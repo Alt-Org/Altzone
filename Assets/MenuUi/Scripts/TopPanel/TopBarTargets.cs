@@ -25,6 +25,7 @@ namespace MenuUI.Scripts.TopPanel
 
         [SerializeField] private float _spacerMinWidth = 0f;
 
+        [SerializeField] private Transform _clanTileBackground;
         [SerializeField] private GameObject _standaloneLeaderboard;
         [SerializeField] private GameObject _clanTileLeaderboard;
         [SerializeField] private TopBarDefs.TopBarItem _clanItem = TopBarDefs.TopBarItem.ClanTile;
@@ -281,6 +282,7 @@ namespace MenuUI.Scripts.TopPanel
                           $"parent={c.parent.name}");
             }
 
+            EnsureClanTileBackgroundPosition();
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
         }
 
@@ -401,6 +403,8 @@ namespace MenuUI.Scripts.TopPanel
                 MoveToTopBar(_clanHeart, _topBarContent);
                 MoveToTopBar(_textContainer, _topBarContent);
             }
+
+            EnsureClanTileBackgroundPosition();
         }
 
         private void MoveUnderClanPanel(Transform item)
@@ -417,7 +421,6 @@ namespace MenuUI.Scripts.TopPanel
 
             if (item == null || parent == null) return;
 
-            item.SetParent(parent, false);
             item.SetParent(parent, false);
             item.gameObject.SetActive(true);
         }
@@ -480,6 +483,16 @@ namespace MenuUI.Scripts.TopPanel
                 rt.anchoredPosition = Vector2.zero;
                 rt.localScale = Vector3.one;
             }
+        }
+
+        private void EnsureClanTileBackgroundPosition()
+        {
+            if (_clanTileBackground == null) return;
+
+            if (_clanPanelRoot != null && _clanTileBackground.parent != _clanPanelRoot)
+                _clanTileBackground.SetParent(_clanPanelRoot, false);
+
+            _clanTileBackground.SetSiblingIndex(0);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Altzone.Scripts.Settings;
 
 public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -57,6 +58,9 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnBeginDrag()");
 
+        if (!DragAllowed())
+            return;
+
         if (_rootCanvas == null) return;
 
         _originalParent = _row.parent;
@@ -106,6 +110,9 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnDrag()");
 
+        if (!DragAllowed())
+            return;
+
         FollowPointer(e);
         UpdatePlaceholderIndex(e);
     }
@@ -113,6 +120,9 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     public void OnEndDrag(PointerEventData e)
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnEndDrag()");
+
+        if (!DragAllowed())
+            return;
 
         _row.SetParent(_originalParent, false);
 
@@ -180,13 +190,21 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         {
             if (child == _placeholderObject.transform) continue;
 
-            if (child.GetComponentInChildren<TopBarToggleDrag>(true) != null)
-                rows.Add((RectTransform)child);
+            RectTransform row = child as RectTransform;
+            if (row == null) continue;
+
+            if (row.GetComponentInChildren<TopBarToggleHandler>(true) == null)
+                continue;
+
+            if (ClanTileIsOn() && IsClanSubItem(row))
+                continue;
+
+            rows.Add(row);
         }
 
         if (rows.Count == 0) return;
 
-        int insertIndex = 0;
+        int insertSiblingIndex = 0;
         Vector3[] corners = new Vector3[4];
 
         for (int i = 0; i < rows.Count; i++)
@@ -197,23 +215,110 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
             float rowMiddleY = (corners[1].y + corners[0].y) * 0.5f;
 
-            Debug.Log(
-                $"[TopBarDebug] row={row.name}, " +
-                $"middleY={rowMiddleY}, " +
-                $"pointerY={e.position.y}, " +
-                $"i={i}"
-            );
+            // Debug.Log(
+            //     $"[TopBarDebug] row={row.name}, " +
+            //     $"middleY={rowMiddleY}, " +
+            //     $"pointerY={e.position.y}, " +
+            //     $"i={i}"
+            // );
 
             if (e.position.y < rowMiddleY)
-                insertIndex = i + 1;
+                insertSiblingIndex = row.GetSiblingIndex() + 1;
             else
                 break;
         }
 
-        insertIndex = Mathf.Clamp(insertIndex, 0, _listContainer.childCount - 1);
-        _placeholderObject.transform.SetSiblingIndex(insertIndex);
-        Debug.Log($"[TopBarDebug] insertIndex={insertIndex}, " +
+        insertSiblingIndex = GetSafeSiblingIndex(insertSiblingIndex);
+        insertSiblingIndex = Mathf.Clamp(insertSiblingIndex, 0, _listContainer.childCount - 1);
+
+        _placeholderObject.transform.SetSiblingIndex(insertSiblingIndex);
+
+        Debug.Log($"[TopBarDebug] insertSiblingIndex={insertSiblingIndex}, " +
                   $"childCount={_listContainer.childCount}, " +
                   $"dragging={_row.name}");
+    }
+
+    private bool DragAllowed()
+    {
+        TopBarToggleHandler handler = GetComponentInParent<TopBarToggleHandler>();
+        if (handler == null) return true;
+
+        bool clanTileOn = PlayerPrefs.GetInt(
+            TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile) + "_" + SettingsCarrier.Instance.TopBarStyleSetting,
+            1
+        ) != 0;
+
+        if (!clanTileOn) return true;
+
+        return handler.item != TopBarDefs.TopBarItem.Leaderboard
+               && handler.item != TopBarDefs.TopBarItem.Coins
+               && handler.item != TopBarDefs.TopBarItem.ClanLogo
+               && handler.item != TopBarDefs.TopBarItem.ClanTextContainer;
+    }
+
+    private bool IsClanSubItem(RectTransform row)
+    {
+        TopBarToggleHandler handler =
+            row.GetComponentInChildren<TopBarToggleHandler>(true);
+
+        if (handler == null) return false;
+
+        return handler.item == TopBarDefs.TopBarItem.Leaderboard
+               || handler.item == TopBarDefs.TopBarItem.Coins
+               || handler.item == TopBarDefs.TopBarItem.ClanLogo
+               || handler.item == TopBarDefs.TopBarItem.ClanTextContainer;
+    }
+
+    private bool ClanTileIsOn()
+    {
+        if (SettingsCarrier.Instance == null) return false;
+
+        string key =
+            TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile)
+            + "_"
+            + SettingsCarrier.Instance.TopBarStyleSetting;
+
+        return PlayerPrefs.GetInt(key, 1) != 0;
+    }
+
+    private int GetSafeSiblingIndex(int index)
+    {
+        if (!ClanTileIsOn() || _listContainer == null)
+            return index;
+
+        int clanTileIndex = -1;
+        int lastClanSubIndex = -1;
+
+        foreach (Transform child in _listContainer)
+        {
+            if (child == _placeholderObject.transform) continue;
+
+            TopBarToggleHandler handler =
+                child.GetComponentInChildren<TopBarToggleHandler>(true);
+
+            if (handler == null) continue;
+
+            int sibling = child.GetSiblingIndex();
+
+            if (handler.item == TopBarDefs.TopBarItem.ClanTile)
+                clanTileIndex = sibling;
+
+            if (handler.item == TopBarDefs.TopBarItem.Leaderboard ||
+                handler.item == TopBarDefs.TopBarItem.Coins ||
+                handler.item == TopBarDefs.TopBarItem.ClanLogo ||
+                handler.item == TopBarDefs.TopBarItem.ClanTextContainer)
+            {
+                if (sibling > lastClanSubIndex)
+                    lastClanSubIndex = sibling;
+            }
+        }
+
+        if (clanTileIndex < 0 || lastClanSubIndex < 0)
+            return index;
+
+        if (index > clanTileIndex && index <= lastClanSubIndex + 1)
+            return lastClanSubIndex + 1;
+
+        return index;
     }
 }

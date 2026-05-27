@@ -212,8 +212,10 @@ public class TopBarOrderBridge : MonoBehaviour
 
         TopBarTargets owner = GetTargetsFor(style);
 
-        Debug.Log($"[TopBarDebug] Bridge target = {owner.name}, style={owner.style}, rows={owner.RowCount()}");
         if (owner != null)
+
+            Debug.Log($"[TopBarDebug] Bridge target = {owner.name}, style={owner.style}, rows={owner.RowCount()}");
+
         {
             Debug.Log($"[TopBarDebug] Bridge target = {owner.name}, style={owner.style}, rows={owner.RowCount()}");
         }
@@ -308,6 +310,9 @@ public class TopBarOrderBridge : MonoBehaviour
         }
 
         SetClanSubItemRowsLocked(clanTileOn);
+
+        if (clanTileOn)
+            MoveClanSubRowsUnderClanTile();
     }
 
     public void RefreshClanSubItemIndent()
@@ -355,5 +360,52 @@ public class TopBarOrderBridge : MonoBehaviour
 
         owner.ApplyFromSettings();
         RefreshClanSubItemIndent();
+    }
+
+    private void MoveClanSubRowsUnderClanTile()
+    {
+        if (_toggleContainer == null) return;
+
+        RectTransform clanTileRow = null;
+        RectTransform leaderboardRow = null;
+        RectTransform coinsRow = null;
+        RectTransform clanLogoRow = null;
+        RectTransform clanTextRow = null;
+
+        foreach (Transform child in _toggleContainer)
+        {
+            TopBarToggleHandler h = child.GetComponentInChildren<TopBarToggleHandler>(true);
+            if (h == null) continue;
+
+            RectTransform row = child as RectTransform;
+
+            switch (h.item)
+            {
+                case TopBarDefs.TopBarItem.ClanTile:
+                    clanTileRow = row;
+                    break;
+                case TopBarDefs.TopBarItem.Leaderboard:
+                    leaderboardRow = row;
+                    break;
+                case TopBarDefs.TopBarItem.Coins:
+                    coinsRow = row;
+                    break;
+                case TopBarDefs.TopBarItem.ClanLogo:
+                    clanLogoRow = row;
+                    break;
+                case TopBarDefs.TopBarItem.ClanTextContainer:
+                    clanTextRow = row;
+                    break;
+            }
+        }
+
+        if (clanTileRow == null) return;
+
+        int index = clanTileRow.GetSiblingIndex() + 1;
+
+        if (leaderboardRow != null) leaderboardRow.SetSiblingIndex(index++);
+        if (coinsRow != null) coinsRow.SetSiblingIndex(index++);
+        if (clanLogoRow != null) clanLogoRow.SetSiblingIndex(index++);
+        if (clanTextRow != null) clanTextRow.SetSiblingIndex(index++);
     }
 }
