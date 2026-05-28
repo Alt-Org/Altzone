@@ -78,14 +78,24 @@ namespace Battle.QSimulation.Player
         {
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerEntityRef damagedPlayerEntityRef = (BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef;
-            BattlePlayerDataQComponent* damagedPlayerData = damagedPlayerEntityRef.GetDataQComponent(f);
+            // get spec
+            BattlePlayerQSpec playerSpec = BattleQConfig.GetPlayerSpec(f);
+
+            // get references
+            BattlePlayerEntityRef            damagedPlayerEntityRef = (BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef;
+            BattlePlayerDataQComponent*      damagedPlayerData      = damagedPlayerEntityRef.GetDataQComponent(f);
+            BattlePlayerManager.PlayerHandle playerHandle           = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
 
             if (damagedPlayerData->StunCooldown.IsRunning(f)) goto Exit;
 
-            if (damagedPlayerData->CurrentDefence <= 0) HandleSFXCommon(f, damagedPlayerData->Slot, SoundEffectTypeCommon.Death, SoundEffectTarget.All);
-            else
+            if (damagedPlayerData->CurrentDefence > 0)
             {
+                // handle stun
+
+                damagedPlayerData->MovementEnabled = false;
+                damagedPlayerData->RotationEnabled = false;
+                damagedPlayerData->StunCooldown    = FrameTimer.FromSeconds(f, playerSpec.StunDurationSec);
+
                 SoundEffectTypeCommon soundEffectType = projectileCollisionData->ProjectileEmotionCurrent switch
                 {
                     BattleEmotionState.Aggression => SoundEffectTypeCommon.HitCharacterAggression,
@@ -97,34 +107,28 @@ namespace Battle.QSimulation.Player
                     _ => throw new System.NotImplementedException()
                 };
                 HandleSFXCommon(f, damagedPlayerData->Slot, soundEffectType, SoundEffectTarget.All);
-            }
 
-            if (damagedPlayerData->CurrentDefence <= 0)
-            {
-                BattlePlayerManager.PlayerHandle playerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
-                f.Events.BattleCharacterDeath(damagedPlayerData->Slot, playerHandle.SelectedCharacterNumber);
-                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
-                playerHandle.RespawnTimer = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).AutoRespawnTimeSec);
-
-                playerHandle.SetOutOfPlayRespawning();
-                goto Exit;
-            }
-
-            damagedPlayerData->MovementEnabled = false;
-            damagedPlayerData->RotationEnabled = false;
-            FP stunCooldown = (int)BattleQConfig.GetPlayerSpec(f).StunDurationSec;
-
-            damagedPlayerData->StunCooldown = FrameTimer.FromSeconds(f, stunCooldown);
-
-            f.Events.BattleCharacterHit(
-                damagedPlayerEntityRef,
-                damagedPlayerData->TeamNumber,
-                damagedPlayerData->Slot,
-                BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber,
-                damagedPlayerData->AttachedShieldNumber,
-                stunCooldown,
-                projectileCollisionData->ProjectileEmotionCurrent
+                f.Events.BattleCharacterHit(
+                    damagedPlayerEntityRef,
+                    damagedPlayerData->TeamNumber,
+                    damagedPlayerData->Slot,
+                    playerHandle.SelectedCharacterNumber,
+                    damagedPlayerData->AttachedShieldNumber,
+                    playerSpec.StunDurationSec,
+                    projectileCollisionData->ProjectileEmotionCurrent
                 );
+            }
+            else
+            {
+                // handle death
+
+                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
+                playerHandle.SetOutOfPlayRespawning();
+                playerHandle.RespawnTimer = FrameTimer.FromSeconds(f, playerSpec.AutoRespawnTimeSec);
+
+                HandleSFXCommon(f, damagedPlayerData->Slot, SoundEffectTypeCommon.Death, SoundEffectTarget.All);
+                f.Events.BattleCharacterDeath(damagedPlayerData->Slot, playerHandle.SelectedCharacterNumber);
+            }
 
         Exit:
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
