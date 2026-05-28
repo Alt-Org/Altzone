@@ -528,7 +528,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7617954089972408482
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1777,14 +1777,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.6201109, b: 0.3443396, a: 1}
+  m_Color: {r: 1, g: 0.68235296, b: 0.68235296, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 776df73bddbed9848b7968a02085a428, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1849,7 +1849,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1504166851438060575}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
@@ -6435,7 +6435,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 54.7
+  m_fontSize: 56.35
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6573,7 +6573,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 54.7
+  m_fontSize: 56.35
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10056,7 +10056,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7237999902384814953
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13262,7 +13262,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 57.05
+  m_fontSize: 58.6
   m_fontSizeBase: 55.15
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -13785,7 +13785,7 @@ PrefabInstance:
     - target: {fileID: 4028375515925020952, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_fontSize
-      value: 45.25
+      value: 46.45
       objectReference: {fileID: 0}
     - target: {fileID: 7062704168869414568, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
@@ -13822,6 +13822,27 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 7663954824446020484, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: _englishText
+      value: Close
+      objectReference: {fileID: 0}
+    - target: {fileID: 7663954824446020484, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: _finnishText
+      value: Sulje
+      objectReference: {fileID: 0}
+    - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 47f3804936cb29747bf9619ef5303fec,
+        type: 3}
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_Color.b
@@ -18665,7 +18686,38 @@ PrefabInstance:
     - target: {fileID: 4028375515925020952, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_fontSize
-      value: 45.25
+      value: 46.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 7663954824446020484, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: _englishText
+      value: Continue
+      objectReference: {fileID: 0}
+    - target: {fileID: 7663954824446020484, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: _finnishText
+      value: Jatka
+      objectReference: {fileID: 0}
+    - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 47f3804936cb29747bf9619ef5303fec,
+        type: 3}
+    - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.6313726
       objectReference: {fileID: 0}
     - target: {fileID: 8279349774068130845, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}

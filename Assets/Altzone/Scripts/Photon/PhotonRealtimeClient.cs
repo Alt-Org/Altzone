@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Altzone.Scripts.Lobby.Wrappers;
 using Photon.Client;
 using LogLevel = Photon.Client.LogLevel;
@@ -56,6 +58,20 @@ public static class PhotonRealtimeClient
         }
     }
     private static string gameVersion;
+
+    public static string HashRoomPassword(string password)
+    {
+        if (string.IsNullOrEmpty(password))
+        {
+            return string.Empty;
+        }
+
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+            return BitConverter.ToString(hash).Replace("-", string.Empty).ToLowerInvariant();
+        }
+    }
 
     public static AuthenticationValues AuthValues
     {
@@ -711,7 +727,7 @@ public static class PhotonRealtimeClient
 
         if (!string.IsNullOrEmpty(password))
         {
-            customRoomProperties.Add(PhotonBattleRoom.PasswordKey, password);
+            customRoomProperties.Add(PhotonBattleRoom.PasswordKey, HashRoomPassword(password));
             propertiesShowingToLobby.Add(PhotonBattleRoom.PasswordKey);
         }
 

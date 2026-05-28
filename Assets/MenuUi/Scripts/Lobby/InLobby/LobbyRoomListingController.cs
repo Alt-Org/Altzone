@@ -160,13 +160,19 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void CreateCustomRoom()
         {
-            _pendingJoinIntent = JoinIntent.CustomCreate;
             // int randomNumber = UnityEngine.Random.Range(0, 100) + DateTime.Now.Millisecond;
             string roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameCustom}" : $"{_createRoomCustom.RoomName}";
 
-            if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
+            if (_createRoomCustom.IsPrivate)
             {
-                // For private rooms keep using the provided password and display name
+                if (string.IsNullOrWhiteSpace(_createRoomCustom.RoomPassword))
+                {
+                    _pendingJoinIntent = JoinIntent.None;
+                    PopupSignalBus.OnChangePopupInfoSignal("Lisää salasana ennen yksityisen huoneen luontia.");
+                    return;
+                }
+
+                // For private rooms keep the provided password for hashing and the display name for the lobby.
                 string internalName = $"{roomName}_{Guid.NewGuid()}";
                 PhotonRealtimeClient.CreateCustomLobbyRoom(internalName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword, null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
             }
@@ -177,6 +183,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 string uniqueRoomId = string.IsNullOrWhiteSpace(roomName) ? $"{DefaultRoomNameCustom}{Guid.NewGuid()}" : $"{roomName}_{Guid.NewGuid()}";
                 PhotonRealtimeClient.CreateCustomLobbyRoom(uniqueRoomId, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, "", null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
             }
+
+            _pendingJoinIntent = JoinIntent.CustomCreate;
         }
 
         private void WireCreateRoomButtonFallback()
@@ -266,12 +274,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 if (roomInfo.Name.Equals(roomName, StringComparison.Ordinal) && !roomInfo.RemovedFromList && roomInfo.IsOpen)
                 {
                     // Asking for password if there is one
-                    if (roomInfo.CustomProperties.ContainsKey(PhotonBattleRoom.PasswordKey))
+                    if (roomInfo.CustomProperties.TryGetValue(PhotonBattleRoom.PasswordKey, out object passwordHashObj) && passwordHashObj is string passwordHash && !string.IsNullOrEmpty(passwordHash))
                     {
-                        string password = (string)roomInfo.CustomProperties[PhotonBattleRoom.PasswordKey];
                         StartCoroutine(_passwordPopup.AskForPassword(passwordInput =>
                         {
-                            if (password.Trim() == passwordInput.Trim())
+                            if (RoomPasswordMatches(passwordHash, passwordInput))
                             {
                                 _pendingJoinIntent = JoinIntent.ManualRoomJoin;
                                 PhotonRealtimeClient.JoinRoom(roomInfo.Name);
@@ -451,7 +458,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void UpdateStatus()
         {
-            LobbyManager.Instance.CurrentRooms = _photonRoomList.CurrentRooms;
             var rooms = _photonRoomList.CurrentRooms.ToList();
             rooms.Sort((a, b) =>
             {
@@ -461,20 +467,18 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
 
-            rooms = FilterCustomRoomsBySelectedMode(rooms);
+            rooms = FilterCustomRooms(rooms);
 
             _searchPanel.RoomsData = rooms;
             _searchPanel.SetOnJoinRoom(JoinRoom);
         }
 
-        private List<LobbyRoomInfo> FilterCustomRoomsBySelectedMode(List<LobbyRoomInfo> rooms)
+        private List<LobbyRoomInfo> FilterCustomRooms(List<LobbyRoomInfo> rooms)
         {
             if (rooms == null)
             {
                 return rooms;
             }
-
-            int selectedMode = _createRoomCustom != null ? _createRoomCustom.SelectedCustomGameModeIndex : (int)CustomGameMode.TwoVersusTwo;
 
             // Get local player data (from local DataStore) for friend list and clan id checks
             PlayerData localPlayerData = null;
@@ -499,13 +503,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 {
                     return false;
                 }
-
-                if (!room.CustomProperties.TryGetValue(PhotonBattleRoom.CustomGameModeKey, out object roomCustomModeValue) || roomCustomModeValue is not int roomCustomMode)
-                {
-                    roomCustomMode = (int)CustomGameMode.TwoVersusTwo;
-                }
-
-                if (roomCustomMode != selectedMode) return false;
 
                 // If room is marked show-to-friends only (sf), only show if the local player is friends with the room leader
                 if (room.CustomProperties.TryGetValue(PhotonBattleRoom.ShowToFriendsKey, out object sfObj) && sfObj is bool sf && sf)
@@ -555,6 +552,27 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
                 return true;
             }).ToList();
+        }
+
+        private static bool RoomPasswordMatches(string storedPasswordValue, string passwordInput)
+        {
+            if (string.IsNullOrEmpty(storedPasswordValue))
+            {
+                return false;
+            }
+
+            string normalizedInput = passwordInput?.Trim() ?? string.Empty;
+            bool looksLikeHash = storedPasswordValue.Length == 64 && storedPasswordValue.All(character =>
+                (character >= '0' && character <= '9') ||
+                (character >= 'a' && character <= 'f'));
+
+            if (looksLikeHash)
+            {
+                string enteredPasswordHash = PhotonRealtimeClient.HashRoomPassword(normalizedInput);
+                return string.Equals(storedPasswordValue, enteredPasswordHash, StringComparison.Ordinal);
+            }
+
+            return string.Equals(storedPasswordValue.Trim(), normalizedInput, StringComparison.Ordinal);
         }
 
         private void HandleClanMemberDisconnected()

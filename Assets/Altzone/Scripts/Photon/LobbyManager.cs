@@ -3503,6 +3503,7 @@ namespace Altzone.Scripts.Lobby
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
             _gamePlayedOut = false;
+            CurrentRooms = null;
 
             // Clearing player position key from own custom properties
             if (PhotonRealtimeClient.LocalPlayer.HasCustomProperty(PlayerPositionKey)) PhotonRealtimeClient.LocalPlayer.RemoveCustomProperty(PlayerPositionKey);
@@ -3565,9 +3566,15 @@ namespace Altzone.Scripts.Lobby
             {
                 lobbyRoomList.Add(new(roomInfo));
             }
+
+            CurrentRooms = lobbyRoomList.AsReadOnly();
             LobbyOnRoomListUpdate?.Invoke(lobbyRoomList);
         }
-        public void OnLeftLobby() { LobbyOnLeftLobby?.Invoke(); }
+        public void OnLeftLobby()
+        {
+            CurrentRooms = null;
+            LobbyOnLeftLobby?.Invoke();
+        }
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) { LobbyOnLobbyStatisticsUpdate?.Invoke(); }
         public void OnFriendListUpdate(List<FriendInfo> friendList) {
             _friendList = friendList;
