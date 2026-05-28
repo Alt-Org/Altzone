@@ -220,6 +220,9 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame</param>
         public override void Update(Frame f)
         {
+            BattleGameSessionQSingleton* singleton = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            if (singleton->State != BattleGameState.Playing) return;
+
             InputData inputData;
             Input stackInputStorage;
 
