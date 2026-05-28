@@ -21,14 +21,14 @@ public class SettingsPopup : MonoBehaviour
     {
         gameObject.SetActive(false);
 
-        _blockerHandler.ClosePopup(gameObject);
+        if(_blockerHandler) _blockerHandler.ClosePopup(gameObject);
     }
 
     public void OpenPopup()
     {
         gameObject.SetActive(true);
 
-        _blockerHandler.OpenPopup(gameObject);
+        if (_blockerHandler) _blockerHandler.OpenPopup(gameObject);
     }
 
     public IEnumerator CloseWithDelay()
@@ -43,7 +43,7 @@ public class SettingsPopup : MonoBehaviour
         if (!isActiveAndEnabled) return;
         gameObject.SetActive(false);
 
-        _blockerHandler.ClosePopup(gameObject);
+        if (_blockerHandler) _blockerHandler.ClosePopup(gameObject);
 
         if (!invokeButtons) return;
 

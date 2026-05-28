@@ -349,6 +349,7 @@ namespace Quantum.Prototypes {
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
     public QBoolean DisableRotation;
+    public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
     public QBoolean MovementEnabled;
     public QBoolean RotationEnabled;
     public FP CurrentDefence;
@@ -381,6 +382,7 @@ namespace Quantum.Prototypes {
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
         result.DisableRotation = this.DisableRotation;
+        result.SpawnBehaviour = this.SpawnBehaviour;
         result.MovementEnabled = this.MovementEnabled;
         result.RotationEnabled = this.RotationEnabled;
         result.CurrentDefence = this.CurrentDefence;
@@ -407,6 +409,7 @@ namespace Quantum.Prototypes {
     public Int32 GridExtendBottom;
     public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype Hitbox;
     public QBoolean DisableRotation;
+    public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataTemplateQComponent component = default;
@@ -418,6 +421,7 @@ namespace Quantum.Prototypes {
         result.GridExtendBottom = this.GridExtendBottom;
         this.Hitbox.Materialize(frame, ref result.Hitbox, in context);
         result.DisableRotation = this.DisableRotation;
+        result.SpawnBehaviour = this.SpawnBehaviour;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -508,9 +512,11 @@ namespace Quantum.Prototypes {
     [ArrayLengthAttribute(4)]
     public Int32[] CharacterSelectedNumbers = new Int32[4];
     [ArrayLengthAttribute(4)]
-    public Quantum.Prototypes.BattleEntityIDPrototype[] CharacterAllEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[4];
+    public Quantum.Prototypes.BattleEntityIDPrototype[] CharacterEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[4];
     [ArrayLengthAttribute(12)]
     public Quantum.QEnum32<BattlePlayerCharacterState>[] CharactersAllStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
+    [ArrayLengthAttribute(12)]
+    public FPVector2[] CharacterAllPreviousPositions = new FPVector2[12];
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerManagerDataQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerManagerDataQSingleton component = default;
@@ -543,11 +549,14 @@ namespace Quantum.Prototypes {
         for (int i = 0, count = PrototypeValidator.CheckLength(CharacterSelectedNumbers, 4, in context); i < count; ++i) {
           result.CharacterSelectedNumbers[i] = this.CharacterSelectedNumbers[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterAllEntityGroupIDs, 4, in context); i < count; ++i) {
-          this.CharacterAllEntityGroupIDs[i].Materialize(frame, ref *result.CharacterAllEntityGroupIDs.GetPointer(i), in context);
+        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterEntityGroupIDs, 4, in context); i < count; ++i) {
+          this.CharacterEntityGroupIDs[i].Materialize(frame, ref *result.CharacterEntityGroupIDs.GetPointer(i), in context);
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(CharactersAllStates, 12, in context); i < count; ++i) {
           *result.CharactersAllStates.GetPointer(i) = this.CharactersAllStates[i];
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterAllPreviousPositions, 12, in context); i < count; ++i) {
+          *result.CharacterAllPreviousPositions.GetPointer(i) = this.CharacterAllPreviousPositions[i];
         }
         MaterializeUser(frame, ref result, in context);
     }

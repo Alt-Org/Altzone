@@ -666,9 +666,6 @@ namespace Battle.View.Player
 
         /// @}
 
-        /// <summary>Is shield attached.</summary>
-        private bool _shieldAttached;
-
         /// <summary>This classes %BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
@@ -676,6 +673,11 @@ namespace Battle.View.Player
         ///
         /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         private bool _isInPlay;
+
+        /// <summary>Is shield attached.</summary>
+        ///
+        /// See [{Attached/Detached Shield}](#page-concepts-player-character-entity-shield-attach) for more info.
+        private bool _shieldAttached;
 
         /// <summary>Reference to the active character class view controller.</summary>
         ///

@@ -14,20 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _classType: 500
   _list:
-  - "Kukaan ei koskaan pyyd\xE4 minua pelaamaan"
-  - "Ei kai kukaan halua pelata toista peli\xE4? "
-  - 'Voin tulla, jos kukaan muu ei halua? '
-  - "\xC4\xE4hh..."
-  - "No, kai se k\xE4y "
-  - "En voi sanoa t\xE4h\xE4n nyt mit\xE4\xE4n. "
-  - "Ket\xE4\xE4n ei varmaan kiinnosta, mutta olen paikalla. "
-  - "Olen vain haitaksi, joten lopetan t\xE4lt\xE4 p\xE4iv\xE4lt\xE4. "
-  - "L\xE4hden, katsotaan viitsink\xF6 tulla takaisin. "
-  - "Enk\xF6h\xE4n kohta h\xE4vi\xE4, niinkuin aina. "
-  - "En onnistu t\xE4ss\xE4k\xE4\xE4n, ei oikeastaan yll\xE4t\xE4. "
-  - "Liity mukaan ALT Zone -yhteis\xF6\xF6n Discordissa, en h\xE4iritse teit\xE4
-    siell\xE4. Linkki etusivulla. "
-  - "Ket\xE4\xE4n ei kiinnosta olla kanssani..."
-  - "T\xE4\xE4 peli on ihan kiva, toivottavasti en pilaa t\xE4t\xE4kin. "
-  - "T\xE4\xE4 peli on melkein yht\xE4 paska kuin min\xE4. "
-  - "No enp\xE4 osannut t\xE4t\xE4k\xE4\xE4n pelata oikein. "
+  - ResponseId: 0
+    Response: "Olisi ihanaa pelata yhdess\xE4, tuu mukaan jos silt\xE4 tuntuu."
+  - ResponseId: 1
+    Response: "Pelattaisko toinen, ihan rauhassa ja yhdess\xE4?"
+  - ResponseId: 2
+    Response: "Tulen mielell\xE4ni, yhdess\xE4 pelaaminen tuntuu hyv\xE4lt\xE4."
+  - ResponseId: 3
+    Response: "Haluan liitty\xE4 teihin. Tuntuu, ett\xE4 kuulun t\xE4nne."
+  - ResponseId: 4
+    Response: "Kyll\xE4, rakkaudella. Kiitos ett\xE4 kysyit."
+  - ResponseId: 5
+    Response: "Ei t\xE4ll\xE4 kertaa, mutta arvostan, ett\xE4 ajattelit minua."
+  - ResponseId: 6
+    Response: "Hei rakkaat, t\xE4\xE4ll\xE4 ollaan!"
+  - ResponseId: 7
+    Response: "Kiitos kaikille t\xE4st\xE4. L\xE4hden nyt syd\xE4n t\xE4ynn\xE4."
+  - ResponseId: 8
+    Response: "Jaksakaa viel\xE4 hetki rakkaani, olen poissa vain sekunnin!"
+  - ResponseId: 9
+    Response: "Oi, suloinen voitto, syleile minua viel\xE4 kerran!"
+  - ResponseId: 10
+    Response: "Me h\xE4vit\xE4\xE4n yhdess\xE4, ja sekin on okei. Olette silti t\xE4rkeit\xE4
+      mulle."
+  - ResponseId: 11
+    Response: "Tervetuloa Discordiin, siell\xE4 voi oikeasti l\xF6yt\xE4\xE4 yhteyden.
+      Linkki nettisivuilta!"
+  - ResponseId: 12
+    Response: "Tunnen yksin\xE4isyytt\xE4, mutta teid\xE4n l\xE4sn\xE4olo lohduttaa."
+  - ResponseId: 13
+    Response: "Rakastan t\xE4t\xE4 peli\xE4, koska se toi mut teid\xE4n luo."
+  - ResponseId: 14
+    Response: 'Peli on pettymys, mut te ette ole. Te teette sen arvokkaaksi. '
+  - ResponseId: 15
+    Response: "En osaa t\xE4t\xE4, mut jos autatte, opimme yhdess\xE4."
