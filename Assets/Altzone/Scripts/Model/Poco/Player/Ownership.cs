@@ -1,5 +1,8 @@
 using System.Collections.Generic;
-using Altzone.Scripts.AvatarPartsInfo;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 
@@ -19,14 +22,13 @@ public class Ownership
     public List<string> _ownedAnimation_Ids;
     public List<string> _ownedUIStyle_ids;   // Item not implemented yet
 
-    public List<AvatarDefault> _defaultOwnerships;     // Add default avatarparts
+    // public List<AvatarDefault> _defaultOwnerships;     // Add default avatarparts
+    public List<string> _defaultOwnerships;
+
+    private PlayerData _playerData = null;
 
     public void AddItem(string id, ItemType type)
     {
-        // Differentiating types of items seems encumbaring currently
-        // Option 1: add patterns to item_ids can be used to sort them.
-        // Option 2: add every item into one list.
-        // Option 3: first item in the list is identifier
         switch (type)
         {
             case ItemType.AvatarPiece:
@@ -39,7 +41,7 @@ public class Ownership
                 AddToList(id, _ownedMiscItems_Ids);
                 break;
         }
-        //SaveItems(type);
+        //SaveItems();
     }
 
     private void AddToList(string id, List<string> list)
@@ -51,31 +53,48 @@ public class Ownership
     {
         if (_ownedAvatarPiece_Ids.Contains(id)) _ownedAvatarPiece_Ids.Remove(id);
         if (_ownedAnimation_Ids.Contains(id)) _ownedAnimation_Ids.Remove(id);
-        //SaveItems(type);
+        //SaveItems();
     }
 
     public void SaveItems()
     {
-        //_playerData.SavePlayerData();    // Propably doesn't work like this
-        // Save PlayerData
+        _playerData.SaveOwnerships();    // Propably doesn't work like this
     }
 
     public bool CheckItemOwnership(string id)
     {
-        foreach (AvatarDefault part in _defaultOwnerships)
-        {
-            if (part.HairId == id) { return true; }
-            if (part.EyesId == id) { return true; }
-            if (part.NoseId == id) { return true; }
-            if (part.MouthId == id) { return true; }
-            if (part.BodyId == id) { return true; }
-            if (part.HandsId == id) { return true; }
-            if (part.FeetId == id) { return true; }
-        }
+        AssignDefaultParts();   // Check if we have defaultparts already, and if not, assigns them.
+        foreach (string partId in _defaultOwnerships) { if (partId == id) { return true; } }
         if (_ownedAvatarPiece_Ids.Contains(id)) return true;
         if (_ownedAnimation_Ids.Contains(id)) return true;
         
         return false;
-    }  
+    }
+
+    private void ArrangeDefaultParts(AvatarDefault list)
+    {
+        _defaultOwnerships.Add(list.HairId);
+        _defaultOwnerships.Add(list.EyesId);
+        _defaultOwnerships.Add(list.NoseId);
+        _defaultOwnerships.Add(list.MouthId);
+        _defaultOwnerships.Add(list.BodyId);
+        _defaultOwnerships.Add(list.HandsId);
+        _defaultOwnerships.Add(list.FeetId);
+    }
+
+    /// <summary>
+    /// Checks if player has default avatarparts.
+    /// If not, this method checks characterclasstype and takes that one's defaultparts.
+    /// </summary>
+    public void AssignDefaultParts()
+    {
+        if (_defaultOwnerships == null)
+        {
+            Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => _playerData = p);
+            AvatarDefault playerDefault = AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)(_playerData.SelectedCharacterId / 100 * 100));
+            ArrangeDefaultParts(playerDefault);
+        }
+        return;
+    }
 }
 
