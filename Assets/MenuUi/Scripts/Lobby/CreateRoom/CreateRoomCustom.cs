@@ -68,6 +68,14 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         {
             _roomPassword.text = "";
             _privateToggle.isOn = false;
+            if (_showToFriends != null)
+            {
+                _showToFriends.isOn = false;
+            }
+            if (_showToClan != null)
+            {
+                _showToClan.isOn = false;
+            }
             // Ensure visibility toggles are mutually exclusive: only one can be on at a time
             if (_showToFriends != null && _showToClan != null)
             {
