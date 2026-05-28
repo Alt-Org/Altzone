@@ -68,7 +68,7 @@ public class ChooseTask : MonoBehaviour
         // Show popup every other battle on turboeducation
         if (_gameVersion == VersionType.TurboEducation)
         {
-            if (DailyTaskProgressManager.Instance.HasOnGoingTask())
+            if (DailyTaskProgressManager.Instance.HasOnGoingTask() && DailyTaskManager.Instance.CurrentTaskForced)
             {
                 _shouldShowPopup = false;
             }
@@ -127,9 +127,14 @@ public class ChooseTask : MonoBehaviour
 
     public void HideSelectionWindow()
     {
-        _selectionWindow.gameObject.SetActive(false);
-        DeleteTaskCards();
-        OnChooseTaskHidden?.Invoke();
+        if (_selectionWindow.gameObject.activeSelf)
+        {
+            _selectionWindow.gameObject.SetActive(false);
+            DeleteTaskCards();
+            DailyTaskManager.Instance.CurrentTaskForced = true;
+            OnChooseTaskHidden?.Invoke();
+        }
+        
     }
 
 
