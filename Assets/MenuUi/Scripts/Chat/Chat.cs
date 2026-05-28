@@ -112,6 +112,7 @@ public class Chat : AltMonoBehaviour
     public Mood currentMood = Mood.Neutral;
     public Mood lasttimeMood = Mood.Neutral;
     public GameObject _responsesData;
+    private int ResponseOrder = 0;
 
     private bool _miniMizeReaction = true, _miniMizeQuickMessage = true;
 
@@ -193,15 +194,24 @@ public class Chat : AltMonoBehaviour
 
     private void AddResponses()
     {
-
+        //If mood isnt selected mood, defaults to Happy
         if (currentMood == Mood.Neutral) currentMood = Mood.Happy;
 
+        //Halts the progress if its the same mood so it wont reload already set same data
         if (lasttimeMood == currentMood)
             return;
 
-        
+        //Changes message to set mood message if user switches 
+        if (_inputField.text != "")
+        {
+            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(currentMood);
+            ChatResponseObject convertedResponse = messageList[ResponseOrder];
+            string textFromButton = convertedResponse.Response;
 
-        //Halts the progress if its the same mood so it wont reload already set same data
+            _inputField.text = textFromButton;
+        }
+
+
 
         //Clears the current Responses
         if (_responsesData.transform.childCount > 0)
@@ -368,6 +378,7 @@ public class Chat : AltMonoBehaviour
             List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(currentMood);        
             ChatResponseObject convertedResponse = messageList.FirstOrDefault(c => c.ResponseId == message.ResponseId);
             string textFromButton = convertedResponse.Response;
+            ResponseOrder = (int)convertedResponse.ResponseId;
             _reactionAvailable = true;
             _miniMizeReaction = false;
             MinimizeOptions();
