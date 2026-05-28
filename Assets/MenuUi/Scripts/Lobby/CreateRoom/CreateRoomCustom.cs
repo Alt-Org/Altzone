@@ -48,13 +48,14 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
                 }
             }
         }
-        public string RoomPassword { get { return _roomPassword.text; } }
-        public bool IsPrivate { get { return _privateToggle.isOn; } }
+        public string RoomPassword { get { return _roomPassword != null ? _roomPassword.text : string.Empty; } }
+        public bool IsPrivate { get { return _privateToggle != null && _privateToggle.isOn; } }
         public bool ShowToFriends {  get { return _showToFriends.isOn; } }
         public bool ShowToClan { get {  return _showToClan.isOn; } }
         public Button CreateRoomButton { get { return _createRoom; } }
         public CustomGameMode SelectedCustomGameMode { get { return _customBattleGameModeSelector.SelectedGameMode; } }
         public int SelectedCustomGameModeIndex { get { return (int)_customBattleGameModeSelector.SelectedGameMode; } }
+        public bool CanCreateRoom => !IsPrivate || !string.IsNullOrWhiteSpace(RoomPassword);
 
         public void InitializeCustomRoomOptions()
         {
@@ -66,8 +67,18 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
 
         private void OnEnable()
         {
-            _roomPassword.text = "";
-            _privateToggle.isOn = false;
+            if (_roomPassword != null)
+            {
+                _roomPassword.text = "";
+                _roomPassword.onValueChanged.RemoveListener(HandleRoomPasswordChanged);
+                _roomPassword.onValueChanged.AddListener(HandleRoomPasswordChanged);
+            }
+            if (_privateToggle != null)
+            {
+                _privateToggle.isOn = false;
+                _privateToggle.onValueChanged.RemoveListener(HandlePrivateToggleChanged);
+                _privateToggle.onValueChanged.AddListener(HandlePrivateToggleChanged);
+            }
             if (_showToFriends != null)
             {
                 _showToFriends.isOn = false;
@@ -84,14 +95,42 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
                 _showToFriends.onValueChanged.AddListener(HandleShowToFriendsChanged);
                 _showToClan.onValueChanged.AddListener(HandleShowToClanChanged);
             }
+
+            RefreshCreateRoomButtonState();
         }
 
         private void OnDisable()
         {
+            if (_roomPassword != null)
+            {
+                _roomPassword.onValueChanged.RemoveListener(HandleRoomPasswordChanged);
+            }
+            if (_privateToggle != null)
+            {
+                _privateToggle.onValueChanged.RemoveListener(HandlePrivateToggleChanged);
+            }
             if (_showToFriends != null && _showToClan != null)
             {
                 _showToFriends.onValueChanged.RemoveListener(HandleShowToFriendsChanged);
                 _showToClan.onValueChanged.RemoveListener(HandleShowToClanChanged);
+            }
+        }
+
+        private void HandleRoomPasswordChanged(string _)
+        {
+            RefreshCreateRoomButtonState();
+        }
+
+        private void HandlePrivateToggleChanged(bool _)
+        {
+            RefreshCreateRoomButtonState();
+        }
+
+        private void RefreshCreateRoomButtonState()
+        {
+            if (_createRoom != null)
+            {
+                _createRoom.interactable = CanCreateRoom;
             }
         }
 

@@ -160,12 +160,18 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void CreateCustomRoom()
         {
-            _pendingJoinIntent = JoinIntent.CustomCreate;
             // int randomNumber = UnityEngine.Random.Range(0, 100) + DateTime.Now.Millisecond;
             string roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameCustom}" : $"{_createRoomCustom.RoomName}";
 
-            if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
+            if (_createRoomCustom.IsPrivate)
             {
+                if (string.IsNullOrWhiteSpace(_createRoomCustom.RoomPassword))
+                {
+                    _pendingJoinIntent = JoinIntent.None;
+                    PopupSignalBus.OnChangePopupInfoSignal("Lisää salasana ennen yksityisen huoneen luontia.");
+                    return;
+                }
+
                 // For private rooms keep the provided password for hashing and the display name for the lobby.
                 string internalName = $"{roomName}_{Guid.NewGuid()}";
                 PhotonRealtimeClient.CreateCustomLobbyRoom(internalName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword, null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
@@ -177,6 +183,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 string uniqueRoomId = string.IsNullOrWhiteSpace(roomName) ? $"{DefaultRoomNameCustom}{Guid.NewGuid()}" : $"{roomName}_{Guid.NewGuid()}";
                 PhotonRealtimeClient.CreateCustomLobbyRoom(uniqueRoomId, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, "", null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
             }
+
+            _pendingJoinIntent = JoinIntent.CustomCreate;
         }
 
         private void WireCreateRoomButtonFallback()
