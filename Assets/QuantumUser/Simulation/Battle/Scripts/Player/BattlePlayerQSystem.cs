@@ -223,9 +223,9 @@ namespace Battle.QSimulation.Player
             InputData inputData;
             Input stackInputStorage;
 
-            BattlePlayerEntityRef playerEntity = BattlePlayerEntityRef.None;
-            BattlePlayerDataQComponent* playerData = null;
-            Transform2D* playerTransform = null;
+            BattlePlayerEntityRef       playerEntity    = BattlePlayerEntityRef.None;
+            BattlePlayerDataQComponent* playerData      = null;
+            Transform2D*                playerTransform = null;
 
             BattlePlayerManager.PlayerHandle[] playerHandleArray = BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f);
 
@@ -234,14 +234,7 @@ namespace Battle.QSimulation.Player
                 BattlePlayerManager.PlayerHandle playerHandle = playerHandleArray[playerNumber];
                 if (playerHandle.PlayState.IsNotInGame()) continue;
 
-                if (playerHandle.PlayState.IsInPlay())
-                {
-                    playerEntity = playerHandle.GetSelectedCharacterEntityRef(f);
-                    playerData = playerEntity.GetDataQComponent(f);
-                    playerTransform = playerEntity.GetTransform(f);
-                }
-
-                inputData = GetInput(f, playerHandle, playerData, &stackInputStorage);
+                inputData = GetInput(f, playerHandle, &stackInputStorage);
 
                 //{ non-character logic
 
@@ -262,6 +255,10 @@ namespace Battle.QSimulation.Player
                 //} non-character logic
 
                 //{ character logic
+
+                playerEntity    = playerHandle.GetSelectedCharacterEntityRef(f);
+                playerData      = playerEntity.GetDataQComponent(f);
+                playerTransform = playerEntity.GetTransform(f);
 
                 switch (inputData.CommandType)
                 {
@@ -345,7 +342,7 @@ namespace Battle.QSimulation.Player
         /// <param name="stackInputStorage">Temporary input storage for bots and abandoned players.</param>
         ///
         /// <returns>Pointer to the player's input.</returns>
-        private InputData GetInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, Input* stackInputStorage)
+        private InputData GetInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, Input* stackInputStorage)
         {
             InputData inputData = new()
             {
@@ -358,7 +355,7 @@ namespace Battle.QSimulation.Player
 
             if (playerHandle.IsBot)
             {
-                BattlePlayerBotController.GetBotInput(f, playerHandle.PlayState.IsInPlay(), playerData, inputData.Input, &inputData.CommandType, inputData.CommandData);
+                BattlePlayerBotController.GetBotInput(f, playerHandle, inputData.Input, &inputData.CommandType, inputData.CommandData);
                 isValid = inputData.Input->IsValid;
             }
             else if (!playerHandle.IsAbandoned)
