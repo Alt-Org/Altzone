@@ -192,9 +192,26 @@ public class ClanSearchView : MonoBehaviour
                 || (_filters.language != Language.None && _filters.language != clanListing.Clan.language)
                 || (_filters.age != ClanAge.None && _filters.age != clanListing.Clan.ageRange)
                 || (_filters.goal != Goals.None && _filters.goal != clanListing.Clan.goal)
+                || !CheckMemberCount(clanListing.Clan.playerCount, _filters.memberCount)
                 || !CheckValues(clanListing.Clan.labels, _filters.values);
             clanListing.gameObject.SetActive(!hidelisting);
         }
+    }
+
+    private bool CheckMemberCount(int memberCount, ClanMembers filterMemberCount)
+    {
+        if (filterMemberCount == ClanMembers.None)
+            return true;
+
+        return filterMemberCount switch
+        {
+            ClanMembers.Small => memberCount >= 1 && memberCount <= 5,
+            ClanMembers.Medium => memberCount >= 6 && memberCount <= 10,
+            ClanMembers.Large => memberCount >= 11 && memberCount <= 20,
+            ClanMembers.VeryLarge => memberCount >= 21 && memberCount <= 28,
+            ClanMembers.Huge => memberCount >= 29,
+            _ => true
+        };
     }
 
     private bool CheckValues(List<string> labels, List<ClanValues> filterValues)

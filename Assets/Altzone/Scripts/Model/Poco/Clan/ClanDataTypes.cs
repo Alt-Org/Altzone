@@ -312,7 +312,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 case SettingsCarrier.LanguageType.Finnish:
                     return ranking switch
                     {
-                        ClanRanking.None => "Sijoitus",
+                        ClanRanking.None => "Kaikki",
                         ClanRanking.Top10 => "Top 10",
                         ClanRanking.Top25 => "Top 25",
                         ClanRanking.Top50 => "Top 50",
@@ -332,7 +332,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             }
             return ranking switch
             {
-                ClanRanking.None => "Sijoitus",
+                ClanRanking.None => "Kaikki",
                 ClanRanking.Top10 => "Top 10",
                 ClanRanking.Top25 => "Top 25",
                 ClanRanking.Top50 => "Top 50",
@@ -348,34 +348,34 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 case SettingsCarrier.LanguageType.Finnish:
                     return members switch
                     {
-                        ClanMembers.None => "Jäsenmäärä",
-                        ClanMembers.Small => "Pieni (1-5)",
-                        ClanMembers.Medium => "Keskikokoinen (6-10)",
-                        ClanMembers.Large => "Suuri (11-20)",
-                        ClanMembers.VeryLarge => "Hyvin suuri (21-28)",
-                        ClanMembers.Huge => "Valtava (29+)",
+                        ClanMembers.None => "Kaikki",
+                        ClanMembers.Small => "1-5",
+                        ClanMembers.Medium => "6-10",
+                        ClanMembers.Large => "11-20",
+                        ClanMembers.VeryLarge => "21-28",
+                        ClanMembers.Huge => "29+",
                         _ => "",
                     };
                 case SettingsCarrier.LanguageType.English:
                     return members switch
                     {
                         ClanMembers.None => "Member count",
-                        ClanMembers.Small => "Small (1-5)",
-                        ClanMembers.Medium => "Medium (6-10)",
-                        ClanMembers.Large => "Large (11-20)",
-                        ClanMembers.VeryLarge => "Very Large (21-28)",
-                        ClanMembers.Huge => "Huge (29+)",
+                        ClanMembers.Small => "1-5",
+                        ClanMembers.Medium => "6-10",
+                        ClanMembers.Large => "11-20",
+                        ClanMembers.VeryLarge => "21-28",
+                        ClanMembers.Huge => "29+",
                         _ => "",
                     };
             }
             return members switch
             {
-                ClanMembers.None => "Jäsenmäärä",
-                ClanMembers.Small => "Pieni (1-5)",
-                ClanMembers.Medium => "Keskikokoinen (6-10)",
-                ClanMembers.Large => "Suuri (11-20)",
-                ClanMembers.VeryLarge => "Hyvin suuri (21-28)",
-                ClanMembers.Huge => "Valtava (29+)",
+                ClanMembers.None => "Kaikki",
+                ClanMembers.Small => "1-5",
+                ClanMembers.Medium => "6-10",
+                ClanMembers.Large => "11-20",
+                ClanMembers.VeryLarge => "21-28",
+                ClanMembers.Huge => "29+",
                 _ => "",
             };
         }

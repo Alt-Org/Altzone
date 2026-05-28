@@ -53,11 +53,15 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
     [Header("Open Selection")]
     [SerializeField] private TextMeshProUGUI _openText;
-    [SerializeField] private Button _openButtonPrevious;
-    [SerializeField] private Button _openButtonNext;
+    [SerializeField] private Button _lockButton;
     [SerializeField] private Image _lockImage;
+    [SerializeField] private Image _lockBackgroundImage;
     [SerializeField] private Sprite _openLockSprite;
     [SerializeField] private Sprite _closedLockSprite;
+
+    [Header("Lock Background Colors")]
+    [SerializeField] private Color _openBackgroundColor = Color.white;
+    [SerializeField] private Color _lockedBackgroundColor;
 
     [Header("Values selection")]
     [SerializeField] private ClanValuesUIManager _valueManager;
@@ -274,11 +278,11 @@ public class ClanSearchFiltersPanel : MonoBehaviour
     {
         UpdateLockDisplay();
 
-        _openButtonNext.onClick.RemoveAllListeners();
-        _openButtonPrevious.onClick.RemoveAllListeners();
-
-        _openButtonNext.onClick.AddListener(ToggleLock);
-        _openButtonPrevious.onClick.AddListener(ToggleLock);
+        if (_lockButton != null)
+        {
+            _lockButton.onClick.RemoveAllListeners();
+            _lockButton.onClick.AddListener(ToggleLock);
+        }
     }
 
     private void ToggleLock()
@@ -289,10 +293,27 @@ public class ClanSearchFiltersPanel : MonoBehaviour
 
     private void UpdateLockDisplay()
     {
-        if(SettingsCarrier.Instance.Language is not SettingsCarrier.LanguageType.English)
-        _openText.text = _isOpen ? "Avoin" : "Lukittu";
-        else _openText.text = _isOpen ? "Open" : "Locked";
-        _lockImage.sprite = _isOpen ? _openLockSprite : _closedLockSprite;
+        if (_openText != null)
+        {
+            if (SettingsCarrier.Instance.Language is not SettingsCarrier.LanguageType.English)
+            {
+                _openText.text = _isOpen ? "Avoin" : "Lukittu";
+            }
+            else
+            {
+                _openText.text = _isOpen ? "Open" : "Locked";
+            }
+        }
+
+        if (_lockImage != null)
+        {
+            _lockImage.sprite = _isOpen ? _openLockSprite : _closedLockSprite;
+        }
+
+        if (_lockBackgroundImage != null)
+        {
+            _lockBackgroundImage.color = _isOpen ? _openBackgroundColor : _lockedBackgroundColor;
+        }
     }
 
     private int GetNextIndex(int currentIndex, int arrayLength)
