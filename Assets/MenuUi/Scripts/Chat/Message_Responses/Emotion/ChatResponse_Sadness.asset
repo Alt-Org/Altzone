@@ -14,20 +14,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _classType: 100
   _list:
-  - Pelaamaan, joku, nyt!
-  - "Pelataan toinen, \xE4l\xE4 valita."
-  - "Oon mukana. \xC4l\xE4 hidastele. "
-  - "M\xE4 tuun my\xF6s mukaan, etteh\xE4n te muuten ees p\xE4rj\xE4is. "
-  - Joo
-  - "Ei. \xC4l\xE4 kysy uudestaan. "
-  - 'Oon paikalla. Aloitetaan. '
-  - "Eik\xF6h\xE4n t\xE4\xE4 riit\xE4 t\xE4lt\xE4 p\xE4iv\xE4lt\xE4. "
-  - 'Poistun. Tuun takas sitten kun huvittaa. '
-  - "Voitan jatkuvasti. Ei oikeastaan yll\xE4t\xE4. "
-  - "T\xE4\xE4 menee ihan p\xE4in helvetti\xE4. "
-  - "Jos haluutte pelata oikeiden pelaajien kans, niin liittyk\xE4\xE4 ALT Zone -yhteis\xF6\xF6n
-    Discordissa. Linkki etusivulla. "
-  - 'Yksin taas. Ei uutta. '
-  - "No onhan t\xE4\xE4 peli ihan ok "
-  - "On kyll\xE4 ihan paska peli. "
-  - "Paska peli, miten t\xE4ss\xE4 muka pit\xE4s p\xE4rj\xE4t\xE4?? "
+  - ResponseId: 0
+    Response: "Eik\xF6 kukaan haluis pelaa mun kanssa? Tuntuu kurjalta istua t\xE4\xE4ll\xE4
+      yksin\u2026"
+  - ResponseId: 1
+    Response: Voisin pelaa uudestaa, jos joku huolii mut
+  - ResponseId: 2
+    Response: "Voin tulla, jos siit\xE4 ei oo teille liikaa vaivaa"
+  - ResponseId: 3
+    Response: Huoliiko joku mut, jos haluun pelaa?
+  - ResponseId: 4
+    Response: Joo, vaikka.
+  - ResponseId: 5
+    Response: Ei varmaan.
+  - ResponseId: 6
+    Response: "M\xE4 olisin nyt t\xE4\xE4l, jos ket\xE4\xE4 kiinnostaa"
+  - ResponseId: 7
+    Response: "Joo, t\xE4\xE4 oli nyt t\xE4ss\xE4 t\xE4lt\xE4 er\xE4\xE4"
+  - ResponseId: 8
+    Response: "Poistun nyt, mut jos haluutte, voin tulla takasin sit my\xF6hemmin
+      viel\xE4"
+  - ResponseId: 9
+    Response: "Kohta varmaa h\xE4vit\xE4\xE4n, ku ollaa voitettu ihan liikaa"
+  - ResponseId: 10
+    Response: "Ei t\xE4\xE4 t\xE4st\xE4 kyll\xE4 en\xE4\xE4 parane. Me vaan h\xE4vit\xE4\xE4n
+      kokoaika."
+  - ResponseId: 11
+    Response: "Ois kiva n\xE4hd\xE4 teit\xE4 Discordissa, jos ket\xE4\xE4n kiinnostaa.
+      Linkki l\xF6ytyis nettisivuilta."
+  - ResponseId: 12
+    Response: Kukaan ei haluu pelaa mun kanssa. Oon ihan yksin.
+  - ResponseId: 13
+    Response: "On t\xE4\xE4 ihan kiva peli"
+  - ResponseId: 14
+    Response: "Ei oo kyll\xE4 mulle t\xE4\xE4 peli, tuun t\xE4st\xE4 vaan surulliseks."
+  - ResponseId: 15
+    Response: "\xC4lk\xE4\xE4 vihatko mua, mut m\xE4 en osaa pelaa"
