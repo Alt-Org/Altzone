@@ -400,7 +400,7 @@ public class ProfileMenu : AltMonoBehaviour
             return;
         }
 
-        if (_playerData.emotionSelectorDate.Equals(DateTime.MinValue))
+        if (_playerData.EmotionSelectionDate.Equals(DateTime.MinValue))
         {
             _todaysEmotionImage.sprite = _blankEmotionSprite;
             return;
@@ -412,7 +412,7 @@ public class ProfileMenu : AltMonoBehaviour
             return;
         }*/
         
-        int dayOffset = (DateTime.Now.Date - _playerData.emotionSelectorDate.Date).Days;
+        int dayOffset = (DateTime.Now.Date - _playerData.EmotionSelectionDate.Date).Days;
 
         if (dayOffset < 0 || dayOffset >= emotions.Count)
         {

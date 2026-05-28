@@ -4,6 +4,8 @@
 
 @bigtext{@subpage page-concepts-entity-management}
 
+@bigtext{@subpage page-concepts-commands}
+
 @bigtext{@subpage page-concepts-player}
 
 @bigtext{@subpage page-concepts-view-registry}

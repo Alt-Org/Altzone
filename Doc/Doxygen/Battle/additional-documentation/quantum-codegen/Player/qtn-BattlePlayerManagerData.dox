@@ -111,16 +111,22 @@
 /// @var array Quantum.BattlePlayerManagerDataQSingleton::CharacterSelectedNumbers
 /// <summary>Array of characters's numbers that are currently selected.</summary>
 ///
-/// @var array Quantum.BattlePlayerManagerDataQSingleton::CharacterAllEntityGroupIDs
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::CharacterEntityGroupIDs
 /// <summary>
 /// Array of entity group IDs for all characters in the game session.  
-/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_CharacterAllEntityGroupIDs_} array.
+/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_CharacterEntityGroupIDs_} array.
 /// </summary>
 ///
 /// @var array Quantum.BattlePlayerManagerDataQSingleton::CharactersAllStates
 /// <summary>
 /// Array of all characters states.  
 /// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_CharactersAllStates_} array.
+/// </summary>
+///
+/// @var array Quantum.BattlePlayerManagerDataQSingleton::CharacterAllPreviousPositions
+/// <summary>
+/// Array of all characters previous positions.  
+/// Public getter for internal @cref{Quantum.BattlePlayerManagerDataQSingleton,_CharacterAllPreviousPositions_} array.
 /// </summary>
 /// @}
 
@@ -148,11 +154,14 @@
 /// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_RespawnTimers_
 /// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,RespawnTimers}</summary>
 ///
-/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_CharacterAllEntityGroupIDs_
-/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,CharacterAllEntityGroupIDs}</summary>
+/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_CharacterEntityGroupIDs_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,CharacterEntityGroupIDs}</summary>
 ///
 /// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_CharactersAllStates_
 /// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,CharactersAllStates}</summary>
+///
+/// @var Byte Quantum.BattlePlayerManagerDataQSingleton::_CharacterAllPreviousPositions_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerManagerDataQSingleton,CharacterAllPreviousPositions}</summary>
 /// @}
 
 
