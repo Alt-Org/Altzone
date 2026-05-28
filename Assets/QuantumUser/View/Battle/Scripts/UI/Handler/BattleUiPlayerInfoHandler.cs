@@ -212,7 +212,7 @@ namespace Battle.View.UI
         }
 
         /// <summary>
-        /// Calls SetDeathImage on the character button of the correct players correct character.
+        /// Calls SetDeathImage and SetDamageFill on the character button of the correct players correct character.
         /// </summary>
         ///
         /// <param name="slot">The slot of the player in question.</param>
