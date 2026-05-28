@@ -122,12 +122,14 @@ namespace Battle.QSimulation.Player
             {
                 // handle death
 
+                int selectedCharacterNumber = playerHandle.SelectedCharacterNumber;
+
                 BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
                 playerHandle.SetOutOfPlayRespawning();
                 playerHandle.RespawnTimer = FrameTimer.FromSeconds(f, playerSpec.AutoRespawnTimeSec);
 
                 HandleSFXCommon(f, damagedPlayerData->Slot, SoundEffectTypeCommon.Death, SoundEffectTarget.All);
-                f.Events.BattleCharacterDeath(damagedPlayerData->Slot, playerHandle.SelectedCharacterNumber);
+                f.Events.BattleCharacterDeath(damagedPlayerData->Slot, selectedCharacterNumber);
             }
 
         Exit:
