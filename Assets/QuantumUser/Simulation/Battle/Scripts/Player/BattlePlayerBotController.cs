@@ -70,22 +70,35 @@ namespace Battle.QSimulation.Player
         /// <param name="isInPlay">Bool to check if bot is in play.</param>
         /// <param name="playerData">Pointer to player's BattlePlayerDataQComponent.</param>
         /// <param name="outBotInput">Pointer to where bot's %Quantum Input will be written.</param>
-        public static void GetBotInput(Frame f, bool isInPlay, BattlePlayerDataQComponent* playerData, Input* outBotInput, BattleCommand.Type* commandType, BattleCommand commandData)
+        public static void GetBotInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, Input* outBotInput, BattleCommand.Type* commandType, BattleCommand commandData)
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
 
             BattleMovementInputType movementInput = BattleMovementInputType.None;
             BattleGridPosition predictedGridPosition = new() { Col = 0, Row = 0 };
 
-            if (isInPlay)
+            //{ non-character logic
+
+            if (BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerHandle.Slot).GiveUpState && !playerHandle.GiveUpState)
             {
-                bool botGiveUpState = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, playerData->Slot).GiveUpState;
-                if (BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot).GiveUpState && !botGiveUpState)
-                {
-                    *commandType = BattleCommand.Type.GiveUp;
-                    commandData = new BattleGiveUpQCommand();
-                }
-                else if (playerData->BotMovementCooldownSec > FP._0)
+                *commandType = BattleCommand.Type.GiveUp;
+                commandData = new BattleGiveUpQCommand();
+                return;
+            }
+
+            //} non-character logic
+
+            //{ character logic
+
+            BattlePlayerEntityRef playerEntity;
+            BattlePlayerDataQComponent* playerData = null;
+
+            if (playerHandle.PlayState.IsInPlay())
+            {
+                playerEntity = playerHandle.GetSelectedCharacterEntityRef(f);
+                playerData = playerEntity.GetDataQComponent(f);
+
+                if (playerData->BotMovementCooldownSec > FP._0)
                 {
                     playerData->BotMovementCooldownSec -= f.DeltaTime;
                 }
@@ -178,6 +191,8 @@ namespace Battle.QSimulation.Player
                 RotationInput                 = false,
                 RotationValue                 = FP._0
             };
+
+            //} character logic
         }
     }
 }
