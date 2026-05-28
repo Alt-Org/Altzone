@@ -675,6 +675,8 @@ namespace Battle.View.Player
         private bool _isInPlay;
 
         /// <summary>Is shield attached.</summary>
+        ///
+        /// See [{Attached/Detached Shield}](#page-concepts-player-character-entity-shield-attach) for more info.
         private bool _shieldAttached;
 
         /// <summary>Reference to the active character class view controller.</summary>
