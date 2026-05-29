@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
 using MenuUi.Scripts.Signals;
@@ -55,12 +57,22 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// </summary>
         public void SetCharacters()
         {
-            StartCoroutine(GetPlayerData(playerData =>
+            Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, playerData =>
             {
+                if (playerData == null)
+                {
+                    for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+                    {
+                        _selectedCharacterSlots[i].SetEmpty(true);
+                    }
+
+                    return;
+                }
+
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
                     CharacterID charID;
-                    if (playerData.SelectedCharacterIds.Length < i)
+                    if (playerData.SelectedCharacterIds.Length <= i)
                     {
                         charID = CharacterID.None;
                     }
@@ -80,7 +92,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     //_selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charID, true);
                     _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, true);
                 }
-            }));
+            });
         }
 
 
