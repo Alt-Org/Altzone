@@ -86,7 +86,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent*      damagedPlayerData      = damagedPlayerEntityRef.GetDataQComponent(f);
             BattlePlayerManager.PlayerHandle playerHandle           = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
 
-            if (damagedPlayerData->StunCooldown.IsRunning(f)) goto Exit;
+            if (damagedPlayerData->StunCooldown.IsRunning(f) || (damagedPlayerData->ShieldHitCooldown.IsRunning(f)) && damagedPlayerData->AttachedShield != EntityRef.None) goto Exit;
 
             if (damagedPlayerData->CurrentDefence > 0)
             {
@@ -151,9 +151,9 @@ namespace Battle.QSimulation.Player
             BattlePlayerShieldDataQComponent* playerShieldData  = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetDataQComponent(f);
             BattlePlayerDataQComponent*       damagedPlayerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
-            int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
+            int  characterNumber     = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
             bool defenceUpdateVisual = false;
-            FP defencePercentage = -1;
+            FP   defencePercentage   = -1;
 
             if (playerShieldData->ShieldHitCooldown.IsRunning(f)) goto ExitNoHit;
 
@@ -186,11 +186,9 @@ namespace Battle.QSimulation.Player
             //} hit attach
 
         ExitHit:
-            playerShieldData->ShieldHitCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
-
-            damagedPlayerData->MovementEnabled = false;
-            damagedPlayerData->RotationEnabled = false;
-            damagedPlayerData->ShieldHitCooldown = FrameTimer.FromSeconds(f, BattleQConfig.GetPlayerSpec(f).DamageCooldownSec);
+            FP damageCooldownSec                 = BattleQConfig.GetPlayerSpec(f).DamageCooldownSec;
+            playerShieldData->ShieldHitCooldown  = FrameTimer.FromSeconds(f, damageCooldownSec);
+            damagedPlayerData->ShieldHitCooldown = FrameTimer.FromSeconds(f, damageCooldownSec);
 
             f.Events.BattleShieldHit(
                 shieldCollisionData->PlayerShieldHitbox->ParentEntityRef,
@@ -628,7 +626,7 @@ namespace Battle.QSimulation.Player
                 updateMovement = false;
             }
 
-            if (!playerData->StunCooldown.IsRunning(f) && !playerData->ShieldHitCooldown.IsRunning(f))
+            if (!playerData->StunCooldown.IsRunning(f))
             {
                 playerData->MovementEnabled = true;
                 playerData->RotationEnabled = !playerData->DisableRotation;
