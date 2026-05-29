@@ -268,6 +268,27 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void JoinRoom(string roomName)
         {
             Debug.Log($"{roomName}");
+            if (PhotonRealtimeClient.InRoom)
+            {
+                var currentRoom = PhotonRealtimeClient.LobbyCurrentRoom;
+                if (currentRoom != null && string.Equals(currentRoom.Name, roomName, StringComparison.Ordinal))
+                {
+                    PopupSignalBus.OnChangePopupInfoSignal("Olet jo tässä huoneessa.");
+                }
+                else
+                {
+                    Debug.LogWarning($"JoinRoom skipped for '{roomName}': client is already in room '{currentRoom?.Name ?? "<unknown>"}'.");
+                }
+
+                return;
+            }
+
+            if (!PhotonRealtimeClient.InLobby)
+            {
+                Debug.LogWarning($"JoinRoom skipped for '{roomName}': client is not in lobby.");
+                return;
+            }
+
             var rooms = _photonRoomList.CurrentRooms.ToList();
             foreach (var roomInfo in rooms)
             {
@@ -322,6 +343,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
         public void OnJoinedRoomFailed(short returnCode, string message)
         {
             bool creatingTextActive = _creatingRoomText != null && _creatingRoomText.activeSelf;
+
+            if (returnCode == LobbyErrorCode.JoinFailedPeerAlreadyJoined || (!string.IsNullOrEmpty(message) && message.IndexOf("already joined", StringComparison.OrdinalIgnoreCase) >= 0))
+            {
+                if (creatingTextActive) _creatingRoomText.SetActive(false);
+                _pendingJoinIntent = JoinIntent.None;
+                Debug.LogWarning($"JoinRoomFailed ignored because the client was already joined to the room. Code={returnCode}, Message={message}");
+                return;
+            }
 
             // Only attempt to create a custom room automatically when the user was creating a custom room.
             if (_pendingJoinIntent == JoinIntent.CustomCreate || (creatingTextActive && InLobbyController.SelectedGameType == GameType.Custom))
@@ -458,6 +487,13 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void UpdateStatus()
         {
+            if (!PhotonRealtimeClient.InLobby)
+            {
+                _searchPanel.RoomsData = new List<LobbyRoomInfo>();
+                _searchPanel.SetOnJoinRoom(JoinRoom);
+                return;
+            }
+
             var rooms = _photonRoomList.CurrentRooms.ToList();
             rooms.Sort((a, b) =>
             {
