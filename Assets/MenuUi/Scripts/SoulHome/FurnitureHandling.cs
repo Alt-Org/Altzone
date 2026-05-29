@@ -65,24 +65,18 @@ namespace MenuUI.Scripts.SoulHome
         private Vector2Int _interactionOffset = new Vector2Int(0, 1);
         public bool HasInteractionSlot => _hasInteractionSlot;
 
-        [SerializeField] public InteractionPattern Pattern = InteractionPattern.FrontRow;
+        //[SerializeField] public InteractionPattern Pattern = InteractionPattern.FrontRow;
         public List<FurnitureSlot> AssignedInteractionSlots { get; private set; } = new List<FurnitureSlot>();
 
         [HideInInspector]
         public List<Vector2Int> customInteractionOffsets = new List<Vector2Int>();
 
-        public Vector2Int GetRotatedInteractionOffset()
-        {
-            // Rotates the offset based on the current temp direction
-            return _tempSpriteDirection switch
-            {
-                Direction.Front => _interactionOffset,
-                Direction.Right => new Vector2Int(-_interactionOffset.y, _interactionOffset.x),
-                Direction.Back => new Vector2Int(-_interactionOffset.x, -_interactionOffset.y),
-                Direction.Left => new Vector2Int(_interactionOffset.y + GetFurnitureSize().x - 1, -_interactionOffset.x),
-                _ => _interactionOffset
-            };
-        }
+        [Header("Dimensions (Edit Mode Configurations)")]
+        [SerializeField] private int _width = 1;
+        [SerializeField] private int _height = 1;
+
+        public int Width => _width;
+        public int Height => _height;
 
         public void ClearInteractionSlots()
         {
@@ -231,6 +225,10 @@ namespace MenuUI.Scripts.SoulHome
 
         public Vector3Int GetFurnitureSize()
         {
+            if (Furniture == null)
+            {
+                return new Vector3Int(_width, _height, 0);
+            }
             if (Furniture.IsRotated) return Furniture.GetFurnitureSizeRotated();
             return Furniture.GetFurnitureNormalSize();
         }
