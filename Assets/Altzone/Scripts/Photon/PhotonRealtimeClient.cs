@@ -823,11 +823,25 @@ public static class PhotonRealtimeClient
     {
         // Use provided displayName for lobby-visible name if given, otherwise fall back to the roomName
         string leaderId = null;
+        string clanName = null;
         try
         {
             leaderId = ServerManager.Instance?.Player?._id;
+            if (showToClan)
+            {
+                clanName = ServerManager.Instance?.Player?.clan_id;
+            }
         }
-        catch { leaderId = null; }
+        catch
+        {
+            leaderId = null;
+            clanName = null;
+        }
+
+        if (showToClan && string.IsNullOrWhiteSpace(clanName))
+        {
+            Debug.LogWarning("CreateCustomLobbyRoom: showToClan is enabled but the local player's clan id is empty; the room will not be visible to clan members.");
+        }
 
         RoomOptions roomOptions = GetRoomOptions(
             gameType: GameType.Custom,
@@ -835,6 +849,7 @@ public static class PhotonRealtimeClient
             startingEmotion: startingEmotion,
             roomName: displayName ?? roomName,
             password: password,
+            clanName: showToClan ? clanName : null,
             customGameMode: customGameMode,
             showToFriends: showToFriends,
             showToClan: showToClan,
