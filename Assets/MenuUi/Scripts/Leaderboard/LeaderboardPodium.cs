@@ -126,15 +126,13 @@ public class LeaderboardPodium : MonoBehaviour
                 _firstPlayerData = playerData;
                 FirstOpenPlayerProfileButton.onClick.AddListener(FirstAddDataCarrierData);
 
-                AvatarVisualData avatarVisualData = null;
-
-               
+                AvatarVisualData avatarVisualData = null;          
                 
-                    avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
+                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
                 
                 if (avatarVisualData != null)
                 {
-                    _firstAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
+                    _firstAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarVisualData);
                 }
             }
 
@@ -160,6 +158,7 @@ public class LeaderboardPodium : MonoBehaviour
         }
         else
         {
+
             if (playerData != null)
             {
                 SecondOpenPlayerProfileButton.onClick.RemoveListener(SecondAddDataCarrierData); // Remove in case the button already has another player's info
@@ -174,7 +173,7 @@ public class LeaderboardPodium : MonoBehaviour
                 
                 if (avatarVisualData != null)
                 {
-                    _secondAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
+                    _secondAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarVisualData);
                 }
             }
         }
@@ -217,7 +216,7 @@ public class LeaderboardPodium : MonoBehaviour
                 
                 if (avatarVisualData != null)
                 {
-                    _thirdAvatarHead.GetComponent<AvatarFaceLoader>().UpdateVisuals(avatarVisualData);
+                    _thirdAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarVisualData);
                 }
             }
         }

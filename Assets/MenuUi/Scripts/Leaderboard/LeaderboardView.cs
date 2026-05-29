@@ -110,17 +110,6 @@ public class LeaderboardView : MonoBehaviour
         foreach (Transform child in _winsContent) Destroy(child.gameObject);
 
         _podium.SetPlayerView();
-        /*
-        for(int i = 1; i > 3; i++)
-        {
-            _podium.InitilializePodium(i, null, 0, null, null);
-            _podium.InitilializePodium(i, null, 0, null, null);
-            _podium.InitilializePodium(i, null, 0, null, null);
-
-            _podium.InitilializePodium(i, null, 0, null);
-            _podium.InitilializePodium(i, null, 0, null);
-            _podium.InitilializePodium(i, null, 0, null);
-        }*/
 
         switch (_currentLeaderboard)
         {
@@ -157,7 +146,22 @@ public class LeaderboardView : MonoBehaviour
                                 else
                                     { _podium.InitilializePodium(3, null, 0, clanData, null); }
 
-                                LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>(); //add podium to view
+                                //add podium to view
+                                LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>(); 
+
+                                // View clan profile -buttons
+                                item.FirstOpenClanProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.ClanListing, serverClan); // Transfer the data for use in the leaderboard 1st place
+                                });
+                                item.SecondOpenClanProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.ClanListing, clanLeaderboard[1].ServerClan); // Transfer the data for use in the leaderboard 2nd place
+                                });
+                                item.ThirdOpenClanProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.ClanListing, clanLeaderboard[2].ServerClan); // Transfer the data for use in the leaderboard 3rd place
+                                });
                             }
                             else if(rank > 3)
                             {
@@ -199,17 +203,15 @@ public class LeaderboardView : MonoBehaviour
                         int rank = 1;
                         foreach (PlayerLeaderboard ranking in playerLeaderboard)
                         {
-                            AvatarVisualData avatarVisualData = null;
+                            //AvatarVisualData avatarVisualData = null;
 
                             //if (ranking.Player.SelectedCharacterId != 0)
                             //{
-                            avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(ranking.Player);
+                            //avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(ranking.Player);
                             //}
-
 
                             if (rank == 1) //The top three are displayed on the podium
                             {
-
                                 //apply all info to the podium
                                 _podium.InitilializePodium(rank, ranking);
 
@@ -223,12 +225,24 @@ public class LeaderboardView : MonoBehaviour
                                 else
                                 { _podium.InitilializePodium(3, null); }
 
-                                if (rank == 1) //add the podium to scroll view
+                                // add podium to view
+                                LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>(); 
+
+                                // View player profile -buttons
+                                item.FirstOpenPlayerProfileButton.onClick.AddListener(() =>
                                 {
-                                    LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
-                                }
+                                    DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player); // Transfer the data for use in the leaderboard 1st place
+                                });
 
+                                item.SecondOpenPlayerProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.PlayerProfile, playerLeaderboard[1].Player); // Transfer the data for use in the leaderboard 2nd place
+                                });
 
+                                item.ThirdOpenPlayerProfileButton.onClick.AddListener(() =>
+                                {
+                                    DataCarrier.AddData(DataCarrier.PlayerProfile, playerLeaderboard[2].Player); // Transfer the data for use in the leaderboard 3rd place
+                                });
 
                             }
                             else if (rank > 3) 
@@ -360,6 +374,7 @@ public class LeaderboardView : MonoBehaviour
                 _friendsPlayersList.Add(player);
                 player.name = ServerManager.Instance.Player.name;
                 player.clan_id = ServerManager.Instance.Player.clan_id;
+                player._id = ServerManager.Instance.Player._id;
 
               
                 //_friendsPlayersList.Sort((a, b) => b.wins.CompareTo(a.wins)); //sort by wins, not done currently since wins do not exist for friends
@@ -367,9 +382,6 @@ public class LeaderboardView : MonoBehaviour
                 int rank = 1;
                 foreach (FriendPlayer friend in _friendsPlayersList)  //add friends to leaderboard
                 {
-                    Debug.Log("IN THE FOREACHLOOP FOR LEADERBOARD: " + friend.name);
-
-
                     if (rank == 1)
                     {
                         //apply all info to the podium
@@ -385,10 +397,28 @@ public class LeaderboardView : MonoBehaviour
                         else
                         { _podium.InitilializePodium(3, null, 0, null); }
 
+                        //add the podium to the scroll view
+                        LeaderboardPodium itemPod = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
 
-
-                        LeaderboardPodium itemPod = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>(); //add the podium to the scroll view
-
+                        // View player profile -buttons
+                        itemPod.FirstOpenPlayerProfileButton.onClick.AddListener(() =>
+                        {
+                            DataCarrier.AddData(DataCarrier.PlayerProfile, friend._id); // Transfer the data for use in the leaderboard 1st place
+                        });
+                        if (_friendsPlayersList.Count > 1)
+                        {
+                            itemPod.SecondOpenPlayerProfileButton.onClick.AddListener(() =>
+                            {
+                                DataCarrier.AddData(DataCarrier.PlayerProfile, _friendsPlayersList[1]._id); // Transfer the data for use in the leaderboard 2nd place
+                            });
+                        }
+                        if (_friendsPlayersList.Count > 2)
+                        {
+                            itemPod.ThirdOpenPlayerProfileButton.onClick.AddListener(() =>
+                            {
+                                DataCarrier.AddData(DataCarrier.PlayerProfile, _friendsPlayersList[2]._id); // Transfer the data for use in the leaderboard 3rd place
+                            });
+                        }
                     }
                     else if( rank > 3)
                     {
@@ -396,7 +426,12 @@ public class LeaderboardView : MonoBehaviour
 
                         item.Initialize(rank, friend.name, 0, null, "");
 
-                        
+                        //open friend profile                  
+                        item.OpenProfileButton.onClick.AddListener(() =>
+                        {
+                            DataCarrier.AddData(DataCarrier.PlayerProfile, friend._id); // Transfer the data for use in the leaderboard
+                        });
+
                         if (friend.name == ServerManager.Instance.Player.name.ToString()) //color player's item white
                         {
                             item.RecolorBackground();
