@@ -3561,10 +3561,28 @@ namespace Altzone.Scripts.Lobby
 
         public void OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            List<LobbyRoomInfo> lobbyRoomList = new();
+            List<LobbyRoomInfo> lobbyRoomList = CurrentRooms != null
+                ? CurrentRooms.ToList()
+                : new List<LobbyRoomInfo>();
+
             foreach (RoomInfo roomInfo in roomList)
             {
-                lobbyRoomList.Add(new(roomInfo));
+                LobbyRoomInfo updatedRoom = new(roomInfo);
+                int existingIndex = lobbyRoomList.FindIndex(room => room.Name.Equals(updatedRoom.Name, StringComparison.Ordinal));
+                if (existingIndex != -1)
+                {
+                    lobbyRoomList.RemoveAt(existingIndex);
+                }
+
+                if (!updatedRoom.RemovedFromList)
+                {
+                    lobbyRoomList.Add(updatedRoom);
+                }
+            }
+
+            if (lobbyRoomList.Any(room => room.RemovedFromList))
+            {
+                lobbyRoomList = lobbyRoomList.Where(room => !room.RemovedFromList).ToList();
             }
 
             CurrentRooms = lobbyRoomList.AsReadOnly();
