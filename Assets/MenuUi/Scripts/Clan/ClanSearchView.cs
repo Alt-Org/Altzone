@@ -4,6 +4,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ClanSearchView : MonoBehaviour
 {
@@ -27,15 +28,20 @@ public class ClanSearchView : MonoBehaviour
     [SerializeField] private Button _clanPopupCancelButton;
     [SerializeField] private Button _clanPopupCloseButton;
 
+    [Header("Search")]
+    [SerializeField] private TMP_InputField _searchInputField;
+
     private int _currentPage;    // Current page found in pagination data
     private int _totalPages;     // Total pages in pagination data
     private List<ClanListing> _listedClans = new();
-    private ClanSearchFilters _filters = new ClanSearchFilters() { clanName = "" };
+    private ClanSearchFilters _filters;
 
     private bool _isJoining;
 
     private void Awake()
     {
+        _filters = GetDefaultFilters();
+
         if (_loadMoreButton != null)
         {
             Button loadMoreButton = _loadMoreButton.GetComponent<Button>();
@@ -60,6 +66,9 @@ public class ClanSearchView : MonoBehaviour
 
         if (_clanPopupCloseButton != null)
             _clanPopupCloseButton.onClick.AddListener(CloseClanPopup);
+
+        if (_searchInputField != null)
+            _searchInputField.onValueChanged.AddListener(UpdateClanNameSearch);
     }
 
     private void OnDestroy()
@@ -81,6 +90,9 @@ public class ClanSearchView : MonoBehaviour
 
         if (_clanPopupCloseButton != null)
             _clanPopupCloseButton.onClick.RemoveListener(CloseClanPopup);
+
+        if (_searchInputField != null)
+            _searchInputField.onValueChanged.RemoveListener(UpdateClanNameSearch);
     }
 
     private void OnEnable()
@@ -110,8 +122,14 @@ public class ClanSearchView : MonoBehaviour
         _currentPage = 0;
         _loadMoreButton.SetActive(false);
         _listedClans.Clear();
+
+        if (_searchInputField != null)
+            _searchInputField.SetTextWithoutNotify("");
+
+        _filters = GetDefaultFilters();
+
         CloseClanPopup();
-        CloseFiltersPopup();    
+        CloseFiltersPopup();
     }
 
     private void LoadMoreClans()
@@ -173,7 +191,7 @@ public class ClanSearchView : MonoBehaviour
         else _loadMoreButton.SetActive(false);
 
         _loadMoreButton.transform.SetAsLastSibling();
-        //FilterListings();
+        FilterListings();
     }
 
 
@@ -188,7 +206,8 @@ public class ClanSearchView : MonoBehaviour
         foreach (ClanListing clanListing in _listedClans)
         {
             bool hidelisting = (_filters.isOpen != clanListing.Clan.isOpen)
-                || (_filters.clanName != "" && !clanListing.Clan.name.ToLower().Contains(_filters.clanName.ToLower()))
+                || (!string.IsNullOrWhiteSpace(_filters.clanName)
+                    && !clanListing.Clan.name.Contains(_filters.clanName, StringComparison.OrdinalIgnoreCase))
                 || (_filters.language != Language.None && _filters.language != clanListing.Clan.language)
                 || (_filters.age != ClanAge.None && _filters.age != clanListing.Clan.ageRange)
                 || (_filters.goal != Goals.None && _filters.goal != clanListing.Clan.goal)
@@ -434,5 +453,26 @@ public class ClanSearchView : MonoBehaviour
                 cancelText: "Peruuta",
                 style: "leave"
             );
+    }
+
+    private void UpdateClanNameSearch(string searchText)
+    {
+        _filters.clanName = searchText.Trim();
+        FilterListings();
+    }
+
+    private ClanSearchFilters GetDefaultFilters()
+    {
+        return new ClanSearchFilters()
+        {
+            clanName = "",
+            isOpen = true,
+            language = Language.None,
+            age = ClanAge.None,
+            goal = Goals.None,
+            ranking = ClanRanking.None,
+            memberCount = ClanMembers.None,
+            values = new List<ClanValues>()
+        };
     }
 }
