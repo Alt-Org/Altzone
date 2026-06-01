@@ -18170,22 +18170,18 @@ MonoBehaviour:
   _buttons:
   - Button: {fileID: 546183101640870297}
     Window: {fileID: 4438051913019104232}
-    TabName: 
     TabAreaContent: {fileID: 0}
     Image: {fileID: 0}
   - Button: {fileID: 5857023639188183615}
     Window: {fileID: 1831731657080324738}
-    TabName: 
     TabAreaContent: {fileID: 0}
     Image: {fileID: 0}
   - Button: {fileID: 8699856563791125433}
     Window: {fileID: 8868207926459236633}
-    TabName: 
     TabAreaContent: {fileID: 0}
     Image: {fileID: 0}
   _defaultTab: 0
   _ignoreChange: 0
-  _textField: {fileID: 2181035913623591996}
   _updateTabContextUI: 0
   _primaryTabIndex: 0
   _secondaryTabIndex: 1
@@ -38981,7 +38977,7 @@ PrefabInstance:
     - target: {fileID: 4156402849371661598, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_fontSize
-      value: 49.25
+      value: 65.65
       objectReference: {fileID: 0}
     - target: {fileID: 4156402849371661598, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -39324,6 +39320,16 @@ PrefabInstance:
     - target: {fileID: 5941332736402343395, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982512575202583919, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6044129548250700832, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6073106209191891444, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -39917,6 +39923,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8352138058860422027, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8356775703520088113, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_IsActive
@@ -40185,18 +40196,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2876140746209982754}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2181035913623591996 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4156402849371661598, guid: 57890b7dbec8a984abb7d8148eefe9f6,
-    type: 3}
-  m_PrefabInstance: {fileID: 2876140746209982754}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &2931318049040622824 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1100066851907345866, guid: 57890b7dbec8a984abb7d8148eefe9f6,

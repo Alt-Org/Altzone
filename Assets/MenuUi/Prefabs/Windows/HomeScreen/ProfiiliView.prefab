@@ -7547,7 +7547,7 @@ RectTransform:
   - {fileID: 9057141652733085722}
   m_Father: {fileID: 2040135918781158156}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.75, y: 0.2}
+  m_AnchorMin: {x: 0.8, y: 0.2}
   m_AnchorMax: {x: 0.95, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -0.0000019073486}
@@ -20213,6 +20213,16 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1590817812882612098, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _englishText
+      value: Player Profile
+      objectReference: {fileID: 0}
+    - target: {fileID: 1590817812882612098, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _finnishText
+      value: Pelaaja Profiili
+      objectReference: {fileID: 0}
     - target: {fileID: 1731878601048451229, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -20368,6 +20378,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSize
       value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: 2679788599554708040, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_text
+      value: Avatar muokkaus
       objectReference: {fileID: 0}
     - target: {fileID: 2726325047841245831, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -20701,8 +20716,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4156402849371661598, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
+      propertyPath: m_text
+      value: Pelaaja Profiili
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156402849371661598, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
       propertyPath: m_fontSize
-      value: 44.6
+      value: 52.9
       objectReference: {fileID: 0}
     - target: {fileID: 4156402849371661598, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -21160,6 +21180,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6834111052593543095, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _englishText
+      value: Avatar editor
+      objectReference: {fileID: 0}
+    - target: {fileID: 6834111052593543095, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: _finnishText
+      value: Avatar muokkaus
       objectReference: {fileID: 0}
     - target: {fileID: 6869901590260236040, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
