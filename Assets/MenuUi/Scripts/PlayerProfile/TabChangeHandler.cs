@@ -13,6 +13,8 @@ public class TabChangeHandler : MonoBehaviour
     {
         public Button Button;
         public GameObject Window;
+        public string TabName;
+        public GameObject TabAreaContent;
         public Image Image;
     }
     [Header("TablineScript reference")]
@@ -21,6 +23,7 @@ public class TabChangeHandler : MonoBehaviour
     [SerializeField] protected List<ButtonWindowBind> _buttons = new List<ButtonWindowBind>();
     [SerializeField] protected int _defaultTab = 1;
     [SerializeField] private bool _ignoreChange;
+    [SerializeField] private TextMeshProUGUI _textField;
 
     [Header("Optional Tab Context UI")]
     [SerializeField] private bool _updateTabContextUI;
@@ -73,8 +76,19 @@ public class TabChangeHandler : MonoBehaviour
             for (int i = 0; i < _buttons.Count; i++)
             {
                 if (_buttons[i].Window != null) _buttons[i].Window.SetActive(i == activeIndex);
+                else continue;
+                if (_buttons[i].TabAreaContent != null) _buttons[i].TabAreaContent.SetActive(i == activeIndex);
+                if (i == activeIndex) _textField.text = _buttons[i].TabName;
             }
-        else _tablineScript.Swipe.CurrentPage = activeIndex;
+        else
+        {
+            _tablineScript.Swipe.CurrentPage = activeIndex;
+            for (int i = 0; i < _buttons.Count; i++)
+            {
+                if (_buttons[i].TabAreaContent != null) _buttons[i].TabAreaContent.SetActive(i == activeIndex);
+                if (i == activeIndex) _textField.text = _buttons[i].TabName;
+            }
+        }
         _tablineScript.UpdateTabVisuals(activeIndex);
         UpdateTabContextUI(activeIndex);
     }
