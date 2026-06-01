@@ -324,12 +324,12 @@ namespace Battle.QSimulation.Player
         /// </summary>
         private struct InputData
         {
-        /// <summary>Quantum's default input struct</summary>
-        public Input* Input;
-        /// <summary>Type of the command</summary>
-        public BattleCommand.Type CommandType;
-        /// <summary>Data related to the command</summary>
-        public BattleCommand CommandData;
+            /// <summary>Quantum's default input struct</summary>
+            public Input* Input;
+            /// <summary>Type of the command</summary>
+            public BattleCommand.Type CommandType;
+            /// <summary>Data related to the command</summary>
+            public BattleCommand CommandData;
         }
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
