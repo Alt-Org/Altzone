@@ -86,7 +86,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent*      damagedPlayerData      = damagedPlayerEntityRef.GetDataQComponent(f);
             BattlePlayerManager.PlayerHandle playerHandle           = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
 
-            if (damagedPlayerData->StunCooldown.IsRunning(f) || (damagedPlayerData->ShieldHitCooldown.IsRunning(f)) && damagedPlayerData->AttachedShield != EntityRef.None) goto Exit;
+            if (damagedPlayerData->StunCooldown.IsRunning(f) || damagedPlayerData->ShieldHitCooldown.IsRunning(f)) goto Exit;
 
             if (damagedPlayerData->CurrentDefence > 0)
             {
@@ -188,7 +188,10 @@ namespace Battle.QSimulation.Player
         ExitHit:
             FP damageCooldownSec                 = BattleQConfig.GetPlayerSpec(f).DamageCooldownSec;
             playerShieldData->ShieldHitCooldown  = FrameTimer.FromSeconds(f, damageCooldownSec);
-            damagedPlayerData->ShieldHitCooldown = FrameTimer.FromSeconds(f, damageCooldownSec);
+            if (damagedPlayerData->AttachedShield != EntityRef.None)
+            {
+                damagedPlayerData->ShieldHitCooldown = FrameTimer.FromSeconds(f, damageCooldownSec);
+            }
 
             f.Events.BattleShieldHit(
                 shieldCollisionData->PlayerShieldHitbox->ParentEntityRef,
