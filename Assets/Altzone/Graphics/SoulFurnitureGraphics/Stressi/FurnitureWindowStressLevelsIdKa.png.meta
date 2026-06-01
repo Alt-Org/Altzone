@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2b10bccbd3428e54490ca2430b093ac9
+guid: df26aee2426b81e4aa00c7a1ad38a781
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 256
+  spritePixelsToUnits: 120
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -162,64 +162,127 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FurnitureTableStressLevelsIdKa_0
+      name: FurnitureWindowStressLevelsIdKa_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 17
-        width: 1016
-        height: 632
-      alignment: 9
-      pivot: {x: 0.5, y: 0.024}
+        x: 5
+        y: 1046
+        width: 758
+        height: 740
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f3907ac63c8903f49b80b74f386bb664
-      internalID: -1209857418
+      spriteID: b1945814bd2365046942d51ced5ddb3f
+      internalID: -1399997212
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FurnitureTableStressLevelsIdKa_1
+      name: FurnitureWindowStressLevelsIdKa_1
       rect:
         serializedVersion: 2
-        x: 1028
-        y: 17
-        width: 1017
-        height: 632
-      alignment: 9
-      pivot: {x: 0.5, y: 0.024}
+        x: 775
+        y: 1032
+        width: 758
+        height: 754
+      alignment: 6
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d9e812eb666ae994a9bde8c89bb2897d
-      internalID: -663095348
+      spriteID: 2d0601a3c0e00794a81ab4b3ebeb284d
+      internalID: -2000748502
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: FurnitureTableStressLevelsIdKa_2
+      name: FurnitureWindowStressLevelsIdKa_2
       rect:
         serializedVersion: 2
-        x: 2052
-        y: 15
-        width: 1016
-        height: 670
-      alignment: 9
-      pivot: {x: 0.5, y: 0.024}
+        x: 1541
+        y: 1027
+        width: 758
+        height: 759
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3c446c6a5d6bb4744bf280968ac9d19d
-      internalID: 1058336014
+      spriteID: 7ed492b73b4ccee4188ed15164693431
+      internalID: -1353317997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FurnitureWindowStressLevelsIdKa_3
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 8
+        width: 376
+        height: 988
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7506d130cb3863d4c989f85036446d67
+      internalID: 164638696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FurnitureWindowStressLevelsIdKa_4
+      rect:
+        serializedVersion: 2
+        x: 954
+        y: 8
+        width: 376
+        height: 988
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 61fd290a544765f4e99387ddbf79b51f
+      internalID: 1911625974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FurnitureWindowStressLevelsIdKa_5
+      rect:
+        serializedVersion: 2
+        x: 1682
+        y: 8
+        width: 416
+        height: 988
+      alignment: 9
+      pivot: {x: 0.545, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95d916b305355a04c83d08a66b66aa79
+      internalID: -1623607665
       vertices: []
       indices: 
       edges: []
@@ -235,9 +298,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      FurnitureTableStressLevelsIdKa_0: -1209857418
-      FurnitureTableStressLevelsIdKa_1: -663095348
-      FurnitureTableStressLevelsIdKa_2: 1058336014
+      FurnitureWindowStressLevelsIdKa_0: -1399997212
+      FurnitureWindowStressLevelsIdKa_1: -2000748502
+      FurnitureWindowStressLevelsIdKa_2: -1353317997
+      FurnitureWindowStressLevelsIdKa_3: 164638696
+      FurnitureWindowStressLevelsIdKa_4: 1911625974
+      FurnitureWindowStressLevelsIdKa_5: -1623607665
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
