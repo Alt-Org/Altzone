@@ -38,7 +38,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private const float InviteLifecycleTickSeconds = 1f;
         private const long InviteExpirationSeconds = 60;
         private Coroutine _customRoomTimeoutHolder;
-        private const float CustomRoomTimeoutSeconds = 60f;
+        private const float CustomRoomTimeoutSeconds = 300f;
 
         private void Awake()
         {

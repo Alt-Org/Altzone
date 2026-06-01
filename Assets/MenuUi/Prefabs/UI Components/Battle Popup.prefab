@@ -15142,17 +15142,17 @@ PrefabInstance:
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.9725491
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.63529414
+      value: 0.6313726
       objectReference: {fileID: 0}
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.83921576
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8279349774068130845, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
@@ -19750,17 +19750,17 @@ PrefabInstance:
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_Color.b
-      value: 0.9725491
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_Color.g
-      value: 0.63529414
+      value: 0.6313726
       objectReference: {fileID: 0}
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_Color.r
-      value: 0.83921576
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8279349774068130845, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
@@ -19917,6 +19917,18 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 72
       objectReference: {fileID: 0}
+    - target: {fileID: 4028375515925020952, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e,
+        type: 2}
+    - target: {fileID: 4028375515925020952, guid: 3db9db4cd4ab4f84b96799395497bcfa,
+        type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
+        type: 2}
     - target: {fileID: 7663954824446020484, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: _englishText
@@ -19948,18 +19960,6 @@ PrefabInstance:
       propertyPath: m_Color.g
       value: 0.6313726
       objectReference: {fileID: 0}
-    - target: {fileID: 4028375515925020952, guid: 3db9db4cd4ab4f84b96799395497bcfa,
-        type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e,
-        type: 2}
-    - target: {fileID: 4028375515925020952, guid: 3db9db4cd4ab4f84b96799395497bcfa,
-        type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
-        type: 2}
     - target: {fileID: 8279349774068130845, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_Pivot.x
@@ -20931,12 +20931,12 @@ PrefabInstance:
     - target: {fileID: 7663954824446020484, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: _englishText
-      value: Leave Room
+      value: Leave
       objectReference: {fileID: 0}
     - target: {fileID: 7663954824446020484, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: _finnishText
-      value: "Poistu \nhuoneesta"
+      value: 'Poistu '
       objectReference: {fileID: 0}
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
@@ -21435,12 +21435,12 @@ PrefabInstance:
     - target: {fileID: 7663954824446020484, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: _englishText
-      value: Leave Room
+      value: 'Leave '
       objectReference: {fileID: 0}
     - target: {fileID: 7663954824446020484, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: _finnishText
-      value: "Poistu \nhuoneesta"
+      value: "Poistu \n"
       objectReference: {fileID: 0}
     - target: {fileID: 7811438372343880993, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
