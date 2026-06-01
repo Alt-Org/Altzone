@@ -67,7 +67,7 @@ public static class PollManager // Handles the polls from creation to loading to
     // Create poll for GameFurniture
     public static void CreateBuyFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture, string id, bool fetchData = false)
     {
-        if(fetchData)LoadClanData();
+        if (fetchData) LoadClanData();
 
 
         DataStore store = Storefront.Get();
@@ -97,7 +97,8 @@ public static class PollManager // Handles the polls from creation to loading to
     // Create poll for StorageFurniture
     public static void CreateFurnitureSellPoll(FurniturePollType furniturePollType, StorageFurniture furniture, Action<bool> callback)
     {
-        ServerManager.Instance.SellItemOnStall(furniture.Id, (int)furniture.Value, result => {
+        ServerManager.Instance.SellItemOnStall(furniture.Id, (int)furniture.Value, result =>
+        {
 
             if (result)
             {

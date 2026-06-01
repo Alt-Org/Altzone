@@ -30,6 +30,11 @@ public class PollObject : MonoBehaviour
     [SerializeField] private Image Background;
     [SerializeField] private Image InfoBackground;
 
+    [Header("TradeTag")]
+    [SerializeField] private Image TradeBackground;
+    [SerializeField] private TextMeshProUGUI TradeText;
+    [SerializeField] private TextMeshProUGUI Price;
+
     [Header("Buttons")]
     [SerializeField] private Button ClockButton;
     [SerializeField] private GameObject VoteYes;
@@ -38,6 +43,7 @@ public class PollObject : MonoBehaviour
     [Header("Results")]
     [SerializeField] private GameObject YesVoters;
     [SerializeField] private GameObject NoVoters;
+    [SerializeField] private GameObject ShowVoteButton;
 
     [Header("PlayerHeads")]
     [SerializeField] private AddPlayerHeads playerHeads;
@@ -51,9 +57,12 @@ public class PollObject : MonoBehaviour
     private Coroutine updateCoroutine;
     private bool pollEnded = false;
 
+    private readonly Color _green = HexToColor("#2FA36B");
+    private readonly Color _red = HexToColor("#C83A2D");
+
     private void Start()
     {
-        ClockButton.onClick.AddListener(OnClockButtonClicked);
+        // ClockButton.onClick.AddListener(OnClockButtonClicked);
 
         if (pollData != null)
         {
@@ -94,7 +103,7 @@ public class PollObject : MonoBehaviour
             {
                 pollEnded = true;
                 showEndTimeManually = true;
-                ClockButton.interactable = false;
+                // ClockButton.interactable = false;
                 VoteYes.gameObject.SetActive(false);
                 VoteNo.gameObject.SetActive(false);
                 YesVoters.gameObject.SetActive(true);
@@ -105,6 +114,13 @@ public class PollObject : MonoBehaviour
 
                 // Format and show local time. Example: "20.6. 13:50"
                 TimeLeftText.text = endDateTime.ToString("d.M. HH:mm");
+                PollInfoPopup.Instance._pollEnded = true;
+
+                if (PollInfoPopup.Instance != null && PollInfoPopup.Instance.gameObject.activeInHierarchy)
+                {
+                    PollInfoPopup.Instance.UpdateTimerDisplay(secondsLeft);
+                }
+
 
                 //PollManager.EndPoll(pollId);
 
@@ -113,6 +129,12 @@ public class PollObject : MonoBehaviour
 
             Clock.fillAmount = 1 - (float)(secondsLeft) / totalDuration;
             UpdateClockDisplay(secondsLeft);
+
+            if (PollInfoPopup.Instance != null && PollInfoPopup.Instance.gameObject.activeInHierarchy)
+            {
+                PollInfoPopup.Instance.UpdateTimerDisplay(secondsLeft);
+            }
+
 
             yield return new WaitForSeconds(1);
         }
@@ -136,9 +158,9 @@ public class PollObject : MonoBehaviour
         else
         {
             // Display the remaining time, requires the "left" to read properly in-game
-            if (secondsLeft < 60) TimeLeftText.text = secondsLeft + "s\nleft";
-            else if (secondsLeft < 3600) TimeLeftText.text = (secondsLeft / 60) + "m\nleft";
-            else TimeLeftText.text = (secondsLeft / 3600) + "h\nleft";
+            if (secondsLeft < 60) TimeLeftText.text = secondsLeft + "s";
+            else if (secondsLeft < 3600) TimeLeftText.text = (secondsLeft / 60) + "m";
+            else TimeLeftText.text = (secondsLeft / 3600) + "h";
         }
     }
 
@@ -151,7 +173,6 @@ public class PollObject : MonoBehaviour
     {
         pollData.AddVote(answer, result =>
         {
-
             // --- DEBUG CHECK ---
             DataStore store = Storefront.Get();
             PlayerData player = null;
@@ -193,27 +214,23 @@ public class PollObject : MonoBehaviour
 
         if (InfoBackground != null)
         {
-            if (pollData is ClanRolePollData)
-            {
-                // Clan Role Poll Color
-                InfoBackground.color = new Color(1f, 1f, 1f); // White
-                Background.color = new Color(0f, 1f, 1f); // Cyan
-            }
-            else if (pollData is FurniturePollData)
-            {
-                // Furniture Poll Background Color
-                InfoBackground.color = new Color(0.2f, 1f, 0.2f); // Green
-                Background.color = new Color(1f, 0.75f, 0f); // Yellow
-            }
+            // *** kommentoidaan värityksen testauksen ajaksi pois ***
+
+            //if (pollData is ClanRolePollData)
+            //{
+            //    // Clan Role Poll Color
+            //    InfoBackground.color = new Color(1f, 1f, 1f); // White
+            //    Background.color = new Color(0f, 1f, 1f); // Cyan
+            //}
+            //else if (pollData is FurniturePollData)
+            //{
+            //    // Furniture Poll Background Color
+            //    InfoBackground.color = new Color(0.2f, 1f, 0.2f); // Green
+            //    Background.color = new Color(1f, 0.75f, 0f); // Yellow
+            //}
         }
 
-        // Handles the Poll Header
-        if (pollData is FurniturePollData)
-        {
-            if (PollTypeText != null)
-                PollTypeText.text = "Furniture Poll";
-        }
-        else if (pollData is ClanRolePollData)
+        if (pollData is ClanRolePollData)
         {
             if (PollTypeText != null)
                 PollTypeText.text = "Clan Poll";
@@ -224,116 +241,155 @@ public class PollObject : MonoBehaviour
                 PollTypeText.text = "General Poll";
         }
 
-        // Handle UI for Furniture Polls
+        PlayerData player = null;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
+        {
+            player = data;
+
+            if(player != null)
+            {
+                bool hasVoted = !pollData.NotVoted.Contains(player.Id);
+                ShowVoteButton.gameObject.SetActive(!hasVoted);
+            }
+            else
+            {
+                Debug.LogError("Failed to fetch player data!");
+            }
+        });
+
         if (pollData is FurniturePollData furniturePollData)
         {
-            Image.gameObject.SetActive(true);
-
-           
-            Sprite ribbonSprite = null;
-            if (furniturePollData.Furniture != null)
-            {
-                // Fetch the furniture info from StorageFurnitureReference
-                var furnitureInfo = StorageFurnitureReference.Instance.GetFurnitureInfo(furniturePollData.Furniture.Name);
-                if (furnitureInfo != null && furnitureInfo.RibbonImage != null)
-                {
-                    ribbonSprite = furnitureInfo.RibbonImage;
-                }
-            }
-
-            // In the case of ribbonSprite is missing, show the normal furniture sprite
-            Image.sprite = ribbonSprite ?? furniturePollData.Sprite;
-
-            // Poll description for Furniture Polls
-            if (PollDescriptionText != null && furniturePollData.Furniture != null)
-            {
-                string furnitureName = furniturePollData.Furniture.Name ?? "Unknown Item";
-                string priceText = furniturePollData.Furniture.Value.ToString();
-                if(furniturePollData.FurniturePollType is FurniturePollType.Buying)
-                    PollDescriptionText.text = $"Buying {furnitureName} for {priceText}";
-                else if(furniturePollData.FurniturePollType is FurniturePollType.Selling)
-                    PollDescriptionText.text = $"Suggesting {furnitureName} to be sold for {priceText}";
-            }
+            SetFurnitureData(furniturePollData);
         }
-
-        // Handle UI for Clan Polls
         else if (pollData is ClanRolePollData clanRolePoll)
         {
-            avatarHandleGameObject.SetActive(true);
-
-            // Default values
-            string memberName = "Unknown";
-            string roleName = "None";
-
-            PlayerData player = null;
-            Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
-
-            if (player != null && !string.IsNullOrEmpty(player.ClanId))
-            {
-                ClanData clan = null;
-                Storefront.Get().GetClanData(player.ClanId, data => clan = data);
-
-                if (clan != null)
-                {
-                    ClanMember targetMember = clan.Members.Find(m => m.Id == clanRolePoll.TargetPlayerId);
-                    if (targetMember != null)
-                    {
-                        memberName = targetMember.Name;
-
-                        if (targetMember.Role != null)
-                        {
-                            roleName = targetMember.Role.name.ToString();
-                        }
-                        else
-                        {
-                            roleName = "None"; // Fallback
-                        }
-
-                        // Load the avatar and apply visuals
-                        StartCoroutine(LoadAndApplyAvatar(targetMember));
-                    }
-                }
-            }
-
-            // Poll Description for Clan Role Polls
-            if (PollDescriptionText != null)
-            {
-                string currentRoleText = string.IsNullOrEmpty(roleName) ? "None" : roleName;
-                string targetRoleText = clanRolePoll.TargetRole.ToString();
-                PollDescriptionText.text = $"Promoting {memberName} from {currentRoleText} to {targetRoleText}";
-            }
+            SetClanRoleData(clanRolePoll);
         }
 
-        // Enable and disable vote buttons and list based on whether the player has voted on the poll
-        PlayerData currentPlayer = null;
-        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => currentPlayer = data);
+        int yesCount = pollData.YesVotes.Count;
+        int noCount = pollData.NoVotes.Count;
+        int totalCount = yesCount + noCount;
 
-        if (currentPlayer != null)
-        {
-            bool hasNotVoted = pollData.NotVoted.Contains(currentPlayer.Id);
+        float fillValue = (totalCount > 0) ? (float)yesCount / totalCount : 0.5f;
 
-            // Vote buttons
-            VoteYes.SetActive(hasNotVoted);
-            VoteNo.SetActive(hasNotVoted);
+        if (YesVotesText != null) YesVotesText.text = fillValue.ToString("P0");
+        if (NoVotesText != null) NoVotesText.text = (1f - fillValue).ToString("P0");
 
-            // Voter lists
-            YesVoters.SetActive(!hasNotVoted);
-            NoVoters.SetActive(!hasNotVoted);
-        }
+        GreenFill.fillAmount = fillValue;
 
-        if (YesVotesText != null) YesVotesText.text = pollData.YesVotes.Count.ToString();
-        if (NoVotesText != null) NoVotesText.text = pollData.NoVotes.Count.ToString();
-
-        if (GreenFill != null)
-        {
-            if (pollData.YesVotes.Count == 0 && pollData.NoVotes.Count == 0)
-                GreenFill.fillAmount = 0.5f;
-            else
-                GreenFill.fillAmount = (float)pollData.YesVotes.Count / (pollData.NoVotes.Count + pollData.YesVotes.Count);
-        }
-
-        playerHeads.InstantiateHeads(pollId);
+        // playerHeads.InstantiateHeads(pollId);
     }
+
+    private void SetClanRoleData(ClanRolePollData clanRolePoll)
+    {
+        avatarHandleGameObject.SetActive(true);
+
+        string memberName = "Unknown";
+        string roleName = "None";
+        ClanData clan = null;
+        PlayerData player = null;
+
+        if (player == null || string.IsNullOrEmpty(player.ClanId))
+            return;
+
+        Storefront.Get().GetClanData(player.ClanId, data =>
+        {
+            if (clan == null)
+                return;
+
+            ClanMember targetMember = clan.Members.Find(m => m.Id == clanRolePoll.TargetPlayerId);
+            if (targetMember == null)
+                return;
+
+            memberName = targetMember.Name;
+
+            if (targetMember.Role != null)
+            {
+                roleName = targetMember.Role.name.ToString();
+            }
+            else
+            {
+                roleName = "None";
+            }
+
+            StartCoroutine(LoadAndApplyAvatar(targetMember));
+        });
+
+        if (PollDescriptionText != null)
+        {
+            string currentRoleText = string.IsNullOrEmpty(roleName) ? "None" : roleName;
+            string targetRoleText = clanRolePoll.TargetRole.ToString();
+            PollDescriptionText.text = $"Promoting {memberName} from {currentRoleText} to {targetRoleText}";
+        }
+    }
+
+    private void SetFurnitureData(FurniturePollData furniturePollData)
+    {
+        if (furniturePollData == null || furniturePollData.Furniture == null)
+        {
+            Debug.LogError("SetFurnitureData received null poll or furniture data!");
+            return;
+        }
+
+        Image.gameObject.SetActive(true);
+        PollTypeText.text = furniturePollData.Furniture.Name;
+
+        bool isBuying = furniturePollData.FurniturePollType == FurniturePollType.Buying;
+        TradeBackground.color = isBuying ? _green : _red;
+        TradeText.text = isBuying ? "OSTO" : "MYYNTI";
+
+        Price.text = furniturePollData.Furniture.Value.ToString();
+
+        Sprite ribbonSprite = null;
+
+        // Fetch the furniture info from StorageFurnitureReference
+        FurnitureInfo furnitureInfo = StorageFurnitureReference.Instance.GetFurnitureInfo(furniturePollData.Furniture.Name);
+        if (furnitureInfo != null && furnitureInfo.RibbonImage != null)
+        {
+            ribbonSprite = furnitureInfo.RibbonImage;
+        }
+
+        // In the case of ribbonSprite is missing, show the normal furniture sprite
+        Image.sprite = ribbonSprite ?? furniturePollData.Sprite;
+
+        // Poll description for Furniture Polls
+        if (PollDescriptionText != null && furniturePollData.Furniture != null)
+        {
+            string furnitureName = furniturePollData.Furniture.Name ?? "Unknown Item";
+            string priceText = furniturePollData.Furniture.Value.ToString();
+            if (furniturePollData.FurniturePollType is FurniturePollType.Buying)
+            {
+                PollDescriptionText.text = $"Buying {furnitureName} for {priceText}";
+            }
+            else if (furniturePollData.FurniturePollType is FurniturePollType.Selling)
+            {
+                PollDescriptionText.text = $"Suggesting {furnitureName} to be sold for {priceText}";
+            }
+        }
+    }
+
+
+
+    //// Erjan lisäys, testi ***
+
+    public void SetTheme(Color themeColor)
+    {
+        if (Background == null)
+        {
+            Debug.LogError("Background is NULL in PollObject!");
+            return;
+        }
+
+        Debug.Log("Applying theme color: " + themeColor);
+        Background.color = themeColor;
+    }
+
+
+
+
+
+
+
 
 
     private IEnumerator LoadAndApplyAvatar(ClanMember targetMember)
@@ -379,7 +435,7 @@ public class PollObject : MonoBehaviour
                 if (updateCoroutine != null) StopCoroutine(updateCoroutine);
                 pollEnded = false;
                 showEndTimeManually = false;
-                ClockButton.interactable = true;
+                // ClockButton.interactable = true;
                 updateCoroutine = StartCoroutine(UpdateValues());
             }
         }
@@ -387,7 +443,7 @@ public class PollObject : MonoBehaviour
         {
             pollEnded = true;
             showEndTimeManually = true;
-            ClockButton.interactable = false;
+            // ClockButton.interactable = false;
             Clock.fillAmount = 1f;
             UpdateClockDisplay();
         }
@@ -413,7 +469,7 @@ public class PollObject : MonoBehaviour
         {
             if (PollInfoPopup.Instance != null)
             {
-                PollInfoPopup.Instance.OpenFurniturePopup(furniturePollData.Furniture);
+                PollInfoPopup.Instance.OpenFurniturePopup(pollData);
             }
             else
             {
@@ -453,7 +509,7 @@ public class PollObject : MonoBehaviour
             yield break;
         }
 
-        // Fetch the clan data 
+        // Fetch the clan data
         ClanData clan = null;
         Storefront.Get().GetClanData(player.ClanId, data => clan = data);
         yield return new WaitUntil(() => clan != null);
@@ -483,10 +539,17 @@ public class PollObject : MonoBehaviour
         else
         {
             Debug.LogWarning($"Invalid role string for member {targetMember.Name}: {targetMember.Role}. Defaulting to None.");
-            currentRole = ClanMemberRole.None; // fallback 
+            currentRole = ClanMemberRole.None; // fallback
         }
 
         // Open the clan role popup with the fetched data
         PollInfoPopup.Instance.OpenClanRolePopup(targetMember.Name, currentRole, clanRolePoll.TargetRole);
+    }
+
+    private static Color HexToColor(string hex) {
+        if (ColorUtility.TryParseHtmlString(hex, out Color color)) {
+            return color;
+        }
+        return Color.white;
     }
 }

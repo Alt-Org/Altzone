@@ -1,9 +1,14 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Voting;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
+using System;
 
 public class PollInfoPopup : MonoBehaviour
 {
@@ -20,6 +25,19 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private Image rarityImage;
     [SerializeField] private Image frontRarityImage;
     [SerializeField] private TMP_Text rarityText;
+    [SerializeField] private Image greenFill;
+    [SerializeField] private TMP_Text timer;
+    [SerializeField] private TMP_Text tradeTag;
+
+    [Header("Votes")]
+    [SerializeField] private Button yesButton;
+    [SerializeField] private Button noButton;
+    [SerializeField] private GameObject voteButtons;
+    [SerializeField] private GameObject voteBar;
+    [SerializeField] private TMP_Text yesVotes;
+    [SerializeField] private TMP_Text noVotes;
+    [SerializeField] private TMP_Text yesVotesButton;
+    [SerializeField] private TMP_Text noVotesButton;
 
     [Header("Rarity Color Reference")]
     [SerializeField] private RarityColourReference rarityColourReference;
@@ -33,10 +51,13 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private GameObject infoBox;
 
     [Header("Clan Role Poll UI Elements")]
-    [SerializeField] private GameObject clanRolePollInfoObject; 
+    [SerializeField] private GameObject clanRolePollInfoObject;
     [SerializeField] private TMP_Text clanPlayerNameText;
     [SerializeField] private TMP_Text clanCurrentRoleText;
     [SerializeField] private TMP_Text clanTargetRoleText;
+
+    private PollData _currentPollData;
+    public bool _pollEnded;
 
     private void Awake()
     {
@@ -79,26 +100,69 @@ public class PollInfoPopup : MonoBehaviour
         }
     }
 
-    // Opens the popup and fills it with the data from the furniture in question
-    public void OpenFurniturePopup(GameFurniture furniture)
+    public void UpdateTimerDisplay(long secondsLeft = -1)
     {
-        if (furniture == null)
+        if (timer == null)
+            return;
+
+        if (_pollEnded) {
+            var endDateTime = DateTimeOffset.FromUnixTimeSeconds(_currentPollData.EndTime).ToLocalTime();
+            timer.text = endDateTime.ToString("d.M. HH:mm");
+            return;
+        }
+
+        if (secondsLeft == -1) {
+            long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            secondsLeft = _currentPollData.EndTime - currentTime;
+        }
+
+        long seconds = secondsLeft % 60;
+        long minutes = (secondsLeft / 60) % 60;
+        long hours = secondsLeft / 3600;
+
+        timer.text = secondsLeft switch
+        {
+            < 60 => $"{seconds}s",
+            < 3600 => $"{minutes}m {seconds}s",
+            _ => $"{hours}h {minutes}m"
+        };
+    }
+
+    // Opens the popup and fills it with the data from the furniture in question
+    public void OpenFurniturePopup(PollData pollData)
+    {
+        if (pollData == null)
         {
             Debug.LogWarning("PollInfoPopup Open called with null furniture!");
             return;
         }
 
-        nameText.text = furniture.Name ?? "";
+        _currentPollData = pollData;
 
-        setNameText.text = furniture.FurnitureInfo?.SetName ?? "";
-        iconImage.sprite = furniture.FurnitureInfo?.Image;
-        descriptionText.text = furniture.FurnitureInfo?.ArtisticDescription ?? "";
+        SetValues();
+    }
+
+    // We assume all data is furniture data for now
+    private void SetValues()
+    {
+        var furnitureData = _currentPollData as FurniturePollData;
+        if (furnitureData == null || furnitureData.Furniture == null) return;
+
+        bool isBuying = furnitureData.FurniturePollType == FurniturePollType.Buying;
+        tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
+
+        nameText.text = furnitureData.Furniture.Name ?? "";
+        iconImage.sprite = furnitureData.Furniture.FurnitureInfo?.Image;
+        descriptionText.text = furnitureData.Furniture.FurnitureInfo?.ArtisticDescription ?? "";
+        valueText.text = $"{furnitureData.Furniture.Value}";
+
+        /*
+        setNameText.text = furnitureData.Furniture.FurnitureInfo?.SetName ?? "";
 
         string artistName = furniture.FurnitureInfo?.ArtistName;
         artistNameText.text = string.IsNullOrEmpty(artistName) ? "" : $"Artist: {artistName}";
 
         weightText.text = $"Weight: {furniture.Weight}";
-        valueText.text = $"Value: {furniture.Value}";
         rarityText.text = $"Rarity: {furniture.Rarity}";
 
         // Apply colour to the two background images of the card based on rarityColourReference
@@ -112,10 +176,79 @@ public class PollInfoPopup : MonoBehaviour
                 frontRarityImage.color = rarityColor;
             }
         }
+        */
+
+        UpdateTimerDisplay();
+
+        string currentPollId = _currentPollData.Id;
+        // Enable and disable vote buttons and list based on whether the player has voted on the poll
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
+        {
+            if (this == null || data == null) return;
+
+            bool hasVoted = !_currentPollData.NotVoted.Contains(data.Id);
+            Debug.Log(hasVoted);
+
+            voteButtons.SetActive(!hasVoted);
+            voteBar.SetActive(hasVoted);
+
+            if (!hasVoted)
+            {
+                yesButton.onClick.RemoveAllListeners();
+                noButton.onClick.RemoveAllListeners();
+
+                yesButton.onClick.AddListener(() => OnVoteButtonClicked(true));
+                noButton.onClick.AddListener(() => OnVoteButtonClicked(false));
+            }
+        });
+
+        int yesCount = _currentPollData.YesVotes.Count;
+        int noCount = _currentPollData.NoVotes.Count;
+        SetGreenFill(yesCount, noCount);
 
         gameObject.SetActive(true);
         furniturePollInfoObject.SetActive(true);
         if (clanRolePollInfoObject != null) clanRolePollInfoObject.SetActive(false);
+    }
+
+    private void SetGreenFill(int yesCount, int noCount) {
+        int totalCount = yesCount + noCount;
+
+        float fillValue;
+        string yesPercent, noPercent;
+
+        if (totalCount > 0)
+        {
+            fillValue = (float)yesCount / totalCount;
+            yesPercent = fillValue.ToString("P0");
+            noPercent = (1.0f - fillValue).ToString("P0");
+        }
+        else
+        {
+            fillValue = 0.5f;
+            yesPercent = "0%";
+            noPercent = "0%";
+        }
+
+        greenFill.fillAmount = fillValue;
+        yesVotes.text = yesVotesButton.text = yesPercent;
+        noVotes.text = noVotesButton.text = noPercent;
+    }
+
+    public void OnVoteButtonClicked(bool answer)
+    {
+        int yesCount = _currentPollData.YesVotes.Count;
+        int noCount = _currentPollData.NoVotes.Count;
+        if (answer) yesCount += 1;
+        else noCount += 1;
+
+        _currentPollData.AddVote(answer, result =>
+        {
+            voteButtons.SetActive(false);
+            voteBar.SetActive(true);
+            SetGreenFill(yesCount, noCount);
+            VotingActions.ReloadPollList?.Invoke();
+        });
     }
 
     // Opens the popup for clan role polls
@@ -139,7 +272,7 @@ public class PollInfoPopup : MonoBehaviour
         if (clanRolePollInfoObject != null)
             clanRolePollInfoObject.SetActive(false);
 
-        infoBox.SetActive(false);
+        // infoBox.SetActive(false);
         gameObject.SetActive(false);
     }
 
