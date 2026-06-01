@@ -24,7 +24,7 @@ singleton component BattlePlayerManagerDataQSingleton
 
     // Player character arrays
     array<int>[BATTLE_PLAYER_SLOT_COUNT] CharacterSelectedNumbers;
-    array<BattleEntityID>[BATTLE_PLAYER_SLOT_COUNT] CharacterAllEntityGroupIDs;
+    array<BattleEntityID>[BATTLE_PLAYER_SLOT_COUNT] CharacterEntityGroupIDs;
     array<BattlePlayerCharacterState>[BATTLE_PLAYER_CHARACTER_TOTAL_COUNT] CharactersAllStates;
-
+    array<FPVector2>[BATTLE_PLAYER_CHARACTER_TOTAL_COUNT] CharacterAllPreviousPositions;
 }

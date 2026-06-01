@@ -68,7 +68,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Called by BattleCollisionQSystem. Stuns the player after checking if it is appropriate to do so.
+        /// Called by BattleCollisionQSystem. Stuns the player after checking if it is appropriate to do so and kills the player if he gets hit without a shield.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame</param>
@@ -78,14 +78,24 @@ namespace Battle.QSimulation.Player
         {
             if (projectileCollisionData->Projectile->IsHeld) return;
 
-            BattlePlayerEntityRef damagedPlayerEntityRef = (BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef;
-            BattlePlayerDataQComponent* damagedPlayerData = damagedPlayerEntityRef.GetDataQComponent(f);
+            // get spec
+            BattlePlayerQSpec playerSpec = BattleQConfig.GetPlayerSpec(f);
+
+            // get references
+            BattlePlayerEntityRef            damagedPlayerEntityRef = (BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef;
+            BattlePlayerDataQComponent*      damagedPlayerData      = damagedPlayerEntityRef.GetDataQComponent(f);
+            BattlePlayerManager.PlayerHandle playerHandle           = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
 
             if (damagedPlayerData->StunCooldown.IsRunning(f)) goto Exit;
 
-            if (damagedPlayerData->CurrentDefence <= 0) HandleSFXCommon(f, damagedPlayerData->Slot, SoundEffectTypeCommon.Death, SoundEffectTarget.All);
-            else
+            if (damagedPlayerData->CurrentDefence > 0)
             {
+                // handle stun
+
+                damagedPlayerData->MovementEnabled = false;
+                damagedPlayerData->RotationEnabled = false;
+                damagedPlayerData->StunCooldown    = FrameTimer.FromSeconds(f, playerSpec.StunDurationSec);
+
                 SoundEffectTypeCommon soundEffectType = projectileCollisionData->ProjectileEmotionCurrent switch
                 {
                     BattleEmotionState.Aggression => SoundEffectTypeCommon.HitCharacterAggression,
@@ -97,24 +107,30 @@ namespace Battle.QSimulation.Player
                     _ => throw new System.NotImplementedException()
                 };
                 HandleSFXCommon(f, damagedPlayerData->Slot, soundEffectType, SoundEffectTarget.All);
-            }
 
-            damagedPlayerData->MovementEnabled = false;
-            damagedPlayerData->RotationEnabled = false;
-            FP stunCooldown = (int)BattleQConfig.GetPlayerSpec(f).StunDurationSec;
-
-            damagedPlayerData->StunCooldown = FrameTimer.FromSeconds(f, stunCooldown);
-
-            f.Events.BattleCharacterHit(
-                damagedPlayerEntityRef,
-                damagedPlayerData->TeamNumber,
-                damagedPlayerData->Slot,
-                BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber,
-                damagedPlayerData->AttachedShield.ERef != EntityRef.None,
-                damagedPlayerData->AttachedShieldNumber,
-                stunCooldown,
-                projectileCollisionData->ProjectileEmotionCurrent
+                f.Events.BattleCharacterHit(
+                    damagedPlayerEntityRef,
+                    damagedPlayerData->TeamNumber,
+                    damagedPlayerData->Slot,
+                    playerHandle.SelectedCharacterNumber,
+                    damagedPlayerData->AttachedShieldNumber,
+                    playerSpec.StunDurationSec,
+                    projectileCollisionData->ProjectileEmotionCurrent
                 );
+            }
+            else
+            {
+                // handle death
+
+                int selectedCharacterNumber = playerHandle.SelectedCharacterNumber;
+
+                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
+                playerHandle.SetOutOfPlayRespawning();
+                playerHandle.RespawnTimer = FrameTimer.FromSeconds(f, playerSpec.AutoRespawnTimeSec);
+
+                HandleSFXCommon(f, damagedPlayerData->Slot, SoundEffectTypeCommon.Death, SoundEffectTarget.All);
+                f.Events.BattleCharacterDeath(damagedPlayerData->Slot, selectedCharacterNumber);
+            }
 
         Exit:
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
@@ -138,6 +154,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerDataQComponent*       damagedPlayerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
             int characterNumber = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
+            bool defenceUpdateVisual = false;
             FP defencePercentage = -1;
 
             if (playerShieldData->ShieldHitCooldown.IsRunning(f)) goto ExitNoHit;
@@ -158,6 +175,7 @@ namespace Battle.QSimulation.Player
 
             damagedPlayerData->CurrentDefence = damagedPlayerData->CurrentDefence - damageTaken;
 
+            defenceUpdateVisual = true;
             defencePercentage = damagedPlayerData->CurrentDefence / damagedPlayerData->Stats.Defence;
 
             if (damagedPlayerData->CurrentDefence <= 0)
@@ -181,8 +199,8 @@ namespace Battle.QSimulation.Player
                 damagedPlayerData->TeamNumber,
                 damagedPlayerData->Slot,
                 characterNumber,
-                playerShieldData->IsAttached,
                 damagedPlayerData->AttachedShieldNumber,
+                defenceUpdateVisual,
                 defencePercentage
             );
         ExitNoHit:
@@ -217,26 +235,15 @@ namespace Battle.QSimulation.Player
             {
                 BattlePlayerManager.PlayerHandle playerHandle = playerHandleArray[playerNumber];
                 if (playerHandle.PlayState.IsNotInGame()) continue;
-                if (playerHandle.PlayState.IsOutOfPlayFinal()) continue;
 
-                if (playerHandle.PlayState.IsInPlay())
+                BattleCommand.Type commandType = BattleCommand.GetCommand(f, playerHandle.PlayerRef, out BattleCommand commandData);
+
+                //{ non-character logic
+
+                switch(commandType)
                 {
-                    playerEntity    = playerHandle.GetSelectedCharacterEntityRef(f);
-                    playerData      = playerEntity.GetDataQComponent(f);
-                    playerTransform = playerEntity.GetTransform(f);
-                }
-
-                switch (BattleCommand.GetCommand(f, playerData->PlayerRef, out BattleCommand commandData))
-                {
-                    case BattleCommand.Type.None:
-                        break;
-
                     case BattleCommand.Type.GiveUp:
                         if (HandleGiveUp(f, playerHandle)) continue;
-                        break;
-
-                    case BattleCommand.Type.ActivateAbility:
-                        playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
                         break;
 
                     case BattleCommand.Type.SwapCharacter:
@@ -245,11 +252,28 @@ namespace Battle.QSimulation.Player
                         break;
                 }
 
-                input = GetInput(f, playerHandle, playerData, &stackInputStorage);
-
                 if (HandleOutOfPlay(f, playerHandle)) continue;
 
+                //} non-character logic
+
+                //{ character logic
+
+                playerEntity    = playerHandle.GetSelectedCharacterEntityRef(f);
+                playerData      = playerEntity.GetDataQComponent(f);
+                playerTransform = playerEntity.GetTransform(f);
+
+                switch (commandType)
+                {
+                    case BattleCommand.Type.ActivateAbility:
+                        playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
+                        break;
+                }
+
+                input = GetInput(f, playerHandle, playerData, &stackInputStorage);
+
                 HandleInPlay(f, input, playerHandle, playerData, playerEntity, playerTransform);
+
+                //} character logic
             }
         }
 

@@ -251,8 +251,8 @@ public class Popup : MonoBehaviour
 
     private void SetTaskRewardTexts(PlayerTask data)
     {
-        _taskPointsText.text = data.Points.ToString();
-        _taskCoinsText.text = data.Coins.ToString();
+        _taskPointsText.text = "+" + data.Points.ToString();
+        _taskCoinsText.text = "+" + data.Coins.ToString();
     }
 
     /// <summary>
@@ -280,6 +280,7 @@ public class Popup : MonoBehaviour
     private void SwitchWindow(PopupWindowType type)
     {
         Debug.Log("WindowType: " + type.ToString());
+        // Using the same popup for accepting task and showing task info (hiding accept button for info popup on RequestPopup)
         _taskAcceptPopup.SetActive(type == PopupWindowType.Accept || type == PopupWindowType.Info);
         _taskCancelPopup.SetActive(type == PopupWindowType.Cancel);
         _clanMilestonePopup.SetActive(type == PopupWindowType.ClanMilestone);
