@@ -14,29 +14,38 @@ public class LeaderboardPodium : MonoBehaviour
     [SerializeField] private GameObject[] _clanProfileButtons;
 
     [Header("First place")]
-    [SerializeField] private TextMeshProUGUI _firstName;
+    [SerializeField] private TextMeshProUGUI _firstPlayerName;
+    [SerializeField] private TextMeshProUGUI _firstClanName;
     [SerializeField] private TextMeshProUGUI _firstPoints;
     [SerializeField] private GameObject _firstClanHeart;
     [SerializeField] private GameObject _firstClanHeartPlayer;
     [SerializeField] private GameObject _firstAvatarHead;
+    [SerializeField] private GameObject _firstClanBox;
+    [SerializeField] private GameObject _firstPlayerBox;
     [field: SerializeField] public Button FirstOpenClanProfileButton { get; private set; }
     [field: SerializeField] public Button FirstOpenPlayerProfileButton { get; private set; }
 
     [Header("Second place")]
-    [SerializeField] private TextMeshProUGUI _secondName;
+    [SerializeField] private TextMeshProUGUI _secondPlayerName;
+    [SerializeField] private TextMeshProUGUI _secondClanName;
     [SerializeField] private TextMeshProUGUI _secondPoints;
     [SerializeField] private GameObject _secondClanHeart;
     [SerializeField] private GameObject _secondClanHeartPlayer;
     [SerializeField] private GameObject _secondAvatarHead;
+    [SerializeField] private GameObject _secondClanBox;
+    [SerializeField] private GameObject _secondPlayerBox;
     [field: SerializeField] public Button SecondOpenClanProfileButton { get; private set; }
     [field: SerializeField] public Button SecondOpenPlayerProfileButton { get; private set; }
 
     [Header("Third place")]
-    [SerializeField] private TextMeshProUGUI _thirdName;
+    [SerializeField] private TextMeshProUGUI _thirdPlayerName;
+    [SerializeField] private TextMeshProUGUI _thirdClanName;
     [SerializeField] private TextMeshProUGUI _thirdPoints;
     [SerializeField] private GameObject _thirdClanHeart;
     [SerializeField] private GameObject _thirdClanHeartPlayer;
     [SerializeField] private GameObject _thirdAvatarHead;
+    [SerializeField] private GameObject _thirdClanBox;
+    [SerializeField] private GameObject _thirdPlayerBox;
     [field: SerializeField] public Button ThirdOpenClanProfileButton { get; private set; }
     [field: SerializeField] public Button ThirdOpenPlayerProfileButton { get; private set; }
 
@@ -103,14 +112,20 @@ public class LeaderboardPodium : MonoBehaviour
 
     private void InitializeFirstPlace(string firstName, int firstPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo= null)
     {
-        _firstName.text = TruncateName(firstName);
+        //_firstName.text = TruncateName(firstName);
         _firstPoints.text = firstPoints.ToString();
+
+        _firstClanBox.gameObject.SetActive(false);
+        _firstPlayerBox.gameObject.SetActive(false);
+
 
         if (_isClanView)
         {
             // Clan heart colors
             ClanHeartColorSetter clanheart = _firstClanHeart.GetComponentInChildren<ClanHeartColorSetter>();
             clanheart.SetOtherClanColors(clanData);
+            _firstClanBox.gameObject.SetActive(true);
+            _firstClanName.text = firstName;
 
             // Open Clan Profile
             FirstOpenClanProfileButton.onClick.AddListener(() =>
@@ -120,8 +135,12 @@ public class LeaderboardPodium : MonoBehaviour
         }
         else
         {
+            _firstPlayerBox.gameObject.SetActive(true);
+            _firstPlayerName.text = firstName;
+
             if (playerData != null)
             {
+
                 FirstOpenPlayerProfileButton.onClick.RemoveListener(FirstAddDataCarrierData); // Remove in case the button already has another player's info
                 _firstPlayerData = playerData;
                 FirstOpenPlayerProfileButton.onClick.AddListener(FirstAddDataCarrierData);
@@ -141,14 +160,20 @@ public class LeaderboardPodium : MonoBehaviour
 
     private void InitializeSecondPlace(string secondName, int secondPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo = null)
     {
-        _secondName.text = TruncateName(secondName);
+        //_secondName.text = TruncateName(secondName);
         _secondPoints.text = secondPoints.ToString();
+
+        _secondClanBox.gameObject.SetActive(false);
+        _secondPlayerBox.gameObject.SetActive(false);
 
         if (_isClanView)
         {
             //Clan heart colors
             ClanHeartColorSetter clanheart = _secondClanHeart.GetComponentInChildren<ClanHeartColorSetter>();
             clanheart.SetOtherClanColors(clanData);
+
+            _secondClanBox.gameObject.SetActive(true);
+            _secondClanName.text = secondName;
 
             // Open Clan Profile
             SecondOpenClanProfileButton.onClick.AddListener(() =>
@@ -158,9 +183,12 @@ public class LeaderboardPodium : MonoBehaviour
         }
         else
         {
+            _secondPlayerBox.gameObject.SetActive(true);
+            _secondPlayerName.text = secondName;
 
             if (playerData != null)
             {
+
                 SecondOpenPlayerProfileButton.onClick.RemoveListener(SecondAddDataCarrierData); // Remove in case the button already has another player's info
                 _secondPlayerData = playerData;
                 SecondOpenPlayerProfileButton.onClick.AddListener(SecondAddDataCarrierData);
@@ -181,14 +209,19 @@ public class LeaderboardPodium : MonoBehaviour
 
     private void InitializeThirdPlace(string thirdName, int thirdPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo = null)
     {
-        _thirdName.text =TruncateName(thirdName);
+        //_thirdName.text =TruncateName(thirdName);
         _thirdPoints.text = thirdPoints.ToString();
+
+        _thirdClanBox.gameObject.SetActive(false);
+        _thirdPlayerBox.gameObject.SetActive(false);
 
         if (_isClanView)
         {
             //Clan heart colors
             ClanHeartColorSetter clanheart = _thirdClanHeart.GetComponentInChildren<ClanHeartColorSetter>();
             clanheart.SetOtherClanColors(clanData);
+            _thirdClanBox.gameObject.SetActive(true);
+            _thirdClanName.text = thirdName;
 
             // Open Clan Profile
             ThirdOpenClanProfileButton.onClick.AddListener(() =>
@@ -198,8 +231,12 @@ public class LeaderboardPodium : MonoBehaviour
         }
         else
         {
+            _thirdPlayerBox.gameObject.SetActive(true);
+            _thirdPlayerName.text = thirdName;
+
             if (playerData != null)
             {
+
                 ThirdOpenPlayerProfileButton.onClick.RemoveListener(ThirdAddDataCarrierData); // Remove incase the button already has another player's info
                 _thirdPlayerData = playerData;
                 ThirdOpenPlayerProfileButton.onClick.AddListener(ThirdAddDataCarrierData);
