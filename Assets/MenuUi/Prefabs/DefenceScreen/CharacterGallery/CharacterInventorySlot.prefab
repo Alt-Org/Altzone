@@ -438,6 +438,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6762374876794546724}
     m_Modifications:
+    - target: {fileID: 1698316617930894126, guid: 00dd9bde2849f9c498dd00c084457690,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1775543799907187927, guid: 00dd9bde2849f9c498dd00c084457690,
         type: 3}
       propertyPath: m_Name
@@ -448,6 +453,16 @@ PrefabInstance:
       propertyPath: _addCharacterButton
       value: 
       objectReference: {fileID: 6431255123728105841}
+    - target: {fileID: 6426410192925854614, guid: 00dd9bde2849f9c498dd00c084457690,
+        type: 3}
+      propertyPath: _characterSlot
+      value: 
+      objectReference: {fileID: 4381437622224976902}
+    - target: {fileID: 6904266878682227548, guid: 00dd9bde2849f9c498dd00c084457690,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8755021714922067558, guid: 00dd9bde2849f9c498dd00c084457690,
         type: 3}
       propertyPath: m_Pivot.x
