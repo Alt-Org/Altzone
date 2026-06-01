@@ -42,6 +42,8 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     private int LineOrder = 0;
     private int currentOrder = 1;
 
+    public ScrollRect _scrollRect;
+
 
     //[SerializeField] private TextLanguageSelectorCaller _reactionAmount;
     private void Start()
@@ -70,6 +72,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         Destroy(CopiedReactionField);
         CopiedReactionField = null;
+        _scrollRect.content = null;
         _messageReactionsHandler = null;
         gameObject.SetActive(false);
         LineOrder = 0;

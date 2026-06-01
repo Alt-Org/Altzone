@@ -263,8 +263,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
             chatReactionHandler.AddReaction(_reaction);
             _reactionHandlers.Add(chatReactionHandler);
             ReactionData.Add(_reaction);
-            chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler, message, _reaction));
-            chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(message));
+            chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler, message));
+            chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler, message));
             
             StartCoroutine(GetPlayerData(player =>
             {
@@ -312,7 +312,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// Toggles the added reactions as selected and unselected.
     /// </summary>
     /// <param name="reactionHandler"></param>
-    public void ToggleReaction(ChatReactionHandler reactionHandler, ChatMessage message, ServerReactions _reaction)
+    public void ToggleReaction(ChatReactionHandler reactionHandler, ChatMessage message)
     {
         ChatListener.Instance.SendReaction(!reactionHandler.Selected ? reactionHandler.Mood.ToString() : string.Empty, reactionHandler.MessageID, ChatListener.Instance.ActiveChatChannel);
         if (!_longClick)
@@ -343,34 +343,48 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
     }
 
-    private void ShowUsers(ChatMessage message)
+    private void ShowUsers(ChatReactionHandler reactionHandler, ChatMessage message)
     {
 
         
         //halts the button as when field get copied it the button will rerun the script again duplicating it twice
-        /*if(Popup.gameObject.activeSelf)
+        if(Popup.gameObject.activeSelf)
             return;
+
 
         //Gets needed data for ChatShowUserPopUpData
         Popup._messageReactionsHandler = gameObject.GetComponent<MessageReactionsHandler>();
         Popup.gameObject.SetActive(true);
         Popup.CopiedReactionField = Instantiate(_reactionPaneldata._reactionField, Popup.ReactionFieldLocation);
+
+        Popup._scrollRect.content = Popup.CopiedReactionField.GetComponent<RectTransform>();
+
         GenarateReactionObjects(Popup.PopUpAllReactions);
         UpdateReactionStatus(Popup.PopUpAllReactions);
+
+        //Changes the reactions object sizes
+        foreach(RectTransform child in Popup.CopiedReactionField.transform)
+        {
+            ContentSizeFitter childFitter = child.GetComponent<ContentSizeFitter>();
+            childFitter.enabled = false;
+
+            Button test = child.GetComponent<Button>();
+
+            test.onClick.RemoveAllListeners();
+
+            test.onClick.AddListener(() => ToggleReaction(reactionHandler, message));
+
+
+
+
+            child.sizeDelta = new Vector2(150, 110);
+        }
+
+
         foreach (var reactionData in ReactionData)
         {
             Popup.AddUsersReaction(message, reactionData);
         }
-        // RectTransform rtReactionField = _reactionPaneldata[0]._reactionField.GetComponent<RectTransform>();
-        /*foreach(var i in _reactionHandlers)
-        {
-            ContentSizeFitter SizeFitter = i._messageReaction.GetComponent<ContentSizeFitter>();
-            RectTransform transform = i._messageReaction.GetComponent<RectTransform>();
-            layoutElement.ignoreLayout = false;
-            SizeFitter.enabled = false;
-
-            transform.sizeDelta = new Vector2(150,  110);
-        } */
 
         _longClick = true;
 
