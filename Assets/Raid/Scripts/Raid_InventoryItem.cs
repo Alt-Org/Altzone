@@ -101,18 +101,46 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     public void RemoveData()
     {
         ItemImage.gameObject.SetActive(false);
+        BombIndicator.SetActive(false);
+        bomb = false;
     }
     public void SetBomb(int bombType)
     {
-        _bombType = bombType;
+        SetTrap(bombType);
+    }
+
+    public void SetTrap(int trapType)
+    {
+        _bombType = trapType;
         bomb = true;
-        if (spectator)
-            BombIndicator.SetActive(true);
+        BombIndicator.SetActive(true);
     }
     public void TriggerBomb()
     {
+        TriggerTrap();
+    }
+
+    public void TriggerTrap()
+    {
         if(!triggered && !timeEnded)
         {
+            string trapName;
+            switch (_bombType)
+            {
+                case 0:
+                    trapName = "EndGame";
+                    break;
+                case 1:
+                    trapName = "Freeze";
+                    break;
+                case 2:
+                    trapName = "DoubleWeight";
+                    break;
+                default:
+                    trapName = "Unknown";
+                    break;
+            }
+            Debug.Log($"(RAID) Trap triggered: {trapName} (type {_bombType})");
             if(_bombType == 1)
             {
                 Bomb.transform.localScale = new Vector2(3f, 3f);
@@ -121,7 +149,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             triggered = true;
             audioSource.PlayOneShot(explosion, SettingsCarrier.Instance.SentVolume(GetComponent<SetVolume>()._soundType));
         }
-        //BombIndicator.SetActive(false);
+        BombIndicator.SetActive(false);
     }
     public void LaunchBall()
     {

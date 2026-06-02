@@ -23,12 +23,15 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private ExitRaid exitraid;
     [SerializeField] private bool spectator = false;
     [SerializeField] private bool firstItem = true;
+    [SerializeField, Min(1)] private int trapAmount = 3;
+    [SerializeField, Min(0f)] private float freezeDuration = 3f;
+    [SerializeField, Min(1f)] private float doubleWeightMultiplier = 2f;
 
     [System.Serializable]
     public class BombData
     {
         public int bombIndex;
-         //type 0: default, type 1: lock
+         //type 0: end game, type 1: freeze, type 2: double weight
         public int bombType;
     }
     [SerializeField] BombData[] Bombs;
@@ -36,6 +39,9 @@ public class Raid_InventoryPage : MonoBehaviour
     List<Raid_InventoryItem> ListOfUIItems = new List<Raid_InventoryItem>();
 
     List<GameFurniture> ListOfFurniture = new List<GameFurniture>();
+    private bool inventoryFrozen;
+    private bool nextLootWeightDoubled;
+    private Coroutine freezeRoutine;
 
     //public PhotonView _photonView { get; private set; }
     private void Awake()
@@ -96,7 +102,7 @@ public class Raid_InventoryPage : MonoBehaviour
         for (int j = 0; j < Bombs.Length; j++)
         {
             Debug.Log("bombIndex: " + Bombs[j].bombIndex + " Bombs.Length: " + Bombs.Length);
-            ListOfUIItems[Bombs[j].bombIndex].GetComponent<Raid_InventoryItem>().SetBomb(Bombs[j].bombType);
+            ListOfUIItems[Bombs[j].bombIndex].GetComponent<Raid_InventoryItem>().SetTrap(Bombs[j].bombType);
         }
     }
 
@@ -119,6 +125,10 @@ public class Raid_InventoryPage : MonoBehaviour
         {
             return;
         }
+        if (inventoryFrozen)
+        {
+            return;
+        }
         if (raid_Timer.CurrentTime <= 0 || LootTracker.CurrentLootWeight > LootTracker.MaxLootWeight || exitraid.raidEnded)
         {
             return;
@@ -129,10 +139,18 @@ public class Raid_InventoryPage : MonoBehaviour
             if (item.GetComponent<Raid_InventoryItem>().bomb)
             {
                 item.RemoveData();
-                item.GetComponent<Raid_InventoryItem>().TriggerBomb();
-                if (item.GetComponent<Raid_InventoryItem>()._bombType == 1)
+                item.GetComponent<Raid_InventoryItem>().TriggerTrap();
+                switch (item.GetComponent<Raid_InventoryItem>()._bombType)
                 {
-                    LockItems(index);
+                    case 0:
+                        exitraid.EndRaid();
+                        break;
+                    case 1:
+                        StartFreeze();
+                        break;
+                    case 2:
+                        nextLootWeightDoubled = true;
+                        break;
                 }
                 return;
             }
@@ -140,7 +158,9 @@ public class Raid_InventoryPage : MonoBehaviour
 
             if (itemWeight == item.ItemWeight && itemWeight != 0)
             {
-                LootTracker.SetLootCount(item.furnitureData,LootTracker.MaxLootWeight);
+                float lootWeightMultiplier = nextLootWeightDoubled ? doubleWeightMultiplier : 1f;
+                LootTracker.SetLootCount(item.furnitureData, LootTracker.MaxLootWeight, lootWeightMultiplier);
+                nextLootWeightDoubled = false;
                 item.RemoveData();
             } else
             {
@@ -213,9 +233,19 @@ public class Raid_InventoryPage : MonoBehaviour
     }
     public void RandomizeBombs()
     {
-        Bombs[0].bombIndex = Random.Range(0, ListOfUIItems.Count / 3);
-        Bombs[1].bombIndex = Random.Range((ListOfUIItems.Count / 3) + 1, ListOfUIItems.Count / 3 * 2);
-        Bombs[2].bombIndex = Random.Range((ListOfUIItems.Count / 3 * 2) + 1, ListOfUIItems.Count);
+        int amount = Mathf.Clamp(trapAmount, 1, ListOfUIItems.Count);
+        Bombs = new BombData[amount];
+
+        List<int> availableIndices = Enumerable.Range(0, ListOfUIItems.Count).OrderBy(_ => Random.value).Take(amount).ToList();
+
+        for (int i = 0; i < amount; i++)
+        {
+            Bombs[i] = new BombData
+            {
+                bombIndex = availableIndices[i],
+                bombType = i < 3 ? i : Random.Range(0, 3)
+            };
+        }
     }
     /*[PunRPC]*/
     public void SendBombLocationsRPC(string jsonBombs)
@@ -245,6 +275,24 @@ public class Raid_InventoryPage : MonoBehaviour
             ListOfUIItems[index - 4].GetComponent<Raid_InventoryItem>().SetLocked();
         if (ListOfUIItems[index + 4])
             ListOfUIItems[index + 4].GetComponent<Raid_InventoryItem>().SetLocked();
+    }
+
+    private void StartFreeze()
+    {
+        if (freezeRoutine != null)
+        {
+            StopCoroutine(freezeRoutine);
+        }
+
+        freezeRoutine = StartCoroutine(FreezeInventoryRoutine());
+    }
+
+    private IEnumerator FreezeInventoryRoutine()
+    {
+        inventoryFrozen = true;
+        yield return new WaitForSeconds(freezeDuration);
+        inventoryFrozen = false;
+        freezeRoutine = null;
     }
     
     // Sets the UI slot to a choosen item.

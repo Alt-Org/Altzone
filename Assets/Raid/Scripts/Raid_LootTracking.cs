@@ -52,9 +52,9 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         MaxLootText.text =  MaxLootWeight.ToString() + " kg";
     }
 
-    public void SetLootCount(GameFurniture furniture, float MaxLootWeight)
+    public void SetLootCount(GameFurniture furniture, float MaxLootWeight, float lootWeightMultiplier = 1f)
     {
-        float AddedLootWeight = (float)furniture.Weight;
+        float AddedLootWeight = (float)furniture.Weight * lootWeightMultiplier;
         ListOfCollectedLoot.Add(furniture);
 
         float NewLootWeight = CurrentLootWeight + AddedLootWeight;
