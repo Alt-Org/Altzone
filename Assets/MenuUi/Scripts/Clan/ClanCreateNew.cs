@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Clan;
 using MenuUi.Scripts.Window;
 using MenuUi.Scripts.Window.ScriptableObjects;
 using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Model.Poco.Clan;
 
 public class ClanCreateNew : MonoBehaviour
 {
@@ -19,7 +19,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private TMP_InputField _clanNameField;
     [SerializeField] private Toggle _openClanToggle;
     [SerializeField] private TMP_InputField _clanPasswordField;
-    [SerializeField] private GameObject _clanPasswordRoot;
+    //[SerializeField] private GameObject _clanPasswordRoot;
     [SerializeField] private ClanLanguageList _languageSelection;
     [SerializeField] private ValueSelectionController _valueSelection;
     [SerializeField] private LanguageFlagImage _flagImage;
@@ -44,9 +44,26 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private Sprite _iconWholeHeart;
     [SerializeField] private Sprite _iconPieceMode;
 
+    [Header("Open / Lock Clan Popups")]
+    [SerializeField] private GameObject _lockClanPopup;
+    [SerializeField] private GameObject _openClanPopup;
+    [SerializeField] private GameObject _createClanPasswordPopup;
+
+    [SerializeField] private Button _lockClanConfirmButton;
+    [SerializeField] private Button _lockClanCancelButton;
+    [SerializeField] private Button _openClanConfirmButton;
+    [SerializeField] private Button _openClanCancelButton;
+    [SerializeField] private Button _passwordConfirmButton;
+    [SerializeField] private Button _passwordCancelButton;
+
+    [Header("Open / Lock Clan Visuals")]
+    [SerializeField] private Image _openClanToggleBackground;
+    [SerializeField] private Color _openClanBackgroundColor = Color.white;
+    [SerializeField] private Color _lockedClanBackgroundColor = Color.red;
+
     [Header("Warnings")]
     [SerializeField] private GameObject _nameWarningOutline;
-    [SerializeField] private GameObject _passwordWarningOutline;
+    //[SerializeField] private GameObject _passwordWarningOutline;
     [SerializeField] private GameObject _ageWarningOutline;
     [SerializeField] private GameObject _languageWarningOutline;
     [SerializeField] private GameObject _valuesWarningOutline;
@@ -55,10 +72,12 @@ public class ClanCreateNew : MonoBehaviour
     [Header("Buttons")]
     //[SerializeField] private Button _closeLanguageSelect;
     [SerializeField] private Button _createClanButton;
+    [SerializeField] private Button _agreementCloseButton;
 
     [SerializeField] private Button _clanLogoButton;
     [SerializeField] private Button _heartEditSaveButton;
     [SerializeField] private Button _heartEditCancelButton;
+    [SerializeField] private Button _heartEditCloseButton;
     [SerializeField] private Button _ageButton;
     [SerializeField] private Button _ageSaveButton;
     [SerializeField] private Button _ageCancelButton;
@@ -77,6 +96,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private GameObject _raycastBlocker;
     [SerializeField] private AgreementController _agreementController;
     [SerializeField] private GameObject _agreementPopup;
+    [SerializeField] private TMP_Text _agreementClanNameText;
 
     [Header("Default Icons")]
     [SerializeField] private Sprite _defaultAgeSprite;
@@ -89,6 +109,9 @@ public class ClanCreateNew : MonoBehaviour
     private Color _defaultHeartColor;
     private List<HeartPieceData> _heartPieces;
 
+    private bool _confirmedLockedState;
+    private bool _ignoreOpenClanToggleCallback;
+
     private readonly ClanRoleRights[] _defaultRights = new ClanRoleRights[3]  {
         ClanRoleRights.None,
         ClanRoleRights.EditSoulHome,
@@ -97,19 +120,36 @@ public class ClanCreateNew : MonoBehaviour
 
     private void Start()
     {
-        //_createClanOK.onClick.RemoveAllListeners();
-        //_createClanOK.onClick.AddListener(PostClanToServer);
+        if (_openClanToggle != null)
+        {
+            _confirmedLockedState = _openClanToggle.isOn;
 
-        _openClanToggle.onValueChanged.AddListener(OnOpenClanToggleChanged);
-        OnOpenClanToggleChanged(_openClanToggle.isOn);
+            _openClanToggle.onValueChanged.RemoveListener(OnOpenClanToggleChanged);
+            _openClanToggle.onValueChanged.AddListener(OnOpenClanToggleChanged);
+
+            ApplyOpenClanState(_confirmedLockedState);
+        }
     }
 
     private void OnOpenClanToggleChanged(bool isOn)
     {
-        bool isOpen = !isOn;
-        if(_clanPasswordRoot != null)
+        if (_ignoreOpenClanToggleCallback)
+            return;
+
+        // changing from open to locked
+        if (isOn && !_confirmedLockedState)
         {
-            _clanPasswordRoot.SetActive(!isOpen);
+            ShowPopup(_lockClanPopup);
+            RevertToggleToConfirmedState();
+            return;
+        }
+
+        // changing from locked to open
+        if (!isOn && _confirmedLockedState)
+        {
+            ShowPopup(_openClanPopup);
+            RevertToggleToConfirmedState();
+            return;
         }
     }
 
@@ -117,18 +157,17 @@ public class ClanCreateNew : MonoBehaviour
     {
         if (_heartModeLabel != null)
         {
-            _heartModeLabel.text = isOn ? _pieceModeText : _wholeHeartText;
+            _heartModeLabel.text = isOn ? _wholeHeartText : _pieceModeText;
         }
 
         if (_toggleIcon != null)
         {
-            _toggleIcon.sprite = isOn ? _iconPieceMode : _iconWholeHeart;
+            _toggleIcon.sprite = isOn ? _iconWholeHeart: _iconPieceMode;
         }
 
         if (_heartColorChanger != null)
         {
-            bool fillWholeHeart = !isOn;          
-            _heartColorChanger.SetFillWholeHeart(fillWholeHeart);
+            _heartColorChanger.SetFillWholeHeart(isOn);
         }
     }
 
@@ -143,6 +182,7 @@ public class ClanCreateNew : MonoBehaviour
 
         if (_heartEditSaveButton) _heartEditSaveButton.onClick.AddListener(ConfirmHeartEdit);
         if (_heartEditCancelButton) _heartEditCancelButton.onClick.AddListener(CancelHeartEdit);
+        if (_heartEditCloseButton) _heartEditCloseButton.onClick.AddListener(CancelHeartEdit);
 
         if (_ageSaveButton) _ageSaveButton.onClick.AddListener(SaveAgeSelection);
         if (_ageCancelButton) _ageCancelButton.onClick.AddListener(CancelAgeSelection);
@@ -152,8 +192,20 @@ public class ClanCreateNew : MonoBehaviour
         if (_languageCancelButton) _languageCancelButton.onClick.AddListener(CancelLanguageSelection);
         if (_languageCloseButton) _languageCloseButton.onClick.AddListener(CancelLanguageSelection);
 
+        if (_lockClanConfirmButton) _lockClanConfirmButton.onClick.AddListener(ConfirmLockClan);
+        if (_lockClanCancelButton) _lockClanCancelButton.onClick.AddListener(CancelOpenLockChange);
+
+        if (_openClanConfirmButton) _openClanConfirmButton.onClick.AddListener(ConfirmOpenClan);
+        if (_openClanCancelButton) _openClanCancelButton.onClick.AddListener(CancelOpenLockChange);
+
+        if (_passwordConfirmButton) _passwordConfirmButton.onClick.AddListener(ConfirmPasswordPopup);
+        if (_passwordCancelButton) _passwordCancelButton.onClick.AddListener(CancelPasswordPopup);
+
         if (_createClanButton != null)
             _createClanButton.onClick.AddListener(OnAgreementCreatePressed);
+
+        if (_agreementCloseButton != null)
+            _agreementCloseButton.onClick.AddListener(OnCancelPressed);
 
         Reset();
     }
@@ -166,6 +218,7 @@ public class ClanCreateNew : MonoBehaviour
 
         if (_heartEditSaveButton) _heartEditSaveButton.onClick.RemoveListener(ConfirmHeartEdit);
         if (_heartEditCancelButton) _heartEditCancelButton.onClick.RemoveListener(CancelHeartEdit);
+        if (_heartEditCloseButton) _heartEditCloseButton.onClick.RemoveListener(CancelHeartEdit);
 
         if (_ageSaveButton) _ageSaveButton.onClick.RemoveListener(SaveAgeSelection);
         if (_ageCancelButton) _ageCancelButton.onClick.RemoveListener(CancelAgeSelection);
@@ -175,11 +228,23 @@ public class ClanCreateNew : MonoBehaviour
         if (_languageCancelButton) _languageCancelButton.onClick.RemoveListener(CancelLanguageSelection);
         if (_languageCloseButton) _languageCloseButton.onClick.RemoveListener(CancelLanguageSelection);
 
+        if (_lockClanConfirmButton) _lockClanConfirmButton.onClick.RemoveListener(ConfirmLockClan);
+        if (_lockClanCancelButton) _lockClanCancelButton.onClick.RemoveListener(CancelOpenLockChange);
+
+        if (_openClanConfirmButton) _openClanConfirmButton.onClick.RemoveListener(ConfirmOpenClan);
+        if (_openClanCancelButton) _openClanCancelButton.onClick.RemoveListener(CancelOpenLockChange);
+
+        if (_passwordConfirmButton) _passwordConfirmButton.onClick.RemoveListener(ConfirmPasswordPopup);
+        if (_passwordCancelButton) _passwordCancelButton.onClick.RemoveListener(CancelPasswordPopup);
+
         if (_cancelButton) _cancelButton.onClick.RemoveListener(OnCancelPressed);
         if (_confirmButton) _confirmButton.onClick.RemoveListener(OnConfirmPressed);
 
         if (_createClanButton != null)
             _createClanButton.onClick.RemoveListener(OnAgreementCreatePressed);
+
+        if (_agreementCloseButton != null)
+            _agreementCloseButton.onClick.RemoveListener(OnCancelPressed);
     }
 
     private void OnAgreementCreatePressed()
@@ -213,23 +278,27 @@ public class ClanCreateNew : MonoBehaviour
 
     private void OnConfirmPressed()
     {
-        ShowPopup(_agreementPopup); 
+        UpdateAgreementClanName();
+        ShowPopup(_agreementPopup);
     }
-
 
     private void Reset()
     {
+        CloseAllPopups();
+
         _mainCreatePanel.SetActive(true);
         _languagePanel.SetActive(false);
 
         StopAllCoroutines();
 
         _clanNameField.text = "";
-        _openClanToggle.isOn = false;
-        OnOpenClanToggleChanged(_openClanToggle.isOn);
+
+        _confirmedLockedState = false;
+        SetToggleWithoutCallback(false);
+        ApplyOpenClanState(false);
 
         _nameWarningOutline.SetActive(false);
-        _passwordWarningOutline.SetActive(false);
+        //_passwordWarningOutline.SetActive(false);
         _ageWarningOutline.SetActive(false);
         _languageWarningOutline.SetActive(false);
         _valuesWarningOutline.SetActive(false);
@@ -290,14 +359,44 @@ public class ClanCreateNew : MonoBehaviour
             OnFillWholeHeartToggleChanged(_fillWholeHeartToggle.isOn);
         }
         else if (_heartColorChanger != null)
-        {          
-            _heartColorChanger.SetFillWholeHeart(true);
+        {
+            OnFillWholeHeartToggleChanged(true);
         }
 
         if (_agreementController != null)
         {
             _agreementController.ResetState();
         }
+    }
+
+    private void CloseAllPopups()
+    {
+        if (_agreementPopup != null)
+            _agreementPopup.SetActive(false);
+
+        if (_languagePanel != null)
+            _languagePanel.SetActive(false);
+
+        if (_clanAgeEditPopup != null)
+            _clanAgeEditPopup.SetActive(false);
+
+        if (_clanHeartEditPanel != null)
+            _clanHeartEditPanel.SetActive(false);
+
+        if (_heartEditPopup != null)
+            _heartEditPopup.SetActive(false);
+
+        if (_lockClanPopup != null)
+            _lockClanPopup.SetActive(false);
+
+        if (_openClanPopup != null)
+            _openClanPopup.SetActive(false);
+
+        if (_createClanPasswordPopup != null)
+            _createClanPasswordPopup.SetActive(false);
+
+        if (_raycastBlocker != null)
+            _raycastBlocker.SetActive(false);
     }
 
     public void ShowPopup(GameObject popup)
@@ -318,7 +417,19 @@ public class ClanCreateNew : MonoBehaviour
             _raycastBlocker.SetActive(false);
     }
 
-   public void OpenHeartEditPopup()
+    private void UpdateAgreementClanName()
+    {
+        if (_agreementClanNameText == null || _clanNameField == null)
+            return;
+
+        string clanName = _clanNameField.text.Trim();
+
+        _agreementClanNameText.text = string.IsNullOrWhiteSpace(clanName)
+            ? ""
+            : $"\"{clanName}\"";
+    }
+
+    public void OpenHeartEditPopup()
     {
         if (_heartColorChanger != null && _heartPieces != null)
         {
@@ -492,7 +603,7 @@ public class ClanCreateNew : MonoBehaviour
                 );
                 return;
             }
-
+            if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.ToggleOverlay(true);
             Debug.Log($"naviTarget {_naviTarget} isCurrentPopOutWindow {true}", _naviTarget);
             IWindowManager windowManager = WindowManager.Get();
             if (windowManager == null)
@@ -555,11 +666,11 @@ public class ClanCreateNew : MonoBehaviour
 
         if (!isOpen && password == string.Empty)
         {
-            _passwordWarningOutline.SetActive(true);
+            //_passwordWarningOutline.SetActive(true);
             _warningPopup.ActivatePopUp("Lukituilla klaaneilla tulee olla salasana");
             validInputs = false;
         }
-        else _passwordWarningOutline.SetActive(false);
+        //else _passwordWarningOutline.SetActive(false);
 
         if (language == Language.None)
         {
@@ -589,5 +700,100 @@ public class ClanCreateNew : MonoBehaviour
         }
 
         return validInputs;
+    }
+
+    private void ConfirmLockClan()
+    {
+        HidePopup(_lockClanPopup);
+
+        _confirmedLockedState = true;
+        SetToggleWithoutCallback(true);
+        ApplyOpenClanState(true);
+
+        ShowPopup(_createClanPasswordPopup);
+    }
+
+    private void ConfirmOpenClan()
+    {
+        HidePopup(_openClanPopup);
+
+        _confirmedLockedState = false;
+        SetToggleWithoutCallback(false);
+        ApplyOpenClanState(false);
+
+        if (_clanPasswordField != null)
+            _clanPasswordField.text = string.Empty;
+    }
+
+    private void ConfirmPasswordPopup()
+    {
+        if (_clanPasswordField != null && string.IsNullOrWhiteSpace(_clanPasswordField.text))
+        {
+            if (_warningPopup != null)
+                _warningPopup.ActivatePopUp("Lisää klaanin salasana");
+
+            /*if (_passwordWarningOutline != null)
+                _passwordWarningOutline.SetActive(true);*/
+
+            return;
+        }
+
+        /*if (_passwordWarningOutline != null)
+            _passwordWarningOutline.SetActive(false);*/
+
+        _confirmedLockedState = true;
+        SetToggleWithoutCallback(true);
+        ApplyOpenClanState(true);
+
+        HidePopup(_createClanPasswordPopup);
+    }
+
+    private void CancelPasswordPopup()
+    {
+        if (_clanPasswordField != null)
+            _clanPasswordField.text = string.Empty;
+
+        _confirmedLockedState = false;
+        SetToggleWithoutCallback(false);
+        ApplyOpenClanState(false);
+
+        HidePopup(_createClanPasswordPopup);
+    }
+
+    private void CancelOpenLockChange()
+    {
+        HidePopup(_lockClanPopup);
+        HidePopup(_openClanPopup);
+
+        RevertToggleToConfirmedState();
+        ApplyOpenClanState(_confirmedLockedState);
+    }
+
+    private void RevertToggleToConfirmedState()
+    {
+        SetToggleWithoutCallback(_confirmedLockedState);
+    }
+
+    private void SetToggleWithoutCallback(bool isLocked)
+    {
+        if (_openClanToggle == null)
+            return;
+
+        _ignoreOpenClanToggleCallback = true;
+        _openClanToggle.isOn = isLocked;
+        _ignoreOpenClanToggleCallback = false;
+
+        ToggleImage toggleImage = _openClanToggle.GetComponent<ToggleImage>();
+        if (toggleImage != null)
+            toggleImage.RefreshImage();
+    }
+
+    private void ApplyOpenClanState(bool isLocked)
+    {
+        /*if (_clanPasswordRoot != null)
+            _clanPasswordRoot.SetActive(isLocked);*/
+
+        if (_openClanToggleBackground != null)
+            _openClanToggleBackground.color = isLocked ? _lockedClanBackgroundColor : _openClanBackgroundColor;
     }
 }

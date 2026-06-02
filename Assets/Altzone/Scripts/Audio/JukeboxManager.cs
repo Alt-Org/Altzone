@@ -106,7 +106,7 @@ namespace Altzone.Scripts.Audio
         public delegate void FavoriteButtonChange(string musicTrackId, MusicTrackFavoriteType favoriteType);
         public event FavoriteButtonChange OnFavoriteButtonChange;
 
-        public delegate void PreviewStart();
+        public delegate bool PreviewStart();
         public event PreviewStart OnPreviewStart;
 
         public delegate void PreviewEnd();
@@ -231,8 +231,17 @@ namespace Altzone.Scripts.Audio
             OnFavoriteButtonChange?.Invoke(musicTrackId, favoriteType);
         }
 
+        /// <summary>
+        /// Returns current music track or random music which the user has marked as not hated.
+        /// </summary>
+        /// <returns>Not hated music if found, otherwise null.</returns>
         public MusicTrack GetNotHatedMusicTrack() { return GetNotHatedMusicTrack(_currentTrackQueueData); }
 
+        /// <summary>
+        /// Returns given music track or random music which the user has marked as not hated.
+        /// </summary>
+        /// <param name="trackQueueData"></param>
+        /// <returns>Not hated music if found, otherwise null.</returns>
         public MusicTrack GetNotHatedMusicTrack(TrackQueueData trackQueueData)
         {
             if (trackQueueData == null) return null;
@@ -505,6 +514,11 @@ namespace Altzone.Scripts.Audio
             return trackName;
         }
 
+        /// <summary>
+        /// Check if can try to start to play music.
+        /// </summary>
+        /// <param name="trackQueueData"></param>
+        /// <returns>True if can try to start play music.</returns>
         private bool PlayTrackBlockingCheck(TrackQueueData trackQueueData)
         {
             return trackQueueData == null || _trackEndingControlCoroutine != null || (_playbackPaused && _currentTrackQueueData != null);
@@ -535,6 +549,13 @@ namespace Altzone.Scripts.Audio
             return (muteActivation ? _jukeboxMuted : _playbackPaused);
         }
 
+        /// <summary>
+        /// Continues the current music track.
+        /// </summary>
+        /// <param name="muteActivation"></param>
+        /// <param name="forcePlay"></param>
+        /// <param name="playAnimations"></param>
+        /// <returns>Music track name if playback start was successful.</returns>
         public string ContinueTrack(bool muteActivation, bool forcePlay = false, bool playAnimations = true)
         {
             if (_trackPreviewActive || _currentPlaylist == null) return null;
@@ -569,6 +590,11 @@ namespace Altzone.Scripts.Audio
             return null;
         }
 
+        /// <summary>
+        /// Ends the current music playback when music tracks maximum duration is reached.
+        /// </summary>
+        /// <param name="playAnimations"></param>
+        /// <returns></returns>
         private IEnumerator TrackEndingControl(bool playAnimations = true)
         {
             if (_currentTrackQueueData == null || !_currentTrackQueueData.InUse()) yield break;
@@ -636,6 +662,11 @@ namespace Altzone.Scripts.Audio
         /// </summary>
         public void QueueTrack(MusicTrack musicTrack) { StartCoroutine(AddToServerSongQueue(musicTrack)); }
 
+        /// <summary>
+        /// Try to add music track to server.
+        /// </summary>
+        /// <param name="musicTrack"></param>
+        /// <returns></returns>
         private IEnumerator AddToServerSongQueue(MusicTrack musicTrack)
         {
             if (!_serverOperationAvailable) yield break;
@@ -649,18 +680,30 @@ namespace Altzone.Scripts.Audio
             UpdateLocalClanPlaylist();
         }
 
-        public void DeleteFromQueue(int linearIndex, bool updateServer)
+        /// <summary>
+        /// Delete from local track queue.
+        /// </summary>
+        /// <param name="serverId"></param>
+        /// <param name="updateServer">Notify server of music track deletion.</param>
+        public void DeleteFromQueue(string serverId, bool updateServer)
         {
-            TrackQueueData data = _trackQueue[linearIndex];
+            int index = _trackQueue.FindIndex(0, data => data.ServerSongData.id == serverId);
 
-            if (updateServer) StartCoroutine(DeleteTrackFromServer(null, data.ServerSongData.id, data.MusicTrack.Name));
+            if (updateServer) StartCoroutine(DeleteTrackFromServer(null, serverId, _trackQueue[index].MusicTrack.Name));
 
-            _trackQueue.RemoveAt(linearIndex);
+            _trackQueue.RemoveAt(index);
             OnQueueChange?.Invoke();
         }
         #endregion
 
         #region Preview
+        /// <summary>
+        /// Plays music preview of given <c>JukeboxTrackButtonHandler</c>
+        /// </summary>
+        /// <param name="buttonHandler"></param>
+        /// <param name="type"></param>
+        /// <param name="previewDuration"></param>
+        /// <returns>True if preview start successful.</returns>
         public bool PlayPreview(JukeboxTrackButtonHandler buttonHandler, PreviewLocationType type, float previewDuration = -1f)
         {
             if (!PlayPreview(buttonHandler.MusicTrack, type, previewDuration)) return false;
@@ -671,6 +714,13 @@ namespace Altzone.Scripts.Audio
             return true;
         }
 
+        /// <summary>
+        /// Plays music preview of given <c>MusicTrack</c>.
+        /// </summary>
+        /// <param name="musicTrack"></param>
+        /// <param name="type"></param>
+        /// <param name="previewDuration"></param>
+        /// <returns>True if preview start successful.</returns>
         public bool PlayPreview(MusicTrack musicTrack, PreviewLocationType type, float previewDuration = -1f)
         {
             if (_currentPreviewMusicTrackHandler)
@@ -709,6 +759,11 @@ namespace Altzone.Scripts.Audio
             return true;
         }
 
+        /// <summary>
+        /// Controls when the music preview has played the maximum duration.
+        /// </summary>
+        /// <param name="previewTime"></param>
+        /// <param name="type"></param>
         private IEnumerator MusicPreviewPlaybackControl(float previewTime, PreviewLocationType type)
         {
             float timer = 0f;
@@ -768,6 +823,23 @@ namespace Altzone.Scripts.Audio
             OnMusicTrackInfoPressed?.Invoke(musicTrack, likeType);
         }
 
+        /// <summary>
+        /// Update local track queue contents with server playlist.
+        /// </summary>
+        /// <param name="serverPlaylist"></param>
+        public void UpdateQueueContents(ServerPlaylist serverPlaylist)
+        {
+            _trackQueue.Clear();
+
+            for (int i = 0; i < serverPlaylist.songQueue.Count; i++)
+            {
+                MusicTrack musicTrack = GetMusicTrack(serverPlaylist.songQueue[i].songId);
+
+                _trackQueue.Add(new TrackQueueData(serverPlaylist.songQueue[i], musicTrack,
+                    serverPlaylist.songQueue[i].playerId == _currentPlayerData.Id, GetTrackFavoriteType(musicTrack.Id)));
+            }
+        }
+
         public class MusicTrackFavoriteData
         {
             public string MusicTrackId;
@@ -779,55 +851,43 @@ namespace Altzone.Scripts.Audio
                 FavoriteType = likeType;
             }
         }
-
-        public void UpdateQueueContents(ServerPlaylist serverPlaylist)
-        {
-            _trackQueue.Clear();
-
-            for (int i = 0; i < serverPlaylist.songQueue.Count; i++)
-            {
-                MusicTrack musicTrack = GetMusicTrack(serverPlaylist.songQueue[i].songId);
-
-                _trackQueue.Add(new TrackQueueData(serverPlaylist.songQueue[i], i, musicTrack,
-                    serverPlaylist.songQueue[i].playerId == _currentPlayerData.Id, GetTrackFavoriteType(musicTrack.Id)));
-            }
-        }
     }
 
+    /// <summary>
+    /// Used locally and with <c>SmartVerticalObjectList</c> to transfer data.
+    /// </summary>
     public class TrackQueueData
     {
         public ServerSong ServerSongData;
-        public int LinearIndex;
         public MusicTrack MusicTrack;
         public bool UserOwned;
         public JukeboxManager.MusicTrackFavoriteType FavoriteType;
 
         public TrackQueueData(ServerSong serverSong, MusicTrack musicTrack) //TODO:Remove
         {
-            SetData(serverSong, -1, musicTrack, false, JukeboxManager.MusicTrackFavoriteType.Neutral);
+            SetData(serverSong, musicTrack, false, JukeboxManager.MusicTrackFavoriteType.Neutral);
         }
 
         public TrackQueueData(ServerSong serverSong, MusicTrack musicTrack, bool userOwned) //TODO:Remove
         {
-            SetData(serverSong, -1, musicTrack, userOwned, JukeboxManager.MusicTrackFavoriteType.Neutral);
+            SetData(serverSong, musicTrack, userOwned, JukeboxManager.MusicTrackFavoriteType.Neutral);
         }
 
-        public TrackQueueData(ServerSong serverSong, int linearIndex, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
+        public TrackQueueData(ServerSong serverSong, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
         {
-            SetData(serverSong, linearIndex, track, userOwned, favoriteType);
+            SetData(serverSong, track, userOwned, favoriteType);
         }
 
         public bool InUse() { return ServerSongData != null; }
 
-        public void SetData(TrackQueueData data, int linearIndex)
+        public void SetData(TrackQueueData data)
         {
-            SetData(data.ServerSongData, linearIndex, data.MusicTrack, data.UserOwned, data.FavoriteType);
+            SetData(data.ServerSongData, data.MusicTrack, data.UserOwned, data.FavoriteType);
         }
 
-        public void SetData(ServerSong serverSong, int linearIndex, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
+        public void SetData(ServerSong serverSong, MusicTrack track, bool userOwned, JukeboxManager.MusicTrackFavoriteType favoriteType)
         {
             ServerSongData = serverSong;
-            LinearIndex = linearIndex;
             MusicTrack = track;
             UserOwned = userOwned;
             FavoriteType = favoriteType;
@@ -838,11 +898,13 @@ namespace Altzone.Scripts.Audio
         public void Clear()
         {
             ServerSongData = null;
-            LinearIndex = -1;
             MusicTrack = null;
         }
     }
 
+    /// <summary>
+    /// Currently barely relevant. Will be relevant if offline playlists are greenlit.
+    /// </summary>
     public class Playlist
     {
         public string Name {get; private set;}
@@ -857,6 +919,9 @@ namespace Altzone.Scripts.Audio
         }
     }
 
+    /// <summary>
+    /// Used with <c>SmartVerticalObjectList</c> to transfer data.
+    /// </summary>
     public class PersonalizedMusicTrack
     {
         private MusicTrack _track;

@@ -96,8 +96,20 @@ synced event BattleProjectileChangeGlowStrength
     FP Strength;
 }
 
-event BattlePlaySoundFX
+event BattlePlaySoundFxForAll
 {
+    BattleSoundFX Effect;
+}
+
+event BattlePlaySoundFxForTeam
+{
+    BattleTeamNumber Team;
+    BattleSoundFX Effect;
+}
+
+event BattlePlaySoundFxForPlayer
+{
+    BattlePlayerSlot Slot;
     BattleSoundFX Effect;
 }
 
@@ -127,7 +139,8 @@ synced event BattleCharacterHit
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
-    FP StunFlashDurationSec;
+    int ShieldNumber;
+    FP StunDurationSec;
     BattleEmotionState ProjectileEmotion;
 }
 
@@ -137,7 +150,8 @@ synced event BattleShieldHit
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
-    bool ShieldAttached;
+    int ShieldNumber;
+    bool DefenceUpdateVisual;
     FP DefencePercentage;
 }
 
@@ -160,12 +174,32 @@ synced event BattleStoneCharacterPlayHitAnimation
     BattleEmotionState Emotion;
 }
 
+synced event BattleSpecialJoystickVisibilityChange
+{
+    BattlePlayerSlot Slot;
+    bool Show;
+}
+
+synced event BattlePlayerClass100AimIndicatorUpdate
+{
+    EntityRef ERef;
+    BattlePlayerSlot Slot;
+    bool Show;
+    FPVector2 Direction;
+}
+
 synced event BattleShieldChangeState
 {
     EntityRef ERef;
     BattleTeamNumber Team;
     bool ShieldAttached;
     int ShieldNumber;
+}
+
+synced event BattleCharacterDeath
+{
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
 }
 
 //} Gameplay events

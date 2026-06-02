@@ -51,23 +51,27 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
+            if (!_playerData.EmotionSelectionDate.Equals(DateTime.MinValue))
             {
-                if (DateTime.Parse(_playerData.emotionSelectorDate).Date == DateTime.Today)
+                Debug.LogWarning(_playerData.EmotionSelectionDate.Date);
+                if (_playerData.EmotionSelectionDate.Date == DateTime.Today)
                 {
                     _bSwitch = false;
                 }
             }
 
-            if (_bSwitch)
+            StartCoroutine(ServerManager.Instance.CheckEmotionInServer(success =>
             {
-                _popupPrefab.SetActive(true);
-            }
-            else
-            {
-                _popupPrefab.SetActive(false);
-                OnEmotionInsertFinished?.Invoke();
-            }
+                if (!success || _bSwitch)
+                {
+                    _popupPrefab.SetActive(true);
+                }
+                else
+                {
+                    _popupPrefab.SetActive(false);
+                    OnEmotionInsertFinished?.Invoke();
+                }
+            }));
         }));
     }
 
@@ -86,60 +90,62 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
             return;
         }
 
-        List<Emotion> data = _playerData.playerDataEmotionList;
-
-        if (data == null)
+        StartCoroutine(ServerManager.Instance.UpdateEmotionToServer(emotion.ToString(), success =>
         {
-            data = new List<Emotion>();
-        }
+            if (!success) return; 
+            List<Emotion> data = _playerData.playerDataEmotionList;
 
-        while (data.Count < 7)
-        {
-            data.Add(Emotion.Blank);
-        }
+            if (data == null)
+            {
+                data = new List<Emotion>();
+            }
 
-        if (data.Count > 7)
-        {
-            data = data.GetRange(0, 7);
-        }
+            while (data.Count < 7)
+            {
+                data.Add(Emotion.Blank);
+            }
 
-        int days = 7;
-        if (!string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
-        {
-            TimeSpan span = DateTime.Today - DateTime.Parse(_playerData.emotionSelectorDate);
+            if (data.Count > 7)
+            {
+                data = data.GetRange(0, 7);
+            }
+
+            int days = 7;
+
+            TimeSpan span = DateTime.Today - _playerData.EmotionSelectionDate;
             days = span.Days;
-            if(days > 7) days = 7;
-        }
+            if (days > 7) days = 7;
 
-        for (int i = days-1; i > 0; i--)
-        {
+            for (int i = days - 1; i > 0; i--)
+            {
+                // Removes the last item in the list of moods
+                data.RemoveAt(data.Count - 1);
+
+                // Adds the newest item to the list of emotions.
+                data.Insert(0, Emotion.Blank);
+            }
+
             // Removes the last item in the list of moods
             data.RemoveAt(data.Count - 1);
 
             // Adds the newest item to the list of emotions.
-            data.Insert(0, Emotion.Blank);
-        }
+            data.Insert(0, emotion);
 
-        // Removes the last item in the list of moods
-        data.RemoveAt(data.Count-1);
+            _playerData.AddEmotion(emotion);
 
-        // Adds the newest item to the list of emotions.
-        data.Insert(0, emotion);
+            _playerData.daysBetweenInput = days.ToString();
 
-        _playerData.emotionSelectorDate = DateTime.Today.ToString();
+            _playerData.playerDataEmotionList = data;
 
-        _playerData.daysBetweenInput = days.ToString();
+            Debug.Log(days);
 
-        _playerData.playerDataEmotionList = data;
+            Debug.Log("Saving emotion date: " + _playerData.EmotionSelectionDate);
+            Debug.Log("Saving emotions: " + string.Join(", ", _playerData.playerDataEmotionList));
 
-        Debug.Log(days);
-
-        Debug.Log("Saving emotion date: " + _playerData.emotionSelectorDate);
-        Debug.Log("Saving emotions: " + string.Join(", ", _playerData.playerDataEmotionList));
-
-        // Saves the playerdata that has been changed.
-        StartCoroutine(SavePlayerData(_playerData, null));
-        _bSwitch = false;
+            // Saves the playerdata that has been changed.
+            StartCoroutine(SavePlayerData(_playerData, null));
+            _bSwitch = false;
+        }));
         ClosePopup();
         OnEmotionInsertFinished?.Invoke();
     }

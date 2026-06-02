@@ -68,6 +68,21 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleCollisionColliderQComponent))]
+  public unsafe partial class BattleCollisionColliderQComponentPrototype : ComponentPrototype<Quantum.BattleCollisionColliderQComponent> {
+    public Quantum.QEnum32<BattleCollisionColliderType> Type;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattleCollisionColliderQComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattleCollisionColliderQComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattleCollisionColliderQComponent result, in PrototypeMaterializationContext context = default) {
+        result.Type = this.Type;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattleCollisionTriggerQComponent))]
   public unsafe partial class BattleCollisionTriggerQComponentPrototype : ComponentPrototype<Quantum.BattleCollisionTriggerQComponent> {
     public Quantum.QEnum32<BattleCollisionTriggerType> Type;
@@ -254,7 +269,13 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass100DataQComponent))]
   public unsafe partial class BattlePlayerClass100DataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass100DataQComponent> {
     [HideInInspector()]
-    public Int32 _empty_prototype_dummy_field_;
+    public FPVector2 JoystickValuePrevious;
+    [HideInInspector()]
+    public QBoolean JoystickDownPrevious;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype JoystickTimer;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype CooldownTimer;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClass100DataQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerClass100DataQComponent component = default;
@@ -262,6 +283,29 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerClass100DataQComponent result, in PrototypeMaterializationContext context = default) {
+        result.JoystickValuePrevious = this.JoystickValuePrevious;
+        result.JoystickDownPrevious = this.JoystickDownPrevious;
+        this.JoystickTimer.Materialize(frame, ref result.JoystickTimer, in context);
+        this.CooldownTimer.Materialize(frame, ref result.CooldownTimer, in context);
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass100ProjectileQComponent))]
+  public unsafe partial class BattlePlayerClass100ProjectileQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass100ProjectileQComponent> {
+    [HideInInspector()]
+    public FPVector2 Direction;
+    [HideInInspector()]
+    public FP Speed;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClass100ProjectileQComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattlePlayerClass100ProjectileQComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerClass100ProjectileQComponent result, in PrototypeMaterializationContext context = default) {
+        result.Direction = this.Direction;
+        result.Speed = this.Speed;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -305,10 +349,12 @@ namespace Quantum.Prototypes {
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
     public QBoolean DisableRotation;
+    public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
     public QBoolean MovementEnabled;
     public QBoolean RotationEnabled;
     public FP CurrentDefence;
     public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
     public QBoolean HasTargetPosition;
     public FPVector2 TargetPosition;
     public FP RotationBaseRad;
@@ -336,10 +382,12 @@ namespace Quantum.Prototypes {
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
         result.DisableRotation = this.DisableRotation;
+        result.SpawnBehaviour = this.SpawnBehaviour;
         result.MovementEnabled = this.MovementEnabled;
         result.RotationEnabled = this.RotationEnabled;
         result.CurrentDefence = this.CurrentDefence;
         this.StunCooldown.Materialize(frame, ref result.StunCooldown, in context);
+        this.ShieldHitCooldown.Materialize(frame, ref result.ShieldHitCooldown, in context);
         result.HasTargetPosition = this.HasTargetPosition;
         result.TargetPosition = this.TargetPosition;
         result.RotationBaseRad = this.RotationBaseRad;
@@ -361,6 +409,7 @@ namespace Quantum.Prototypes {
     public Int32 GridExtendBottom;
     public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype Hitbox;
     public QBoolean DisableRotation;
+    public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerDataTemplateQComponent component = default;
@@ -372,6 +421,7 @@ namespace Quantum.Prototypes {
         result.GridExtendBottom = this.GridExtendBottom;
         this.Hitbox.Materialize(frame, ref result.Hitbox, in context);
         result.DisableRotation = this.DisableRotation;
+        result.SpawnBehaviour = this.SpawnBehaviour;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -462,9 +512,11 @@ namespace Quantum.Prototypes {
     [ArrayLengthAttribute(4)]
     public Int32[] CharacterSelectedNumbers = new Int32[4];
     [ArrayLengthAttribute(4)]
-    public Quantum.Prototypes.BattleEntityIDPrototype[] CharacterAllEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[4];
+    public Quantum.Prototypes.BattleEntityIDPrototype[] CharacterEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[4];
     [ArrayLengthAttribute(12)]
     public Quantum.QEnum32<BattlePlayerCharacterState>[] CharactersAllStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
+    [ArrayLengthAttribute(12)]
+    public FPVector2[] CharacterAllPreviousPositions = new FPVector2[12];
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerManagerDataQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerManagerDataQSingleton component = default;
@@ -497,11 +549,14 @@ namespace Quantum.Prototypes {
         for (int i = 0, count = PrototypeValidator.CheckLength(CharacterSelectedNumbers, 4, in context); i < count; ++i) {
           result.CharacterSelectedNumbers[i] = this.CharacterSelectedNumbers[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterAllEntityGroupIDs, 4, in context); i < count; ++i) {
-          this.CharacterAllEntityGroupIDs[i].Materialize(frame, ref *result.CharacterAllEntityGroupIDs.GetPointer(i), in context);
+        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterEntityGroupIDs, 4, in context); i < count; ++i) {
+          this.CharacterEntityGroupIDs[i].Materialize(frame, ref *result.CharacterEntityGroupIDs.GetPointer(i), in context);
         }
         for (int i = 0, count = PrototypeValidator.CheckLength(CharactersAllStates, 12, in context); i < count; ++i) {
           *result.CharactersAllStates.GetPointer(i) = this.CharactersAllStates[i];
+        }
+        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterAllPreviousPositions, 12, in context); i < count; ++i) {
+          *result.CharacterAllPreviousPositions.GetPointer(i) = this.CharacterAllPreviousPositions[i];
         }
         MaterializeUser(frame, ref result, in context);
     }
@@ -645,18 +700,31 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleProjectileSpawnerQComponent))]
-  public unsafe partial class BattleProjectileSpawnerQComponentPrototype : ComponentPrototype<Quantum.BattleProjectileSpawnerQComponent> {
-    public QBoolean HasSpawned;
-    partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileSpawnerQComponent result, in PrototypeMaterializationContext context);
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleProjectileSystemDataQSingleton))]
+  public unsafe partial class BattleProjectileSystemDataQSingletonPrototype : ComponentPrototype<Quantum.BattleProjectileSystemDataQSingleton> {
+    public Quantum.Prototypes.BattleEntityIDPrototype ProjectileEntityID;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattleProjectileSystemDataQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.BattleProjectileSpawnerQComponent component = default;
+        Quantum.BattleProjectileSystemDataQSingleton component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
-    public void Materialize(Frame frame, ref Quantum.BattleProjectileSpawnerQComponent result, in PrototypeMaterializationContext context = default) {
-        result.HasSpawned = this.HasSpawned;
+    public void Materialize(Frame frame, ref Quantum.BattleProjectileSystemDataQSingleton result, in PrototypeMaterializationContext context = default) {
+        this.ProjectileEntityID.Materialize(frame, ref result.ProjectileEntityID, in context);
         MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleProjectileTriggerQComponent))]
+  public unsafe class BattleProjectileTriggerQComponentPrototype : ComponentPrototype<Quantum.BattleProjectileTriggerQComponent> {
+    public MapEntityId ProjectileEntityRef;
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattleProjectileTriggerQComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattleProjectileTriggerQComponent result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.ProjectileEntityRef, in context, out result.ProjectileEntityRef);
     }
   }
   [System.SerializableAttribute()]
@@ -699,34 +767,40 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleSpecialInput))]
+  public unsafe partial class BattleSpecialInputPrototype : StructPrototype {
+    public Quantum.QEnum32<BattleJoystickState> JoystickState;
+    public FPVector2 JoystickValue;
+    partial void MaterializeUser(Frame frame, ref Quantum.BattleSpecialInput result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.BattleSpecialInput result, in PrototypeMaterializationContext context = default) {
+        result.JoystickState = this.JoystickState;
+        result.JoystickValue = this.JoystickValue;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
     public QBoolean IsValid;
     public Int32 DebugNumber;
     public Quantum.QEnum32<BattleMovementInputType> MovementInput;
     public QBoolean MovementDirectionIsNormalized;
-    public Quantum.Prototypes.BattleGridPositionPrototype MovementPositionTarget;
-    public FPVector2 MovementPositionMove;
-    public FPVector2 MovementDirection;
+    public Quantum.Prototypes.BattleGridPositionPrototype MovementGridPosition;
+    public FPVector2 MovementVector;
     public QBoolean RotationInput;
     public FP RotationValue;
-    public QBoolean AbilityActivate;
-    public Int32 PlayerCharacterNumber;
-    public QBoolean GiveUpInput;
+    public Quantum.Prototypes.BattleSpecialInputPrototype Special;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.IsValid = this.IsValid;
         result.DebugNumber = this.DebugNumber;
         result.MovementInput = this.MovementInput;
         result.MovementDirectionIsNormalized = this.MovementDirectionIsNormalized;
-        this.MovementPositionTarget.Materialize(frame, ref result.MovementPositionTarget, in context);
-        result.MovementPositionMove = this.MovementPositionMove;
-        result.MovementDirection = this.MovementDirection;
+        this.MovementGridPosition.Materialize(frame, ref result.MovementGridPosition, in context);
+        result.MovementVector = this.MovementVector;
         result.RotationInput = this.RotationInput;
         result.RotationValue = this.RotationValue;
-        result.AbilityActivate = this.AbilityActivate;
-        result.PlayerCharacterNumber = this.PlayerCharacterNumber;
-        result.GiveUpInput = this.GiveUpInput;
+        this.Special.Materialize(frame, ref result.Special, in context);
         MaterializeUser(frame, ref result, in context);
     }
   }

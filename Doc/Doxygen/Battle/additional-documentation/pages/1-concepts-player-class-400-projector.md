@@ -5,6 +5,7 @@
       @cref{Battle.QSimulation.Player,BattlePlayerClass400}
     - Has simulation data component  
       @cref{Quantum,BattlePlayerClass400DataQComponent}
+    - Has no spec
 
 - **View**
     - Has a view controller for the shield  

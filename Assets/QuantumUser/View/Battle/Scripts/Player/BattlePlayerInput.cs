@@ -42,46 +42,79 @@ namespace Battle.View.Player
     /// [{Player Overview}](#page-concepts-player-overview)
     public class BattlePlayerInput : MonoBehaviour
     {
-        /// @name Input methods
-        /// Input methods are called by BattleGameViewController when the player gives a %UI input. These methods shouldn't be called any other way.
+        /// @name Command input methods
+        /// Command input methods are called by @cref{BattleGameViewController} when the player gives a %UI input. These methods shouldn't be called any other way.<br/>
+        /// These inputs are sent to %Quantum as commands.
+        /// @{
+
+        /// <summary>
+        /// Called when the player presses give up button
+        /// </summary>
+        public void CommandSendGiveUp()
+        {
+            BattleGameViewController.QGame.SendCommand(new BattleGiveUpQCommand());
+        }
+
+        /// <summary>
+        /// Called when the player presses character swap button
+        /// </summary>
+        ///
+        /// <param name="characterNumber">The character number of the character to swap to</param>
+        public void CommandSendSwapCharacter(int characterNumber)
+        {
+            BattleGameViewController.QGame.SendCommand(new BattleCharacterSwapQCommand
+            {
+                CharacterNumber = characterNumber
+            });
+        }
+
+        /// <summary>
+        /// Called when the player activates ability
+        /// </summary>
+        public void CommandSendActivateAbility()
+        {
+            BattleGameViewController.QGame.SendCommand(new BattleCharacterAbilityQCommand());
+        }
+
+        /// @}
+
+        /// @name Queued input methods
+        /// Queued input methods are called by @cref{BattleGameViewController} when the player gives a %UI input. These methods shouldn't be called any other way.<br/>
+        /// These inputs are queued for next time that %Quantum polls input.
         /// @{
 
         /// <summary>
         /// Called when the player interacts with the movement joystick.
         /// </summary>
         ///
-        /// <param name="input">The input value of the movement joystick</param>
-        public void OnJoystickMovement(Vector2 input)
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick. (unused)</param>
+        /// <param name="value">Value of the joystick as Vector2.</param>
+        public void QueueJoystickMovement(BattleJoystickState state, Vector2 value)
         {
-            _joystickMovementVector = input;
+            _queued.JoystickMovementVector = value;
         }
 
         /// <summary>
         /// Called when the player interacts with the rotation joystick.
         /// </summary>
         ///
-        /// <param name="input">The input value of the rotation joystick</param>
-        public void OnJoystickRotation(float input)
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick. (unused)</param>
+        /// <param name="value">Value of the joystick as float.</param>
+        public void QueueJoystickRotation(BattleJoystickState state, float value)
         {
-            _joystickRotationValue = input;
+            _queued.JoystickRotationValue = value;
         }
 
         /// <summary>
-        /// Called when the player presses one of the character selection buttons.
+        /// Called when player interacts with the special joystick
         /// </summary>
         ///
-        /// <param name="characterNumber">The number of the character that was selected.</param>
-        public void OnCharacterSelected(int characterNumber)
+        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="value">Value of the joystick as Vector2.</param>
+        public void QueueJoystickSpecial(BattleJoystickState state, Vector2 value)
         {
-            _characterNumber = characterNumber;
-        }
-
-        /// <summary>
-        /// Called when the player presses the give up button.
-        /// </summary>
-        public void OnGiveUp()
-        {
-            _onGiveUp = true;
+            _queued.JoystickSpecialState = state;
+            _queued.JoystickSpecialValue = value;
         }
 
         /// @}
@@ -93,17 +126,15 @@ namespace Battle.View.Player
         {
             public BattleMovementInputType MovementInput;
             public bool                    MovementDirectionIsNormalized;
-            public BattleGridPosition      MovementPositionTarget;
-            public FPVector2               MovementPositionMove;
-            public FPVector2               MovementDirection;
+            public BattleGridPosition      MovementGridPosition;
+            public FPVector2               MovementVector;
 
-            public MovementInputInfo(BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPositionTarget, FPVector2 movementPositionMove, FPVector2 movementDirection)
+            public MovementInputInfo(BattleMovementInputType movementInput, bool movementDirectionIsNormalized, BattleGridPosition movementPositionTarget, FPVector2 movementVector)
             {
                 MovementInput                 = movementInput;
                 MovementDirectionIsNormalized = movementDirectionIsNormalized;
-                MovementPositionTarget        = movementPositionTarget;
-                MovementPositionMove          = movementPositionMove;
-                MovementDirection             = movementDirection;
+                MovementGridPosition          = movementPositionTarget;
+                MovementVector                = movementVector;
             }
         }
 
@@ -122,9 +153,27 @@ namespace Battle.View.Player
             }
         }
 
+        /// <summary>
+        /// Struct containing input data that is queued for next time Quantum polls input.
+        /// </summary>
+        private struct Queued
+        {
+            /// <summary>The vector received from the movement joystick.</summary>
+            public Vector2 JoystickMovementVector;
+            /// <summary>The float value received from the rotation joystick.</summary>
+            public float JoystickRotationValue;
+            /// <summary>The <see cref="BattleJoystickState"></see> of the special joystick</summary>
+            public BattleJoystickState JoystickSpecialState;
+            /// <summary>The vector received from the special joystick.</summary>
+            public Vector2 JoystickSpecialValue;
+        }
+
         /// @name State variables
         /// Variables related to current input states.
         /// @{
+
+        /// <summary>Input data that is queued for next time Quantum polls input. <see cref="Queued">More</see></summary>
+        private Queued _queued;
 
         /// <summary>Saved time from previous frame.</summary>
         private float _previousTime;
@@ -141,23 +190,11 @@ namespace Battle.View.Player
         /// <summary>Initial saved vector when movement input is first detected.</summary>
         private Vector3 _movementStartVector;
 
-        /// <summary>The vector received from the movement joystick.</summary>
-        private Vector2 _joystickMovementVector;
-
-        /// <summary>The float value received from the rotation joystick.</summary>
-        private float _joystickRotationValue;
-
         /// <summary>Saved world position of the previous tap position used for double tap input validating.</summary>
         private Vector3 _lastTapPosition;
 
         /// <summary>Saved time stamp of the previous tap.</summary>
         private float _lastTapTime;
-
-        /// <summary>Saved character number from character swapping input.</summary>
-        private int _characterNumber = -1;
-
-        /// <summary>Give up button state</summary>
-        private bool _onGiveUp = false;
 
         /// <summary>Bool to block screen input</summary>
         private bool _blockScreenInput = false;
@@ -203,6 +240,8 @@ namespace Battle.View.Player
 
         /// @}
 
+        /// @{
+
         /// <summary>
         /// Saves data from SettingsCarrier to private variables. <br/>
         /// Saves a reference to the play device's gyroscope if there is one. <br/>
@@ -223,8 +262,8 @@ namespace Battle.View.Player
 #if DEBUG_INPUT_TYPE_OVERRIDE
             _debugLogger.Warning("DEBUG_INPUT_TYPE_OVERRIDE enabled!");
 
-            _movementInputType = MovementInputType.FollowPointer;
-            _rotationInputType = RotationInputType.TwoFinger;
+            _movementInputType = MovementInputType.Joystick;
+            _rotationInputType = RotationInputType.Joystick;
 
             _debugLogger.WarningFormat("Using MovementInputType {0} override", _movementInputType);
             _debugLogger.WarningFormat("Using RotationInputType {0} override", _rotationInputType);
@@ -259,11 +298,8 @@ namespace Battle.View.Player
             const float DoubleTapDistance = 1.0f;
 
             // set default input info
-            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
+            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
             RotationInputInfo rotationInputInfo = new(false, FP._0);
-
-            // check button input
-            if (_characterNumber > -1 || _onGiveUp) _blockScreenInput = true;
 
             Vector2 clickPosition = Vector2.zero;
             Vector3 unityPosition = Vector3.zero;
@@ -285,7 +321,20 @@ namespace Battle.View.Player
                 _blockScreenInput = false;
             }
 
+            bool abilityActivate = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance;
+
+            if (abilityActivate)
+            {
+                CommandSendActivateAbility();
+            }
+
             //{ create and set input
+
+            BattleSpecialInput specialInput = new()
+            {
+                JoystickValue = new FPVector2(FP.FromFloat_UNSAFE(_queued.JoystickSpecialValue.x), FP.FromFloat_UNSAFE(_queued.JoystickSpecialValue.y)),
+                JoystickState = _queued.JoystickSpecialState
+            };
 
             Input input = new()
             {
@@ -293,14 +342,11 @@ namespace Battle.View.Player
                 DebugNumber                   = _inputDebugNumber,
                 MovementInput                 = movementInputInfo.MovementInput,
                 MovementDirectionIsNormalized = movementInputInfo.MovementDirectionIsNormalized,
-                MovementPositionTarget        = movementInputInfo.MovementPositionTarget,
-                MovementPositionMove          = movementInputInfo.MovementPositionMove,
-                MovementDirection             = movementInputInfo.MovementDirection,
+                MovementGridPosition          = movementInputInfo.MovementGridPosition,
+                MovementVector                = movementInputInfo.MovementVector,
                 RotationInput                 = rotationInputInfo.RotationInput,
                 RotationValue                 = rotationInputInfo.RotationValue,
-                AbilityActivate               = Time.time - _lastTapTime < DoubleTapInterval && mouseClick && Vector3.Distance(_lastTapPosition, unityPosition) < DoubleTapDistance,
-                PlayerCharacterNumber         = _characterNumber,
-                GiveUpInput                   = _onGiveUp
+                Special                       = specialInput
             };
 
             DeterministicInputFlags inputFlags = DeterministicInputFlags.Repeatable;
@@ -336,10 +382,6 @@ namespace Battle.View.Player
             _previousTime = Time.time;
 
             _inputDebugNumber++;
-
-            // reset
-            _onGiveUp        = false;
-            _characterNumber = -1;
         }
 
         /// @name Input reading methods
@@ -356,7 +398,7 @@ namespace Battle.View.Player
         /// <param name="deltaTime">Time since previous frame</param>
         private MovementInputInfo GetMovementInput(bool mouseDown, bool mouseClick, Vector3 unityPosition, FP deltaTime)
         {
-            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero, FPVector2.Zero);
+            MovementInputInfo movementInputInfo = new(BattleMovementInputType.None, false, new BattleGridPosition() { Row = -1, Col = -1 }, FPVector2.Zero);
 
             switch (_movementInputType)
             {
@@ -364,7 +406,7 @@ namespace Battle.View.Player
                     if (mouseClick)
                     {
                         movementInputInfo.MovementInput = BattleMovementInputType.PositionTarget;
-                        movementInputInfo.MovementPositionTarget = new()
+                        movementInputInfo.MovementGridPosition = new()
                         {
                             Row = BattleGridManager.WorldYPositionToGridRow(FP.FromFloat_UNSAFE(unityPosition.z)),
                             Col = BattleGridManager.WorldXPositionToGridCol(FP.FromFloat_UNSAFE(unityPosition.x))
@@ -376,7 +418,7 @@ namespace Battle.View.Player
                     if (mouseDown)
                     {
                         movementInputInfo.MovementInput = BattleMovementInputType.PositionMove;
-                        movementInputInfo.MovementPositionMove = new FPVector2
+                        movementInputInfo.MovementVector = new FPVector2
                         (
                             FP.FromFloat_UNSAFE(unityPosition.x),
                             FP.FromFloat_UNSAFE(unityPosition.z)
@@ -385,7 +427,7 @@ namespace Battle.View.Player
                     else
                     {
                         movementInputInfo.MovementInput = BattleMovementInputType.None;
-                        movementInputInfo.MovementPositionMove = FPVector2.Zero;
+                        movementInputInfo.MovementVector = FPVector2.Zero;
                     }
                     break;
 
@@ -413,8 +455,8 @@ namespace Battle.View.Player
                         if (_swipePerformed)
                         {
                             Vector3 direction = unityPosition - _movementStartVector;
-                            movementInputInfo.MovementDirection = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
-                            movementInputInfo.MovementDirection *= FP.FromFloat_UNSAFE(_swipeSensitivity);
+                            movementInputInfo.MovementVector = new FPVector2(FP.FromFloat_UNSAFE(direction.x), FP.FromFloat_UNSAFE(direction.z)) / deltaTime;
+                            movementInputInfo.MovementVector *= FP.FromFloat_UNSAFE(_swipeSensitivity);
 
                         }
                         _movementStartVector = unityPosition;
@@ -422,13 +464,13 @@ namespace Battle.View.Player
                     break;
 
                 case MovementInputType.Joystick:
-                    if (_joystickMovementVector != Vector2.zero)
+                    if (_queued.JoystickMovementVector != Vector2.zero)
                     {
                         movementInputInfo.MovementInput = BattleMovementInputType.Direction;
                         movementInputInfo.MovementDirectionIsNormalized = true;
-                        movementInputInfo.MovementDirection = new FPVector2(FP.FromFloat_UNSAFE(_joystickMovementVector.x), FP.FromFloat_UNSAFE(_joystickMovementVector.y));
+                        movementInputInfo.MovementVector = new FPVector2(FP.FromFloat_UNSAFE(_queued.JoystickMovementVector.x), FP.FromFloat_UNSAFE(_queued.JoystickMovementVector.y));
 
-                        if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta) movementInputInfo.MovementDirection *= -1;
+                        if (BattleGameViewController.LocalPlayerTeam == BattleTeamNumber.TeamBeta) movementInputInfo.MovementVector *= -1;
                     }
                     break;
             }
@@ -482,10 +524,10 @@ namespace Battle.View.Player
                     break;
 
                 case RotationInputType.Joystick:
-                    if (_joystickRotationValue != 0)
+                    if (_queued.JoystickRotationValue != 0)
                     {
                         rotationInputInfo.RotationInput = true;
-                        rotationInputInfo.RotationValue = FP.FromFloat_UNSAFE(_joystickRotationValue);
+                        rotationInputInfo.RotationValue = FP.FromFloat_UNSAFE(_queued.JoystickRotationValue);
                         rotationInputInfo.RotationValue *= -1;
                     }
                     break;

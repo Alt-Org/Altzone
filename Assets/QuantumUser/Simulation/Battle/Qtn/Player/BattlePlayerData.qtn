@@ -1,3 +1,10 @@
+enum BattlePlayerSpawnBehaviour
+{
+    DefaultPosition,
+    CharactersPreviousPosition,
+    PreviousCharactersPosition
+}
+
 //{ PlayerData
 
 component BattlePlayerDataQComponent
@@ -16,12 +23,14 @@ component BattlePlayerDataQComponent
     int  GridExtendTop;
     int  GridExtendBottom;
     bool DisableRotation;
+    BattlePlayerSpawnBehaviour SpawnBehaviour;
 
     // Player's current state related data
     bool       MovementEnabled;
     bool       RotationEnabled;
     FP         CurrentDefence;
     FrameTimer StunCooldown;
+    FrameTimer ShieldHitCooldown;
 
     // Player's movement related data
     bool       HasTargetPosition;
@@ -57,5 +66,7 @@ component BattlePlayerDataTemplateQComponent
     BattlePlayerHitboxTemplate Hitbox;
 
     bool DisableRotation;
+
+    BattlePlayerSpawnBehaviour SpawnBehaviour;
 }
 //} PlayerDataTemplate

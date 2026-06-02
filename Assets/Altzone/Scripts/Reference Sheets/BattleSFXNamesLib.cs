@@ -19,7 +19,14 @@ namespace Assets.Altzone.Scripts.Reference_Sheets
         #region Character Sound Effects
 
         // Common
-        PlayerCharacterCommonHitShield = BattleSoundFX.PlayerCharacterCommonHitShield,
+        PlayerCharacterCommonHitShield              = BattleSoundFX.PlayerCharacterCommonHitShield,
+        PlayerCharacterCommonCatchphrase            = BattleSoundFX.PlayerCharacterCommonCatchphrase,
+        PlayerCharacterCommonHitCharacterAggression = BattleSoundFX.PlayerCharacterCommonHitCharacterAggression,
+        PlayerCharacterCommonHitCharacterJoy        = BattleSoundFX.PlayerCharacterCommonHitCharacterJoy,
+        PlayerCharacterCommonHitCharacterLove       = BattleSoundFX.PlayerCharacterCommonHitCharacterLove,
+        PlayerCharacterCommonHitCharacterPlayful    = BattleSoundFX.PlayerCharacterCommonHitCharacterPlayful,
+        PlayerCharacterCommonHitCharacterSadness    = BattleSoundFX.PlayerCharacterCommonHitCharacterSadness,
+        PlayerCharacterCommonDeath                  = BattleSoundFX.PlayerCharacterCommonDeath,
 
         // None
         PlayerCharacterNoneCatchphrase            = BattleSoundFX.PlayerCharacterNoneCatchphrase,

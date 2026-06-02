@@ -45,7 +45,6 @@ In **%Battle** [Quantum Systems🡵] have **"QSystem"** suffix. [[Naming]](#inde
 |                                                                                                                                                                                                                 ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,SoulWall}   | @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSystem}            | @copybrief Battle.QSimulation.SoulWall.BattleSoulWallQSystem            |
 |                                                                                                                                                                                                                 ||||
-| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Projectile} | @cref{Battle.QSimulation.Projectile,BattleProjectileSpawnerQSystem} | @copybrief Battle.QSimulation.Projectile.BattleProjectileSpawnerQSystem |
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Projectile} | @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem}        | @copybrief Battle.QSimulation.Projectile.BattleProjectileQSystem        |
 |                                                                                                                                                                                                                 ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Goal}       | @cref{Battle.QSimulation.Goal,BattleGoalQSystem}                    | @copybrief Battle.QSimulation.Goal.BattleGoalQSystem                    |
@@ -94,7 +93,6 @@ In %Battle [Quantum Components🡵] have **"QComponent"** suffix. [[Naming]](#in
 | @crefd{Quantum}   | @cref{Quantum,BattlePlayerShieldDataTemplateQComponent}   | @copybrief Quantum.BattlePlayerShieldDataTemplateQComponent |
 |                                                                                                                                           |||
 | @crefd{Quantum}   | @cref{Quantum,BattleProjectileQComponent}                 | @copybrief Quantum.BattleProjectileQComponent               |
-| @crefd{Quantum}   | @cref{Quantum,BattleProjectileSpawnerQComponent}          | @copybrief Quantum.BattleProjectileSpawnerQComponent        |
 |                                                                                                                                           |||
 | @crefd{Quantum}   | @cref{Quantum,BattleSoulWallQComponent}                   | @copybrief Quantum.BattleSoulWallQComponent                 |
 
@@ -181,15 +179,18 @@ In **%Battle** all [Quantum Events🡵] are located in BattleEvents.qtn file.
 | @crefd{Quantum}   | @cref{Quantum,EventBattleChangeEmotionState}                | @copybrief Quantum.EventBattleChangeEmotionState                |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleProjectileChangeSpeed}             | @copybrief Quantum.EventBattleProjectileChangeSpeed             |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleProjectileChangeGlowStrength}      | @copybrief Quantum.EventBattleProjectileChangeGlowStrength      |
-| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFX}                       | @copybrief Quantum.EventBattlePlaySoundFX                       |
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFxForAll}                 | @copybrief Quantum.EventBattlePlaySoundFxForAll                 |
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFxForTeam}                | @copybrief Quantum.EventBattlePlaySoundFxForTeam                |
+| @crefd{Quantum}   | @cref{Quantum,EventBattlePlaySoundFxForPlayer}              | @copybrief Quantum.EventBattlePlaySoundFxForPlayer              |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleLastRowWallDestroyed}              | @copybrief Quantum.EventBattleLastRowWallDestroyed              |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleDiamondLanded}                     | @copybrief Quantum.EventBattleDiamondLanded                     |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleCharacterSelected}                 | @copybrief Quantum.EventBattleCharacterSelected                 |
-| @crefd{Quantum}   | @cref{Quantum,EventBattleCharacterTakeDamage}               | @copybrief Quantum.EventBattleCharacterTakeDamage               |
-| @crefd{Quantum}   | @cref{Quantum,EventBattleShieldTakeDamage}                  | @copybrief Quantum.EventBattleShieldTakeDamage                  |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleCharacterHit}                      | @copybrief Quantum.EventBattleCharacterHit                      |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleShieldHit}                         | @copybrief Quantum.EventBattleShieldHit                         |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleGiveUpStateChange}                 | @copybrief Quantum.EventBattleGiveUpStateChange                 |
 | @crefd{Quantum}   | @cref{Quantum,EventBattlePlayStateUpdate}                   | @copybrief Quantum.EventBattlePlayStateUpdate                   |
 | @crefd{Quantum}   | @cref{Quantum,EventBattleStoneCharacterPlayHitAnimation}    | @copybrief Quantum.EventBattleStoneCharacterPlayHitAnimation    |
+| @crefd{Quantum}   | @cref{Quantum,EventBattleShieldChangeState}                 | @copybrief Quantum.EventBattleShieldChangeState                 |
 |                                                                                                                                                 |||
 | @crefd{Quantum}   | @cref{Quantum,EventBattleDebugOnScreenMessage}              | @copybrief Quantum.EventBattleDebugOnScreenMessage              |
 

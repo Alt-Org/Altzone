@@ -14,19 +14,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _classType: 400
   _list:
-  - 'Jokuhan halusi pelata kanssani? '
-  - "Tied\xE4n, ett\xE4 haluat jatkaa viel\xE4. "
-  - "Haluat kuitenkin pelata kanssani. Olkoon t\xE4m\xE4n kerran. "
-  - 'Kun kerta haluatte minut mukaan, niin voin tulla '
-  - "Kuten voitte arvata, kyll\xE4. "
-  - 'Kuten odotitte, ei. '
-  - "Koska kaikki kuitenkin haluavat tiet\xE4\xE4, olen nyt paikalla! "
-  - "Kun te ette kerta jaksa en\xE4\xE4, niin min\xE4kin lopetan. "
-  - "Palaan my\xF6hemmin, voitte rauhassa mietti\xE4, ett\xE4 miksi... "
-  - "Tied\xE4n kyll\xE4, ett\xE4 toivotte minun h\xE4vi\xE4v\xE4n pian. "
-  - "Teid\xE4n mielest\xE4 n\xE4\xE4 h\xE4vi\xF6t on mun syyt\xE4! "
-  - "Haluatte tietenkin liitty\xE4 ALT Zoneen Discordissa. Linkki etusivulla. "
-  - "Olette varmasti yksin\xE4isi\xE4."
-  - "Te taidatte tyk\xE4t\xE4 t\xE4st\xE4 pelist\xE4. "
-  - "Kukaan ei taida tyk\xE4t\xE4 t\xE4st\xE4 pelist\xE4. "
-  - "Kukaan teist\xE4 ei osaa pelata t\xE4t\xE4 yht\xE4\xE4n!"
+  - ResponseId: 0
+    Response: "Uskaltaako joku hyp\xE4t\xE4 peliin mun kanssa, vai pelk\xE4\xE4ttek\xF6
+      h\xE4vi\xE4mist\xE4?"
+  - ResponseId: 1
+    Response: "Pelataanko toinen peli, vai ootteko jo v\xE4syneit\xE4 muhun?"
+  - ResponseId: 2
+    Response: Voisin tulla, tai sitten olla tulematta
+  - ResponseId: 3
+    Response: "Heitt\xE4k\xE4\xE4 mut soppaan, lupaan maustaa peli\xE4!"
+  - ResponseId: 4
+    Response: "Ei, tai ehk\xE4 sittenki kyll\xE4!"
+  - ResponseId: 5
+    Response: "Ei, tai ehk\xE4 sittenkin kyll\xE4. No ei."
+  - ResponseId: 6
+    Response: "Yo, yo, yo, miss\xE4 menn\xE4\xE4n?"
+  - ResponseId: 7
+    Response: "Hypp\xE4\xE4n pois nyt! Huomenna n\xE4hd\xE4\xE4n taas, ehk\xE4 kuka
+      tiet\xE4\xE4!"
+  - ResponseId: 8
+    Response: "Miss me while I\u2019m gone\u2026teen jotain salaper\xE4ist\xE4."
+  - ResponseId: 9
+    Response: "Se oli voitto, jonka j\xE4lkeen voitto, jonka j\xE4lkeen\u2026VOITTO!"
+  - ResponseId: 10
+    Response: "H\xE4vi\xF6 on v\xE4\xE4rinp\xE4in voitto, joten me ei koskaan h\xE4vitty!"
+  - ResponseId: 11
+    Response: "ALT Zone Discordi linkki, nettisivuilla. Noh, noh mit\xE4 viel\xE4
+      vitkuttelet"
+  - ResponseId: 12
+    Response: "Vain kaiku vastaa, kun sille huudan. Miss\xE4 kaikki luuraa?"
+  - ResponseId: 13
+    Response: "Nyt t\xE4ytyy antaa kyll\xE4 t\xE4ydet pisteet ja papukaijamerkki
+      t\xE4n pelin tekij\xF6ille!"
+  - ResponseId: 14
+    Response: "N\xE4kev\xE4tk\xF6 silm\xE4ni oikein..? Viimeisen\xE4 maaliin p\xF6rh\xE4lt\xE4\xE4,
+      t\xE4m\xE4 peli!"
+  - ResponseId: 15
+    Response: "Ent\xE4s jos, sin\xE4 opetat, ja min\xE4 katson, hehe."

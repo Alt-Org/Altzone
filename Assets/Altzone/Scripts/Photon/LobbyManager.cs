@@ -97,7 +97,7 @@ namespace Altzone.Scripts.Lobby
 
         private const long STARTDELAY = 2000;
         // Max time the leader waits before filling remaining Random2v2 slots with bots.
-        private const float MatchmakingTimeoutSeconds = 30f;
+        private const float MatchmakingTimeoutSeconds = 20f;
         // Timeout for followers who join a matchmaking room: if not enough human players join within this interval, auto-leave and requeue.
         private const float MatchmakingJoinTimeoutSeconds = 5f;
         // Marker for matchmaking rooms that were created from queue timeout flow.
@@ -129,7 +129,7 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _autoJoinHolder = null;
         private Coroutine _verifyPositionsHolder = null;
         private Coroutine _queueTimerHolder = null;
-        private const float QueueWaitSeconds = 30f;
+        private const float QueueWaitSeconds = 20f;
         // Flag set by OnJoinRoomFailed to signal a join attempt failure to waiting coroutines
         private bool _joinRoomFailed = false;
 
@@ -2159,6 +2159,7 @@ namespace Altzone.Scripts.Lobby
                         MapId = mapId,
                         PlayerCount = playerCount,
                         Seed = Random.Range(int.MinValue, int.MaxValue),
+                        TestMode = SettingsCarrier.Instance.BattleDebug,
                     };
 
                 }
@@ -2355,7 +2356,8 @@ namespace Altzone.Scripts.Lobby
                         PlayerSlotTypes = data.PlayerSlotTypes,
                         PlayerSlotUserIDs = data.PlayerSlotUserIds,
                         PlayerCount = data.PlayerCount,
-                        ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion
+                        ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion,
+                        IsTestMode = data.TestMode,
                     }
                 };
 
@@ -3501,6 +3503,7 @@ namespace Altzone.Scripts.Lobby
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
             _gamePlayedOut = false;
+            CurrentRooms = null;
 
             // Clearing player position key from own custom properties
             if (PhotonRealtimeClient.LocalPlayer.HasCustomProperty(PlayerPositionKey)) PhotonRealtimeClient.LocalPlayer.RemoveCustomProperty(PlayerPositionKey);
@@ -3558,14 +3561,38 @@ namespace Altzone.Scripts.Lobby
 
         public void OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            List<LobbyRoomInfo> lobbyRoomList = new();
+            List<LobbyRoomInfo> lobbyRoomList = CurrentRooms != null
+                ? CurrentRooms.ToList()
+                : new List<LobbyRoomInfo>();
+
             foreach (RoomInfo roomInfo in roomList)
             {
-                lobbyRoomList.Add(new(roomInfo));
+                LobbyRoomInfo updatedRoom = new(roomInfo);
+                int existingIndex = lobbyRoomList.FindIndex(room => room.Name.Equals(updatedRoom.Name, StringComparison.Ordinal));
+                if (existingIndex != -1)
+                {
+                    lobbyRoomList.RemoveAt(existingIndex);
+                }
+
+                if (!updatedRoom.RemovedFromList)
+                {
+                    lobbyRoomList.Add(updatedRoom);
+                }
             }
+
+            if (lobbyRoomList.Any(room => room.RemovedFromList))
+            {
+                lobbyRoomList = lobbyRoomList.Where(room => !room.RemovedFromList).ToList();
+            }
+
+            CurrentRooms = lobbyRoomList.AsReadOnly();
             LobbyOnRoomListUpdate?.Invoke(lobbyRoomList);
         }
-        public void OnLeftLobby() { LobbyOnLeftLobby?.Invoke(); }
+        public void OnLeftLobby()
+        {
+            CurrentRooms = null;
+            LobbyOnLeftLobby?.Invoke();
+        }
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) { LobbyOnLobbyStatisticsUpdate?.Invoke(); }
         public void OnFriendListUpdate(List<FriendInfo> friendList) {
             _friendList = friendList;
@@ -4432,6 +4459,7 @@ namespace Altzone.Scripts.Lobby
         public string MapId { get; set; }
         public int PlayerCount { get; set; }
         public int Seed { get; set; }
+        public bool TestMode { get; set; }
 
         public static byte[] Serialize(StartGameData data)
         {
@@ -4445,6 +4473,7 @@ namespace Altzone.Scripts.Lobby
             Serializer.Serialize(b.MapId, ref bytes);
             Serializer.Serialize(b.PlayerCount, ref bytes);
             Serializer.Serialize(b.Seed, ref bytes);
+            Serializer.Serialize(b.TestMode, ref bytes);
 
             return bytes;
         }
@@ -4461,6 +4490,7 @@ namespace Altzone.Scripts.Lobby
             result.MapId = Serializer.DeserializeString(data, ref offset);
             result.PlayerCount = Serializer.DeserializeInt(data, ref offset);
             result.Seed = Serializer.DeserializeInt(data, ref offset);
+            result.TestMode = Serializer.DeserializeBool(data, ref offset);
 
             return result;
         }

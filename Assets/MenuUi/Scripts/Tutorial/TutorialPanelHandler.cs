@@ -14,6 +14,7 @@ public class TutorialPanelHandler : MonoBehaviour
     [SerializeField] private GameObject _infoBox;
     [SerializeField] private TextMeshProUGUI _infoText;
     [SerializeField] private GameObject _fadeLayer;
+    [SerializeField] private bool _useCutOut = false;
 
     private List<CutOutHandler> _cutOuts = new();
 
@@ -32,7 +33,6 @@ public class TutorialPanelHandler : MonoBehaviour
             _cutOuts.Add(newCutOut);
         }
 
-        _fadeLayer.transform.SetAsLastSibling();
         int j = 0;
         foreach (Image imageToCutOut in _imageToCutOut)
         {
@@ -41,6 +41,9 @@ public class TutorialPanelHandler : MonoBehaviour
                 Image cutout = _cutOuts[j].GetComponent<Image>();
                 cutout.sprite = imageToCutOut.sprite;
                 cutout.preserveAspect = imageToCutOut.preserveAspect;
+                cutout.transform.localScale = imageToCutOut.transform.localScale;
+                if (cutout.sprite == null || _useCutOut) _fadeLayer.transform.SetAsLastSibling();
+                else cutout.material = null;
             }
             j++;
         }
@@ -61,7 +64,7 @@ public class TutorialPanelHandler : MonoBehaviour
     {
         for (int i = 0; i < _cutOuts.Count; i++)
         {
-            _cutOuts[i].SetPosition(_imageToCutOut[i], _fadeLayer);
+            StartCoroutine(_cutOuts[i].SetPosition(_imageToCutOut[i], _fadeLayer));
         }
         yield return null;
         GameObject previousArrow = null;
