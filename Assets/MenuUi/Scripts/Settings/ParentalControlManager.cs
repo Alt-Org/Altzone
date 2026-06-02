@@ -41,6 +41,10 @@ public class ParentalControlManager : MonoBehaviour
     public string setPasswordInput;
     public string setConfirmPasswordInput;
 
+    public Button eyeButton;
+    public Sprite eyeOpen;
+    public Sprite eyeClosed;
+
 
 
     //the ParentalControl settings
@@ -611,5 +615,21 @@ public class ParentalControlManager : MonoBehaviour
 
     }
 
+    public void ChangePasswordVisibility()
+    {
+        //changes the eye icon to open eye and password to visible text
+        if (passwordInput.contentType == TMP_InputField.ContentType.Password)
+        {
+            eyeButton.image.sprite = eyeOpen;
+            passwordInput.contentType = TMP_InputField.ContentType.Standard;
+        } else
+        {
+            passwordInput.contentType = TMP_InputField.ContentType.Password;
+            eyeButton.image.sprite = eyeClosed;
+        }
+
+        passwordInput.Select();
+
+    }
 
 }
