@@ -18,7 +18,7 @@ public class ExitRaid : MonoBehaviour
         
         raidEnded = true;
         OnEndRaid();
-        raid_References.RedScreen.SetActive(true);
+
         raid_References.EndMenu.SetActive(true);
 
         if(!raid_References.OutOfSpace.enabled && !raid_References.OutOfTime.enabled)

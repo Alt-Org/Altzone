@@ -6,7 +6,7 @@ using TMPro;
 public class Raid_References : MonoBehaviour
 {
     [SerializeField, Header("Reference GameObjects")]
-    public GameObject RedScreen;
+ 
     public GameObject EndMenu;
     public GameObject HeartHalves;
     public GameObject Heart;
@@ -21,7 +21,7 @@ public class Raid_References : MonoBehaviour
     private void Start()
     {
         inventoryHandler = GameObject.Find("ScriptHolder").GetComponent<Raid_InventoryHandler>();
-        RedScreen.SetActive(false);
+   
         EndMenu.SetActive(false);
         OutOfTime.enabled = false;
         OutOfSpace.enabled = false;

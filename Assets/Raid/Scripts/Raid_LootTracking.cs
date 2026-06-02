@@ -67,7 +67,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         if (CurrentLootWeight > MaxLootWeight)
         {
             //EndScreen
-            raid_References.RedScreen.SetActive(true);
+          
             raid_References.EndMenu.SetActive(true);
             raid_References.OutOfSpace.enabled = true;
 
