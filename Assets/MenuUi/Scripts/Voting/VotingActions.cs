@@ -8,7 +8,7 @@ using Altzone.Scripts.AvatarPartsInfo;
 public static class VotingActions
 {
     public static Action<GameFurniture> PassShopItem;
-    public static Action<AvatarPartInfo> PassShopItemAvatar;
+    public static Action<AvatarPartInfo, Sprite, String> PassShopItemAvatar;
     public static Action PollPopupReady;
     public static Action<string> PassPollId;
     public static Action ReloadPollList;

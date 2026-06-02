@@ -27,7 +27,11 @@ public class AvatarShopCategoryUI : MonoBehaviour
 
         foreach (GameObject group in categoryGroups)
         {
-            options.Add(group.name);
+            Transform titleTransform = group.transform.GetChild(0);
+
+            TMP_Text titleText = titleTransform.GetComponentInChildren<TMP_Text>();
+
+            options.Add(titleText.text);
         }
 
         categoryDropdown.AddOptions(options);

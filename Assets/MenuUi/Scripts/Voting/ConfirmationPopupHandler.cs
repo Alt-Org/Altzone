@@ -12,6 +12,8 @@ using UnityEngine.UI;
 public class ConfirmationPopupHandler : MonoBehaviour
 {
     [SerializeField] private GameObject Background;
+    [SerializeField] private Image _itemIcon;
+    [SerializeField] private TMP_Text _itemNameText;
 
     [SerializeField] private TextLanguageSelectorCaller _confirmText;
     [SerializeField] private Button _acceptButton;
@@ -57,10 +59,12 @@ public class ConfirmationPopupHandler : MonoBehaviour
         }
     }
 
-    private void SetPopupActiveAvatarPart(AvatarPartInfo part)
+    private void SetPopupActiveAvatarPart(AvatarPartInfo part, Sprite icon, string itemName)
     {
         if (Background != null) Background.SetActive(true);
 
+        _itemNameText.text = itemName;
+        _itemIcon.sprite = icon;
         avatarpart = part;
         _acceptButton.onClick.RemoveAllListeners();
         _acceptButton.onClick.AddListener(() => BuyAvatarPiece());
@@ -69,13 +73,13 @@ public class ConfirmationPopupHandler : MonoBehaviour
         switch (SettingsCarrier.Instance.Language)
         {
             case SettingsCarrier.LanguageType.Finnish:
-                _confirmText.SetText("Haluatko varmasti ostaa tämän personointi palasen?");
+                _confirmText.SetText("Haluatko varmasti ostaa tämän personointipalan?");
                 break;
             case SettingsCarrier.LanguageType.English:
                 _confirmText.SetText("Are you sure you want to buy this personification piece?");
                 break;
             default:
-                _confirmText.SetText("Haluatko varmasti ostaa tämän personointi palasen?");
+                _confirmText.SetText("Haluatko varmasti ostaa tämän personointipalan?");
                 break;
         }
     }

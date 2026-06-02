@@ -9,6 +9,8 @@ public class GameFurniturePasser : MonoBehaviour
 {
     [SerializeField] private Button _acceptButton;
 
+    private string _itemName;
+    private Sprite _itemSprite;
     GameFurniture furniture;
     AvatarPartInfo avatarpart;
 
@@ -26,11 +28,13 @@ public class GameFurniturePasser : MonoBehaviour
 
     public void PassAvatarPart()
     {
-        VotingActions.PassShopItemAvatar?.Invoke(avatarpart);
+        VotingActions.PassShopItemAvatar?.Invoke(avatarpart, _itemSprite, _itemName);
     }
 
-    public void SetAvatarPart(AvatarPartInfo part)
+    public void SetAvatarPart(AvatarPartInfo part, Sprite sprite, string itemName)
     {
+        _itemName = itemName;
+        _itemSprite = sprite;
         avatarpart = part;
         _acceptButton.onClick.RemoveAllListeners();
         _acceptButton.onClick.AddListener(() => PassAvatarPart());

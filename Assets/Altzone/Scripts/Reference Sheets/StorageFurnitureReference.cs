@@ -148,6 +148,7 @@ namespace Altzone.Scripts.ReferenceSheets
     public class FurnitureInfo
     {
         public Sprite Image;
+        public Sprite SidewaysImage;
         public Sprite PosterImage;
         public Sprite RibbonImage;
         public string VisibleName;
@@ -162,6 +163,7 @@ namespace Altzone.Scripts.ReferenceSheets
         public FurnitureInfo(FurnitureInfoObject data, FurnitureSetInfo setData)
         {
             Image = data.Image;
+            SidewaysImage = data.SidewaysImage;
             PosterImage = data.PosterImage;
             RibbonImage = data.RibbonImage;
             VisibleName = data.VisibleName;
@@ -181,6 +183,7 @@ namespace Altzone.Scripts.ReferenceSheets
         public string Name;
         public string EnglishName;
         public Sprite Image;
+        public Sprite SidewaysImage;
         public Sprite PosterImage;
         public Sprite RibbonImage;
         public string VisibleName;

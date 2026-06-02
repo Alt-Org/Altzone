@@ -31,7 +31,7 @@ public class GameFurnitureVisualizer : MonoBehaviour
         _productText.text = string.IsNullOrWhiteSpace(_avatarPart.VisibleName) ? _avatarPart.Name : _avatarPart.VisibleName;
         _priceText.text = "100"; //_avatarPart.Value.ToString();
         _contentImage.sprite = _avatarPart.IconImage ? _avatarPart.IconImage : _avatarPart.AvatarImage;
-        gameObject.GetComponent<GameFurniturePasser>().SetAvatarPart(_avatarPart);
+        gameObject.GetComponent<GameFurniturePasser>().SetAvatarPart(_avatarPart, _contentImage.sprite, _productText.text);
         _button.onClick.AddListener(() => confirmationPopUp.SetActive(true));
         _button.onClick.AddListener(() => gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1"));
     }
