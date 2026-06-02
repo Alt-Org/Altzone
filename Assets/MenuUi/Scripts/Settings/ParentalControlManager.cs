@@ -28,6 +28,9 @@ public class ParentalControlManager : MonoBehaviour
     //the password will be set in the pop up
     public GameObject parentalControlPopup;
     public GameObject parentalControlPopupButton;
+    public Button popupEye;
+
+    public Button confirmEye;
 
     public GameObject controlEnabledButton;
 
@@ -631,5 +634,44 @@ public class ParentalControlManager : MonoBehaviour
         passwordInput.Select();
 
     }
+
+
+
+    public void ChangePopUpPasswordVisibility()
+    {
+        //changes the eye icon to open eye and password to visible text
+        if (popupPasswordInput.contentType == TMP_InputField.ContentType.Password)
+        {
+            eyeButton.image.sprite = eyeOpen;
+            popupPasswordInput.contentType = TMP_InputField.ContentType.Standard;
+        }
+        else
+        {
+            popupPasswordInput.contentType = TMP_InputField.ContentType.Password;
+            eyeButton.image.sprite = eyeClosed;
+        }
+
+        popupPasswordInput.Select();
+
+    }
+
+    public void ChangePopUpConfirmPasswordVisibility()
+    {
+        //changes the eye icon to open eye and password to visible text
+        if (confirmPasswordInput.contentType == TMP_InputField.ContentType.Password)
+        {
+            eyeButton.image.sprite = eyeOpen;
+            confirmPasswordInput.contentType = TMP_InputField.ContentType.Standard;
+        }
+        else
+        {
+            confirmPasswordInput.contentType = TMP_InputField.ContentType.Password;
+            eyeButton.image.sprite = eyeClosed;
+        }
+
+        confirmPasswordInput.Select();
+
+    }
+
 
 }
