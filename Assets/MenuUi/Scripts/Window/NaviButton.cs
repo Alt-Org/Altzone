@@ -1,4 +1,5 @@
-﻿using MenuUi.Scripts.Window.ScriptableObjects;
+﻿using System.Runtime.CompilerServices;
+using MenuUi.Scripts.Window.ScriptableObjects;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,9 @@ namespace MenuUi.Scripts.Window
     [RequireComponent(typeof(Button))]
     public class NaviButton : WindowNavigation
     {
+
+        public bool Interactable = true;
+
         private void Start()
         {
             Debug.Log($"{name}", gameObject);
@@ -35,6 +39,7 @@ namespace MenuUi.Scripts.Window
 
         protected virtual void OnNaviButtonClick()
         {
+            if (!Interactable) return;
             StartCoroutine(Navigate());
         }
 #if UNITY_EDITOR
