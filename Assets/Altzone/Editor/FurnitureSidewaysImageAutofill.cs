@@ -52,7 +52,8 @@ public static class FurnitureSidewaysImageAutoFill
                     if (asset is Sprite sprite &&
                         sprite.name == sidewaysName)
                     {
-                        furniture.SidewaysImage = sprite;
+                        //furniture.SidewaysImage = sprite;
+                        Debug.Log($"Would assign {imageName} -> {sidewaysName}"); //test
                         assigned++;
                         found = true;
 
