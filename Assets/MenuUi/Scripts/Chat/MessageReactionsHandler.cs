@@ -237,6 +237,14 @@ public class MessageReactionsHandler : AltMonoBehaviour
                                 //Removes the selected reaction
                                 _reactionList[i].Selected = true;
                                 addedReaction.Select();
+
+                                ReactionData.Add(_reaction);
+
+                                if(Popup.gameObject.activeSelf)
+                                foreach (var reactionData in ReactionData)
+                                {
+                                    Popup.AddUsersReaction(message, reactionData);
+                                }
                             }
                     }));
 
@@ -275,6 +283,11 @@ public class MessageReactionsHandler : AltMonoBehaviour
                         chatReactionHandler.Select();
                         //Removes the selected Mood from the list  by checking what sprite is being used
                         _reactionList[i].Selected = true;
+
+                        foreach (var reactionData in ReactionData)
+                        {
+                            Popup.AddUsersReaction(message, reactionData);
+                        }
                     }
 
             }));
@@ -320,7 +333,20 @@ public class MessageReactionsHandler : AltMonoBehaviour
             _selectedMessage.SetMessageInactive();
 
             reactionHandler.Deselect();
+            StartCoroutine(GetPlayerData(player =>
+            {
+                for (int i = 0; i < ReactionData.Count; i++)
+                {
+                    if (ReactionData[i].sender_id == player.Id)
+                    {
+                        ReactionData.Remove(ReactionData[i]);
 
+                        if(Popup.gameObject.activeSelf)
+                        Popup.RemoveUserReaction(player.Id);
+                        
+                    }
+                }
+            }));
             if (reactionHandler.Selected)
             {
 
