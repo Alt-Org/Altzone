@@ -284,6 +284,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
                         //Removes the selected Mood from the list  by checking what sprite is being used
                         _reactionList[i].Selected = true;
 
+                        if(Popup.gameObject.activeSelf)
                         foreach (var reactionData in ReactionData)
                         {
                             Popup.AddUsersReaction(message, reactionData);

@@ -115,7 +115,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
     public void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
     {
-        LineOrder++;
                 Mood mood = (Mood)Enum.Parse(typeof(Mood), Emoji.emoji);
 
         //halts the system if there's already a same user on the list
@@ -136,6 +135,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
                 return;
             }
         }
+        LineOrder++;
             //Gets sprite
         Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
 
