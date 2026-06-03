@@ -19,12 +19,13 @@ public class Raid_EventPopup : MonoBehaviour
     private class ScenarioVisual
     {
         public Scenario Scenario;
-        public string Title;
         public string Message;
         public Sprite BackgroundSprite = null;
         public Color BackgroundColor = new Color(0f, 0f, 0f, 0.55f);
         public Color TextColor = Color.white;
         public Sprite Image = null;
+        public Sprite SecondaryImage = null;
+        public string MultText = "";
     }
 
     private const string PopupResourcePath = "Prefabs/RaidEventPopup";
@@ -35,8 +36,9 @@ public class Raid_EventPopup : MonoBehaviour
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private Image image;
-    [SerializeField] private TextMeshProUGUI titleText;
+    [SerializeField] private Image secondaryImage;
     [SerializeField] private TextMeshProUGUI messageText;
+    [SerializeField] private TextMeshProUGUI MultText;
     [SerializeField] private float showTime = DefaultShowTime;
     [SerializeField] private ScenarioVisual[] scenarioVisuals;
 
@@ -102,16 +104,28 @@ public class Raid_EventPopup : MonoBehaviour
     {
         ScenarioVisual visual = GetScenarioVisual(scenario);
 
-        titleText.text = visual.Title;
         messageText.text = visual.Message;
-        titleText.color = visual.TextColor;
+        MultText.text = visual.MultText;
         messageText.color = visual.TextColor;
+        MultText.color = visual.TextColor;
 
         ApplyImage(backgroundImage, visual.BackgroundSprite, visual.BackgroundColor);
 
         if (image != null)
         {
+            image.gameObject.SetActive(visual.Image != null);
             image.sprite = visual.Image;
+        }
+
+        if (secondaryImage != null)
+        {
+            secondaryImage.gameObject.SetActive(visual.SecondaryImage != null);
+            secondaryImage.sprite = visual.SecondaryImage;
+        }
+
+        if (MultText != null)
+        {
+            MultText.gameObject.SetActive(!string.IsNullOrWhiteSpace(visual.MultText));
         }
     }
 
@@ -131,7 +145,6 @@ public class Raid_EventPopup : MonoBehaviour
         return new ScenarioVisual
         {
             Scenario = scenario,
-            Title = "Trap triggered!",
             Message = "The raid is ending."
         };
     }
