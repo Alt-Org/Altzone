@@ -50,6 +50,11 @@ public class Raid_Timer : MonoBehaviour
         TimeFormat.Add(TimerFormat.TenthDecimal, "0.0");
         TimeFormat.Add(TimerFormat.HundrethsDecimal, "0.00");
 
+        if (exitRaid == null || !exitRaid.gameObject.activeInHierarchy)
+        {
+            exitRaid = FindActiveExitRaid();
+        }
+
         if (exitRaid != null)
         {
             exitRaid.ExitedRaid += RaidExited;
@@ -72,7 +77,19 @@ public class Raid_Timer : MonoBehaviour
             if (HasLimit && ((CountUp && CurrentTime >= TimerLimit) || (!CountUp && CurrentTime <= TimerLimit)))
             {
                 OnTimeEnd();
-                exitRaid.EndRaid(ExitRaid.RaidEndReason.OutOfTime);
+                if (exitRaid == null || !exitRaid.gameObject.activeInHierarchy)
+                {
+                    exitRaid = FindActiveExitRaid();
+                }
+
+                if (exitRaid != null)
+                {
+                    exitRaid.EndRaid(ExitRaid.RaidEndReason.OutOfTime);
+                }
+                else
+                {
+                    Debug.LogError("Raid timer ended, but no active ExitRaid was found.");
+                }
                 CurrentTime = TimerLimit;
                 SetTimerText();
                 TimerText.color = Color.red;
@@ -124,6 +141,21 @@ public class Raid_Timer : MonoBehaviour
     {
         TimeEnded?.Invoke();
     }
+
+    private ExitRaid FindActiveExitRaid()
+    {
+        ExitRaid[] exitRaids = FindObjectsOfType<ExitRaid>();
+        foreach (ExitRaid activeExitRaid in exitRaids)
+        {
+            if (activeExitRaid != null && activeExitRaid.gameObject.activeInHierarchy)
+            {
+                return activeExitRaid;
+            }
+        }
+
+        return null;
+    }
+
     void RaidExited()
     {
         CurrentTime = 0;

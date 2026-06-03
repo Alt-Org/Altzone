@@ -22,6 +22,8 @@ public class Raid_EventPopup : MonoBehaviour
         public string Message;
         public Sprite BackgroundSprite = null;
         public Color BackgroundColor = new Color(0f, 0f, 0f, 0.55f);
+        public Sprite Effect = null;
+        public Color EffectColor = Color.white;
         public Color TextColor = Color.white;
         public Sprite Image = null;
         public Sprite SecondaryImage = null;
@@ -35,6 +37,7 @@ public class Raid_EventPopup : MonoBehaviour
 
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Image backgroundImage;
+    [SerializeField] private Image effectImage;
     [SerializeField] private Image image;
     [SerializeField] private Image secondaryImage;
     [SerializeField] private TextMeshProUGUI messageText;
@@ -110,6 +113,12 @@ public class Raid_EventPopup : MonoBehaviour
         MultText.color = visual.TextColor;
 
         ApplyImage(backgroundImage, visual.BackgroundSprite, visual.BackgroundColor);
+        ApplyImage(effectImage, visual.Effect, visual.EffectColor);
+
+        if (effectImage != null)
+        {
+            effectImage.gameObject.SetActive(visual.Effect != null);
+        }
 
         if (image != null)
         {

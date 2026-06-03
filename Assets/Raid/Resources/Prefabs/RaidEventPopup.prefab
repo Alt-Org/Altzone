@@ -34,6 +34,7 @@ RectTransform:
   m_Children:
   - {fileID: 2001}
   - {fileID: 8677795790919758679}
+  - {fileID: 9001}
   - {fileID: 6001}
   - {fileID: 7001}
   - {fileID: 3001}
@@ -111,6 +112,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 1004}
   backgroundImage: {fileID: 4820472504932973940}
+  effectImage: {fileID: 9003}
   image: {fileID: 6003}
   secondaryImage: {fileID: 7003}
   messageText: {fileID: 5004}
@@ -121,6 +123,8 @@ MonoBehaviour:
     Message: Ansa! Kuolettava pommi
     BackgroundSprite: {fileID: 21300000, guid: 64b00f4be61371448934c52816bb3079, type: 3}
     BackgroundColor: {r: 1, g: 1, b: 1, a: 0.55}
+    Effect: {fileID: 0}
+    EffectColor: {r: 1, g: 1, b: 1, a: 1}
     TextColor: {r: 1, g: 0.6313726, b: 0, a: 1}
     Image: {fileID: 21300000, guid: 203e9d7fbfc3ab146b3a5efe940bd4fc, type: 3}
     SecondaryImage: {fileID: 0}
@@ -129,6 +133,8 @@ MonoBehaviour:
     Message: "Ansa! J\xE4\xE4dyit 10 Sekunniksi"
     BackgroundSprite: {fileID: 21300000, guid: 64b00f4be61371448934c52816bb3079, type: 3}
     BackgroundColor: {r: 1, g: 1, b: 1, a: 0.55}
+    Effect: {fileID: 21300000, guid: c9a331cd52627344d8562ac19ef5c695, type: 3}
+    EffectColor: {r: 1, g: 1, b: 1, a: 1}
     TextColor: {r: 0, g: 0.76470596, b: 0.81568635, a: 1}
     Image: {fileID: 21300000, guid: f3ee01a8f86d9eb4fb65049758f18bc8, type: 3}
     SecondaryImage: {fileID: 0}
@@ -137,6 +143,8 @@ MonoBehaviour:
     Message: Ansa! Esineen paino tuplaantui
     BackgroundSprite: {fileID: 21300000, guid: 64b00f4be61371448934c52816bb3079, type: 3}
     BackgroundColor: {r: 1, g: 1, b: 1, a: 0.55}
+    Effect: {fileID: 0}
+    EffectColor: {r: 1, g: 1, b: 1, a: 1}
     TextColor: {r: 1, g: 0.6313726, b: 0, a: 1}
     Image: {fileID: 0}
     SecondaryImage: {fileID: 21300000, guid: 8cc5377ca2937f7419b6eec45686c507, type: 3}
@@ -145,6 +153,8 @@ MonoBehaviour:
     Message: "Aika! Peli P\xE4\xE4ttynyt"
     BackgroundSprite: {fileID: 21300000, guid: 64b00f4be61371448934c52816bb3079, type: 3}
     BackgroundColor: {r: 1, g: 1, b: 1, a: 0.55}
+    Effect: {fileID: 0}
+    EffectColor: {r: 1, g: 1, b: 1, a: 1}
     TextColor: {r: 1, g: 0.6313726, b: 0, a: 1}
     Image: {fileID: 21300000, guid: 334e3eb1b24707a4aa53bab625e40c5b, type: 3}
     SecondaryImage: {fileID: 0}
@@ -153,6 +163,8 @@ MonoBehaviour:
     Message: "Syd\xE4men  kapasiteetti ylitetty"
     BackgroundSprite: {fileID: 21300000, guid: 64b00f4be61371448934c52816bb3079, type: 3}
     BackgroundColor: {r: 1, g: 1, b: 1, a: 0.55}
+    Effect: {fileID: 0}
+    EffectColor: {r: 1, g: 1, b: 1, a: 1}
     TextColor: {r: 1, g: 0.6313726, b: 0, a: 1}
     Image: {fileID: 21300000, guid: e744bbe740a59e147a20e863381e3cbe, type: 3}
     SecondaryImage: {fileID: 0}
@@ -870,6 +882,81 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &9000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9001}
+  - component: {fileID: 9002}
+  - component: {fileID: 9003}
+  m_Layer: 5
+  m_Name: Effect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &9001
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9000}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1001}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &9002
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9000}
+  m_CullTransparentMesh: 1
+--- !u!114 &9003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &3371798991561071494
 GameObject:
   m_ObjectHideFlags: 0

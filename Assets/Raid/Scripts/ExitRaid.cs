@@ -18,6 +18,11 @@ public class ExitRaid : MonoBehaviour
     [SerializeField] private Raid_Timer raid_timer;
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
 
+    private void Awake()
+    {
+        ResolveReferences();
+    }
+
     public void EndRaid()
     {
         EndRaid(RaidEndReason.Trap);
@@ -25,8 +30,28 @@ public class ExitRaid : MonoBehaviour
 
     public void EndRaid(RaidEndReason reason)
     {
+        if (!gameObject.activeInHierarchy)
+        {
+            ExitRaid activeExitRaid = FindActiveExitRaid();
+            if (activeExitRaid != null && activeExitRaid != this)
+            {
+                activeExitRaid.EndRaid(reason);
+                return;
+            }
+
+            Debug.LogError("Cannot end raid from an inactive ExitRaid object.");
+            return;
+        }
+
         if (raidEnded)
         {
+            return;
+        }
+
+        ResolveReferences();
+        if (raid_timer == null || raid_References == null)
+        {
+            Debug.LogError("Cannot end raid because ExitRaid is missing raid references.");
             return;
         }
 
@@ -70,5 +95,32 @@ public class ExitRaid : MonoBehaviour
             default:
                 return Raid_EventPopup.Scenario.EndTrap;
         }
+    }
+
+    private void ResolveReferences()
+    {
+        if (raid_timer == null)
+        {
+            raid_timer = FindObjectOfType<Raid_Timer>();
+        }
+
+        if (raid_References == null)
+        {
+            raid_References = FindObjectOfType<Raid_References>();
+        }
+    }
+
+    private ExitRaid FindActiveExitRaid()
+    {
+        ExitRaid[] exitRaids = FindObjectsOfType<ExitRaid>();
+        foreach (ExitRaid exitRaid in exitRaids)
+        {
+            if (exitRaid != null && exitRaid.gameObject.activeInHierarchy)
+            {
+                return exitRaid;
+            }
+        }
+
+        return null;
     }
 }
