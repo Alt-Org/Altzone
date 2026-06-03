@@ -212,21 +212,24 @@ public class LeaderboardView : MonoBehaviour
 
                             if (rank == 1) //The top three are displayed on the podium
                             {
-                                //apply all info to the podium
-                                _podium.InitilializePodium(rank, ranking);
 
-                                if (playerLeaderboard.Count > 1) // make sure that list has enough members
-                                { _podium.InitilializePodium(2, playerLeaderboard[1]); }
-                                else
-                                { _podium.InitilializePodium(2, null); }
-
-                                if (playerLeaderboard.Count > 2)
-                                { _podium.InitilializePodium(3, playerLeaderboard[2]); }
-                                else
-                                { _podium.InitilializePodium(3, null); }
 
                                 // add podium to view
-                                LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>(); 
+                                LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
+
+                                //apply all info to the podium
+                                item.InitilializePodium(rank, ranking);
+
+                                if (playerLeaderboard.Count > 1) // make sure that list has enough members
+                                { item.InitilializePodium(2, playerLeaderboard[1]); }
+                                else
+                                { item.InitilializePodium(2, null); }
+
+                                if (playerLeaderboard.Count > 2)
+                                { item.InitilializePodium(3, playerLeaderboard[2]); }
+                                else
+                                { item.InitilializePodium(3, null); }
+
 
                                 // View player profile -buttons
                                 item.FirstOpenPlayerProfileButton.onClick.AddListener(() =>
@@ -268,7 +271,12 @@ public class LeaderboardView : MonoBehaviour
                         }
 
                     }));
+                    if (_podium.isActiveAndEnabled)
+                    {
+                        Debug.Log("CCCCCCCCCCCCCCCCCCCCCCCCCCC");
+                    }
                 }
+
                 break;
             case Leaderboard.Clan:
 
@@ -352,16 +360,10 @@ public class LeaderboardView : MonoBehaviour
                 //test friends to fill the leaderboard
                 _friendsPlayersList.Add(friendtest1);
                 _friendsPlayersList.Add(friendtest2);
-                _friendsPlayersList.Add(friendtest3);
-                _friendsPlayersList.Add(friendtest4);
-                _friendsPlayersList.Add(friendtest5);
-                _friendsPlayersList.Add(friendtest6);
+
                 friendtest1.name = "friendtest1";
                 friendtest2.name = "friendtest2";
-                friendtest3.name = "friendtest3";
-                friendtest4.name = "friendtest4";
-                friendtest5.name = "friendtest5";
-                friendtest6.name = "friendtest6";
+
 
 
                 foreach (FriendPlayer friend in OnlinePlayersPanel.Instance.Friendlist) //add friends to list
@@ -384,21 +386,24 @@ public class LeaderboardView : MonoBehaviour
                 {
                     if (rank == 1)
                     {
-                        //apply all info to the podium
-                        _podium.InitilializePodium(rank, friend.name, 0, null);
-
-                        if (_friendsPlayersList.Count > 1) // make sure that list has enough members
-                        { _podium.InitilializePodium(2, _friendsPlayersList[1].name, 0, null); }
-                        else
-                        { _podium.InitilializePodium(2, null, 0, null); }
-
-                        if (_friendsPlayersList.Count > 2)
-                        { _podium.InitilializePodium(3, _friendsPlayersList[2].name, 0, null); }
-                        else
-                        { _podium.InitilializePodium(3, null, 0, null); }
+                        AvatarVisualData avatarVisualData = null;
+                        avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(friend.avatar);
 
                         //add the podium to the scroll view
                         LeaderboardPodium itemPod = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
+
+                        //apply all info to the podium
+                        itemPod.InitilializePodium(rank, friend.name, 0, null);
+
+                        if (_friendsPlayersList.Count > 1) // make sure that list has enough members
+                        { itemPod.InitilializePodium(2, _friendsPlayersList[1].name, 0, null); }
+                        else
+                        { itemPod.InitilializePodium(2, null, 0, null); }
+
+                        if (_friendsPlayersList.Count > 2)
+                        { itemPod.InitilializePodium(3, _friendsPlayersList[2].name, 0, null); }
+                        else
+                        { itemPod.InitilializePodium(3, null, 0, null); }
 
                         // View player profile -buttons
                         itemPod.FirstOpenPlayerProfileButton.onClick.AddListener(() =>
@@ -422,9 +427,14 @@ public class LeaderboardView : MonoBehaviour
                     }
                     else if( rank > 3)
                     {
+
+                        AvatarVisualData avatarVisualData = null;
+                        avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(friend.avatar);
+                        
+
                         LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
 
-                        item.Initialize(rank, friend.name, 0, null, "");
+                        item.Initialize(rank, friend.name, 0, avatarVisualData, friend.clan_id);
 
                         //open friend profile                  
                         item.OpenProfileButton.onClick.AddListener(() =>
@@ -489,9 +499,6 @@ public class LeaderboardView : MonoBehaviour
                 break;
         }
     }
-
-
-
 
     private void ScrollToTop()
     {

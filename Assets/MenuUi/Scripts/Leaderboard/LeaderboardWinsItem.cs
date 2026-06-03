@@ -29,7 +29,7 @@ public class LeaderboardWinsItem : MonoBehaviour
     public void Initialize(int rank, string name, int wins, AvatarVisualData avatarVisualData, string clanId = null)
     {
         _rankText.text = rank.ToString() + ".";
-        _nameText.text = TruncateName(name);
+        _nameText.text = name;
         _winsText.text = wins.ToString() + " pts";
         if (avatarVisualData != null)
         {
@@ -56,8 +56,9 @@ public class LeaderboardWinsItem : MonoBehaviour
         if (ranking.Clanlogo != null) _clanHeart.SetHeartColors(ranking.Clanlogo);
     }
 
-    public void RecolorBackground() //make list item bg white if the placement is the player's
+    public void RecolorBackground() //make list item bg white if the placement is the player's, also set the avatar to player avatar
     {
         _itemBackground.color = new Color(0, 0, 0, 0);
+        _avatarFaceLoader.SetUseOwnAvatarVisuals(true);
     }
 }

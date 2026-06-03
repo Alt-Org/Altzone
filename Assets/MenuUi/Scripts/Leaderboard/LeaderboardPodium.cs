@@ -149,7 +149,7 @@ public class LeaderboardPodium : MonoBehaviour
                 
                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
                 
-                if (avatarVisualData != null)
+                if (avatarVisualData != null && isActiveAndEnabled)
                 {
                     _firstAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarVisualData);
                 }
@@ -157,6 +157,7 @@ public class LeaderboardPodium : MonoBehaviour
 
         }
     }
+
 
     private void InitializeSecondPlace(string secondName, int secondPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo = null)
     {
@@ -193,13 +194,10 @@ public class LeaderboardPodium : MonoBehaviour
                 _secondPlayerData = playerData;
                 SecondOpenPlayerProfileButton.onClick.AddListener(SecondAddDataCarrierData);
 
-                AvatarVisualData avatarVisualData = null;
+                AvatarVisualData avatarVisualData = null;                      
+                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
 
-            
-                
-                    avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
-                
-                if (avatarVisualData != null)
+                if (avatarVisualData != null && isActiveAndEnabled)
                 {
                     _secondAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarVisualData);
                 }
@@ -251,7 +249,7 @@ public class LeaderboardPodium : MonoBehaviour
                 
                     avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
                 
-                if (avatarVisualData != null)
+                if (avatarVisualData != null && isActiveAndEnabled)
                 {
                     _thirdAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarVisualData);
                 }
