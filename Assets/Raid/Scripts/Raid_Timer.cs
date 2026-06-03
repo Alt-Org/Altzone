@@ -72,17 +72,7 @@ public class Raid_Timer : MonoBehaviour
             if (HasLimit && ((CountUp && CurrentTime >= TimerLimit) || (!CountUp && CurrentTime <= TimerLimit)))
             {
                 OnTimeEnd();
-           
-                raid_References.EndMenu.GetComponent<Raid_EndMenu>().SetCollectedLoot(raid_References.raid_LootTracking.ListOfCollectedLoot);
-                raid_References.EndMenu.SetActive(true);
-                if (raid_References.OutOfSpace.enabled || raid_References.RaidEndedText.enabled)
-                {
-                    raid_References.OutOfTime.enabled = false;
-                }
-                else if (!raid_References.OutOfSpace.enabled && !raid_References.RaidEndedText.enabled)
-                {
-                    raid_References.OutOfTime.enabled = true;
-                }
+                exitRaid.EndRaid(ExitRaid.RaidEndReason.OutOfTime);
                 CurrentTime = TimerLimit;
                 SetTimerText();
                 TimerText.color = Color.red;

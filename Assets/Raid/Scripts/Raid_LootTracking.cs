@@ -10,6 +10,7 @@ using Altzone.Scripts.Model.Poco.Game;
 public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 {
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
+    [SerializeField] private ExitRaid exitRaid;
 
     [SerializeField, Header("Reference game components")] private TMP_Text CurrentLootText;
     [SerializeField] private TMP_Text OutOfText;
@@ -24,6 +25,11 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     public void Awake()
     {
+        if (exitRaid == null)
+        {
+            exitRaid = FindObjectOfType<ExitRaid>();
+        }
+
 /*        _photonView = gameObject.AddComponent<PhotonView>();
         _photonView.ViewID = 3;
         if (PhotonNetwork.IsMasterClient)
@@ -67,9 +73,6 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         if (CurrentLootWeight > MaxLootWeight)
         {
             //EndScreen
-          
-            raid_References.EndMenu.SetActive(true);
-            raid_References.OutOfSpace.enabled = true;
 
             //HeartBreak animation
             Color tmp = raid_References.Heart.GetComponent<Image>().color;
@@ -80,6 +83,16 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
             }
             raid_References.HeartHalves.SetActive(true);
             raid_References.Heart.GetComponent<Image>().enabled = false;
+
+            if (exitRaid != null)
+            {
+                exitRaid.EndRaid(ExitRaid.RaidEndReason.OutOfSpace);
+            }
+            else
+            {
+                raid_References.EndMenu.SetActive(true);
+                raid_References.OutOfSpace.enabled = true;
+            }
         }
     }
     

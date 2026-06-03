@@ -138,35 +138,46 @@ public class Raid_InventoryPage : MonoBehaviour
             Raid_InventoryItem item = ListOfUIItems[index];
             if (item.GetComponent<Raid_InventoryItem>().bomb)
             {
-                item.RemoveData();
                 item.GetComponent<Raid_InventoryItem>().TriggerTrap();
+                if (item.GetComponent<Raid_InventoryItem>()._bombType == 2)
+                {
+                    nextLootWeightDoubled = true;
+                }
+                LootItem(item, itemWeight);
                 switch (item.GetComponent<Raid_InventoryItem>()._bombType)
                 {
                     case 0:
                         exitraid.EndRaid();
                         break;
                     case 1:
+                        Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.Freeze);
                         StartFreeze();
                         break;
                     case 2:
-                        nextLootWeightDoubled = true;
+                        Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.DoubleWeight);
                         break;
                 }
+                ListOfUIItems[index].ItemWeight = 0;
                 return;
             }
-            item.LaunchBall();
-
-            if (itemWeight == item.ItemWeight && itemWeight != 0)
-            {
-                float lootWeightMultiplier = nextLootWeightDoubled ? doubleWeightMultiplier : 1f;
-                LootTracker.SetLootCount(item.furnitureData, LootTracker.MaxLootWeight, lootWeightMultiplier);
-                nextLootWeightDoubled = false;
-                item.RemoveData();
-            } else
-            {
-                Debug.Log("This inventory slot has already been looted!");
-            }
+            LootItem(item, itemWeight);
             ListOfUIItems[index].ItemWeight = 0;
+        }
+    }
+
+    private void LootItem(Raid_InventoryItem item, float itemWeight)
+    {
+        item.LaunchBall();
+
+        if (itemWeight == item.ItemWeight && itemWeight != 0)
+        {
+            float lootWeightMultiplier = nextLootWeightDoubled ? doubleWeightMultiplier : 1f;
+            LootTracker.SetLootCount(item.furnitureData, LootTracker.MaxLootWeight, lootWeightMultiplier);
+            nextLootWeightDoubled = false;
+            item.RemoveData();
+        } else
+        {
+            Debug.Log("This inventory slot has already been looted!");
         }
     }
 
