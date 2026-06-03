@@ -20,7 +20,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private GameObject ShowUsersPopUp;
 
     [Header("Scripts")]
-    public MessageReactionsHandler _messageReactionsHandler;
     [Header("User Info")]
 
     [SerializeField] private VerticalLayoutGroup _userContent;
@@ -31,9 +30,9 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [Header("Reactions")]
     [SerializeField] private List<ReactionObject> _reactionList;
     [SerializeField] private GameObject _allReactions;
-    public GameObject _selectedReaction;
+    [SerializeField] private GameObject _selectedReaction;
     [SerializeField] private GameObject _noReactions;
-    public GameObject CopiedReactionField;
+    private GameObject CopiedReactionField;
     public Transform ReactionFieldLocation;
     public Transform PopUpAllReactions;
     [SerializeField] private Sprite[] _sprites;
@@ -49,8 +48,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     private void Start()
     {
         _closeAllReactionButton.onClick.AddListener(LayoutButton);
-        _listOrderButton.onClick.AddListener(() => currentOrder++);
-        _listOrderButton.onClick.AddListener(() => ListOrder(currentOrder));
+        _listOrderButton.onClick.AddListener(() => {currentOrder++; ListOrder(currentOrder);});
         reactiontext();
         foreach (Button button in _closeButtons)
         {
@@ -61,8 +59,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     //Puts back the reactions and popup back to messageobject
     public void ClosePopup()
     {
-
-        //---- Put the new data that been added to popup here ----
         for (int i = _userInfo.Count - 1; i >= 0; i--)
         {
             Destroy(_userInfo[i].UserDataObj);
@@ -73,7 +69,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         Destroy(CopiedReactionField);
         CopiedReactionField = null;
         _scrollRect.content = null;
-        _messageReactionsHandler = null;
         gameObject.SetActive(false);
         LineOrder = 0;
 
@@ -88,7 +83,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     //Incane user leaves the chat
     private void OnDisable()
     {
-        
         ListOrder(1);
         ClosePopup();
     }
@@ -191,7 +185,23 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     }
     //Sets the List in certain order
 
+    //Changes the reactions object sizes
+    public void ReactionFieldCopyUpdate(GameObject ReactionField, Transform ReactionLocation)
+    {
+        Destroy(CopiedReactionField);
 
+        CopiedReactionField = Instantiate(ReactionField, ReactionLocation);
+
+        _scrollRect.content = CopiedReactionField.GetComponent<RectTransform>();
+
+        foreach (RectTransform child in CopiedReactionField.transform)
+        {
+            ContentSizeFitter childFitter = child.GetComponent<ContentSizeFitter>();
+            childFitter.enabled = false;
+
+            child.sizeDelta = new Vector2(150, 110);
+        }
+    }
 
 
     void ListOrder(int order)
@@ -207,7 +217,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
             //Oldest => Newest
             case 1:
-                Debug.LogWarning("FIND ME Order 1");
+                
                 _userInfo = _userInfo.OrderBy(m => m._order).ToList();
                 _OrderButtonText.text = "Old";
                 _image.sprite = null;
@@ -215,7 +225,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
             //Newest => Oldest
             case 2:
-                Debug.LogWarning("FIND ME Order 2");
                 _userInfo = _userInfo.OrderByDescending(m => m._order).ToList();
                 _OrderButtonText.text = "New";
                 _image.sprite = null;
@@ -223,7 +232,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
             // A => Z By Username
             case 3:
-                Debug.LogWarning("FIND ME Order 3");
                 _userInfo = _userInfo.OrderBy(m => m._name.ToLower().Trim()).ToList();
                 _OrderButtonText.text = "A-Z";
                 _image.sprite = null;
@@ -231,7 +239,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
             // Z => A By Username
             case 4:
-                Debug.LogWarning("FIND ME Order 4");
                 _userInfo = _userInfo.OrderByDescending(m => m._name.ToLower().Trim()).ToList();
                 _OrderButtonText.text = "Z-A";
                 _image.sprite = null;
@@ -239,7 +246,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
             //Sadness => Love by Reactions
             case 5:
-                Debug.LogWarning("FIND ME Order 5");
                 _userInfo = _userInfo.OrderBy(m => m._mood).ToList();
                 _OrderButtonText.text = "";
                 if (_sprites[4] != null)
