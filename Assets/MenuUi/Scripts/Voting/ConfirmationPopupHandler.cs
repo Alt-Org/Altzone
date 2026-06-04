@@ -14,13 +14,19 @@ public class ConfirmationPopupHandler : MonoBehaviour
     [SerializeField] private GameObject Background;
     [SerializeField] private Image _itemIcon;
     [SerializeField] private TMP_Text _itemNameText;
+   // [SerializeField] private Image _sidewaysIcon;
 
     [SerializeField] private TextLanguageSelectorCaller _confirmText;
     [SerializeField] private Button _acceptButton;
     [SerializeField] private Button _declineButton;
+    [SerializeField] private Button _leftArrowButton;
+    [SerializeField] private Button _rightArrowButton;
 
     private GameFurniture furniture;
     private AvatarPartInfo avatarpart;
+    private Sprite _frontSprite;
+    private Sprite _sideSprite;
+    private bool _showingFront = true;
 
     private StorageFurniture storageFurnitures;
 
@@ -39,24 +45,39 @@ public class ConfirmationPopupHandler : MonoBehaviour
     private void SetPopupActive(GameFurniture newFurniture)
     {
         if (Background != null) Background.SetActive(true);
+        if (_leftArrowButton != null) _leftArrowButton.gameObject.SetActive(true);
+        if (_rightArrowButton != null)_rightArrowButton.gameObject.SetActive(true);
 
         furniture = newFurniture;
+        _itemNameText.text = furniture.Name;
+        _itemIcon.sprite = furniture.FurnitureInfo.Image;
+        _frontSprite = furniture.FurnitureInfo.Image;
+        _sideSprite = furniture.FurnitureInfo.SidewaysImage;
+
+        _showingFront = true;
+
         _acceptButton.onClick.RemoveAllListeners();
         _acceptButton.onClick.AddListener(()=>CreatePollPopup());
         _declineButton.onClick.RemoveAllListeners();
         _declineButton.onClick.AddListener(() => ClosePopup());
-        switch (SettingsCarrier.Instance.Language)
-        {
-            case SettingsCarrier.LanguageType.Finnish:
-                _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
-                break;
-            case SettingsCarrier.LanguageType.English:
-                _confirmText.SetText("Are you sure you want to start a vote for this item?");
-                break;
-            default:
-                _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
-                break;
-        }
+        _leftArrowButton.onClick.RemoveAllListeners();
+        _leftArrowButton.onClick.AddListener(() => TogglePopupIcon());
+        _rightArrowButton.onClick.RemoveAllListeners();
+        _rightArrowButton.onClick.AddListener(() => TogglePopupIcon());
+
+        
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
+                    break;
+                case SettingsCarrier.LanguageType.English:
+                    _confirmText.SetText("Are you sure you want to start a vote for this item?");
+                    break;
+                default:
+                    _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
+                    break;
+            }
     }
 
     private void SetPopupActiveAvatarPart(AvatarPartInfo part, Sprite icon, string itemName)
@@ -152,8 +173,19 @@ public class ConfirmationPopupHandler : MonoBehaviour
 
     }
 
+    private void TogglePopupIcon()
+    {
+        if (_showingFront && _sideSprite == null) return;
+        _showingFront = !_showingFront;
+        _itemIcon.sprite = _showingFront ? _frontSprite : _sideSprite;
+    }
     private void ClosePopup()
     {
+        _showingFront = true;
+        _frontSprite = null;
+        _sideSprite = null;
         if (Background != null) Background.SetActive(false);
+        if(_leftArrowButton != null) _leftArrowButton.gameObject.SetActive(false);
+        if (_rightArrowButton != null) _rightArrowButton.gameObject.SetActive(false);
     }
 }
