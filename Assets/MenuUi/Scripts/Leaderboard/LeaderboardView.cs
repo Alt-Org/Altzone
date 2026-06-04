@@ -14,14 +14,13 @@ public class LeaderboardView : MonoBehaviour
 {
     [Header("Tabline")]
     [SerializeField] private Button _globalPlayersLeaderboardButton;
-    [SerializeField] private Image _globalPlayersLeaderboardImage;
+    //[SerializeField] private Image _globalPlayersLeaderboardImage;
     [SerializeField] private Button _friendsLeaderboardButton;
-    [SerializeField] private Image _friendsLeaderboardImage; 
-    [SerializeField] private Image _tablineRibbon;
+    //[SerializeField] private Image _friendsLeaderboardImage; 
+    //[SerializeField] private Image _tablineRibbon;
     [SerializeField] private TabLine _tablineScript;
     [SerializeField] private Button _globalClansLeaderboardButton; 
-    [SerializeField] private Image _globalClansLeaderboardImage;
-    [SerializeField] private List<GameObject> _tablineTitles;
+    //[SerializeField] private Image _globalClansLeaderboardImage;
 
     /*
     [Header("Tab sprites")]
@@ -32,18 +31,24 @@ public class LeaderboardView : MonoBehaviour
 
     [Header("Leaderboard panels")]
     [SerializeField] private LeaderboardPodium _podium;
-    [SerializeField] private GameObject _winsPanel;
-    [SerializeField] private Transform _winsContent;
+    //[SerializeField] private GameObject _winsPanel;
+    //[SerializeField] private Transform _winsContent;
+    [SerializeField] private Transform _clansContent;
+    [SerializeField] private Transform _playersContent;
+    [SerializeField] private Transform _friendsContent;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _playerWinsItemPrefab;
     [SerializeField] private GameObject _clanPointsItemPrefab;
     [SerializeField] private GameObject _friendsWinsItemPrefab;
 
-    [Header("Scroll to top and player")]
-    [SerializeField] private ScrollRect _scrollRect;
+    [Header("Scroll to top and to player")]
     [SerializeField] private Button _scrollToTopButton;
-    [SerializeField] private RectTransform _contentPanel;
+    private ScrollRect _scrollRect;
+    private RectTransform _contentPanel;
+
+    [SerializeField] private List<ScrollRect> _scrollRectScrollToMeList = new List<ScrollRect>();
+    [SerializeField] private List<RectTransform> _contentPanelScrollToMeList = new List<RectTransform>();
 
     [SerializeField] private Button _scrollToMeButton;
     private RectTransform _playerItem;
@@ -56,8 +61,6 @@ public class LeaderboardView : MonoBehaviour
     private FriendPlayer friendtest2 = new FriendPlayer();
     private FriendPlayer friendtest3 = new FriendPlayer();
     private FriendPlayer friendtest4 = new FriendPlayer();
-    private FriendPlayer friendtest5 = new FriendPlayer();
-    private FriendPlayer friendtest6 = new FriendPlayer();
 
 
     private enum Leaderboard
@@ -77,25 +80,14 @@ public class LeaderboardView : MonoBehaviour
         _globalPlayersLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalPlayers));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
         _globalClansLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalClans));
-        _scrollToTopButton.onClick.AddListener(() => ScrollToTop());
-        _scrollToMeButton.onClick.AddListener(() => ScrollToMe());
-
-        InitializeTablineTitles(0);
+        _scrollToTopButton.onClick.AddListener(() => ScrollToTop(_scrollRect));
+        _scrollToMeButton.onClick.AddListener(() => ScrollToMe(_scrollRect, _contentPanel));
     }
 
     private void OnEnable()
     {
         OpenLeaderboard(Leaderboard.GlobalClans);
         _tablineScript.ActivateTabButton(0);
-
-    }
-
-    private void InitializeTablineTitles(int tabInt)
-    {
-        foreach (GameObject title in _tablineTitles)
-            { title.SetActive(false); }
-        _tablineTitles[tabInt].SetActive(true);
-
     }
 
     private void OpenLeaderboard(Leaderboard leaderboard)
@@ -107,7 +99,9 @@ public class LeaderboardView : MonoBehaviour
 
     private void LoadLeaderboard()
     {
-        foreach (Transform child in _winsContent) Destroy(child.gameObject);
+        foreach (Transform child in _clansContent) Destroy(child.gameObject);
+        foreach (Transform child in _playersContent) Destroy(child.gameObject);
+        foreach (Transform child in _friendsContent) Destroy(child.gameObject);
 
         _podium.SetPlayerView();
 
@@ -115,11 +109,13 @@ public class LeaderboardView : MonoBehaviour
         {
             case Leaderboard.GlobalClans: //tab 1
                 {
-                    InitializeTablineTitles(0);
+                    //apply correct list for scroll to me
+                    _scrollRect = _scrollRectScrollToMeList[0];
+                    _contentPanel = _contentPanelScrollToMeList[0];
+                    _scrollToTopButton.onClick.Invoke();
 
                     StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
                     {
-
                         _podium.SetClanView();
 
                         clanLeaderboard.Sort((a, b) => b.Points.CompareTo(a.Points));
@@ -129,7 +125,6 @@ public class LeaderboardView : MonoBehaviour
                         {
                             ClanData clanData = ranking.Clan;
                             ServerClan serverClan = ranking.ServerClan;
-
 
                             if (rank == 1) //The top three are displayed on the podium
                             {
@@ -147,7 +142,7 @@ public class LeaderboardView : MonoBehaviour
                                     { _podium.InitilializePodium(3, null, 0, clanData, null); }
 
                                 //add podium to view
-                                LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>(); 
+                                LeaderboardPodium item = Instantiate(_podium, parent: _clansContent).GetComponent<LeaderboardPodium>(); 
 
                                 // View clan profile -buttons
                                 item.FirstOpenClanProfileButton.onClick.AddListener(() =>
@@ -165,7 +160,7 @@ public class LeaderboardView : MonoBehaviour
                             }
                             else if(rank > 3)
                             {
-                                LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _winsContent).GetComponent<LeaderboardClanPointsItem>();
+                                LeaderboardClanPointsItem item = Instantiate(_clanPointsItemPrefab, parent: _clansContent).GetComponent<LeaderboardClanPointsItem>();
                                 item.Initialize(rank, ranking.Clan.Name, ranking.Points);
 
                                 // Clan heart colors
@@ -188,16 +183,17 @@ public class LeaderboardView : MonoBehaviour
                             rank++;
                         }
                     }));
-
                 }
                 break;
             case Leaderboard.GlobalPlayers: //tab 2
                 {
-                    InitializeTablineTitles(1);
+                    //apply correct list for scroll to me
+                    _scrollRect = _scrollRectScrollToMeList[1];
+                    _contentPanel = _contentPanelScrollToMeList[1];
+                    _scrollToTopButton.onClick.Invoke();
 
                     StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
                     {
-
                         playerLeaderboard.Sort((a, b) => b.WonBattles.CompareTo(a.WonBattles));
 
                         int rank = 1;
@@ -212,10 +208,8 @@ public class LeaderboardView : MonoBehaviour
 
                             if (rank == 1) //The top three are displayed on the podium
                             {
-
-
                                 // add podium to view
-                                LeaderboardPodium item = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
+                                LeaderboardPodium item = Instantiate(_podium, parent: _playersContent).GetComponent<LeaderboardPodium>();
 
                                 //apply all info to the podium
                                 item.InitilializePodium(rank, ranking);
@@ -229,7 +223,6 @@ public class LeaderboardView : MonoBehaviour
                                 { item.InitilializePodium(3, playerLeaderboard[2]); }
                                 else
                                 { item.InitilializePodium(3, null); }
-
 
                                 // View player profile -buttons
                                 item.FirstOpenPlayerProfileButton.onClick.AddListener(() =>
@@ -250,7 +243,7 @@ public class LeaderboardView : MonoBehaviour
                             }
                             else if (rank > 3) 
                             {
-                                LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                                LeaderboardWinsItem item = Instantiate(_playerWinsItemPrefab, parent: _playersContent).GetComponent<LeaderboardWinsItem>();
                                 item.Initialize(rank, ranking);
 
                                 // View player profile button
@@ -266,23 +259,14 @@ public class LeaderboardView : MonoBehaviour
                                 }
 
                             }
-
                             rank++;
                         }
-
                     }));
-                    if (_podium.isActiveAndEnabled)
-                    {
-                        Debug.Log("CCCCCCCCCCCCCCCCCCCCCCCCCCC");
-                    }
                 }
-
                 break;
             case Leaderboard.Clan:
 
-                //InitializeTablineTitles(1);
-
-
+                /*
                 Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, (clanData) =>
                 {
 
@@ -349,27 +333,32 @@ public class LeaderboardView : MonoBehaviour
                             rank++;
                         }
                     }
-                });
+                });*/
                 break;
             case Leaderboard.Friends: //tab 3
 
-                InitializeTablineTitles(2);
+                //apply correct list for scroll to me and to top
+                _scrollRect = _scrollRectScrollToMeList[2];
+                _contentPanel = _contentPanelScrollToMeList[2];
+                _scrollToTopButton.onClick.Invoke();
 
                 _friendsPlayersList.Clear();
 
                 //test friends to fill the leaderboard
                 _friendsPlayersList.Add(friendtest1);
                 _friendsPlayersList.Add(friendtest2);
-
+                _friendsPlayersList.Add(friendtest3);
+                _friendsPlayersList.Add(friendtest4);
+                //
                 friendtest1.name = "friendtest1";
                 friendtest2.name = "friendtest2";
-
-
+                friendtest3.name = "friendtest3";
+                friendtest4.name = "friendtest4";
 
                 foreach (FriendPlayer friend in OnlinePlayersPanel.Instance.Friendlist) //add friends to list
                 {
                     _friendsPlayersList.Add(friend);
-                    Debug.Log("Adding friends from list... name: " + friend.name);
+                    Debug.Log("Adding friends from friendlist... name: " + friend.name);
                 }
 
                 //add the player to the leaderboard
@@ -377,8 +366,7 @@ public class LeaderboardView : MonoBehaviour
                 player.name = ServerManager.Instance.Player.name;
                 player.clan_id = ServerManager.Instance.Player.clan_id;
                 player._id = ServerManager.Instance.Player._id;
-
-              
+             
                 //_friendsPlayersList.Sort((a, b) => b.wins.CompareTo(a.wins)); //sort by wins, not done currently since wins do not exist for friends
 
                 int rank = 1;
@@ -390,7 +378,7 @@ public class LeaderboardView : MonoBehaviour
                         avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(friend.avatar);
 
                         //add the podium to the scroll view
-                        LeaderboardPodium itemPod = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
+                        LeaderboardPodium itemPod = Instantiate(_podium, parent: _friendsContent).GetComponent<LeaderboardPodium>();
 
                         //apply all info to the podium
                         itemPod.InitilializePodium(rank, friend.name, 0, null);
@@ -431,8 +419,7 @@ public class LeaderboardView : MonoBehaviour
                         AvatarVisualData avatarVisualData = null;
                         avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(friend.avatar);
                         
-
-                        LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                        LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _friendsContent).GetComponent<LeaderboardWinsItem>();
 
                         item.Initialize(rank, friend.name, 0, avatarVisualData, friend.clan_id);
 
@@ -456,7 +443,7 @@ public class LeaderboardView : MonoBehaviour
 
                     for (int i = _friendsPlayersList.Count + 1; i < 20; i++)
                     {
-                        LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                        LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _friendsContent).GetComponent<LeaderboardWinsItem>();
 
                         item.Initialize(i, "", 0, null, "");
                     }
@@ -468,7 +455,7 @@ public class LeaderboardView : MonoBehaviour
                 //{
                 //    if (i == 1) //add the podium to scroll view
                 //    {
-                //        LeaderboardPodium itemPod = Instantiate(_podium, parent: _winsContent).GetComponent<LeaderboardPodium>();
+                //        LeaderboardPodium itemPod = Instantiate(_podium, parent: _friendsContent).GetComponent<LeaderboardPodium>();
                 //    }
 
                 //    if (i < 4)
@@ -477,7 +464,7 @@ public class LeaderboardView : MonoBehaviour
                 //    }
                 //    else
                 //    {
-                //        LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _winsContent).GetComponent<LeaderboardWinsItem>();
+                //        LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _friendsContent).GetComponent<LeaderboardWinsItem>();
 
                 //        item.Initialize(i, "", 0, null, "");
 
@@ -500,12 +487,23 @@ public class LeaderboardView : MonoBehaviour
         }
     }
 
-    private void ScrollToTop()
+    private void Update()
+    {
+        if (_scrollRect != null)
+        {
+            if (_scrollRect.verticalNormalizedPosition > 0.99)
+            { _scrollToTopButton.gameObject.SetActive(false); }
+            else
+            { _scrollToTopButton.gameObject.SetActive(true); }
+        }
+    }
+
+    private void ScrollToTop(ScrollRect _scrollRect)
     {
         _scrollRect.verticalNormalizedPosition = 1;
     }
 
-    private void ScrollToMe()
+    private void ScrollToMe(ScrollRect _scrollRect, Transform _contentPanel)
     {
         if (_playerItem != null)
         {
@@ -514,12 +512,14 @@ public class LeaderboardView : MonoBehaviour
             Vector2 listPostition = _scrollRect.viewport.localPosition;
             Vector2 targetPostition = target.localPosition;
 
-            Vector2 newPosition = new Vector2(
-                0, 0 - (listPostition.y + targetPostition.y)
-                );
+            Vector2 newPosition = new Vector2(0,
+                0 - (listPostition.y + targetPostition.y));
 
             _contentPanel.localPosition = newPosition;
-        }         
+        }
+
+        _scrollToTopButton.gameObject.SetActive(false);
+
     }
 
 }
