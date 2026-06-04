@@ -57,7 +57,7 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text clanTargetRoleText;
 
     private PollData _currentPollData;
-    public bool _pollEnded;
+    public bool IsPollEnded { get; set; } = false;
 
     private void Awake()
     {
@@ -105,7 +105,7 @@ public class PollInfoPopup : MonoBehaviour
         if (timer == null)
             return;
 
-        if (_pollEnded) {
+        if (IsPollEnded) {
             var endDateTime = DateTimeOffset.FromUnixTimeSeconds(_currentPollData.EndTime).ToLocalTime();
             timer.text = endDateTime.ToString("d.M. HH:mm");
             return;

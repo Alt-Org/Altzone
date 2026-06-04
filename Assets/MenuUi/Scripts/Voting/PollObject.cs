@@ -35,11 +35,6 @@ public class PollObject : MonoBehaviour
     [SerializeField] private TextMeshProUGUI TradeText;
     [SerializeField] private TextMeshProUGUI Price;
 
-    [Header("Buttons")]
-    [SerializeField] private Button ClockButton;
-    [SerializeField] private GameObject VoteYes;
-    [SerializeField] private GameObject VoteNo;
-
     [Header("Results")]
     [SerializeField] private GameObject YesVoters;
     [SerializeField] private GameObject NoVoters;
@@ -62,8 +57,6 @@ public class PollObject : MonoBehaviour
 
     private void Start()
     {
-        // ClockButton.onClick.AddListener(OnClockButtonClicked);
-
         if (pollData != null)
         {
             updateCoroutine = StartCoroutine(UpdateValues());
@@ -103,9 +96,6 @@ public class PollObject : MonoBehaviour
             {
                 pollEnded = true;
                 showEndTimeManually = true;
-                // ClockButton.interactable = false;
-                VoteYes.gameObject.SetActive(false);
-                VoteNo.gameObject.SetActive(false);
                 YesVoters.gameObject.SetActive(true);
                 NoVoters.gameObject.SetActive(true);
 
@@ -114,7 +104,7 @@ public class PollObject : MonoBehaviour
 
                 // Format and show local time. Example: "20.6. 13:50"
                 TimeLeftText.text = endDateTime.ToString("d.M. HH:mm");
-                PollInfoPopup.Instance._pollEnded = true;
+                PollInfoPopup.Instance.IsPollEnded = true;
 
                 if (PollInfoPopup.Instance != null && PollInfoPopup.Instance.gameObject.activeInHierarchy)
                 {
@@ -435,7 +425,6 @@ public class PollObject : MonoBehaviour
                 if (updateCoroutine != null) StopCoroutine(updateCoroutine);
                 pollEnded = false;
                 showEndTimeManually = false;
-                // ClockButton.interactable = true;
                 updateCoroutine = StartCoroutine(UpdateValues());
             }
         }
@@ -443,7 +432,6 @@ public class PollObject : MonoBehaviour
         {
             pollEnded = true;
             showEndTimeManually = true;
-            // ClockButton.interactable = false;
             Clock.fillAmount = 1f;
             UpdateClockDisplay();
         }

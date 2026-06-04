@@ -219,8 +219,10 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
 
             Debug.Log("Instantiating poll " + pollData.Id +
-          " | IsShop: " + isShopPoll +
-          " | HasVoted: " + hasVoted);
+                      " | IsShop: " + isShopPoll +
+                      " | HasVoted: " + hasVoted);
+
+            Debug.Log(pollData);
 
             if (isShopPoll)
             {
