@@ -76,6 +76,7 @@ public class ExitRaid : MonoBehaviour
 
         endMenu.SetOverWeightLimitBackground(reason == RaidEndReason.OutOfSpace);
         endMenu.SetCollectedLoot(raid_References.raid_LootTracking.ListOfCollectedLoot);
+        endMenu.SetSpaceRemainingText(raid_References.raid_LootTracking.CurrentLootWeight, raid_References.raid_LootTracking.MaxLootWeight);
         raid_References.EndMenu.SetActive(true);
     }
 

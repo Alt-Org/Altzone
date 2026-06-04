@@ -4,6 +4,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class Raid_EndMenu : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class Raid_EndMenu : MonoBehaviour
     [SerializeField] private Sprite overweightBackgroundSprite;
     [SerializeField] private GameObject normalEndResultText;
     [SerializeField] private GameObject overweightEndResultText;
+    [SerializeField] private TMP_Text spaceRemainingText;
     [SerializeField] private Vector3 collectedLootItemScale = Vector3.one;
 
     // SetCollectedLoot for display when showing EndMenu
@@ -63,6 +65,16 @@ public class Raid_EndMenu : MonoBehaviour
         }
     }
 
+    public void SetSpaceRemainingText(float currentLootWeight, float maxLootWeight)
+    {
+        if (spaceRemainingText == null)
+        {
+            return;
+        }
+
+        spaceRemainingText.text = $"{currentLootWeight:F0}kg\n/{maxLootWeight:F0}kg";
+    }
+
     public void ReturnToLobby()
     {
         SceneManager.LoadScene("10-MenuUI");
@@ -93,4 +105,5 @@ public class Raid_EndMenu : MonoBehaviour
         itemContainerTransform.SetParent(content, false);
         return itemContainerTransform;
     }
+
 }

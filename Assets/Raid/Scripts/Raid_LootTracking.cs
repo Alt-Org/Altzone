@@ -47,6 +47,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         MaxLootWeight = maxLootWeight;
         //Debug.Log("maxLootWeight has been set");
         this.MaxLootText.text = MaxLootWeight.ToString() + " kg";
+        UpdateHeartLootText();
     }
 
     public void ResetLootCount()
@@ -56,6 +57,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
         OutOfText.text = "Out of";
         MaxLootText.text =  MaxLootWeight.ToString() + " kg";
+        UpdateHeartLootText();
     }
 
     public void SetLootCount(GameFurniture furniture, float MaxLootWeight, float lootWeightMultiplier = 1f)
@@ -68,8 +70,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
         CurrentLootText.text = NewLootWeight.ToString() + " kg";
         MaxLootText.text = MaxLootWeight.ToString() + " kg";
-        float weightTMP = MaxLootWeight - NewLootWeight;
-        HeartLootText.text = (MaxLootWeight - NewLootWeight).ToString("F0");
+        UpdateHeartLootText();
         if (CurrentLootWeight > MaxLootWeight)
         {
             //EndScreen
@@ -95,11 +96,17 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
                 {
                     endMenu.SetEndReasonText(ExitRaid.RaidEndReason.OutOfSpace);
                     endMenu.SetOverWeightLimitBackground(true);
+                    endMenu.SetSpaceRemainingText(CurrentLootWeight, MaxLootWeight);
                 }
 
                 raid_References.EndMenu.SetActive(true);
             }
         }
+    }
+
+    private void UpdateHeartLootText()
+    {
+        HeartLootText.text = $"{CurrentLootWeight:F0}kg\n/{MaxLootWeight:F0}kg";
     }
     
 }
