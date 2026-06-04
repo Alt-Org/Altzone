@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class ExitRaid : MonoBehaviour
@@ -68,7 +67,15 @@ public class ExitRaid : MonoBehaviour
 
         yield return Raid_EventPopup.ShowAndWait(this, GetPopupScenario(reason));
 
-        raid_References.EndMenu.GetComponent<Raid_EndMenu>().SetCollectedLoot(raid_References.raid_LootTracking.ListOfCollectedLoot);
+        Raid_EndMenu endMenu = raid_References.EndMenu == null ? null : raid_References.EndMenu.GetComponent<Raid_EndMenu>();
+        if (endMenu == null)
+        {
+            Debug.LogError("Cannot show raid end menu because the EndMenu reference is missing Raid_EndMenu.");
+            yield break;
+        }
+
+        endMenu.SetOverWeightLimitBackground(reason == RaidEndReason.OutOfSpace);
+        endMenu.SetCollectedLoot(raid_References.raid_LootTracking.ListOfCollectedLoot);
         raid_References.EndMenu.SetActive(true);
     }
 
@@ -79,9 +86,11 @@ public class ExitRaid : MonoBehaviour
 
     private void SetEndReasonText(RaidEndReason reason)
     {
-        raid_References.OutOfTime.enabled = reason == RaidEndReason.OutOfTime;
-        raid_References.OutOfSpace.enabled = reason == RaidEndReason.OutOfSpace;
-        raid_References.RaidEndedText.enabled = reason == RaidEndReason.Trap;
+        Raid_EndMenu endMenu = raid_References.EndMenu == null ? null : raid_References.EndMenu.GetComponent<Raid_EndMenu>();
+        if (endMenu != null)
+        {
+            endMenu.SetEndReasonText(reason);
+        }
     }
 
     private Raid_EventPopup.Scenario GetPopupScenario(RaidEndReason reason)

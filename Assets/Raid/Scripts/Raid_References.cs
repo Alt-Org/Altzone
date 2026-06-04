@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class Raid_References : MonoBehaviour
 {
@@ -12,9 +11,6 @@ public class Raid_References : MonoBehaviour
     public GameObject Heart;
 
     [SerializeField, Header("Reference game components")]
-    public TextMeshProUGUI OutOfTime;
-    public TextMeshProUGUI OutOfSpace;
-    public TextMeshProUGUI RaidEndedText;
     public Raid_InventoryHandler inventoryHandler;
     public Raid_LootTracking raid_LootTracking;
 
@@ -22,9 +18,9 @@ public class Raid_References : MonoBehaviour
     {
         inventoryHandler = GameObject.Find("ScriptHolder").GetComponent<Raid_InventoryHandler>();
    
-        EndMenu.SetActive(false);
-        OutOfTime.enabled = false;
-        OutOfSpace.enabled = false;
-        RaidEndedText.enabled = false;
+        if (EndMenu != null)
+        {
+            EndMenu.SetActive(false);
+        }
     }
 }

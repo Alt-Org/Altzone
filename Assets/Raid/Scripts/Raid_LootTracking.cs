@@ -90,8 +90,14 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
             }
             else
             {
+                Raid_EndMenu endMenu = raid_References.EndMenu.GetComponent<Raid_EndMenu>();
+                if (endMenu != null)
+                {
+                    endMenu.SetEndReasonText(ExitRaid.RaidEndReason.OutOfSpace);
+                    endMenu.SetOverWeightLimitBackground(true);
+                }
+
                 raid_References.EndMenu.SetActive(true);
-                raid_References.OutOfSpace.enabled = true;
             }
         }
     }

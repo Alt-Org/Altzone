@@ -74,8 +74,10 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             raidTimer.TimeEnded += OnTimeEnded;
         }
         audioSource = GetComponent<AudioSource>();
-        ItemImage.gameObject.SetActive(false);
-        empty = true;
+        if (empty)
+        {
+            ItemImage.gameObject.SetActive(false);
+        }
 
         //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
             spectator = false;

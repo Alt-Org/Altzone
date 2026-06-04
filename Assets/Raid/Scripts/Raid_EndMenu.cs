@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Raid_EndMenu : MonoBehaviour
 {
@@ -10,16 +11,55 @@ public class Raid_EndMenu : MonoBehaviour
     public RectTransform collectedFurniture;
     public RectTransform content;
     public Raid_InventoryItem itemPrefab;
+    [SerializeField] private Image backgroundImage;
+    [SerializeField] private Sprite normalBackgroundSprite;
+    [SerializeField] private Sprite overweightBackgroundSprite;
+    [SerializeField] private GameObject normalEndResultText;
+    [SerializeField] private GameObject overweightEndResultText;
+    [SerializeField] private Vector3 collectedLootItemScale = Vector3.one;
 
     // SetCollectedLoot for display when showing EndMenu
     public void SetCollectedLoot(List<GameFurniture> lootList)
     {
-        for (int i=0;i<lootList.Count;i++)
+        ClearCollectedLoot();
+
+        for (int i = 0; i < lootList.Count; i++)
         {
-            Raid_InventoryItem UIItem = Instantiate(itemPrefab, Vector3.zero, Quaternion.identity);
-            UIItem.transform.SetParent(content);
-            UIItem.transform.localScale = new Vector3(1, 1, 0);
+            Transform itemParent = CreateCollectedLootItemContainer();
+            Raid_InventoryItem UIItem = Instantiate(itemPrefab, itemParent);
+            UIItem.transform.localScale = collectedLootItemScale;
+            RectTransform itemTransform = UIItem.GetComponent<RectTransform>();
+            itemTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            itemTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            itemTransform.anchoredPosition = Vector2.zero;
             UIItem.SetData(lootList[i]);
+        }
+    }
+
+    public void SetOverWeightLimitBackground(bool wentOverWeightLimit)
+    {
+        if (backgroundImage != null)
+        {
+            Sprite selectedBackground = wentOverWeightLimit ? overweightBackgroundSprite : normalBackgroundSprite;
+            if (selectedBackground != null)
+            {
+                backgroundImage.sprite = selectedBackground;
+            }
+        }
+    }
+
+    public void SetEndReasonText(ExitRaid.RaidEndReason reason)
+    {
+        bool wentOverWeightLimit = reason == ExitRaid.RaidEndReason.OutOfSpace;
+
+        if (normalEndResultText != null)
+        {
+            normalEndResultText.SetActive(!wentOverWeightLimit);
+        }
+
+        if (overweightEndResultText != null)
+        {
+            overweightEndResultText.SetActive(wentOverWeightLimit);
         }
     }
 
@@ -31,5 +71,26 @@ public class Raid_EndMenu : MonoBehaviour
     public void Restart() 
     {
         SceneManager.LoadScene("40-Raid");
+    }
+
+    private void ClearCollectedLoot()
+    {
+        if (content == null)
+        {
+            return;
+        }
+
+        for (int i = content.childCount - 1; i >= 0; i--)
+        {
+            Destroy(content.GetChild(i).gameObject);
+        }
+    }
+
+    private Transform CreateCollectedLootItemContainer()
+    {
+        GameObject itemContainer = new GameObject("CollectedLootItem", typeof(RectTransform));
+        RectTransform itemContainerTransform = itemContainer.GetComponent<RectTransform>();
+        itemContainerTransform.SetParent(content, false);
+        return itemContainerTransform;
     }
 }
