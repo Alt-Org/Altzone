@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.AvatarEditor;
 using Altzone.Scripts.Window;
 using TMPro;
 using UnityEngine;
@@ -112,8 +109,7 @@ public class LeaderboardPodium : MonoBehaviour
 
     private void InitializeFirstPlace(string firstName, int firstPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo= null)
     {
-        //_firstName.text = TruncateName(firstName);
-        _firstPoints.text = firstPoints.ToString();
+        _firstPoints.text = firstPoints.ToString() + " pts";
 
         _firstClanBox.gameObject.SetActive(false);
         _firstPlayerBox.gameObject.SetActive(false);
@@ -161,8 +157,7 @@ public class LeaderboardPodium : MonoBehaviour
 
     private void InitializeSecondPlace(string secondName, int secondPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo = null)
     {
-        //_secondName.text = TruncateName(secondName);
-        _secondPoints.text = secondPoints.ToString();
+        _secondPoints.text = secondPoints.ToString() + " pts";
 
         _secondClanBox.gameObject.SetActive(false);
         _secondPlayerBox.gameObject.SetActive(false);
@@ -207,8 +202,7 @@ public class LeaderboardPodium : MonoBehaviour
 
     private void InitializeThirdPlace(string thirdName, int thirdPoints, ClanData clanData = null, ServerClan serverClan = null, PlayerData playerData = null, ClanLogo logo = null)
     {
-        //_thirdName.text =TruncateName(thirdName);
-        _thirdPoints.text = thirdPoints.ToString();
+        _thirdPoints.text = thirdPoints.ToString() + " pts";
 
         _thirdClanBox.gameObject.SetActive(false);
         _thirdPlayerBox.gameObject.SetActive(false);

@@ -35,11 +35,6 @@ public class LeaderboardWinsItem : MonoBehaviour
         {
             _avatarFaceLoader.UpdateVisuals(avatarVisualData);
         }
-        /*
-        if (name == ServerManager.Instance.Player.name.ToString())
-        {
-            RecolorBackground();
-        }*/
     }
 
     public void Initialize(int rank, PlayerLeaderboard ranking)
@@ -47,7 +42,7 @@ public class LeaderboardWinsItem : MonoBehaviour
 
         _rankText.text = rank.ToString() + ".";
         _nameText.text = ranking.Player.Name;
-        _winsText.text = ranking.WonBattles.ToString();
+        _winsText.text = ranking.WonBattles.ToString() + " pts";
         if(ranking.Player != null)
         {
             AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(ranking.Player);

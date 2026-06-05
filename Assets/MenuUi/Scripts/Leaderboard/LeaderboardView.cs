@@ -10,25 +10,13 @@ public class LeaderboardView : MonoBehaviour
 {
     [Header("Tabline")]
     [SerializeField] private Button _globalPlayersLeaderboardButton;
-    //[SerializeField] private Image _globalPlayersLeaderboardImage;
     [SerializeField] private Button _friendsLeaderboardButton;
-    //[SerializeField] private Image _friendsLeaderboardImage; 
-    //[SerializeField] private Image _tablineRibbon;
     [SerializeField] private TabLine _tablineScript;
     [SerializeField] private Button _globalClansLeaderboardButton; 
-    //[SerializeField] private Image _globalClansLeaderboardImage;
 
-    /*
-    [Header("Tab sprites")]
-    [SerializeField] private Sprite _globalWinsSprite;
-    [SerializeField] private Sprite _clanWinsSprite;
-    [SerializeField] private Sprite _friendsWinsSprite;
-    */
 
     [Header("Leaderboard panels")]
     [SerializeField] private LeaderboardPodium _podium;
-    //[SerializeField] private GameObject _winsPanel;
-    //[SerializeField] private Transform _winsContent;
     [SerializeField] private Transform _clansContent;
     [SerializeField] private Transform _playersContent;
     [SerializeField] private Transform _friendsContent;
@@ -58,10 +46,8 @@ public class LeaderboardView : MonoBehaviour
     private List<FriendPlayer> _friendsPlayersList = new List<FriendPlayer>();
     private FriendPlayer player = new FriendPlayer();
     //for testing
-    private FriendPlayer friendtest1 = new FriendPlayer();
-    private FriendPlayer friendtest2 = new FriendPlayer();
-    private FriendPlayer friendtest3 = new FriendPlayer();
-    private FriendPlayer friendtest4 = new FriendPlayer();
+    //private FriendPlayer friendtest1 = new FriendPlayer();
+
 
 
     private enum Leaderboard
@@ -85,7 +71,6 @@ public class LeaderboardView : MonoBehaviour
         _scrollToMeButton1.onClick.AddListener(() => ScrollToMe(_scrollRect, _contentPanel));
         _scrollToMeButton2.onClick.AddListener(() => ScrollToMe(_scrollRect, _contentPanel));
         _scrollToMeButton3.onClick.AddListener(() => ScrollToMe(_scrollRect, _contentPanel));
-
 
         _playerName = ServerManager.Instance.Player.name.ToString();
         _playerClanName = ServerManager.Instance.Clan.name.ToString();
@@ -144,6 +129,7 @@ public class LeaderboardView : MonoBehaviour
                                 { _playerItem = item.GetComponent<RectTransform>(); }
 
                                 //apply all info to the podium
+
                                 _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan);
 
                                 if (clanLeaderboard.Count > 1) // make sure that list has enough members
@@ -371,13 +357,8 @@ public class LeaderboardView : MonoBehaviour
                 _friendsPlayersList.Clear();
 
                 //test friends to fill the leaderboard
-                _friendsPlayersList.Add(friendtest1);
-                _friendsPlayersList.Add(friendtest2);
-
-                //
-                friendtest1.name = "friendtest1";
-                friendtest2.name = "friendtest2";
-
+                //_friendsPlayersList.Add(friendtest1);
+                //friendtest1.name = "friendtest1";
 
                 foreach (FriendPlayer friend in OnlinePlayersPanel.Instance.Friendlist) //add friends to list
                 {
@@ -476,7 +457,6 @@ public class LeaderboardView : MonoBehaviour
 
                 if (_friendsPlayersList.Count < 20) //add empty items for testing
                 {
-
                     for (int i = _friendsPlayersList.Count + 1; i <= 20; i++)
                     {
                         LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _friendsContent).GetComponent<LeaderboardWinsItem>();
@@ -484,41 +464,6 @@ public class LeaderboardView : MonoBehaviour
                         item.Initialize(i, "", 0, null, "");
                     }
                 }
-
-                // For Testing
-
-                //for (int i = 1; i < 20; i++)
-                //{
-                //    if (i == 1) //add the podium to scroll view
-                //    {
-                //        LeaderboardPodium itemPod = Instantiate(_podium, parent: _friendsContent).GetComponent<LeaderboardPodium>();
-                //    }
-
-                //    if (i < 4)
-                //    {
-                //        _podium.InitilializePodium(i, "", 0, null);
-                //    }
-                //    else
-                //    {
-                //        LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _friendsContent).GetComponent<LeaderboardWinsItem>();
-
-                //        item.Initialize(i, "", 0, null, "");
-
-                //        /*
-                //        if (ranking.Player.Name == ServerManager.Instance.Player.name.ToString())
-                //        {
-                //            item.RecolorBackground();
-                //            _playerItem = item.GetComponent<RectTransform>();
-                //        }*/
-
-                //        // View player profile button
-                //        //item.OpenProfileButton.onClick.AddListener(() =>
-                //        //{
-                //        //    DataCarrier.AddData(DataCarrier.PlayerProfile, playerData);
-                //        //});
-
-                //    }
-                //}
                 break;
         }
     }
@@ -541,12 +486,9 @@ public class LeaderboardView : MonoBehaviour
 
     private void ScrollToMe(ScrollRect _scrollRect, Transform _contentPanel)
     {
-        Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaa");
 
         if (_playerItem != null)
         {
-            Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaa");
-
             RectTransform target = _playerItem;
 
             Vector2 listPostition = _scrollRect.viewport.localPosition;
@@ -559,7 +501,6 @@ public class LeaderboardView : MonoBehaviour
         }
 
         _scrollToTopButton.gameObject.SetActive(false);
-
     }
 
 }
