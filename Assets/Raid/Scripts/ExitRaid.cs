@@ -9,7 +9,8 @@ public class ExitRaid : MonoBehaviour
     {
         Trap,
         OutOfTime,
-        OutOfSpace
+        OutOfSpace,
+        PlayerExit
     }
 
     public event Action ExitedRaid;
@@ -20,6 +21,16 @@ public class ExitRaid : MonoBehaviour
     private void Awake()
     {
         ResolveReferences();
+    }
+
+    public void RequestExitRaid()
+    {
+        if (raidEnded)
+        {
+            return;
+        }
+
+        Raid_ExitConfirmationPopup.Show(() => EndRaid(RaidEndReason.PlayerExit));
     }
 
     public void EndRaid()
@@ -102,6 +113,8 @@ public class ExitRaid : MonoBehaviour
                 return Raid_EventPopup.Scenario.OutOfTime;
             case RaidEndReason.OutOfSpace:
                 return Raid_EventPopup.Scenario.OutOfSpace;
+            case RaidEndReason.PlayerExit:
+                return Raid_EventPopup.Scenario.PlayerExit;
             default:
                 return Raid_EventPopup.Scenario.EndTrap;
         }

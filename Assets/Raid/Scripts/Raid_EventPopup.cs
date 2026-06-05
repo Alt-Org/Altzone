@@ -12,7 +12,8 @@ public class Raid_EventPopup : MonoBehaviour
         Freeze,
         DoubleWeight,
         OutOfTime,
-        OutOfSpace
+        OutOfSpace,
+        PlayerExit
     }
 
     [Serializable]
