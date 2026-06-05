@@ -14,13 +14,15 @@ public class ConfirmationPopupHandler : MonoBehaviour
     [SerializeField] private GameObject Background;
     [SerializeField] private Image _itemIcon;
     [SerializeField] private TMP_Text _itemNameText;
-   // [SerializeField] private Image _sidewaysIcon;
+    [SerializeField] private TMP_Text _itemPriceText;
 
     [SerializeField] private TextLanguageSelectorCaller _confirmText;
     [SerializeField] private Button _acceptButton;
     [SerializeField] private Button _declineButton;
     [SerializeField] private Button _leftArrowButton;
     [SerializeField] private Button _rightArrowButton;
+
+    [SerializeField] private bool _furnitureShopPermission; //True=shop, false=voteväliaikainen ennen clanroles shop permissionin tarkastus implementaatiota
 
     private GameFurniture furniture;
     private AvatarPartInfo avatarpart;
@@ -50,22 +52,42 @@ public class ConfirmationPopupHandler : MonoBehaviour
 
         furniture = newFurniture;
         _itemNameText.text = furniture.Name;
+        _itemPriceText.text = furniture.Value.ToString();
         _itemIcon.sprite = furniture.FurnitureInfo.Image;
         _frontSprite = furniture.FurnitureInfo.Image;
         _sideSprite = furniture.FurnitureInfo.SidewaysImage;
-
         _showingFront = true;
 
-        _acceptButton.onClick.RemoveAllListeners();
-        _acceptButton.onClick.AddListener(()=>CreatePollPopup());
-        _declineButton.onClick.RemoveAllListeners();
-        _declineButton.onClick.AddListener(() => ClosePopup());
         _leftArrowButton.onClick.RemoveAllListeners();
         _leftArrowButton.onClick.AddListener(() => TogglePopupIcon());
         _rightArrowButton.onClick.RemoveAllListeners();
         _rightArrowButton.onClick.AddListener(() => TogglePopupIcon());
+        _declineButton.onClick.RemoveAllListeners();
+        _declineButton.onClick.AddListener(() => ClosePopup());
 
-        
+        if (_furnitureShopPermission)
+        {
+            _acceptButton.onClick.RemoveAllListeners();
+            _acceptButton.onClick.AddListener(() => BuyFurniturePiece());
+
+            switch (SettingsCarrier.Instance.Language)
+            {
+                case SettingsCarrier.LanguageType.Finnish:
+                    _confirmText.SetText("Haluatko varmasti ostaa tämän huonekalun?");
+                    break;
+                case SettingsCarrier.LanguageType.English:
+                    _confirmText.SetText("Are you sure you want to buy this item?");
+                    break;
+                default:
+                    _confirmText.SetText("Haluatko varmasti ostaa tämän huonekalun?");
+                    break;
+            }
+        }
+        else
+        {
+            _acceptButton.onClick.RemoveAllListeners();
+            _acceptButton.onClick.AddListener(() => CreatePollPopup());
+
             switch (SettingsCarrier.Instance.Language)
             {
                 case SettingsCarrier.LanguageType.Finnish:
@@ -78,6 +100,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
                     _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
                     break;
             }
+        }//else
     }
 
     private void SetPopupActiveAvatarPart(AvatarPartInfo part, Sprite icon, string itemName)
@@ -87,6 +110,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         _itemNameText.text = itemName;
         _itemIcon.sprite = icon;
         avatarpart = part;
+        _itemPriceText.text = "100"; //Part.Value.ToString(); (muokkaa ensin GameFurnitureVisualizer:ista
         _acceptButton.onClick.RemoveAllListeners();
         _acceptButton.onClick.AddListener(() => BuyAvatarPiece());
         _declineButton.onClick.RemoveAllListeners();
@@ -159,6 +183,12 @@ public class ConfirmationPopupHandler : MonoBehaviour
         ClosePopup();
     }
 
+    private void BuyFurniturePiece() //placeholderi ostomekanismille
+    {
+        Debug.Log("Ostit juuri huonekalun");
+        ClosePopup();
+    }
+
     public IEnumerator CreateClanStallPollPopupCoroutine()
     {
         
@@ -173,7 +203,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
 
     }
 
-    private void TogglePopupIcon()
+    private void TogglePopupIcon() //huonekalujen kääntäminen popupissa
     {
         if (_showingFront && _sideSprite == null) return;
         _showingFront = !_showingFront;
