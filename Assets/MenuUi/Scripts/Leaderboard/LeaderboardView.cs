@@ -50,7 +50,9 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private List<ScrollRect> _scrollRectScrollToMeList = new List<ScrollRect>();
     [SerializeField] private List<RectTransform> _contentPanelScrollToMeList = new List<RectTransform>();
 
-    [SerializeField] private Button _scrollToMeButton;
+    [SerializeField] private Button _scrollToMeButton1;
+    [SerializeField] private Button _scrollToMeButton2;
+    [SerializeField] private Button _scrollToMeButton3;
     private RectTransform _playerItem;
 
     //friend leaderboard
@@ -81,7 +83,9 @@ public class LeaderboardView : MonoBehaviour
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
         _globalClansLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalClans));
         _scrollToTopButton.onClick.AddListener(() => ScrollToTop(_scrollRect));
-        _scrollToMeButton.onClick.AddListener(() => ScrollToMe(_scrollRect, _contentPanel));
+        _scrollToMeButton1.onClick.AddListener(() => ScrollToMe(_scrollRect, _contentPanel));
+        _scrollToMeButton2.onClick.AddListener(() => ScrollToMe(_scrollRect, _contentPanel));
+        _scrollToMeButton3.onClick.AddListener(() => ScrollToMe(_scrollRect, _contentPanel));
     }
 
     private void OnEnable()
@@ -441,7 +445,7 @@ public class LeaderboardView : MonoBehaviour
                 if (_friendsPlayersList.Count < 20) //add empty items for testing
                 {
 
-                    for (int i = _friendsPlayersList.Count + 1; i < 20; i++)
+                    for (int i = _friendsPlayersList.Count + 1; i <= 20; i++)
                     {
                         LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _friendsContent).GetComponent<LeaderboardWinsItem>();
 
@@ -505,8 +509,12 @@ public class LeaderboardView : MonoBehaviour
 
     private void ScrollToMe(ScrollRect _scrollRect, Transform _contentPanel)
     {
+        Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaa");
+
         if (_playerItem != null)
         {
+            Debug.Log("aaaaaaaaaaaaaaaaaaaaaaaa");
+
             RectTransform target = _playerItem;
 
             Vector2 listPostition = _scrollRect.viewport.localPosition;
