@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using Altzone.Scripts.Language;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class Raid_EventPopup : MonoBehaviour
@@ -20,7 +22,9 @@ public class Raid_EventPopup : MonoBehaviour
     private class ScenarioVisual
     {
         public Scenario Scenario;
-        public string Message;
+        [FormerlySerializedAs("Message")]
+        [TextArea(1, 3)] public string FinnishMessage;
+        [TextArea(1, 3)] public string EnglishMessage;
         public Sprite BackgroundSprite = null;
         public Color BackgroundColor = new Color(0f, 0f, 0f, 0.55f);
         public Sprite Effect = null;
@@ -28,7 +32,9 @@ public class Raid_EventPopup : MonoBehaviour
         public Color TextColor = Color.white;
         public Sprite Image = null;
         public Sprite SecondaryImage = null;
-        public string MultText = "";
+        [FormerlySerializedAs("MultText")]
+        [TextArea(1, 3)] public string FinnishMultText = "";
+        [TextArea(1, 3)] public string EnglishMultText = "";
     }
 
     private const string PopupResourcePath = "Prefabs/RaidEventPopup";
@@ -108,10 +114,11 @@ public class Raid_EventPopup : MonoBehaviour
     {
         ScenarioVisual visual = GetScenarioVisual(scenario);
 
-        messageText.text = visual.Message;
-        MultText.text = visual.MultText;
-        messageText.color = visual.TextColor;
-        MultText.color = visual.TextColor;
+        string message = GetLocalizedText(visual.FinnishMessage, visual.EnglishMessage);
+        string multText = GetLocalizedText(visual.FinnishMultText, visual.EnglishMultText);
+
+        SetLocalizedText(messageText, message, visual.TextColor);
+        SetLocalizedText(MultText, multText, visual.TextColor);
 
         ApplyImage(backgroundImage, visual.BackgroundSprite, visual.BackgroundColor);
         ApplyImage(effectImage, visual.Effect, visual.EffectColor);
@@ -135,7 +142,7 @@ public class Raid_EventPopup : MonoBehaviour
 
         if (MultText != null)
         {
-            MultText.gameObject.SetActive(!string.IsNullOrWhiteSpace(visual.MultText));
+            MultText.gameObject.SetActive(!string.IsNullOrWhiteSpace(multText));
         }
     }
 
@@ -155,8 +162,42 @@ public class Raid_EventPopup : MonoBehaviour
         return new ScenarioVisual
         {
             Scenario = scenario,
-            Message = "The raid is ending."
+            FinnishMessage = "Ry\u00f6st\u00f6 p\u00e4\u00e4ttyy.",
+            EnglishMessage = "The raid is ending."
         };
+    }
+
+    private string GetLocalizedText(string finnishText, string englishText)
+    {
+        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+        {
+            return string.IsNullOrWhiteSpace(englishText) ? finnishText : englishText;
+        }
+
+        return string.IsNullOrWhiteSpace(finnishText) ? englishText : finnishText;
+    }
+
+    private void SetLocalizedText(
+        TextMeshProUGUI textField,
+        string text,
+        Color textColor)
+    {
+        if (textField == null)
+        {
+            return;
+        }
+
+        TextLanguageSelectorCaller textLanguageSelector = textField.GetComponent<TextLanguageSelectorCaller>();
+        if (textLanguageSelector != null)
+        {
+            textLanguageSelector.SetText(text);
+        }
+        else
+        {
+            textField.text = text;
+        }
+
+        textField.color = textColor;
     }
 
     private void ApplyImage(Image image, Sprite sprite, Color color)
