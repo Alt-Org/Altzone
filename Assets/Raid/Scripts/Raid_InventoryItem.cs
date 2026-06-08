@@ -36,6 +36,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     [SerializeField] private float speed = 15f;
     [SerializeField] private TMP_Text ItemWeightPopUp;
     [SerializeField] private TMP_Text ItemWeightText;
+    [SerializeField] private bool showItemWeightText = false;
 
     public event Action<Raid_InventoryItem> OnItemClicked;
 
@@ -98,9 +99,15 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         furnitureData = gameFurniture;
         ItemImage.gameObject.SetActive(true);
         ItemImage.sprite = gameFurniture.FurnitureInfo.Image;
-        ItemWeightText.text = ItemWeight + "kg";
+        SetItemWeightTextActive(showItemWeightText);
         empty = false;
         SetBGColor();
+    }
+
+    public void SetShowItemWeightText(bool show)
+    {
+        showItemWeightText = show;
+        SetItemWeightTextActive(showItemWeightText);
     }
 
     public void RemoveData()
@@ -275,5 +282,16 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
             
 
+    }
+
+    private void SetItemWeightTextActive(bool isActive)
+    {
+        if (ItemWeightText == null)
+        {
+            return;
+        }
+
+        ItemWeightText.gameObject.SetActive(isActive);
+        ItemWeightText.text = ItemWeight + "kg";
     }
 }

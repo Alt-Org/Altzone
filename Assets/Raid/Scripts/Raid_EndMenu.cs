@@ -34,6 +34,7 @@ public class Raid_EndMenu : MonoBehaviour
             itemTransform.anchorMin = new Vector2(0.5f, 0.5f);
             itemTransform.anchorMax = new Vector2(0.5f, 0.5f);
             itemTransform.anchoredPosition = Vector2.zero;
+            UIItem.SetShowItemWeightText(true);
             UIItem.SetData(lootList[i]);
         }
     }
