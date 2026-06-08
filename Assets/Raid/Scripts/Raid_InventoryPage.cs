@@ -24,7 +24,7 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private bool spectator = false;
     [SerializeField] private bool firstItem = true;
     [SerializeField, Min(1)] private int trapAmount = 3;
-    [SerializeField, Min(0f)] private float freezeDuration = 3f;
+    [SerializeField, Min(0f)] private float freezeDuration = 10f;
     [SerializeField, Min(1f)] private float doubleWeightMultiplier = 2f;
 
     [System.Serializable]
@@ -150,7 +150,7 @@ public class Raid_InventoryPage : MonoBehaviour
                         exitraid.EndRaid();
                         break;
                     case 1:
-                        Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.Freeze);
+                        Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.Freeze, freezeDuration);
                         StartFreeze();
                         break;
                     case 2:

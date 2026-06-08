@@ -62,7 +62,22 @@ public class Raid_EventPopup : MonoBehaviour
         owner.StartCoroutine(ShowAndWait(owner, scenario));
     }
 
+    public static void Show(MonoBehaviour owner, Scenario scenario, float duration)
+    {
+        if (owner == null)
+        {
+            return;
+        }
+
+        owner.StartCoroutine(ShowAndWait(owner, scenario, duration));
+    }
+
     public static IEnumerator ShowAndWait(MonoBehaviour owner, Scenario scenario, Action onComplete = null)
+    {
+        yield return ShowAndWait(owner, scenario, -1f, onComplete);
+    }
+
+    public static IEnumerator ShowAndWait(MonoBehaviour owner, Scenario scenario, float duration, Action onComplete = null)
     {
         Raid_EventPopup popup = GetOrCreate();
         if (popup == null)
@@ -71,7 +86,7 @@ public class Raid_EventPopup : MonoBehaviour
             yield break;
         }
 
-        yield return popup.ShowRoutine(scenario);
+        yield return popup.ShowRoutine(scenario, duration);
         onComplete?.Invoke();
     }
 
@@ -96,7 +111,7 @@ public class Raid_EventPopup : MonoBehaviour
         return instance;
     }
 
-    private IEnumerator ShowRoutine(Scenario scenario)
+    private IEnumerator ShowRoutine(Scenario scenario, float duration)
     {
         ApplyScenarioVisual(scenario);
 
@@ -106,7 +121,7 @@ public class Raid_EventPopup : MonoBehaviour
             canvasGroup.alpha = 1f;
         }
 
-        yield return new WaitForSeconds(showTime);
+        yield return new WaitForSeconds(duration >= 0f ? duration : showTime);
         gameObject.SetActive(false);
     }
 

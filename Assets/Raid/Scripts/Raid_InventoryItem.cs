@@ -15,6 +15,9 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     [SerializeField] public float ItemWeight;
     [SerializeField] private GameObject Lock;
     [SerializeField] private GameObject Bomb;
+    [SerializeField] private Image BombImage;
+    [SerializeField] private Animator BombAnimator;
+    [SerializeField] private Sprite[] TrapSprites;
     [SerializeField] private GameObject BombIndicator;
     [SerializeField] private GameObject ItemBall;
     [SerializeField] private GameObject Heart;
@@ -147,11 +150,44 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             {
                 Bomb.transform.localScale = new Vector2(3f, 3f);
             }
+            SetTriggeredTrapSprite();
             Bomb.SetActive(true);
             triggered = true;
             audioSource.PlayOneShot(explosion, SettingsCarrier.Instance.SentVolume(GetComponent<SetVolume>()._soundType));
         }
         BombIndicator.SetActive(false);
+    }
+
+    private void SetTriggeredTrapSprite()
+    {
+        if (BombAnimator == null && Bomb != null)
+        {
+            BombAnimator = Bomb.GetComponent<Animator>();
+        }
+
+        if (BombAnimator != null)
+        {
+            BombAnimator.enabled = false;
+        }
+
+        if (BombImage == null && Bomb != null)
+        {
+            BombImage = Bomb.GetComponent<Image>();
+        }
+
+        if (BombImage == null || TrapSprites == null || _bombType < 0 || _bombType >= TrapSprites.Length)
+        {
+            return;
+        }
+
+        Sprite trapSprite = TrapSprites[_bombType];
+        if (trapSprite == null)
+        {
+            return;
+        }
+
+        BombImage.sprite = trapSprite;
+        BombImage.preserveAspect = true;
     }
     public void LaunchBall()
     {

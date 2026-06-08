@@ -322,6 +322,12 @@ MonoBehaviour:
   ItemWeight: 0
   Lock: {fileID: 8338977754596052433}
   Bomb: {fileID: 8434505224719341188}
+  BombImage: {fileID: 8270360087515212976}
+  BombAnimator: {fileID: 0}
+  TrapSprites:
+  - {fileID: 21300000, guid: 203e9d7fbfc3ab146b3a5efe940bd4fc, type: 3}
+  - {fileID: 21300000, guid: f3ee01a8f86d9eb4fb65049758f18bc8, type: 3}
+  - {fileID: 21300000, guid: 8cc5377ca2937f7419b6eec45686c507, type: 3}
   BombIndicator: {fileID: 8745855877302435985}
   ItemBall: {fileID: 5999612523393728091}
   Heart: {fileID: 0}
@@ -1078,7 +1084,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8434505224719341188}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: ee49418163dfc80449ad5fb579945a39, type: 2}
   m_CullingMode: 0
