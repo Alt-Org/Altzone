@@ -968,9 +968,9 @@ MonoBehaviour:
   YesVoters: {fileID: 1927139454889629908}
   NoVoters: {fileID: 4809653007255921631}
   ShowVoteButton: {fileID: 2832380446699632535}
-  playerHeads: {fileID: 6064110939339283093}
-  avatarHandleGameObject: {fileID: 3881937096591514856}
-  avatarFaceLoader: {fileID: 4717683528023764387}
+  playerHeads: {fileID: 0}
+  avatarHandleGameObject: {fileID: 0}
+  avatarFaceLoader: {fileID: 0}
 --- !u!114 &4626450132857449425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3803,18 +3803,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 2
   m_AspectRatio: 1
---- !u!114 &4717683528023764387 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2907023324437588145, guid: 242eb41c9b6db9841a5c6610aa625c54,
-    type: 3}
-  m_PrefabInstance: {fileID: 7579354092601984274}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3881937096591514856}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39ec419aaf903c747b6c6e5ac7dd4bbd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &6183924341459442871 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,

@@ -200,7 +200,7 @@ public class PollObject : MonoBehaviour
     {
         // Reset UI elements
         Image.gameObject.SetActive(false);
-        avatarHandleGameObject.SetActive(false);
+        // avatarHandleGameObject.SetActive(false);
 
         if (InfoBackground != null)
         {
@@ -272,7 +272,7 @@ public class PollObject : MonoBehaviour
 
     private void SetClanRoleData(ClanRolePollData clanRolePoll)
     {
-        avatarHandleGameObject.SetActive(true);
+        // avatarHandleGameObject.SetActive(true);
 
         string memberName = "Unknown";
         string roleName = "None";
@@ -322,7 +322,8 @@ public class PollObject : MonoBehaviour
         }
 
         Image.gameObject.SetActive(true);
-        PollTypeText.text = furniturePollData.Furniture.Name;
+        var info = furniturePollData.Furniture.FurnitureInfo;
+        PollTypeText.text = $"{info.SetName} {info.VisibleName}";
 
         bool isBuying = furniturePollData.FurniturePollType == FurniturePollType.Buying;
         TradeBackground.color = isBuying ? _green : _red;
@@ -330,22 +331,21 @@ public class PollObject : MonoBehaviour
 
         Price.text = furniturePollData.Furniture.Value.ToString();
 
-        Sprite ribbonSprite = null;
 
         // Fetch the furniture info from StorageFurnitureReference
         FurnitureInfo furnitureInfo = StorageFurnitureReference.Instance.GetFurnitureInfo(furniturePollData.Furniture.Name);
         if (furnitureInfo != null && furnitureInfo.RibbonImage != null)
         {
-            ribbonSprite = furnitureInfo.RibbonImage;
+            Image.sprite = furnitureInfo.RibbonImage;
+        } else
+        {
+            Image.sprite = furniturePollData.Sprite;
         }
 
-        // In the case of ribbonSprite is missing, show the normal furniture sprite
-        Image.sprite = ribbonSprite ?? furniturePollData.Sprite;
-
+        /*
         // Poll description for Furniture Polls
         if (PollDescriptionText != null && furniturePollData.Furniture != null)
         {
-            string furnitureName = furniturePollData.Furniture.Name ?? "Unknown Item";
             string priceText = furniturePollData.Furniture.Value.ToString();
             if (furniturePollData.FurniturePollType is FurniturePollType.Buying)
             {
@@ -356,6 +356,7 @@ public class PollObject : MonoBehaviour
                 PollDescriptionText.text = $"Suggesting {furnitureName} to be sold for {priceText}";
             }
         }
+        */
     }
 
 
@@ -397,15 +398,15 @@ public class PollObject : MonoBehaviour
 
         AvatarVisualData visualData = AvatarDesignLoader.Instance.LoadAvatarDesign(targetPlayer);
 
-        if (visualData != null && avatarFaceLoader != null)
-        {
-            Debug.LogWarning($"Loaded AvatarData successfully for {targetMember.Name}");
-            avatarFaceLoader.UpdateVisuals(visualData);
-        }
-        else
-        {
-            Debug.LogWarning($"Failed to load AvatarData for {targetMember.Name}");
-        }
+        // if (visualData != null && avatarFaceLoader != null)
+        // {
+        //     Debug.LogWarning($"Loaded AvatarData successfully for {targetMember.Name}");
+        //     // avatarFaceLoader.UpdateVisuals(visualData);
+        // }
+        // else
+        // {
+        //     Debug.LogWarning($"Failed to load AvatarData for {targetMember.Name}");
+        // }
     }
 
     public void SetPollId(string newPollId)

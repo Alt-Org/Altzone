@@ -5,9 +5,8 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Voting;
 using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.Model.Poco.Player;
+using MenuUI.Scripts;
 using System;
 
 public class PollInfoPopup : MonoBehaviour
@@ -19,6 +18,7 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text setNameText;
     [SerializeField] private TMP_Text weightText;
     [SerializeField] private TMP_Text valueText;
+    [SerializeField] private TMP_Text authorName;
     [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text artistNameText;
@@ -57,6 +57,7 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text clanTargetRoleText;
 
     private PollData _currentPollData;
+    private ServerPoll _pollOrganizer;
     public bool IsPollEnded { get; set; } = false;
 
     private void Awake()
@@ -105,13 +106,15 @@ public class PollInfoPopup : MonoBehaviour
         if (timer == null)
             return;
 
-        if (IsPollEnded) {
+        if (IsPollEnded)
+        {
             var endDateTime = DateTimeOffset.FromUnixTimeSeconds(_currentPollData.EndTime).ToLocalTime();
             timer.text = endDateTime.ToString("d.M. HH:mm");
             return;
         }
 
-        if (secondsLeft == -1) {
+        if (secondsLeft == -1)
+        {
             long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             secondsLeft = _currentPollData.EndTime - currentTime;
         }
@@ -151,9 +154,11 @@ public class PollInfoPopup : MonoBehaviour
         bool isBuying = furnitureData.FurniturePollType == FurniturePollType.Buying;
         tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
 
-        nameText.text = furnitureData.Furniture.Name ?? "";
-        iconImage.sprite = furnitureData.Furniture.FurnitureInfo?.Image;
-        descriptionText.text = furnitureData.Furniture.FurnitureInfo?.ArtisticDescription ?? "";
+        var info = furnitureData.Furniture.FurnitureInfo;
+        nameText.text = $"{info?.SetName} {info?.VisibleName}";
+
+        iconImage.sprite = info?.Image;
+        descriptionText.text = $"{info?.ArtisticDescription}";
         valueText.text = $"{furnitureData.Furniture.Value}";
 
         /*
@@ -211,7 +216,8 @@ public class PollInfoPopup : MonoBehaviour
         if (clanRolePollInfoObject != null) clanRolePollInfoObject.SetActive(false);
     }
 
-    private void SetGreenFill(int yesCount, int noCount) {
+    private void SetGreenFill(int yesCount, int noCount)
+    {
         int totalCount = yesCount + noCount;
 
         float fillValue;
@@ -244,9 +250,14 @@ public class PollInfoPopup : MonoBehaviour
 
         _currentPollData.AddVote(answer, result =>
         {
+            if (!result)
+            {
+                SignalBus.OnChangePopupInfoSignal("Äänen antaminen epäonnistui");
+
+            }
             voteButtons.SetActive(false);
             voteBar.SetActive(true);
-            SetGreenFill(yesCount, noCount);
+
             VotingActions.ReloadPollList?.Invoke();
         });
     }
