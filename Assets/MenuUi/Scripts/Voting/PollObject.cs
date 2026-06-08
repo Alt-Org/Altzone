@@ -454,25 +454,18 @@ public class PollObject : MonoBehaviour
 
     public void ShowPollInfoPopup()
     {
+        if (PollInfoPopup.Instance == null)
+        {
+            Debug.LogWarning("PollInfoPopup instance is not found in the scene.");
+            return;
+        }
+
         if (pollData is FurniturePollData furniturePollData && furniturePollData.Furniture != null)
         {
-            if (PollInfoPopup.Instance != null)
-            {
-                PollInfoPopup.Instance.OpenFurniturePopup(pollData);
-            }
-            else
-            {
-                Debug.LogWarning("PollInfoPopup instance is not found in the scene.");
-            }
+                PollInfoPopup.Instance.OpenPopup(furniturePollData);
         }
         else if (pollData is ClanRolePollData clanRolePoll)
         {
-            if (PollInfoPopup.Instance == null)
-            {
-                Debug.LogWarning("PollInfoPopup instance is not found in the scene.");
-                return;
-            }
-
             // Start coroutine to fetch clan data
             StartCoroutine(FetchClanMemberAndOpenPopup(clanRolePoll));
         }

@@ -133,7 +133,7 @@ public class PollInfoPopup : MonoBehaviour
     }
 
     // Opens the popup and fills it with the data from the furniture in question
-    public void OpenFurniturePopup(PollData pollData)
+    public void OpenPopup(FurniturePollData pollData)
     {
         if (pollData == null)
         {
@@ -141,15 +141,21 @@ public class PollInfoPopup : MonoBehaviour
             return;
         }
 
-        _currentPollData = pollData;
-
-        SetValues();
+        SetValues(pollData);
     }
 
-    // We assume all data is furniture data for now
-    private void SetValues()
+    public void OpenPopup(ClanRolePollData roleData)
     {
-        var furnitureData = _currentPollData as FurniturePollData;
+        if (roleData == null)
+        {
+            Debug.LogWarning("PollInfoPopup Open called with null role!");
+            return;
+        }
+
+        SetValues(roleData);
+    }
+
+    private void SetFurnitureData(FurniturePollData furnitureData) {
         if (furnitureData == null || furnitureData.Furniture == null) return;
 
         bool isBuying = furnitureData.FurniturePollType == FurniturePollType.Buying;
@@ -161,28 +167,17 @@ public class PollInfoPopup : MonoBehaviour
         iconImage.sprite = info?.Image;
         descriptionText.text = $"{info?.ArtisticDescription}";
         valueText.text = $"{furnitureData.Furniture.Value}";
+    }
 
-        /*
-        setNameText.text = furnitureData.Furniture.FurnitureInfo?.SetName ?? "";
-
-        string artistName = furniture.FurnitureInfo?.ArtistName;
-        artistNameText.text = string.IsNullOrEmpty(artistName) ? "" : $"Artist: {artistName}";
-
-        weightText.text = $"Weight: {furniture.Weight}";
-        rarityText.text = $"Rarity: {furniture.Rarity}";
-
-        // Apply colour to the two background images of the card based on rarityColourReference
-        if (rarityColourReference != null)
-        {
-            Color rarityColor = rarityColourReference.GetColor(furniture.Rarity);
-            rarityImage.color = rarityColor;
-
-            if (frontRarityImage != null)
-            {
-                frontRarityImage.color = rarityColor;
-            }
+    private void SetValues(PollData pollData)
+    {
+        _currentPollData = pollData;
+        if (pollData is FurniturePollData) {
+            SetFurnitureData(pollData as FurniturePollData);
         }
-        */
+        else if (pollData is ClanRolePollData) {
+            Debug.LogError("Clan role polls are not setup");
+        }
 
         UpdateTimerDisplay();
 
@@ -250,6 +245,7 @@ public class PollInfoPopup : MonoBehaviour
         int noCount = _currentPollData.NoVotes.Count;
         if (answer) yesCount += 1;
         else noCount += 1;
+        SetGreenFill(yesCount, noCount);
 
         _currentPollData.AddVote(answer, result =>
         {
