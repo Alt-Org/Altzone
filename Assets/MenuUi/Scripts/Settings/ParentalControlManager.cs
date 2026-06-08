@@ -11,6 +11,8 @@ public class ParentalControlManager : MonoBehaviour
     public GameObject parentalControlPanel;
     public GameObject passwordPanel;
     public GameObject parentalControlSettings;
+    public TMP_Text description;
+
     //public InputField passwordInput;
     public TMP_InputField passwordInput;
     public Toggle logInPasswordVisibilityToggle;
@@ -206,6 +208,7 @@ public class ParentalControlManager : MonoBehaviour
                 parentalControlSettings.SetActive(true);
                 passwordInput.text = "";
                 passwordPanel.SetActive(false);
+                description.enabled = false;
 
 
             }
@@ -232,7 +235,8 @@ public class ParentalControlManager : MonoBehaviour
     {
         parentalControlSettings.SetActive(false);
         passwordPanel.SetActive(true);
-        
+        description.enabled = true;
+
 
     }
 
@@ -642,13 +646,13 @@ public class ParentalControlManager : MonoBehaviour
         //changes the eye icon to open eye and password to visible text
         if (popupPasswordInput.contentType == TMP_InputField.ContentType.Password)
         {
-            eyeButton.image.sprite = eyeOpen;
+            popupEye.image.sprite = eyeOpen;
             popupPasswordInput.contentType = TMP_InputField.ContentType.Standard;
         }
         else
         {
             popupPasswordInput.contentType = TMP_InputField.ContentType.Password;
-            eyeButton.image.sprite = eyeClosed;
+            popupEye.image.sprite = eyeClosed;
         }
 
         popupPasswordInput.Select();
@@ -660,13 +664,13 @@ public class ParentalControlManager : MonoBehaviour
         //changes the eye icon to open eye and password to visible text
         if (confirmPasswordInput.contentType == TMP_InputField.ContentType.Password)
         {
-            eyeButton.image.sprite = eyeOpen;
+            confirmEye.image.sprite = eyeOpen;
             confirmPasswordInput.contentType = TMP_InputField.ContentType.Standard;
         }
         else
         {
             confirmPasswordInput.contentType = TMP_InputField.ContentType.Password;
-            eyeButton.image.sprite = eyeClosed;
+            confirmEye.image.sprite = eyeClosed;
         }
 
         confirmPasswordInput.Select();
