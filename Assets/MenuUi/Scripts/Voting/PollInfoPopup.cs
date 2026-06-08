@@ -38,6 +38,7 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text noVotes;
     [SerializeField] private TMP_Text yesVotesButton;
     [SerializeField] private TMP_Text noVotesButton;
+    [SerializeField] private AddPlayerHeads playerHeads;
 
     [Header("Rarity Color Reference")]
     [SerializeField] private RarityColourReference rarityColourReference;
@@ -185,14 +186,12 @@ public class PollInfoPopup : MonoBehaviour
 
         UpdateTimerDisplay();
 
-        string currentPollId = _currentPollData.Id;
         // Enable and disable vote buttons and list based on whether the player has voted on the poll
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
         {
             if (this == null || data == null) return;
 
             bool hasVoted = !_currentPollData.NotVoted.Contains(data.Id);
-            Debug.Log(hasVoted);
 
             voteButtons.SetActive(!hasVoted);
             voteBar.SetActive(hasVoted);
@@ -204,6 +203,10 @@ public class PollInfoPopup : MonoBehaviour
 
                 yesButton.onClick.AddListener(() => OnVoteButtonClicked(true));
                 noButton.onClick.AddListener(() => OnVoteButtonClicked(false));
+            }
+            else
+            {
+                playerHeads.InstantiateHeads(_currentPollData.Id);
             }
         });
 
@@ -253,12 +256,13 @@ public class PollInfoPopup : MonoBehaviour
             if (!result)
             {
                 SignalBus.OnChangePopupInfoSignal("Äänen antaminen epäonnistui");
-
+                return;
             }
             voteButtons.SetActive(false);
             voteBar.SetActive(true);
 
             VotingActions.ReloadPollList?.Invoke();
+            playerHeads.InstantiateHeads(_currentPollData.Id);
         });
     }
 
