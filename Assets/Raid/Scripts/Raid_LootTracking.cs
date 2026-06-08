@@ -22,6 +22,10 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     //public PhotonView _photonView { get; private set; }
     public List<GameFurniture> ListOfCollectedLoot = new List<GameFurniture>();
+    private readonly Dictionary<string, float> _clanCurrentWeights = new();
+    private readonly Dictionary<string, float> _clanMaxWeights = new();
+    private readonly Dictionary<string, List<GameFurniture>> _clanCollectedLoot = new();
+    private string _displayedClanId = string.Empty;
 
     public void Awake()
     {
@@ -60,6 +64,42 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         UpdateHeartLootText();
     }
 
+    public void ResetClanLootCounts()
+    {
+        _clanCurrentWeights.Clear();
+        _clanMaxWeights.Clear();
+        _clanCollectedLoot.Clear();
+        ListOfCollectedLoot = new List<GameFurniture>();
+        CurrentLootWeight = 0;
+        CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
+        OutOfText.text = "Out of";
+        MaxLootText.text = MaxLootWeight.ToString() + " kg";
+        UpdateHeartLootText();
+    }
+
+    public void SetDisplayedClan(string clanId)
+    {
+        _displayedClanId = clanId ?? string.Empty;
+        EnsureClanState(_displayedClanId, MaxLootWeight);
+        RefreshDisplayedClanValues();
+    }
+
+    public void SetClanLimit(string clanId, float maxLootWeight)
+    {
+        if (string.IsNullOrWhiteSpace(clanId))
+        {
+            return;
+        }
+
+        EnsureClanState(clanId, maxLootWeight);
+        _clanMaxWeights[clanId] = maxLootWeight;
+
+        if (clanId == _displayedClanId)
+        {
+            RefreshDisplayedClanValues();
+        }
+    }
+
     public void SetLootCount(GameFurniture furniture, float MaxLootWeight, float lootWeightMultiplier = 1f)
     {
         float AddedLootWeight = (float)furniture.Weight * lootWeightMultiplier;
@@ -73,40 +113,124 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         UpdateHeartLootText();
         if (CurrentLootWeight > MaxLootWeight)
         {
-            //EndScreen
+            TriggerOverWeightEnd(MaxLootWeight);
+        }
+    }
 
-            //HeartBreak animation
-            Color tmp = raid_References.Heart.GetComponent<Image>().color;
-            Image[] children = raid_References.HeartHalves.GetComponentsInChildren<Image>();
-            foreach (Image image in children)
-            {
-                image.color = tmp;
-            }
-            raid_References.HeartHalves.SetActive(true);
-            raid_References.Heart.GetComponent<Image>().enabled = false;
+    public void SetClanLootCount(string clanId, GameFurniture furniture, float maxLootWeight, float lootWeightMultiplier = 1f)
+    {
+        if (string.IsNullOrWhiteSpace(clanId) || furniture == null)
+        {
+            return;
+        }
 
-            if (exitRaid != null)
-            {
-                exitRaid.EndRaid(ExitRaid.RaidEndReason.OutOfSpace);
-            }
-            else
-            {
-                Raid_EndMenu endMenu = raid_References.EndMenu.GetComponent<Raid_EndMenu>();
-                if (endMenu != null)
-                {
-                    endMenu.SetEndReasonText(ExitRaid.RaidEndReason.OutOfSpace);
-                    endMenu.SetOverWeightLimitBackground(true);
-                    endMenu.SetSpaceRemainingText(CurrentLootWeight, MaxLootWeight);
-                }
+        float configuredMaxWeight = ResolveClanMaxWeight(clanId, maxLootWeight);
+        EnsureClanState(clanId, configuredMaxWeight);
 
-                raid_References.EndMenu.SetActive(true);
-            }
+        float addedLootWeight = (float)furniture.Weight * lootWeightMultiplier;
+        _clanCollectedLoot[clanId].Add(furniture);
+        _clanCurrentWeights[clanId] += addedLootWeight;
+
+        if (clanId != _displayedClanId)
+        {
+            return;
+        }
+
+        RefreshDisplayedClanValues();
+        if (CurrentLootWeight > MaxLootWeight)
+        {
+            TriggerOverWeightEnd(MaxLootWeight);
         }
     }
 
     private void UpdateHeartLootText()
     {
         HeartLootText.text = $"{CurrentLootWeight:F0}kg\n/{MaxLootWeight:F0}kg";
+    }
+
+    private float ResolveClanMaxWeight(string clanId, float fallbackMaxWeight)
+    {
+        if (_clanMaxWeights.TryGetValue(clanId, out float configuredMaxWeight) && configuredMaxWeight > 0f)
+        {
+            return configuredMaxWeight;
+        }
+
+        if (fallbackMaxWeight > 0f)
+        {
+            return fallbackMaxWeight;
+        }
+
+        return MaxLootWeight;
+    }
+
+    private void EnsureClanState(string clanId, float maxLootWeight)
+    {
+        if (string.IsNullOrWhiteSpace(clanId))
+        {
+            return;
+        }
+
+        if (!_clanCurrentWeights.ContainsKey(clanId))
+        {
+            _clanCurrentWeights[clanId] = 0f;
+        }
+
+        if (!_clanMaxWeights.ContainsKey(clanId))
+        {
+            _clanMaxWeights[clanId] = maxLootWeight;
+        }
+
+        if (!_clanCollectedLoot.ContainsKey(clanId))
+        {
+            _clanCollectedLoot[clanId] = new List<GameFurniture>();
+        }
+    }
+
+    private void RefreshDisplayedClanValues()
+    {
+        if (string.IsNullOrWhiteSpace(_displayedClanId))
+        {
+            return;
+        }
+
+        EnsureClanState(_displayedClanId, MaxLootWeight);
+        CurrentLootWeight = _clanCurrentWeights[_displayedClanId];
+        MaxLootWeight = _clanMaxWeights[_displayedClanId];
+        ListOfCollectedLoot = _clanCollectedLoot[_displayedClanId];
+        CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
+        OutOfText.text = "Out of";
+        MaxLootText.text = MaxLootWeight.ToString() + " kg";
+        UpdateHeartLootText();
+    }
+
+    private void TriggerOverWeightEnd(float maxLootWeight)
+    {
+        //HeartBreak animation
+        Color tmp = raid_References.Heart.GetComponent<Image>().color;
+        Image[] children = raid_References.HeartHalves.GetComponentsInChildren<Image>();
+        foreach (Image image in children)
+        {
+            image.color = tmp;
+        }
+        raid_References.HeartHalves.SetActive(true);
+        raid_References.Heart.GetComponent<Image>().enabled = false;
+
+        if (exitRaid != null)
+        {
+            exitRaid.EndRaid(ExitRaid.RaidEndReason.OutOfSpace);
+        }
+        else
+        {
+            Raid_EndMenu endMenu = raid_References.EndMenu.GetComponent<Raid_EndMenu>();
+            if (endMenu != null)
+            {
+                endMenu.SetEndReasonText(ExitRaid.RaidEndReason.OutOfSpace);
+                endMenu.SetOverWeightLimitBackground(true);
+                endMenu.SetSpaceRemainingText(CurrentLootWeight, maxLootWeight);
+            }
+
+            raid_References.EndMenu.SetActive(true);
+        }
     }
     
 }

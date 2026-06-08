@@ -14,6 +14,14 @@ public class Raid_References : MonoBehaviour
     public Raid_InventoryHandler inventoryHandler;
     public Raid_LootTracking raid_LootTracking;
 
+    private void Awake()
+    {
+        if (GetComponent<RaidMatchmakingController>() == null)
+        {
+            gameObject.AddComponent<RaidMatchmakingController>();
+        }
+    }
+
     private void Start()
     {
         inventoryHandler = GameObject.Find("ScriptHolder").GetComponent<Raid_InventoryHandler>();

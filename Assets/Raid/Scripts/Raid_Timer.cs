@@ -63,6 +63,14 @@ public class Raid_Timer : MonoBehaviour
 
     void Update()
     {
+        if (RaidMatchmakingController.Instance != null
+            && RaidMatchmakingController.Instance.ControlsInventorySetup
+            && !RaidMatchmakingController.Instance.HasReleasedGameplay)
+        {
+            SetTimerText();
+            return;
+        }
+
         if (timerActive)
         {
             CurrentTime = CountUp ? CurrentTime += Time.deltaTime : CurrentTime -= Time.deltaTime;

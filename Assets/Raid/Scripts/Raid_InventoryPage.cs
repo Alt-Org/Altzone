@@ -73,8 +73,9 @@ public class Raid_InventoryPage : MonoBehaviour
         return furnitures;
     }
 
-    public void InitializeInventoryUI(int InventorySize)
+    public void InitializeInventoryUI(int InventorySize, RaidPhotonRoom.TrapData[] trapData = null)
     {
+        ClearInventoryUI();
         ListOfFurniture = GetGameFurniture();
 
         for (int i = 0; i < InventorySize; i++)
@@ -95,20 +96,36 @@ public class Raid_InventoryPage : MonoBehaviour
         }
         */
 
-        RandomizeBombs();
+        if (trapData == null)
+        {
+            RandomizeBombs();
+        }
+        else
+        {
+            SetBombsFromTrapData(trapData);
+        }
         //string jsonBombs = JsonUtility.ToJson(Bombs);
         //SendBombLocationsRPC(jsonBombs);
 
         for (int j = 0; j < Bombs.Length; j++)
         {
             Debug.Log("bombIndex: " + Bombs[j].bombIndex + " Bombs.Length: " + Bombs.Length);
-            ListOfUIItems[Bombs[j].bombIndex].GetComponent<Raid_InventoryItem>().SetTrap(Bombs[j].bombType);
+            if (Bombs[j].bombIndex >= 0 && Bombs[j].bombIndex < ListOfUIItems.Count)
+            {
+                ListOfUIItems[Bombs[j].bombIndex].GetComponent<Raid_InventoryItem>().SetTrap(Bombs[j].bombType);
+            }
         }
     }
 
     public void HandleItemLooting(Raid_InventoryItem inventoryItem)
     {
         int index = ListOfUIItems.IndexOf(inventoryItem);
+        if (RaidMatchmakingController.Instance != null && RaidMatchmakingController.Instance.ControlsInventorySetup)
+        {
+            RaidMatchmakingController.Instance.RequestLoot(index);
+            return;
+        }
+
         //_photonView.RPC(nameof(HandleItemLootingRPC), RpcTarget.All, index, inventoryItem.ItemWeight);
         HandleItemLootingRPC(index,inventoryItem.ItemWeight);
     }
@@ -165,6 +182,57 @@ public class Raid_InventoryPage : MonoBehaviour
         }
     }
 
+    public void HandleNetworkLootAccepted(int index, int actorNumber, string clanId, float lootWeightMultiplier, bool triggeredByLocalPlayer)
+    {
+        if (index < 0 || index >= ListOfUIItems.Count || exitraid != null && exitraid.raidEnded)
+        {
+            return;
+        }
+
+        Raid_InventoryItem item = ListOfUIItems[index];
+        if (item == null || item.ItemWeight <= 0f || item.furnitureData == null)
+        {
+            return;
+        }
+
+        if (item.bomb)
+        {
+            int trapType = item._bombType;
+            if (triggeredByLocalPlayer)
+            {
+                item.TriggerTrap();
+            }
+
+            LootItemForClan(item, item.ItemWeight, clanId, lootWeightMultiplier);
+
+            if (!triggeredByLocalPlayer)
+            {
+                ListOfUIItems[index].ItemWeight = 0;
+                return;
+            }
+
+            switch (trapType)
+            {
+                case 0:
+                    exitraid.EndRaid();
+                    break;
+                case 1:
+                    Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.Freeze, freezeDuration);
+                    StartFreeze();
+                    break;
+                case 2:
+                    Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.DoubleWeight);
+                    break;
+            }
+
+            ListOfUIItems[index].ItemWeight = 0;
+            return;
+        }
+
+        LootItemForClan(item, item.ItemWeight, clanId, lootWeightMultiplier);
+        ListOfUIItems[index].ItemWeight = 0;
+    }
+
     private void LootItem(Raid_InventoryItem item, float itemWeight)
     {
         item.LaunchBall();
@@ -176,6 +244,21 @@ public class Raid_InventoryPage : MonoBehaviour
             nextLootWeightDoubled = false;
             item.RemoveData();
         } else
+        {
+            Debug.Log("This inventory slot has already been looted!");
+        }
+    }
+
+    private void LootItemForClan(Raid_InventoryItem item, float itemWeight, string clanId, float lootWeightMultiplier)
+    {
+        item.LaunchBall();
+
+        if (itemWeight == item.ItemWeight && itemWeight != 0)
+        {
+            LootTracker.SetClanLootCount(clanId, item.furnitureData, LootTracker.MaxLootWeight, lootWeightMultiplier);
+            item.RemoveData();
+        }
+        else
         {
             Debug.Log("This inventory slot has already been looted!");
         }
@@ -242,6 +325,63 @@ public class Raid_InventoryPage : MonoBehaviour
         }
 
     }
+
+    public void RandomizeInventoryContentDeterministic(int InventorySize, int seed)
+    {
+        List<GameFurniture> smallItemList = WeightQuery(ListOfFurniture, 0f, 50f);
+        List<GameFurniture> mediumItemList = WeightQuery(ListOfFurniture, 50f, 80f);
+        List<GameFurniture> largeItemList = WeightQuery(ListOfFurniture, 80.1f, 999f);
+
+        if (smallItemList.Count == 0 && mediumItemList.Count == 0 && largeItemList.Count == 0)
+        {
+            Debug.LogError("Raid inventory cannot be generated because no furniture was found.");
+            return;
+        }
+
+        int largeRemaining = raid_InventoryHandler != null ? raid_InventoryHandler.LargeItemMaxAmount : 0;
+        int mediumRemaining = raid_InventoryHandler != null ? raid_InventoryHandler.MediumItemMaxAmount : 0;
+        System.Random rng = new System.Random(seed);
+
+        for (int i = 0; i < InventorySize; i++)
+        {
+            int choice = rng.Next(0, 3);
+            bool itemSet = false;
+
+            switch (choice)
+            {
+                case 0:
+                    if (largeRemaining > 0 && TrySetInventorySlotData(largeItemList, i, rng))
+                    {
+                        largeRemaining--;
+                        itemSet = true;
+                    }
+                    break;
+                case 1:
+                    if (mediumRemaining > 0 && TrySetInventorySlotData(mediumItemList, i, rng))
+                    {
+                        mediumRemaining--;
+                        itemSet = true;
+                    }
+                    break;
+            }
+
+            if (!itemSet && TrySetInventorySlotData(smallItemList, i, rng))
+            {
+                itemSet = true;
+            }
+
+            if (!itemSet && mediumRemaining > 0 && TrySetInventorySlotData(mediumItemList, i, rng))
+            {
+                mediumRemaining--;
+                itemSet = true;
+            }
+
+            if (!itemSet && largeRemaining > 0 && TrySetInventorySlotData(largeItemList, i, rng))
+            {
+                largeRemaining--;
+            }
+        }
+    }
     public void RandomizeBombs()
     {
         int amount = Mathf.Clamp(trapAmount, 1, ListOfUIItems.Count);
@@ -257,6 +397,44 @@ public class Raid_InventoryPage : MonoBehaviour
                 bombType = i < 3 ? i : Random.Range(0, 3)
             };
         }
+    }
+
+    public RaidPhotonRoom.TrapData[] BuildDeterministicTrapData(int inventorySize, int seed)
+    {
+        int amount = Mathf.Clamp(trapAmount, 1, inventorySize);
+        System.Random rng = new System.Random(seed);
+        List<int> availableIndices = Enumerable.Range(0, inventorySize).ToList();
+
+        for (int i = availableIndices.Count - 1; i > 0; i--)
+        {
+            int swapIndex = rng.Next(i + 1);
+            (availableIndices[i], availableIndices[swapIndex]) = (availableIndices[swapIndex], availableIndices[i]);
+        }
+
+        RaidPhotonRoom.TrapData[] traps = new RaidPhotonRoom.TrapData[amount];
+        for (int i = 0; i < amount; i++)
+        {
+            int trapType = i < 3 ? i : rng.Next(0, 3);
+            traps[i] = new RaidPhotonRoom.TrapData(availableIndices[i], trapType);
+        }
+
+        return traps;
+    }
+
+    public Raid_InventoryItem GetInventoryItem(int index)
+    {
+        if (index < 0 || index >= ListOfUIItems.Count)
+        {
+            return null;
+        }
+
+        return ListOfUIItems[index];
+    }
+
+    public float GetNetworkLootWeightMultiplier(int index)
+    {
+        Raid_InventoryItem item = GetInventoryItem(index);
+        return item != null && item.bomb && item._bombType == 2 ? doubleWeightMultiplier : 1f;
     }
     /*[PunRPC]*/
     public void SendBombLocationsRPC(string jsonBombs)
@@ -312,5 +490,39 @@ public class Raid_InventoryPage : MonoBehaviour
         GameFurniture furniture = furnitureSet[FurnitureIndex];
         ListOfUIItems[UiIndex].SetData(furniture);
         return;
+    }
+
+    private bool TrySetInventorySlotData(List<GameFurniture> furnitureSet, int uiIndex, System.Random rng)
+    {
+        if (furnitureSet == null || furnitureSet.Count == 0 || uiIndex < 0 || uiIndex >= ListOfUIItems.Count)
+        {
+            return false;
+        }
+
+        int furnitureIndex = rng.Next(0, furnitureSet.Count);
+        SetInventorySlotDataRPC(furnitureSet, uiIndex, furnitureIndex);
+        return true;
+    }
+
+    private void SetBombsFromTrapData(RaidPhotonRoom.TrapData[] trapData)
+    {
+        Bombs = trapData
+            .Where(trap => trap.Index >= 0 && trap.Index < ListOfUIItems.Count)
+            .Select(trap => new BombData { bombIndex = trap.Index, bombType = trap.Type })
+            .ToArray();
+    }
+
+    private void ClearInventoryUI()
+    {
+        foreach (Raid_InventoryItem item in ListOfUIItems)
+        {
+            if (item != null)
+            {
+                item.OnItemClicked -= HandleItemLooting;
+                Destroy(item.gameObject);
+            }
+        }
+
+        ListOfUIItems.Clear();
     }
 }

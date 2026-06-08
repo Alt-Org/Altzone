@@ -18,6 +18,11 @@ public class Raid_InventoryHandler : MonoBehaviour
     */
     private void Start()
     {
+        if (RaidMatchmakingController.Instance != null && RaidMatchmakingController.Instance.ControlsInventorySetup)
+        {
+            return;
+        }
+
         /*
         _photonView = gameObject.AddComponent<PhotonView>();
         _photonView.ViewID = 1;
@@ -33,6 +38,13 @@ public class Raid_InventoryHandler : MonoBehaviour
         InventoryUI.InitializeInventoryUI(InventorySize);
         InventoryUI.RandomizeInventoryContent(InventorySize);
 
+    }
+
+    public void InitializeSharedInventory(int inventorySize, int seed, RaidPhotonRoom.TrapData[] traps)
+    {
+        InventorySize = inventorySize;
+        InventoryUI.InitializeInventoryUI(InventorySize, traps);
+        InventoryUI.RandomizeInventoryContentDeterministic(InventorySize, seed);
     }
 
 /*

@@ -1,0 +1,62 @@
+using System;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class RaidMatchmakingViews : MonoBehaviour
+{
+    [SerializeField] private Canvas overlayCanvas;
+    [SerializeField] private GameObject matchmakingPanel;
+    [SerializeField] private GameObject lobbyPanel;
+    [SerializeField] private TextMeshProUGUI matchmakingTitleText;
+    [SerializeField] private TextMeshProUGUI matchmakingStatusText;
+    [SerializeField] private TextMeshProUGUI matchmakingDetailText;
+    [SerializeField] private TextMeshProUGUI lobbyCountdownText;
+    [SerializeField] private Transform participantListRoot;
+    [SerializeField] private RaidLobbyClanListItem clanListItemTemplate;
+    [SerializeField] private Button surrenderButton;
+
+    public Canvas Canvas => overlayCanvas;
+    public GameObject MatchmakingPanel => matchmakingPanel;
+    public GameObject LobbyPanel => lobbyPanel;
+    public TextMeshProUGUI MatchmakingTitleText => matchmakingTitleText;
+    public TextMeshProUGUI MatchmakingStatusText => matchmakingStatusText;
+    public TextMeshProUGUI MatchmakingDetailText => matchmakingDetailText;
+    public TextMeshProUGUI LobbyCountdownText => lobbyCountdownText;
+    public Transform ParticipantListRoot => participantListRoot;
+    public RaidLobbyClanListItem ClanListItemTemplate => clanListItemTemplate;
+
+    private Action _surrenderAction;
+
+    private void Awake()
+    {
+        if (overlayCanvas == null)
+        {
+            overlayCanvas = GetComponent<Canvas>();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (surrenderButton != null)
+        {
+            surrenderButton.onClick.RemoveListener(OnSurrenderPressed);
+        }
+    }
+
+    public void Initialize(Action surrenderAction)
+    {
+        _surrenderAction = surrenderAction;
+
+        if (surrenderButton != null)
+        {
+            surrenderButton.onClick.RemoveListener(OnSurrenderPressed);
+            surrenderButton.onClick.AddListener(OnSurrenderPressed);
+        }
+    }
+
+    private void OnSurrenderPressed()
+    {
+        _surrenderAction?.Invoke();
+    }
+}
