@@ -42,6 +42,7 @@ namespace Altzone.Scripts.Voting
     public class PollData
     {
         public string Id;
+        public string Organizer;
         public long StartTime;
         public long EndTime;
         public Sprite Sprite;
@@ -77,6 +78,8 @@ namespace Altzone.Scripts.Voting
             ClanData clan = null;
             Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, c => clan=c);
             if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
+
+            Organizer = clan.Members.Find(member => member.Id == poll.organizer.player_id)?.Name;
 
             NotVoted = clanMembers;
             YesVotes = new List<PollVoteData>();

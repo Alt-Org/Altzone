@@ -173,6 +173,9 @@ public class PollInfoPopup : MonoBehaviour
     private void SetValues(PollData pollData)
     {
         _currentPollData = pollData;
+
+        authorName.text = $"Luonut: {pollData.Organizer}";
+
         if (pollData is FurniturePollData)
         {
             SetFurnitureData(pollData as FurniturePollData);
