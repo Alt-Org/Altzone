@@ -152,7 +152,7 @@ namespace Altzone.Scripts.Voting
     {
         public FurniturePollType FurniturePollType;
         public GameFurniture Furniture;
-        
+
         public FurniturePollData(string id, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, long endTime = 1)
         : base(id, furniture.FurnitureInfo.Image, clanMembers, endTime)
         {
@@ -161,7 +161,7 @@ namespace Altzone.Scripts.Voting
         }
 
         public FurniturePollData(ServerPoll poll ,ClanData clanData)
-        : base(poll)
+        :base(poll)
         {
             GameFurniture gameFurniture = null;
             if (poll.type == "flea_market_sell_item")

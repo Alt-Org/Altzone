@@ -14,19 +14,19 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
     [SerializeField] private GameObject VotedListContent;
     [SerializeField] private GameObject NotVotedListContent;
 
-    [Header ("Shop Content")]
+    [Header("Shop Content")]
     [SerializeField] private GameObject ShopVotedListContent;
     [SerializeField] private GameObject ShopNotVotedListContent;
     [SerializeField] private GameObject ShopSection;
     [SerializeField] private GameObject NoPollsShop;
 
-    [Header ("Admin Content")]
+    [Header("Admin Content")]
     [SerializeField] private GameObject AdminNotVotedListContent;
     [SerializeField] private GameObject AdminVotedListContent;
     [SerializeField] private GameObject AdminSection;
     [SerializeField] private GameObject NoPollsAdmin;
 
-    [Header ("Stuff")]
+    [Header("Stuff")]
     [SerializeField] private GameObject PollObjectPrefab;
     [SerializeField] private GameObject PollPopup;
     [SerializeField] private GameObject Blocker;
@@ -102,11 +102,10 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
                 {
                     clanData.Polls.Clear();
 
-
-
                     foreach (ServerPoll poll in polls)
                     {
                         Debug.Log("Server poll type: " + poll.type);
+
                         if (poll.type == "flea_market_sell_item" || poll.type == "shop_buy_item")
                         {
                             FurniturePollData pollData = new FurniturePollData(poll, clanData);
@@ -182,9 +181,7 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
         // ****************** var pollList = PollManager.GetPollList();
         // ******************         Debug.Log("Poll count: " + pollList.Count);
 
-
-
-        List<PollData> pollList = PollManager.GetPollList().Where(p => !p.IsExpired).ToList();
+        List<PollData> pollList = PollManager.GetPollList().Where(static p => !p.IsExpired).ToList();
 
         Debug.Log("AdminSection active: " + AdminSection.activeSelf);
         Debug.Log("ShopSection active: " + ShopSection.activeSelf);
@@ -196,12 +193,11 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
         bool hasAdminPolls = false;
         bool hasShopPolls = false;
 
-        foreach (var pollData in pollList)
+        foreach (PollData pollData in pollList)
         {
             GameObject obj = null;
-
-
             bool isShopPoll = pollData is FurniturePollData;
+            bool hasVoted = !pollData.NotVoted.Contains(player.Id);
 
             // Test bit from earlier
             //#if unity_editor
@@ -210,19 +206,6 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
             //#else
             //            bool isshoppoll = polldata is furniturepolldata;
             //#endif
-
-            Debug.Log("isShopPoll = " + isShopPoll);
-
-
-
-            bool hasVoted = !pollData.NotVoted.Contains(player.Id);
-
-
-            Debug.Log("Instantiating poll " + pollData.Id +
-                      " | IsShop: " + isShopPoll +
-                      " | HasVoted: " + hasVoted);
-
-            Debug.Log(pollData);
 
             if (isShopPoll)
             {
@@ -256,22 +239,6 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
                 Polls.Add(obj);
 
                 // ----------------
-
-
-                /*
-                obj.GetComponent<Button>().onClick.AddListener(() =>
-                {
-                    if (!HasPlayerVoted(pollData, player.Id))
-                    {
-                        PollPopup.SetActive(true);
-                        VotingActions.PassPollId?.Invoke(pollData.Id);
-                    }
-                    else
-                    {
-                        Debug.Log("You have already voted on this poll.");
-                    }
-                });
-                */
             }
         }
 
@@ -284,12 +251,6 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
         NoPollsAdmin.SetActive(!hasAdminPolls);
         NoPollsShop.SetActive(!hasShopPolls);
 
-        /*
-        if (Polls.Count == 0)
-            NoPollsText.SetActive(true);
-        else
-            NoPollsText.SetActive(false);
-        */
         Canvas.ForceUpdateCanvases();
     }
 

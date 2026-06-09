@@ -109,7 +109,7 @@ public class PollInfoPopup : MonoBehaviour
 
         if (IsPollEnded)
         {
-            var endDateTime = DateTimeOffset.FromUnixTimeSeconds(_currentPollData.EndTime).ToLocalTime();
+            DateTimeOffset endDateTime = DateTimeOffset.FromUnixTimeSeconds(_currentPollData.EndTime).ToLocalTime();
             timer.text = endDateTime.ToString("d.M. HH:mm");
             return;
         }
@@ -155,13 +155,14 @@ public class PollInfoPopup : MonoBehaviour
         SetValues(roleData);
     }
 
-    private void SetFurnitureData(FurniturePollData furnitureData) {
+    private void SetFurnitureData(FurniturePollData furnitureData)
+    {
         if (furnitureData == null || furnitureData.Furniture == null) return;
 
         bool isBuying = furnitureData.FurniturePollType == FurniturePollType.Buying;
         tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
 
-        var info = furnitureData.Furniture.FurnitureInfo;
+        FurnitureInfo info = furnitureData.Furniture.FurnitureInfo;
         nameText.text = $"{info?.SetName} {info?.VisibleName}";
 
         iconImage.sprite = info?.Image;
@@ -172,10 +173,12 @@ public class PollInfoPopup : MonoBehaviour
     private void SetValues(PollData pollData)
     {
         _currentPollData = pollData;
-        if (pollData is FurniturePollData) {
+        if (pollData is FurniturePollData)
+        {
             SetFurnitureData(pollData as FurniturePollData);
         }
-        else if (pollData is ClanRolePollData) {
+        else if (pollData is ClanRolePollData)
+        {
             Debug.LogError("Clan role polls are not setup");
         }
 

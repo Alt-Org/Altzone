@@ -117,7 +117,7 @@ public class PollObject : MonoBehaviour
                 yield break;
             }
 
-            Clock.fillAmount = 1 - (float)(secondsLeft) / totalDuration;
+            Clock.fillAmount = 1f - (secondsLeft / totalDuration);
             UpdateClockDisplay(secondsLeft);
 
             if (PollInfoPopup.Instance != null && PollInfoPopup.Instance.gameObject.activeInHierarchy)
@@ -236,7 +236,7 @@ public class PollObject : MonoBehaviour
         {
             player = data;
 
-            if(player != null)
+            if (player != null)
             {
                 bool hasVoted = !pollData.NotVoted.Contains(player.Id);
                 ShowVoteButton.gameObject.SetActive(!hasVoted);
@@ -322,7 +322,7 @@ public class PollObject : MonoBehaviour
         }
 
         Image.gameObject.SetActive(true);
-        var info = furniturePollData.Furniture.FurnitureInfo;
+        FurnitureInfo info = furniturePollData.Furniture.FurnitureInfo;
         PollTypeText.text = $"{info.SetName} {info.VisibleName}";
 
         bool isBuying = furniturePollData.FurniturePollType == FurniturePollType.Buying;
@@ -334,10 +334,12 @@ public class PollObject : MonoBehaviour
 
         // Fetch the furniture info from StorageFurnitureReference
         FurnitureInfo furnitureInfo = StorageFurnitureReference.Instance.GetFurnitureInfo(furniturePollData.Furniture.Name);
+
         if (furnitureInfo != null && furnitureInfo.RibbonImage != null)
         {
             Image.sprite = furnitureInfo.RibbonImage;
-        } else
+        }
+        else
         {
             Image.sprite = furniturePollData.Sprite;
         }
@@ -462,7 +464,7 @@ public class PollObject : MonoBehaviour
 
         if (pollData is FurniturePollData furniturePollData && furniturePollData.Furniture != null)
         {
-                PollInfoPopup.Instance.OpenPopup(furniturePollData);
+            PollInfoPopup.Instance.OpenPopup(furniturePollData);
         }
         else if (pollData is ClanRolePollData clanRolePoll)
         {
@@ -528,8 +530,10 @@ public class PollObject : MonoBehaviour
         PollInfoPopup.Instance.OpenClanRolePopup(targetMember.Name, currentRole, clanRolePoll.TargetRole);
     }
 
-    private static Color HexToColor(string hex) {
-        if (ColorUtility.TryParseHtmlString(hex, out Color color)) {
+    private static Color HexToColor(string hex)
+    {
+        if (ColorUtility.TryParseHtmlString(hex, out Color color))
+        {
             return color;
         }
         return Color.white;
