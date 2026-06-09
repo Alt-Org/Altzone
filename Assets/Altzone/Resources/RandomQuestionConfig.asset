@@ -1,0 +1,142 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86632199a269e3641a1b2f75d1171ac6, type: 3}
+  m_Name: RandomQuestionConfig
+  m_EditorClassIdentifier: 
+  _questions:
+  - question: Voiko digitaalinen peli olla taideteos?
+    englishQuestion: 
+    answers:
+    - answer: "Kyll\xE4"
+      englishAnswer: Yes
+      color: {r: 0.08627451, g: 0.8901961, b: 0.21568628, a: 1}
+    - answer: Ei
+      englishAnswer: No
+      color: {r: 1, g: 0.27450982, b: 0.27450982, a: 1}
+  - question: "Mik\xE4 tekee pelist\xE4 taidetta?"
+    englishQuestion: 
+    answers:
+    - answer: Visuaalinen tyyli
+      englishAnswer: Visual style
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: "Musiikki ja \xE4\xE4nimaailma"
+      englishAnswer: 
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: Tarina ja tunnelma
+      englishAnswer: 
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: Pelaajan kokemus
+      englishAnswer: 
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: Pelimekaniikka
+      englishAnswer: 
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+  - question: "Voiko pelin s\xE4\xE4nn\xF6t tai pelimekaniikka olla osa sen taiteellista
+      ilmaisua?"
+    englishQuestion: 
+    answers:
+    - answer: "Kyll\xE4"
+      englishAnswer: Yes
+      color: {r: 0.08627451, g: 0.8901961, b: 0.21568628, a: 1}
+    - answer: Ei
+      englishAnswer: No
+      color: {r: 1, g: 0.27450982, b: 0.27450982, a: 1}
+  - question: Millainen peli tuntuu sinusta eniten taiteelliselta?
+    englishQuestion: 
+    answers:
+    - answer: Kauniisti piirretty tai animoitu peli
+      englishAnswer: 
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: "Vahvan tarinan sis\xE4lt\xE4v\xE4 peli"
+      englishAnswer: 
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: "Tunteita her\xE4tt\xE4v\xE4 peli"
+      englishAnswer: 
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: Kokeellinen tai erikoinen peli
+      englishAnswer: 
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: Peli, jossa pelaaja saa luoda itse
+      englishAnswer: 
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+  - question: "Voiko peli k\xE4sitell\xE4 vakavia aiheita samalla tavalla kuin elokuva,
+      kirja tai kuvataideteos?"
+    englishQuestion: 
+    answers:
+    - answer: "Kyll\xE4"
+      englishAnswer: Yes
+      color: {r: 0.08627451, g: 0.8901961, b: 0.21568628, a: 1}
+    - answer: Ei
+      englishAnswer: No
+      color: {r: 1, g: 0.27450982, b: 0.27450982, a: 1}
+  - question: "Onko pelin pelaaja mielest\xE4si mukana teoksen syntymisess\xE4?"
+    englishQuestion: 
+    answers:
+    - answer: "Kyll\xE4"
+      englishAnswer: Yes
+      color: {r: 0.08627451, g: 0.8901961, b: 0.21568628, a: 1}
+    - answer: Ei
+      englishAnswer: No
+      color: {r: 1, g: 0.27450982, b: 0.27450982, a: 1}
+    - answer: "Riippuu pelist\xE4"
+      englishAnswer: 
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+  - question: "Mik\xE4 seuraavista on mielest\xE4si t\xE4rkein osa pelitaidetta?"
+    englishQuestion: 
+    answers:
+    - answer: Kuvallinen maailma
+      englishAnswer: Game graphics
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: "\xC4\xE4net ja musiikki"
+      englishAnswer: Music and sounds
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: Tarina
+      englishAnswer: Story
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: Pelattavuus
+      englishAnswer: Playability
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: Pelaajan valinnat
+      englishAnswer: Player's choices
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+    - answer: Tunnelma
+      englishAnswer: Atmosphere
+      color: {r: 1, g: 0.6313726, b: 0, a: 1}
+  - question: Voiko peli olla taidetta, vaikka se ei olisi visuaalisesti kaunis?
+    englishQuestion: 
+    answers:
+    - answer: "Kyll\xE4"
+      englishAnswer: Yes
+      color: {r: 0.08627451, g: 0.8901961, b: 0.21568628, a: 1}
+    - answer: Ei
+      englishAnswer: No
+      color: {r: 1, g: 0.27450982, b: 0.27450982, a: 1}
+  - question: "Oletko joskus pelannut peli\xE4, joka on her\xE4tt\xE4nyt sinussa
+      vahvoja tunteita?"
+    englishQuestion: 
+    answers:
+    - answer: "Kyll\xE4"
+      englishAnswer: Yes
+      color: {r: 0.08627451, g: 0.8901961, b: 0.21568628, a: 1}
+    - answer: Ei
+      englishAnswer: No
+      color: {r: 1, g: 0.27450982, b: 0.27450982, a: 1}
+  - question: "Pit\xE4isik\xF6 pelej\xE4 esitell\xE4 museoissa, gallerioissa tai
+      taiden\xE4yttelyiss\xE4?"
+    englishQuestion: 
+    answers:
+    - answer: "Kyll\xE4"
+      englishAnswer: Yes
+      color: {r: 0.08627451, g: 0.8901961, b: 0.21568628, a: 1}
+    - answer: Ei
+      englishAnswer: No
+      color: {r: 1, g: 0.27450982, b: 0.27450982, a: 1}
