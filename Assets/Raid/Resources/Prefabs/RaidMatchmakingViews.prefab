@@ -244,6 +244,7 @@ GameObject:
   - component: {fileID: 3001}
   - component: {fileID: 3002}
   - component: {fileID: 3003}
+  - component: {fileID: 3004}
   m_Layer: 5
   m_Name: MatchmakingTitleText
   m_TagString: Untagged
@@ -370,6 +371,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Etsitaan Raid-pelaajia
+  _englishText: Finding Raid players
 --- !u!1 &4000
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,6 +396,7 @@ GameObject:
   - component: {fileID: 4001}
   - component: {fileID: 4002}
   - component: {fileID: 4003}
+  - component: {fileID: 4004}
   m_Layer: 5
   m_Name: MatchmakingStatusText
   m_TagString: Untagged
@@ -507,6 +523,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 'Odotetaan pelaajia: {0}/{1}'
+  _englishText: 'Waiting for players: {0}/{1}'
 --- !u!1 &5000
 GameObject:
   m_ObjectHideFlags: 0
@@ -518,6 +548,7 @@ GameObject:
   - component: {fileID: 5001}
   - component: {fileID: 5002}
   - component: {fileID: 5003}
+  - component: {fileID: 5004}
   m_Layer: 5
   m_Name: MatchmakingDetailText
   m_TagString: Untagged
@@ -644,6 +675,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Klaanista voi tulla enintaan kaksi pelaajaa.
+  _englishText: Each clan can bring up to two players.
 --- !u!1 &6000
 GameObject:
   m_ObjectHideFlags: 0
@@ -680,8 +725,8 @@ RectTransform:
   - {fileID: 12001}
   m_Father: {fileID: 1001}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.05, y: 0.2}
-  m_AnchorMax: {x: 0.95, y: 0.8}
+  m_AnchorMin: {x: 0.05, y: 0.15}
+  m_AnchorMax: {x: 0.95, y: 0.85}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -706,7 +751,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.20392159, g: 0.20784315, b: 0.21568629, a: 0.96}
+  m_Color: {r: 0.20392159, g: 0.20784315, b: 0.21568629, a: 0.8}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -855,6 +900,7 @@ GameObject:
   - component: {fileID: 8001}
   - component: {fileID: 8002}
   - component: {fileID: 8003}
+  - component: {fileID: 8004}
   m_Layer: 5
   m_Name: SurrenderButtonLabel
   m_TagString: Untagged
@@ -981,6 +1027,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Luovuta
+  _englishText: Surrender
 --- !u!1 &9000
 GameObject:
   m_ObjectHideFlags: 0
@@ -992,6 +1052,7 @@ GameObject:
   - component: {fileID: 9001}
   - component: {fileID: 9002}
   - component: {fileID: 9003}
+  - component: {fileID: 9004}
   m_Layer: 5
   m_Name: LobbyTitleText
   m_TagString: Untagged
@@ -1118,6 +1179,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &9004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Osallistuvat klaanit
+  _englishText: Participating clans
 --- !u!1 &10000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1203,7 +1278,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.09411766, g: 0.1254902, b: 0.14509805, a: 1}
+  m_Color: {r: 0.09411766, g: 0.1254902, b: 0.14509805, a: 0.59607846}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1231,6 +1306,7 @@ GameObject:
   - component: {fileID: 11001}
   - component: {fileID: 11002}
   - component: {fileID: 11003}
+  - component: {fileID: 11004}
   m_Layer: 5
   m_Name: LobbyCountdownText
   m_TagString: Untagged
@@ -1359,6 +1435,24 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &11004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 'Kokoaminen alkaa
+
+    {0}'
+  _englishText: 'Gathering starts
+
+    {0}'
 --- !u!1 &12000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1429,6 +1523,7 @@ GameObject:
   - component: {fileID: 12101}
   - component: {fileID: 12102}
   - component: {fileID: 12103}
+  - component: {fileID: 12104}
   m_Layer: 5
   m_Name: ClanNameText
   m_TagString: Untagged
@@ -1555,6 +1650,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &12104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: '{0}'
+  _englishText: '{0}'
 --- !u!1 &12200
 GameObject:
   m_ObjectHideFlags: 0
@@ -1717,6 +1826,7 @@ GameObject:
   - component: {fileID: 12401}
   - component: {fileID: 12402}
   - component: {fileID: 12403}
+  - component: {fileID: 12404}
   m_Layer: 5
   m_Name: PlayerCountText
   m_TagString: Untagged
@@ -1843,6 +1953,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &12404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 12400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Pelaajat {0}/{1}
+  _englishText: Players {0}/{1}
 --- !u!1 &12500
 GameObject:
   m_ObjectHideFlags: 0
@@ -1901,10 +2025,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.22}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -1976,10 +2100,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.22}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []

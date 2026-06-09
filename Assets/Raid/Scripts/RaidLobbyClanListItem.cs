@@ -1,3 +1,5 @@
+using Altzone.Scripts;
+using Altzone.Scripts.Language;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,16 +26,17 @@ public class RaidLobbyClanListItem : MonoBehaviour
     public void Configure(string clanName, int playerCount, int maxPlayersPerClan)
     {
         int clampedCount = Mathf.Clamp(playerCount, 0, Mathf.Max(0, maxPlayersPerClan));
+        string displayClanName = string.IsNullOrWhiteSpace(clanName)
+            ? GetCurrentLanguage() == SettingsCarrier.LanguageType.English ? "Clan" : "Klaani"
+            : clanName;
 
-        if (clanNameText != null)
-        {
-            clanNameText.text = string.IsNullOrWhiteSpace(clanName) ? "Klaani" : clanName;
-        }
-
-        if (playerCountText != null)
-        {
-            playerCountText.text = $"Pelaajat {clampedCount}/{maxPlayersPerClan}";
-        }
+        SetLocalizedText(clanNameText, "{0}", "{0}", displayClanName);
+        SetLocalizedText(
+            playerCountText,
+            "Pelaajat {0}/{1}",
+            "Players {0}/{1}",
+            clampedCount.ToString(),
+            maxPlayersPerClan.ToString());
 
         if (progressFill != null)
         {
@@ -55,5 +58,34 @@ public class RaidLobbyClanListItem : MonoBehaviour
                 playerIcons[i].gameObject.SetActive(i < clampedCount);
             }
         }
+    }
+
+    private static void SetLocalizedText(TextMeshProUGUI textField, string finnishText, string englishText, params string[] additions)
+    {
+        if (textField == null)
+        {
+            return;
+        }
+
+        TextLanguageSelectorCaller selector = textField.GetComponent<TextLanguageSelectorCaller>();
+        if (selector != null)
+        {
+            selector.SetText(GetCurrentLanguage(), additions);
+            return;
+        }
+
+        string format = GetCurrentLanguage() == SettingsCarrier.LanguageType.English ? englishText : finnishText;
+        textField.text = string.Format(format, additions);
+    }
+
+    private static SettingsCarrier.LanguageType GetCurrentLanguage()
+    {
+        SettingsCarrier.LanguageType language = SettingsCarrier.Instance != null
+            ? SettingsCarrier.Instance.Language
+            : SettingsCarrier.LanguageType.Finnish;
+
+        return language == SettingsCarrier.LanguageType.English
+            ? SettingsCarrier.LanguageType.English
+            : SettingsCarrier.LanguageType.Finnish;
     }
 }

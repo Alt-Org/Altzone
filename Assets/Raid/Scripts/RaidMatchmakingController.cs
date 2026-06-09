@@ -5,6 +5,7 @@ using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
@@ -24,7 +25,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     [SerializeField] private int minInventoryRows = 6;
     [SerializeField] private int maxInventoryRowsExclusive = 12;
     [SerializeField] private float fallbackClanWeightLimit = 200f;
-    [SerializeField] private RaidMatchmakingViews viewsPrefab;
 
     private readonly Dictionary<string, RoomInfo> _knownRooms = new();
     private readonly HashSet<string> _rejectedRoomNames = new(StringComparer.Ordinal);
@@ -590,11 +590,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         long nowMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         float secondsRemaining = Mathf.Max(0f, (startTimeMs - nowMs) / 1000f);
-        if (_lobbyCountdownText != null)
-        {
-            TimeSpan remaining = TimeSpan.FromSeconds(Mathf.CeilToInt(secondsRemaining));
-            _lobbyCountdownText.text = $"Kokoaminen alkaa\n{(int)remaining.TotalMinutes}:{remaining.Seconds:00}";
-        }
+        TimeSpan remaining = TimeSpan.FromSeconds(Mathf.CeilToInt(secondsRemaining));
+        string timeText = $"{(int)remaining.TotalMinutes}:{remaining.Seconds:00}";
+        SetLocalizedText(_lobbyCountdownText, "Kokoaminen alkaa\n{0}", "Gathering starts\n{0}", timeText);
 
         if (secondsRemaining <= 0f && PhotonRealtimeClient.LocalPlayer.IsMasterClient)
         {
@@ -765,14 +763,22 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void UpdateMatchmakingStatus()
     {
-        if (!IsCurrentRoomRaid() || _matchmakingStatusText == null)
+        if (!IsCurrentRoomRaid())
         {
             return;
         }
 
         int currentPlayers = GetRaidPlayersWithClans().Count;
-        _matchmakingStatusText.text = $"Waiting for players: {currentPlayers}/{RaidPhotonRoom.RequiredPlayers}";
-        _matchmakingDetailText.text = "Testing mode: Raid starts with two clan players. Each clan can bring up to two players.";
+        SetLocalizedText(
+            _matchmakingStatusText,
+            "Odotetaan pelaajia: {0}/{1}",
+            "Waiting for players: {0}/{1}",
+            currentPlayers.ToString(),
+            RaidPhotonRoom.RequiredPlayers.ToString());
+        SetLocalizedText(
+            _matchmakingDetailText,
+            "Klaanista voi tulla enintaan kaksi pelaajaa.",
+            "Each clan can bring up to two players.");
     }
 
     private void ShowMatchmaking(string title, string status, string detail)
@@ -792,20 +798,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             _lobbyPanel.SetActive(false);
         }
 
-        if (_matchmakingTitleText != null)
-        {
-            _matchmakingTitleText.text = title;
-        }
-
-        if (_matchmakingStatusText != null)
-        {
-            _matchmakingStatusText.text = status;
-        }
-
-        if (_matchmakingDetailText != null)
-        {
-            _matchmakingDetailText.text = detail;
-        }
+        SetText(_matchmakingTitleText, title);
+        SetText(_matchmakingStatusText, status);
+        SetText(_matchmakingDetailText, detail);
     }
 
     private void ShowLobby()
@@ -882,18 +877,15 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void CreateOverlayUi()
     {
-        RaidMatchmakingViews prefab = viewsPrefab != null
-            ? viewsPrefab
-            : Resources.Load<RaidMatchmakingViews>("Prefabs/RaidMatchmakingViews");
+        _views = FindObjectsOfType<RaidMatchmakingViews>(true)
+            .FirstOrDefault(view => view.gameObject.scene.IsValid());
 
-        if (prefab == null)
+        if (_views == null)
         {
-            Debug.LogError("Raid matchmaking views prefab was not found at Resources/Prefabs/RaidMatchmakingViews.");
+            Debug.LogError("Raid matchmaking views are missing from the Raid scene. Add RaidMatchmakingViews to 40-Raid.");
             return;
         }
 
-        _views = Instantiate(prefab);
-        _views.name = "Raid Matchmaking Views";
         _views.Initialize(OnSurrenderPressed);
         AssignViewReferences(_views);
     }
@@ -942,6 +934,45 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         return room != null
             && GetRoomProperty(room, PhotonBattleRoom.GameTypeKey, (int)GameType.None) == (int)GameType.Raid
             && GetRoomProperty(room, RaidPhotonRoom.RaidMatchmakingKey, false);
+    }
+
+    private static void SetText(TextMeshProUGUI textField, string text)
+    {
+        if (textField == null)
+        {
+            return;
+        }
+
+        textField.text = text;
+    }
+
+    private static void SetLocalizedText(TextMeshProUGUI textField, string finnishText, string englishText, params string[] additions)
+    {
+        if (textField == null)
+        {
+            return;
+        }
+
+        TextLanguageSelectorCaller selector = textField.GetComponent<TextLanguageSelectorCaller>();
+        if (selector != null)
+        {
+            selector.SetText(GetCurrentLanguage(), additions ?? Array.Empty<string>());
+            return;
+        }
+
+        string format = GetCurrentLanguage() == SettingsCarrier.LanguageType.English ? englishText : finnishText;
+        textField.text = string.Format(format, additions ?? Array.Empty<string>());
+    }
+
+    private static SettingsCarrier.LanguageType GetCurrentLanguage()
+    {
+        SettingsCarrier.LanguageType language = SettingsCarrier.Instance != null
+            ? SettingsCarrier.Instance.Language
+            : SettingsCarrier.LanguageType.Finnish;
+
+        return language == SettingsCarrier.LanguageType.English
+            ? SettingsCarrier.LanguageType.English
+            : SettingsCarrier.LanguageType.Finnish;
     }
 
     private static T GetRoomInfoProperty<T>(RoomInfo room, string key, T defaultValue)
