@@ -4,7 +4,6 @@ using System.Threading;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using static MessageReactionsHandler;
 using System;
 using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Player;
@@ -13,38 +12,37 @@ using System.Linq;
 
 public class ChatShowUsersPopUpData : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI ReactionAmounText;
+    [Header("Buttons")]
     [SerializeField] private Button[] _closeButtons;
     [SerializeField] private Button _closeAllReactionButton;
     [SerializeField] private Button _listOrderButton;
-    [SerializeField] private GameObject ShowUsersPopUp;
 
-    [Header("Scripts")]
+    [Header("For Copied Reactions")]
+    [SerializeField] private Transform _reactionFieldLocation;
+    private GameObject CopiedReactionField;
+    [SerializeField] private Transform PopUpAllReactions;
+    [SerializeField] private ScrollRect _scrollRect;
+
     [Header("User Info")]
-
     [SerializeField] private VerticalLayoutGroup _userContent;
     [SerializeField] private GameObject _userData;
     private List<UsersReactionData> _usersReactionData = new();
     [SerializeField] private List<UserReactionInfo> _userInfo;
 
     [Header("Reactions")]
+    [SerializeField] private TextMeshProUGUI ReactionAmounText;
     [SerializeField] private List<ReactionObject> _reactionList;
     [SerializeField] private GameObject _allReactions;
     [SerializeField] private GameObject _selectedReaction;
     [SerializeField] private GameObject _noReactions;
-    private GameObject CopiedReactionField;
-    public Transform ReactionFieldLocation;
-    public Transform PopUpAllReactions;
+
+    [Header("List Order")]
     [SerializeField] private Sprite[] _sprites;
     [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI _OrderButtonText;
     private int LineOrder = 0;
     private int currentOrder = 1;
 
-    public ScrollRect _scrollRect;
-
-
-    //[SerializeField] private TextLanguageSelectorCaller _reactionAmount;
     private void Start()
     {
         _closeAllReactionButton.onClick.AddListener(LayoutButton);
@@ -186,11 +184,11 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     //Sets the List in certain order
 
     //Changes the reactions object sizes
-    public void ReactionFieldCopyUpdate(GameObject ReactionField, Transform ReactionLocation)
+    public void ReactionFieldCopyUpdate(GameObject ReactionField, MessageReactionsHandler ReactionHandler)
     {
         Destroy(CopiedReactionField);
 
-        CopiedReactionField = Instantiate(ReactionField, ReactionLocation);
+        CopiedReactionField = Instantiate(ReactionField, _reactionFieldLocation);
 
         _scrollRect.content = CopiedReactionField.GetComponent<RectTransform>();
 
@@ -201,6 +199,9 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
             child.sizeDelta = new Vector2(150, 110);
         }
+
+        ReactionHandler.GenarateReactionObjects(PopUpAllReactions);
+
     }
 
 

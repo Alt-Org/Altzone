@@ -6167,6 +6167,9 @@ MonoBehaviour:
   _closeAllReactionButton: {fileID: 2014114443139516172}
   _listOrderButton: {fileID: 3052950907519947448}
   ShowUsersPopUp: {fileID: 5763485112562100175}
+  _reactionFieldLocation: {fileID: 4349249108874952513}
+  PopUpAllReactions: {fileID: 8542177965822184391}
+  _scrollRect: {fileID: 959950731169273863}
   _userContent: {fileID: 7215285588370245146}
   _userData: {fileID: 8844569307860996610, guid: d9e96f8283e71824cadeec334b0a267e,
     type: 3}
@@ -6185,9 +6188,6 @@ MonoBehaviour:
   _allReactions: {fileID: 7575259912955991635}
   _selectedReaction: {fileID: 3062161777963099109}
   _noReactions: {fileID: 8829262437161837364}
-  CopiedReactionField: {fileID: 0}
-  ReactionFieldLocation: {fileID: 4349249108874952513}
-  PopUpAllReactions: {fileID: 8542177965822184391}
   _sprites:
   - {fileID: 0}
   - {fileID: 0}
@@ -6196,7 +6196,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a12221f1d2fd7194dbb2e0620c4fe9b8, type: 3}
   _image: {fileID: 4777644748716934985}
   _OrderButtonText: {fileID: 4953989987484460405}
-  _scrollRect: {fileID: 959950731169273863}
 --- !u!114 &7249710220094630189
 MonoBehaviour:
   m_ObjectHideFlags: 0
