@@ -21,6 +21,7 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private Raid_LootTracking LootTracker;
     [SerializeField] private Raid_Timer raid_Timer;
     [SerializeField] private ExitRaid exitraid;
+    [SerializeField] private Raid_EventLog eventLog;
     [SerializeField] private bool spectator = false;
     [SerializeField] private bool firstItem = true;
     [SerializeField, Min(1)] private int trapAmount = 3;
@@ -47,6 +48,8 @@ public class Raid_InventoryPage : MonoBehaviour
     private void Awake()
     {
         LootTracker.ResetLootCount();
+        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
+        eventLog?.Clear();
         //_photonView = gameObject.AddComponent<PhotonView>();
         //_photonView.ViewID = 2;
         //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
@@ -75,6 +78,8 @@ public class Raid_InventoryPage : MonoBehaviour
 
     public void InitializeInventoryUI(int InventorySize, RaidPhotonRoom.TrapData[] trapData = null)
     {
+        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
+        eventLog?.Clear();
         ClearInventoryUI();
         ListOfFurniture = GetGameFurniture();
 
@@ -155,13 +160,20 @@ public class Raid_InventoryPage : MonoBehaviour
             Raid_InventoryItem item = ListOfUIItems[index];
             if (item.GetComponent<Raid_InventoryItem>().bomb)
             {
+                int trapType = item.GetComponent<Raid_InventoryItem>()._bombType;
+                GameFurniture furniture = item.furnitureData;
                 item.GetComponent<Raid_InventoryItem>().TriggerTrap();
-                if (item.GetComponent<Raid_InventoryItem>()._bombType == 2)
+                eventLog?.LogTrapTriggered(GetLocalEventPlayerName(), trapType);
+                if (trapType == 2)
                 {
                     nextLootWeightDoubled = true;
                 }
-                LootItem(item, itemWeight);
-                switch (item.GetComponent<Raid_InventoryItem>()._bombType)
+                float lootWeightMultiplier = nextLootWeightDoubled ? doubleWeightMultiplier : 1f;
+                if (LootItem(item, itemWeight))
+                {
+                    eventLog?.LogLootTaken(GetLocalEventPlayerName(), furniture, lootWeightMultiplier);
+                }
+                switch (trapType)
                 {
                     case 0:
                         exitraid.EndRaid();
@@ -177,12 +189,16 @@ public class Raid_InventoryPage : MonoBehaviour
                 ListOfUIItems[index].ItemWeight = 0;
                 return;
             }
-            LootItem(item, itemWeight);
+            GameFurniture furnitureData = item.furnitureData;
+            if (LootItem(item, itemWeight))
+            {
+                eventLog?.LogLootTaken(GetLocalEventPlayerName(), furnitureData);
+            }
             ListOfUIItems[index].ItemWeight = 0;
         }
     }
 
-    public void HandleNetworkLootAccepted(int index, int actorNumber, string clanId, float lootWeightMultiplier, bool triggeredByLocalPlayer)
+    public void HandleNetworkLootAccepted(int index, int actorNumber, string clanId, float lootWeightMultiplier, bool triggeredByLocalPlayer, string playerName = null)
     {
         if (index < 0 || index >= ListOfUIItems.Count || exitraid != null && exitraid.raidEnded)
         {
@@ -198,12 +214,17 @@ public class Raid_InventoryPage : MonoBehaviour
         if (item.bomb)
         {
             int trapType = item._bombType;
+            GameFurniture furniture = item.furnitureData;
             if (triggeredByLocalPlayer)
             {
                 item.TriggerTrap();
             }
 
-            LootItemForClan(item, item.ItemWeight, clanId, lootWeightMultiplier);
+            eventLog?.LogTrapTriggered(playerName, trapType);
+            if (LootItemForClan(item, item.ItemWeight, clanId, lootWeightMultiplier))
+            {
+                eventLog?.LogLootTaken(playerName, furniture, lootWeightMultiplier);
+            }
 
             if (!triggeredByLocalPlayer)
             {
@@ -229,11 +250,15 @@ public class Raid_InventoryPage : MonoBehaviour
             return;
         }
 
-        LootItemForClan(item, item.ItemWeight, clanId, lootWeightMultiplier);
+        GameFurniture furnitureData = item.furnitureData;
+        if (LootItemForClan(item, item.ItemWeight, clanId, lootWeightMultiplier))
+        {
+            eventLog?.LogLootTaken(playerName, furnitureData, lootWeightMultiplier);
+        }
         ListOfUIItems[index].ItemWeight = 0;
     }
 
-    private void LootItem(Raid_InventoryItem item, float itemWeight)
+    private bool LootItem(Raid_InventoryItem item, float itemWeight)
     {
         item.LaunchBall();
 
@@ -243,13 +268,15 @@ public class Raid_InventoryPage : MonoBehaviour
             LootTracker.SetLootCount(item.furnitureData, LootTracker.MaxLootWeight, lootWeightMultiplier);
             nextLootWeightDoubled = false;
             item.RemoveData();
+            return true;
         } else
         {
             Debug.Log("This inventory slot has already been looted!");
+            return false;
         }
     }
 
-    private void LootItemForClan(Raid_InventoryItem item, float itemWeight, string clanId, float lootWeightMultiplier)
+    private bool LootItemForClan(Raid_InventoryItem item, float itemWeight, string clanId, float lootWeightMultiplier)
     {
         item.LaunchBall();
 
@@ -257,10 +284,12 @@ public class Raid_InventoryPage : MonoBehaviour
         {
             LootTracker.SetClanLootCount(clanId, item.furnitureData, LootTracker.MaxLootWeight, lootWeightMultiplier);
             item.RemoveData();
+            return true;
         }
         else
         {
             Debug.Log("This inventory slot has already been looted!");
+            return false;
         }
     }
 
@@ -502,6 +531,17 @@ public class Raid_InventoryPage : MonoBehaviour
         int furnitureIndex = rng.Next(0, furnitureSet.Count);
         SetInventorySlotDataRPC(furnitureSet, uiIndex, furnitureIndex);
         return true;
+    }
+
+    private string GetLocalEventPlayerName()
+    {
+        string playerName = ServerManager.Instance?.Clan?.name;
+        if (string.IsNullOrWhiteSpace(playerName))
+        {
+            playerName = ServerManager.Instance?.Player?.name;
+        }
+
+        return string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName;
     }
 
     private void SetBombsFromTrapData(RaidPhotonRoom.TrapData[] trapData)

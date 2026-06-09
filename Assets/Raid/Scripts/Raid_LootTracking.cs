@@ -12,10 +12,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
     [SerializeField] private ExitRaid exitRaid;
 
-    [SerializeField, Header("Reference game components")] private TMP_Text CurrentLootText;
-    [SerializeField] private TMP_Text OutOfText;
-    [SerializeField] private TMP_Text MaxLootText;
-    [SerializeField] private TMP_Text HeartLootText;
+    [SerializeField, Header("Reference game components")] private TMP_Text HeartLootText;
     
     [SerializeField, Header("Variables")] public float CurrentLootWeight;
     [SerializeField] public float MaxLootWeight;
@@ -50,7 +47,6 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
     {
         MaxLootWeight = maxLootWeight;
         //Debug.Log("maxLootWeight has been set");
-        this.MaxLootText.text = MaxLootWeight.ToString() + " kg";
         UpdateHeartLootText();
     }
 
@@ -58,9 +54,6 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
     {
         ListOfCollectedLoot = new List<GameFurniture>();
         CurrentLootWeight = 0;
-        CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
-        OutOfText.text = "Out of";
-        MaxLootText.text =  MaxLootWeight.ToString() + " kg";
         UpdateHeartLootText();
     }
 
@@ -71,9 +64,6 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         _clanCollectedLoot.Clear();
         ListOfCollectedLoot = new List<GameFurniture>();
         CurrentLootWeight = 0;
-        CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
-        OutOfText.text = "Out of";
-        MaxLootText.text = MaxLootWeight.ToString() + " kg";
         UpdateHeartLootText();
     }
 
@@ -108,8 +98,6 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         float NewLootWeight = CurrentLootWeight + AddedLootWeight;
         CurrentLootWeight = NewLootWeight;
 
-        CurrentLootText.text = NewLootWeight.ToString() + " kg";
-        MaxLootText.text = MaxLootWeight.ToString() + " kg";
         UpdateHeartLootText();
         if (CurrentLootWeight > MaxLootWeight)
         {
@@ -145,7 +133,10 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     private void UpdateHeartLootText()
     {
-        HeartLootText.text = $"{CurrentLootWeight:F0}kg\n/{MaxLootWeight:F0}kg";
+        if (HeartLootText != null)
+        {
+            HeartLootText.text = $"{CurrentLootWeight:F0}kg\n/{MaxLootWeight:F0}kg";
+        }
     }
 
     private float ResolveClanMaxWeight(string clanId, float fallbackMaxWeight)
@@ -197,9 +188,6 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         CurrentLootWeight = _clanCurrentWeights[_displayedClanId];
         MaxLootWeight = _clanMaxWeights[_displayedClanId];
         ListOfCollectedLoot = _clanCollectedLoot[_displayedClanId];
-        CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
-        OutOfText.text = "Out of";
-        MaxLootText.text = MaxLootWeight.ToString() + " kg";
         UpdateHeartLootText();
     }
 

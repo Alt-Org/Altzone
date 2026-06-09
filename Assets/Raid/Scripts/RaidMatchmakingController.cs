@@ -689,9 +689,11 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         float weightMultiplier = Convert.ToSingle(data[3]);
         bool triggeredByLocalPlayer = PhotonRealtimeClient.LocalPlayer != null
             && PhotonRealtimeClient.LocalPlayer.ActorNumber == actorNumber;
+        Player roomPlayer = GetRoomPlayer(actorNumber);
+        string actorName = GetClanDisplayName(roomPlayer, actorNumber);
 
         _lootedSlots.Add(slotIndex);
-        _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, clanId, weightMultiplier, triggeredByLocalPlayer);
+        _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, clanId, weightMultiplier, triggeredByLocalPlayer, actorName);
     }
 
     private bool IsParticipatingClan(string clanId)
@@ -714,6 +716,24 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         PhotonRealtimeClient.CurrentRoom.Players.TryGetValue(actorNumber, out Player player);
         return player;
+    }
+
+    private static string GetPlayerDisplayName(Player player, int actorNumber)
+    {
+        if (!string.IsNullOrWhiteSpace(player?.NickName))
+        {
+            return player.NickName;
+        }
+
+        return actorNumber > 0 ? $"Player {actorNumber}" : "Player";
+    }
+
+    private string GetClanDisplayName(Player player, int actorNumber)
+    {
+        string clanName = GetPlayerClanName(player);
+        return string.IsNullOrWhiteSpace(clanName)
+            ? GetPlayerDisplayName(player, actorNumber)
+            : clanName;
     }
 
     private List<Player> GetRaidPlayersWithClans()
