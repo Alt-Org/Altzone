@@ -3,12 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.AvatarEditor;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Raid_EventLog : MonoBehaviour
 {
+    private const float EventLogAvatarScale = 1f;
+    private const float EventLogTextLeftMargin = 56f;
+    private const float EventLogTextRightMargin = 18f;
+    private const float EventLogDividerLeftMargin = 56f;
+    private const float EventLogDividerRightMargin = 18f;
+    private const float EventLogDividerBottomOffset = 2f;
+    private const float EventLogTemplateAnchorMinY = 0.5f;
+
     private static readonly Color[] IconColors =
     {
         new(1f, 0.62f, 0.12f, 1f),
@@ -16,15 +27,26 @@ public class Raid_EventLog : MonoBehaviour
         new(0.21f, 0.78f, 1f, 1f),
         new(0.46f, 0.82f, 0.37f, 1f)
     };
+    private static readonly AvatarPiece[] AvatarPieces =
+    {
+        AvatarPiece.Hair,
+        AvatarPiece.Eyes,
+        AvatarPiece.Nose,
+        AvatarPiece.Mouth,
+        AvatarPiece.Clothes,
+        AvatarPiece.Feet,
+        AvatarPiece.Hands
+    };
 
     [SerializeField, Min(1)] private int maxEntries = 80;
     [SerializeField, Min(1)] private int visibleEntryCount = 2;
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private RectTransform contentRoot;
     [SerializeField] private GameObject entryTemplate;
+    [SerializeField] private AvatarFaceLoader avatarHeadTemplate;
     [SerializeField] private Color normalEntryColor = new(1f, 1f, 1f, 0.95f);
-    [SerializeField] private Color trapEntryColor = new(1f, 0.78f, 0.34f, 0.98f);
-    [SerializeField] private Color dividerColor = new(0.9f, 0.56f, 0.05f, 0.75f);
+    [SerializeField] private Color trapEntryColor = new(1f, 1f, 1f, 0.95f);
+    [SerializeField] private Color dividerColor = new(1f, 0.59f, 0f, 0.85f);
 
     private readonly Queue<GameObject> entries = new();
     private Coroutine scrollRoutine;
@@ -64,7 +86,7 @@ public class Raid_EventLog : MonoBehaviour
         }
     }
 
-    public void LogLootTaken(string playerName, GameFurniture furniture, float lootWeightMultiplier = 1f)
+    public void LogLootTaken(string playerName, GameFurniture furniture, float lootWeightMultiplier = 1f, CharacterID characterId = CharacterID.None, AvatarData avatarData = null)
     {
         if (furniture == null)
         {
@@ -76,19 +98,19 @@ public class Raid_EventLog : MonoBehaviour
         string message = UseEnglish()
             ? $"{actorName} took {GetFurnitureName(furniture)} {FormatNumber(addedWeight)} kg"
             : $"{actorName} nappasi \u00E4sken {GetFurnitureName(furniture)} {FormatNumber(addedWeight)} kg";
-        AddEntry(actorName, message, normalEntryColor);
+        AddEntry(actorName, message, normalEntryColor, characterId, avatarData);
     }
 
-    public void LogTrapTriggered(string playerName, int trapType)
+    public void LogTrapTriggered(string playerName, int trapType, CharacterID characterId = CharacterID.None, AvatarData avatarData = null)
     {
         string actorName = FormatActorName(playerName);
         string message = UseEnglish()
             ? $"{actorName} triggered {GetTrapName(trapType)} trap"
             : $"{actorName} laukaisi \u00E4sken ansan";
-        AddEntry(actorName, message, trapEntryColor);
+        AddEntry(actorName, message, trapEntryColor, characterId, avatarData);
     }
 
-    private void AddEntry(string actorName, string message, Color color)
+    private void AddEntry(string actorName, string message, Color color, CharacterID characterId, AvatarData avatarData)
     {
         if (!HasRequiredReferences())
         {
@@ -98,7 +120,7 @@ public class Raid_EventLog : MonoBehaviour
         entryTemplate.SetActive(false);
         GameObject entry = Instantiate(entryTemplate, contentRoot);
         entry.name = "EventLogEntry";
-        ConfigureEntry(entry, actorName, message, color);
+        ConfigureEntry(entry, actorName, message, color, characterId, avatarData);
         entry.SetActive(true);
         entries.Enqueue(entry);
 
@@ -111,6 +133,8 @@ public class Raid_EventLog : MonoBehaviour
             }
         }
 
+        RefreshEntryDividers();
+
         if (scrollRoutine != null)
         {
             StopCoroutine(scrollRoutine);
@@ -119,13 +143,9 @@ public class Raid_EventLog : MonoBehaviour
         scrollRoutine = StartCoroutine(ScrollToBottomNextFrame());
     }
 
-    private void ConfigureEntry(GameObject entry, string actorName, string message, Color color)
+    private void ConfigureEntry(GameObject entry, string actorName, string message, Color color, CharacterID characterId, AvatarData avatarData)
     {
-        TMP_Text messageText = entry.GetComponent<TMP_Text>();
-        if (messageText == null)
-        {
-            messageText = entry.GetComponentInChildren<TMP_Text>(true);
-        }
+        TMP_Text messageText = FindMessageText(entry.transform);
 
         ApplyEntryLayout(entry, messageText);
 
@@ -135,22 +155,240 @@ public class Raid_EventLog : MonoBehaviour
             messageText.color = color;
         }
 
-        Image iconImage = entry.transform.Find("Icon")?.GetComponent<Image>();
-        if (iconImage != null)
+        ConfigureIcon(FindAvatarSlot(entry.transform), actorName, characterId, avatarData);
+        ConfigureDivider(entry.transform.Find("Divider"), false);
+    }
+
+    private static TMP_Text FindMessageText(Transform entryTransform)
+    {
+        if (entryTransform == null)
         {
-            iconImage.color = ResolveIconColor(actorName);
+            return null;
         }
 
-        Graphic dividerGraphic = entry.transform.Find("Divider")?.GetComponent<Graphic>();
-        if (dividerGraphic != null)
+        TMP_Text messageText = entryTransform.Find("Message")?.GetComponent<TMP_Text>();
+        if (messageText != null)
         {
-            dividerGraphic.color = dividerColor;
+            return messageText;
         }
+
+        messageText = entryTransform.GetComponent<TMP_Text>();
+        return messageText != null
+            ? messageText
+            : entryTransform.GetComponentInChildren<TMP_Text>(true);
+    }
+
+    private static Transform FindAvatarSlot(Transform entryTransform)
+    {
+        return entryTransform == null
+            ? null
+            : entryTransform.Find("Profile Image") ?? entryTransform.Find("Icon");
+    }
+
+    private void ConfigureIcon(Transform iconTransform, string actorName, CharacterID characterId, AvatarData avatarData)
+    {
+        if (iconTransform == null)
+        {
+            return;
+        }
+
+        Image iconImage = iconTransform.GetComponent<Image>();
+        if (TryConfigureAvatarIcon(iconTransform, iconImage, characterId, avatarData))
+        {
+            return;
+        }
+
+        SetAvatarHeadVisible(iconTransform, false);
+
+        if (iconImage != null)
+        {
+            iconImage.enabled = true;
+            iconImage.color = ResolveIconColor(actorName);
+            iconImage.preserveAspect = false;
+        }
+    }
+
+    private bool TryConfigureAvatarIcon(Transform iconTransform, Image iconImage, CharacterID characterId, AvatarData avatarData)
+    {
+        if (avatarData == null)
+        {
+            return false;
+        }
+
+        AvatarVisualData visualData = CreateAvatarVisualData(avatarData, characterId);
+        if (visualData == null)
+        {
+            return false;
+        }
+
+        AvatarFaceLoader avatarFaceLoader = iconTransform.GetComponentInChildren<AvatarFaceLoader>(true);
+        if (avatarFaceLoader == null)
+        {
+            if (avatarHeadTemplate == null)
+            {
+                return false;
+            }
+
+            avatarFaceLoader = Instantiate(avatarHeadTemplate, iconTransform);
+            avatarFaceLoader.name = "CharacterHeadImage";
+        }
+
+        avatarFaceLoader.SetUseOwnAvatarVisuals(false);
+        FitAvatarHead(avatarFaceLoader.transform as RectTransform);
+        DisableAvatarRaycasts(avatarFaceLoader);
+
+        if (iconImage != null)
+        {
+            iconImage.enabled = false;
+            iconImage.raycastTarget = false;
+        }
+
+        if (iconTransform.GetComponent<RectMask2D>() == null)
+        {
+            iconTransform.gameObject.AddComponent<RectMask2D>();
+        }
+
+        avatarFaceLoader.gameObject.SetActive(true);
+        avatarFaceLoader.UpdateVisuals(visualData);
+        return true;
+    }
+
+    private static void SetAvatarHeadVisible(Transform iconTransform, bool isVisible)
+    {
+        if (iconTransform == null)
+        {
+            return;
+        }
+
+        AvatarFaceLoader avatarFaceLoader = iconTransform.GetComponentInChildren<AvatarFaceLoader>(true);
+        if (avatarFaceLoader != null)
+        {
+            avatarFaceLoader.gameObject.SetActive(isVisible);
+        }
+    }
+
+    private AvatarVisualData CreateAvatarVisualData(AvatarData avatarData, CharacterID characterId)
+    {
+        AvatarPartsReference avatarPartsReference = AvatarPartsReference.Instance;
+        if (avatarData == null || avatarPartsReference == null)
+        {
+            return null;
+        }
+
+        AvatarVisualData visualData = new();
+        foreach (AvatarPiece piece in AvatarPieces)
+        {
+            int pieceId = avatarData.GetPieceID(piece);
+            if (pieceId <= 0)
+            {
+                continue;
+            }
+
+            visualData.SetAvatarPiece(piece, avatarPartsReference.GetAvatarPartById(pieceId.ToString(CultureInfo.InvariantCulture)));
+            visualData.SetColor(piece, ParseAvatarColor(avatarData.GetPieceColor(piece)));
+        }
+
+        visualData.SkinColor = ParseAvatarColor(avatarData.Color);
+        visualData.ClassColor = ResolveClassColor(characterId);
+        return visualData;
+    }
+
+    private static void FitAvatarHead(RectTransform avatarRect)
+    {
+        if (avatarRect == null)
+        {
+            return;
+        }
+
+        avatarRect.anchorMin = Vector2.zero;
+        avatarRect.anchorMax = Vector2.one;
+        avatarRect.offsetMin = Vector2.zero;
+        avatarRect.offsetMax = Vector2.zero;
+        avatarRect.anchoredPosition = Vector2.zero;
+        avatarRect.pivot = new Vector2(0.5f, 0.5f);
+        avatarRect.localScale = new Vector3(EventLogAvatarScale, EventLogAvatarScale, 1f);
+    }
+
+    private void RefreshEntryDividers()
+    {
+        int index = 0;
+        int lastIndex = entries.Count - 1;
+        foreach (GameObject entry in entries)
+        {
+            ConfigureDivider(entry != null ? entry.transform.Find("Divider") : null, index == lastIndex);
+            index++;
+        }
+    }
+
+    private void ConfigureDivider(Transform divider, bool isVisible)
+    {
+        if (divider == null)
+        {
+            return;
+        }
+
+        divider.gameObject.SetActive(isVisible);
+
+        if (divider.TryGetComponent(out Image dividerImage))
+        {
+            dividerImage.color = dividerColor;
+            dividerImage.raycastTarget = false;
+        }
+
+        if (divider is not RectTransform dividerRect)
+        {
+            return;
+        }
+
+        dividerRect.anchorMin = new Vector2(0f, 0f);
+        dividerRect.anchorMax = new Vector2(1f, 0f);
+        dividerRect.offsetMin = new Vector2(EventLogDividerLeftMargin, EventLogDividerBottomOffset);
+        dividerRect.offsetMax = new Vector2(-EventLogDividerRightMargin, EventLogDividerBottomOffset + 1f);
+        dividerRect.pivot = new Vector2(0f, 0.5f);
+    }
+
+    private static void DisableAvatarRaycasts(AvatarFaceLoader avatarFaceLoader)
+    {
+        if (avatarFaceLoader == null)
+        {
+            return;
+        }
+
+        foreach (Graphic graphic in avatarFaceLoader.GetComponentsInChildren<Graphic>(true))
+        {
+            graphic.raycastTarget = false;
+        }
+    }
+
+    private static Color ParseAvatarColor(string colorValue)
+    {
+        if (string.IsNullOrWhiteSpace(colorValue))
+        {
+            return Color.white;
+        }
+
+        string normalizedColor = colorValue.StartsWith("#", StringComparison.Ordinal)
+            ? colorValue
+            : "#" + colorValue;
+        return ColorUtility.TryParseHtmlString(normalizedColor, out Color color)
+            ? color
+            : Color.white;
+    }
+
+    private static Color ResolveClassColor(CharacterID characterId)
+    {
+        if (characterId == CharacterID.None || ClassReference.Instance == null)
+        {
+            return Color.white;
+        }
+
+        return ClassReference.Instance.GetColor(BaseCharacter.GetClass(characterId));
     }
 
     private void ApplyRuntimeLayout()
     {
         ApplyContentLayout();
+        ApplyEntryTemplateLayout();
     }
 
     private void ApplyContentLayout()
@@ -170,6 +408,32 @@ public class Raid_EventLog : MonoBehaviour
         if (contentRoot.TryGetComponent(out ContentSizeFitter contentSizeFitter))
         {
             contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        }
+    }
+
+    private void ApplyEntryTemplateLayout()
+    {
+        if (entryTemplate == null)
+        {
+            return;
+        }
+
+        if (entryTemplate.transform is RectTransform entryRect)
+        {
+            entryRect.anchorMin = new Vector2(0f, EventLogTemplateAnchorMinY);
+            entryRect.anchorMax = Vector2.one;
+            entryRect.offsetMin = Vector2.zero;
+            entryRect.offsetMax = Vector2.zero;
+            entryRect.anchoredPosition = Vector2.zero;
+            entryRect.pivot = new Vector2(0.5f, 1f);
+        }
+
+        if (entryTemplate.TryGetComponent(out LayoutElement layoutElement))
+        {
+            layoutElement.ignoreLayout = true;
+            layoutElement.minHeight = -1f;
+            layoutElement.preferredHeight = -1f;
+            layoutElement.flexibleHeight = 0f;
         }
     }
 
@@ -199,13 +463,22 @@ public class Raid_EventLog : MonoBehaviour
             return;
         }
 
-        float fontSize = GetTemplateFontSize();
-        messageText.enableAutoSizing = false;
-        messageText.fontSize = fontSize;
-        messageText.fontSizeMin = fontSize;
-        messageText.fontSizeMax = fontSize;
-        messageText.textWrappingMode = TextWrappingModes.NoWrap;
+        messageText.textWrappingMode = TextWrappingModes.Normal;
         messageText.overflowMode = TextOverflowModes.Ellipsis;
+        messageText.horizontalAlignment = HorizontalAlignmentOptions.Left;
+        messageText.verticalAlignment = VerticalAlignmentOptions.Middle;
+        messageText.lineSpacing = 0f;
+        ApplyRootMessageFallbackMargin(entry, messageText);
+    }
+
+    private static void ApplyRootMessageFallbackMargin(GameObject entry, TMP_Text messageText)
+    {
+        if (messageText.transform != entry.transform)
+        {
+            return;
+        }
+
+        messageText.margin = new Vector4(EventLogTextLeftMargin, 0f, EventLogTextRightMargin, 0f);
     }
 
     private float GetTemplateEntryHeight()
@@ -247,11 +520,7 @@ public class Raid_EventLog : MonoBehaviour
         TMP_Text templateText = null;
         if (entryTemplate != null)
         {
-            templateText = entryTemplate.GetComponent<TMP_Text>();
-            if (templateText == null)
-            {
-                templateText = entryTemplate.GetComponentInChildren<TMP_Text>(true);
-            }
+            templateText = FindMessageText(entryTemplate.transform);
         }
 
         return templateText != null && templateText.fontSize > 0f
@@ -389,4 +658,5 @@ public class Raid_EventLog : MonoBehaviour
         int colorIndex = Math.Abs(hash % IconColors.Length);
         return IconColors[colorIndex];
     }
+
 }

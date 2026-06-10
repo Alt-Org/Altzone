@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 //using Photon.Pun;
 using Random = UnityEngine.Random;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine.UI;
 using System.Linq;
@@ -160,12 +163,15 @@ public class Raid_InventoryPage : MonoBehaviour
         else
         {
             Raid_InventoryItem item = ListOfUIItems[index];
+            string playerName = GetLocalEventPlayerName();
+            CharacterID characterId = GetLocalEventCharacterId();
+            AvatarData avatarData = GetLocalEventAvatarData();
             if (item.GetComponent<Raid_InventoryItem>().bomb)
             {
                 int trapType = item.GetComponent<Raid_InventoryItem>()._bombType;
                 GameFurniture furniture = item.furnitureData;
                 item.GetComponent<Raid_InventoryItem>().TriggerTrap();
-                eventLog?.LogTrapTriggered(GetLocalEventPlayerName(), trapType);
+                eventLog?.LogTrapTriggered(playerName, trapType, characterId, avatarData);
                 if (trapType == 2)
                 {
                     nextLootWeightDoubled = true;
@@ -173,7 +179,7 @@ public class Raid_InventoryPage : MonoBehaviour
                 float lootWeightMultiplier = nextLootWeightDoubled ? doubleWeightMultiplier : 1f;
                 if (LootItem(item, itemWeight))
                 {
-                    eventLog?.LogLootTaken(GetLocalEventPlayerName(), furniture, lootWeightMultiplier);
+                    eventLog?.LogLootTaken(playerName, furniture, lootWeightMultiplier, characterId, avatarData);
                 }
                 switch (trapType)
                 {
@@ -194,13 +200,13 @@ public class Raid_InventoryPage : MonoBehaviour
             GameFurniture furnitureData = item.furnitureData;
             if (LootItem(item, itemWeight))
             {
-                eventLog?.LogLootTaken(GetLocalEventPlayerName(), furnitureData);
+                eventLog?.LogLootTaken(playerName, furnitureData, 1f, characterId, avatarData);
             }
             ListOfUIItems[index].ItemWeight = 0;
         }
     }
 
-    public void HandleNetworkLootAccepted(int index, int actorNumber, string clanId, float lootWeightMultiplier, bool triggeredByLocalPlayer, string playerName = null)
+    public void HandleNetworkLootAccepted(int index, int actorNumber, string clanId, float lootWeightMultiplier, bool triggeredByLocalPlayer, string playerName = null, CharacterID actorCharacterId = CharacterID.None, AvatarData actorAvatarData = null)
     {
         if (index < 0 || index >= ListOfUIItems.Count || exitraid != null && exitraid.raidEnded)
         {
@@ -222,10 +228,10 @@ public class Raid_InventoryPage : MonoBehaviour
                 item.TriggerTrap();
             }
 
-            eventLog?.LogTrapTriggered(playerName, trapType);
+            eventLog?.LogTrapTriggered(playerName, trapType, actorCharacterId, actorAvatarData);
             if (LootItemForClan(item, item.ItemWeight, clanId, lootWeightMultiplier))
             {
-                eventLog?.LogLootTaken(playerName, furniture, lootWeightMultiplier);
+                eventLog?.LogLootTaken(playerName, furniture, lootWeightMultiplier, actorCharacterId, actorAvatarData);
             }
 
             if (!triggeredByLocalPlayer)
@@ -255,7 +261,7 @@ public class Raid_InventoryPage : MonoBehaviour
         GameFurniture furnitureData = item.furnitureData;
         if (LootItemForClan(item, item.ItemWeight, clanId, lootWeightMultiplier))
         {
-            eventLog?.LogLootTaken(playerName, furnitureData, lootWeightMultiplier);
+            eventLog?.LogLootTaken(playerName, furnitureData, lootWeightMultiplier, actorCharacterId, actorAvatarData);
         }
         ListOfUIItems[index].ItemWeight = 0;
     }
@@ -544,6 +550,35 @@ public class Raid_InventoryPage : MonoBehaviour
         }
 
         return string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName;
+    }
+
+    private CharacterID GetLocalEventCharacterId()
+    {
+        int? currentAvatarId = ServerManager.Instance?.Player?.currentAvatarId;
+        if (currentAvatarId.HasValue && Enum.IsDefined(typeof(CharacterID), currentAvatarId.Value))
+        {
+            return (CharacterID)currentAvatarId.Value;
+        }
+
+        return CharacterID.None;
+    }
+
+    private AvatarData GetLocalEventAvatarData()
+    {
+        ServerPlayer serverPlayer = ServerManager.Instance?.Player;
+        if (serverPlayer?.avatar != null)
+        {
+            return new AvatarData(serverPlayer.name, serverPlayer.avatar);
+        }
+
+        PlayerData playerData = null;
+        string playerGuid = GameConfig.Get().PlayerSettings.PlayerGuid;
+        if (!string.IsNullOrWhiteSpace(playerGuid))
+        {
+            Storefront.Get().GetPlayerData(playerGuid, data => playerData = data);
+        }
+
+        return playerData?.AvatarData;
     }
 
     private void SetBombsFromTrapData(RaidPhotonRoom.TrapData[] trapData)

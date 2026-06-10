@@ -8,6 +8,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Language;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Photon.Client;
 using Photon.Realtime;
@@ -50,6 +51,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private string _localPlayerName = "Player";
     private string _localClanId = string.Empty;
     private string _localClanName = string.Empty;
+    private AvatarData _localAvatarData;
 
     private bool _joiningOrCreatingRoom;
     private bool _waitingForRetryLeave;
@@ -167,12 +169,17 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         if (ServerManager.Instance != null)
         {
-            _localPlayerName = ServerManager.Instance.Player?.name ?? _localPlayerName;
-            _localClanId = ServerManager.Instance.Player?.clan_id ?? string.Empty;
+            ServerPlayer serverPlayer = ServerManager.Instance.Player;
+            _localPlayerName = serverPlayer?.name ?? _localPlayerName;
+            _localClanId = serverPlayer?.clan_id ?? string.Empty;
             _localClanName = ServerManager.Instance.Clan?.name ?? string.Empty;
+            if (serverPlayer?.avatar != null)
+            {
+                _localAvatarData = new AvatarData(_localPlayerName, serverPlayer.avatar);
+            }
         }
 
-        if (string.IsNullOrWhiteSpace(_localClanId))
+        if (string.IsNullOrWhiteSpace(_localClanId) || _localAvatarData == null)
         {
             bool playerLoaded = false;
             Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
@@ -186,7 +193,12 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             if (playerData != null)
             {
                 _localPlayerName = string.IsNullOrWhiteSpace(playerData.Name) ? _localPlayerName : playerData.Name;
-                _localClanId = playerData.ClanId ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(_localClanId))
+                {
+                    _localClanId = playerData.ClanId ?? string.Empty;
+                }
+
+                _localAvatarData ??= playerData.AvatarData;
             }
         }
 
@@ -421,7 +433,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         PhotonRealtimeClient.LocalPlayer.SetCustomProperties(new PhotonHashtable
         {
             { RaidPhotonRoom.PlayerClanIdKey, _localClanId },
-            { RaidPhotonRoom.PlayerClanNameKey, _localClanName }
+            { RaidPhotonRoom.PlayerClanNameKey, _localClanName },
+            { RaidPhotonRoom.PlayerCharacterIdKey, GetLocalCharacterId() },
+            { RaidPhotonRoom.PlayerAvatarDataKey, GetLocalAvatarPayload() }
         });
     }
 
@@ -669,9 +683,11 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         _lootedSlots.Add(slotIndex);
         float weightMultiplier = _inventoryPage.GetNetworkLootWeightMultiplier(slotIndex);
+        int characterId = GetPlayerCharacterId(sender);
+        string avatarPayload = GetPlayerAvatarPayload(sender);
         PhotonRealtimeClient.Client.OpRaiseEvent(
             RaidPhotonRoom.LootAcceptedEvent,
-            new object[] { slotIndex, senderActorNumber, clanId, weightMultiplier },
+            new object[] { slotIndex, senderActorNumber, clanId, weightMultiplier, characterId, avatarPayload },
             new RaiseEventArgs { Receivers = ReceiverGroup.All },
             SendOptions.SendReliable);
     }
@@ -687,13 +703,16 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         int actorNumber = Convert.ToInt32(data[1]);
         string clanId = data[2] as string ?? string.Empty;
         float weightMultiplier = Convert.ToSingle(data[3]);
+        int characterId = data.Length >= 5 ? Convert.ToInt32(data[4]) : (int)CharacterID.None;
+        string avatarPayload = data.Length >= 6 ? data[5] as string ?? string.Empty : string.Empty;
+        AvatarData avatarData = RaidPhotonRoom.DecodeAvatarData(avatarPayload);
         bool triggeredByLocalPlayer = PhotonRealtimeClient.LocalPlayer != null
             && PhotonRealtimeClient.LocalPlayer.ActorNumber == actorNumber;
         Player roomPlayer = GetRoomPlayer(actorNumber);
         string actorName = GetClanDisplayName(roomPlayer, actorNumber);
 
         _lootedSlots.Add(slotIndex);
-        _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, clanId, weightMultiplier, triggeredByLocalPlayer, actorName);
+        _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, clanId, weightMultiplier, triggeredByLocalPlayer, actorName, (CharacterID)characterId, avatarData);
     }
 
     private bool IsParticipatingClan(string clanId)
@@ -779,6 +798,74 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private string GetPlayerClanName(Player player)
     {
         return GetPlayerProperty(player, RaidPhotonRoom.PlayerClanNameKey, string.Empty);
+    }
+
+    private int GetPlayerCharacterId(Player player)
+    {
+        return GetPlayerProperty(player, RaidPhotonRoom.PlayerCharacterIdKey, (int)CharacterID.None);
+    }
+
+    private string GetPlayerAvatarPayload(Player player)
+    {
+        string payload = GetPlayerProperty(player, RaidPhotonRoom.PlayerAvatarDataKey, string.Empty);
+        if (!string.IsNullOrWhiteSpace(payload))
+        {
+            return payload;
+        }
+
+        return player != null && PhotonRealtimeClient.LocalPlayer != null && player.ActorNumber == PhotonRealtimeClient.LocalPlayer.ActorNumber
+            ? GetLocalAvatarPayload()
+            : string.Empty;
+    }
+
+    private string GetLocalAvatarPayload()
+    {
+        return RaidPhotonRoom.EncodeAvatarData(GetLocalAvatarData());
+    }
+
+    private AvatarData GetLocalAvatarData()
+    {
+        if (_localAvatarData != null)
+        {
+            return _localAvatarData;
+        }
+
+        ServerPlayer serverPlayer = ServerManager.Instance?.Player;
+        if (serverPlayer?.avatar != null)
+        {
+            _localAvatarData = new AvatarData(serverPlayer.name ?? _localPlayerName, serverPlayer.avatar);
+            return _localAvatarData;
+        }
+
+        PlayerData playerData = null;
+        string playerGuid = GameConfig.Get().PlayerSettings.PlayerGuid;
+        if (!string.IsNullOrWhiteSpace(playerGuid))
+        {
+            Storefront.Get().GetPlayerData(playerGuid, data => playerData = data);
+        }
+
+        _localAvatarData = playerData?.AvatarData;
+        return _localAvatarData;
+    }
+
+    private int GetLocalCharacterId()
+    {
+        int? currentAvatarId = ServerManager.Instance?.Player?.currentAvatarId;
+        if (currentAvatarId.HasValue && Enum.IsDefined(typeof(CharacterID), currentAvatarId.Value))
+        {
+            return currentAvatarId.Value;
+        }
+
+        PlayerData playerData = null;
+        string playerGuid = GameConfig.Get().PlayerSettings.PlayerGuid;
+        if (!string.IsNullOrWhiteSpace(playerGuid))
+        {
+            Storefront.Get().GetPlayerData(playerGuid, data => playerData = data);
+        }
+
+        return playerData != null && Enum.IsDefined(typeof(CharacterID), playerData.SelectedCharacterId)
+            ? playerData.SelectedCharacterId
+            : (int)CharacterID.None;
     }
 
     private void UpdateMatchmakingStatus()

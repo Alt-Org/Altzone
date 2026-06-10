@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Altzone.Scripts.Model.Poco.Player;
 
 public static class RaidPhotonRoom
 {
     public const int RoomCapacity = 4;
-    public const int RequiredPlayers = 2;
+    public const int RequiredPlayers = 1;
     public const int MaxPlayersPerClan = 2;
 
     public const string RaidMatchmakingKey = "raid_mm";
@@ -21,6 +22,8 @@ public static class RaidPhotonRoom
 
     public const string PlayerClanIdKey = "raid_clan_id";
     public const string PlayerClanNameKey = "raid_clan_name";
+    public const string PlayerCharacterIdKey = "raid_char_id";
+    public const string PlayerAvatarDataKey = "raid_avatar";
 
     public const byte LootRequestEvent = 80;
     public const byte LootAcceptedEvent = 81;
@@ -181,6 +184,86 @@ public static class RaidPhotonRoom
         }
 
         return limits.ToArray();
+    }
+
+    public static string EncodeAvatarData(AvatarData avatarData)
+    {
+        if (avatarData == null)
+        {
+            return string.Empty;
+        }
+
+        string[] values =
+        {
+            avatarData.Name,
+            avatarData.Hair.ToString(CultureInfo.InvariantCulture),
+            avatarData.Eyes.ToString(CultureInfo.InvariantCulture),
+            avatarData.Nose.ToString(CultureInfo.InvariantCulture),
+            avatarData.Mouth.ToString(CultureInfo.InvariantCulture),
+            avatarData.Clothes.ToString(CultureInfo.InvariantCulture),
+            avatarData.Feet.ToString(CultureInfo.InvariantCulture),
+            avatarData.Hands.ToString(CultureInfo.InvariantCulture),
+            avatarData.Color,
+            avatarData.HairColor,
+            avatarData.EyesColor,
+            avatarData.NoseColor,
+            avatarData.MouthColor,
+            avatarData.ClothesColor,
+            avatarData.FeetColor,
+            avatarData.HandsColor
+        };
+
+        return string.Join("|", values.Select(Escape));
+    }
+
+    public static AvatarData DecodeAvatarData(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        string[] parts = value.Split('|');
+        if (parts.Length < 16)
+        {
+            return null;
+        }
+
+        return new AvatarData
+        {
+            Name = DecodeString(parts, 0),
+            Hair = DecodeInt(parts, 1),
+            Eyes = DecodeInt(parts, 2),
+            Nose = DecodeInt(parts, 3),
+            Mouth = DecodeInt(parts, 4),
+            Clothes = DecodeInt(parts, 5),
+            Feet = DecodeInt(parts, 6),
+            Hands = DecodeInt(parts, 7),
+            Color = DecodeString(parts, 8),
+            HairColor = DecodeString(parts, 9),
+            EyesColor = DecodeString(parts, 10),
+            NoseColor = DecodeString(parts, 11),
+            MouthColor = DecodeString(parts, 12),
+            ClothesColor = DecodeString(parts, 13),
+            FeetColor = DecodeString(parts, 14),
+            HandsColor = DecodeString(parts, 15)
+        };
+    }
+
+    private static int DecodeInt(string[] parts, int index)
+    {
+        return index >= 0
+            && index < parts.Length
+            && int.TryParse(Unescape(parts[index]), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value)
+            ? value
+            : 0;
+    }
+
+    private static string DecodeString(string[] parts, int index)
+    {
+        return index >= 0 && index < parts.Length
+            ? Unescape(parts[index])
+            : string.Empty;
     }
 
     private static string Escape(string value)
