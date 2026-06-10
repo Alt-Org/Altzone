@@ -132,8 +132,8 @@ MonoBehaviour:
     FinnishMultText: 
     EnglishMultText: 
   - Scenario: 1
-    FinnishMessage: "Ansa! J\xE4\xE4dyit 10 Sekunniksi"
-    EnglishMessage: Trap! Frozen for 10 seconds
+    FinnishMessage: "Ansa! J\xE4\xE4dyit {0} Sekunniksi"
+    EnglishMessage: Trap! Frozen for {0} seconds
     BackgroundSprite: {fileID: 21300000, guid: 64b00f4be61371448934c52816bb3079, type: 3}
     BackgroundColor: {r: 1, g: 1, b: 1, a: 0.55}
     Effect: {fileID: 21300000, guid: c9a331cd52627344d8562ac19ef5c695, type: 3}

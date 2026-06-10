@@ -122,7 +122,8 @@ public class Raid_EventPopup : MonoBehaviour
 
     private IEnumerator ShowRoutine(Scenario scenario, float duration)
     {
-        ApplyScenarioVisual(scenario);
+        ScenarioVisual visual = GetScenarioVisual(scenario);
+        ApplyScenarioVisual(visual);
 
         gameObject.SetActive(true);
         if (canvasGroup != null)
@@ -130,14 +131,56 @@ public class Raid_EventPopup : MonoBehaviour
             canvasGroup.alpha = 1f;
         }
 
-        yield return new WaitForSeconds(duration >= 0f ? duration : showTime);
+        float displayTime = duration >= 0f ? duration : showTime;
+        if (scenario == Scenario.Freeze && displayTime > 0f)
+        {
+            yield return ShowFreezeCountdownRoutine(visual, displayTime);
+        }
+        else
+        {
+            yield return new WaitForSeconds(displayTime);
+        }
+
         gameObject.SetActive(false);
     }
 
-    private void ApplyScenarioVisual(Scenario scenario)
+    private IEnumerator ShowFreezeCountdownRoutine(ScenarioVisual visual, float duration)
     {
-        ScenarioVisual visual = GetScenarioVisual(scenario);
+        float remainingTime = duration;
+        int lastDisplayedSeconds = -1;
 
+        while (remainingTime > 0f)
+        {
+            int secondsRemaining = Mathf.Max(1, Mathf.CeilToInt(remainingTime));
+            if (secondsRemaining != lastDisplayedSeconds)
+            {
+                SetLocalizedText(messageText, FormatCountdownMessage(visual.Message, secondsRemaining), visual.TextColor);
+                lastDisplayedSeconds = secondsRemaining;
+            }
+
+            yield return null;
+            remainingTime -= Time.deltaTime;
+        }
+    }
+
+    private string FormatCountdownMessage(string messageTemplate, int secondsRemaining)
+    {
+        if (string.IsNullOrWhiteSpace(messageTemplate))
+        {
+            return secondsRemaining.ToString();
+        }
+
+        string secondsText = secondsRemaining.ToString();
+        if (messageTemplate.Contains("{0}"))
+        {
+            return messageTemplate.Replace("{0}", secondsText);
+        }
+
+        return messageTemplate.Replace("10", secondsText);
+    }
+
+    private void ApplyScenarioVisual(ScenarioVisual visual)
+    {
         SetLocalizedText(messageText, visual.Message, visual.TextColor);
         SetLocalizedText(MultText, visual.MultText, visual.TextColor);
 
