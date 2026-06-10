@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class ExitRaid : MonoBehaviour
 {
+    public static ExitRaid Instance { get; private set; }
+
     public enum RaidEndReason
     {
         Trap,
@@ -20,11 +22,39 @@ public class ExitRaid : MonoBehaviour
 
     private void Awake()
     {
+        RegisterInstance();
         ResolveReferences();
+    }
+
+    private void OnEnable()
+    {
+        RegisterInstance();
+    }
+
+    private void OnDisable()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 
     public void RequestExitRaid()
     {
+        if (Instance != null && Instance != this)
+        {
+            Instance.RequestExitRaid();
+            return;
+        }
+
         if (raidEnded)
         {
             return;
@@ -40,15 +70,14 @@ public class ExitRaid : MonoBehaviour
 
     public void EndRaid(RaidEndReason reason)
     {
+        if (Instance != null && Instance != this)
+        {
+            Instance.EndRaid(reason);
+            return;
+        }
+
         if (!gameObject.activeInHierarchy)
         {
-            ExitRaid activeExitRaid = FindActiveExitRaid();
-            if (activeExitRaid != null && activeExitRaid != this)
-            {
-                activeExitRaid.EndRaid(reason);
-                return;
-            }
-
             Debug.LogError("Cannot end raid from an inactive ExitRaid object.");
             return;
         }
@@ -78,17 +107,17 @@ public class ExitRaid : MonoBehaviour
 
         yield return Raid_EventPopup.ShowAndWait(this, GetPopupScenario(reason));
 
-        Raid_EndMenu endMenu = raid_References.EndMenu == null ? null : raid_References.EndMenu.GetComponent<Raid_EndMenu>();
+        Raid_EndMenu endMenu = raid_References.EndMenuController;
         if (endMenu == null)
         {
-            Debug.LogError("Cannot show raid end menu because the EndMenu reference is missing Raid_EndMenu.");
+            Debug.LogError("Cannot show raid end menu because the EndMenuController reference is missing.");
             yield break;
         }
 
         endMenu.SetOverWeightLimitBackground(reason == RaidEndReason.OutOfSpace);
         endMenu.SetCollectedLoot(raid_References.raid_LootTracking.ListOfCollectedLoot);
         endMenu.SetSpaceRemainingText(raid_References.raid_LootTracking.CurrentLootWeight, raid_References.raid_LootTracking.MaxLootWeight);
-        raid_References.EndMenu.SetActive(true);
+        raid_References.ShowEndMenu();
     }
 
     public void OnEndRaid()
@@ -98,11 +127,28 @@ public class ExitRaid : MonoBehaviour
 
     private void SetEndReasonText(RaidEndReason reason)
     {
-        Raid_EndMenu endMenu = raid_References.EndMenu == null ? null : raid_References.EndMenu.GetComponent<Raid_EndMenu>();
+        Raid_EndMenu endMenu = raid_References.EndMenuController;
         if (endMenu != null)
         {
             endMenu.SetEndReasonText(reason);
         }
+    }
+
+    private void RegisterInstance()
+    {
+        if (Instance == null || Instance == this)
+        {
+            Instance = this;
+            return;
+        }
+
+        if (!Instance.gameObject.activeInHierarchy && gameObject.activeInHierarchy)
+        {
+            Instance = this;
+            return;
+        }
+
+        Debug.LogWarning("Multiple ExitRaid instances found. Using the first active instance.");
     }
 
     private Raid_EventPopup.Scenario GetPopupScenario(RaidEndReason reason)
@@ -131,19 +177,5 @@ public class ExitRaid : MonoBehaviour
         {
             raid_References = FindObjectOfType<Raid_References>();
         }
-    }
-
-    private ExitRaid FindActiveExitRaid()
-    {
-        ExitRaid[] exitRaids = FindObjectsOfType<ExitRaid>();
-        foreach (ExitRaid exitRaid in exitRaids)
-        {
-            if (exitRaid != null && exitRaid.gameObject.activeInHierarchy)
-            {
-                return exitRaid;
-            }
-        }
-
-        return null;
     }
 }

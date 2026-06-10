@@ -35,6 +35,15 @@ public class Raid_EventPopup : MonoBehaviour
         [FormerlySerializedAs("MultText")]
         [TextArea(1, 3)] public string FinnishMultText = "";
         [TextArea(1, 3)] public string EnglishMultText = "";
+
+        public string Message { get; private set; }
+        public string MultText { get; private set; }
+
+        public void SetLocalizedTexts(string message, string multText)
+        {
+            Message = message;
+            MultText = multText;
+        }
     }
 
     private const string PopupResourcePath = "Prefabs/RaidEventPopup";
@@ -129,11 +138,8 @@ public class Raid_EventPopup : MonoBehaviour
     {
         ScenarioVisual visual = GetScenarioVisual(scenario);
 
-        string message = GetLocalizedText(visual.FinnishMessage, visual.EnglishMessage);
-        string multText = GetLocalizedText(visual.FinnishMultText, visual.EnglishMultText);
-
-        SetLocalizedText(messageText, message, visual.TextColor);
-        SetLocalizedText(MultText, multText, visual.TextColor);
+        SetLocalizedText(messageText, visual.Message, visual.TextColor);
+        SetLocalizedText(MultText, visual.MultText, visual.TextColor);
 
         ApplyImage(backgroundImage, visual.BackgroundSprite, visual.BackgroundColor);
         ApplyImage(effectImage, visual.Effect, visual.EffectColor);
@@ -157,29 +163,38 @@ public class Raid_EventPopup : MonoBehaviour
 
         if (MultText != null)
         {
-            MultText.gameObject.SetActive(!string.IsNullOrWhiteSpace(multText));
+            MultText.gameObject.SetActive(!string.IsNullOrWhiteSpace(visual.MultText));
         }
     }
 
     private ScenarioVisual GetScenarioVisual(Scenario scenario)
     {
+        ScenarioVisual scenarioVisual = null;
+
         if (scenarioVisuals != null)
         {
             foreach (ScenarioVisual visual in scenarioVisuals)
             {
                 if (visual != null && visual.Scenario == scenario)
                 {
-                    return visual;
+                    scenarioVisual = visual;
+                    break;
                 }
             }
         }
 
-        return new ScenarioVisual
+        scenarioVisual ??= new ScenarioVisual
         {
             Scenario = scenario,
             FinnishMessage = "Ry\u00f6st\u00f6 p\u00e4\u00e4ttyy.",
             EnglishMessage = "The raid is ending."
         };
+
+        scenarioVisual.SetLocalizedTexts(
+            GetLocalizedText(scenarioVisual.FinnishMessage, scenarioVisual.EnglishMessage),
+            GetLocalizedText(scenarioVisual.FinnishMultText, scenarioVisual.EnglishMultText));
+
+        return scenarioVisual;
     }
 
     private string GetLocalizedText(string finnishText, string englishText)

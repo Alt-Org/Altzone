@@ -10,13 +10,14 @@ GameObject:
   m_Component:
   - component: {fileID: 2668198566995541017}
   - component: {fileID: 7581730394780298031}
+  - component: {fileID: 9203000000000000001}
   m_Layer: 5
   m_Name: EndMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2668198566995541017
 RectTransform:
   m_ObjectHideFlags: 0
@@ -59,6 +60,7 @@ MonoBehaviour:
   content: {fileID: 4296145650629842064}
   itemPrefab: {fileID: 7481540141435164365, guid: 59f733f3d92449d4a8da7c84514fdf3b,
     type: 3}
+  menuRoot: {fileID: 683399793402178915}
   backgroundImage: {fileID: 486935528496687519}
   normalBackgroundSprite: {fileID: 21300000, guid: ca292ec662d733746a24248a335eba3a,
     type: 3}
@@ -68,6 +70,18 @@ MonoBehaviour:
   overweightEndResultText: {fileID: 9001000000000000001}
   spaceRemainingText: {fileID: 9102000000000000004}
   collectedLootItemScale: {x: 1.25, y: 1.25, z: 1}
+--- !u!225 &9203000000000000001
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683399793402178915}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &1381501735683521454
 GameObject:
   m_ObjectHideFlags: 0

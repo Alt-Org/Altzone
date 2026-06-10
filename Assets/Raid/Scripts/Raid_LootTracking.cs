@@ -27,7 +27,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
     {
         if (exitRaid == null)
         {
-            exitRaid = FindObjectOfType<ExitRaid>();
+            exitRaid = ExitRaid.Instance;
         }
 
 /*        _photonView = gameObject.AddComponent<PhotonView>();
@@ -85,13 +85,18 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
             raid_References.HeartHalves.SetActive(true);
             raid_References.Heart.GetComponent<Image>().enabled = false;
 
+            if (exitRaid == null)
+            {
+                exitRaid = ExitRaid.Instance;
+            }
+
             if (exitRaid != null)
             {
                 exitRaid.EndRaid(ExitRaid.RaidEndReason.OutOfSpace);
             }
             else
             {
-                Raid_EndMenu endMenu = raid_References.EndMenu.GetComponent<Raid_EndMenu>();
+                Raid_EndMenu endMenu = raid_References.EndMenuController;
                 if (endMenu != null)
                 {
                     endMenu.SetEndReasonText(ExitRaid.RaidEndReason.OutOfSpace);
@@ -99,7 +104,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
                     endMenu.SetSpaceRemainingText(CurrentLootWeight, MaxLootWeight);
                 }
 
-                raid_References.EndMenu.SetActive(true);
+                raid_References.ShowEndMenu();
             }
         }
     }
