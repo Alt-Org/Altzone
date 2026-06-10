@@ -125,6 +125,8 @@ namespace MenuUi.Scripts.Login
             _registerButton.onClick.AddListener(OpenPasswordHintPanel);
             _setHintButton.onClick.AddListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
             _skipHintButton.onClick.AddListener(() => Register());
+            _registerPasswordHintAnswerInputField.onValueChanged.AddListener((value) => CheckHintValidity());
+            _registerPasswordHintInputField.onValueChanged.AddListener((value) => CheckHintValidity());
             _autoLoginToggle.OnToggleStateChanged += SetVersionState;
             _turboEducationToggle.OnToggleStateChanged += SetTurboState;
             _logInUsernameInputField.text = PlayerPrefs.GetString("userName", string.Empty);
@@ -150,6 +152,14 @@ namespace MenuUi.Scripts.Login
         {
             _autoLoginToggle.OnToggleStateChanged -= SetVersionState;
             _turboEducationToggle.OnToggleStateChanged -= SetTurboState;
+            _logInPasswordVisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_logInPasswordInputField, value));
+            _registerPasswordVisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_registerPasswordInputField, value));
+            _registerPassword2VisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_registerPassword2InputField, value));
+            _registerButton.onClick.RemoveListener(OpenPasswordHintPanel);
+            _setHintButton.onClick.RemoveListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
+            _skipHintButton.onClick.RemoveListener(() => Register());
+            _registerPasswordHintAnswerInputField.onValueChanged.RemoveListener((value) => CheckHintValidity());
+            _registerPasswordHintInputField.onValueChanged.RemoveListener((value) => CheckHintValidity());
         }
 
         /// <summary>
@@ -436,6 +446,18 @@ namespace MenuUi.Scripts.Login
             {
                 //PlayerPrefs.SetInt("AutomaticLogin", 0);
                 _autoLoginToggle.SetState(value);
+            }
+        }
+
+        private void CheckHintValidity()
+        {
+            if (!string.IsNullOrWhiteSpace(_registerPasswordHintAnswerInputField.text) && !string.IsNullOrWhiteSpace(_registerPasswordHintInputField.text))
+            {
+                _setHintButton.interactable = true;
+            }
+            else
+            {
+                _setHintButton.interactable = false;
             }
         }
 

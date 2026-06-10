@@ -274,6 +274,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SignInPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 4161633919127985019, guid: 179832fdffedb49409cd6ae1f2a86864,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5035525574827617841, guid: 179832fdffedb49409cd6ae1f2a86864,
         type: 3}
       propertyPath: m_fontSize
@@ -578,6 +583,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SetPasswordHintButton
       objectReference: {fileID: 0}
+    - target: {fileID: 1468417906203807196, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
+        type: 3}
+      propertyPath: m_InputType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1506928733256432559, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
         type: 3}
       propertyPath: m_Name
@@ -587,6 +597,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PasswordHintInputField
+      objectReference: {fileID: 0}
+    - target: {fileID: 2279598400674853093, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
+        type: 3}
+      propertyPath: m_InputType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2603114656624139408, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2693419572081421394, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
         type: 3}
@@ -601,7 +621,7 @@ PrefabInstance:
     - target: {fileID: 2693419572081421394, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -49.600037
+      value: -118.04498
       objectReference: {fileID: 0}
     - target: {fileID: 3304356132709760914, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
         type: 3}
@@ -611,7 +631,7 @@ PrefabInstance:
     - target: {fileID: 3643711157038332828, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 89.26201
+      value: 61.541786
       objectReference: {fileID: 0}
     - target: {fileID: 4058079263082071556, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
         type: 3}
@@ -721,7 +741,7 @@ PrefabInstance:
     - target: {fileID: 5884276125235583331, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 89.26201
+      value: 61.541786
       objectReference: {fileID: 0}
     - target: {fileID: 5937862379154403949, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
         type: 3}
@@ -736,12 +756,12 @@ PrefabInstance:
     - target: {fileID: 5937862379154403949, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -49.600037
+      value: -118.04498
       objectReference: {fileID: 0}
     - target: {fileID: 7145915473669730094, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 89.26199
+      value: 61.54178
       objectReference: {fileID: 0}
     - target: {fileID: 8313983840355195716, guid: 48b4b181747d9cd4fb96fb3c5a9c6971,
         type: 3}
