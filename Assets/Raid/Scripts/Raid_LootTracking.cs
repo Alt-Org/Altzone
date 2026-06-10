@@ -28,7 +28,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
     {
         if (exitRaid == null)
         {
-            exitRaid = FindObjectOfType<ExitRaid>();
+            exitRaid = ExitRaid.Instance;
         }
 
 /*        _photonView = gameObject.AddComponent<PhotonView>();

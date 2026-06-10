@@ -35,6 +35,15 @@ public class Raid_EventPopup : MonoBehaviour
         [FormerlySerializedAs("MultText")]
         [TextArea(1, 3)] public string FinnishMultText = "";
         [TextArea(1, 3)] public string EnglishMultText = "";
+
+        public string Message { get; private set; }
+        public string MultText { get; private set; }
+
+        public void SetLocalizedTexts(string message, string multText)
+        {
+            Message = message;
+            MultText = multText;
+        }
     }
 
     private const string PopupResourcePath = "Prefabs/RaidEventPopup";
@@ -113,7 +122,8 @@ public class Raid_EventPopup : MonoBehaviour
 
     private IEnumerator ShowRoutine(Scenario scenario, float duration)
     {
-        ApplyScenarioVisual(scenario);
+        ScenarioVisual visual = GetScenarioVisual(scenario);
+        ApplyScenarioVisual(visual);
 
         gameObject.SetActive(true);
         if (canvasGroup != null)
@@ -121,19 +131,58 @@ public class Raid_EventPopup : MonoBehaviour
             canvasGroup.alpha = 1f;
         }
 
-        yield return new WaitForSeconds(duration >= 0f ? duration : showTime);
+        float displayTime = duration >= 0f ? duration : showTime;
+        if (scenario == Scenario.Freeze && displayTime > 0f)
+        {
+            yield return ShowFreezeCountdownRoutine(visual, displayTime);
+        }
+        else
+        {
+            yield return new WaitForSeconds(displayTime);
+        }
+
         gameObject.SetActive(false);
     }
 
-    private void ApplyScenarioVisual(Scenario scenario)
+    private IEnumerator ShowFreezeCountdownRoutine(ScenarioVisual visual, float duration)
     {
-        ScenarioVisual visual = GetScenarioVisual(scenario);
+        float remainingTime = duration;
+        int lastDisplayedSeconds = -1;
 
-        string message = GetLocalizedText(visual.FinnishMessage, visual.EnglishMessage);
-        string multText = GetLocalizedText(visual.FinnishMultText, visual.EnglishMultText);
+        while (remainingTime > 0f)
+        {
+            int secondsRemaining = Mathf.Max(1, Mathf.CeilToInt(remainingTime));
+            if (secondsRemaining != lastDisplayedSeconds)
+            {
+                SetLocalizedText(messageText, FormatCountdownMessage(visual.Message, secondsRemaining), visual.TextColor);
+                lastDisplayedSeconds = secondsRemaining;
+            }
 
-        SetLocalizedText(messageText, message, visual.TextColor);
-        SetLocalizedText(MultText, multText, visual.TextColor);
+            yield return null;
+            remainingTime -= Time.deltaTime;
+        }
+    }
+
+    private string FormatCountdownMessage(string messageTemplate, int secondsRemaining)
+    {
+        if (string.IsNullOrWhiteSpace(messageTemplate))
+        {
+            return secondsRemaining.ToString();
+        }
+
+        string secondsText = secondsRemaining.ToString();
+        if (messageTemplate.Contains("{0}"))
+        {
+            return messageTemplate.Replace("{0}", secondsText);
+        }
+
+        return messageTemplate.Replace("10", secondsText);
+    }
+
+    private void ApplyScenarioVisual(ScenarioVisual visual)
+    {
+        SetLocalizedText(messageText, visual.Message, visual.TextColor);
+        SetLocalizedText(MultText, visual.MultText, visual.TextColor);
 
         ApplyImage(backgroundImage, visual.BackgroundSprite, visual.BackgroundColor);
         ApplyImage(effectImage, visual.Effect, visual.EffectColor);
@@ -157,29 +206,38 @@ public class Raid_EventPopup : MonoBehaviour
 
         if (MultText != null)
         {
-            MultText.gameObject.SetActive(!string.IsNullOrWhiteSpace(multText));
+            MultText.gameObject.SetActive(!string.IsNullOrWhiteSpace(visual.MultText));
         }
     }
 
     private ScenarioVisual GetScenarioVisual(Scenario scenario)
     {
+        ScenarioVisual scenarioVisual = null;
+
         if (scenarioVisuals != null)
         {
             foreach (ScenarioVisual visual in scenarioVisuals)
             {
                 if (visual != null && visual.Scenario == scenario)
                 {
-                    return visual;
+                    scenarioVisual = visual;
+                    break;
                 }
             }
         }
 
-        return new ScenarioVisual
+        scenarioVisual ??= new ScenarioVisual
         {
             Scenario = scenario,
             FinnishMessage = "Ry\u00f6st\u00f6 p\u00e4\u00e4ttyy.",
             EnglishMessage = "The raid is ending."
         };
+
+        scenarioVisual.SetLocalizedTexts(
+            GetLocalizedText(scenarioVisual.FinnishMessage, scenarioVisual.EnglishMessage),
+            GetLocalizedText(scenarioVisual.FinnishMultText, scenarioVisual.EnglishMultText));
+
+        return scenarioVisual;
     }
 
     private string GetLocalizedText(string finnishText, string englishText)

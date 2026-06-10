@@ -27,6 +27,7 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField, Min(1)] private int trapAmount = 3;
     [SerializeField, Min(0f)] private float freezeDuration = 10f;
     [SerializeField, Min(1f)] private float doubleWeightMultiplier = 2f;
+    [SerializeField, Header("Trap settings")] private bool showTrapIndicators = true;
 
     [System.Serializable]
     public class BombData
@@ -88,6 +89,7 @@ public class Raid_InventoryPage : MonoBehaviour
             Raid_InventoryItem UIItem = Instantiate(ItemPrefab, Vector3.zero, Quaternion.identity);
             UIItem.transform.SetParent(ContentPanel);
             UIItem.transform.localScale = new Vector3(1, 1, 0);
+            UIItem.SetTrapIndicatorVisible(showTrapIndicators);
             ListOfUIItems.Add(UIItem);
             UIItem.OnItemClicked += HandleItemLooting;
         }
