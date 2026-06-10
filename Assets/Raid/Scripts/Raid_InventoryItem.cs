@@ -53,6 +53,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     private bool triggered = false;
 
     public bool bomb = false;
+    private bool showTrapIndicator = true;
 
     private bool timeEnded = false;
     public GameFurniture furnitureData;
@@ -82,6 +83,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         {
             ItemImage.gameObject.SetActive(false);
         }
+        RefreshBombIndicator();
 
         //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
             spectator = false;
@@ -113,8 +115,8 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     public void RemoveData()
     {
         ItemImage.gameObject.SetActive(false);
-        BombIndicator.SetActive(false);
         bomb = false;
+        RefreshBombIndicator();
     }
     public void SetBomb(int bombType)
     {
@@ -125,7 +127,8 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         _bombType = trapType;
         bomb = true;
-        BombIndicator.SetActive(true);
+        triggered = false;
+        RefreshBombIndicator();
     }
     public void TriggerBomb()
     {
@@ -162,7 +165,23 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             triggered = true;
             audioSource.PlayOneShot(explosion, SettingsCarrier.Instance.SentVolume(GetComponent<SetVolume>()._soundType));
         }
-        BombIndicator.SetActive(false);
+        RefreshBombIndicator();
+    }
+
+    public void SetTrapIndicatorVisible(bool visible)
+    {
+        showTrapIndicator = visible;
+        RefreshBombIndicator();
+    }
+
+    private void RefreshBombIndicator()
+    {
+        if (BombIndicator == null)
+        {
+            return;
+        }
+
+        BombIndicator.SetActive(bomb && !triggered && showTrapIndicator);
     }
 
     private void SetTriggeredTrapSprite()
