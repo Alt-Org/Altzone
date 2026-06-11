@@ -51,65 +51,38 @@ public class PastPollManager : MonoBehaviour
 
         var pastPollList = PollManager.GetPastPollList();
 
-        /*
-#if UNITY_EDITOR
-        if (pastPollList == null || pastPollList.Count == 0)
+
+
+        foreach (var pollData in pastPollList)
         {
-            Debug.Log("PAST TEST MODE: Creating fake UI entries");
+            GameObject obj = null;
 
-            for (int i = 0; i < 5; i++)   // ← 5 test pollia
+            bool isShopPoll = pollData is FurniturePollData;
+
+            if (isShopPoll)
             {
-                GameObject fakeAdmin = Instantiate(PollObjectPrefab, PastAdminVotedListContent.transform);
-                PollObject adminObj = fakeAdmin.GetComponent<PollObject>();
-                adminObj.SetPollId("PAST_TEST_ADMIN");
-                adminObj.SetTheme(AdminThemeColor);
-                fakeAdmin.GetComponent<UnityEngine.UI.Button>().interactable = false;
-                PastPolls.Add(fakeAdmin);
-
-                GameObject fakeShop = Instantiate(PollObjectPrefab, PastShopVotedListContent.transform);
-                PollObject shopObj = fakeShop.GetComponent<PollObject>();
-                shopObj.SetPollId("PAST_TEST_SHOP");
-                shopObj.SetTheme(ShopThemeColor);
-                fakeShop.GetComponent<UnityEngine.UI.Button>().interactable = false;
-                PastPolls.Add(fakeShop);
+                obj = Instantiate(PollObjectPrefab, PastShopVotedListContent.transform);
+            }
+            else
+            {
+                obj = Instantiate(PollObjectPrefab, PastAdminVotedListContent.transform);
             }
 
-        }
-        else
-#endif
-        */
-
-        {
-            foreach (var pollData in pastPollList)
+            if (obj != null)
             {
-                GameObject obj = null;
-
-                bool isShopPoll = pollData is FurniturePollData;
+                PollObject pollObject = obj.GetComponent<PollObject>();
+                pollObject.SetPollId(pollData.Id);
 
                 if (isShopPoll)
-                {
-                    obj = Instantiate(PollObjectPrefab, PastShopVotedListContent.transform);
-                }
+                    pollObject.SetTheme(ShopThemeColor);
                 else
-                {
-                    obj = Instantiate(PollObjectPrefab, PastAdminVotedListContent.transform);
-                }
+                    pollObject.SetTheme(AdminThemeColor);
 
-                if (obj != null)
-                {
-                    PollObject pollObject = obj.GetComponent<PollObject>();
-                    pollObject.SetPollId(pollData.Id);
-
-                    if (isShopPoll)
-                        pollObject.SetTheme(ShopThemeColor);
-                    else
-                        pollObject.SetTheme(AdminThemeColor);
-
-                    obj.GetComponent<UnityEngine.UI.Button>().interactable = false;
-                    PastPolls.Add(obj);
-                }
+                obj.GetComponent<UnityEngine.UI.Button>().interactable = false;
+                PastPolls.Add(obj);
             }
         }
+
 
 
         Debug.Log("Admin children: " + PastAdminVotedListContent.transform.childCount);

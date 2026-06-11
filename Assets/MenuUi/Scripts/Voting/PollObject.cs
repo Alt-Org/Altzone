@@ -266,8 +266,6 @@ public class PollObject : MonoBehaviour
         if (NoVotesText != null) NoVotesText.text = (1f - fillValue).ToString("P0");
 
         GreenFill.fillAmount = fillValue;
-
-        // playerHeads.InstantiateHeads(pollId);
     }
 
     private void SetClanRoleData(ClanRolePollData clanRolePoll)
@@ -461,12 +459,15 @@ public class PollObject : MonoBehaviour
             Debug.LogWarning("PollInfoPopup instance is not found in the scene.");
             return;
         }
-
-        if (pollData is FurniturePollData furniturePollData && furniturePollData.Furniture != null)
+        if (pollData == null)
         {
-            PollInfoPopup.Instance.OpenPopup(furniturePollData);
+            return;
         }
-        else if (pollData is ClanRolePollData clanRolePoll)
+
+        PollInfoPopup.Instance.OpenPopup(pollData);
+
+
+        if (pollData is ClanRolePollData clanRolePoll)
         {
             // Start coroutine to fetch clan data
             StartCoroutine(FetchClanMemberAndOpenPopup(clanRolePoll));

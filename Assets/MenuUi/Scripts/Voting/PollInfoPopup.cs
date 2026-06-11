@@ -133,26 +133,14 @@ public class PollInfoPopup : MonoBehaviour
     }
 
     // Opens the popup and fills it with the data from the furniture in question
-    public void OpenPopup(FurniturePollData pollData)
+    public void OpenPopup(PollData pollData)
     {
         if (pollData == null)
         {
-            Debug.LogWarning("PollInfoPopup Open called with null furniture!");
             return;
         }
 
         SetValues(pollData);
-    }
-
-    public void OpenPopup(ClanRolePollData roleData)
-    {
-        if (roleData == null)
-        {
-            Debug.LogWarning("PollInfoPopup Open called with null role!");
-            return;
-        }
-
-        SetValues(roleData);
     }
 
     private void SetFurnitureData(FurniturePollData furnitureData)
@@ -170,19 +158,27 @@ public class PollInfoPopup : MonoBehaviour
         valueText.text = $"{furnitureData.Furniture.Value}";
     }
 
+    private void SetClanRoleData(ClanRolePollData _)
+    {
+        Debug.LogWarning("ClanRolePoll not implemented yet");
+    }
+
     private void SetValues(PollData pollData)
     {
         _currentPollData = pollData;
 
-        authorName.text = $"Luonut: {pollData.Organizer}";
+        authorName.text = $"Luonut: {pollData?.Organizer}";
 
-        if (pollData is FurniturePollData)
+        if (pollData is FurniturePollData furniturePollData)
         {
-            SetFurnitureData(pollData as FurniturePollData);
+            SetFurnitureData(furniturePollData);
         }
-        else if (pollData is ClanRolePollData)
+        else if (pollData is ClanRolePollData clanRolePollData)
         {
-            Debug.LogError("Clan role polls are not setup");
+            SetClanRoleData(clanRolePollData);
+        }
+        else {
+            Debug.LogError("Called PollInfo with unknown data");
         }
 
         UpdateTimerDisplay();
