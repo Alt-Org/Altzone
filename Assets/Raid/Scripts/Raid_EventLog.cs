@@ -15,9 +15,6 @@ public class Raid_EventLog : MonoBehaviour
     private const float EventLogAvatarScale = 1f;
     private const float EventLogTextLeftMargin = 56f;
     private const float EventLogTextRightMargin = 18f;
-    private const float EventLogDividerLeftMargin = 56f;
-    private const float EventLogDividerRightMargin = 18f;
-    private const float EventLogDividerBottomOffset = 2f;
     private const float EventLogTemplateAnchorMinY = 0.5f;
 
     private static readonly Color[] IconColors =
@@ -46,7 +43,6 @@ public class Raid_EventLog : MonoBehaviour
     [SerializeField] private AvatarFaceLoader avatarHeadTemplate;
     [SerializeField] private Color normalEntryColor = new(1f, 1f, 1f, 0.95f);
     [SerializeField] private Color trapEntryColor = new(1f, 1f, 1f, 0.95f);
-    [SerializeField] private Color dividerColor = new(1f, 0.59f, 0f, 0.85f);
 
     private readonly Queue<GameObject> entries = new();
     private Coroutine scrollRoutine;
@@ -133,8 +129,6 @@ public class Raid_EventLog : MonoBehaviour
             }
         }
 
-        RefreshEntryDividers();
-
         if (scrollRoutine != null)
         {
             StopCoroutine(scrollRoutine);
@@ -156,7 +150,6 @@ public class Raid_EventLog : MonoBehaviour
         }
 
         ConfigureIcon(FindAvatarSlot(entry.transform), actorName, characterId, avatarData);
-        ConfigureDivider(entry.transform.Find("Divider"), false);
     }
 
     private static TMP_Text FindMessageText(Transform entryTransform)
@@ -307,44 +300,6 @@ public class Raid_EventLog : MonoBehaviour
         avatarRect.anchoredPosition = Vector2.zero;
         avatarRect.pivot = new Vector2(0.5f, 0.5f);
         avatarRect.localScale = new Vector3(EventLogAvatarScale, EventLogAvatarScale, 1f);
-    }
-
-    private void RefreshEntryDividers()
-    {
-        int index = 0;
-        int lastIndex = entries.Count - 1;
-        foreach (GameObject entry in entries)
-        {
-            ConfigureDivider(entry != null ? entry.transform.Find("Divider") : null, index == lastIndex);
-            index++;
-        }
-    }
-
-    private void ConfigureDivider(Transform divider, bool isVisible)
-    {
-        if (divider == null)
-        {
-            return;
-        }
-
-        divider.gameObject.SetActive(isVisible);
-
-        if (divider.TryGetComponent(out Image dividerImage))
-        {
-            dividerImage.color = dividerColor;
-            dividerImage.raycastTarget = false;
-        }
-
-        if (divider is not RectTransform dividerRect)
-        {
-            return;
-        }
-
-        dividerRect.anchorMin = new Vector2(0f, 0f);
-        dividerRect.anchorMax = new Vector2(1f, 0f);
-        dividerRect.offsetMin = new Vector2(EventLogDividerLeftMargin, EventLogDividerBottomOffset);
-        dividerRect.offsetMax = new Vector2(-EventLogDividerRightMargin, EventLogDividerBottomOffset + 1f);
-        dividerRect.pivot = new Vector2(0f, 0.5f);
     }
 
     private static void DisableAvatarRaycasts(AvatarFaceLoader avatarFaceLoader)
