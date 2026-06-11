@@ -4451,7 +4451,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Klaanin nimi
+  m_text: Expedition 24-854
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
   m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
@@ -4763,6 +4763,7 @@ MonoBehaviour:
   _firstAvatarHead: {fileID: 7056963433560713699}
   _firstClanBox: {fileID: 8068934491079467253}
   _firstPlayerBox: {fileID: 5167352711359635555}
+  _firstAvatarLoader: {fileID: 394819900488883527}
   <FirstOpenClanProfileButton>k__BackingField: {fileID: 6434049995438207127}
   <FirstOpenPlayerProfileButton>k__BackingField: {fileID: 1725538171519595709}
   _secondPlayerName: {fileID: 8667618424803966650}
@@ -4773,6 +4774,7 @@ MonoBehaviour:
   _secondAvatarHead: {fileID: 2521966448818217926}
   _secondClanBox: {fileID: 4430771302323988236}
   _secondPlayerBox: {fileID: 6091404006185772779}
+  _secondAvatarLoader: {fileID: 5073906818865485666}
   <SecondOpenClanProfileButton>k__BackingField: {fileID: 625816591317258959}
   <SecondOpenPlayerProfileButton>k__BackingField: {fileID: 906063442006148180}
   _thirdPlayerName: {fileID: 2882079886838319392}
@@ -4783,6 +4785,7 @@ MonoBehaviour:
   _thirdAvatarHead: {fileID: 4979082371281993341}
   _thirdClanBox: {fileID: 1141119659554797391}
   _thirdPlayerBox: {fileID: 5389076316745192804}
+  _thirdAvatarLoader: {fileID: 2417502025924709081}
   <ThirdOpenClanProfileButton>k__BackingField: {fileID: 8999701531289173905}
   <ThirdOpenPlayerProfileButton>k__BackingField: {fileID: 4761379310469337198}
 --- !u!1 &7513390045398527746
@@ -6174,6 +6177,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1156260405200592309}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5073906818865485666 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6224537532541717207, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 1156260405200592309}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2521966448818217926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536f36292a85464488de36d484319b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2502706404188056612
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9396,6 +9411,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 5988469686715111312}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &394819900488883527 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6224537532541717207, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 5988469686715111312}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7056963433560713699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536f36292a85464488de36d484319b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7056963433560713699 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3671576818270862963, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
@@ -9704,6 +9731,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb, type: 3}
+--- !u!114 &2417502025924709081 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6224537532541717207, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,
+    type: 3}
+  m_PrefabInstance: {fileID: 8641649711733522446}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4979082371281993341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536f36292a85464488de36d484319b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &2672779026800016930 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5979321243465989676, guid: dce1296dc0a533c4ebf66f2c8d0eb7eb,

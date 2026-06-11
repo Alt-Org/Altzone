@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 
@@ -16,6 +14,41 @@ public class AvatarLoader : MonoBehaviour
         {
             UpdateVisuals();
         }
+    }
+
+    public void SetUseOwnAvatarVisuals(bool useOwn)
+    {
+        bool wasUsing = _useOwnAvatarVisuals;
+        _useOwnAvatarVisuals = useOwn;
+
+        if (useOwn && !wasUsing && _avatarVisuals != null)
+        {
+            UpdateVisuals();
+        }
+
+        if (gameObject.activeInHierarchy)
+        {
+            UnsubscribeFromEvents();
+            if (_useOwnAvatarVisuals)
+            {
+                SubscribeToEvents();
+            }
+        }
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromEvents();
+    }
+
+    private void SubscribeToEvents()
+    {
+        AvatarDesignLoader.OnAvatarDesignUpdate += UpdateVisuals;
+    }
+
+    private void UnsubscribeFromEvents()
+    {
+        AvatarDesignLoader.OnAvatarDesignUpdate -= UpdateVisuals;
     }
 
     private void UpdateVisuals()

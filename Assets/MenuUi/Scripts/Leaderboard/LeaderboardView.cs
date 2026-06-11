@@ -44,7 +44,7 @@ public class LeaderboardView : MonoBehaviour
 
     //friend leaderboard
     private List<FriendPlayer> _friendsPlayersList = new List<FriendPlayer>();
-    private FriendPlayer player = new FriendPlayer();
+    private FriendPlayer _player = new FriendPlayer();
     //for testing
     //private FriendPlayer friendtest1 = new FriendPlayer();
 
@@ -130,23 +130,23 @@ public class LeaderboardView : MonoBehaviour
 
                                 //apply all info to the podium
 
-                                _podium.InitilializePodium(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan);
+                                _podium.InitilializePodiumClan(rank, ranking.Clan.Name, ranking.Points, clanData, serverClan);
 
                                 if (clanLeaderboard.Count > 1) // make sure that list has enough members
-                                    { _podium.InitilializePodium(2, clanLeaderboard[1].Clan.Name, clanLeaderboard[1].Points, clanLeaderboard[1].Clan, clanLeaderboard[1].ServerClan);
+                                    { _podium.InitilializePodiumClan(2, clanLeaderboard[1].Clan.Name, clanLeaderboard[1].Points, clanLeaderboard[1].Clan, clanLeaderboard[1].ServerClan);
                                     if (clanLeaderboard[1].Clan.Name == _playerClanName)
                                         { _playerItem = item.GetComponent<RectTransform>(); }
                                 }
                                 else
-                                    { _podium.InitilializePodium(2, null, 0, clanData, null); }
+                                    { _podium.InitilializePodiumClan(2, null, 0, clanData, null); }
 
                                 if (clanLeaderboard.Count > 2)
-                                    { _podium.InitilializePodium(3, clanLeaderboard[2].Clan.Name, clanLeaderboard[2].Points, clanLeaderboard[2].Clan, clanLeaderboard[2].ServerClan);
+                                    { _podium.InitilializePodiumClan(3, clanLeaderboard[2].Clan.Name, clanLeaderboard[2].Points, clanLeaderboard[2].Clan, clanLeaderboard[2].ServerClan);
                                     if (clanLeaderboard[2].Clan.Name == _playerClanName)
                                         { _playerItem = item.GetComponent<RectTransform>(); }
                                 }
                                 else
-                                    { _podium.InitilializePodium(3, null, 0, clanData, null); }
+                                    { _podium.InitilializePodiumClan(3, null, 0, clanData, null); }
 
 
                                 // View clan profile -buttons
@@ -204,7 +204,6 @@ public class LeaderboardView : MonoBehaviour
                         int rank = 1;
                         foreach (PlayerLeaderboard ranking in playerLeaderboard)
                         {
-
                             if (rank == 1) //The top three are displayed on the podium
                             {
                                 // add podium to view
@@ -367,10 +366,10 @@ public class LeaderboardView : MonoBehaviour
                 }
 
                 //add the player to the leaderboard
-                _friendsPlayersList.Add(player);
-                player.name = ServerManager.Instance.Player.name;
-                player.clan_id = ServerManager.Instance.Player.clan_id;
-                player._id = ServerManager.Instance.Player._id;
+                _friendsPlayersList.Add(_player);
+                _player.name = ServerManager.Instance.Player.name;
+                _player.clan_id = ServerManager.Instance.Player.clan_id;
+                _player._id = ServerManager.Instance.Player._id;
              
                 //_friendsPlayersList.Sort((a, b) => b.wins.CompareTo(a.wins)); //sort by wins, not done currently since wins do not exist for friends
 
@@ -379,36 +378,45 @@ public class LeaderboardView : MonoBehaviour
                 {
                     if (rank == 1)
                     {
-                        AvatarVisualData avatarVisualData = null;
-                        avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(friend.avatar);
-
                         //add the podium to the scroll view
                         LeaderboardPodium itemPod = Instantiate(_podium, parent: _friendsContent).GetComponent<LeaderboardPodium>();
 
+                        AvatarVisualData avatarVisualData = null;
+                        avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(friend.avatar);
+
                         //apply all info to the podium
 
-                        itemPod.InitilializePodium(rank, friend.name, 0, null);
+                        //FIRST
+                        itemPod.InitilializePodium(rank, friend.name, 0, null, avatarVisualData);
 
                         if (friend.name == _playerName)
                         { _playerItem = itemPod.GetComponent<RectTransform>(); }
 
+                        //SECOND
                         if (_friendsPlayersList.Count > 1) // make sure that list has enough members
                         {
-                            itemPod.InitilializePodium(3, _friendsPlayersList[1].name, 0, null);
+                            avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(_friendsPlayersList[1].avatar);
+
+                            itemPod.InitilializePodium(2, _friendsPlayersList[1].name, 0, null, avatarVisualData);
+
                             if (_friendsPlayersList[1].name == _playerName)
                             { _playerItem = itemPod.GetComponent<RectTransform>(); }
                         }
                         else
-                        { itemPod.InitilializePodium(2, null, 0, null); }
+                        { itemPod.InitilializePodium(2, null, 0, null, null); }
 
+                        //THIRD
                         if (_friendsPlayersList.Count > 2)
                         {
-                            itemPod.InitilializePodium(3, _friendsPlayersList[2].name, 0, null);
+                            avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(_friendsPlayersList[2].avatar);
+
+                            itemPod.InitilializePodium(3, _friendsPlayersList[2].name, 0, null, avatarVisualData);
+
                             if (_friendsPlayersList[2].name == _playerName)
                             { _playerItem = itemPod.GetComponent<RectTransform>(); }
                         }
                         else
-                        { itemPod.InitilializePodium(3, null, 0, null); }
+                        { itemPod.InitilializePodium(3, null, 0, null, null); }
 
                         // View player profile -buttons
                         itemPod.FirstOpenPlayerProfileButton.onClick.AddListener(() =>
@@ -499,8 +507,6 @@ public class LeaderboardView : MonoBehaviour
 
             _contentPanel.localPosition = newPosition;
         }
-
-        _scrollToTopButton.gameObject.SetActive(false);
     }
 
 }
