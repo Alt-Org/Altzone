@@ -112,6 +112,12 @@ public class LeaderboardPodium : MonoBehaviour
         _firstClanBox.gameObject.SetActive(false);
         _firstPlayerBox.gameObject.SetActive(false);
 
+
+        if (firstName == ServerManager.Instance.Player.name.ToString())
+        {
+            _firstAvatarLoader.SetUseOwnAvatarVisuals(true);
+        }
+
         if (_isClanView)
         {
             // Clan heart colors
@@ -152,11 +158,7 @@ public class LeaderboardPodium : MonoBehaviour
                 //_firstPlayerData = avatarData;
                 FirstOpenPlayerProfileButton.onClick.AddListener(FirstAddDataCarrierData);
 
-                if (firstName == ServerManager.Instance.Player.name.ToString())
-                {
-                    _firstAvatarLoader.SetUseOwnAvatarVisuals(true);
-                }
-                else if (avatarData != null && isActiveAndEnabled)
+                if (avatarData != null && isActiveAndEnabled)
                 {
                     _firstAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarData);
                 }
@@ -219,11 +221,7 @@ public class LeaderboardPodium : MonoBehaviour
                 SecondOpenPlayerProfileButton.onClick.RemoveListener(FirstAddDataCarrierData); // Remove in case the button already has another player's info
                 SecondOpenPlayerProfileButton.onClick.AddListener(FirstAddDataCarrierData);
 
-                if (secondName == ServerManager.Instance.Player.name)
-                {
-                    _secondAvatarLoader.SetUseOwnAvatarVisuals(true);
-                }
-                else if (avatarData != null && isActiveAndEnabled)
+                if (avatarData != null && isActiveAndEnabled)
                 {
                     _secondAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarData);
                 }
@@ -257,6 +255,11 @@ public class LeaderboardPodium : MonoBehaviour
             _thirdPlayerBox.gameObject.SetActive(true);
             _thirdPlayerName.text = thirdName;
 
+            if (thirdName == ServerManager.Instance.Player.name)
+            {
+                _thirdAvatarLoader.SetUseOwnAvatarVisuals(true);
+            }
+
             if (playerData != null)
             {
 
@@ -278,16 +281,12 @@ public class LeaderboardPodium : MonoBehaviour
             }
             else if (avatarData != null)
             {
-
                 ThirdOpenPlayerProfileButton.onClick.RemoveListener(FirstAddDataCarrierData); // Remove in case the button already has another player's info
                 //_firstPlayerData = friendPlayer.clan_id;
+
                 ThirdOpenPlayerProfileButton.onClick.AddListener(FirstAddDataCarrierData);
 
-                if (thirdName == ServerManager.Instance.Player.name)
-                {
-                    _thirdAvatarLoader.SetUseOwnAvatarVisuals(true);
-                }
-                else if (avatarData != null && isActiveAndEnabled)
+                if (avatarData != null && isActiveAndEnabled)
                 {
                     _thirdAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarData);
                 }
