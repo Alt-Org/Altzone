@@ -42,6 +42,11 @@ public class Raid_Timer : MonoBehaviour
     [SerializeField]
     private float duration;
 
+    [Header("Timer fill")]
+    [SerializeField] private Raid_TimerFillCircle timerFillCircle;
+
+    private float timerStartTime;
+
     void Start()
     {
         TimeFormat.Add(TimerFormat.Whole, "0");
@@ -59,6 +64,9 @@ public class Raid_Timer : MonoBehaviour
         }
 
         SetStartTimerVisualState(false);
+        timerStartTime = CurrentTime;
+        EnsureTimerFillCircle();
+        UpdateTimerFill();
     }
 
     void Update()
@@ -68,6 +76,7 @@ public class Raid_Timer : MonoBehaviour
             && !RaidMatchmakingController.Instance.HasReleasedGameplay)
         {
             SetTimerText();
+            SetTimerFillProgress(0f);
             return;
         }
 
@@ -99,6 +108,7 @@ public class Raid_Timer : MonoBehaviour
                 }
                 CurrentTime = TimerLimit;
                 SetTimerText();
+                UpdateTimerFill();
                 TimerText.color = Color.red;
                 enabled = false;
             }
@@ -124,14 +134,17 @@ public class Raid_Timer : MonoBehaviour
         }
         
         SetTimerText();
+        UpdateTimerFill();
     }
     public void StartTimer()
     {
         StartTimerText.gameObject.transform.parent.gameObject.SetActive(false);
         if (!timerActive && !started)
         {
+            timerStartTime = CurrentTime;
             timerActive = true;
             started = true;
+            UpdateTimerFill();
         }
             
     }
@@ -186,7 +199,7 @@ public class Raid_Timer : MonoBehaviour
     public void FinishRaid()
     {
         timerActive = false;
-
+        UpdateTimerFill();
     }
 
     private void SetTimerText()
@@ -194,6 +207,87 @@ public class Raid_Timer : MonoBehaviour
         //TimerText.text = HasFormat ? CurrentTime.ToString(TimeFormat[Format]) : CurrentTime.ToString();
         TimerText.text = CurrentTime.ToString("F0");
     }
+
+    private void EnsureTimerFillCircle()
+    {
+        bool createdFillCircle = false;
+
+        if (timerFillCircle == null && TimerText != null && TimerText.transform.parent != null)
+        {
+            Transform timerPanel = TimerText.transform.parent;
+            Transform existingFill = timerPanel.Find("TimerFillCircle");
+
+            if (existingFill != null)
+            {
+                timerFillCircle = existingFill.GetComponent<Raid_TimerFillCircle>();
+            }
+
+            if (timerFillCircle == null)
+            {
+                GameObject fillObject = new GameObject("TimerFillCircle", typeof(RectTransform), typeof(CanvasRenderer), typeof(Raid_TimerFillCircle));
+                RectTransform fillRect = fillObject.GetComponent<RectTransform>();
+                fillRect.SetParent(timerPanel, false);
+                fillRect.anchorMin = Vector2.zero;
+                fillRect.anchorMax = Vector2.one;
+                fillRect.anchoredPosition = Vector2.zero;
+                fillRect.sizeDelta = Vector2.zero;
+                fillRect.pivot = new Vector2(0.5f, 0.5f);
+
+                timerFillCircle = fillObject.GetComponent<Raid_TimerFillCircle>();
+                createdFillCircle = true;
+            }
+        }
+
+        if (timerFillCircle == null)
+        {
+            return;
+        }
+
+        if (createdFillCircle)
+        {
+            timerFillCircle.raycastTarget = false;
+            timerFillCircle.transform.SetAsFirstSibling();
+
+            if (TimerText != null)
+            {
+                TimerText.transform.SetAsLastSibling();
+            }
+        }
+    }
+
+    private void UpdateTimerFill()
+    {
+        SetTimerFillProgress(CalculateTimerFillProgress());
+    }
+
+    private void SetTimerFillProgress(float progress)
+    {
+        if (timerFillCircle == null)
+        {
+            EnsureTimerFillCircle();
+        }
+
+        if (timerFillCircle != null)
+        {
+            timerFillCircle.Progress = progress;
+        }
+    }
+
+    private float CalculateTimerFillProgress()
+    {
+        if (!started)
+        {
+            return 0f;
+        }
+
+        if (Mathf.Approximately(timerStartTime, TimerLimit))
+        {
+            return Mathf.Approximately(CurrentTime, TimerLimit) ? 1f : 0f;
+        }
+
+        return Mathf.InverseLerp(timerStartTime, TimerLimit, CurrentTime);
+    }
+
     void OnTimeEnd()
     {
         TimeEnded?.Invoke();
@@ -202,6 +296,7 @@ public class Raid_Timer : MonoBehaviour
     void RaidExited()
     {
         CurrentTime = 0;
+        UpdateTimerFill();
     }
 
     public enum TimerFormat
