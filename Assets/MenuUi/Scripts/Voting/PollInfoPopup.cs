@@ -29,6 +29,12 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text timer;
     [SerializeField] private TMP_Text tradeTag;
 
+    [Header("Expired Polls")]
+    [SerializeField] private TMP_Text resultText;
+    [SerializeField] private GameObject resultObject;
+    [SerializeField] private TMP_Text resultYes;
+    [SerializeField] private TMP_Text resultNo;
+
     [Header("Votes")]
     [SerializeField] private Button yesButton;
     [SerializeField] private Button noButton;
@@ -59,6 +65,10 @@ public class PollInfoPopup : MonoBehaviour
 
     private PollData _currentPollData;
     private ServerPoll _pollOrganizer;
+
+    private readonly Color _green = HexToColor("#2FA36B");
+    private readonly Color _red = HexToColor("#C83A2D");
+
     public bool IsPollEnded { get; set; } = false;
 
     private void Awake()
@@ -107,7 +117,7 @@ public class PollInfoPopup : MonoBehaviour
         if (timer == null)
             return;
 
-        if (IsPollEnded)
+        if (_currentPollData.IsExpired)
         {
             DateTimeOffset endDateTime = DateTimeOffset.FromUnixTimeSeconds(_currentPollData.EndTime).ToLocalTime();
             timer.text = endDateTime.ToString("d.M. HH:mm");
@@ -135,6 +145,7 @@ public class PollInfoPopup : MonoBehaviour
     // Opens the popup and fills it with the data from the furniture in question
     public void OpenPopup(PollData pollData)
     {
+        Debug.Log($"PollData in OpenPopup {pollData}");
         if (pollData == null)
         {
             return;
@@ -163,6 +174,43 @@ public class PollInfoPopup : MonoBehaviour
         Debug.LogWarning("ClanRolePoll not implemented yet");
     }
 
+    private void SetExpiredPollInfo()
+    {
+        voteButtons.SetActive(false);
+        voteBar.SetActive(false);
+
+        int yesCount = _currentPollData.YesVotes?.Count ?? 0;
+        int noCount = _currentPollData.NoVotes?.Count ?? 0;
+        int totalCount = yesCount + noCount;
+
+        string yesPercent, noPercent;
+
+        if (totalCount < 0)
+        {
+            return;
+        }
+
+        float yesVoteRatio = (float)yesCount / totalCount;
+        yesPercent = yesVoteRatio.ToString("P0");
+        noPercent = (1.0f - yesVoteRatio).ToString("P0");
+
+        resultYes.text = yesPercent;
+        resultNo.text = noPercent;
+
+        bool isAccepted = yesCount > noCount;
+
+        resultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
+
+        resultText.text = isAccepted
+            ? "Hyv\u00E4ksytty".ToUpper()
+            : "Hyl\u00E4tty".ToUpper();
+
+        resultObject.SetActive(true);
+
+        playerHeads.InstantiateHeads(_currentPollData.Id);
+        ShowPollPanel();
+    }
+
     private void SetValues(PollData pollData)
     {
         _currentPollData = pollData;
@@ -177,11 +225,22 @@ public class PollInfoPopup : MonoBehaviour
         {
             SetClanRoleData(clanRolePollData);
         }
-        else {
+        else
+        {
             Debug.LogError("Called PollInfo with unknown data");
         }
 
         UpdateTimerDisplay();
+
+        int yesCount = _currentPollData.YesVotes.Count;
+        int noCount = _currentPollData.NoVotes.Count;
+        SetGreenFill(yesCount, noCount);
+
+        if (_currentPollData.IsExpired)
+        {
+            SetExpiredPollInfo();
+            return;
+        }
 
         // Enable and disable vote buttons and list based on whether the player has voted on the poll
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
@@ -190,6 +249,7 @@ public class PollInfoPopup : MonoBehaviour
 
             bool hasVoted = !_currentPollData.NotVoted.Contains(data.Id);
 
+            resultObject.SetActive(false);
             voteButtons.SetActive(!hasVoted);
             voteBar.SetActive(hasVoted);
 
@@ -207,10 +267,11 @@ public class PollInfoPopup : MonoBehaviour
             }
         });
 
-        int yesCount = _currentPollData.YesVotes.Count;
-        int noCount = _currentPollData.NoVotes.Count;
-        SetGreenFill(yesCount, noCount);
+        ShowPollPanel();
+    }
 
+    private void ShowPollPanel()
+    {
         gameObject.SetActive(true);
         furniturePollInfoObject.SetActive(true);
         if (clanRolePollInfoObject != null) clanRolePollInfoObject.SetActive(false);
@@ -296,5 +357,14 @@ public class PollInfoPopup : MonoBehaviour
         {
             target.SetActive(!target.activeSelf);
         }
+    }
+
+    private static Color HexToColor(string hex)
+    {
+        if (ColorUtility.TryParseHtmlString(hex, out Color color))
+        {
+            return color;
+        }
+        return Color.white;
     }
 }

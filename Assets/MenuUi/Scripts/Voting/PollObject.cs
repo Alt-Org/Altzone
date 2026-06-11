@@ -35,10 +35,15 @@ public class PollObject : MonoBehaviour
     [SerializeField] private TextMeshProUGUI TradeText;
     [SerializeField] private TextMeshProUGUI Price;
 
+    [Header("Poll Ended")]
+    [SerializeField] private GameObject ResultObject;
+    [SerializeField] private TextMeshProUGUI ResultText;
+
     [Header("Results")]
     [SerializeField] private GameObject YesVoters;
     [SerializeField] private GameObject NoVoters;
     [SerializeField] private GameObject ShowVoteButton;
+    [SerializeField] private GameObject VoteBar;
 
     [Header("PlayerHeads")]
     [SerializeField] private AddPlayerHeads playerHeads;
@@ -240,6 +245,7 @@ public class PollObject : MonoBehaviour
             {
                 bool hasVoted = !pollData.NotVoted.Contains(player.Id);
                 ShowVoteButton.gameObject.SetActive(!hasVoted);
+                VoteBar.gameObject.SetActive(hasVoted);
             }
             else
             {
@@ -261,6 +267,27 @@ public class PollObject : MonoBehaviour
         int totalCount = yesCount + noCount;
 
         float fillValue = (totalCount > 0) ? (float)yesCount / totalCount : 0.5f;
+
+        if (pollData.IsExpired)
+        {
+            bool isAccepted = yesCount > noCount;
+
+            ResultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
+
+            ResultText.text = isAccepted
+                ? "Hyv\u00E4ksytty".ToUpper()
+                : "Hyl\u00E4tty".ToUpper();
+
+            ResultObject.SetActive(true);
+            VoteBar.gameObject.SetActive(false);
+            ShowVoteButton.gameObject.SetActive(false);
+
+            return;
+        }
+        else
+        {
+            ResultObject.SetActive(false);
+        }
 
         if (YesVotesText != null) YesVotesText.text = fillValue.ToString("P0");
         if (NoVotesText != null) NoVotesText.text = (1f - fillValue).ToString("P0");

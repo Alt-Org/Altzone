@@ -49,11 +49,11 @@ public class PastPollManager : MonoBehaviour
         ClearContainer(PastShopNotVotedListContent);
         ClearContainer(PastShopVotedListContent);
 
-        var pastPollList = PollManager.GetPastPollList();
+        List<PollData> pastPollList = PollManager.GetPastPollList();
 
 
 
-        foreach (var pollData in pastPollList)
+        foreach (PollData pollData in pastPollList)
         {
             GameObject obj = null;
 
@@ -78,17 +78,12 @@ public class PastPollManager : MonoBehaviour
                 else
                     pollObject.SetTheme(AdminThemeColor);
 
-                obj.GetComponent<UnityEngine.UI.Button>().interactable = false;
                 PastPolls.Add(obj);
             }
         }
 
-
-
         Debug.Log("Admin children: " + PastAdminVotedListContent.transform.childCount);
         Debug.Log("Shop children: " + PastShopVotedListContent.transform.childCount);
-
-
 
         bool hasAdminPolls =
             PastAdminNotVotedListContent.transform.childCount > 0 ||
