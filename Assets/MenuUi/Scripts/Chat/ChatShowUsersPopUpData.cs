@@ -40,6 +40,8 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private Sprite[] _sprites;
     [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI _OrderButtonText;
+
+    private string CurrentMessage;
     private int LineOrder = 0;
     private int currentOrder = 1;
 
@@ -67,6 +69,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         Destroy(CopiedReactionField);
         CopiedReactionField = null;
         _scrollRect.content = null;
+        CurrentMessage = null;
         gameObject.SetActive(false);
         LineOrder = 0;
 
@@ -107,6 +110,17 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
     public void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
     {
+        //Checks if it's on a correct Message section
+        if (CurrentMessage != null)
+        {
+            if (CurrentMessage != message.Id)
+                return;
+        }
+        else
+        {
+            CurrentMessage = message.Id;
+        }
+
                 Mood mood = (Mood)Enum.Parse(typeof(Mood), Emoji.emoji);
 
         //halts the system if there's already a same user on the list
@@ -118,7 +132,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
             if (_userInfo[i]._id == Emoji.sender_id &&  _userInfo[i]._mood != mood)
             {
-                RemoveUserReaction(Emoji.sender_id);
+                RemoveUserReaction(Emoji.sender_id, message);
                 continue;
             }
             else if (_userInfo[i]._id == Emoji.sender_id && _userInfo[i]._mood == mood)
@@ -148,10 +162,14 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     }
 
     //removes the userData
-    public void RemoveUserReaction(string Userid)
+    public void RemoveUserReaction(string Userid, ChatMessage message)
     {
+        if (CurrentMessage != null)
+        {
+            if (CurrentMessage != message.Id)
+                return;
+        }
 
-        
         for (int i = _userInfo.Count - 1; i >= 0; i--)
             {
 
@@ -184,8 +202,17 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     //Sets the List in certain order
 
     //Changes the reactions object sizes
-    public void ReactionFieldCopyUpdate(GameObject ReactionField, MessageReactionsHandler ReactionHandler)
+    public void ReactionFieldCopyUpdate(GameObject ReactionField, MessageReactionsHandler ReactionHandler, ChatMessage message)
     {
+
+        //Checks if it's on a correct Message section
+        if (CurrentMessage != null)
+        {
+            if (CurrentMessage != message.Id)
+                return;
+        }
+
+
         Destroy(CopiedReactionField);
 
         CopiedReactionField = Instantiate(ReactionField, _reactionFieldLocation);
