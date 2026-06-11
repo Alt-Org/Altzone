@@ -32,6 +32,13 @@ public class ClanStallPopupHandler : MonoBehaviour
     [SerializeField] private TMP_Text _clanName;
     private string _randomClanName;
 
+    [Header("Navigation Arrows")]
+    [SerializeField] private GameObject _arrowPrevious;
+    [SerializeField] private GameObject _arrowNext;
+    private List<GameObject> _ads;
+    private int _adsIndex = 0;
+
+
 
     //TO DO: kirpputori ‰‰nestys
     void Start()
@@ -162,6 +169,76 @@ public class ClanStallPopupHandler : MonoBehaviour
             _clanName.text = clanData.Name;
         }
 
+    }
+
+    public void navigateClanStalls(List<GameObject> adPosters, GameObject clickedAd)
+    {
+        _ads = adPosters;
+        _adsIndex = _ads.IndexOf(clickedAd);
+
+        if (_adsIndex == -1)
+        {
+            _adsIndex = 0;
+        }
+
+        Debug.Log("posterin indeksi" + _adsIndex);
+
+        Button nextBtn = _arrowNext.GetComponent<Button>();
+        Button prevBtn = _arrowPrevious.GetComponent<Button>();
+
+        nextBtn.onClick.RemoveAllListeners();
+        nextBtn.onClick.AddListener(nextStall);
+
+        prevBtn.onClick.RemoveAllListeners();
+        prevBtn.onClick.AddListener(prevStall);
+
+        //updateStallAds();
+    }
+
+    private void nextStall()
+    {
+        _adsIndex++;
+
+        if (_adsIndex >= _ads.Count)
+        {
+            _adsIndex = 0;
+        }
+
+        updateStallAds();
+    }
+
+    private void prevStall()
+    {
+        _adsIndex--;
+
+        if (_adsIndex < 0)
+        {
+            _adsIndex = _ads.Count -1;
+        }
+
+        updateStallAds();
+    }
+
+    private void updateStallAds()
+    {
+        if (_ads == null)
+        {
+            return;
+        }
+
+        GameObject testiAd = _ads[_adsIndex];
+        EsineDisplay esineDisplay = testiAd.GetComponent<EsineDisplay>();
+
+        for (int i = _content.transform.childCount; i > 0; i--)
+        {
+            Destroy(_content.transform.GetChild(i - 1).gameObject);
+        }
+
+        if (esineDisplay != null) {
+            CreateStalls(esineDisplay.Furnitures);
+        }
+
+        
     }
 
 }

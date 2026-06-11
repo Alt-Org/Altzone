@@ -28,7 +28,9 @@ public class Kirpputori : MonoBehaviour
     [SerializeField] private RectTransform _Content;
     private DataStore _store;
 
-    
+    [Header("Tabline button")]
+    [SerializeField] private GameObject _ClanStallButton;
+
 
     private void Awake()
     {
@@ -48,6 +50,18 @@ public class Kirpputori : MonoBehaviour
 
         StartCoroutine(RandomFurniture());
 
+    }
+
+    private void OnEnable()
+    {
+        _ClanStallButton.SetActive(true);
+    }
+
+    private void OnDisable()
+    {
+        _ClanStallButton.SetActive(false);
+
+        _ClanPopup.SetActive(false);
     }
 
     public IEnumerator RandomFurniture()
@@ -89,10 +103,11 @@ public class Kirpputori : MonoBehaviour
 
 
 
-    public void OpenPopup(List<StorageFurniture> furnitureList)
+    public void OpenPopup(List<StorageFurniture> furnitureList, GameObject clickedAd)
     {
         _ClanPopup.SetActive(true);
         var clanStallPopupHandler = _ClanPopup.GetComponent<ClanStallPopupHandler>();
         clanStallPopupHandler.CreateStalls(furnitureList);
+        clanStallPopupHandler.navigateClanStalls(_adsInScene, clickedAd);
     }
 }
