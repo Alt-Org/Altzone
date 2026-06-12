@@ -28,7 +28,7 @@ public class Raid_InventoryHandler : MonoBehaviour
         }
         */
 
-        int randomInventorySize = Random.Range(4, 26);
+        int randomInventorySize = Random.Range(6, 12);
         InventorySize = randomInventorySize*4;
         InventoryUI.InitializeInventoryUI(InventorySize);
         InventoryUI.RandomizeInventoryContent(InventorySize);
