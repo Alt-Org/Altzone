@@ -58,13 +58,14 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private bool _surrendering;
     private bool _inventoryInitialized;
     private bool _gameplayReleased;
+    private bool _sharedRaidActive;
     private bool _callbacksRegistered;
 
     public static RaidMatchmakingController Instance { get; private set; }
 
     public bool ControlsInventorySetup => true;
     public bool HasReleasedGameplay => _gameplayReleased;
-    public bool IsSharedRaidActive => _gameplayReleased && IsCurrentRoomRaid();
+    public bool IsSharedRaidActive => _sharedRaidActive && IsCurrentRoomRaid();
     public string LocalClanId => _localClanId;
 
     private void Awake()
@@ -125,6 +126,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             Instance = null;
         }
 
+        UnregisterRaidTimerStarted();
         UnregisterPhotonCallbacks();
     }
 
@@ -625,6 +627,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         _gameplayReleased = true;
+        _sharedRaidActive = false;
         if (_overlayCanvas != null)
         {
             _overlayCanvas.gameObject.SetActive(false);
@@ -637,7 +640,39 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         if (_raidTimer != null)
         {
-            _raidTimer.StartTimer();
+            _raidTimer.TimerStarted -= OnRaidTimerStarted;
+            _raidTimer.TimerStarted += OnRaidTimerStarted;
+
+            if (_raidTimer.HasStarted)
+            {
+                OnRaidTimerStarted();
+            }
+        }
+        else
+        {
+            _sharedRaidActive = true;
+        }
+    }
+
+    private void OnRaidTimerStarted()
+    {
+        if (IsCurrentRoomRaid() && !_surrendering && (_exitRaid == null || !_exitRaid.raidEnded))
+        {
+            _sharedRaidActive = true;
+        }
+    }
+
+    private void ResetRaidStartCountdown()
+    {
+        UnregisterRaidTimerStarted();
+        _raidTimer?.ResetStartCountdown();
+    }
+
+    private void UnregisterRaidTimerStarted()
+    {
+        if (_raidTimer != null)
+        {
+            _raidTimer.TimerStarted -= OnRaidTimerStarted;
         }
     }
 
@@ -1276,8 +1311,10 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     public void OnLeftRoom()
     {
+        ResetRaidStartCountdown();
         _inventoryInitialized = false;
         _gameplayReleased = false;
+        _sharedRaidActive = false;
         _lootedSlots.Clear();
 
         if (_surrendering)

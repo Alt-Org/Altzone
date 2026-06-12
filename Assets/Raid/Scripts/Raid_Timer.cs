@@ -24,6 +24,8 @@ public class Raid_Timer : MonoBehaviour
     [Header("Start Timer settings")]
     public float TimeUntilStart;
     private bool startTextShown;
+    private float initialCurrentTime;
+    private float initialTimeUntilStart;
 
     [Header("Limit settings")]
     public bool HasLimit;
@@ -35,6 +37,7 @@ public class Raid_Timer : MonoBehaviour
     private Dictionary<TimerFormat, string> TimeFormat = new Dictionary<TimerFormat, string>();
 
     public event Action TimeEnded;
+    public event Action TimerStarted;
     public ExitRaid exitRaid;
 
     private Color startColor = Color.white;
@@ -47,11 +50,15 @@ public class Raid_Timer : MonoBehaviour
 
     private float timerStartTime;
 
+    public bool HasStarted => started;
+
     void Start()
     {
         TimeFormat.Add(TimerFormat.Whole, "0");
         TimeFormat.Add(TimerFormat.TenthDecimal, "0.0");
         TimeFormat.Add(TimerFormat.HundrethsDecimal, "0.00");
+        initialCurrentTime = CurrentTime;
+        initialTimeUntilStart = TimeUntilStart;
 
         if (exitRaid == null)
         {
@@ -138,15 +145,45 @@ public class Raid_Timer : MonoBehaviour
     }
     public void StartTimer()
     {
-        StartTimerText.gameObject.transform.parent.gameObject.SetActive(false);
+        if (StartTimerText != null && StartTimerText.transform.parent != null)
+        {
+            StartTimerText.gameObject.transform.parent.gameObject.SetActive(false);
+        }
+
         if (!timerActive && !started)
         {
             timerStartTime = CurrentTime;
             timerActive = true;
             started = true;
             UpdateTimerFill();
+            TimerStarted?.Invoke();
         }
             
+    }
+
+    public void ResetStartCountdown()
+    {
+        timerActive = false;
+        started = false;
+        startTextShown = false;
+        CurrentTime = initialCurrentTime;
+        TimeUntilStart = initialTimeUntilStart;
+        timerStartTime = CurrentTime;
+
+        if (StartTimerText != null && StartTimerText.transform.parent != null)
+        {
+            StartTimerText.transform.parent.gameObject.SetActive(true);
+            SetStartTimerVisualState(false);
+            StartTimerText.text = Mathf.CeilToInt(TimeUntilStart).ToString();
+        }
+
+        if (TimerText != null)
+        {
+            TimerText.color = startColor;
+        }
+
+        SetTimerText();
+        UpdateTimerFill();
     }
 
     private void ShowStartText()
