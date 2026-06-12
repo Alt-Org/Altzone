@@ -149,6 +149,17 @@ public class Raid_EndMenu : MonoBehaviour
             return;
         }
 
+        if (itemPrefab != null)
+        {
+            Raid_InventoryItem lootItem = Instantiate(itemPrefab, content);
+            lootItem.name = "CollectedLootItem";
+            lootItem.transform.localScale = collectedLootItemScale;
+            lootItem.SetTrapIndicatorVisible(false);
+            lootItem.SetData(furniture);
+            lootItem.SetShowItemWeightText(true);
+            return;
+        }
+
         GameObject iconObject = new GameObject("CollectedLootItem", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         iconObject.transform.SetParent(content, false);
         iconObject.transform.localScale = collectedLootItemScale;
