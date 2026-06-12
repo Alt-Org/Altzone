@@ -60,22 +60,24 @@ public class Raid_EndMenu : MonoBehaviour
     }
 
     // SetCollectedLoot for display when showing EndMenu
-    public void SetCollectedLoot(List<GameFurniture> lootList)
+    public void SetCollectedLoot(IReadOnlyList<GameFurniture> lootList)
     {
         ClearCollectedLoot();
 
-        if (content == null || itemPrefab == null)
+        if (content == null)
         {
-            Debug.LogError("Cannot show collected raid loot because content or itemPrefab is missing.");
+            Debug.LogError("Cannot show collected raid loot because content is missing.");
+            return;
+        }
+
+        if (lootList == null)
+        {
             return;
         }
 
         for (int i = 0; i < lootList.Count; i++)
         {
-            Raid_InventoryItem UIItem = Instantiate(itemPrefab, content);
-            UIItem.transform.localScale = collectedLootItemScale;
-            UIItem.SetShowItemWeightText(true);
-            UIItem.SetData(lootList[i]);
+            CreateCollectedLootIcon(lootList[i]);
         }
     }
 
@@ -137,6 +139,28 @@ public class Raid_EndMenu : MonoBehaviour
         {
             Destroy(content.GetChild(i).gameObject);
         }
+    }
+
+    private void CreateCollectedLootIcon(GameFurniture furniture)
+    {
+        Sprite sprite = furniture?.FurnitureInfo?.Image;
+        if (sprite == null)
+        {
+            return;
+        }
+
+        GameObject iconObject = new GameObject("CollectedLootItem", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        iconObject.transform.SetParent(content, false);
+        iconObject.transform.localScale = collectedLootItemScale;
+
+        RectTransform rectTransform = iconObject.GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(325f, 325f);
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+
+        Image icon = iconObject.GetComponent<Image>();
+        icon.sprite = sprite;
+        icon.preserveAspect = true;
+        icon.raycastTarget = false;
     }
 
     private void SetVisible(bool visible)

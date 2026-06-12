@@ -25,6 +25,7 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private Raid_Timer raid_Timer;
     [SerializeField] private ExitRaid exitraid;
     [SerializeField] private Raid_EventLog eventLog;
+    private HeartScript heartScript;
     [SerializeField] private bool spectator = false;
     [SerializeField] private bool firstItem = true;
     [SerializeField, Min(1)] private int trapAmount = 3;
@@ -51,7 +52,12 @@ public class Raid_InventoryPage : MonoBehaviour
     //public PhotonView _photonView { get; private set; }
     private void Awake()
     {
-        LootTracker.ResetLootCount();
+        ResolveReferences();
+        if (LootTracker != null)
+        {
+            LootTracker.ResetLootCount();
+        }
+
         eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
         eventLog?.Clear();
         //_photonView = gameObject.AddComponent<PhotonView>();
@@ -143,8 +149,15 @@ public class Raid_InventoryPage : MonoBehaviour
     /*[PunRPC]*/
     public void HandleItemLootingRPC(int index, float itemWeight)
     {
+        ResolveReferences();
+
         if (firstItem)
         {
+            if (raid_Timer == null)
+            {
+                return;
+            }
+
             raid_Timer.StartTimer();
             firstItem = false;  
         }
@@ -156,7 +169,8 @@ public class Raid_InventoryPage : MonoBehaviour
         {
             return;
         }
-        if (raid_Timer.CurrentTime <= 0 || LootTracker.CurrentLootWeight > LootTracker.MaxLootWeight || exitraid.raidEnded)
+        if (raid_Timer == null || LootTracker == null || exitraid == null
+            || raid_Timer.CurrentTime <= 0 || LootTracker.CurrentLootWeight > LootTracker.MaxLootWeight || exitraid.raidEnded)
         {
             return;
         }
@@ -208,6 +222,8 @@ public class Raid_InventoryPage : MonoBehaviour
 
     public void HandleNetworkLootAccepted(int index, int actorNumber, string clanId, float lootWeightMultiplier, bool triggeredByLocalPlayer, string playerName = null, CharacterID actorCharacterId = CharacterID.None, AvatarData actorAvatarData = null)
     {
+        ResolveReferences();
+
         if (index < 0 || index >= ListOfUIItems.Count || exitraid != null && exitraid.raidEnded)
         {
             return;
@@ -268,37 +284,53 @@ public class Raid_InventoryPage : MonoBehaviour
 
     private bool LootItem(Raid_InventoryItem item, float itemWeight)
     {
-        item.LaunchBall();
+        ResolveReferences();
 
-        if (itemWeight == item.ItemWeight && itemWeight != 0)
-        {
-            float lootWeightMultiplier = nextLootWeightDoubled ? doubleWeightMultiplier : 1f;
-            LootTracker.SetLootCount(item.furnitureData, LootTracker.MaxLootWeight, lootWeightMultiplier);
-            nextLootWeightDoubled = false;
-            item.RemoveData();
-            return true;
-        } else
+        if (item == null || itemWeight != item.ItemWeight || itemWeight == 0)
         {
             Debug.Log("This inventory slot has already been looted!");
             return false;
         }
+
+        if (LootTracker == null)
+        {
+            Debug.LogError("Cannot loot item because Raid_InventoryPage is missing Raid_LootTracking reference.", this);
+            return false;
+        }
+
+        GameFurniture furniture = item.furnitureData;
+        Sprite lootSprite = item.CurrentItemSprite != null ? item.CurrentItemSprite : furniture?.FurnitureInfo?.Image;
+        float lootWeightMultiplier = nextLootWeightDoubled ? doubleWeightMultiplier : 1f;
+        item.LaunchBall(lootSprite, UpdateHeartRecentLootSprite);
+        LootTracker.SetLootCount(furniture, LootTracker.MaxLootWeight, lootWeightMultiplier);
+        nextLootWeightDoubled = false;
+        item.RemoveData();
+        return true;
     }
 
     private bool LootItemForClan(Raid_InventoryItem item, float itemWeight, string clanId, float lootWeightMultiplier)
     {
-        item.LaunchBall();
+        ResolveReferences();
 
-        if (itemWeight == item.ItemWeight && itemWeight != 0)
-        {
-            LootTracker.SetClanLootCount(clanId, item.furnitureData, LootTracker.MaxLootWeight, lootWeightMultiplier);
-            item.RemoveData();
-            return true;
-        }
-        else
+        if (item == null || itemWeight != item.ItemWeight || itemWeight == 0)
         {
             Debug.Log("This inventory slot has already been looted!");
             return false;
         }
+
+        if (LootTracker == null)
+        {
+            Debug.LogError("Cannot loot item because Raid_InventoryPage is missing Raid_LootTracking reference.", this);
+            return false;
+        }
+
+        GameFurniture furniture = item.furnitureData;
+        Sprite lootSprite = item.CurrentItemSprite != null ? item.CurrentItemSprite : furniture?.FurnitureInfo?.Image;
+        item.LaunchBall(lootSprite, UpdateHeartRecentLootSprite);
+        LootTracker.SetClanLootCount(clanId, furniture, LootTracker.MaxLootWeight, lootWeightMultiplier);
+        item.RemoveData();
+
+        return true;
     }
 
     // Get a list of furniture between LowestWeight and HighestWeight, also it accepts any List<GameFurniture> to allow for seasonal furniture sets
@@ -579,6 +611,71 @@ public class Raid_InventoryPage : MonoBehaviour
         }
 
         return playerData?.AvatarData;
+    }
+
+    private void ResolveReferences()
+    {
+        if (raid_References == null)
+        {
+            raid_References = FindObjectOfType<Raid_References>();
+        }
+
+        if (LootTracker == null)
+        {
+            LootTracker = raid_References != null && raid_References.raid_LootTracking != null
+                ? raid_References.raid_LootTracking
+                : null;
+        }
+
+        if (LootTracker == null)
+        {
+            LootTracker = FindObjectOfType<Raid_LootTracking>();
+        }
+
+        if (raid_Timer == null)
+        {
+            raid_Timer = FindObjectOfType<Raid_Timer>();
+        }
+
+        if (exitraid == null)
+        {
+            exitraid = ExitRaid.Instance != null ? ExitRaid.Instance : FindObjectOfType<ExitRaid>();
+        }
+
+        if (heartScript == null)
+        {
+            heartScript = raid_References != null && raid_References.Heart != null
+                ? raid_References.Heart.GetComponent<HeartScript>()
+                : null;
+        }
+
+        if (heartScript == null)
+        {
+            GameObject heart = GameObject.FindWithTag("Heart");
+            if (heart != null)
+            {
+                heartScript = heart.GetComponent<HeartScript>();
+            }
+        }
+
+        if (heartScript == null)
+        {
+            heartScript = FindObjectOfType<HeartScript>();
+        }
+    }
+
+    private void UpdateHeartRecentLootSprite(Sprite lootSprite)
+    {
+        if (lootSprite == null)
+        {
+            return;
+        }
+
+        ResolveReferences();
+        if (heartScript != null)
+        {
+            heartScript.AddRecentLootSprite(lootSprite);
+        }
     }
 
     private void SetBombsFromTrapData(RaidPhotonRoom.TrapData[] trapData)

@@ -64,6 +64,9 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
     //type 0: default, type 1: lock
     public int _bombType = 0; 
+    public Sprite CurrentItemSprite => ItemImage != null ? ItemImage.sprite : null;
+    private Sprite pendingRecentLootSprite;
+    private Action<Sprite> onLootBallArrived;
 
     //public PhotonView _photonView { get; set; }
     public void Awake()
@@ -114,7 +117,15 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
     public void RemoveData()
     {
-        ItemImage.gameObject.SetActive(false);
+        if (ItemImage != null)
+        {
+            ItemImage.sprite = null;
+            ItemImage.gameObject.SetActive(false);
+        }
+
+        ItemWeight = 0f;
+        furnitureData = null;
+        empty = true;
         bomb = false;
         RefreshBombIndicator();
     }
@@ -215,8 +226,10 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         BombImage.sprite = trapSprite;
         BombImage.preserveAspect = true;
     }
-    public void LaunchBall()
+    public void LaunchBall(Sprite recentLootSprite = null, Action<Sprite> lootBallArrived = null)
     {
+        pendingRecentLootSprite = recentLootSprite;
+        onLootBallArrived = lootBallArrived;
         ItemWeightText.gameObject.SetActive(false);
         audioSource.PlayOneShot(pickUp, SettingsCarrier.Instance.SentVolume(GetComponent<SetVolume>()._soundType));
         offset = new Vector3(target.rect.width / 2, -target.rect.height / 2, 0f);
@@ -239,6 +252,9 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         {
             moving = false;
             Heart.GetComponent<HeartScript>().UpdateColor();
+            onLootBallArrived?.Invoke(pendingRecentLootSprite);
+            pendingRecentLootSprite = null;
+            onLootBallArrived = null;
             ItemBall.SetActive(false);
         }
     }
