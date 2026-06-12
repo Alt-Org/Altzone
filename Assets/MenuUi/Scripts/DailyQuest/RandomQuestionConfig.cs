@@ -10,7 +10,15 @@ public class RandomQuestionData
     {
         get
         {
-            return question;
+            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+            {
+                return englishQuestion;
+            }
+            else
+            {
+                return question;
+            }
+                
         }
     }
 
@@ -28,7 +36,14 @@ public class RandomQuestionAnswer
     {
         get
         {
-            return answer;
+            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+            {
+                return englishAnswer;
+            }
+            else
+            {
+                return answer;
+            }
         }
     }
 

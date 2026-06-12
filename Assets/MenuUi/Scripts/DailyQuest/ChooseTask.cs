@@ -138,7 +138,7 @@ public class ChooseTask : MonoBehaviour
     }
 
     /// <summary>
-    /// Generate the task options and show them to the user
+    /// Generate the task options or a random question with answers and show them to the user
     /// </summary>
     public void ShowSelectionWindow()
     {
@@ -188,6 +188,9 @@ public class ChooseTask : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Destroys the current random question answers that are parented by _randomQuestionAnswerHolder
+    /// </summary>
     private void DeleteRandomQuestionAnswers()
     {
         for (int i = 0; i < _randomQuestionAnswerHolder.childCount; i++)
@@ -198,7 +201,7 @@ public class ChooseTask : MonoBehaviour
 
 
     /// <summary>
-    /// Delete the task options and hide the selection window
+    /// Delete the task options or the random question answers and hide the selection window
     /// </summary>
     public void HideSelectionWindow(PlayerTask task)
     {
