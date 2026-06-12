@@ -28,11 +28,12 @@ public class LeaderboardView : MonoBehaviour
 
     [Header("Scroll to top and to player")]
     [SerializeField] private Button _scrollToTopButton;
-    private ScrollRect _scrollRect;
-    private RectTransform _contentPanel;
+    private ScrollRect _currentScrollRect;
+    private RectTransform _currentContentPanel;
 
-    [SerializeField] private List<ScrollRect> _scrollRectScrollToMeList = new List<ScrollRect>();
-    [SerializeField] private List<RectTransform> _contentPanelScrollToMeList = new List<RectTransform>();
+    [SerializeField] private ScrollRect _clansScrollRect;
+    [SerializeField] private ScrollRect _playersScrollRect;
+    [SerializeField] private ScrollRect _friendsScrollRect;
 
     [SerializeField] private Button _scrollToMeButton1;
     [SerializeField] private Button _scrollToMeButton2;
@@ -47,7 +48,6 @@ public class LeaderboardView : MonoBehaviour
     private FriendPlayer _player = new FriendPlayer();
     //for testing
     //private FriendPlayer friendtest1 = new FriendPlayer();
-
 
 
     private enum Leaderboard
@@ -67,10 +67,10 @@ public class LeaderboardView : MonoBehaviour
         _globalPlayersLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalPlayers));
         _friendsLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.Friends));
         _globalClansLeaderboardButton.onClick.AddListener(() => OpenLeaderboard(Leaderboard.GlobalClans));
-        _scrollToTopButton.onClick.AddListener(() => ScrollToTop(_scrollRect));
-        _scrollToMeButton1.onClick.AddListener(() => ScrollToMe(_scrollRect, _contentPanel));
-        _scrollToMeButton2.onClick.AddListener(() => ScrollToMe(_scrollRect, _contentPanel));
-        _scrollToMeButton3.onClick.AddListener(() => ScrollToMe(_scrollRect, _contentPanel));
+        _scrollToTopButton.onClick.AddListener(() => ScrollToTop(_currentScrollRect));
+        _scrollToMeButton1.onClick.AddListener(() => ScrollToMe(_currentScrollRect, _currentContentPanel));
+        _scrollToMeButton2.onClick.AddListener(() => ScrollToMe(_currentScrollRect, _currentContentPanel));
+        _scrollToMeButton3.onClick.AddListener(() => ScrollToMe(_currentScrollRect, _currentContentPanel));
 
         _playerName = ServerManager.Instance.Player.name.ToString();
         _playerClanName = ServerManager.Instance.Clan.name.ToString();
@@ -104,8 +104,8 @@ public class LeaderboardView : MonoBehaviour
             case Leaderboard.GlobalClans: //tab 1
                 {
                     //apply correct list for scroll to me
-                    _scrollRect = _scrollRectScrollToMeList[0];
-                    _contentPanel = _contentPanelScrollToMeList[0];
+                    _currentScrollRect = _clansScrollRect;
+                    _currentContentPanel = (RectTransform)_clansContent;
                     _scrollToTopButton.onClick.Invoke();
 
                     StartCoroutine(ServerManager.Instance.GetClanLeaderboardFromServer((clanLeaderboard) =>
@@ -193,8 +193,8 @@ public class LeaderboardView : MonoBehaviour
             case Leaderboard.GlobalPlayers: //tab 2
                 {
                     //apply correct list for scroll to me
-                    _scrollRect = _scrollRectScrollToMeList[1];
-                    _contentPanel = _contentPanelScrollToMeList[1];
+                    _currentScrollRect = _playersScrollRect;
+                    _currentContentPanel = (RectTransform)_playersContent;
                     _scrollToTopButton.onClick.Invoke();
 
                     StartCoroutine(ServerManager.Instance.GetPlayerLeaderboardFromServer((playerLeaderboard) =>
@@ -349,8 +349,8 @@ public class LeaderboardView : MonoBehaviour
             case Leaderboard.Friends: //tab 3
 
                 //apply correct list for scroll to me and to top
-                _scrollRect = _scrollRectScrollToMeList[2];
-                _contentPanel = _contentPanelScrollToMeList[2];
+                _currentScrollRect = _friendsScrollRect;
+                _currentContentPanel = (RectTransform)_friendsContent;
                 _scrollToTopButton.onClick.Invoke();
 
                 _friendsPlayersList.Clear();
@@ -478,9 +478,9 @@ public class LeaderboardView : MonoBehaviour
 
     private void Update()
     {
-        if (_scrollRect != null)
+        if (_currentScrollRect != null)
         {
-            if (_scrollRect.verticalNormalizedPosition > 0.99)
+            if (_currentScrollRect.verticalNormalizedPosition > 0.99)
             { _scrollToTopButton.gameObject.SetActive(false); }
             else
             { _scrollToTopButton.gameObject.SetActive(true); }
