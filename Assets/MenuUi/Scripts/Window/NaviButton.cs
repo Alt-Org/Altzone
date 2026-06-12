@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using MenuUi.Scripts.Window.ScriptableObjects;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
