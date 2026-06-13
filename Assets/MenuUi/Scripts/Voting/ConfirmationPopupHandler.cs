@@ -106,6 +106,8 @@ public class ConfirmationPopupHandler : MonoBehaviour
     private void SetPopupActiveAvatarPart(AvatarPartInfo part, Sprite icon, string itemName)
     {
         if (Background != null) Background.SetActive(true);
+        if (_leftArrowButton != null) _leftArrowButton.gameObject.SetActive(false);
+        if (_rightArrowButton != null) _rightArrowButton.gameObject.SetActive(false);
 
         _itemNameText.text = itemName;
         _itemIcon.sprite = icon;
