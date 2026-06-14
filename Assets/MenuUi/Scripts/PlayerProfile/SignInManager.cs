@@ -22,6 +22,7 @@ namespace MenuUi.Scripts.Login
         [Header("Windows")]
         [SerializeField] private GameObject _signInWindow;
         [SerializeField] private GameObject _registerWindow;
+        [SerializeField] private GameObject _passwordHintWindow;
 
 
         [Header("Input Fields")]
@@ -39,6 +40,8 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private Toggle _registerParentalAuthToggle;
         [SerializeField] private Toggle _informationPolicyAuthToggle;
         [SerializeField] private ToggleGroup _ageAuthToggleGroup;
+        [SerializeField] private TMP_InputField _registerPasswordHintInputField;
+        [SerializeField] private TMP_InputField _registerPasswordHintAnswerInputField;
 
 
         [Header("Input Fields Errors")]
@@ -57,6 +60,8 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _backButton2;
         [SerializeField] private Button _ageAuthButton;
+        [SerializeField] private Button _skipHintButton;
+        [SerializeField] private Button _setHintButton;
 
         [Header("Version Toggle")]
         [SerializeField] private ToggleSwitchHandler _turboEducationToggle;
@@ -117,6 +122,11 @@ namespace MenuUi.Scripts.Login
             _logInPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_logInPasswordInputField, value));
             _registerPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPasswordInputField, value));
             _registerPassword2VisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPassword2InputField, value));
+            _registerButton.onClick.AddListener(OpenPasswordHintPanel);
+            _setHintButton.onClick.AddListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
+            _skipHintButton.onClick.AddListener(() => Register());
+            _registerPasswordHintAnswerInputField.onValueChanged.AddListener((value) => CheckHintValidity());
+            _registerPasswordHintInputField.onValueChanged.AddListener((value) => CheckHintValidity());
             _autoLoginToggle.OnToggleStateChanged += SetVersionState;
             _turboEducationToggle.OnToggleStateChanged += SetTurboState;
             _logInUsernameInputField.text = PlayerPrefs.GetString("userName", string.Empty);
@@ -142,6 +152,14 @@ namespace MenuUi.Scripts.Login
         {
             _autoLoginToggle.OnToggleStateChanged -= SetVersionState;
             _turboEducationToggle.OnToggleStateChanged -= SetTurboState;
+            _logInPasswordVisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_logInPasswordInputField, value));
+            _registerPasswordVisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_registerPasswordInputField, value));
+            _registerPassword2VisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_registerPassword2InputField, value));
+            _registerButton.onClick.RemoveListener(OpenPasswordHintPanel);
+            _setHintButton.onClick.RemoveListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
+            _skipHintButton.onClick.RemoveListener(() => Register());
+            _registerPasswordHintAnswerInputField.onValueChanged.RemoveListener((value) => CheckHintValidity());
+            _registerPasswordHintInputField.onValueChanged.RemoveListener((value) => CheckHintValidity());
         }
 
         /// <summary>
@@ -195,7 +213,7 @@ namespace MenuUi.Scripts.Login
                 // Parses user info and sends it to ServerManager
                 Debug.Log("Log in successful!");
                     JObject result = JObject.Parse(request.downloadHandler.text);
-                    //Debug.Log(request.downloadHandler.text);
+                    Debug.Log(request.downloadHandler.text);
                     if(ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
                     ServerManager.Instance.SetProfileValues(result, username);
                     if(GameConfig.Get().GameVersionType is VersionType.Standard or VersionType.None) GameConfig.Get().GameVersionType = VersionType.Education;
@@ -213,8 +231,9 @@ namespace MenuUi.Scripts.Login
                 _logInButton.interactable = true;
             }));
         }
-        public void Register()
+        public void Register(string passwordHint = null, string answer = null)
         {
+            _passwordHintWindow.SetActive(false);
             ClearMessage();
 
             string username = _registerUsernameInputField.text;
@@ -273,10 +292,31 @@ namespace MenuUi.Scripts.Login
                 return;
             }
 
+            string body;
 
-            string body = @$"{{""username"":""{_registerUsernameInputField.text}"",""password"":""{_registerPasswordInputField.text}"",
-                ""Player"":{{""name"":""{username}"",""backpackCapacity"":{255},""uniqueIdentifier"":""{username}"",
-                    ""above13"":{_registerAgeVerificationToggle.isOn.ToString().ToLower()},""parentalAuth"":{_registerParentalAuthToggle.isOn.ToString().ToLower()}}}}}";
+            if (passwordHint != null || answer != null)
+            {
+                body = @$"{{""username"":""{_registerUsernameInputField.text}"",
+                            ""password"":""{_registerPasswordInputField.text}"",
+                            ""securityQuestion"":""{passwordHint}"",
+                            ""securityAnswer"":""{answer}"",
+                            ""Player"":{{""name"":""{username}"",
+                            ""backpackCapacity"":{255},
+                            ""uniqueIdentifier"":""{username}"",
+                            ""above13"":{_registerAgeVerificationToggle.isOn.ToString().ToLower()},
+                            ""parentalAuth"":{_registerParentalAuthToggle.isOn.ToString().ToLower()}}}}}";
+            }
+            else
+            {
+                body = @$"{{""username"":""{_registerUsernameInputField.text}"",
+                            ""password"":""{_registerPasswordInputField.text}"",
+                            ""Player"":{{""name"":""{username}"",
+                            ""backpackCapacity"":{255},
+                            ""uniqueIdentifier"":""{username}"",
+                            ""above13"":{_registerAgeVerificationToggle.isOn.ToString().ToLower()},
+                            ""parentalAuth"":{_registerParentalAuthToggle.isOn.ToString().ToLower()}}}}}";
+            }
+
             StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "profile", body, null, request =>
             {
                 if (request.result != UnityWebRequest.Result.Success)
@@ -314,6 +354,13 @@ namespace MenuUi.Scripts.Login
 
                 _registerButton.interactable = true;
             }));
+        }
+
+        private void OpenPasswordHintPanel()
+        {
+            _passwordHintWindow.SetActive(true);
+            _registerPasswordHintAnswerInputField.text = string.Empty;
+            _registerPasswordHintInputField.text = string.Empty;
         }
 
         public void GuestLogin()
@@ -399,6 +446,18 @@ namespace MenuUi.Scripts.Login
             {
                 //PlayerPrefs.SetInt("AutomaticLogin", 0);
                 _autoLoginToggle.SetState(value);
+            }
+        }
+
+        private void CheckHintValidity()
+        {
+            if (!string.IsNullOrWhiteSpace(_registerPasswordHintAnswerInputField.text) && !string.IsNullOrWhiteSpace(_registerPasswordHintInputField.text))
+            {
+                _setHintButton.interactable = true;
+            }
+            else
+            {
+                _setHintButton.interactable = false;
             }
         }
 
