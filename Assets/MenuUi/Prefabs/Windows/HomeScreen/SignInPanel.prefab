@@ -477,7 +477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: Vastaaa
+  _finnishText: Vastaa
   _englishText: Answer
 --- !u!1 &605062038642399587
 GameObject:
@@ -764,7 +764,7 @@ GameObject:
   - component: {fileID: 3698734538617569267}
   - component: {fileID: 8673130491671112919}
   m_Layer: 5
-  m_Name: AutoLogin
+  m_Name: ForgotPassword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -835,7 +835,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 828153790783853148}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -871,7 +871,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3698734538617569267}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1032039420425602401}
+        m_TargetAssemblyTypeName: PasswordReset, MainMenu
+        m_MethodName: OpenPopUp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &893430269768301523
 GameObject:
   m_ObjectHideFlags: 0
@@ -1281,8 +1293,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: Salasanavihje (auttaa unohtuneen salasanan paluttamisessa)
-  _englishText: Password Hint (helps if you forget your password)
+  _finnishText: 'Salasanavihjeesi on:'
+  _englishText: 'Your security question is:'
 --- !u!1 &1141455322330983425
 GameObject:
   m_ObjectHideFlags: 0
@@ -5452,7 +5464,7 @@ GameObject:
   - component: {fileID: 3778639450315671644}
   - component: {fileID: 4314712442818117301}
   m_Layer: 5
-  m_Name: AutoLoginText
+  m_Name: ForgotPasswordText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5848,8 +5860,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: Salasanavihje (auttaa unohtuneen salasanan paluttamisessa)
-  _englishText: Password Hint (helps if you forget your password)
+  _finnishText: Oikea vastaus
+  _englishText: Correct answer
 --- !u!1 &5274791618875941427
 GameObject:
   m_ObjectHideFlags: 0
@@ -7855,7 +7867,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2886629569579448028}
-  - {fileID: 9217632994308166273}
   m_Father: {fileID: 966064183618173829}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.55, y: 0}
@@ -9590,6 +9601,7 @@ GameObject:
   - component: {fileID: 269667508546553031}
   - component: {fileID: 7835553862141336693}
   - component: {fileID: 1738291153305757572}
+  - component: {fileID: 1032039420425602401}
   m_Layer: 5
   m_Name: PasswordResetPanel (1)
   m_TagString: Untagged
@@ -9655,6 +9667,29 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1032039420425602401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8529709596234972562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e138723092feba45b921e48a92954da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _passwordResetPanel: {fileID: 8529709596234972562}
+  _passwordResetAccountNameSection: {fileID: 2654899116688788499}
+  _accountNameField: {fileID: 2897975538958510130}
+  _accountNameButton: {fileID: 1951259209799046827}
+  _passwordResetQuestionSection: {fileID: 8829817777852423819}
+  _questionLabel: {fileID: 2636240795721882160}
+  _answerField: {fileID: 5192774174966207660}
+  _answerButton: {fileID: 5850366359584985852}
+  _passwordResetInputSection: {fileID: 1141455322330983425}
+  _passwordResetField: {fileID: 1928983896576043154}
+  _passwordResetButton: {fileID: 4456572973608003059}
 --- !u!1 &8548984642085826876
 GameObject:
   m_ObjectHideFlags: 0
@@ -11014,7 +11049,7 @@ GameObject:
   - component: {fileID: 1950253693268912078}
   - component: {fileID: 2629879964634684186}
   - component: {fileID: 8931373925157114980}
-  - component: {fileID: 7503215988999368293}
+  - component: {fileID: 2636240795721882160}
   m_Layer: 5
   m_Name: PasswordText (1)
   m_TagString: Untagged
@@ -11141,7 +11176,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &7503215988999368293
+--- !u!114 &2636240795721882160
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -11150,7 +11185,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9101054728721494930}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _finnishText: '{0}'
@@ -11693,150 +11728,4 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7712538080428156199, guid: 508d1943f8481784eb6e33754c2acf0d,
     type: 3}
   m_PrefabInstance: {fileID: 3754977150478009876}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &4499204134406116150
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1296437722096555579}
-    m_Modifications:
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_Pivot.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_Pivot.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0.00012207031
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6699832907098985500, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_fontSize
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 6699832907098985500, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e,
-        type: 2}
-    - target: {fileID: 6699832907098985500, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_sharedMaterial
-      value: 
-      objectReference: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
-        type: 2}
-    - target: {fileID: 6699832907098985500, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_hasFontAssetChanged
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7140401699805581674, guid: 7afbe7fc11286b544aab47947e93f468,
-        type: 3}
-      propertyPath: m_Name
-      value: NotInUsePanel (1)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 7afbe7fc11286b544aab47947e93f468, type: 3}
---- !u!224 &9217632994308166273 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
-    type: 3}
-  m_PrefabInstance: {fileID: 4499204134406116150}
   m_PrefabAsset: {fileID: 0}
