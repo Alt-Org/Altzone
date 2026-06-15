@@ -60,6 +60,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private bool _gameplayReleased;
     private bool _sharedRaidActive;
     private bool _callbacksRegistered;
+    private Coroutine _debugStartCoroutine;
 
     public static RaidMatchmakingController Instance { get; private set; }
 
@@ -1028,7 +1029,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        _views.Initialize(OnSurrenderPressed);
+        _views.Initialize(OnSurrenderPressed, OnDebugStartPressed);
         AssignViewReferences(_views);
     }
 
@@ -1058,6 +1059,80 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         SceneManager.LoadScene("10-MenuUI");
+    }
+
+    private void OnDebugStartPressed()
+    {
+        if (_debugStartCoroutine != null)
+        {
+            return;
+        }
+
+        _debugStartCoroutine = StartCoroutine(DebugStartRaidWhenReady());
+    }
+
+    private IEnumerator DebugStartRaidWhenReady()
+    {
+        if (!IsCurrentRoomRaid())
+        {
+            ShowMatchmaking("Debug Raid start unavailable", "Join a Raid matchmaking room first.", string.Empty);
+            _debugStartCoroutine = null;
+            yield break;
+        }
+
+        SetLocalPlayerRaidProperties();
+
+        float timeout = Time.time + 2f;
+        while (IsCurrentRoomRaid()
+            && PhotonRealtimeClient.LocalPlayer != null
+            && string.IsNullOrWhiteSpace(GetPlayerClanId(PhotonRealtimeClient.LocalPlayer))
+            && Time.time < timeout)
+        {
+            ShowMatchmaking("Debug starting Raid", "Waiting for player clan data...", string.Empty);
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        TryDebugStartRaidIgnoringRequiredPlayers();
+        _debugStartCoroutine = null;
+    }
+
+    private void TryDebugStartRaidIgnoringRequiredPlayers()
+    {
+        if (!IsCurrentRoomRaid())
+        {
+            ShowMatchmaking("Debug Raid start unavailable", "Join a Raid matchmaking room first.", string.Empty);
+            return;
+        }
+
+        if (PhotonRealtimeClient.LocalPlayer == null || !PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+        {
+            ShowMatchmaking("Debug Raid start unavailable", "Only the room leader can force-start a Raid.", string.Empty);
+            return;
+        }
+
+        Room room = PhotonRealtimeClient.CurrentRoom;
+        int state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
+        if (state != RaidPhotonRoom.StateMatchmaking)
+        {
+            ShowMatchmaking("Debug Raid start unavailable", "Raid is already leaving matchmaking.", string.Empty);
+            return;
+        }
+
+        List<Player> validPlayers = GetRaidPlayersWithClans();
+        RaidPhotonRoom.ClanEntry[] clanEntries = BuildClanEntries(validPlayers);
+        bool canDebugStart = validPlayers.Count > 0
+            && validPlayers.Count <= RaidPhotonRoom.RoomCapacity
+            && clanEntries.All(clan => clan.Count <= RaidPhotonRoom.MaxPlayersPerClan);
+
+        if (!canDebugStart)
+        {
+            ShowMatchmaking("Debug Raid start unavailable", "No valid Raid players are ready yet.", "Wait for player clan data to sync, then try again.");
+            return;
+        }
+
+        Debug.Log($"Raid debug start forced with {validPlayers.Count}/{RaidPhotonRoom.RequiredPlayers} players.");
+        ShowMatchmaking("Debug starting Raid", "Starting without required player count.", $"{validPlayers.Count}/{RaidPhotonRoom.RequiredPlayers} players");
+        StartLobbyCountdown(validPlayers, clanEntries);
     }
 
     private IEnumerator RetryMatchmakingAfterDelay()

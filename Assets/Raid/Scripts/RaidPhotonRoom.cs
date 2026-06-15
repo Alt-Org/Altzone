@@ -7,7 +7,7 @@ using Altzone.Scripts.Model.Poco.Player;
 public static class RaidPhotonRoom
 {
     public const int RoomCapacity = 4;
-    public const int RequiredPlayers = 1;
+    public const int RequiredPlayers = 4;
     public const int MaxPlayersPerClan = 2;
 
     public const string RaidMatchmakingKey = "raid_mm";

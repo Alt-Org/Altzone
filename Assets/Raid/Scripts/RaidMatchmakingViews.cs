@@ -15,6 +15,7 @@ public class RaidMatchmakingViews : MonoBehaviour
     [SerializeField] private Transform participantListRoot;
     [SerializeField] private RaidLobbyClanListItem clanListItemTemplate;
     [SerializeField] private Button surrenderButton;
+    [SerializeField] private Button debugStartButton;
 
     public Canvas Canvas => overlayCanvas;
     public GameObject MatchmakingPanel => matchmakingPanel;
@@ -27,6 +28,7 @@ public class RaidMatchmakingViews : MonoBehaviour
     public RaidLobbyClanListItem ClanListItemTemplate => clanListItemTemplate;
 
     private Action _surrenderAction;
+    private Action _debugStartAction;
 
     private void Awake()
     {
@@ -42,21 +44,38 @@ public class RaidMatchmakingViews : MonoBehaviour
         {
             surrenderButton.onClick.RemoveListener(OnSurrenderPressed);
         }
+
+        if (debugStartButton != null)
+        {
+            debugStartButton.onClick.RemoveListener(OnDebugStartPressed);
+        }
     }
 
-    public void Initialize(Action surrenderAction)
+    public void Initialize(Action surrenderAction, Action debugStartAction)
     {
         _surrenderAction = surrenderAction;
+        _debugStartAction = debugStartAction;
 
         if (surrenderButton != null)
         {
             surrenderButton.onClick.RemoveListener(OnSurrenderPressed);
             surrenderButton.onClick.AddListener(OnSurrenderPressed);
         }
+
+        if (debugStartButton != null)
+        {
+            debugStartButton.onClick.RemoveListener(OnDebugStartPressed);
+            debugStartButton.onClick.AddListener(OnDebugStartPressed);
+        }
     }
 
     private void OnSurrenderPressed()
     {
         _surrenderAction?.Invoke();
+    }
+
+    private void OnDebugStartPressed()
+    {
+        _debugStartAction?.Invoke();
     }
 }
