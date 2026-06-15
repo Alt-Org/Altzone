@@ -47,8 +47,12 @@ public class Raid_Timer : MonoBehaviour
 
     [Header("Timer fill")]
     [SerializeField] private Raid_TimerFillCircle timerFillCircle;
+    [SerializeField] private CanvasGroup exitRaidButtonCanvasGroup;
 
     private float timerStartTime;
+    private GameObject timerPanel;
+    private GameObject timerPanelBackground;
+    private Button exitRaidButton;
 
     public bool HasStarted => started;
 
@@ -73,6 +77,7 @@ public class Raid_Timer : MonoBehaviour
         SetStartTimerVisualState(false);
         timerStartTime = CurrentTime;
         EnsureTimerFillCircle();
+        SetRaidControlsVisible(false);
         UpdateTimerFill();
     }
 
@@ -82,10 +87,13 @@ public class Raid_Timer : MonoBehaviour
             && RaidMatchmakingController.Instance.ControlsInventorySetup
             && !RaidMatchmakingController.Instance.HasReleasedGameplay)
         {
+            SetRaidControlsVisible(false);
             SetTimerText();
             SetTimerFillProgress(0f);
             return;
         }
+
+        SetRaidControlsVisible(started || startTextShown);
 
         if (timerActive)
         {
@@ -155,6 +163,7 @@ public class Raid_Timer : MonoBehaviour
             timerStartTime = CurrentTime;
             timerActive = true;
             started = true;
+            SetRaidControlsVisible(true);
             UpdateTimerFill();
             TimerStarted?.Invoke();
         }
@@ -183,6 +192,7 @@ public class Raid_Timer : MonoBehaviour
         }
 
         SetTimerText();
+        SetRaidControlsVisible(false);
         UpdateTimerFill();
     }
 
@@ -205,6 +215,7 @@ public class Raid_Timer : MonoBehaviour
 
         SetStartTimerVisualState(true);
         startTextShown = true;
+        SetRaidControlsVisible(true);
     }
 
     private void SetStartTimerVisualState(bool showStartText)
@@ -223,13 +234,86 @@ public class Raid_Timer : MonoBehaviour
         Image timerBackgroundImage = startTimerParent.GetComponent<Image>();
         if (timerBackgroundImage != null)
         {
-            timerBackgroundImage.enabled = showStartText;
+            timerBackgroundImage.enabled = false;
         }
 
         Transform overlay = startTimerParent.Find("Overlay");
         if (overlay != null)
         {
             overlay.gameObject.SetActive(!showStartText);
+        }
+    }
+
+    private void SetRaidControlsVisible(bool visible)
+    {
+        ResolveRaidControlReferences();
+
+        if (timerPanel != null && timerPanel.activeSelf != visible)
+        {
+            timerPanel.SetActive(visible);
+        }
+
+        if (timerPanelBackground != null && timerPanelBackground.activeSelf != visible)
+        {
+            timerPanelBackground.SetActive(visible);
+        }
+
+        if (exitRaidButtonCanvasGroup != null)
+        {
+            exitRaidButtonCanvasGroup.alpha = visible ? 1f : 0f;
+            exitRaidButtonCanvasGroup.interactable = visible;
+            exitRaidButtonCanvasGroup.blocksRaycasts = visible;
+        }
+
+        if (exitRaidButton != null)
+        {
+            exitRaidButton.interactable = visible;
+        }
+    }
+
+    private void ResolveRaidControlReferences()
+    {
+        if (timerPanel == null && TimerText != null && TimerText.transform.parent != null)
+        {
+            timerPanel = TimerText.transform.parent.gameObject;
+        }
+
+        if (timerPanelBackground == null && timerPanel != null)
+        {
+            Transform background = timerPanel.transform.Find("background");
+            if (background == null && timerPanel.transform.parent != null)
+            {
+                background = timerPanel.transform.parent.Find("background");
+            }
+
+            if (background != null)
+            {
+                timerPanelBackground = background.gameObject;
+            }
+        }
+
+        if (exitRaid == null)
+        {
+            exitRaid = ExitRaid.Instance;
+        }
+
+        if (exitRaid == null)
+        {
+            return;
+        }
+
+        if (exitRaidButtonCanvasGroup == null)
+        {
+            exitRaidButtonCanvasGroup = exitRaid.GetComponent<CanvasGroup>();
+            if (exitRaidButtonCanvasGroup == null)
+            {
+                exitRaidButtonCanvasGroup = exitRaid.gameObject.AddComponent<CanvasGroup>();
+            }
+        }
+
+        if (exitRaidButton == null)
+        {
+            exitRaidButton = exitRaid.GetComponent<Button>();
         }
     }
 
@@ -314,15 +398,15 @@ public class Raid_Timer : MonoBehaviour
     {
         if (!started)
         {
-            return 0f;
+            return 1f;
         }
 
         if (Mathf.Approximately(timerStartTime, TimerLimit))
         {
-            return Mathf.Approximately(CurrentTime, TimerLimit) ? 1f : 0f;
+            return Mathf.Approximately(CurrentTime, TimerLimit) ? 0f : 1f;
         }
 
-        return Mathf.InverseLerp(timerStartTime, TimerLimit, CurrentTime);
+        return 1f - Mathf.InverseLerp(timerStartTime, TimerLimit, CurrentTime);
     }
 
     void OnTimeEnd()
