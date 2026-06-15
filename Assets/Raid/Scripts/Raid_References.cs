@@ -7,7 +7,6 @@ public class Raid_References : MonoBehaviour
     [SerializeField, Header("Reference GameObjects")]
  
     public GameObject EndMenu;
-    public GameObject HeartHalves;
     public GameObject Heart;
 
     [SerializeField, Header("Reference game components")]

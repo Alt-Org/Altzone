@@ -271,7 +271,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         if (Vector2.Distance(ItemBall.GetComponent<RectTransform>().anchoredPosition, endLoc) <= 20f)
         {
             moving = false;
-            Heart.GetComponent<HeartScript>().UpdateColor();
             onLootBallArrived?.Invoke(pendingRecentLootSprite);
             pendingRecentLootSprite = null;
             onLootBallArrived = null;

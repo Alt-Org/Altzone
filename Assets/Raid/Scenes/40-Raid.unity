@@ -500,7 +500,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EndMenu: {fileID: 7204274271899433403}
-  HeartHalves: {fileID: 1513048546}
   Heart: {fileID: 1264060820}
   inventoryHandler: {fileID: 943703426}
   raid_LootTracking: {fileID: 756492972}
@@ -839,12 +838,6 @@ MonoBehaviour:
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
   m_ScrollDeltaPerTick: 6
---- !u!1 &1513048546 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6168685797639129784, guid: 7cabb86556187f24686c8f5e7079f00e,
-    type: 3}
-  m_PrefabInstance: {fileID: 8614867888386930549}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1550062017 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4783276170132543539, guid: 7cabb86556187f24686c8f5e7079f00e,

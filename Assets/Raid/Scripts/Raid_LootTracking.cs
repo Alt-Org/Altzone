@@ -13,6 +13,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
     [SerializeField] private ExitRaid exitRaid;
 
     [SerializeField, Header("Reference game components")] private TMP_Text HeartLootText;
+    [SerializeField] private Sprite BrokenHeartSprite;
     
     [SerializeField, Header("Variables")] public float CurrentLootWeight;
     [SerializeField] public float MaxLootWeight;
@@ -193,15 +194,19 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     private void TriggerOverWeightEnd(float maxLootWeight)
     {
-        //HeartBreak animation
-        Color tmp = raid_References.Heart.GetComponent<Image>().color;
-        Image[] children = raid_References.HeartHalves.GetComponentsInChildren<Image>();
-        foreach (Image image in children)
+        Image heartImage = raid_References != null && raid_References.Heart != null
+            ? raid_References.Heart.GetComponent<Image>()
+            : null;
+
+        if (heartImage != null)
         {
-            image.color = tmp;
+            if (BrokenHeartSprite != null)
+            {
+                heartImage.sprite = BrokenHeartSprite;
+            }
+
+            heartImage.enabled = true;
         }
-        raid_References.HeartHalves.SetActive(true);
-        raid_References.Heart.GetComponent<Image>().enabled = false;
 
         if (exitRaid != null)
         {

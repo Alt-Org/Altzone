@@ -7,9 +7,6 @@ using UnityEngine.UI;
 public class HeartScript : MonoBehaviour
 {
     public Raid_LootTracking raid_LootTracking;
-    private float amount;
-    public Color white = Color.white;
-    public Color black = Color.black;
     private const int DefaultRecentLootSlotCount = 3;
     [SerializeField, Min(1)] private int recentLootSlotCount = 3;
     [SerializeField] private Image[] recentLootImages;
@@ -27,23 +24,6 @@ public class HeartScript : MonoBehaviour
         {
             UpdateRecentLootImages(null);
         }
-    }
-
-    public void UpdateColor()
-    {
-        ResolveLootTracker();
-        if (raid_LootTracking == null || raid_LootTracking.MaxLootWeight <= 0f)
-        {
-            amount = 0f;
-        }
-        else
-        {
-            amount = Mathf.Clamp01(raid_LootTracking.CurrentLootWeight / raid_LootTracking.MaxLootWeight);
-        }
-
-        Color mix = Color.Lerp(white, black, amount);
-        this.GetComponent<Image>().color = mix;
-
     }
 
     public void UpdateRecentLootImages(IReadOnlyList<GameFurniture> collectedLoot)
