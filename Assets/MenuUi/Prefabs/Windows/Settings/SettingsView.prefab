@@ -3380,9 +3380,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Salli internet-linkit
-
-'
+  m_text: Salli internet-linkit
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
   m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
@@ -4874,7 +4872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: Kuukausittainen Peliraha
+  _finnishText: Kuukausittainen peliraha
   _englishText: Monthly allowance
 --- !u!1 &1487999966264022673
 GameObject:
@@ -13666,10 +13664,10 @@ RectTransform:
   - {fileID: 8331063573878080737}
   m_Father: {fileID: 7150708963445429629}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 265.41064, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 132.70532, y: -88.470215}
+  m_SizeDelta: {x: 0, y: 176.94043}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5346137426496441981
 CanvasRenderer:
@@ -14631,10 +14629,10 @@ RectTransform:
   - {fileID: 4856604078376449714}
   m_Father: {fileID: 7150708963445429629}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 129.6508, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 64.8254, y: -613.1825}
+  m_SizeDelta: {x: 0, y: 172.86774}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &743721110334598278
 CanvasRenderer:
@@ -18391,6 +18389,7 @@ GameObject:
   - component: {fileID: 3008880746241381915}
   - component: {fileID: 8694841714710819105}
   - component: {fileID: 4862504112475118016}
+  - component: {fileID: 8785021664775116751}
   m_Layer: 5
   m_Name: Placeholder
   m_TagString: Untagged
@@ -18537,6 +18536,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &8785021664775116751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4820417479910077384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kirjoita salasana
+  _englishText: Enter your password
 --- !u!1 &4992600125758655831
 GameObject:
   m_ObjectHideFlags: 0
@@ -25370,7 +25383,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: "Katkaise peli ottelun p\xE4\xE4tytty\xE4"
+  _finnishText: "Katkaise peli ottelun j\xE4lkeen"
   _englishText: Stop the game at the end of match
 --- !u!1 &6510926680723140194
 GameObject:
@@ -29724,10 +29737,10 @@ RectTransform:
   - {fileID: 9118663012666731975}
   m_Father: {fileID: 7150708963445429629}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 129.6508, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 64.8254, y: -440.31473}
+  m_SizeDelta: {x: 0, y: 172.86774}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7766482377142582589
 CanvasRenderer:
@@ -32157,10 +32170,10 @@ RectTransform:
   - {fileID: 1276186875892441013}
   m_Father: {fileID: 7150708963445429629}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 265.41064, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 132.70532, y: -265.41064}
+  m_SizeDelta: {x: 0, y: 176.94043}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7659843953905760263
 CanvasRenderer:
@@ -38555,7 +38568,7 @@ PrefabInstance:
     - target: {fileID: 8435376971852313966, guid: 333f39dbbf4842c4592131e56b1dcf5d,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -4.9999695
+      value: -4.999939
       objectReference: {fileID: 0}
     - target: {fileID: 9013913239000274625, guid: 333f39dbbf4842c4592131e56b1dcf5d,
         type: 3}
@@ -38762,6 +38775,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -0.001953125
       objectReference: {fileID: 0}
+    - target: {fileID: 1785155530234949932, guid: 36168b4a92b6679449c8fc40f06c0cf9,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000061035156
+      objectReference: {fileID: 0}
     - target: {fileID: 1868688068325777951, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_fontSize
@@ -38945,7 +38963,7 @@ PrefabInstance:
     - target: {fileID: 2522924568871388016, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_Value
-      value: 0.37500006
+      value: 0.37499994
       objectReference: {fileID: 0}
     - target: {fileID: 2522924569201874204, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
@@ -39005,7 +39023,7 @@ PrefabInstance:
     - target: {fileID: 2522924569201874207, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 810
+      value: 810.0001
       objectReference: {fileID: 0}
     - target: {fileID: 2522924569201874207, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
