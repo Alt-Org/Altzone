@@ -594,7 +594,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   raid_References: {fileID: 0}
   exitRaid: {fileID: 1226679771514626003}
-  HeartLootText: {fileID: 7420135195004599251}
+  HeartLootText: {fileID: 8795143182936661784}
   CurrentLootWeight: 0
   MaxLootWeight: 300
   ListOfCollectedLoot: []
@@ -829,7 +829,7 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2087204594760033482}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7420135195004599251 stripped
+--- !u!114 &8795143182936661784 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7420135195004599250, guid: d6db3c921a9398d4c918faba55f9eaee,
     type: 3}
@@ -867,22 +867,22 @@ PrefabInstance:
     - target: {fileID: 8036383514346583647, guid: 13d5a303421ee7e46b3fb03b47d6cc67,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.97
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8036383514346583647, guid: 13d5a303421ee7e46b3fb03b47d6cc67,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.97
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8036383514346583647, guid: 13d5a303421ee7e46b3fb03b47d6cc67,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.76
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8036383514346583647, guid: 13d5a303421ee7e46b3fb03b47d6cc67,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.87
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8036383514346583647, guid: 13d5a303421ee7e46b3fb03b47d6cc67,
         type: 3}
