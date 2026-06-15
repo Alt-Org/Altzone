@@ -185,7 +185,7 @@ public class PollInfoPopup : MonoBehaviour
 
         string yesPercent, noPercent;
 
-        if (totalCount < 0)
+        if (totalCount <= 0)
         {
             return;
         }

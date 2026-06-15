@@ -80,7 +80,7 @@ namespace Altzone.Scripts.Voting
             if (clan.Members != null)
             {
                 clanMembers = clan.Members.Select(member => member.Id).ToList();
-                Organizer = clan.Members.Find(member => member.Id == poll.organizer.player_id)?.Name;
+                Organizer = clan.Members.Find(member => member.Id == poll.organizer?.player_id)?.Name;
             }
 
             NotVoted = clanMembers;
