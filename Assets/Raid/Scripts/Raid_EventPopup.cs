@@ -63,6 +63,22 @@ public class Raid_EventPopup : MonoBehaviour
     [SerializeField] private float showTime = DefaultShowTime;
     [SerializeField] private ScenarioVisual[] scenarioVisuals;
 
+    private void Awake()
+    {
+        if (instance == null || instance == this)
+        {
+            instance = this;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
+
     public static void Show(MonoBehaviour owner, Scenario scenario)
     {
         if (owner == null)
@@ -90,7 +106,7 @@ public class Raid_EventPopup : MonoBehaviour
 
     public static IEnumerator ShowAndWait(MonoBehaviour owner, Scenario scenario, float duration, Action onComplete = null)
     {
-        Raid_EventPopup popup = GetOrCreate();
+        Raid_EventPopup popup = GetOrCreate(owner);
         if (popup == null)
         {
             onComplete?.Invoke();
@@ -109,7 +125,7 @@ public class Raid_EventPopup : MonoBehaviour
             yield break;
         }
 
-        Raid_EventPopup popup = GetOrCreate();
+        Raid_EventPopup popup = GetOrCreate(owner);
         if (popup == null)
         {
             onComplete?.Invoke();
@@ -128,8 +144,14 @@ public class Raid_EventPopup : MonoBehaviour
         }
     }
 
-    private static Raid_EventPopup GetOrCreate()
+    private static Raid_EventPopup GetOrCreate(MonoBehaviour owner)
     {
+        if (instance != null)
+        {
+            return instance;
+        }
+
+        instance = FindObjectOfType<Raid_EventPopup>(true);
         if (instance != null)
         {
             return instance;
@@ -142,9 +164,13 @@ public class Raid_EventPopup : MonoBehaviour
             return null;
         }
 
-        instance = Instantiate(prefab);
+        Canvas parentCanvas = owner != null ? owner.GetComponentInParent<Canvas>() : null;
+        parentCanvas ??= FindObjectOfType<Canvas>(true);
+
+        instance = parentCanvas != null
+            ? Instantiate(prefab, parentCanvas.transform, false)
+            : Instantiate(prefab);
         instance.name = "Raid Event Popup";
-        DontDestroyOnLoad(instance.gameObject);
         instance.gameObject.SetActive(false);
         return instance;
     }

@@ -155,6 +155,8 @@ public class Raid_EndMenu : MonoBehaviour
             lootItem.name = "CollectedLootItem";
             lootItem.transform.localScale = collectedLootItemScale;
             lootItem.SetTrapIndicatorVisible(false);
+            lootItem.SetAuraVisible(false);
+            lootItem.SetBubbleVisible(false);
             lootItem.SetData(furniture);
             lootItem.SetShowItemWeightText(true);
             return;

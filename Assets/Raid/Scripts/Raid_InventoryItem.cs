@@ -185,6 +185,26 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         RefreshBombIndicator();
     }
 
+    public void SetAuraVisible(bool visible)
+    {
+        if (Aura == null)
+        {
+            return;
+        }
+
+        Aura.gameObject.SetActive(visible);
+    }
+
+    public void SetBubbleVisible(bool visible)
+    {
+        if (Bubble == null)
+        {
+            return;
+        }
+
+        Bubble.gameObject.SetActive(visible);
+    }
+
     private void RefreshBombIndicator()
     {
         if (BombIndicator == null)
