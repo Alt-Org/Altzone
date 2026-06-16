@@ -53,6 +53,15 @@ namespace Battle.QSimulation.Projectile
             public BattleProjectileQComponent* Projectile;
         }
 
+        /// <summary>
+        /// Gets the projectile's EntityRef.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>The EntityRef of the projectile.</returns>
+        public static EntityRef GetProjectileEntityRef(Frame f) => GetProjectileEntity(f);
+
         #region Public - Helper Methods
 
         /// <summary>
