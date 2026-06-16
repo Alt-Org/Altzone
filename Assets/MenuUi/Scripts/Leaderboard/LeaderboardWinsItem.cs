@@ -13,7 +13,7 @@ public class LeaderboardWinsItem : MonoBehaviour
     [SerializeField] private Image _itemBackground;
     [field: SerializeField] public Button OpenProfileButton { get; private set; }
 
-    public void Initialize(int rank, string name, int wins, AvatarVisualData avatarVisualData, string clanId = null)
+    public void Initialize(int rank, string name, int wins, AvatarVisualData avatarVisualData)
     {
         _rankText.text = rank.ToString() + ".";
         _nameText.text = name;

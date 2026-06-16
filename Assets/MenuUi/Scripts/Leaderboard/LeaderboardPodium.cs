@@ -154,10 +154,6 @@ public class LeaderboardPodium : MonoBehaviour
             }
             else if (avatarData != null)
             {
-                FirstOpenPlayerProfileButton.onClick.RemoveListener(FirstAddDataCarrierData); // Remove in case the button already has another player's info
-                //_firstPlayerData = avatarData;
-                FirstOpenPlayerProfileButton.onClick.AddListener(FirstAddDataCarrierData);
-
                 if (avatarData != null && isActiveAndEnabled)
                 {
                     _firstAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarData);
@@ -202,7 +198,6 @@ public class LeaderboardPodium : MonoBehaviour
 
             if (playerData != null)
             {
-
                 SecondOpenPlayerProfileButton.onClick.RemoveListener(SecondAddDataCarrierData); // Remove in case the button already has another player's info
                 _secondPlayerData = playerData;
                 SecondOpenPlayerProfileButton.onClick.AddListener(SecondAddDataCarrierData);
@@ -217,10 +212,6 @@ public class LeaderboardPodium : MonoBehaviour
             }
             else if (avatarData != null)
             {
-
-                SecondOpenPlayerProfileButton.onClick.RemoveListener(FirstAddDataCarrierData); // Remove in case the button already has another player's info
-                SecondOpenPlayerProfileButton.onClick.AddListener(FirstAddDataCarrierData);
-
                 if (avatarData != null && isActiveAndEnabled)
                 {
                     _secondAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarData);
@@ -281,11 +272,6 @@ public class LeaderboardPodium : MonoBehaviour
             }
             else if (avatarData != null)
             {
-                ThirdOpenPlayerProfileButton.onClick.RemoveListener(FirstAddDataCarrierData); // Remove in case the button already has another player's info
-                //_firstPlayerData = friendPlayer.clan_id;
-
-                ThirdOpenPlayerProfileButton.onClick.AddListener(FirstAddDataCarrierData);
-
                 if (avatarData != null && isActiveAndEnabled)
                 {
                     _thirdAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarData);

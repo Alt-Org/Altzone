@@ -5,6 +5,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using MenuUi.Scripts.Window;
+using System.Collections;
+using System;
 
 public class LeaderboardView : MonoBehaviour
 {
@@ -45,10 +49,8 @@ public class LeaderboardView : MonoBehaviour
 
     //friend leaderboard
     private List<FriendPlayer> _friendsPlayersList = new List<FriendPlayer>();
-    private FriendPlayer _player = new FriendPlayer();
     //for testing
     //private FriendPlayer friendtest1 = new FriendPlayer();
-
 
     private enum Leaderboard
     {
@@ -239,16 +241,19 @@ public class LeaderboardView : MonoBehaviour
                                 item.FirstOpenPlayerProfileButton.onClick.AddListener(() =>
                                 {
                                     DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player); // Transfer the data for use in the leaderboard 1st place
+                                    StartCoroutine(item.FirstOpenPlayerProfileButton.GetComponent<WindowNavigation>().Navigate());
                                 });
 
                                 item.SecondOpenPlayerProfileButton.onClick.AddListener(() =>
                                 {
                                     DataCarrier.AddData(DataCarrier.PlayerProfile, playerLeaderboard[1].Player); // Transfer the data for use in the leaderboard 2nd place
+                                    StartCoroutine(item.SecondOpenPlayerProfileButton.GetComponent<WindowNavigation>().Navigate());
                                 });
 
                                 item.ThirdOpenPlayerProfileButton.onClick.AddListener(() =>
                                 {
                                     DataCarrier.AddData(DataCarrier.PlayerProfile, playerLeaderboard[2].Player); // Transfer the data for use in the leaderboard 3rd place
+                                    StartCoroutine(item.ThirdOpenPlayerProfileButton.GetComponent<WindowNavigation>().Navigate());
                                 });
 
                             }
@@ -268,9 +273,9 @@ public class LeaderboardView : MonoBehaviour
                                     item.RecolorBackground();
                                     _playerItem = item.GetComponent<RectTransform>();
                                 }
-
                             }
                             rank++;
+                            StartCoroutine(FrameChecker());
                         }
                     }));
                 }
@@ -348,6 +353,8 @@ public class LeaderboardView : MonoBehaviour
                 break;
             case Leaderboard.Friends: //tab 3
 
+                 FriendPlayer _player = new FriendPlayer();
+
                 //apply correct list for scroll to me and to top
                 _currentScrollRect = _friendsScrollRect;
                 _currentContentPanel = (RectTransform)_friendsContent;
@@ -355,9 +362,10 @@ public class LeaderboardView : MonoBehaviour
 
                 _friendsPlayersList.Clear();
 
-                //test friends to fill the leaderboard
+                //test friends to fill the leaderboard             
                 //_friendsPlayersList.Add(friendtest1);
-                //friendtest1.name = "friendtest1";
+                //.name = "friendtest1";
+
 
                 foreach (FriendPlayer friend in OnlinePlayersPanel.Instance.Friendlist) //add friends to list
                 {
@@ -370,109 +378,141 @@ public class LeaderboardView : MonoBehaviour
                 _player.name = ServerManager.Instance.Player.name;
                 _player.clan_id = ServerManager.Instance.Player.clan_id;
                 _player._id = ServerManager.Instance.Player._id;
-             
+
                 //_friendsPlayersList.Sort((a, b) => b.wins.CompareTo(a.wins)); //sort by wins, not done currently since wins do not exist for friends
+                StartCoroutine(FriendLeaderboardList());
 
-                int rank = 1;
-                foreach (FriendPlayer friend in _friendsPlayersList)  //add friends to leaderboard
-                {
-                    if (rank == 1)
-                    {
-                        //add the podium to the scroll view
-                        LeaderboardPodium itemPod = Instantiate(_podium, parent: _friendsContent).GetComponent<LeaderboardPodium>();
-
-                        AvatarVisualData avatarVisualData = null;
-                        avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(friend.avatar);
-
-                        //apply all info to the podium
-
-                        //FIRST
-                        itemPod.InitilializePodium(rank, friend.name, 0, null, avatarVisualData);
-
-                        if (friend.name == _playerName)
-                        { _playerItem = itemPod.GetComponent<RectTransform>(); }
-
-                        //SECOND
-                        if (_friendsPlayersList.Count > 1) // make sure that list has enough members
-                        {
-                            avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(_friendsPlayersList[1].avatar);
-
-                            itemPod.InitilializePodium(2, _friendsPlayersList[1].name, 0, null, avatarVisualData);
-
-                            if (_friendsPlayersList[1].name == _playerName)
-                            { _playerItem = itemPod.GetComponent<RectTransform>(); }
-                        }
-                        else
-                        { itemPod.InitilializePodium(2, null, 0, null, null); }
-
-                        //THIRD
-                        if (_friendsPlayersList.Count > 2)
-                        {
-                            avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(_friendsPlayersList[2].avatar);
-
-                            itemPod.InitilializePodium(3, _friendsPlayersList[2].name, 0, null, avatarVisualData);
-
-                            if (_friendsPlayersList[2].name == _playerName)
-                            { _playerItem = itemPod.GetComponent<RectTransform>(); }
-                        }
-                        else
-                        { itemPod.InitilializePodium(3, null, 0, null, null); }
-
-                        // View player profile -buttons
-                        itemPod.FirstOpenPlayerProfileButton.onClick.AddListener(() =>
-                        {
-                            DataCarrier.AddData(DataCarrier.PlayerProfile, friend._id); // Transfer the data for use in the leaderboard 1st place
-                        });
-                        if (_friendsPlayersList.Count > 1)
-                        {
-                            itemPod.SecondOpenPlayerProfileButton.onClick.AddListener(() =>
-                            {
-                                DataCarrier.AddData(DataCarrier.PlayerProfile, _friendsPlayersList[1]._id); // Transfer the data for use in the leaderboard 2nd place
-                            });
-                        }
-                        if (_friendsPlayersList.Count > 2)
-                        {
-                            itemPod.ThirdOpenPlayerProfileButton.onClick.AddListener(() =>
-                            {
-                                DataCarrier.AddData(DataCarrier.PlayerProfile, _friendsPlayersList[2]._id); // Transfer the data for use in the leaderboard 3rd place
-                            });
-                        }
-                    }
-                    else if( rank > 3)
-                    {
-
-                        AvatarVisualData avatarVisualData = null;
-                        avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(friend.avatar);
-                        
-                        LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _friendsContent).GetComponent<LeaderboardWinsItem>();
-
-                        item.Initialize(rank, friend.name, 0, avatarVisualData, friend.clan_id);
-
-                        //open friend profile                  
-                        item.OpenProfileButton.onClick.AddListener(() =>
-                        {
-                            DataCarrier.AddData(DataCarrier.PlayerProfile, friend._id); // Transfer the data for use in the leaderboard
-                        });
-
-                        if (friend.name == _playerName) //color player's item white
-                        {
-                            item.RecolorBackground();
-                            _playerItem = item.GetComponent<RectTransform>();
-                        }
-                    }
-                    rank++;
-                }
-
-                if (_friendsPlayersList.Count < 20) //add empty items for testing
-                {
-                    for (int i = _friendsPlayersList.Count + 1; i <= 20; i++)
-                    {
-                        LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _friendsContent).GetComponent<LeaderboardWinsItem>();
-
-                        item.Initialize(i, "", 0, null, "");
-                    }
-                }
                 break;
+        }
+    }
+
+    private IEnumerator FriendLeaderboardList()
+    {
+        int rank = 1;
+        foreach (FriendPlayer friend in _friendsPlayersList)  //add friends to leaderboard
+        {
+            if (rank == 1)
+            {
+                //add the podium to the scroll view
+                LeaderboardPodium itemPod = Instantiate(_podium, parent: _friendsContent).GetComponent<LeaderboardPodium>();
+
+                AvatarVisualData avatarVisualData1 = null;
+                AvatarVisualData avatarVisualData2 = null;
+                AvatarVisualData avatarVisualData3 = null;
+
+                avatarVisualData1 = AvatarDesignLoader.Instance.CreateAvatarVisualData(friend.avatar);
+                if (_friendsPlayersList.Count > 1)
+                    avatarVisualData2 = AvatarDesignLoader.Instance.CreateAvatarVisualData(_friendsPlayersList[1].avatar);
+                
+                if (_friendsPlayersList.Count > 2)
+                    avatarVisualData3 = AvatarDesignLoader.Instance.CreateAvatarVisualData(_friendsPlayersList[2].avatar);
+
+                //apply all info to the podium
+
+                //FIRST
+                yield return new WaitForSeconds(0.01f); //wait so that the avatars have time to load
+                
+                itemPod.InitilializePodium(rank, friend.name, 0, null, avatarVisualData1);
+
+                if (friend.name == _playerName)
+                    _playerItem = itemPod.GetComponent<RectTransform>(); 
+
+                //SECOND
+                if (_friendsPlayersList.Count > 1) // make sure that list has enough members
+                {                 
+                    itemPod.InitilializePodium(2, _friendsPlayersList[1].name, 0, null, avatarVisualData2);
+
+                    if (_friendsPlayersList[1].name == _playerName)
+                        _playerItem = itemPod.GetComponent<RectTransform>(); 
+                }
+                else
+                { itemPod.InitilializePodium(2, null, 0, null, null); }
+
+                //THIRD
+                if (_friendsPlayersList.Count > 2)
+                {
+                    itemPod.InitilializePodium(3, _friendsPlayersList[2].name, 0, null, avatarVisualData3);
+
+                    if (_friendsPlayersList[2].name == _playerName)
+                        _playerItem = itemPod.GetComponent<RectTransform>();
+                }
+                else
+                { itemPod.InitilializePodium(3, null, 0, null, null); }
+
+                // View player profile -buttons
+                itemPod.FirstOpenPlayerProfileButton.onClick.AddListener(() =>
+                {
+                    StartCoroutine(GetFriendProfile(friend._id, null, itemPod.FirstOpenPlayerProfileButton));
+                });
+                if (_friendsPlayersList.Count > 1)
+                {
+                    itemPod.SecondOpenPlayerProfileButton.onClick.AddListener(() =>
+                    {
+                        StartCoroutine(GetFriendProfile(_friendsPlayersList[1]._id, null, itemPod.SecondOpenPlayerProfileButton));
+                    });
+                }
+                if (_friendsPlayersList.Count > 2)
+                {
+                    itemPod.ThirdOpenPlayerProfileButton.onClick.AddListener(() =>
+                    {
+                        StartCoroutine(GetFriendProfile(_friendsPlayersList[2]._id, null, itemPod.ThirdOpenPlayerProfileButton));
+                    });
+                }
+            }
+            else if (rank > 3)
+            {
+                AvatarVisualData avatarVisualData = null;
+                avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(friend.avatar);
+
+                LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _friendsContent).GetComponent<LeaderboardWinsItem>();
+
+                item.Initialize(rank, friend.name, 0, avatarVisualData);
+
+                //open friend profile
+                //item.OpenProfileButton.onClick.RemoveAllListeners();
+                item.OpenProfileButton.onClick.AddListener(() =>
+                {
+                    StartCoroutine(GetFriendProfile(friend._id, item));
+                });
+
+                if (friend.name == _playerName) //color player's item white
+                {
+                    item.RecolorBackground();
+                    _playerItem = item.GetComponent<RectTransform>();
+                }
+            }
+            rank++;
+        }
+
+        if (_friendsPlayersList.Count < 20) //add empty items for testing
+        {
+            for (int i = _friendsPlayersList.Count + 1; i <= 20; i++)
+            {
+                LeaderboardWinsItem item = Instantiate(_friendsWinsItemPrefab, parent: _friendsContent).GetComponent<LeaderboardWinsItem>();
+
+                item.Initialize(i, "", 0, null);
+            }
+        }
+        yield return null;
+    }
+
+    private IEnumerator GetFriendProfile(string _id, LeaderboardWinsItem item = null, Button itemPod = null)
+    {
+        bool timeout = false;
+        ServerPlayer serverPlayer = null;
+
+        StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(_id, c => serverPlayer = c)); // Get friend data
+        yield return new WaitUntil(() => serverPlayer != null || timeout);
+
+        DataCarrier.AddData(DataCarrier.PlayerProfile, new PlayerData(serverPlayer));
+
+        if (itemPod != null)
+        {
+            yield return itemPod.GetComponent<WindowNavigation>().Navigate();
+        }
+        else if(item != null)
+        {
+            yield return item.GetComponent<WindowNavigation>().Navigate();
         }
     }
 
@@ -509,4 +549,21 @@ public class LeaderboardView : MonoBehaviour
         }
     }
 
+    private long _frameTimeStart;
+    private IEnumerator FrameChecker()
+    {
+        if (FrameCheck())
+        {
+            yield return null;
+            _frameTimeStart = DateTime.Now.Ticks;
+        }
+    }
+    private bool FrameCheck()
+    {
+        if ((new TimeSpan(DateTime.Now.Ticks - _frameTimeStart)).TotalSeconds > 1f / 60f)
+        {
+            return true;
+        }
+        return false;
+    }
 }
