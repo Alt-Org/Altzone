@@ -40,6 +40,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     [SerializeField] public List<ServerReactions> ReactionData = new List<ServerReactions>(); //Used for addings data to ChatShowUserPopUpData
 
+    [SerializeField] private string playerID;
+
     void Start()
     {
         //For "AddReactions"
@@ -52,11 +54,17 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }));
 
 
+        //Puts up the players ID
+        StartCoroutine(GetPlayerData(player =>
+        {
+            playerID = player.Id;
 
-        //ReactionObjectHandler.OnReactionPressed += AddReaction;
+        }));
+
+            //ReactionObjectHandler.OnReactionPressed += AddReaction;
 
 
-        GenarateReactionObjects(_reactionPaneldata._reactionsContent);
+            GenarateReactionObjects(_reactionPaneldata._reactionsContent);
 
         PickCommonReactions();
     }
@@ -165,13 +173,13 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// </summary>
     public void UpdateReactions(List<ServerReactions> reactions, string messageid, ChatMessage message)
     {
-
         foreach (ChatReactionHandler addedReaction in _reactionHandlers)
         {
             addedReaction.ResetReactions();
         }
         foreach (ServerReactions reaction in reactions)
         {
+            ReactionData.RemoveAll(ReactionData => ReactionData.sender_id == reaction.sender_id);
             AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, _reactionPaneldata._reactionField, message);
 
         }
@@ -187,10 +195,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
         for (int i = removableReactions.Count - 1; i >= 0; i--)
         {
-
-
             RemoveReaction(removableReactions[i]);
-
         }
 
 
@@ -227,7 +232,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
 
             // Checks if chosen reaction is already added to the selected message. If so, deletes it.
-                                //Debug.LogWarning("FIND ME UK WHY rawfwafw" + messageID + " === " + _reaction.sender_id);
             foreach (ChatReactionHandler addedReaction in _reactionHandlers)
             {
                 if (addedReaction.Mood == mood)
@@ -246,11 +250,12 @@ public class MessageReactionsHandler : AltMonoBehaviour
                                 _reactionList[i].Selected = true;
 
                                 addedReaction.Select();
+                                
 
                             }
-                        //Empties the list and Adds the newly added data for that user ID
-                        ReactionData.RemoveAll(ReactionData => ReactionData.sender_id == _reaction.sender_id);
-                        ReactionData.Add(_reaction);
+                            ReactionData.Add(_reaction);
+                            
+
 
                         if (_reactionPopup.gameObject.activeSelf)
                         {
@@ -277,14 +282,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
             ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
             chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
             chatReactionHandler.AddReaction(_reaction);
-
-
-
-
-
-
             _reactionHandlers.Add(chatReactionHandler);
-            chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler, _reaction, messageID, message));
+            chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler, _reaction, playerID, message));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler, message));
 
             StartCoroutine(GetPlayerData(player =>
@@ -299,11 +298,9 @@ public class MessageReactionsHandler : AltMonoBehaviour
                         ClearList(_reaction);
                         _reactionList[i].Selected = true;
 
-
-                    }
-                    //Empties the list and Adds the newly added data for that user ID
-                    ReactionData.RemoveAll(ReactionData => ReactionData.sender_id == _reaction.sender_id);
-                    ReactionData.Add(_reaction);
+                    } 
+                        ReactionData.Add(_reaction);
+                    
 
                     if (_reactionPopup.gameObject.activeSelf)
                     {
@@ -339,32 +336,25 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// Toggles the added reactions as selected and unselected.
     /// </summary>
     /// <param name="reactionHandler"></param>
-    public void ToggleReaction(ChatReactionHandler reactionHandler, ServerReactions _reaction, string messageID, ChatMessage message)
+    public void ToggleReaction(ChatReactionHandler reactionHandler, ServerReactions _reaction, string playerID, ChatMessage message)
     {
         ChatListener.Instance.SendReaction(!reactionHandler.Selected ? reactionHandler.Mood.ToString() : string.Empty, reactionHandler.MessageID, ChatListener.Instance.ActiveChatChannel);
         if (!_longClick)
         {
 
-
-            ReactionData.RemoveAll(ReactionData => ReactionData.sender_id == _reaction.sender_id);
-            ReactionData.Add(_reaction);
-
+            ClearList(_reaction);
+            
+            ReactionData.RemoveAll(ReactionData => ReactionData.sender_id == playerID);
 
             if (_reactionPopup.gameObject.activeSelf)
             {
-
                 foreach (var reactionData in ReactionData)
                 {
                     _reactionPopup.AddUsersReaction(message, reactionData);
-
                 }
             }
-
             _selectedMessage.SetMessageInactive();
 
-            //ReactionData.RemoveAll(ReactionData => ReactionData.sender_id == _reaction.sender_id);
-
-            ClearList(_reaction);
 
             if (reactionHandler.Selected)
             {
@@ -375,7 +365,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
                 reactionHandler.Select();
             }
             GenarateReactionObjects(_reactionPaneldata._reactionsContent);
-
         }
     }
 
@@ -416,13 +405,10 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     private void RemoveReaction(ChatReactionHandler reaction)
     {
-        
         //Checks if the set gameObject is on or not
         HorizontalLayoutGroup reactionsField = _reactionPaneldata._reactionField.GetComponent<HorizontalLayoutGroup>();
         reaction.transform.SetParent(null);
         _reactionHandlers.Remove(reaction);
-
-        //ReactionData.RemoveAll(ReactionData => ReactionData.sender_id == _reaction.sender_id);
 
 
         foreach (var i in _reactionList)
