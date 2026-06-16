@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class HeartScript : MonoBehaviour
 {
+    private static readonly Vector2 LossHaloPadding = new Vector2(90f, 90f);
+    private static readonly Vector2 LossHaloOffset = Vector2.zero;
+
     public Raid_LootTracking raid_LootTracking;
     private const int DefaultRecentLootSlotCount = 3;
     [SerializeField, Min(1)] private int recentLootSlotCount = 3;
@@ -88,6 +91,11 @@ public class HeartScript : MonoBehaviour
 
         recentLootSprites.Add(lootSprite);
         UpdateRecentLootSprites(recentLootSprites);
+    }
+
+    public void SetLossHaloVisible(bool visible)
+    {
+        Raid_RedHalo.SetVisible(gameObject, visible, LossHaloPadding, LossHaloOffset);
     }
 
     private void SyncRecentLootSprites(IReadOnlyList<Sprite> lootSprites)

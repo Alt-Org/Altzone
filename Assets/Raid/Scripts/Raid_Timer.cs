@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 public class Raid_Timer : MonoBehaviour
 {
+    private static readonly Vector2 LossHaloPadding = new Vector2(64f, 64f);
+    private static readonly Vector2 LossHaloOffset = Vector2.zero;
+
     [SerializeField, Header("Raid Inventory ref")]
     private Raid_References raid_References;
 
@@ -321,6 +324,14 @@ public class Raid_Timer : MonoBehaviour
     {
         timerActive = false;
         UpdateTimerFill();
+    }
+
+    public void SetLossHaloVisible(bool visible)
+    {
+        ResolveRaidControlReferences();
+
+        GameObject haloTarget = timerPanel != null ? timerPanel : TimerText != null ? TimerText.transform.parent?.gameObject : null;
+        Raid_RedHalo.SetVisible(haloTarget, visible, LossHaloPadding, LossHaloOffset);
     }
 
     private void SetTimerText()

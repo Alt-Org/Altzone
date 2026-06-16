@@ -11,6 +11,9 @@ using Altzone.Scripts.Model.Poco.Game;
 
 public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {
+    private static readonly Vector2 LossHaloPadding = new Vector2(70f, 70f);
+    private static readonly Vector2 LossHaloOffset = Vector2.zero;
+
     [SerializeField] private Image ItemImage;
     [SerializeField] public float ItemWeight;
     [SerializeField] private GameObject Lock;
@@ -115,8 +118,16 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         SetItemWeightTextActive(showItemWeightText);
     }
 
+    public void SetLossHaloVisible(bool visible)
+    {
+        GameObject haloTarget = ItemImage != null ? ItemImage.gameObject : gameObject;
+        Raid_RedHalo.SetVisible(haloTarget, visible, LossHaloPadding, LossHaloOffset);
+    }
+
     public void RemoveData()
     {
+        SetLossHaloVisible(false);
+
         if (ItemImage != null)
         {
             ItemImage.sprite = null;

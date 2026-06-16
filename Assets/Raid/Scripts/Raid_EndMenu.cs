@@ -25,6 +25,7 @@ public class Raid_EndMenu : MonoBehaviour
 
     private CanvasGroup canvasGroup;
     private bool initialized;
+    private bool collectedLootLossHaloVisible;
 
     public GameObject MenuRoot
     {
@@ -81,6 +82,12 @@ public class Raid_EndMenu : MonoBehaviour
         }
     }
 
+    public void SetLossHaloVisible(bool visible)
+    {
+        collectedLootLossHaloVisible = visible;
+        SetCollectedLootHaloVisible(visible);
+    }
+
     public void SetOverWeightLimitBackground(bool wentOverWeightLimit)
     {
         if (backgroundImage != null)
@@ -91,6 +98,7 @@ public class Raid_EndMenu : MonoBehaviour
                 backgroundImage.sprite = selectedBackground;
             }
         }
+
     }
 
     public void SetEndReasonText(ExitRaid.RaidEndReason reason)
@@ -106,6 +114,7 @@ public class Raid_EndMenu : MonoBehaviour
         {
             overweightEndResultText.SetActive(wentOverWeightLimit);
         }
+
     }
 
     public void SetSpaceRemainingText(float currentLootWeight, float maxLootWeight)
@@ -159,6 +168,7 @@ public class Raid_EndMenu : MonoBehaviour
             lootItem.SetBubbleVisible(false);
             lootItem.SetData(furniture);
             lootItem.SetShowItemWeightText(true);
+            lootItem.SetLossHaloVisible(collectedLootLossHaloVisible);
             return;
         }
 
@@ -174,6 +184,25 @@ public class Raid_EndMenu : MonoBehaviour
         icon.sprite = sprite;
         icon.preserveAspect = true;
         icon.raycastTarget = false;
+    }
+
+    private void SetCollectedLootHaloVisible(bool visible)
+    {
+        if (content == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < content.childCount; i++)
+        {
+            Transform child = content.GetChild(i);
+            Raid_InventoryItem lootItem = child.GetComponent<Raid_InventoryItem>();
+            if (lootItem != null)
+            {
+                lootItem.SetLossHaloVisible(visible);
+                continue;
+            }
+        }
     }
 
     private void SetVisible(bool visible)
