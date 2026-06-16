@@ -124,10 +124,10 @@ namespace Battle.QSimulation.Player
             BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
             //BattleDebugLogger.WarningFormat(f, nameof(BattlePlayerClass100), "Joystick ( state: {0}, Direction: {1} )", specialInput->JoystickState, specialInput->JoystickValue);
 
-            Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+            Transform2D* playerTransform                  = f.Unsafe.GetPointer<Transform2D>(playerEntity);
             BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
 
-            bool joystickDown = specialInput->JoystickState != BattleJoystickState.Up;
+            bool joystickDown         = specialInput->JoystickState != BattleJoystickState.Up;
             bool projectileOnCooldown = classData->CooldownTimer.IsRunning(f);
 
             // Update view
@@ -179,11 +179,11 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
 
-            Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+            Transform2D* playerTransform                  = f.Unsafe.GetPointer<Transform2D>(playerEntity);
             BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
 
-            EntityRef projectileEntityRef = BattleProjectileQSystem.GetProjectileEntityRef(f);
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
+            EntityRef projectileEntityRef          = BattleProjectileQSystem.GetProjectileEntityRef(f);
+            Transform2D* projectileTransform       = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
             BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
 
             bool joystickDown = specialInput->JoystickState != BattleJoystickState.Up;

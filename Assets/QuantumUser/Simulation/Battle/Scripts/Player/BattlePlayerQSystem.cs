@@ -219,7 +219,7 @@ namespace Battle.QSimulation.Player
             {
                 if (playerHandle.PlayState.IsNotInGame()) continue;
 
-                BattlePlayerEntityRef entityRef = playerHandle.GetSelectedCharacterEntityRef(f);
+                BattlePlayerEntityRef entityRef        = playerHandle.GetSelectedCharacterEntityRef(f);
                 BattlePlayerDataQComponent* playerData = entityRef.GetDataQComponent(f);
 
                 BattlePlayerClassManager.OnGameStart(f, playerHandle, playerData, entityRef);

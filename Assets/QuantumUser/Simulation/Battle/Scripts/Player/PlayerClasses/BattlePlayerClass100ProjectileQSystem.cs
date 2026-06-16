@@ -114,16 +114,16 @@ namespace Battle.QSimulation.Player
             EntityRef otherEntity                                              = playerClass100ProjectileCollisionData->OtherEntity;
             BattleArenaBorderQComponent* arenaBorder                           = arenaCollisionData->ArenaBorder;
 
-            FPVector2 normal = arenaBorder->Normal;
+            FPVector2 normal      = arenaBorder->Normal;
             FP collisionMinOffset = arenaBorder->CollisionMinOffset;
 
             FPVector2 direction = FPVector2.Reflect(playerClass100Projectile->Direction, normal).Normalized;
 
             Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(playerClass100ProjectileEntityRef);
-            Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
+            Transform2D* otherTransform      = f.Unsafe.GetPointer<Transform2D>(otherEntity);
 
             FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
-            FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
+            FP collisionOffset     = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
 
             if (collisionOffset - playerClass100Projectile->Radius < collisionMinOffset)
             {
