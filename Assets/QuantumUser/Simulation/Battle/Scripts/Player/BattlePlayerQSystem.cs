@@ -209,6 +209,24 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
+        /// Calls BattlePlayerClassManager::OnGameStart for every player's selected character.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        public static void OnGameStart(Frame f)
+        {
+            foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
+            {
+                if (playerHandle.PlayState.IsNotInGame()) continue;
+
+                BattlePlayerEntityRef entityRef = playerHandle.GetSelectedCharacterEntityRef(f);
+                BattlePlayerDataQComponent* playerData = entityRef.GetDataQComponent(f);
+
+                BattlePlayerClassManager.OnGameStart(f, playerHandle, playerData, entityRef);
+            }
+        }
+
+        /// <summary>
         /// <span class="brief-h"><a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum System Update method@u-exlink</a> gets called every frame.</span><br/>
         /// Relays the appropriate input data to each player in the game
         /// </summary>
