@@ -63,6 +63,9 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntity">Entity reference for the player.</param>
         /// <param name="specialInput">Pointer to special input (unused)</param>
         public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
+            if (GetClassData(f, playerEntity)->PlacementTimer.IsRunning(f)) return;
+
+            playerData->DisableMovement = true;
         /// <summary>
         /// Called when the game starts to start the placement timer.
         /// </summary>
