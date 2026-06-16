@@ -39,6 +39,13 @@ namespace Battle.QSimulation.Game
             public EntityRef OtherEntity;
         }
 
+        public struct PlayerClass100ProjectileCollisionData
+        {
+            public BattlePlayerClass100ProjectileQComponent* Projectile;
+            public EntityRef ProjectileEntity;
+            public EntityRef OtherEntity;
+        }
+
         public struct ArenaBorderCollisionData
         {
             public BattleArenaBorderQComponent* ArenaBorder;
@@ -243,6 +250,13 @@ namespace Battle.QSimulation.Game
                 {
                     BattlePlayerClass100ProjectileQComponent* playerClass100Projectile = f.Unsafe.GetPointer<BattlePlayerClass100ProjectileQComponent>(info.Entity);
 
+                        PlayerClass100ProjectileCollisionData playerClass100ProjectileCollisionData = new()
+                        {
+                            Projectile = playerClass100Projectile,
+                            ProjectileEntity = info.Entity,
+                            OtherEntity = info.Other
+                        };
+
                     switch (collisionTrigger->Type)
                     {
                         case BattleCollisionTriggerType.Projectile:
@@ -273,7 +287,12 @@ namespace Battle.QSimulation.Game
                         case BattleCollisionTriggerType.ArenaBorder:
                         {
                             s_debugLogger.Log("Player class 100 projectile hit the Arena Border");
-                            BattlePlayerClass100ProjectileQSystem.OnProjectileHitObstacle(f, info.Entity);
+
+                            ArenaBorderCollisionData arenaBorderCollisionData = new()
+                            {
+                                ArenaBorder = f.Unsafe.GetPointer<BattleArenaBorderQComponent>(info.Other)
+                            };
+                            BattlePlayerClass100ProjectileQSystem.OnProjectileHitArenaBorder(f, &arenaBorderCollisionData, &playerClass100ProjectileCollisionData);
                             break;
                         }
                     }
