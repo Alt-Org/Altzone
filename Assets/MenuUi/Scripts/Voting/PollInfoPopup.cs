@@ -64,7 +64,6 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text clanTargetRoleText;
 
     private PollData _currentPollData;
-    private ServerPoll _pollOrganizer;
 
     private readonly Color _green = HexToColor("#2FA36B");
     private readonly Color _red = HexToColor("#C83A2D");
@@ -263,7 +262,8 @@ public class PollInfoPopup : MonoBehaviour
             }
             else
             {
-                playerHeads.InstantiateHeads(_currentPollData.Id);
+                if (playerHeads.isActiveAndEnabled)
+                    playerHeads.InstantiateHeads(_currentPollData.Id);
             }
         });
 

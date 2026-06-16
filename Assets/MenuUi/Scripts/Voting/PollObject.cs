@@ -26,6 +26,7 @@ public class PollObject : MonoBehaviour
     [Header("Images")]
     [SerializeField] private Image Clock;
     [SerializeField] private Image Image;
+    [SerializeField] private Image FurnitureSetRibbonBackground;
     [SerializeField] private Image GreenFill;
     [SerializeField] private Image Background;
     [SerializeField] private Image InfoBackground;
@@ -205,6 +206,7 @@ public class PollObject : MonoBehaviour
     {
         // Reset UI elements
         Image.gameObject.SetActive(false);
+        FurnitureSetRibbonBackground.gameObject.SetActive(false);
         // avatarHandleGameObject.SetActive(false);
 
         if (InfoBackground != null)
@@ -347,6 +349,7 @@ public class PollObject : MonoBehaviour
         }
 
         Image.gameObject.SetActive(true);
+        FurnitureSetRibbonBackground.gameObject.SetActive(true);
         FurnitureInfo info = furniturePollData.Furniture.FurnitureInfo;
         PollTypeText.text = $"{info.SetName} {info.VisibleName}";
 
@@ -360,13 +363,11 @@ public class PollObject : MonoBehaviour
         // Fetch the furniture info from StorageFurnitureReference
         FurnitureInfo furnitureInfo = StorageFurnitureReference.Instance.GetFurnitureInfo(furniturePollData.Furniture.Name);
 
-        if (furnitureInfo != null && furnitureInfo.RibbonImage != null)
+        Image.sprite = (furnitureInfo != null) ? furnitureInfo.Image : furniturePollData.Sprite;
+
+        if (furnitureInfo != null)
         {
-            Image.sprite = furnitureInfo.RibbonImage;
-        }
-        else
-        {
-            Image.sprite = furniturePollData.Sprite;
+            FurnitureSetRibbonBackground.sprite = furnitureInfo.FurnitureSetRibbonBackground;
         }
 
         /*
@@ -491,17 +492,14 @@ public class PollObject : MonoBehaviour
             return;
         }
 
-        PollInfoPopup.Instance.OpenPopup(pollData);
-
-
+        if (pollData is FurniturePollData)
+        {
+            PollInfoPopup.Instance.OpenPopup(pollData);
+        }
         if (pollData is ClanRolePollData clanRolePoll)
         {
             // Start coroutine to fetch clan data
             StartCoroutine(FetchClanMemberAndOpenPopup(clanRolePoll));
-        }
-        else
-        {
-            Debug.LogWarning("FurniturePollData or Furniture is null, cannot open PollInfoPopup.");
         }
     }
 
