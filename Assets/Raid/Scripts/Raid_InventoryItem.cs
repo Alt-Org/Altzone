@@ -13,6 +13,12 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {
     private static readonly Vector2 LossHaloPadding = new Vector2(70f, 70f);
     private static readonly Vector2 LossHaloOffset = Vector2.zero;
+    private const int CollectedLootLayoutPaddingLeft = 25;
+    private const int CollectedLootLayoutPaddingRight = 25;
+    private const int CollectedLootLayoutPaddingTop = 15;
+    private const int CollectedLootLayoutPaddingBottom = 125;
+    private static readonly Vector2 CollectedLootWeightTextPosition = new Vector2(0f, -500f);
+    private static readonly Vector2 CollectedLootWeightTextSize = new Vector2(350f, 185f);
 
     [SerializeField] private Image ItemImage;
     [SerializeField] public float ItemWeight;
@@ -118,10 +124,39 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         SetItemWeightTextActive(showItemWeightText);
     }
 
+    public void SetCollectedLootDisplayLayout()
+    {
+        HorizontalLayoutGroup layoutGroup = GetComponent<HorizontalLayoutGroup>();
+        if (layoutGroup != null)
+        {
+            layoutGroup.padding = new RectOffset(
+                CollectedLootLayoutPaddingLeft,
+                CollectedLootLayoutPaddingRight,
+                CollectedLootLayoutPaddingTop,
+                CollectedLootLayoutPaddingBottom);
+        }
+
+        if (ItemWeightText == null)
+        {
+            return;
+        }
+
+        RectTransform weightTextRect = ItemWeightText.rectTransform;
+        weightTextRect.anchorMin = new Vector2(0.5f, 1f);
+        weightTextRect.anchorMax = new Vector2(0.5f, 1f);
+        weightTextRect.pivot = new Vector2(0.5f, 0.5f);
+        weightTextRect.anchoredPosition = CollectedLootWeightTextPosition;
+        weightTextRect.sizeDelta = CollectedLootWeightTextSize;
+    }
+
     public void SetLossHaloVisible(bool visible)
     {
-        GameObject haloTarget = ItemImage != null ? ItemImage.gameObject : gameObject;
-        Raid_RedHalo.SetVisible(haloTarget, visible, LossHaloPadding, LossHaloOffset);
+        if (ItemImage == null)
+        {
+            return;
+        }
+
+        Raid_RedHalo.SetVisible(ItemImage.gameObject, visible, LossHaloPadding, LossHaloOffset);
     }
 
     public void RemoveData()
@@ -357,6 +392,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         }
 
         ItemWeightText.gameObject.SetActive(isActive);
-        ItemWeightText.text = ItemWeight + "kg";
+        ItemWeightText.text = $"{ItemWeight:F0} kg";
     }
 }

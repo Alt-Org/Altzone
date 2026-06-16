@@ -22,6 +22,11 @@ public class Raid_EndMenu : MonoBehaviour
     [SerializeField] private GameObject overweightEndResultText;
     [SerializeField] private TMP_Text spaceRemainingText;
     [SerializeField] private Vector3 collectedLootItemScale = Vector3.one;
+    [SerializeField] private Vector2 collectedLootGridCellSize = new Vector2(325f, 430f);
+    [SerializeField] private Vector2 collectedLootGridSpacing = new Vector2(180f, 310f);
+    [SerializeField] private int collectedLootGridPaddingTop = 80;
+    [SerializeField] private int collectedLootGridPaddingBottom = 40;
+    [SerializeField] private int collectedLootColumnCount = 3;
 
     private CanvasGroup canvasGroup;
     private bool initialized;
@@ -63,6 +68,7 @@ public class Raid_EndMenu : MonoBehaviour
     // SetCollectedLoot for display when showing EndMenu
     public void SetCollectedLoot(IReadOnlyList<GameFurniture> lootList)
     {
+        ConfigureCollectedLootLayout();
         ClearCollectedLoot();
 
         if (content == null)
@@ -124,7 +130,7 @@ public class Raid_EndMenu : MonoBehaviour
             return;
         }
 
-        spaceRemainingText.text = $"{currentLootWeight:F0}kg\n/{maxLootWeight:F0}kg";
+        spaceRemainingText.text = $"{currentLootWeight:F0} kg\n/{maxLootWeight:F0} kg";
     }
 
     public void ReturnToLobby()
@@ -166,6 +172,7 @@ public class Raid_EndMenu : MonoBehaviour
             lootItem.SetTrapIndicatorVisible(false);
             lootItem.SetAuraVisible(false);
             lootItem.SetBubbleVisible(false);
+            lootItem.SetCollectedLootDisplayLayout();
             lootItem.SetData(furniture);
             lootItem.SetShowItemWeightText(true);
             lootItem.SetLossHaloVisible(collectedLootLossHaloVisible);
@@ -217,6 +224,27 @@ public class Raid_EndMenu : MonoBehaviour
         canvasGroup.alpha = visible ? 1f : 0f;
         canvasGroup.interactable = visible;
         canvasGroup.blocksRaycasts = visible;
+    }
+
+    private void ConfigureCollectedLootLayout()
+    {
+        if (content == null)
+        {
+            return;
+        }
+
+        GridLayoutGroup gridLayoutGroup = content.GetComponent<GridLayoutGroup>();
+        if (gridLayoutGroup == null)
+        {
+            return;
+        }
+
+        gridLayoutGroup.cellSize = collectedLootGridCellSize;
+        gridLayoutGroup.spacing = collectedLootGridSpacing;
+        gridLayoutGroup.padding = new RectOffset(0, 0, collectedLootGridPaddingTop, collectedLootGridPaddingBottom);
+        gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        gridLayoutGroup.constraintCount = collectedLootColumnCount;
+        gridLayoutGroup.childAlignment = TextAnchor.UpperCenter;
     }
 
     private void EnsureInitialized()

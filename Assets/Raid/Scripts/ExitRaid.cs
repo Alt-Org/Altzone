@@ -115,7 +115,7 @@ public class ExitRaid : MonoBehaviour
             yield break;
         }
 
-        endMenu.SetLossHaloVisible(reason != RaidEndReason.PlayerExit);
+        endMenu.SetLossHaloVisible(reason == RaidEndReason.OutOfSpace);
         endMenu.SetOverWeightLimitBackground(reason == RaidEndReason.OutOfSpace);
         endMenu.SetCollectedLoot(raid_References.raid_LootTracking.ListOfCollectedLoot);
         endMenu.SetSpaceRemainingText(raid_References.raid_LootTracking.CurrentLootWeight, raid_References.raid_LootTracking.MaxLootWeight);
@@ -149,12 +149,12 @@ public class ExitRaid : MonoBehaviour
 
         if (heartScript != null)
         {
-            heartScript.SetLossHaloVisible(reason == RaidEndReason.Trap || reason == RaidEndReason.OutOfSpace);
+            heartScript.SetLossHaloVisible(reason == RaidEndReason.OutOfSpace);
         }
 
         if (raid_timer != null)
         {
-            raid_timer.SetLossHaloVisible(reason == RaidEndReason.OutOfTime);
+            raid_timer.SetLossHaloVisible(true);
         }
     }
 

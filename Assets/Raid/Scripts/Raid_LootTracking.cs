@@ -218,6 +218,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
             if (endMenu != null)
             {
                 endMenu.SetEndReasonText(ExitRaid.RaidEndReason.OutOfSpace);
+                endMenu.SetLossHaloVisible(true);
                 endMenu.SetOverWeightLimitBackground(true);
                 endMenu.SetSpaceRemainingText(CurrentLootWeight, maxLootWeight);
             }
