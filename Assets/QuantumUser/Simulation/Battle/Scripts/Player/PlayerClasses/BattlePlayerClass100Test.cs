@@ -9,6 +9,7 @@ using Photon.Deterministic;
 
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
+using Battle.QSimulation.Projectile;
 
 namespace Battle.QSimulation.Player
 {
@@ -63,9 +64,36 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntity">Entity reference for the player.</param>
         /// <param name="specialInput">Pointer to special input (unused)</param>
         public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
+        {
             if (GetClassData(f, playerEntity)->PlacementTimer.IsRunning(f)) return;
 
             playerData->DisableMovement = true;
+
+            BattlePlayerCharacterID characterID = playerData->CharacterId;
+
+            switch (characterID)
+            {
+                case BattlePlayerCharacterID.Character101:
+                    HandleAiming(f, playerData, playerEntity, specialInput);
+                    break;
+                case BattlePlayerCharacterID.Character102:
+                    HandleAutoAim(f, playerEntity, specialInput);
+                    break;
+                case BattlePlayerCharacterID.Character103:
+                    HandleAiming(f, playerData, playerEntity, specialInput);
+                    break;
+                case BattlePlayerCharacterID.Character104:
+                    HandleAutoAim(f, playerEntity, specialInput);
+                    break;
+                case BattlePlayerCharacterID.Character105:
+                    HandleAiming(f, playerData, playerEntity, specialInput);
+                    break;
+                case BattlePlayerCharacterID.Character106:
+                    HandleAutoAim(f, playerEntity, specialInput);
+                    break;
+            }
+        }
+
         /// <summary>
         /// Called when the game starts to start the placement timer.
         /// </summary>
@@ -82,14 +110,24 @@ namespace Battle.QSimulation.Player
 
             classData->PlacementTimer = FrameTimer.FromSeconds(f, spec.PlacementTimeDurationSec);
         }
+
+        /// <summary>
+        /// Handles joystick based aiming.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerEntity">Entity reference to the player.</param>
+        /// <param name="specialInput">Pointer to special input.</param>
+        private unsafe void HandleAiming(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
         {
             BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
             //BattleDebugLogger.WarningFormat(f, nameof(BattlePlayerClass100), "Joystick ( state: {0}, Direction: {1} )", specialInput->JoystickState, specialInput->JoystickValue);
 
-            Transform2D*                        playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
-            BattlePlayerClass100DataQComponent* classData       = GetClassData(f, playerEntity);
+            Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+            BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
 
-            bool joystickDown         = specialInput->JoystickState != BattleJoystickState.Up;
+            bool joystickDown = specialInput->JoystickState != BattleJoystickState.Up;
             bool projectileOnCooldown = classData->CooldownTimer.IsRunning(f);
 
             // Update view
@@ -119,6 +157,93 @@ namespace Battle.QSimulation.Player
 
                 if (playerData->TeamNumber == BattleTeamNumber.TeamBeta) direction = FPVector2.Rotate(direction, FP.Rad_180);
                 FPVector2 position = playerTransform->Position + direction * spec.ProjectileSpawnDistance;
+                BattlePlayerClass100ProjectileQSystem.Create(f, f.FindAsset(spec.ProjectileEntityPrototype), position, direction, spec.ProjectileSpeed);
+
+                // start projectile cooldown
+                classData->CooldownTimer = FrameTimer.FromSeconds(f, spec.ProjectileSpawnCooldown);
+            }
+
+        Exit:
+            classData->JoystickDownPrevious = joystickDown;
+            classData->JoystickValuePrevious = specialInput->JoystickValue;
+        }
+
+        /// <summary>
+        /// Handles autoaiming.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerEntity">Entity reference to the player.</param>
+        /// <param name="specialInput">Pointer to special input.</param>
+        private unsafe void HandleAutoAim(Frame f, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
+        {
+            BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
+
+            Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+            BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
+
+            EntityRef projectileEntityRef = BattleProjectileQSystem.GetProjectileEntityRef(f);
+            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
+            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
+
+            bool joystickDown = specialInput->JoystickState != BattleJoystickState.Up;
+            bool projectileOnCooldown = classData->CooldownTimer.IsRunning(f);
+
+            // Exit if no changes in joystick state
+            if (joystickDown == classData->JoystickDownPrevious) goto Exit;
+
+            if (joystickDown)
+            {
+                // Handle joystick down
+                classData->JoystickTimer = FrameTimer.FromSeconds(f, spec.JoystickTapDurationMax);
+            }
+            else
+            {
+                // Handle joystick up
+
+                // exit if projectile ability is on cooldown
+                if (projectileOnCooldown) goto Exit;
+
+                bool isJoystickTap = classData->JoystickTimer.IsRunning(f) && classData->JoystickValuePrevious.Magnitude < spec.JoystickTapDistanceMax;
+
+                FPVector2 targetPosition = projectileTransform->Position;
+                FPVector2 targetVelocity = projectile->Direction * projectile->Speed;
+                FPVector2 playerPosition = playerTransform->Position;
+                FPVector2 direction      = (targetPosition - playerPosition).Normalized;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    FPVector2 spawnPosition = playerPosition + direction * spec.ProjectileSpawnDistance;
+
+                    FPVector2 r = targetPosition - spawnPosition;
+
+                    FP a = FPVector2.Dot(targetVelocity, targetVelocity) - spec.ProjectileSpeed * spec.ProjectileSpeed;
+                    FP b = FP._2 * FPVector2.Dot(r, targetVelocity);
+                    FP c = FPVector2.Dot(r, r);
+
+                    FP discriminant = b * b - FP._4 * a * c;
+
+                    if (discriminant < FP._0) break;
+
+                    FP sqrtD = FPMath.Sqrt(discriminant);
+
+                    FP t1 = (-b + sqrtD) / (FP._2 * a);
+                    FP t2 = (-b - sqrtD) / (FP._2 * a);
+
+                    FP t = FP.MaxValue;
+
+                    if (t1 > FP._0) t = t1;
+                    if (t2 > FP._0) t = FPMath.Min(t, t2);
+
+                    if (t == FP.MaxValue) break;
+
+                    FPVector2 interceptPoint = targetPosition + targetVelocity * t;
+
+                    direction = (interceptPoint - playerPosition).Normalized;
+                }
+
+                FPVector2 position = playerPosition + direction * spec.ProjectileSpawnDistance;
+
                 BattlePlayerClass100ProjectileQSystem.Create(f, f.FindAsset(spec.ProjectileEntityPrototype), position, direction, spec.ProjectileSpeed);
 
                 // start projectile cooldown

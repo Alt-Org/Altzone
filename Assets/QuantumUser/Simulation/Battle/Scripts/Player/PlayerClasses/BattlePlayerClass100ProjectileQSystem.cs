@@ -74,7 +74,7 @@ namespace Battle.QSimulation.Player
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
-            filter.Transform->Position += filter.Projectile->Direction * filter.Projectile->Speed;
+            filter.Transform->Position += filter.Projectile->Direction * (filter.Projectile->Speed * f.DeltaTime);
         }
 
         /// <summary>
