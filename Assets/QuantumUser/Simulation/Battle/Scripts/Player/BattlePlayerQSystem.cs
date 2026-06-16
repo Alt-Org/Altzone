@@ -633,7 +633,7 @@ namespace Battle.QSimulation.Player
 
             if (!playerData->StunCooldown.IsRunning(f))
             {
-                playerData->MovementEnabled = true;
+                playerData->MovementEnabled = !playerData->DisableMovement;
                 playerData->RotationEnabled = !playerData->DisableRotation;
             }
 
