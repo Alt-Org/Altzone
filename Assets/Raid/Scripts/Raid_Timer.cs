@@ -10,6 +10,7 @@ public class Raid_Timer : MonoBehaviour
 {
     private static readonly Vector2 LossHaloPadding = new Vector2(200f, 200f);
     private static readonly Vector2 LossHaloOffset = Vector2.zero;
+    private static readonly Vector2 TimerTextHaloMinimumSize = new Vector2(260f, 220f);
 
     [SerializeField, Header("Raid Inventory ref")]
     private Raid_References raid_References;
@@ -56,6 +57,7 @@ public class Raid_Timer : MonoBehaviour
     private GameObject timerPanel;
     private GameObject timerPanelBackground;
     private Button exitRaidButton;
+    private Raid_TextHalo timerTextHalo;
 
     public bool HasStarted => started;
 
@@ -82,6 +84,16 @@ public class Raid_Timer : MonoBehaviour
         EnsureTimerFillCircle();
         SetRaidControlsVisible(false);
         UpdateTimerFill();
+    }
+
+    private void OnDestroy()
+    {
+        if (exitRaid != null)
+        {
+            exitRaid.ExitedRaid -= RaidExited;
+        }
+
+        timerTextHalo?.Dispose();
     }
 
     void Update()
@@ -195,6 +207,7 @@ public class Raid_Timer : MonoBehaviour
         }
 
         SetTimerText();
+        SetTimerTextHaloVisible(false);
         SetRaidControlsVisible(false);
         UpdateTimerFill();
     }
@@ -332,12 +345,38 @@ public class Raid_Timer : MonoBehaviour
 
         GameObject haloTarget = timerPanel != null ? timerPanel : TimerText != null ? TimerText.transform.parent?.gameObject : null;
         Raid_RedHalo.SetVisible(haloTarget, visible, LossHaloPadding, LossHaloOffset);
+        SetTimerTextHaloVisible(visible);
     }
 
     private void SetTimerText()
     {
         //TimerText.text = HasFormat ? CurrentTime.ToString(TimeFormat[Format]) : CurrentTime.ToString();
         TimerText.text = CurrentTime.ToString("F0");
+        timerTextHalo?.Sync();
+    }
+
+    private void SetTimerTextHaloVisible(bool visible)
+    {
+        if (TimerText == null)
+        {
+            return;
+        }
+
+        if (timerTextHalo == null)
+        {
+            if (!visible)
+            {
+                return;
+            }
+
+            Raid_TextHalo.Settings settings = Raid_TextHalo.CreateDefaultSettings(
+                TimerTextHaloMinimumSize,
+                "TimerText_RedCloudHalo");
+            timerTextHalo = new Raid_TextHalo(TimerText, settings);
+        }
+
+        timerTextHalo.SetTarget(TimerText);
+        timerTextHalo.SetVisible(visible);
     }
 
     private void EnsureTimerFillCircle()
