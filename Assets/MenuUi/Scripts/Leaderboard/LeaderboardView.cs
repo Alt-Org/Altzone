@@ -24,6 +24,7 @@ public class LeaderboardView : MonoBehaviour
     [SerializeField] private Transform _clansContent;
     [SerializeField] private Transform _playersContent;
     [SerializeField] private Transform _friendsContent;
+    [SerializeField] private GameObject _loadingImage;
 
     [Header("Prefabs")]
     [SerializeField] private GameObject _playerWinsItemPrefab;
@@ -76,6 +77,7 @@ public class LeaderboardView : MonoBehaviour
 
         _playerName = ServerManager.Instance.Player.name.ToString();
         _playerClanName = ServerManager.Instance.Clan.name.ToString();
+        _loadingImage.SetActive(false);
     }
 
     private void OnEnable()
@@ -501,10 +503,16 @@ public class LeaderboardView : MonoBehaviour
         bool timeout = false;
         ServerPlayer serverPlayer = null;
 
+        //open loading image
+        _loadingImage.SetActive(true);
+
         StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(_id, c => serverPlayer = c)); // Get friend data
         yield return new WaitUntil(() => serverPlayer != null || timeout);
 
         DataCarrier.AddData(DataCarrier.PlayerProfile, new PlayerData(serverPlayer));
+
+        //close loading image
+        _loadingImage.SetActive(false);
 
         if (itemPod != null)
         {
