@@ -26,7 +26,7 @@ public class PollObject : MonoBehaviour
     [Header("Images")]
     [SerializeField] private Image Clock;
     [SerializeField] private Image Image;
-    [SerializeField] private Image FurnitureSetRibbonBackground;
+    [SerializeField] private Image SetRibbonBackground;
     [SerializeField] private Image GreenFill;
     [SerializeField] private Image Background;
     [SerializeField] private Image InfoBackground;
@@ -206,7 +206,7 @@ public class PollObject : MonoBehaviour
     {
         // Reset UI elements
         Image.gameObject.SetActive(false);
-        FurnitureSetRibbonBackground.gameObject.SetActive(false);
+        SetRibbonBackground.gameObject.SetActive(false);
         // avatarHandleGameObject.SetActive(false);
 
         if (InfoBackground != null)
@@ -349,7 +349,7 @@ public class PollObject : MonoBehaviour
         }
 
         Image.gameObject.SetActive(true);
-        FurnitureSetRibbonBackground.gameObject.SetActive(true);
+        SetRibbonBackground.gameObject.SetActive(true);
         FurnitureInfo info = furniturePollData.Furniture.FurnitureInfo;
         PollTypeText.text = $"{info.SetName} {info.VisibleName}";
 
@@ -367,7 +367,7 @@ public class PollObject : MonoBehaviour
 
         if (furnitureInfo != null)
         {
-            FurnitureSetRibbonBackground.sprite = furnitureInfo.FurnitureSetRibbonBackground;
+            SetRibbonBackground.sprite = furnitureInfo.SetRibbonBackground;
         }
 
         /*

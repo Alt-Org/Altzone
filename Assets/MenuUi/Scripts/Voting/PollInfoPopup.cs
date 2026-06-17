@@ -14,12 +14,9 @@ public class PollInfoPopup : MonoBehaviour
     public static PollInfoPopup Instance { get; private set; }
 
     [Header("UI Elements")]
-    [SerializeField] private TMP_Text nameText;
-    [SerializeField] private TMP_Text setNameText;
     [SerializeField] private TMP_Text weightText;
     [SerializeField] private TMP_Text valueText;
     [SerializeField] private TMP_Text authorName;
-    [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text artistNameText;
     [SerializeField] private Image rarityImage;
@@ -27,7 +24,14 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text rarityText;
     [SerializeField] private Image greenFill;
     [SerializeField] private TMP_Text timer;
+
+    [Header("Furniture")]
     [SerializeField] private TMP_Text tradeTag;
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text setNameText;
+    [SerializeField] private Image iconImage;
+    [SerializeField] private Image setPosterBackground;
+    [SerializeField] private Image setFontName;
 
     [Header("Expired Polls")]
     [SerializeField] private TMP_Text resultText;
@@ -161,10 +165,26 @@ public class PollInfoPopup : MonoBehaviour
         tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
 
         FurnitureInfo info = furnitureData.Furniture.FurnitureInfo;
-        nameText.text = $"{info?.SetName} {info?.VisibleName}";
 
-        iconImage.sprite = info?.Image;
-        descriptionText.text = $"{info?.ArtisticDescription}";
+        if (info == null)
+            return;
+
+        nameText.text = $"{info.SetName} {info.VisibleName}";
+
+        iconImage.sprite = info.Image;
+
+        if (info.SetPosterBackground != null && setPosterBackground != null)
+        {
+            setPosterBackground.gameObject.SetActive(true);
+            setPosterBackground.sprite = info.SetPosterBackground;
+        }
+        if (info.SetFontName != null && setFontName != null)
+        {
+            setFontName.gameObject.SetActive(true);
+            setFontName.sprite = info.SetFontName;
+        }
+
+        descriptionText.text = $"{info.ArtisticDescription}";
         valueText.text = $"{furnitureData.Furniture.Value}";
     }
 
@@ -215,6 +235,9 @@ public class PollInfoPopup : MonoBehaviour
         _currentPollData = pollData;
 
         authorName.text = $"Luonut: {pollData?.Organizer}";
+
+        setPosterBackground.gameObject.SetActive(false);
+        setFontName.gameObject.SetActive(false);
 
         if (pollData is FurniturePollData furniturePollData)
         {
