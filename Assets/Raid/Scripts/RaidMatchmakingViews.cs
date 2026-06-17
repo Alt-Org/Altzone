@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class RaidMatchmakingViews : MonoBehaviour
 {
-    [SerializeField] private Canvas overlayCanvas;
     [SerializeField] private GameObject matchmakingPanel;
     [SerializeField] private GameObject lobbyPanel;
     [SerializeField] private TextMeshProUGUI matchmakingTitleText;
@@ -17,7 +16,7 @@ public class RaidMatchmakingViews : MonoBehaviour
     [SerializeField] private Button surrenderButton;
     [SerializeField] private Button debugStartButton;
 
-    public Canvas Canvas => overlayCanvas;
+    public GameObject Root => gameObject;
     public GameObject MatchmakingPanel => matchmakingPanel;
     public GameObject LobbyPanel => lobbyPanel;
     public TextMeshProUGUI MatchmakingTitleText => matchmakingTitleText;
@@ -29,14 +28,6 @@ public class RaidMatchmakingViews : MonoBehaviour
 
     private Action _surrenderAction;
     private Action _debugStartAction;
-
-    private void Awake()
-    {
-        if (overlayCanvas == null)
-        {
-            overlayCanvas = GetComponent<Canvas>();
-        }
-    }
 
     private void OnDestroy()
     {

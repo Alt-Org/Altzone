@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class HeartScript : MonoBehaviour
 {
-    private static readonly Vector2 LossHaloPadding = new Vector2(90f, 90f);
+    private static readonly Vector2 LossHaloPadding = new Vector2(200f, 200f);
     private static readonly Vector2 LossHaloOffset = Vector2.zero;
 
     public Raid_LootTracking raid_LootTracking;

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class Raid_Timer : MonoBehaviour
 {
-    private static readonly Vector2 LossHaloPadding = new Vector2(64f, 64f);
+    private static readonly Vector2 LossHaloPadding = new Vector2(200f, 200f);
     private static readonly Vector2 LossHaloOffset = Vector2.zero;
 
     [SerializeField, Header("Raid Inventory ref")]
@@ -237,7 +237,7 @@ public class Raid_Timer : MonoBehaviour
         Image timerBackgroundImage = startTimerParent.GetComponent<Image>();
         if (timerBackgroundImage != null)
         {
-            timerBackgroundImage.enabled = false;
+            timerBackgroundImage.enabled = showStartText;
         }
 
         Transform overlay = startTimerParent.Find("Overlay");

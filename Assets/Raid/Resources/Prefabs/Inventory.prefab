@@ -182,9 +182,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8100441790794122374}
-  - {fileID: 6844752908668851494}
   - {fileID: 3531054082868248669}
   - {fileID: 6501203988115084079}
+  - {fileID: 6844752908668851494}
   - {fileID: 8100441792792287935}
   - {fileID: 1193868579907854364}
   m_Father: {fileID: 0}
@@ -318,7 +318,12 @@ PrefabInstance:
   m_Modification:
     serializedVersion: 3
     m_TransformParent: {fileID: 8100441792339531714}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 7220611156868413374, guid: 62adee4d4be2d4f4790ca51ddb76c58f,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

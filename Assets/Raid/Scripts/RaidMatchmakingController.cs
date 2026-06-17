@@ -38,7 +38,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private ExitRaid _exitRaid;
 
     private RaidMatchmakingViews _views;
-    private Canvas _overlayCanvas;
+    private GameObject _overlayRoot;
     private GameObject _matchmakingPanel;
     private GameObject _lobbyPanel;
     private TextMeshProUGUI _matchmakingTitleText;
@@ -629,9 +629,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         _gameplayReleased = true;
         _sharedRaidActive = false;
-        if (_overlayCanvas != null)
+        if (_overlayRoot != null)
         {
-            _overlayCanvas.gameObject.SetActive(false);
+            _overlayRoot.SetActive(false);
         }
 
         if (_lootTracking != null)
@@ -926,9 +926,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void ShowMatchmaking(string title, string status, string detail)
     {
-        if (_overlayCanvas != null)
+        if (_overlayRoot != null)
         {
-            _overlayCanvas.gameObject.SetActive(true);
+            _overlayRoot.SetActive(true);
         }
 
         if (_matchmakingPanel != null)
@@ -948,9 +948,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void ShowLobby()
     {
-        if (_overlayCanvas != null)
+        if (_overlayRoot != null)
         {
-            _overlayCanvas.gameObject.SetActive(true);
+            _overlayRoot.SetActive(true);
         }
 
         if (_matchmakingPanel != null)
@@ -1035,7 +1035,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void AssignViewReferences(RaidMatchmakingViews views)
     {
-        _overlayCanvas = views.Canvas;
+        _overlayRoot = views.Root;
         _matchmakingPanel = views.MatchmakingPanel;
         _lobbyPanel = views.LobbyPanel;
         _matchmakingTitleText = views.MatchmakingTitleText;
