@@ -205,7 +205,7 @@ namespace MenuUi.Scripts.Login
                             break;
                     }
 
-                    ShowMessage(errorString + "\n" + request.error, Color.red);
+                    ShowMessage(errorString, Color.red);
 
                 }
                 else
@@ -337,7 +337,7 @@ namespace MenuUi.Scripts.Login
                             break;
                     }
 
-                    ShowMessage(errorString + "\n" + request.error, Color.red);
+                    ShowMessage(errorString, Color.red);
                 }
                 else
                 {
@@ -387,7 +387,7 @@ namespace MenuUi.Scripts.Login
                             break;
                     }
 
-                    ShowMessage(errorString + "\n" + request.error, Color.red);
+                    ShowMessage(errorString, Color.red);
                 }
                 else
                 {
