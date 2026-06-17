@@ -211,36 +211,40 @@ namespace Battle.QSimulation.Player
                 FPVector2 playerPosition = playerTransform->Position;
                 FPVector2 direction      = (targetPosition - playerPosition).Normalized;
 
-                for (int i = 0; i < 2; i++)
+                FP time = FP._2;
+
+                FPVector2 spawnPosition = playerPosition + direction * spec.ProjectileSpawnDistance;
+                FPVector2 targetRelativePosition = targetPosition - spawnPosition;
+
+                FP a = projectile->Speed * projectile->Speed - spec.ProjectileSpeed * spec.ProjectileSpeed;
+                FP b = FPVector2.Dot(targetRelativePosition, targetVelocity) * FP._2;
+                FP c = targetRelativePosition.SqrMagnitude;
+
+                if (a == 0)
                 {
-                    FPVector2 spawnPosition = playerPosition + direction * spec.ProjectileSpawnDistance;
+                    FP time1 = -c / b;
 
-                    FPVector2 r = targetPosition - spawnPosition;
-
-                    FP a = FPVector2.Dot(targetVelocity, targetVelocity) - spec.ProjectileSpeed * spec.ProjectileSpeed;
-                    FP b = FP._2 * FPVector2.Dot(r, targetVelocity);
-                    FP c = FPVector2.Dot(r, r);
-
-                    FP discriminant = b * b - FP._4 * a * c;
-
-                    if (discriminant < FP._0) break;
-
-                    FP sqrtD = FPMath.Sqrt(discriminant);
-
-                    FP t1 = (-b + sqrtD) / (FP._2 * a);
-                    FP t2 = (-b - sqrtD) / (FP._2 * a);
-
-                    FP t = FP.MaxValue;
-
-                    if (t1 > FP._0) t = t1;
-                    if (t2 > FP._0) t = FPMath.Min(t, t2);
-
-                    if (t == FP.MaxValue) break;
-
-                    FPVector2 interceptPoint = targetPosition + targetVelocity * t;
-
-                    direction = (interceptPoint - playerPosition).Normalized;
+                    if (time1 > FP._0) time = time1;
                 }
+                else
+                {
+                    FP discriminant = b * b - a * c * FP._4;
+
+                    if (discriminant > FP._0)
+                    {
+                        FP discriminantSquareRoot = FPMath.Sqrt(discriminant);
+
+                        FP time1 = (-b + discriminantSquareRoot) / (a * FP._2);
+                        FP time2 = (-b - discriminantSquareRoot) / (a * FP._2);
+
+                        if (time1 > FP._0) time = time1;
+                        if (time2 > FP._0) time = FPMath.Min(time, time2);
+                    }
+                }
+
+                FPVector2 interceptPoint = targetPosition + targetVelocity * time;
+
+                direction = (interceptPoint - playerPosition).Normalized;
 
                 FPVector2 position = playerPosition + direction * spec.ProjectileSpawnDistance;
 
