@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Language;
-using Altzone.Scripts.Model.Poco.Player;
-using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
 using Newtonsoft.Json.Linq;
 using TMPro;
@@ -29,6 +26,78 @@ public class PasswordReset : MonoBehaviour
     [SerializeField] private Button _passwordResetButton;
 
     private string _resetToken = null;
+
+    private const string ERROR_DEFAULT_FI = "Jotain meni pieleen!";
+    private const string ERROR_DEFAULT_EN = "Something went wrong!";
+    private const string ERROR400_FI = "Väärä vastaus!";
+    private const string ERROR400_EN = "Wrong Answer!";
+    private const string ERROR401_FI = "Virhellinen authentikointi!";
+    private const string ERROR401_EN = "Invalid Authentication!";
+    private const string ERROR404CONNECTION_FI = "Serveriyhteyttä ei voitu luoda! Tarkista internet-yhteksesi.";
+    private const string ERROR404CONNECTION_EN = "Address not found! Check your internet connection.";
+    private const string ERROR404MISSINGUSER_FI = "Haettua käyttäjää ei löydetty serveriltä!";
+    private const string ERROR404MISSINGUSER_EN = "Desired user not found on server!";
+    private const string ERROR500_FI = "Serverivirhe!";
+    private const string ERROR500_EN = "Server Error!";
+
+    public static string ERROR_DEFAULT
+    {
+        get
+        {
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR_DEFAULT_FI;
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR_DEFAULT_EN;
+            else return ERROR_DEFAULT_FI;
+        }
+    }
+
+    public static string ERROR400
+    {
+        get
+        {
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR400_FI;
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR400_EN;
+            else return ERROR400_FI;
+        }
+    }
+
+    public static string ERROR401
+    {
+        get
+        {
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR401_FI;
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR401_EN;
+            else return ERROR401_FI;
+        }
+    }
+    public static string ERROR404CONNECTION
+    {
+        get
+        {
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR404CONNECTION_FI;
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR404CONNECTION_EN;
+            else return ERROR404CONNECTION_FI;
+        }
+    }
+    public static string ERROR404MISSINGUSER
+    {
+        get
+        {
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR404MISSINGUSER_FI;
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR404MISSINGUSER_EN;
+            else return ERROR404MISSINGUSER_FI;
+        }
+    }
+    public static string ERROR500
+    {
+        get
+        {
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR500_FI;
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR500_EN;
+            else return ERROR500_FI;
+        }
+    }
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -72,7 +141,28 @@ public class PasswordReset : MonoBehaviour
             {
                 string errorString = string.Empty;
 
-                ShowMessage(errorString + "\n" + request.error, Color.red);
+                switch (request.responseCode)
+                {
+                    default:
+                        errorString = ERROR_DEFAULT;
+                        break;
+                    case 400:
+                        errorString = ERROR400;
+                        break;
+                    case 404:
+                        JObject result = JObject.Parse(request.downloadHandler.text);
+                        if (result["errors"] == null)
+                            errorString = ERROR404CONNECTION;
+                        else if (result["errors"][0]["reason"].ToString().Equals("NOT_FOUND")) 
+                            errorString = ERROR404MISSINGUSER;
+                        else errorString = ERROR_DEFAULT;
+                        break;
+                    case 500:
+                        errorString = ERROR500;
+                        break;
+                }
+
+                ShowMessage(errorString, Color.red);
             }
             else
             {
@@ -102,7 +192,28 @@ public class PasswordReset : MonoBehaviour
             {
                 string errorString = string.Empty;
 
-                ShowMessage(errorString + "\n" + request.error, Color.red);
+                switch (request.responseCode)
+                {
+                    default:
+                        errorString = ERROR_DEFAULT;
+                        break;
+                    case 400:
+                        errorString = ERROR400;
+                        break;
+                    case 404:
+                        JObject result = JObject.Parse(request.downloadHandler.text);
+                        if (result["errors"] == null)
+                            errorString = ERROR404CONNECTION;
+                        else if (result["errors"][0]["reason"].ToString().Equals("NOT_FOUND"))
+                            errorString = ERROR404MISSINGUSER;
+                        else errorString = ERROR_DEFAULT;
+                        break;
+                    case 500:
+                        errorString = ERROR500;
+                        break;
+                }
+
+                ShowMessage(errorString, Color.red);
             }
             else
             {
@@ -131,7 +242,29 @@ public class PasswordReset : MonoBehaviour
             if (request.result != UnityWebRequest.Result.Success)
             {
                 string errorString = string.Empty;
-                ShowMessage(errorString + "\n" + request.error, Color.red);
+
+                switch (request.responseCode)
+                {
+                    default:
+                        errorString = ERROR_DEFAULT;
+                        break;
+                    case 400:
+                        errorString = ERROR400;
+                        break;
+                    case 404:
+                        JObject result = JObject.Parse(request.downloadHandler.text);
+                        if (result["errors"] == null)
+                            errorString = ERROR404CONNECTION;
+                        else if (result["errors"][0]["reason"].ToString().Equals("NOT_FOUND"))
+                            errorString = ERROR404MISSINGUSER;
+                        else errorString = ERROR_DEFAULT;
+                        break;
+                    case 500:
+                        errorString = ERROR500;
+                        break;
+                }
+
+                ShowMessage(errorString, Color.red);
             }
             else
             {
