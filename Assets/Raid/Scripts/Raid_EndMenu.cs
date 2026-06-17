@@ -16,6 +16,7 @@ public class Raid_EndMenu : MonoBehaviour
     public RectTransform collectedFurniture;
     public RectTransform content;
     public Raid_InventoryItem itemPrefab;
+    [SerializeField] private Raid_InventoryItem collectedLootItemPrefab;
     [SerializeField] private GameObject menuRoot;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private Sprite normalBackgroundSprite;
@@ -196,17 +197,13 @@ public class Raid_EndMenu : MonoBehaviour
             return;
         }
 
-        if (itemPrefab != null)
+        Raid_InventoryItem lootItemPrefab = collectedLootItemPrefab != null ? collectedLootItemPrefab : itemPrefab;
+        if (lootItemPrefab != null)
         {
-            Raid_InventoryItem lootItem = Instantiate(itemPrefab, content);
+            Raid_InventoryItem lootItem = Instantiate(lootItemPrefab, content);
             lootItem.name = "CollectedLootItem";
             lootItem.transform.localScale = collectedLootItemScale;
-            lootItem.SetTrapIndicatorVisible(false);
-            lootItem.SetAuraVisible(false);
-            lootItem.SetBubbleVisible(false);
-            lootItem.SetCollectedLootDisplayLayout();
             lootItem.SetData(furniture);
-            lootItem.SetShowItemWeightText(true);
             lootItem.SetLossHaloVisible(collectedLootLossHaloVisible);
             return;
         }

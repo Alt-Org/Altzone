@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 9178301089945426792}
   - component: {fileID: 2482327229344257677}
   - component: {fileID: 1226679771514626003}
+  - component: {fileID: 9203000000000000002}
   m_Layer: 5
   m_Name: ExitRaidButton
   m_TagString: Untagged
@@ -148,6 +149,18 @@ MonoBehaviour:
   raidEnded: 0
   raid_timer: {fileID: 0}
   raid_References: {fileID: 0}
+--- !u!225 &9203000000000000002
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4379092815024515770}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8100441792339531715
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,6 +619,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3565596066494129017}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9204000000000000001 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7012345600000000004, guid: 13d5a303421ee7e46b3fb03b47d6cc67,
+    type: 3}
+  m_PrefabInstance: {fileID: 3565596066494129017}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf86753d60b4ab3ad575038a71a3f65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4533469008900623704
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -318,15 +318,6 @@ public class Raid_Timer : MonoBehaviour
             return;
         }
 
-        if (exitRaidButtonCanvasGroup == null)
-        {
-            exitRaidButtonCanvasGroup = exitRaid.GetComponent<CanvasGroup>();
-            if (exitRaidButtonCanvasGroup == null)
-            {
-                exitRaidButtonCanvasGroup = exitRaid.gameObject.AddComponent<CanvasGroup>();
-            }
-        }
-
         if (exitRaidButton == null)
         {
             exitRaidButton = exitRaid.GetComponent<Button>();
@@ -381,49 +372,12 @@ public class Raid_Timer : MonoBehaviour
 
     private void EnsureTimerFillCircle()
     {
-        bool createdFillCircle = false;
-
-        if (timerFillCircle == null && TimerText != null && TimerText.transform.parent != null)
-        {
-            Transform timerPanel = TimerText.transform.parent;
-            Transform existingFill = timerPanel.Find("TimerFillCircle");
-
-            if (existingFill != null)
-            {
-                timerFillCircle = existingFill.GetComponent<Raid_TimerFillCircle>();
-            }
-
-            if (timerFillCircle == null)
-            {
-                GameObject fillObject = new GameObject("TimerFillCircle", typeof(RectTransform), typeof(CanvasRenderer), typeof(Raid_TimerFillCircle));
-                RectTransform fillRect = fillObject.GetComponent<RectTransform>();
-                fillRect.SetParent(timerPanel, false);
-                fillRect.anchorMin = Vector2.zero;
-                fillRect.anchorMax = Vector2.one;
-                fillRect.anchoredPosition = Vector2.zero;
-                fillRect.sizeDelta = Vector2.zero;
-                fillRect.pivot = new Vector2(0.5f, 0.5f);
-
-                timerFillCircle = fillObject.GetComponent<Raid_TimerFillCircle>();
-                createdFillCircle = true;
-            }
-        }
-
         if (timerFillCircle == null)
         {
             return;
         }
 
-        if (createdFillCircle)
-        {
-            timerFillCircle.raycastTarget = false;
-            timerFillCircle.transform.SetAsFirstSibling();
-
-            if (TimerText != null)
-            {
-                TimerText.transform.SetAsLastSibling();
-            }
-        }
+        timerFillCircle.raycastTarget = false;
     }
 
     private void UpdateTimerFill()

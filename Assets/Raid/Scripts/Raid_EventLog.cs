@@ -12,11 +12,6 @@ using UnityEngine.UI;
 
 public class Raid_EventLog : MonoBehaviour
 {
-    private const float EventLogAvatarScale = 1f;
-    private const float EventLogTextLeftMargin = 56f;
-    private const float EventLogTextRightMargin = 18f;
-    private const float EventLogTemplateAnchorMinY = 0.5f;
-
     private static readonly Color[] IconColors =
     {
         new(1f, 0.62f, 0.12f, 1f),
@@ -57,8 +52,6 @@ public class Raid_EventLog : MonoBehaviour
 
     private void Awake()
     {
-        ApplyRuntimeLayout();
-
         if (entryTemplate != null)
         {
             entryTemplate.SetActive(false);
@@ -227,18 +220,12 @@ public class Raid_EventLog : MonoBehaviour
         }
 
         avatarFaceLoader.SetUseOwnAvatarVisuals(false);
-        FitAvatarHead(avatarFaceLoader.transform as RectTransform);
         DisableAvatarRaycasts(avatarFaceLoader);
 
         if (iconImage != null)
         {
             iconImage.enabled = false;
             iconImage.raycastTarget = false;
-        }
-
-        if (iconTransform.GetComponent<RectMask2D>() == null)
-        {
-            iconTransform.gameObject.AddComponent<RectMask2D>();
         }
 
         avatarFaceLoader.gameObject.SetActive(true);
@@ -286,22 +273,6 @@ public class Raid_EventLog : MonoBehaviour
         return visualData;
     }
 
-    private static void FitAvatarHead(RectTransform avatarRect)
-    {
-        if (avatarRect == null)
-        {
-            return;
-        }
-
-        avatarRect.anchorMin = Vector2.zero;
-        avatarRect.anchorMax = Vector2.one;
-        avatarRect.offsetMin = Vector2.zero;
-        avatarRect.offsetMax = Vector2.zero;
-        avatarRect.anchoredPosition = Vector2.zero;
-        avatarRect.pivot = new Vector2(0.5f, 0.5f);
-        avatarRect.localScale = new Vector3(EventLogAvatarScale, EventLogAvatarScale, 1f);
-    }
-
     private static void DisableAvatarRaycasts(AvatarFaceLoader avatarFaceLoader)
     {
         if (avatarFaceLoader == null)
@@ -340,58 +311,6 @@ public class Raid_EventLog : MonoBehaviour
         return ClassReference.Instance.GetColor(BaseCharacter.GetClass(characterId));
     }
 
-    private void ApplyRuntimeLayout()
-    {
-        ApplyContentLayout();
-        ApplyEntryTemplateLayout();
-    }
-
-    private void ApplyContentLayout()
-    {
-        if (contentRoot == null)
-        {
-            return;
-        }
-
-        if (contentRoot.TryGetComponent(out VerticalLayoutGroup layoutGroup))
-        {
-            layoutGroup.childControlHeight = true;
-            layoutGroup.childForceExpandHeight = false;
-            layoutGroup.spacing = 0f;
-        }
-
-        if (contentRoot.TryGetComponent(out ContentSizeFitter contentSizeFitter))
-        {
-            contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-        }
-    }
-
-    private void ApplyEntryTemplateLayout()
-    {
-        if (entryTemplate == null)
-        {
-            return;
-        }
-
-        if (entryTemplate.transform is RectTransform entryRect)
-        {
-            entryRect.anchorMin = new Vector2(0f, EventLogTemplateAnchorMinY);
-            entryRect.anchorMax = Vector2.one;
-            entryRect.offsetMin = Vector2.zero;
-            entryRect.offsetMax = Vector2.zero;
-            entryRect.anchoredPosition = Vector2.zero;
-            entryRect.pivot = new Vector2(0.5f, 1f);
-        }
-
-        if (entryTemplate.TryGetComponent(out LayoutElement layoutElement))
-        {
-            layoutElement.ignoreLayout = true;
-            layoutElement.minHeight = -1f;
-            layoutElement.preferredHeight = -1f;
-            layoutElement.flexibleHeight = 0f;
-        }
-    }
-
     private void ApplyEntryLayout(GameObject entry, TMP_Text messageText)
     {
         if (entry == null)
@@ -413,27 +332,6 @@ public class Raid_EventLog : MonoBehaviour
             entryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rowHeight);
         }
 
-        if (messageText == null)
-        {
-            return;
-        }
-
-        messageText.textWrappingMode = TextWrappingModes.Normal;
-        messageText.overflowMode = TextOverflowModes.Ellipsis;
-        messageText.horizontalAlignment = HorizontalAlignmentOptions.Left;
-        messageText.verticalAlignment = VerticalAlignmentOptions.Middle;
-        messageText.lineSpacing = 0f;
-        ApplyRootMessageFallbackMargin(entry, messageText);
-    }
-
-    private static void ApplyRootMessageFallbackMargin(GameObject entry, TMP_Text messageText)
-    {
-        if (messageText.transform != entry.transform)
-        {
-            return;
-        }
-
-        messageText.margin = new Vector4(EventLogTextLeftMargin, 0f, EventLogTextRightMargin, 0f);
     }
 
     private float GetTemplateEntryHeight()
