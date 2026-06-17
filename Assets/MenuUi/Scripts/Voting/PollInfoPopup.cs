@@ -8,6 +8,7 @@ using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Clan;
 using MenuUI.Scripts;
 using System;
+using System.Collections;
 
 public class PollInfoPopup : MonoBehaviour
 {
@@ -68,11 +69,10 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text clanTargetRoleText;
 
     private PollData _currentPollData;
+    private Coroutine _timerCoroutine;
 
     private readonly Color _green = HexToColor("#2FA36B");
     private readonly Color _red = HexToColor("#C83A2D");
-
-    public bool IsPollEnded { get; set; } = false;
 
     private void Awake()
     {
@@ -83,6 +83,20 @@ public class PollInfoPopup : MonoBehaviour
             return;
         }
         Instance = this;
+    }
+
+    private void OnEnable()
+    {
+        _timerCoroutine = StartCoroutine(TimerUpdateLoop());
+    }
+
+    private void OnDisable()
+    {
+        if (_timerCoroutine != null)
+        {
+            StopCoroutine(_timerCoroutine);
+            _timerCoroutine = null;
+        }
     }
 
     private void OnDestroy()
@@ -113,6 +127,16 @@ public class PollInfoPopup : MonoBehaviour
             Instance = this;
             Debug.Log("[PollInfoPopup] Initialized manually.");
         }
+    }
+
+    private IEnumerator TimerUpdateLoop()
+    {
+        while (!_currentPollData.IsExpired)
+        {
+            UpdateTimerDisplay();
+            yield return new WaitForSeconds(1);
+        }
+        UpdateTimerDisplay();
     }
 
     public void UpdateTimerDisplay(long secondsLeft = -1)
@@ -226,7 +250,6 @@ public class PollInfoPopup : MonoBehaviour
 
         resultObject.SetActive(true);
 
-        playerHeads.InstantiateHeads(_currentPollData.Id);
         ShowPollPanel();
     }
 
@@ -285,8 +308,7 @@ public class PollInfoPopup : MonoBehaviour
             }
             else
             {
-                if (playerHeads.isActiveAndEnabled)
-                    playerHeads.InstantiateHeads(_currentPollData.Id);
+                playerHeads.InstantiateHeads(_currentPollData.Id);
             }
         });
 

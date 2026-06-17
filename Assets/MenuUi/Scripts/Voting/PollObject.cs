@@ -110,13 +110,6 @@ public class PollObject : MonoBehaviour
 
                 // Format and show local time. Example: "20.6. 13:50"
                 TimeLeftText.text = endDateTime.ToString("d.M. HH:mm");
-                PollInfoPopup.Instance.IsPollEnded = true;
-
-                if (PollInfoPopup.Instance != null && PollInfoPopup.Instance.gameObject.activeInHierarchy)
-                {
-                    PollInfoPopup.Instance.UpdateTimerDisplay(secondsLeft);
-                }
-
 
                 //PollManager.EndPoll(pollId);
 
@@ -125,12 +118,6 @@ public class PollObject : MonoBehaviour
 
             Clock.fillAmount = 1f - (secondsLeft / totalDuration);
             UpdateClockDisplay(secondsLeft);
-
-            if (PollInfoPopup.Instance != null && PollInfoPopup.Instance.gameObject.activeInHierarchy)
-            {
-                PollInfoPopup.Instance.UpdateTimerDisplay(secondsLeft);
-            }
-
 
             yield return new WaitForSeconds(1);
         }
