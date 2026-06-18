@@ -521,6 +521,8 @@ MonoBehaviour:
   minInventoryRows: 6
   maxInventoryRowsExclusive: 12
   fallbackClanWeightLimit: 200
+  matchmakingDotToggleSeconds: 0.75
+  matchmakingDotSpacing: 48
 --- !u!1001 &1218261552
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1099,7 +1101,7 @@ MonoBehaviour:
   Format: 0
   exitRaid: {fileID: 0}
   duration: 0.8
-  timerFillCircle: {fileID: 9204000000000000003}
+  timerFillCircle: {fileID: 0}
   exitRaidButtonCanvasGroup: {fileID: 9203000000000000004}
 --- !u!4 &1918953309
 Transform:
@@ -1593,24 +1595,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1218261552}
   m_PrefabAsset: {fileID: 0}
---- !u!225 &9203000000000000004 stripped
-CanvasGroup:
-  m_CorrespondingSourceObject: {fileID: 9203000000000000003, guid: 7cabb86556187f24686c8f5e7079f00e,
-    type: 3}
-  m_PrefabInstance: {fileID: 8614867888386930549}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &9204000000000000003 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9204000000000000002, guid: 7cabb86556187f24686c8f5e7079f00e,
-    type: 3}
-  m_PrefabInstance: {fileID: 8614867888386930549}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddf86753d60b4ab3ad575038a71a3f65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &8614867888386930549
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1854,6 +1838,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7cabb86556187f24686c8f5e7079f00e, type: 3}
+--- !u!225 &9203000000000000004 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 9203000000000000003, guid: 7cabb86556187f24686c8f5e7079f00e,
+    type: 3}
+  m_PrefabInstance: {fileID: 8614867888386930549}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

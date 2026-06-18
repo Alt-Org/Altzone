@@ -26,6 +26,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     [SerializeField] private int minInventoryRows = 6;
     [SerializeField] private int maxInventoryRowsExclusive = 12;
     [SerializeField] private float fallbackClanWeightLimit = 200f;
+    [SerializeField] private float matchmakingDotToggleSeconds = 0.5f;
+    [SerializeField] private float matchmakingDotSpacing = 48f;
 
     private readonly Dictionary<string, RoomInfo> _knownRooms = new();
     private readonly HashSet<string> _rejectedRoomNames = new(StringComparer.Ordinal);
@@ -44,6 +46,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private TextMeshProUGUI _matchmakingTitleText;
     private TextMeshProUGUI _matchmakingStatusText;
     private TextMeshProUGUI _matchmakingDetailText;
+    private GameObject[] _matchmakingDots;
     private TextMeshProUGUI _lobbyCountdownText;
     private Transform _participantListRoot;
     private RaidLobbyClanListItem _clanListItemTemplate;
@@ -60,6 +63,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private bool _gameplayReleased;
     private bool _sharedRaidActive;
     private bool _callbacksRegistered;
+    private bool _matchmakingSearchVisualsEnabled;
+    private bool _showFiveMatchmakingDots = true;
+    private float _nextMatchmakingDotToggleTime;
     private Coroutine _debugStartCoroutine;
 
     public static RaidMatchmakingController Instance { get; private set; }
@@ -85,12 +91,14 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void Start()
     {
-        ShowMatchmaking("Preparing Raid matchmaking", "Loading clan data...", string.Empty);
+        ShowMatchmakingSearchState(1);
         StartCoroutine(StartRaidMatchmakingFlow());
     }
 
     private void Update()
     {
+        UpdateMatchmakingDots();
+
         if (!IsCurrentRoomRaid())
         {
             return;
@@ -260,7 +268,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         _joiningOrCreatingRoom = true;
-        ShowMatchmaking("Finding Raid players", "Searching for a Raid room...", "Waiting for 4 clan players");
+        ShowMatchmakingSearchState(1);
 
         RoomInfo room = FindJoinableRaidRoom();
         if (room != null)
@@ -965,20 +973,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         int currentPlayers = GetRaidPlayersWithClans().Count;
-        SetLocalizedText(
-            _matchmakingStatusText,
-            "Odotetaan pelaajia: {0}/{1}",
-            "Waiting for players: {0}/{1}",
-            currentPlayers.ToString(),
-            RaidPhotonRoom.RequiredPlayers.ToString());
-        SetLocalizedText(
-            _matchmakingDetailText,
-            "Klaanista voi tulla enintaan kaksi pelaajaa.",
-            "Each clan can bring up to two players.");
+        ShowMatchmakingSearchState(currentPlayers);
     }
 
     private void ShowMatchmaking(string title, string status, string detail)
     {
+        _matchmakingSearchVisualsEnabled = false;
+
         if (_overlayRoot != null)
         {
             _overlayRoot.SetActive(true);
@@ -997,6 +998,67 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         SetText(_matchmakingTitleText, title);
         SetText(_matchmakingStatusText, status);
         SetText(_matchmakingDetailText, detail);
+        SetTextActive(_matchmakingStatusText, !string.IsNullOrWhiteSpace(status));
+        SetTextActive(_matchmakingDetailText, !string.IsNullOrWhiteSpace(detail));
+        SetMatchmakingDotsActive(0);
+    }
+
+    private void ShowMatchmakingSearchState(int currentPlayers)
+    {
+        _matchmakingSearchVisualsEnabled = true;
+
+        if (_overlayRoot != null)
+        {
+            _overlayRoot.SetActive(true);
+        }
+
+        if (_matchmakingPanel != null)
+        {
+            _matchmakingPanel.SetActive(true);
+        }
+
+        if (_lobbyPanel != null)
+        {
+            _lobbyPanel.SetActive(false);
+        }
+
+        bool playersFound = currentPlayers > 1;
+        SetText(
+            _matchmakingTitleText,
+            GetCurrentLanguage() == SettingsCarrier.LanguageType.English
+                ? (playersFound ? "Players found" : "Searching for players")
+                : (playersFound ? "Pelaajia l\u00F6ydetty" : "Etsit\u00E4\u00E4n pelaajia"));
+
+        SetTextActive(_matchmakingStatusText, playersFound);
+        if (playersFound)
+        {
+            SetText(_matchmakingStatusText, $"{currentPlayers} / {RaidPhotonRoom.RequiredPlayers}");
+        }
+
+        SetTextActive(_matchmakingDetailText, false);
+        SetMatchmakingDotText();
+    }
+
+    private void UpdateMatchmakingDots()
+    {
+        if (!_matchmakingSearchVisualsEnabled || _matchmakingPanel == null || !_matchmakingPanel.activeInHierarchy)
+        {
+            return;
+        }
+
+        if (Time.time < _nextMatchmakingDotToggleTime)
+        {
+            return;
+        }
+
+        _showFiveMatchmakingDots = !_showFiveMatchmakingDots;
+        _nextMatchmakingDotToggleTime = Time.time + Mathf.Max(0.1f, matchmakingDotToggleSeconds);
+        SetMatchmakingDotText();
+    }
+
+    private void SetMatchmakingDotText()
+    {
+        SetMatchmakingDotsActive(_showFiveMatchmakingDots ? 5 : 4);
     }
 
     private void ShowLobby()
@@ -1094,6 +1156,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         _matchmakingTitleText = views.MatchmakingTitleText;
         _matchmakingStatusText = views.MatchmakingStatusText;
         _matchmakingDetailText = views.MatchmakingDetailText;
+        _matchmakingDots = views.MatchmakingDots;
+        ResolveMatchmakingDotsFallback();
         _lobbyCountdownText = views.LobbyCountdownText;
         _participantListRoot = views.ParticipantListRoot;
         _clanListItemTemplate = views.ClanListItemTemplate;
@@ -1214,6 +1278,64 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         textField.text = text;
+    }
+
+    private static void SetTextActive(TextMeshProUGUI textField, bool isActive)
+    {
+        if (textField == null)
+        {
+            return;
+        }
+
+        textField.gameObject.SetActive(isActive);
+    }
+
+    private void SetMatchmakingDotsActive(int visibleCount)
+    {
+        if (_matchmakingDots == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < _matchmakingDots.Length; i++)
+        {
+            GameObject dot = _matchmakingDots[i];
+            if (dot == null)
+            {
+                continue;
+            }
+
+            bool isVisible = i < visibleCount;
+            dot.SetActive(isVisible);
+
+            if (isVisible && dot.transform is RectTransform dotTransform)
+            {
+                float startX = -matchmakingDotSpacing * (visibleCount - 1) * 0.5f;
+                dotTransform.anchoredPosition = new Vector2(startX + matchmakingDotSpacing * i, 0f);
+            }
+        }
+    }
+
+    private void ResolveMatchmakingDotsFallback()
+    {
+        if (_matchmakingDots != null && _matchmakingDots.Length > 0)
+        {
+            return;
+        }
+
+        Transform dotRoot = _matchmakingPanel != null
+            ? _matchmakingPanel.transform.Find("MatchmakingDots")
+            : null;
+        if (dotRoot == null)
+        {
+            return;
+        }
+
+        _matchmakingDots = new GameObject[dotRoot.childCount];
+        for (int i = 0; i < dotRoot.childCount; i++)
+        {
+            _matchmakingDots[i] = dotRoot.GetChild(i).gameObject;
+        }
     }
 
     private static void SetLocalizedText(TextMeshProUGUI textField, string finnishText, string englishText, params string[] additions)

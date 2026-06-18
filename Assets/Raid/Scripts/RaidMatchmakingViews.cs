@@ -10,6 +10,7 @@ public class RaidMatchmakingViews : MonoBehaviour
     [SerializeField] private TextMeshProUGUI matchmakingTitleText;
     [SerializeField] private TextMeshProUGUI matchmakingStatusText;
     [SerializeField] private TextMeshProUGUI matchmakingDetailText;
+    [SerializeField] private GameObject[] matchmakingDots;
     [SerializeField] private TextMeshProUGUI lobbyCountdownText;
     [SerializeField] private Transform participantListRoot;
     [SerializeField] private RaidLobbyClanListItem clanListItemTemplate;
@@ -22,6 +23,7 @@ public class RaidMatchmakingViews : MonoBehaviour
     public TextMeshProUGUI MatchmakingTitleText => matchmakingTitleText;
     public TextMeshProUGUI MatchmakingStatusText => matchmakingStatusText;
     public TextMeshProUGUI MatchmakingDetailText => matchmakingDetailText;
+    public GameObject[] MatchmakingDots => matchmakingDots;
     public TextMeshProUGUI LobbyCountdownText => lobbyCountdownText;
     public Transform ParticipantListRoot => participantListRoot;
     public RaidLobbyClanListItem ClanListItemTemplate => clanListItemTemplate;
