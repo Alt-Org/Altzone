@@ -205,6 +205,8 @@ public class Raid_EndMenu : MonoBehaviour
             lootItem.transform.localScale = collectedLootItemScale;
             lootItem.SetData(furniture);
             lootItem.SetLossHaloVisible(collectedLootLossHaloVisible);
+            lootItem.SetCollectedLootDisplayLayout();
+            lootItem.SetShowItemWeightText(true);
             return;
         }
 
@@ -442,13 +444,13 @@ public sealed class Raid_TextHalo
     {
         if (haloMaterial != null)
         {
-            Object.Destroy(haloMaterial);
+            UnityEngine.Object.Destroy(haloMaterial);
             haloMaterial = null;
         }
 
         if (cloudRect != null)
         {
-            Object.Destroy(cloudRect.gameObject);
+            UnityEngine.Object.Destroy(cloudRect.gameObject);
             cloudRect = null;
             cloudImage = null;
         }

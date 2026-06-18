@@ -29,6 +29,40 @@ public class HeartScript : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        ResolveLootTracker();
+        if (raid_LootTracking != null)
+        {
+            raid_LootTracking.CollectedLootChanged -= OnCollectedLootChanged;
+            raid_LootTracking.CollectedLootChanged += OnCollectedLootChanged;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (raid_LootTracking != null)
+        {
+            raid_LootTracking.CollectedLootChanged -= OnCollectedLootChanged;
+        }
+    }
+
+    public void OpenLiveInventory()
+    {
+        ExitRaid exitRaid = ExitRaid.Instance;
+        if (exitRaid != null && exitRaid.raidEnded)
+        {
+            return;
+        }
+
+        ResolveLootTracker();
+        Raid_LiveInventory liveInventory = ResolveLiveInventory();
+        if (liveInventory != null && raid_LootTracking != null)
+        {
+            liveInventory.Show(raid_LootTracking);
+        }
+    }
+
     public void UpdateRecentLootImages(IReadOnlyList<GameFurniture> collectedLoot)
     {
         ResolveRecentLootImages();
@@ -115,6 +149,49 @@ public class HeartScript : MonoBehaviour
         {
             recentLootSprites.Add(lootSprites[i]);
         }
+    }
+
+    private void OnCollectedLootChanged()
+    {
+        UpdateRecentLootImages(raid_LootTracking != null ? raid_LootTracking.ListOfCollectedLoot : null);
+    }
+
+    private Raid_LiveInventory ResolveLiveInventory()
+    {
+        Raid_LiveInventory liveInventory = Raid_LiveInventory.Instance;
+        if (liveInventory != null)
+        {
+            return liveInventory;
+        }
+
+        liveInventory = FindObjectOfType<Raid_LiveInventory>(true);
+        if (liveInventory != null)
+        {
+            return liveInventory;
+        }
+
+        Raid_LiveInventory prefab = Resources.Load<Raid_LiveInventory>("Prefabs/LiveInventory");
+        if (prefab == null)
+        {
+            Debug.LogError("Cannot open raid live inventory because Prefabs/LiveInventory is missing.");
+            return null;
+        }
+
+        Transform parent = null;
+        Raid_References raidReferences = FindObjectOfType<Raid_References>();
+        if (raidReferences != null && raidReferences.EndMenu != null)
+        {
+            parent = raidReferences.EndMenu.transform.parent;
+        }
+
+        if (parent == null)
+        {
+            parent = transform.root;
+        }
+
+        liveInventory = Instantiate(prefab, parent, false);
+        liveInventory.name = "LiveInventory";
+        return liveInventory;
     }
 
     private void ResolveLootTracker()

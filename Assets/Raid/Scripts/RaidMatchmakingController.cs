@@ -697,6 +697,26 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             SendOptions.SendReliable);
     }
 
+    public void RequestRemoveCollectedLoot(int lootIndex)
+    {
+        if (!IsSharedRaidActive || _exitRaid != null && _exitRaid.raidEnded)
+        {
+            return;
+        }
+
+        if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+        {
+            HandleRemoveCollectedLootRequest(PhotonRealtimeClient.LocalPlayer.ActorNumber, lootIndex);
+            return;
+        }
+
+        PhotonRealtimeClient.Client.OpRaiseEvent(
+            RaidPhotonRoom.RemoveLootRequestEvent,
+            new object[] { lootIndex },
+            new RaiseEventArgs { Receivers = ReceiverGroup.MasterClient },
+            SendOptions.SendReliable);
+    }
+
     private void HandleLootRequest(int senderActorNumber, int slotIndex)
     {
         if (!IsSharedRaidActive || _inventoryPage == null || _lootedSlots.Contains(slotIndex))
@@ -749,6 +769,39 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         _lootedSlots.Add(slotIndex);
         _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, clanId, weightMultiplier, triggeredByLocalPlayer, actorName, (CharacterID)characterId, avatarData);
+    }
+
+    private void HandleRemoveCollectedLootRequest(int senderActorNumber, int lootIndex)
+    {
+        if (!IsSharedRaidActive || _lootTracking == null)
+        {
+            return;
+        }
+
+        Player sender = GetRoomPlayer(senderActorNumber);
+        string clanId = GetPlayerClanId(sender);
+        if (sender == null || string.IsNullOrWhiteSpace(clanId) || !IsParticipatingClan(clanId))
+        {
+            return;
+        }
+
+        PhotonRealtimeClient.Client.OpRaiseEvent(
+            RaidPhotonRoom.RemoveLootAcceptedEvent,
+            new object[] { clanId, lootIndex },
+            new RaiseEventArgs { Receivers = ReceiverGroup.All },
+            SendOptions.SendReliable);
+    }
+
+    private void ApplyRemoveCollectedLootAccepted(object[] data)
+    {
+        if (data == null || data.Length < 2 || _lootTracking == null)
+        {
+            return;
+        }
+
+        string clanId = data[0] as string ?? string.Empty;
+        int lootIndex = Convert.ToInt32(data[1]);
+        _lootTracking.RemoveClanCollectedLootAt(clanId, lootIndex);
     }
 
     private bool IsParticipatingClan(string clanId)
@@ -1469,6 +1522,29 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         if (photonEvent.Code == RaidPhotonRoom.LootAcceptedEvent)
         {
             ApplyLootAccepted(photonEvent.CustomData as object[]);
+            return;
+        }
+
+        if (photonEvent.Code == RaidPhotonRoom.RemoveLootRequestEvent)
+        {
+            if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                return;
+            }
+
+            object[] data = photonEvent.CustomData as object[];
+            if (data == null || data.Length < 1)
+            {
+                return;
+            }
+
+            HandleRemoveCollectedLootRequest(photonEvent.Sender, Convert.ToInt32(data[0]));
+            return;
+        }
+
+        if (photonEvent.Code == RaidPhotonRoom.RemoveLootAcceptedEvent)
+        {
+            ApplyRemoveCollectedLootAccepted(photonEvent.CustomData as object[]);
         }
     }
 }

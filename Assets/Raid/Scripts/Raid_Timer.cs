@@ -123,6 +123,7 @@ public class Raid_Timer : MonoBehaviour
             if (HasLimit && ((CountUp && CurrentTime >= TimerLimit) || (!CountUp && CurrentTime <= TimerLimit)))
             {
                 OnTimeEnd();
+                Raid_LiveInventory.Instance?.HideLiveInventory();
                 if (exitRaid == null)
                 {
                     exitRaid = ExitRaid.Instance;
@@ -372,6 +373,15 @@ public class Raid_Timer : MonoBehaviour
 
     private void EnsureTimerFillCircle()
     {
+        if (timerFillCircle == null && TimerText != null)
+        {
+            timerFillCircle = TimerText.GetComponentInParent<Raid_TimerFillCircle>(true);
+            if (timerFillCircle == null && TimerText.transform.parent != null)
+            {
+                timerFillCircle = TimerText.transform.parent.GetComponentInChildren<Raid_TimerFillCircle>(true);
+            }
+        }
+
         if (timerFillCircle == null)
         {
             return;

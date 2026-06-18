@@ -619,18 +619,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3565596066494129017}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &9204000000000000001 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7012345600000000004, guid: 13d5a303421ee7e46b3fb03b47d6cc67,
-    type: 3}
-  m_PrefabInstance: {fileID: 3565596066494129017}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddf86753d60b4ab3ad575038a71a3f65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &4533469008900623704
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -738,6 +726,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: EventLog
+      objectReference: {fileID: 0}
+    - target: {fileID: 7542349187606789019, guid: 02fa4971f0bb84a46ad3a7af06662202,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7542349187606789061, guid: 02fa4971f0bb84a46ad3a7af06662202,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 7542349187606789089, guid: 02fa4971f0bb84a46ad3a7af06662202,
         type: 3}

@@ -27,6 +27,8 @@ public static class RaidPhotonRoom
 
     public const byte LootRequestEvent = 80;
     public const byte LootAcceptedEvent = 81;
+    public const byte RemoveLootRequestEvent = 82;
+    public const byte RemoveLootAcceptedEvent = 83;
 
     public const int StateMatchmaking = 0;
     public const int StateLobby = 1;
