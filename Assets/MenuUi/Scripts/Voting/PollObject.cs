@@ -259,7 +259,18 @@ public class PollObject : MonoBehaviour
 
         if (pollData.IsExpired)
         {
-            bool isAccepted = yesCount > noCount;
+            DataStore store = Storefront.Get();
+            ClanData clan = null;
+
+            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+            if (player != null && player.ClanId != null)
+            {
+                store.GetClanData(player.ClanId, data => clan = data);
+            }
+
+            int requiredYesVotes = Mathf.CeilToInt(clan.Members.Count * 0.33f);
+            bool isAccepted = yesCount >= requiredYesVotes && yesCount > noCount;
 
             ResultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
 

@@ -9,6 +9,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using MenuUI.Scripts;
 using System;
 using System.Collections;
+using Altzone.Scripts.Model.Poco.Player;
 
 public class PollInfoPopup : MonoBehaviour
 {
@@ -240,7 +241,19 @@ public class PollInfoPopup : MonoBehaviour
         resultYes.text = yesPercent;
         resultNo.text = noPercent;
 
-        bool isAccepted = yesCount > noCount;
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+        if (player != null && player.ClanId != null)
+        {
+            store.GetClanData(player.ClanId, data => clan = data);
+        }
+
+        int requiredYesVotes = Mathf.CeilToInt(clan.Members.Count * 0.33f);
+        bool isAccepted = yesCount >= requiredYesVotes && yesCount > noCount;
 
         resultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
 
