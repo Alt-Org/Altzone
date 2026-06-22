@@ -147,14 +147,14 @@ public class LeaderboardPodium : MonoBehaviour
                 AvatarVisualData avatarVisualData = null;
                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
                 
-                if (avatarVisualData != null && isActiveAndEnabled)
+                if (avatarVisualData != null)
                 {
                     _firstAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarVisualData);
                 }
             }
             else if (avatarData != null)
             {
-                if (avatarData != null && isActiveAndEnabled)
+                if (avatarData != null)
                 {
                     _firstAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarData);
                 }
@@ -205,14 +205,14 @@ public class LeaderboardPodium : MonoBehaviour
                 AvatarVisualData avatarVisualData = null;                      
                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
 
-                if (avatarVisualData != null && isActiveAndEnabled)
+                if (avatarVisualData != null)
                 {
                     _secondAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarVisualData);
                 }
             }
             else if (avatarData != null)
             {
-                if (avatarData != null && isActiveAndEnabled)
+                if (avatarData != null)
                 {
                     _secondAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarData);
                 }
@@ -265,14 +265,14 @@ public class LeaderboardPodium : MonoBehaviour
                 AvatarVisualData avatarVisualData = null;                      
                 avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData);
                 
-                if (avatarVisualData != null && isActiveAndEnabled)
+                if (avatarVisualData != null)
                 {
                     _thirdAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarVisualData);
                 }
             }
             else if (avatarData != null)
             {
-                if (avatarData != null && isActiveAndEnabled)
+                if (avatarData != null)
                 {
                     _thirdAvatarHead.GetComponent<AvatarLoader>().UpdateVisuals(avatarData);
                 }
