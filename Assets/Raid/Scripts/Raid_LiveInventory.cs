@@ -9,8 +9,6 @@ public class Raid_LiveInventory : MonoBehaviour
     [SerializeField] private RectTransform content;
     [SerializeField] private Raid_InventoryItem collectedLootItemPrefab;
     [SerializeField] private GameObject menuRoot;
-    [SerializeField] private GameObject normalEndResultText;
-    [SerializeField] private GameObject overweightEndResultText;
     [SerializeField] private TMP_Text spaceRemainingText;
     [SerializeField] private Button backButton;
     [SerializeField] private Vector3 collectedLootItemScale = Vector3.one;
@@ -63,7 +61,7 @@ public class Raid_LiveInventory : MonoBehaviour
         this.lootTracking = lootTracking;
         this.lootTracking.CollectedLootChanged += Refresh;
 
-        SetStaticLiveInventoryObjectsVisible();
+        SetBackButtonVisible();
         Refresh();
         SetVisible(true);
         BringLiveRaidControlsToFront();
@@ -158,18 +156,8 @@ public class Raid_LiveInventory : MonoBehaviour
         }
     }
 
-    private void SetStaticLiveInventoryObjectsVisible()
+    private void SetBackButtonVisible()
     {
-        if (normalEndResultText != null)
-        {
-            normalEndResultText.SetActive(false);
-        }
-
-        if (overweightEndResultText != null)
-        {
-            overweightEndResultText.SetActive(false);
-        }
-
         if (backButton != null)
         {
             backButton.gameObject.SetActive(true);

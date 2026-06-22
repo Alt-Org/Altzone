@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using Photon.Pun;
 using Random = UnityEngine.Random;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
@@ -10,10 +9,8 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine.UI;
-using System.Linq;
 using Photon.Realtime;
 using MenuUI.Scripts.SoulHome;
-//using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryPage : MonoBehaviour
 {
@@ -26,7 +23,6 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private ExitRaid exitraid;
     [SerializeField] private Raid_EventLog eventLog;
     private HeartScript heartScript;
-    [SerializeField] private bool spectator = false;
     [SerializeField] private bool firstItem = true;
     [SerializeField, Min(1)] private int trapAmount = 3;
     [SerializeField, Min(0f)] private float freezeDuration = 10f;
@@ -37,7 +33,7 @@ public class Raid_InventoryPage : MonoBehaviour
     public class BombData
     {
         public int bombIndex;
-         //type 0: end game, type 1: freeze, type 2: double weight
+        [Tooltip("Trap type: 0 = end raid, 1 = freeze, 2 = double next loot weight.")]
         public int bombType;
     }
     [SerializeField] BombData[] Bombs;
@@ -49,7 +45,6 @@ public class Raid_InventoryPage : MonoBehaviour
     private bool nextLootWeightDoubled;
     private Coroutine freezeRoutine;
 
-    //public PhotonView _photonView { get; private set; }
     private void Awake()
     {
         ResolveReferences();
@@ -60,57 +55,38 @@ public class Raid_InventoryPage : MonoBehaviour
 
         eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
         eventLog?.Clear();
-        //_photonView = gameObject.AddComponent<PhotonView>();
-        //_photonView.ViewID = 2;
-        //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
-        {
-            spectator = false;
-        }
-
     }
 
-    // This function will get all game furniture from the "StorageFurnitureReference"
     public List<GameFurniture> GetGameFurniture()
-    {   
-        List<GameFurniture> furnitures = null;
+    {
         StorageFurnitureReference storageFurnitureReference = StorageFurnitureReference.Instance;
-        furnitures = storageFurnitureReference.GetAllGameFurniture();
-        
-        /* Debug print furnitures
-        foreach (GameFurniture furniture in furnitures)
-        {
-            Debug.Log("(RAID) Nimi : "+furniture.ToString());
-        }
-        */
-
-        return furnitures;
+        return storageFurnitureReference != null
+            ? storageFurnitureReference.GetAllGameFurniture()
+            : new List<GameFurniture>();
     }
 
     public void InitializeInventoryUI(int InventorySize, RaidPhotonRoom.TrapData[] trapData = null)
     {
+        ResolveReferences();
         eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
         eventLog?.Clear();
         ClearInventoryUI();
         ListOfFurniture = GetGameFurniture();
 
+        if (ItemPrefab == null || ContentPanel == null)
+        {
+            Debug.LogError("Raid inventory cannot initialize because item prefab or content panel is missing.", this);
+            return;
+        }
+
         for (int i = 0; i < InventorySize; i++)
         {
-            Raid_InventoryItem UIItem = Instantiate(ItemPrefab, Vector3.zero, Quaternion.identity);
-            UIItem.transform.SetParent(ContentPanel);
+            Raid_InventoryItem UIItem = Instantiate(ItemPrefab, ContentPanel);
             UIItem.transform.localScale = new Vector3(1, 1, 0);
             UIItem.SetTrapIndicatorVisible(showTrapIndicators);
             ListOfUIItems.Add(UIItem);
             UIItem.OnItemClicked += HandleItemLooting;
         }
-
-        /*
-        if (PhotonNetwork.IsMasterClient)
-        {
-            RandomizeBombs();
-            string jsonBombs = JsonUtility.ToJson(Bombs);
-            _photonView.RPC("SendBombLocationsRPC", RpcTarget.Others, jsonBombs);
-        }
-        */
 
         if (trapData == null)
         {
@@ -120,21 +96,33 @@ public class Raid_InventoryPage : MonoBehaviour
         {
             SetBombsFromTrapData(trapData);
         }
-        //string jsonBombs = JsonUtility.ToJson(Bombs);
-        //SendBombLocationsRPC(jsonBombs);
+        ApplyBombsToInventory();
+    }
+
+    private void ApplyBombsToInventory()
+    {
+        if (Bombs == null)
+        {
+            return;
+        }
 
         for (int j = 0; j < Bombs.Length; j++)
         {
-            Debug.Log("bombIndex: " + Bombs[j].bombIndex + " Bombs.Length: " + Bombs.Length);
-            if (Bombs[j].bombIndex >= 0 && Bombs[j].bombIndex < ListOfUIItems.Count)
+            BombData bombData = Bombs[j];
+            if (bombData != null && bombData.bombIndex >= 0 && bombData.bombIndex < ListOfUIItems.Count)
             {
-                ListOfUIItems[Bombs[j].bombIndex].GetComponent<Raid_InventoryItem>().SetTrap(Bombs[j].bombType);
+                ListOfUIItems[bombData.bombIndex].SetTrap(bombData.bombType);
             }
         }
     }
 
     public void HandleItemLooting(Raid_InventoryItem inventoryItem)
     {
+        if (inventoryItem == null)
+        {
+            return;
+        }
+
         int index = ListOfUIItems.IndexOf(inventoryItem);
         if (RaidMatchmakingController.Instance != null && RaidMatchmakingController.Instance.ControlsInventorySetup)
         {
@@ -142,247 +130,155 @@ public class Raid_InventoryPage : MonoBehaviour
             return;
         }
 
-        //_photonView.RPC(nameof(HandleItemLootingRPC), RpcTarget.All, index, inventoryItem.ItemWeight);
-        HandleItemLootingRPC(index,inventoryItem.ItemWeight);
+        HandleItemLootingRPC(index, inventoryItem.ItemWeight);
     }
 
-    /*[PunRPC]*/
     public void HandleItemLootingRPC(int index, float itemWeight)
     {
         ResolveReferences();
+        TryStartTimerOnFirstLoot();
 
-        if (firstItem)
-        {
-            if (raid_Timer == null)
-            {
-                return;
-            }
+        LootActorContext actorContext = new LootActorContext(
+            GetLocalEventPlayerName(),
+            GetLocalEventCharacterId(),
+            GetLocalEventAvatarData());
 
-            raid_Timer.StartTimer();
-            firstItem = false;  
-        }
-        if (index == -1)
-        {
-            return;
-        }
-        if (inventoryFrozen)
-        {
-            return;
-        }
-        if (raid_Timer == null || LootTracker == null || exitraid == null
-            || raid_Timer.CurrentTime <= 0 || LootTracker.CurrentLootWeight > LootTracker.MaxLootWeight || exitraid.raidEnded)
-        {
-            return;
-        }
-        else
-        {
-            Raid_InventoryItem item = ListOfUIItems[index];
-            string playerName = GetLocalEventPlayerName();
-            CharacterID characterId = GetLocalEventCharacterId();
-            AvatarData avatarData = GetLocalEventAvatarData();
-            if (item.GetComponent<Raid_InventoryItem>().bomb)
-            {
-                int trapType = item.GetComponent<Raid_InventoryItem>()._bombType;
-                GameFurniture furniture = item.furnitureData;
-                item.GetComponent<Raid_InventoryItem>().TriggerTrap();
-                eventLog?.LogTrapTriggered(playerName, trapType, characterId, avatarData);
-                if (trapType == 2)
-                {
-                    nextLootWeightDoubled = true;
-                }
-                float lootWeightMultiplier = nextLootWeightDoubled ? doubleWeightMultiplier : 1f;
-                if (LootItem(item, itemWeight))
-                {
-                    eventLog?.LogLootTaken(playerName, furniture, lootWeightMultiplier, characterId, avatarData);
-                }
-                switch (trapType)
-                {
-                    case 0:
-                        exitraid.EndRaid();
-                        break;
-                    case 1:
-                        Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.Freeze, freezeDuration);
-                        StartFreeze();
-                        break;
-                    case 2:
-                        Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.DoubleWeight);
-                        break;
-                }
-                ListOfUIItems[index].ItemWeight = 0;
-                return;
-            }
-            GameFurniture furnitureData = item.furnitureData;
-            if (LootItem(item, itemWeight))
-            {
-                eventLog?.LogLootTaken(playerName, furnitureData, 1f, characterId, avatarData);
-            }
-            ListOfUIItems[index].ItemWeight = 0;
-        }
+        ProcessLoot(index, itemWeight, null, 1f, true, actorContext, false);
     }
 
     public void HandleNetworkLootAccepted(int index, int actorNumber, string lootOwnerId, float lootWeightMultiplier, bool triggeredByLocalPlayer, string playerName = null, CharacterID actorCharacterId = CharacterID.None, AvatarData actorAvatarData = null)
     {
         ResolveReferences();
 
-        if (index < 0 || index >= ListOfUIItems.Count || exitraid != null && exitraid.raidEnded)
+        LootActorContext actorContext = new LootActorContext(playerName, actorCharacterId, actorAvatarData);
+        ProcessLoot(index, 0f, lootOwnerId, lootWeightMultiplier, triggeredByLocalPlayer, actorContext, true);
+    }
+
+    private void ProcessLoot(int index, float expectedItemWeight, string lootOwnerId, float networkLootWeightMultiplier, bool applyTrapEffect, LootActorContext actorContext, bool useOwnerTracking)
+    {
+        if (!CanLoot(index, out Raid_InventoryItem item))
         {
             return;
         }
 
-        Raid_InventoryItem item = ListOfUIItems[index];
-        if (item == null || item.ItemWeight <= 0f || item.furnitureData == null)
+        if (!useOwnerTracking && !Mathf.Approximately(expectedItemWeight, item.ItemWeight))
         {
             return;
         }
 
-        if (item.bomb)
+        GameFurniture furniture = item.furnitureData;
+        int trapType = item._bombType;
+        bool isTrap = item.bomb;
+        float lootWeightMultiplier = useOwnerTracking
+            ? networkLootWeightMultiplier
+            : ResolveLocalLootWeightMultiplier(isTrap, trapType);
+
+        if (isTrap)
         {
-            int trapType = item._bombType;
-            GameFurniture furniture = item.furnitureData;
-            if (triggeredByLocalPlayer)
+            if (applyTrapEffect)
             {
                 item.TriggerTrap();
             }
 
-            eventLog?.LogTrapTriggered(playerName, trapType, actorCharacterId, actorAvatarData);
-            if (LootItemForOwner(item, item.ItemWeight, lootOwnerId, lootWeightMultiplier))
-            {
-                eventLog?.LogLootTaken(playerName, furniture, lootWeightMultiplier, actorCharacterId, actorAvatarData);
-            }
-
-            if (!triggeredByLocalPlayer)
-            {
-                ListOfUIItems[index].ItemWeight = 0;
-                return;
-            }
-
-            switch (trapType)
-            {
-                case 0:
-                    exitraid.EndRaid();
-                    break;
-                case 1:
-                    Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.Freeze, freezeDuration);
-                    StartFreeze();
-                    break;
-                case 2:
-                    Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.DoubleWeight);
-                    break;
-            }
-
-            ListOfUIItems[index].ItemWeight = 0;
-            return;
+            eventLog?.LogTrapTriggered(actorContext.PlayerName, trapType, actorContext.CharacterId, actorContext.AvatarData);
         }
 
-        GameFurniture furnitureData = item.furnitureData;
-        if (LootItemForOwner(item, item.ItemWeight, lootOwnerId, lootWeightMultiplier))
+        if (LootItem(item, lootOwnerId, lootWeightMultiplier, useOwnerTracking))
         {
-            eventLog?.LogLootTaken(playerName, furnitureData, lootWeightMultiplier, actorCharacterId, actorAvatarData);
+            eventLog?.LogLootTaken(actorContext.PlayerName, furniture, lootWeightMultiplier, actorContext.CharacterId, actorContext.AvatarData);
         }
-        ListOfUIItems[index].ItemWeight = 0;
+
+        item.ItemWeight = 0f;
+
+        if (isTrap && applyTrapEffect)
+        {
+            ApplyTrapEffect(trapType);
+        }
     }
 
-    private bool LootItem(Raid_InventoryItem item, float itemWeight)
+    private bool LootItem(Raid_InventoryItem item, string lootOwnerId, float lootWeightMultiplier, bool useOwnerTracking)
     {
-        ResolveReferences();
-
-        if (item == null || itemWeight != item.ItemWeight || itemWeight == 0)
-        {
-            Debug.Log("This inventory slot has already been looted!");
-            return false;
-        }
-
-        if (LootTracker == null)
-        {
-            Debug.LogError("Cannot loot item because Raid_InventoryPage is missing Raid_LootTracking reference.", this);
-            return false;
-        }
-
         GameFurniture furniture = item.furnitureData;
-        Sprite lootSprite = item.CurrentItemSprite != null ? item.CurrentItemSprite : furniture?.FurnitureInfo?.Image;
-        float lootWeightMultiplier = nextLootWeightDoubled ? doubleWeightMultiplier : 1f;
-        item.LaunchBall(lootSprite, UpdateHeartRecentLootSprite);
-        LootTracker.SetLootCount(furniture, LootTracker.MaxLootWeight, lootWeightMultiplier);
-        nextLootWeightDoubled = false;
-        item.RemoveData();
-        return true;
-    }
-
-    private bool LootItemForOwner(Raid_InventoryItem item, float itemWeight, string lootOwnerId, float lootWeightMultiplier)
-    {
-        ResolveReferences();
-
-        if (item == null || itemWeight != item.ItemWeight || itemWeight == 0)
+        if (LootTracker == null || furniture == null)
         {
-            Debug.Log("This inventory slot has already been looted!");
+            if (LootTracker == null)
+            {
+                Debug.LogError("Cannot loot item because Raid_InventoryPage is missing Raid_LootTracking reference.", this);
+            }
+
             return false;
         }
 
-        if (LootTracker == null)
-        {
-            Debug.LogError("Cannot loot item because Raid_InventoryPage is missing Raid_LootTracking reference.", this);
-            return false;
-        }
-
-        GameFurniture furniture = item.furnitureData;
         Sprite lootSprite = item.CurrentItemSprite != null ? item.CurrentItemSprite : furniture?.FurnitureInfo?.Image;
-        Action<Sprite> updateRecentLootImage = LootTracker.IsDisplayedLootOwner(lootOwnerId)
+        Action<Sprite> updateRecentLootImage = !useOwnerTracking || LootTracker.IsDisplayedLootOwner(lootOwnerId)
             ? UpdateHeartRecentLootSprite
             : null;
         item.LaunchBall(lootSprite, updateRecentLootImage);
-        LootTracker.SetLootOwnerLootCount(lootOwnerId, furniture, LootTracker.MaxLootWeight, lootWeightMultiplier);
+
+        if (useOwnerTracking)
+        {
+            LootTracker.SetLootOwnerLootCount(lootOwnerId, furniture, LootTracker.MaxLootWeight, lootWeightMultiplier);
+        }
+        else
+        {
+            LootTracker.SetLootCount(furniture, LootTracker.MaxLootWeight, lootWeightMultiplier);
+            nextLootWeightDoubled = false;
+        }
+
         item.RemoveData();
 
         return true;
     }
 
-    // Get a list of furniture between LowestWeight and HighestWeight, also it accepts any List<GameFurniture> to allow for seasonal furniture sets
     public List<GameFurniture> WeightQuery(List<GameFurniture> furnitureList, float LowestWeight, float HighestWeight)
     {
-        return furnitureList.Where(f => f.Weight >= LowestWeight && f.Weight <= HighestWeight).ToList();
+        List<GameFurniture> results = new List<GameFurniture>();
+        if (furnitureList == null)
+        {
+            return results;
+        }
+
+        for (int i = 0; i < furnitureList.Count; i++)
+        {
+            GameFurniture furniture = furnitureList[i];
+            if (furniture != null && furniture.Weight >= LowestWeight && furniture.Weight <= HighestWeight)
+            {
+                results.Add(furniture);
+            }
+        }
+
+        return results;
     } 
 
 
     public void RandomizeInventoryContent(int InventorySize)
     {
-        // InventorySize = raid_InventoryHandler.InventorySize;
-
-        // Split all furnitures into lists
         List<GameFurniture> SmallItemList = WeightQuery(ListOfFurniture,0f,50f);
         List<GameFurniture> MediumItemList = WeightQuery(ListOfFurniture,50f,80f);
-        List<GameFurniture> LargeItemList = WeightQuery(ListOfFurniture,80.1f,999f); 
+        List<GameFurniture> LargeItemList = WeightQuery(ListOfFurniture,80.1f,999f);
 
-        // Just so the next one knows that a list might be empty, the spawning logic should still run unless all lists are empty?
-        if (LargeItemList.Count == 0)
+        if (SmallItemList.Count == 0 && MediumItemList.Count == 0 && LargeItemList.Count == 0)
         {
-            Debug.Log("HUOM LargeItemList on tyhjä!"); 
-        } if (MediumItemList.Count == 0)
-        {
-            Debug.Log("HUOM MediumItemList on tyhjä!");
-        }if (SmallItemList.Count == 0)
-        {
-            Debug.Log("HUOM SmallItemList on tyhjä!");
+            Debug.LogError("Raid inventory cannot be generated because no furniture was found.");
+            return;
         }
 
         for (int i = 0; i < InventorySize; i++)
         {
             int RandomFurniture;
-            //_photonView.RPC(nameof(SetInventorySlotDataRPC), RpcTarget.All, i, RandomFurniture);
-
-            // Randomize inventory content and enforce item limits (TODO) randomize better
             int x = Random.Range(0, 3);
             switch (x)
             {
                 case 0:
-                    if (raid_InventoryHandler.LargeItemMaxAmount != 0 && LargeItemList.Count != 0)
+                    if (raid_InventoryHandler != null && raid_InventoryHandler.LargeItemMaxAmount != 0 && LargeItemList.Count != 0)
                     {
                         RandomFurniture = Random.Range(0,LargeItemList.Count);
                         SetInventorySlotDataRPC(LargeItemList,i,RandomFurniture);
                         raid_InventoryHandler.LargeItemMaxAmount--;
-                    } else {goto case 1;} 
+                    } else {goto case 1;}
                     break;
                 case 1:
-                    if (raid_InventoryHandler.MediumItemMaxAmount != 0 && MediumItemList.Count != 0)
+                    if (raid_InventoryHandler != null && raid_InventoryHandler.MediumItemMaxAmount != 0 && MediumItemList.Count != 0)
                     {
                         RandomFurniture = Random.Range(0,MediumItemList.Count);
                         SetInventorySlotDataRPC(MediumItemList,i,RandomFurniture);
@@ -390,14 +286,20 @@ public class Raid_InventoryPage : MonoBehaviour
                     } else {goto case 2;}
                     break;
                 case 2:
-                    RandomFurniture = Random.Range(0,SmallItemList.Count);
-                    SetInventorySlotDataRPC(SmallItemList,i,RandomFurniture);
+                    if (SmallItemList.Count != 0)
+                    {
+                        RandomFurniture = Random.Range(0,SmallItemList.Count);
+                        SetInventorySlotDataRPC(SmallItemList,i,RandomFurniture);
+                    }
+                    else if (!TrySetRandomInventorySlotData(MediumItemList, i) && !TrySetRandomInventorySlotData(LargeItemList, i))
+                    {
+                        return;
+                    }
                     break;
             }
         }
 
     }
-
     public void RandomizeInventoryContentDeterministic(int InventorySize, int seed)
     {
         List<GameFurniture> smallItemList = WeightQuery(ListOfFurniture, 0f, 50f);
@@ -456,10 +358,17 @@ public class Raid_InventoryPage : MonoBehaviour
     }
     public void RandomizeBombs()
     {
+        if (ListOfUIItems.Count == 0)
+        {
+            Bombs = Array.Empty<BombData>();
+            return;
+        }
+
         int amount = Mathf.Clamp(trapAmount, 1, ListOfUIItems.Count);
         Bombs = new BombData[amount];
 
-        List<int> availableIndices = Enumerable.Range(0, ListOfUIItems.Count).OrderBy(_ => Random.value).Take(amount).ToList();
+        List<int> availableIndices = BuildSequentialIndexList(ListOfUIItems.Count);
+        ShuffleWithUnityRandom(availableIndices);
 
         for (int i = 0; i < amount; i++)
         {
@@ -473,9 +382,14 @@ public class Raid_InventoryPage : MonoBehaviour
 
     public RaidPhotonRoom.TrapData[] BuildDeterministicTrapData(int inventorySize, int seed)
     {
+        if (inventorySize <= 0)
+        {
+            return Array.Empty<RaidPhotonRoom.TrapData>();
+        }
+
         int amount = Mathf.Clamp(trapAmount, 1, inventorySize);
         System.Random rng = new System.Random(seed);
-        List<int> availableIndices = Enumerable.Range(0, inventorySize).ToList();
+        List<int> availableIndices = BuildSequentialIndexList(inventorySize);
 
         for (int i = availableIndices.Count - 1; i > 0; i--)
         {
@@ -508,34 +422,11 @@ public class Raid_InventoryPage : MonoBehaviour
         Raid_InventoryItem item = GetInventoryItem(index);
         return item != null && item.bomb && item._bombType == 2 ? doubleWeightMultiplier : 1f;
     }
-    /*[PunRPC]*/
     public void SendBombLocationsRPC(string jsonBombs)
     {
-        Bombs = JsonUtility.FromJson<BombData[]>(jsonBombs);
-    }
-
-    // Locks items around passed index.
-    public void LockItems(int index)
-    {
-        int column = -1;
-        bool topRow = false;
-
-        if (index == 0 || index == 1 || index == 2 || index == 3)
-        {
-            topRow = true;
-            column = index;
-        }
-        if (column == -1)
-            column = index % 4;
-
-        if (column != 3)
-            ListOfUIItems[index + 1].GetComponent<Raid_InventoryItem>().SetLocked();
-        if (column != 0)
-            ListOfUIItems[index - 1].GetComponent<Raid_InventoryItem>().SetLocked();
-        if (!topRow)
-            ListOfUIItems[index - 4].GetComponent<Raid_InventoryItem>().SetLocked();
-        if (ListOfUIItems[index + 4])
-            ListOfUIItems[index + 4].GetComponent<Raid_InventoryItem>().SetLocked();
+        Bombs = string.IsNullOrWhiteSpace(jsonBombs)
+            ? Array.Empty<BombData>()
+            : JsonUtility.FromJson<BombData[]>(jsonBombs);
     }
 
     private void StartFreeze()
@@ -556,12 +447,20 @@ public class Raid_InventoryPage : MonoBehaviour
         freezeRoutine = null;
     }
     
-    // Sets the UI slot to a choosen item.
     public void SetInventorySlotDataRPC(List<GameFurniture> furnitureSet,int UiIndex, int FurnitureIndex)
     {
+        if (furnitureSet == null
+            || UiIndex < 0
+            || UiIndex >= ListOfUIItems.Count
+            || FurnitureIndex < 0
+            || FurnitureIndex >= furnitureSet.Count
+            || ListOfUIItems[UiIndex] == null)
+        {
+            return;
+        }
+
         GameFurniture furniture = furnitureSet[FurnitureIndex];
         ListOfUIItems[UiIndex].SetData(furniture);
-        return;
     }
 
     private bool TrySetInventorySlotData(List<GameFurniture> furnitureSet, int uiIndex, System.Random rng)
@@ -573,6 +472,17 @@ public class Raid_InventoryPage : MonoBehaviour
 
         int furnitureIndex = rng.Next(0, furnitureSet.Count);
         SetInventorySlotDataRPC(furnitureSet, uiIndex, furnitureIndex);
+        return true;
+    }
+
+    private bool TrySetRandomInventorySlotData(List<GameFurniture> furnitureSet, int uiIndex)
+    {
+        if (furnitureSet == null || furnitureSet.Count == 0 || uiIndex < 0 || uiIndex >= ListOfUIItems.Count)
+        {
+            return false;
+        }
+
+        SetInventorySlotDataRPC(furnitureSet, uiIndex, Random.Range(0, furnitureSet.Count));
         return true;
     }
 
@@ -620,7 +530,8 @@ public class Raid_InventoryPage : MonoBehaviour
     {
         if (raid_References == null)
         {
-            raid_References = FindObjectOfType<Raid_References>();
+            Raid_References[] references = FindObjectsOfType<Raid_References>(true);
+            raid_References = references.Length > 0 ? references[0] : null;
         }
 
         if (LootTracker == null)
@@ -648,16 +559,17 @@ public class Raid_InventoryPage : MonoBehaviour
         if (heartScript == null)
         {
             heartScript = raid_References != null && raid_References.Heart != null
-                ? raid_References.Heart.GetComponent<HeartScript>()
+                && raid_References.Heart.TryGetComponent(out HeartScript referencedHeart)
+                    ? referencedHeart
                 : null;
         }
 
         if (heartScript == null)
         {
             GameObject heart = GameObject.FindWithTag("Heart");
-            if (heart != null)
+            if (heart != null && heart.TryGetComponent(out HeartScript foundHeart))
             {
-                heartScript = heart.GetComponent<HeartScript>();
+                heartScript = foundHeart;
             }
         }
 
@@ -683,10 +595,23 @@ public class Raid_InventoryPage : MonoBehaviour
 
     private void SetBombsFromTrapData(RaidPhotonRoom.TrapData[] trapData)
     {
-        Bombs = trapData
-            .Where(trap => trap.Index >= 0 && trap.Index < ListOfUIItems.Count)
-            .Select(trap => new BombData { bombIndex = trap.Index, bombType = trap.Type })
-            .ToArray();
+        if (trapData == null)
+        {
+            Bombs = Array.Empty<BombData>();
+            return;
+        }
+
+        List<BombData> bombs = new List<BombData>(trapData.Length);
+        for (int i = 0; i < trapData.Length; i++)
+        {
+            RaidPhotonRoom.TrapData trap = trapData[i];
+            if (trap.Index >= 0 && trap.Index < ListOfUIItems.Count)
+            {
+                bombs.Add(new BombData { bombIndex = trap.Index, bombType = trap.Type });
+            }
+        }
+
+        Bombs = bombs.ToArray();
     }
 
     private void ClearInventoryUI()
@@ -701,5 +626,98 @@ public class Raid_InventoryPage : MonoBehaviour
         }
 
         ListOfUIItems.Clear();
+    }
+
+    private bool CanLoot(int index, out Raid_InventoryItem item)
+    {
+        item = GetInventoryItem(index);
+        if (item == null || inventoryFrozen)
+        {
+            return false;
+        }
+
+        if (raid_Timer == null || LootTracker == null || exitraid == null)
+        {
+            return false;
+        }
+
+        if (raid_Timer.CurrentTime <= 0f || LootTracker.CurrentLootWeight > LootTracker.MaxLootWeight || exitraid.raidEnded)
+        {
+            return false;
+        }
+
+        return item.ItemWeight > 0f && item.furnitureData != null;
+    }
+
+    private void TryStartTimerOnFirstLoot()
+    {
+        if (!firstItem || raid_Timer == null)
+        {
+            return;
+        }
+
+        raid_Timer.StartTimer();
+        firstItem = false;
+    }
+
+    private float ResolveLocalLootWeightMultiplier(bool isTrap, int trapType)
+    {
+        if (isTrap && trapType == 2)
+        {
+            nextLootWeightDoubled = true;
+        }
+
+        return nextLootWeightDoubled ? doubleWeightMultiplier : 1f;
+    }
+
+    private void ApplyTrapEffect(int trapType)
+    {
+        switch (trapType)
+        {
+            case 0:
+                exitraid.EndRaid();
+                break;
+            case 1:
+                Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.Freeze, freezeDuration);
+                StartFreeze();
+                break;
+            case 2:
+                Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.DoubleWeight);
+                break;
+        }
+    }
+
+    private readonly struct LootActorContext
+    {
+        public LootActorContext(string playerName, CharacterID characterId, AvatarData avatarData)
+        {
+            PlayerName = playerName;
+            CharacterId = characterId;
+            AvatarData = avatarData;
+        }
+
+        public string PlayerName { get; }
+        public CharacterID CharacterId { get; }
+        public AvatarData AvatarData { get; }
+    }
+
+    private static List<int> BuildSequentialIndexList(int count)
+    {
+        List<int> indices = new List<int>(Mathf.Max(0, count));
+        for (int i = 0; i < count; i++)
+        {
+            indices.Add(i);
+        }
+
+        return indices;
+    }
+
+    private static void ShuffleWithUnityRandom(List<int> values)
+    {
+        for (int i = values.Count - 1; i > 0; i--)
+        {
+            int swapIndex = Random.Range(0, i + 1);
+            (values[i], values[swapIndex]) = (values[swapIndex], values[i]);
+        }
     }
 }

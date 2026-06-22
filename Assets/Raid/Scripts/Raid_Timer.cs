@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.Language;
 using UnityEngine;
 using TMPro;
@@ -38,7 +36,6 @@ public class Raid_Timer : MonoBehaviour
     [Header("Format settings")]
     public bool HasFormat;
     public TimerFormat Format;
-    private Dictionary<TimerFormat, string> TimeFormat = new Dictionary<TimerFormat, string>();
 
     public event Action TimeEnded;
     public event Action TimerStarted;
@@ -61,11 +58,8 @@ public class Raid_Timer : MonoBehaviour
 
     public bool HasStarted => started;
 
-    void Start()
+    private void Start()
     {
-        TimeFormat.Add(TimerFormat.Whole, "0");
-        TimeFormat.Add(TimerFormat.TenthDecimal, "0.0");
-        TimeFormat.Add(TimerFormat.HundrethsDecimal, "0.00");
         initialCurrentTime = CurrentTime;
         initialTimeUntilStart = TimeUntilStart;
 
@@ -96,7 +90,7 @@ public class Raid_Timer : MonoBehaviour
         timerTextHalo?.Dispose();
     }
 
-    void Update()
+    private void Update()
     {
         if (RaidMatchmakingController.Instance != null
             && RaidMatchmakingController.Instance.ControlsInventorySetup
@@ -113,7 +107,7 @@ public class Raid_Timer : MonoBehaviour
         if (timerActive)
         {
             CurrentTime = CountUp ? CurrentTime += Time.deltaTime : CurrentTime -= Time.deltaTime;
-            if (CurrentTime <= 5)
+            if (CurrentTime <= 5f && TimerText != null)
             {
                 float t = Mathf.PingPong(Time.time / duration, 1f);
                 Color lerped = Color.Lerp(startColor, endColor, t);
@@ -140,7 +134,10 @@ public class Raid_Timer : MonoBehaviour
                 CurrentTime = TimerLimit;
                 SetTimerText();
                 UpdateTimerFill();
-                TimerText.color = Color.red;
+                if (TimerText != null)
+                {
+                    TimerText.color = Color.red;
+                }
                 enabled = false;
             }
         }
@@ -159,7 +156,10 @@ public class Raid_Timer : MonoBehaviour
                 }
                 else
                 {
-                    StartTimerText.text = Mathf.CeilToInt(TimeUntilStart).ToString();
+                    if (StartTimerText != null)
+                    {
+                        StartTimerText.text = Mathf.CeilToInt(TimeUntilStart).ToString();
+                    }
                 }
             }
         }
@@ -216,6 +216,11 @@ public class Raid_Timer : MonoBehaviour
     private void ShowStartText()
     {
         if (startTextShown)
+        {
+            return;
+        }
+
+        if (StartTimerText == null)
         {
             return;
         }
@@ -342,9 +347,28 @@ public class Raid_Timer : MonoBehaviour
 
     private void SetTimerText()
     {
-        //TimerText.text = HasFormat ? CurrentTime.ToString(TimeFormat[Format]) : CurrentTime.ToString();
-        TimerText.text = CurrentTime.ToString("F0");
+        if (TimerText == null)
+        {
+            return;
+        }
+
+        TimerText.text = CurrentTime.ToString(GetTimeFormat());
         timerTextHalo?.Sync();
+    }
+
+    private string GetTimeFormat()
+    {
+        if (!HasFormat)
+        {
+            return "F0";
+        }
+
+        return Format switch
+        {
+            TimerFormat.TenthDecimal => "F1",
+            TimerFormat.HundrethsDecimal => "F2",
+            _ => "F0"
+        };
     }
 
     private void SetTimerTextHaloVisible(bool visible)
@@ -423,12 +447,12 @@ public class Raid_Timer : MonoBehaviour
         return 1f - Mathf.InverseLerp(timerStartTime, TimerLimit, CurrentTime);
     }
 
-    void OnTimeEnd()
+    private void OnTimeEnd()
     {
         TimeEnded?.Invoke();
     }
 
-    void RaidExited()
+    private void RaidExited()
     {
         CurrentTime = 0;
         UpdateTimerFill();

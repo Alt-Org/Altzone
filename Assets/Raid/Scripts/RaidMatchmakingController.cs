@@ -1351,7 +1351,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        Debug.Log($"Raid debug start forced with {validPlayers.Count}/{RaidPhotonRoom.RequiredPlayers} players.");
         ShowMatchmaking("Debug starting Raid", "Starting without required player count.", $"{validPlayers.Count}/{RaidPhotonRoom.RequiredPlayers} players");
         StartLobbyCountdown(validPlayers, clanEntries);
     }

@@ -61,8 +61,6 @@ MonoBehaviour:
   collectedLootItemPrefab: {fileID: 7481540141435164365, guid: 9d8e0a9a6f9147d48b21b7c52f0a3e91,
     type: 3}
   menuRoot: {fileID: 683399793402178915}
-  normalEndResultText: {fileID: 2517094342130405460}
-  overweightEndResultText: {fileID: 9001000000000000001}
   spaceRemainingText: {fileID: 9102000000000000004}
   backButton: {fileID: 9204100000000000005}
   collectedLootItemScale: {x: 1.25, y: 1.25, z: 1}
@@ -983,7 +981,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9001000000000000002
 RectTransform:
   m_ObjectHideFlags: 0

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Raid_References : MonoBehaviour
@@ -25,15 +23,17 @@ public class Raid_References : MonoBehaviour
 
     private void Awake()
     {
-        if (GetComponent<RaidMatchmakingController>() == null)
+        if (!TryGetComponent(out RaidMatchmakingController _))
         {
             gameObject.AddComponent<RaidMatchmakingController>();
         }
+
+        ResolveReferences();
     }
 
     private void Start()
     {
-        inventoryHandler = GameObject.Find("ScriptHolder").GetComponent<Raid_InventoryHandler>();
+        ResolveReferences();
 
         HideEndMenu();
     }
@@ -71,12 +71,37 @@ public class Raid_References : MonoBehaviour
 
         if (endMenuController == null && EndMenu != null)
         {
-            endMenuController = EndMenu.GetComponent<Raid_EndMenu>();
+            EndMenu.TryGetComponent(out endMenuController);
         }
 
         if (EndMenu == null && endMenuController != null)
         {
             EndMenu = endMenuController.MenuRoot;
         }
+    }
+
+    private void ResolveReferences()
+    {
+        if (inventoryHandler == null)
+        {
+            TryGetComponent(out inventoryHandler);
+        }
+
+        if (inventoryHandler == null)
+        {
+            inventoryHandler = FindObjectOfType<Raid_InventoryHandler>();
+        }
+
+        if (raid_LootTracking == null)
+        {
+            TryGetComponent(out raid_LootTracking);
+        }
+
+        if (raid_LootTracking == null)
+        {
+            raid_LootTracking = FindObjectOfType<Raid_LootTracking>();
+        }
+
+        ResolveEndMenuController();
     }
 }

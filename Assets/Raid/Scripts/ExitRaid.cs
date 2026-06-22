@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ExitRaid : MonoBehaviour
@@ -109,9 +108,9 @@ public class ExitRaid : MonoBehaviour
         yield return Raid_EventPopup.ShowAndWait(this, GetPopupScenario(reason));
 
         Raid_EndMenu endMenu = raid_References.EndMenuController;
-        if (endMenu == null)
+        if (endMenu == null || raid_References.raid_LootTracking == null)
         {
-            Debug.LogError("Cannot show raid end menu because the EndMenuController reference is missing.");
+            Debug.LogError("Cannot show raid end menu because the end menu or loot tracking reference is missing.");
             yield break;
         }
 
@@ -138,8 +137,10 @@ public class ExitRaid : MonoBehaviour
 
     private void SetLossHaloVisuals(RaidEndReason reason)
     {
-        HeartScript heartScript = raid_References != null && raid_References.Heart != null
-            ? raid_References.Heart.GetComponent<HeartScript>()
+        HeartScript heartScript = raid_References != null
+            && raid_References.Heart != null
+            && raid_References.Heart.TryGetComponent(out HeartScript referencedHeart)
+            ? referencedHeart
             : null;
 
         if (heartScript == null)

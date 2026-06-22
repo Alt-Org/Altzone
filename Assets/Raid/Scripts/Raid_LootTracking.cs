@@ -1,14 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 using Altzone.Scripts.Model.Poco.Game;
 using System;
-//using Photon.Pun;
 
-public class Raid_LootTracking : MonoBehaviour//PunCallbacks
+public class Raid_LootTracking : MonoBehaviour
 {
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
     [SerializeField] private ExitRaid exitRaid;
@@ -19,7 +16,6 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
     [SerializeField, Header("Variables")] public float CurrentLootWeight;
     [SerializeField] public float MaxLootWeight;
 
-    //public PhotonView _photonView { get; private set; }
     public List<GameFurniture> ListOfCollectedLoot = new List<GameFurniture>();
     public event Action CollectedLootChanged;
 
@@ -32,27 +28,21 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     public void Awake()
     {
+        if (raid_References == null)
+        {
+            Raid_References[] references = FindObjectsOfType<Raid_References>(true);
+            raid_References = references.Length > 0 ? references[0] : null;
+        }
+
         if (exitRaid == null)
         {
             exitRaid = ExitRaid.Instance;
         }
-
-/*        _photonView = gameObject.AddComponent<PhotonView>();
-        _photonView.ViewID = 3;
-        if (PhotonNetwork.IsMasterClient)
-        {
-            float randomlootWeight = Random.Range(140, 241);
-            _photonView.RPC(nameof(SetRandomMaxLootWeightRPC), RpcTarget.AllBuffered, randomlootWeight);
-        }
-
-        ResetLootCount();*/
     }
 
-    /*[PunRPC]*/
     public void SetRandomMaxLootWeightRPC(float maxLootWeight)
     {
         MaxLootWeight = maxLootWeight;
-        //Debug.Log("maxLootWeight has been set");
         UpdateHeartLootText();
     }
 
@@ -128,6 +118,11 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     public void SetLootCount(GameFurniture furniture, float MaxLootWeight, float lootWeightMultiplier = 1f)
     {
+        if (furniture == null)
+        {
+            return;
+        }
+
         float AddedLootWeight = (float)furniture.Weight * lootWeightMultiplier;
         ListOfCollectedLoot.Add(furniture);
         _collectedLootWeights.Add(AddedLootWeight);
@@ -325,8 +320,10 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     private void TriggerOverWeightEnd(float maxLootWeight)
     {
-        Image heartImage = raid_References != null && raid_References.Heart != null
-            ? raid_References.Heart.GetComponent<Image>()
+        Image heartImage = raid_References != null
+            && raid_References.Heart != null
+            && raid_References.Heart.TryGetComponent(out Image image)
+            ? image
             : null;
 
         if (heartImage != null)
@@ -345,7 +342,9 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         }
         else
         {
-            Raid_EndMenu endMenu = raid_References.EndMenu.GetComponent<Raid_EndMenu>();
+            Raid_EndMenu endMenu = raid_References != null
+                ? raid_References.EndMenuController
+                : null;
             if (endMenu != null)
             {
                 endMenu.SetEndReasonText(ExitRaid.RaidEndReason.OutOfSpace);
@@ -354,7 +353,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
                 endMenu.SetSpaceRemainingText(CurrentLootWeight, maxLootWeight);
             }
 
-            raid_References.EndMenu.SetActive(true);
+            raid_References?.ShowEndMenu();
         }
     }
     

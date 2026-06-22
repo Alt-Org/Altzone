@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
+using System.Text;
 using Altzone.Scripts.Model.Poco.Player;
 
 public static class RaidPhotonRoom
@@ -93,7 +93,16 @@ public static class RaidPhotonRoom
             return string.Empty;
         }
 
-        return string.Join("|", traps.Select(trap => $"{trap.Index}:{trap.Type}"));
+        StringBuilder builder = new StringBuilder();
+        foreach (TrapData trap in traps)
+        {
+            AppendSeparator(builder);
+            builder.Append(trap.Index.ToString(CultureInfo.InvariantCulture));
+            builder.Append(':');
+            builder.Append(trap.Type.ToString(CultureInfo.InvariantCulture));
+        }
+
+        return builder.ToString();
     }
 
     public static TrapData[] DecodeTraps(string value)
@@ -130,9 +139,23 @@ public static class RaidPhotonRoom
             return string.Empty;
         }
 
-        return string.Join("|", clans
-            .Where(clan => !string.IsNullOrWhiteSpace(clan.ClanId))
-            .Select(clan => $"{Escape(clan.ClanId)}:{clan.Count}:{Escape(clan.ClanName)}"));
+        StringBuilder builder = new StringBuilder();
+        foreach (ClanEntry clan in clans)
+        {
+            if (string.IsNullOrWhiteSpace(clan.ClanId))
+            {
+                continue;
+            }
+
+            AppendSeparator(builder);
+            builder.Append(Escape(clan.ClanId));
+            builder.Append(':');
+            builder.Append(clan.Count.ToString(CultureInfo.InvariantCulture));
+            builder.Append(':');
+            builder.Append(Escape(clan.ClanName));
+        }
+
+        return builder.ToString();
     }
 
     public static ClanEntry[] DecodeClanCounts(string value)
@@ -171,9 +194,21 @@ public static class RaidPhotonRoom
             return string.Empty;
         }
 
-        return string.Join("|", limits
-            .Where(limit => !string.IsNullOrWhiteSpace(limit.ClanId))
-            .Select(limit => $"{Escape(limit.ClanId)}:{limit.MaxWeight.ToString(CultureInfo.InvariantCulture)}"));
+        StringBuilder builder = new StringBuilder();
+        foreach (ClanWeightLimit limit in limits)
+        {
+            if (string.IsNullOrWhiteSpace(limit.ClanId))
+            {
+                continue;
+            }
+
+            AppendSeparator(builder);
+            builder.Append(Escape(limit.ClanId));
+            builder.Append(':');
+            builder.Append(limit.MaxWeight.ToString(CultureInfo.InvariantCulture));
+        }
+
+        return builder.ToString();
     }
 
     public static ClanWeightLimit[] DecodeClanWeightLimits(string value)
@@ -209,9 +244,21 @@ public static class RaidPhotonRoom
             return string.Empty;
         }
 
-        return string.Join("|", limits
-            .Where(limit => !string.IsNullOrWhiteSpace(limit.PlayerId))
-            .Select(limit => $"{Escape(limit.PlayerId)}:{limit.MaxWeight.ToString(CultureInfo.InvariantCulture)}"));
+        StringBuilder builder = new StringBuilder();
+        foreach (PlayerWeightLimit limit in limits)
+        {
+            if (string.IsNullOrWhiteSpace(limit.PlayerId))
+            {
+                continue;
+            }
+
+            AppendSeparator(builder);
+            builder.Append(Escape(limit.PlayerId));
+            builder.Append(':');
+            builder.Append(limit.MaxWeight.ToString(CultureInfo.InvariantCulture));
+        }
+
+        return builder.ToString();
     }
 
     public static PlayerWeightLimit[] DecodePlayerWeightLimits(string value)
@@ -267,7 +314,14 @@ public static class RaidPhotonRoom
             avatarData.HandsColor
         };
 
-        return string.Join("|", values.Select(Escape));
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < values.Length; i++)
+        {
+            AppendSeparator(builder);
+            builder.Append(Escape(values[i]));
+        }
+
+        return builder.ToString();
     }
 
     public static AvatarData DecodeAvatarData(string value)
@@ -328,5 +382,13 @@ public static class RaidPhotonRoom
     private static string Unescape(string value)
     {
         return Uri.UnescapeDataString(value ?? string.Empty);
+    }
+
+    private static void AppendSeparator(StringBuilder builder)
+    {
+        if (builder.Length > 0)
+        {
+            builder.Append('|');
+        }
     }
 }

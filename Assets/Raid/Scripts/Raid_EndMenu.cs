@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
@@ -71,7 +70,6 @@ public class Raid_EndMenu : MonoBehaviour
         SetVisible(false);
     }
 
-    // SetCollectedLoot for display when showing EndMenu
     public void SetCollectedLoot(IReadOnlyList<GameFurniture> lootList)
     {
         ConfigureCollectedLootLayout();
@@ -146,7 +144,7 @@ public class Raid_EndMenu : MonoBehaviour
     {
         SceneManager.LoadScene("10-MenuUI");
     }
-    //TODO: This is used for testing / debugging only, remove when releasing demo
+
     public void Restart() 
     {
         RaidMatchmakingController.RestartNextSceneInDebugInventoryMode();
