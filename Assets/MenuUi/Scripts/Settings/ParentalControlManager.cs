@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Collections;
 using Altzone.Scripts.AzDebug;
 using TMPro;
 using UnityEngine;
@@ -80,7 +81,7 @@ public class ParentalControlManager : MonoBehaviour
     //public bool EndAfterMatch;
     public Toggle endMatchToggle;
 
-
+    public GameObject settingsSavedPopUp;
     
 
 
@@ -516,6 +517,8 @@ public class ParentalControlManager : MonoBehaviour
     {
         PlayerPrefs.Save();
         //TODO pop up when settings are saved
+        settingsSavedPopUp.SetActive(true);
+        CloseSettingsPopUp();
         //messageText.text = "Asetukset tallennettu";
 
     }
@@ -681,6 +684,20 @@ public class ParentalControlManager : MonoBehaviour
         confirmPasswordInput.Select();
 
     }
+
+
+    public void CloseSettingsPopUp()
+    {
+        StartCoroutine(RemoveAfterSeconds(2));
+    }
+
+    IEnumerator RemoveAfterSeconds(int seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        settingsSavedPopUp.SetActive(false);
+    }
+
+
 
 
 }
