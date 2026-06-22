@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(CanvasGroup))]
 public class Raid_LiveInventory : MonoBehaviour
 {
     [SerializeField] private RectTransform content;
@@ -181,6 +182,12 @@ public class Raid_LiveInventory : MonoBehaviour
     {
         EnsureInitialized();
 
+        if (canvasGroup == null)
+        {
+            Debug.LogError("Cannot set raid live inventory visibility because CanvasGroup is missing from the LiveInventory prefab.", this);
+            return;
+        }
+
         if (!menuRoot.activeSelf)
         {
             menuRoot.SetActive(true);
@@ -199,10 +206,6 @@ public class Raid_LiveInventory : MonoBehaviour
         }
 
         canvasGroup = menuRoot.GetComponent<CanvasGroup>();
-        if (canvasGroup == null)
-        {
-            canvasGroup = menuRoot.AddComponent<CanvasGroup>();
-        }
 
         ResolveBackButton();
         if (backButton != null)

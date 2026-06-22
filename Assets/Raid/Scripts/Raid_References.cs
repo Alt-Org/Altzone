@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(RaidMatchmakingController))]
 public class Raid_References : MonoBehaviour
 {
     [SerializeField, Header("Reference GameObjects")]
@@ -23,11 +24,6 @@ public class Raid_References : MonoBehaviour
 
     private void Awake()
     {
-        if (!TryGetComponent(out RaidMatchmakingController _))
-        {
-            gameObject.AddComponent<RaidMatchmakingController>();
-        }
-
         ResolveReferences();
     }
 

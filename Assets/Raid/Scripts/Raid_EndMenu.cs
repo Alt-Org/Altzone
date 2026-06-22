@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
+[RequireComponent(typeof(CanvasGroup))]
 public class Raid_EndMenu : MonoBehaviour
 {
     public static Raid_EndMenu Instance { get; private set; }
@@ -209,18 +210,7 @@ public class Raid_EndMenu : MonoBehaviour
             return;
         }
 
-        GameObject iconObject = new GameObject("CollectedLootItem", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        iconObject.transform.SetParent(content, false);
-        iconObject.transform.localScale = collectedLootItemScale;
-
-        RectTransform rectTransform = iconObject.GetComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(325f, 325f);
-        rectTransform.pivot = new Vector2(0.5f, 0.5f);
-
-        Image icon = iconObject.GetComponent<Image>();
-        icon.sprite = sprite;
-        icon.preserveAspect = true;
-        icon.raycastTarget = false;
+        Debug.LogError("Cannot show collected raid loot icon because collectedLootItemPrefab/itemPrefab is missing from the EndMenu prefab.", this);
     }
 
     private void SetCollectedLootHaloVisible(bool visible)
@@ -245,6 +235,12 @@ public class Raid_EndMenu : MonoBehaviour
     private void SetVisible(bool visible)
     {
         EnsureInitialized();
+
+        if (canvasGroup == null)
+        {
+            Debug.LogError("Cannot set raid end menu visibility because CanvasGroup is missing from the EndMenu prefab.", this);
+            return;
+        }
 
         if (!menuRoot.activeSelf)
         {
@@ -299,10 +295,6 @@ public class Raid_EndMenu : MonoBehaviour
         }
 
         canvasGroup = menuRoot.GetComponent<CanvasGroup>();
-        if (canvasGroup == null)
-        {
-            canvasGroup = menuRoot.AddComponent<CanvasGroup>();
-        }
 
         initialized = true;
     }

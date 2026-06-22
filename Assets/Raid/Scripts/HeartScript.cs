@@ -10,7 +10,6 @@ public class HeartScript : MonoBehaviour
     private static readonly Vector2 LossHaloOffset = Vector2.zero;
 
     public Raid_LootTracking raid_LootTracking;
-    private const int DefaultRecentLootSlotCount = 3;
     [SerializeField, Min(1)] private int recentLootSlotCount = 3;
     [SerializeField] private Image[] recentLootImages;
     private readonly List<Sprite> recentLootSprites = new List<Sprite>();
@@ -218,7 +217,7 @@ public class HeartScript : MonoBehaviour
             return;
         }
 
-        int slotCount = recentLootSlotCount > 0 ? recentLootSlotCount : DefaultRecentLootSlotCount;
+        int slotCount = Mathf.Max(1, recentLootSlotCount);
         List<Image> resolvedImages = new List<Image>();
         for (int i = 1; i <= slotCount; i++)
         {
@@ -229,55 +228,10 @@ public class HeartScript : MonoBehaviour
                 continue;
             }
 
-            resolvedImages.Add(CreateRecentLootImage(i));
+            Debug.LogWarning($"Recent loot image slot RecentLootImage{i} is missing from {name}. Add it to the HeartPanel prefab instead of creating it at runtime.", this);
         }
 
         recentLootImages = resolvedImages.ToArray();
-    }
-
-    private Image CreateRecentLootImage(int slotIndex)
-    {
-        GameObject imageObject = new GameObject($"RecentLootImage{slotIndex}", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        imageObject.transform.SetParent(transform, false);
-        imageObject.SetActive(false);
-
-        RectTransform rectTransform = imageObject.GetComponent<RectTransform>();
-        ApplyRecentLootImageLayout(rectTransform, slotIndex);
-        rectTransform.SetSiblingIndex(Mathf.Max(0, slotIndex - 1));
-
-        Image image = imageObject.GetComponent<Image>();
-        image.raycastTarget = false;
-        image.preserveAspect = true;
-        image.enabled = false;
-        return image;
-    }
-
-    private void ApplyRecentLootImageLayout(RectTransform rectTransform, int slotIndex)
-    {
-        if (rectTransform == null)
-        {
-            return;
-        }
-
-        switch (slotIndex)
-        {
-            case 1:
-                rectTransform.anchorMin = new Vector2(0.35f, 0.35f);
-                rectTransform.anchorMax = new Vector2(0.68f, 0.72f);
-                break;
-            case 2:
-                rectTransform.anchorMin = new Vector2(0.13f, 0.38f);
-                rectTransform.anchorMax = new Vector2(0.44f, 0.78f);
-                break;
-            default:
-                rectTransform.anchorMin = new Vector2(0.52f, 0.5f);
-                rectTransform.anchorMax = new Vector2(0.78f, 0.86f);
-                break;
-        }
-
-        rectTransform.anchoredPosition = Vector2.zero;
-        rectTransform.sizeDelta = Vector2.zero;
-        rectTransform.pivot = new Vector2(0.5f, 0.5f);
     }
 
     private bool HasRecentLootImages()
