@@ -37,7 +37,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private bool _longClick = false;
     private ChatShowUsersPopUpData _reactionPopup = Chat.instance?.ChatShowUsersPopUpData;
 
-
     [SerializeField] public List<ServerReactions> ReactionData = new List<ServerReactions>(); //Used for addings data to ChatShowUserPopUpData
 
     [SerializeField] private string playerID;
@@ -179,36 +178,34 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
         foreach (ServerReactions reaction in reactions)
         {
-            ReactionData.RemoveAll(ReactionData => ReactionData.sender_id == reaction.sender_id);
+
+            
             AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, _reactionPaneldata._reactionField, message);
 
         }
         List<ChatReactionHandler> removableReactions = new();
         foreach (ChatReactionHandler addedReaction in _reactionHandlers)
         {
-
             if (addedReaction.Count <= 0)
             {
                 removableReactions.Add(addedReaction);
             }
-
         }
         for (int i = removableReactions.Count - 1; i >= 0; i--)
         {
-            RemoveReaction(removableReactions[i]);
+            RemoveReaction(removableReactions[i], message);
         }
 
+            UpdateReactionData(reactions, message);
 
 
-
-        //Used for "ChatShowUserPopUpData"
-        if (_reactionPopup.gameObject.activeSelf)
+            //Used for "ChatShowUserPopUpData"
+            if (_reactionPopup.gameObject.activeSelf)
         {
             _reactionPopup.ReactionFieldCopyUpdate(_reactionPaneldata._reactionField, this, message);
         }
 
     }
-
     /// <summary>
     /// Adds the chosen reaction to the selected message.
     /// </summary>
@@ -253,20 +250,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
                                 
 
                             }
-                            ReactionData.Add(_reaction);
-                            
-
-
-                        if (_reactionPopup.gameObject.activeSelf)
-                        {
-
-                            foreach (var reactionData in ReactionData)
-                            {
-                                _reactionPopup.AddUsersReaction(message, reactionData);
-
-                            }
-                        }
-
                     }));
                     GenarateReactionObjects(_reactionPaneldata._reactionsContent);
                     _selectedMessage.SetMessageInactive();
@@ -299,24 +282,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
                         _reactionList[i].Selected = true;
 
                     } 
-                        ReactionData.Add(_reaction);
-                    
-
-                    if (_reactionPopup.gameObject.activeSelf)
-                    {
-
-                        foreach (var reactionData in ReactionData)
-                        {
-                            _reactionPopup.AddUsersReaction(message, reactionData);
-
-                        }
-                    }
-
             }));
-            if (_reactionPopup.gameObject.activeSelf)
-            {
-                _reactionPopup.AddUsersReaction(message, _reaction);
-            }
 
             GenarateReactionObjects(_reactionPaneldata._reactionsContent);
 
@@ -344,17 +310,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
             ClearList(_reaction);
             
-            ReactionData.RemoveAll(ReactionData => ReactionData.sender_id == playerID);
-
-            if (_reactionPopup.gameObject.activeSelf)
-            {
-                foreach (var reactionData in ReactionData)
-                {
-                    _reactionPopup.AddUsersReaction(message, reactionData);
-                }
-            }
-            _selectedMessage.SetMessageInactive();
-
 
             if (reactionHandler.Selected)
             {
@@ -398,12 +353,45 @@ public class MessageReactionsHandler : AltMonoBehaviour
         Invoke("ResetLongClick", 2);
     }
 
+    //Used for ChatShowUsersPopUpData to update the data
+    void UpdateReactionData(List<ServerReactions> reactions, ChatMessage message)
+    {
+        //Empties the data
+        if (_reactionPopup.gameObject.activeSelf)
+        {
+            foreach (var i in ReactionData)
+            {
+                _reactionPopup.RemoveUserReaction(i.sender_id, message);
+            }
+        }
+
+        ReactionData.Clear();
+
+
+        //Adds the data
+        foreach (ServerReactions reaction in reactions)
+        {
+            ReactionData.Add(reaction);
+
+        }
+
+        if (_reactionPopup.gameObject.activeSelf)
+        {
+
+            foreach (var reactionData in ReactionData)
+            {
+                _reactionPopup.AddUsersReaction(message, reactionData);
+
+            }
+        }
+    }
+
     private void ResetLongClick()
     {
         _longClick = false;
     }
 
-    private void RemoveReaction(ChatReactionHandler reaction)
+    private void RemoveReaction(ChatReactionHandler reaction, ChatMessage message)
     {
         //Checks if the set gameObject is on or not
         HorizontalLayoutGroup reactionsField = _reactionPaneldata._reactionField.GetComponent<HorizontalLayoutGroup>();

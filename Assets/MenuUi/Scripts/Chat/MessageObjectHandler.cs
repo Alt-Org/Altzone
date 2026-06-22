@@ -159,6 +159,9 @@ public class MessageObjectHandler : MonoBehaviour
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
         ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, ReactionsPanel, message);
+
+        //Used for ChatShowUsersPopUpData
+        ChildsScript.ReactionData.Add(EmojiId);
     }
 
     private void UpdateReactions(ChatChannelType chatChannelType, ChatMessage message)
