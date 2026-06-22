@@ -21,6 +21,10 @@ using UnityEngine.UI;
 [DefaultExecutionOrder(-100)]
 public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, ILobbyCallbacks, IMatchmakingCallbacks, IInRoomCallbacks, IOnEventCallback
 {
+    private static bool _startNextRaidInDebugInventoryMode;
+    private const float DebugInventoryModeRaidTimeSeconds = 45f;
+    private const float DebugInventoryModeStartCountdownSeconds = 3f;
+
     [SerializeField] private float lobbyCountdownSeconds = 10f;
     [SerializeField] private float retryDelaySeconds = 1.25f;
     [SerializeField] private int minInventoryRows = 6;
@@ -64,13 +68,14 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private bool _sharedRaidActive;
     private bool _callbacksRegistered;
     private bool _matchmakingSearchVisualsEnabled;
+    private bool _debugInventoryMode;
     private bool _showFiveMatchmakingDots = true;
     private float _nextMatchmakingDotToggleTime;
     private Coroutine _debugStartCoroutine;
 
     public static RaidMatchmakingController Instance { get; private set; }
 
-    public bool ControlsInventorySetup => true;
+    public bool ControlsInventorySetup => !_debugInventoryMode;
     public bool HasReleasedGameplay => _gameplayReleased;
     public bool IsSharedRaidActive => _sharedRaidActive && IsCurrentRoomRaid();
     public string LocalClanId => _localClanId;
@@ -83,6 +88,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
+        _debugInventoryMode = _startNextRaidInDebugInventoryMode;
+        _startNextRaidInDebugInventoryMode = false;
+
         Instance = this;
         ResolveReferences();
         CreateOverlayUi();
@@ -91,6 +99,12 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void Start()
     {
+        if (_debugInventoryMode)
+        {
+            StartDebugInventoryMode();
+            return;
+        }
+
         ShowMatchmakingSearchState(1);
         StartCoroutine(StartRaidMatchmakingFlow());
     }
@@ -171,6 +185,40 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         JoinOrCreateRaidRoom();
+    }
+
+    public static void RestartNextSceneInDebugInventoryMode()
+    {
+        _startNextRaidInDebugInventoryMode = true;
+    }
+
+    private void StartDebugInventoryMode()
+    {
+        _surrendering = true;
+        _gameplayReleased = true;
+        _sharedRaidActive = false;
+        _inventoryInitialized = false;
+
+        if (PhotonRealtimeClient.InRoom)
+        {
+            PhotonRealtimeClient.LeaveRoom(false);
+        }
+
+        if (_overlayRoot != null)
+        {
+            _overlayRoot.SetActive(false);
+        }
+
+        if (_lootTracking != null)
+        {
+            _lootTracking.ResetLootCount();
+        }
+
+        if (_raidTimer != null)
+        {
+            _raidTimer.CurrentTime = DebugInventoryModeRaidTimeSeconds;
+            _raidTimer.TimeUntilStart = DebugInventoryModeStartCountdownSeconds;
+        }
     }
 
     private IEnumerator LoadLocalClanData()

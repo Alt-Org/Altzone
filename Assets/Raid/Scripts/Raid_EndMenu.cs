@@ -149,6 +149,7 @@ public class Raid_EndMenu : MonoBehaviour
     //TODO: This is used for testing / debugging only, remove when releasing demo
     public void Restart() 
     {
+        RaidMatchmakingController.RestartNextSceneInDebugInventoryMode();
         SceneManager.LoadScene("40-Raid");
     }
 
