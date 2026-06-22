@@ -211,7 +211,7 @@ public class ParentalControlManager : MonoBehaviour
                 passwordInput.text = "";
                 passwordPanel.SetActive(false);
                 activateLogInPanel.SetActive(false);
-                description.enabled = false;
+                //description.enabled = false;
 
 
             }
@@ -239,7 +239,7 @@ public class ParentalControlManager : MonoBehaviour
         parentalControlSettings.SetActive(false);
         passwordPanel.SetActive(true);
         activateLogInPanel.SetActive(true);
-        description.enabled = true;
+        //description.enabled = true;
 
 
     }
