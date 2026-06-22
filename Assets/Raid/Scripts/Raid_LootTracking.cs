@@ -24,11 +24,11 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
     public event Action CollectedLootChanged;
 
     private readonly List<float> _collectedLootWeights = new();
-    private readonly Dictionary<string, float> _clanCurrentWeights = new();
-    private readonly Dictionary<string, float> _clanMaxWeights = new();
-    private readonly Dictionary<string, List<GameFurniture>> _clanCollectedLoot = new();
-    private readonly Dictionary<string, List<float>> _clanCollectedLootWeights = new();
-    private string _displayedClanId = string.Empty;
+    private readonly Dictionary<string, float> _ownerCurrentWeights = new();
+    private readonly Dictionary<string, float> _ownerMaxWeights = new();
+    private readonly Dictionary<string, List<GameFurniture>> _ownerCollectedLoot = new();
+    private readonly Dictionary<string, List<float>> _ownerCollectedLootWeights = new();
+    private string _displayedOwnerId = string.Empty;
 
     public void Awake()
     {
@@ -67,10 +67,15 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     public void ResetClanLootCounts()
     {
-        _clanCurrentWeights.Clear();
-        _clanMaxWeights.Clear();
-        _clanCollectedLoot.Clear();
-        _clanCollectedLootWeights.Clear();
+        ResetLootOwnerCounts();
+    }
+
+    public void ResetLootOwnerCounts()
+    {
+        _ownerCurrentWeights.Clear();
+        _ownerMaxWeights.Clear();
+        _ownerCollectedLoot.Clear();
+        _ownerCollectedLootWeights.Clear();
         _collectedLootWeights.Clear();
         ListOfCollectedLoot = new List<GameFurniture>();
         CurrentLootWeight = 0;
@@ -80,24 +85,44 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     public void SetDisplayedClan(string clanId)
     {
-        _displayedClanId = clanId ?? string.Empty;
-        EnsureClanState(_displayedClanId, MaxLootWeight);
-        RefreshDisplayedClanValues();
+        SetDisplayedLootOwner(clanId);
+    }
+
+    public void SetDisplayedLootOwner(string ownerId)
+    {
+        _displayedOwnerId = ownerId ?? string.Empty;
+        EnsureLootOwnerState(_displayedOwnerId, MaxLootWeight);
+        RefreshDisplayedOwnerValues();
+    }
+
+    public bool IsDisplayedClan(string clanId)
+    {
+        return IsDisplayedLootOwner(clanId);
+    }
+
+    public bool IsDisplayedLootOwner(string ownerId)
+    {
+        return !string.IsNullOrWhiteSpace(ownerId) && ownerId == _displayedOwnerId;
     }
 
     public void SetClanLimit(string clanId, float maxLootWeight)
     {
-        if (string.IsNullOrWhiteSpace(clanId))
+        SetLootOwnerLimit(clanId, maxLootWeight);
+    }
+
+    public void SetLootOwnerLimit(string ownerId, float maxLootWeight)
+    {
+        if (string.IsNullOrWhiteSpace(ownerId))
         {
             return;
         }
 
-        EnsureClanState(clanId, maxLootWeight);
-        _clanMaxWeights[clanId] = maxLootWeight;
+        EnsureLootOwnerState(ownerId, maxLootWeight);
+        _ownerMaxWeights[ownerId] = maxLootWeight;
 
-        if (clanId == _displayedClanId)
+        if (ownerId == _displayedOwnerId)
         {
-            RefreshDisplayedClanValues();
+            RefreshDisplayedOwnerValues();
         }
     }
 
@@ -120,25 +145,30 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     public void SetClanLootCount(string clanId, GameFurniture furniture, float maxLootWeight, float lootWeightMultiplier = 1f)
     {
-        if (string.IsNullOrWhiteSpace(clanId) || furniture == null)
+        SetLootOwnerLootCount(clanId, furniture, maxLootWeight, lootWeightMultiplier);
+    }
+
+    public void SetLootOwnerLootCount(string ownerId, GameFurniture furniture, float maxLootWeight, float lootWeightMultiplier = 1f)
+    {
+        if (string.IsNullOrWhiteSpace(ownerId) || furniture == null)
         {
             return;
         }
 
-        float configuredMaxWeight = ResolveClanMaxWeight(clanId, maxLootWeight);
-        EnsureClanState(clanId, configuredMaxWeight);
+        float configuredMaxWeight = ResolveLootOwnerMaxWeight(ownerId, maxLootWeight);
+        EnsureLootOwnerState(ownerId, configuredMaxWeight);
 
         float addedLootWeight = (float)furniture.Weight * lootWeightMultiplier;
-        _clanCollectedLoot[clanId].Add(furniture);
-        _clanCollectedLootWeights[clanId].Add(addedLootWeight);
-        _clanCurrentWeights[clanId] += addedLootWeight;
+        _ownerCollectedLoot[ownerId].Add(furniture);
+        _ownerCollectedLootWeights[ownerId].Add(addedLootWeight);
+        _ownerCurrentWeights[ownerId] += addedLootWeight;
 
-        if (clanId != _displayedClanId)
+        if (ownerId != _displayedOwnerId)
         {
             return;
         }
 
-        RefreshDisplayedClanValues();
+        RefreshDisplayedOwnerValues();
         CollectedLootChanged?.Invoke();
         if (CurrentLootWeight > MaxLootWeight)
         {
@@ -169,31 +199,36 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     public bool RemoveClanCollectedLootAt(string clanId, int lootIndex)
     {
-        if (string.IsNullOrWhiteSpace(clanId))
+        return RemoveLootOwnerCollectedLootAt(clanId, lootIndex);
+    }
+
+    public bool RemoveLootOwnerCollectedLootAt(string ownerId, int lootIndex)
+    {
+        if (string.IsNullOrWhiteSpace(ownerId))
         {
             return false;
         }
 
-        EnsureClanState(clanId, MaxLootWeight);
-        List<GameFurniture> clanLoot = _clanCollectedLoot[clanId];
-        if (lootIndex < 0 || lootIndex >= clanLoot.Count)
+        EnsureLootOwnerState(ownerId, MaxLootWeight);
+        List<GameFurniture> ownerLoot = _ownerCollectedLoot[ownerId];
+        if (lootIndex < 0 || lootIndex >= ownerLoot.Count)
         {
             return false;
         }
 
-        GameFurniture removedFurniture = clanLoot[lootIndex];
-        float removedWeight = GetClanCollectedLootWeight(clanId, lootIndex, removedFurniture);
-        clanLoot.RemoveAt(lootIndex);
-        if (_clanCollectedLootWeights.TryGetValue(clanId, out List<float> clanWeights) && lootIndex < clanWeights.Count)
+        GameFurniture removedFurniture = ownerLoot[lootIndex];
+        float removedWeight = GetLootOwnerCollectedLootWeight(ownerId, lootIndex, removedFurniture);
+        ownerLoot.RemoveAt(lootIndex);
+        if (_ownerCollectedLootWeights.TryGetValue(ownerId, out List<float> ownerWeights) && lootIndex < ownerWeights.Count)
         {
-            clanWeights.RemoveAt(lootIndex);
+            ownerWeights.RemoveAt(lootIndex);
         }
 
-        _clanCurrentWeights[clanId] = Mathf.Max(0f, _clanCurrentWeights[clanId] - removedWeight);
+        _ownerCurrentWeights[ownerId] = Mathf.Max(0f, _ownerCurrentWeights[ownerId] - removedWeight);
 
-        if (clanId == _displayedClanId)
+        if (ownerId == _displayedOwnerId)
         {
-            RefreshDisplayedClanValues();
+            RefreshDisplayedOwnerValues();
         }
 
         CollectedLootChanged?.Invoke();
@@ -208,9 +243,9 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         }
     }
 
-    private float ResolveClanMaxWeight(string clanId, float fallbackMaxWeight)
+    private float ResolveLootOwnerMaxWeight(string ownerId, float fallbackMaxWeight)
     {
-        if (_clanMaxWeights.TryGetValue(clanId, out float configuredMaxWeight) && configuredMaxWeight > 0f)
+        if (_ownerMaxWeights.TryGetValue(ownerId, out float configuredMaxWeight) && configuredMaxWeight > 0f)
         {
             return configuredMaxWeight;
         }
@@ -223,47 +258,47 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         return MaxLootWeight;
     }
 
-    private void EnsureClanState(string clanId, float maxLootWeight)
+    private void EnsureLootOwnerState(string ownerId, float maxLootWeight)
     {
-        if (string.IsNullOrWhiteSpace(clanId))
+        if (string.IsNullOrWhiteSpace(ownerId))
         {
             return;
         }
 
-        if (!_clanCurrentWeights.ContainsKey(clanId))
+        if (!_ownerCurrentWeights.ContainsKey(ownerId))
         {
-            _clanCurrentWeights[clanId] = 0f;
+            _ownerCurrentWeights[ownerId] = 0f;
         }
 
-        if (!_clanMaxWeights.ContainsKey(clanId))
+        if (!_ownerMaxWeights.ContainsKey(ownerId))
         {
-            _clanMaxWeights[clanId] = maxLootWeight;
+            _ownerMaxWeights[ownerId] = maxLootWeight;
         }
 
-        if (!_clanCollectedLoot.ContainsKey(clanId))
+        if (!_ownerCollectedLoot.ContainsKey(ownerId))
         {
-            _clanCollectedLoot[clanId] = new List<GameFurniture>();
+            _ownerCollectedLoot[ownerId] = new List<GameFurniture>();
         }
 
-        if (!_clanCollectedLootWeights.ContainsKey(clanId))
+        if (!_ownerCollectedLootWeights.ContainsKey(ownerId))
         {
-            _clanCollectedLootWeights[clanId] = new List<float>();
+            _ownerCollectedLootWeights[ownerId] = new List<float>();
         }
     }
 
-    private void RefreshDisplayedClanValues()
+    private void RefreshDisplayedOwnerValues()
     {
-        if (string.IsNullOrWhiteSpace(_displayedClanId))
+        if (string.IsNullOrWhiteSpace(_displayedOwnerId))
         {
             return;
         }
 
-        EnsureClanState(_displayedClanId, MaxLootWeight);
-        CurrentLootWeight = _clanCurrentWeights[_displayedClanId];
-        MaxLootWeight = _clanMaxWeights[_displayedClanId];
-        ListOfCollectedLoot = _clanCollectedLoot[_displayedClanId];
+        EnsureLootOwnerState(_displayedOwnerId, MaxLootWeight);
+        CurrentLootWeight = _ownerCurrentWeights[_displayedOwnerId];
+        MaxLootWeight = _ownerMaxWeights[_displayedOwnerId];
+        ListOfCollectedLoot = _ownerCollectedLoot[_displayedOwnerId];
         _collectedLootWeights.Clear();
-        _collectedLootWeights.AddRange(_clanCollectedLootWeights[_displayedClanId]);
+        _collectedLootWeights.AddRange(_ownerCollectedLootWeights[_displayedOwnerId]);
         UpdateHeartLootText();
     }
 
@@ -274,12 +309,12 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
             : GetFurnitureWeight(fallbackFurniture);
     }
 
-    private float GetClanCollectedLootWeight(string clanId, int lootIndex, GameFurniture fallbackFurniture)
+    private float GetLootOwnerCollectedLootWeight(string ownerId, int lootIndex, GameFurniture fallbackFurniture)
     {
-        return _clanCollectedLootWeights.TryGetValue(clanId, out List<float> clanWeights)
+        return _ownerCollectedLootWeights.TryGetValue(ownerId, out List<float> ownerWeights)
             && lootIndex >= 0
-            && lootIndex < clanWeights.Count
-                ? clanWeights[lootIndex]
+            && lootIndex < ownerWeights.Count
+                ? ownerWeights[lootIndex]
                 : GetFurnitureWeight(fallbackFurniture);
     }
 

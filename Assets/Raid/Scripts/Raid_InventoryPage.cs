@@ -220,7 +220,7 @@ public class Raid_InventoryPage : MonoBehaviour
         }
     }
 
-    public void HandleNetworkLootAccepted(int index, int actorNumber, string clanId, float lootWeightMultiplier, bool triggeredByLocalPlayer, string playerName = null, CharacterID actorCharacterId = CharacterID.None, AvatarData actorAvatarData = null)
+    public void HandleNetworkLootAccepted(int index, int actorNumber, string lootOwnerId, float lootWeightMultiplier, bool triggeredByLocalPlayer, string playerName = null, CharacterID actorCharacterId = CharacterID.None, AvatarData actorAvatarData = null)
     {
         ResolveReferences();
 
@@ -245,7 +245,7 @@ public class Raid_InventoryPage : MonoBehaviour
             }
 
             eventLog?.LogTrapTriggered(playerName, trapType, actorCharacterId, actorAvatarData);
-            if (LootItemForClan(item, item.ItemWeight, clanId, lootWeightMultiplier))
+            if (LootItemForOwner(item, item.ItemWeight, lootOwnerId, lootWeightMultiplier))
             {
                 eventLog?.LogLootTaken(playerName, furniture, lootWeightMultiplier, actorCharacterId, actorAvatarData);
             }
@@ -275,7 +275,7 @@ public class Raid_InventoryPage : MonoBehaviour
         }
 
         GameFurniture furnitureData = item.furnitureData;
-        if (LootItemForClan(item, item.ItemWeight, clanId, lootWeightMultiplier))
+        if (LootItemForOwner(item, item.ItemWeight, lootOwnerId, lootWeightMultiplier))
         {
             eventLog?.LogLootTaken(playerName, furnitureData, lootWeightMultiplier, actorCharacterId, actorAvatarData);
         }
@@ -308,7 +308,7 @@ public class Raid_InventoryPage : MonoBehaviour
         return true;
     }
 
-    private bool LootItemForClan(Raid_InventoryItem item, float itemWeight, string clanId, float lootWeightMultiplier)
+    private bool LootItemForOwner(Raid_InventoryItem item, float itemWeight, string lootOwnerId, float lootWeightMultiplier)
     {
         ResolveReferences();
 
@@ -326,8 +326,11 @@ public class Raid_InventoryPage : MonoBehaviour
 
         GameFurniture furniture = item.furnitureData;
         Sprite lootSprite = item.CurrentItemSprite != null ? item.CurrentItemSprite : furniture?.FurnitureInfo?.Image;
-        item.LaunchBall(lootSprite, UpdateHeartRecentLootSprite);
-        LootTracker.SetClanLootCount(clanId, furniture, LootTracker.MaxLootWeight, lootWeightMultiplier);
+        Action<Sprite> updateRecentLootImage = LootTracker.IsDisplayedLootOwner(lootOwnerId)
+            ? UpdateHeartRecentLootSprite
+            : null;
+        item.LaunchBall(lootSprite, updateRecentLootImage);
+        LootTracker.SetLootOwnerLootCount(lootOwnerId, furniture, LootTracker.MaxLootWeight, lootWeightMultiplier);
         item.RemoveData();
 
         return true;

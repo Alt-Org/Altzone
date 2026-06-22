@@ -56,6 +56,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private RaidLobbyClanListItem _clanListItemTemplate;
 
     private string _localPlayerName = "Player";
+    private string _localPlayerId = string.Empty;
     private string _localClanId = string.Empty;
     private string _localClanName = string.Empty;
     private AvatarData _localAvatarData;
@@ -230,6 +231,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         {
             ServerPlayer serverPlayer = ServerManager.Instance.Player;
             _localPlayerName = serverPlayer?.name ?? _localPlayerName;
+            _localPlayerId = serverPlayer?._id ?? serverPlayer?.uniqueIdentifier ?? string.Empty;
             _localClanId = serverPlayer?.clan_id ?? string.Empty;
             _localClanName = ServerManager.Instance.Clan?.name ?? string.Empty;
             if (serverPlayer?.avatar != null)
@@ -252,6 +254,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             if (playerData != null)
             {
                 _localPlayerName = string.IsNullOrWhiteSpace(playerData.Name) ? _localPlayerName : playerData.Name;
+                if (string.IsNullOrWhiteSpace(_localPlayerId))
+                {
+                    _localPlayerId = !string.IsNullOrWhiteSpace(playerData.Id)
+                        ? playerData.Id
+                        : playerData.UniqueIdentifier ?? string.Empty;
+                }
+
                 if (string.IsNullOrWhiteSpace(_localClanId))
                 {
                     _localClanId = playerData.ClanId ?? string.Empty;
@@ -277,6 +286,11 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         if (string.IsNullOrWhiteSpace(_localPlayerName))
         {
             _localPlayerName = PhotonRealtimeClient.NickName;
+        }
+
+        if (string.IsNullOrWhiteSpace(_localPlayerId))
+        {
+            _localPlayerId = GameConfig.Get().PlayerSettings.PlayerGuid;
         }
 
         if (!string.IsNullOrWhiteSpace(_localPlayerName) && PhotonRealtimeClient.Client != null)
@@ -491,6 +505,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         PhotonRealtimeClient.LocalPlayer.SetCustomProperties(new PhotonHashtable
         {
+            { RaidPhotonRoom.PlayerIdKey, _localPlayerId },
             { RaidPhotonRoom.PlayerClanIdKey, _localClanId },
             { RaidPhotonRoom.PlayerClanNameKey, _localClanName },
             { RaidPhotonRoom.PlayerCharacterIdKey, GetLocalCharacterId() },
@@ -576,8 +591,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             : Array.Empty<RaidPhotonRoom.TrapData>();
 
         float clanMaxWeight = GetDefaultClanMaxWeight();
-        RaidPhotonRoom.ClanWeightLimit[] clanLimits = clanEntries
-            .Select(clan => new RaidPhotonRoom.ClanWeightLimit(clan.ClanId, clanMaxWeight))
+        RaidPhotonRoom.PlayerWeightLimit[] playerLimits = validPlayers
+            .Select(player => new RaidPhotonRoom.PlayerWeightLimit(GetPlayerLootOwnerId(player), clanMaxWeight))
+            .Where(limit => !string.IsNullOrWhiteSpace(limit.PlayerId))
             .ToArray();
 
         long startTimeMs = DateTimeOffset.UtcNow.AddSeconds(lobbyCountdownSeconds).ToUnixTimeMilliseconds();
@@ -590,7 +606,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             { RaidPhotonRoom.RaidInventorySizeKey, inventorySize },
             { RaidPhotonRoom.RaidInventorySeedKey, seed },
             { RaidPhotonRoom.RaidTrapSlotsKey, RaidPhotonRoom.EncodeTraps(traps) },
-            { RaidPhotonRoom.RaidClanWeightLimitsKey, RaidPhotonRoom.EncodeClanWeightLimits(clanLimits) }
+            { RaidPhotonRoom.RaidPlayerWeightLimitsKey, RaidPhotonRoom.EncodePlayerWeightLimits(playerLimits) }
         });
 
         room.IsOpen = false;
@@ -624,21 +640,21 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         int inventorySize = GetRoomProperty(room, RaidPhotonRoom.RaidInventorySizeKey, 0);
         int seed = GetRoomProperty(room, RaidPhotonRoom.RaidInventorySeedKey, 0);
         string trapPayload = GetRoomProperty(room, RaidPhotonRoom.RaidTrapSlotsKey, string.Empty);
-        string limitPayload = GetRoomProperty(room, RaidPhotonRoom.RaidClanWeightLimitsKey, string.Empty);
+        string limitPayload = GetRoomProperty(room, RaidPhotonRoom.RaidPlayerWeightLimitsKey, string.Empty);
 
         if (inventorySize <= 0)
         {
             return;
         }
 
-        RaidPhotonRoom.ClanWeightLimit[] limits = RaidPhotonRoom.DecodeClanWeightLimits(limitPayload);
+        RaidPhotonRoom.PlayerWeightLimit[] limits = RaidPhotonRoom.DecodePlayerWeightLimits(limitPayload);
         if (_lootTracking != null)
         {
-            _lootTracking.ResetClanLootCounts();
-            _lootTracking.SetDisplayedClan(_localClanId);
-            foreach (RaidPhotonRoom.ClanWeightLimit limit in limits)
+            _lootTracking.ResetLootOwnerCounts();
+            _lootTracking.SetDisplayedLootOwner(GetLocalLootOwnerId());
+            foreach (RaidPhotonRoom.PlayerWeightLimit limit in limits)
             {
-                _lootTracking.SetClanLimit(limit.ClanId, limit.MaxWeight);
+                _lootTracking.SetLootOwnerLimit(limit.PlayerId, limit.MaxWeight);
             }
         }
 
@@ -692,7 +708,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         if (_lootTracking != null)
         {
-            _lootTracking.SetDisplayedClan(_localClanId);
+            _lootTracking.SetDisplayedLootOwner(GetLocalLootOwnerId());
         }
 
         if (_raidTimer != null)
@@ -787,6 +803,12 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
+        string lootOwnerId = GetPlayerLootOwnerId(sender);
+        if (string.IsNullOrWhiteSpace(lootOwnerId))
+        {
+            return;
+        }
+
         Raid_InventoryItem item = _inventoryPage.GetInventoryItem(slotIndex);
         if (item == null || item.ItemWeight <= 0f || item.furnitureData == null)
         {
@@ -799,7 +821,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         string avatarPayload = GetPlayerAvatarPayload(sender);
         PhotonRealtimeClient.Client.OpRaiseEvent(
             RaidPhotonRoom.LootAcceptedEvent,
-            new object[] { slotIndex, senderActorNumber, clanId, weightMultiplier, characterId, avatarPayload },
+            new object[] { slotIndex, senderActorNumber, lootOwnerId, weightMultiplier, characterId, avatarPayload },
             new RaiseEventArgs { Receivers = ReceiverGroup.All },
             SendOptions.SendReliable);
     }
@@ -813,7 +835,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         int slotIndex = Convert.ToInt32(data[0]);
         int actorNumber = Convert.ToInt32(data[1]);
-        string clanId = data[2] as string ?? string.Empty;
+        string lootOwnerId = data[2] as string ?? string.Empty;
         float weightMultiplier = Convert.ToSingle(data[3]);
         int characterId = data.Length >= 5 ? Convert.ToInt32(data[4]) : (int)CharacterID.None;
         string avatarPayload = data.Length >= 6 ? data[5] as string ?? string.Empty : string.Empty;
@@ -821,10 +843,10 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         bool triggeredByLocalPlayer = PhotonRealtimeClient.LocalPlayer != null
             && PhotonRealtimeClient.LocalPlayer.ActorNumber == actorNumber;
         Player roomPlayer = GetRoomPlayer(actorNumber);
-        string actorName = GetClanDisplayName(roomPlayer, actorNumber);
+        string actorName = GetPlayerDisplayName(roomPlayer, actorNumber);
 
         _lootedSlots.Add(slotIndex);
-        _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, clanId, weightMultiplier, triggeredByLocalPlayer, actorName, (CharacterID)characterId, avatarData);
+        _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, lootOwnerId, weightMultiplier, triggeredByLocalPlayer, actorName, (CharacterID)characterId, avatarData);
     }
 
     private void HandleRemoveCollectedLootRequest(int senderActorNumber, int lootIndex)
@@ -841,9 +863,15 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
+        string lootOwnerId = GetPlayerLootOwnerId(sender);
+        if (string.IsNullOrWhiteSpace(lootOwnerId))
+        {
+            return;
+        }
+
         PhotonRealtimeClient.Client.OpRaiseEvent(
             RaidPhotonRoom.RemoveLootAcceptedEvent,
-            new object[] { clanId, lootIndex },
+            new object[] { lootOwnerId, lootIndex },
             new RaiseEventArgs { Receivers = ReceiverGroup.All },
             SendOptions.SendReliable);
     }
@@ -855,9 +883,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        string clanId = data[0] as string ?? string.Empty;
+        string lootOwnerId = data[0] as string ?? string.Empty;
         int lootIndex = Convert.ToInt32(data[1]);
-        _lootTracking.RemoveClanCollectedLootAt(clanId, lootIndex);
+        _lootTracking.RemoveLootOwnerCollectedLootAt(lootOwnerId, lootIndex);
     }
 
     private bool IsParticipatingClan(string clanId)
@@ -867,8 +895,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return false;
         }
 
-        string limits = GetRoomProperty(PhotonRealtimeClient.CurrentRoom, RaidPhotonRoom.RaidClanWeightLimitsKey, string.Empty);
-        return RaidPhotonRoom.DecodeClanWeightLimits(limits).Any(limit => limit.ClanId == clanId);
+        string clans = GetRoomProperty(PhotonRealtimeClient.CurrentRoom, RaidPhotonRoom.RaidClanCountsKey, string.Empty);
+        return RaidPhotonRoom.DecodeClanCounts(clans).Any(clan => clan.ClanId == clanId);
     }
 
     private Player GetRoomPlayer(int actorNumber)
@@ -938,6 +966,34 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private string GetPlayerClanId(Player player)
     {
         return GetPlayerProperty(player, RaidPhotonRoom.PlayerClanIdKey, string.Empty);
+    }
+
+    private string GetPlayerLootOwnerId(Player player)
+    {
+        string playerId = GetPlayerProperty(player, RaidPhotonRoom.PlayerIdKey, string.Empty);
+        if (!string.IsNullOrWhiteSpace(playerId))
+        {
+            return playerId;
+        }
+
+        if (player != null && !string.IsNullOrWhiteSpace(player.UserId))
+        {
+            return player.UserId;
+        }
+
+        return player != null ? player.ActorNumber.ToString() : string.Empty;
+    }
+
+    private string GetLocalLootOwnerId()
+    {
+        if (!string.IsNullOrWhiteSpace(_localPlayerId))
+        {
+            return _localPlayerId;
+        }
+
+        return PhotonRealtimeClient.LocalPlayer != null
+            ? GetPlayerLootOwnerId(PhotonRealtimeClient.LocalPlayer)
+            : GameConfig.Get().PlayerSettings.PlayerGuid;
     }
 
     private string GetPlayerClanName(Player player)
