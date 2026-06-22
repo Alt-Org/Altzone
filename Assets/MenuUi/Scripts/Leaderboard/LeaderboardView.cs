@@ -99,6 +99,8 @@ public class LeaderboardView : MonoBehaviour
         foreach (Transform child in _playersContent) Destroy(child.gameObject);
         foreach (Transform child in _friendsContent) Destroy(child.gameObject);
 
+        _loadingImage.SetActive(true);
+
         _playerItem = null;
 
         _podium.SetPlayerView();
@@ -191,6 +193,7 @@ public class LeaderboardView : MonoBehaviour
                             }
                             rank++;
                         }
+                        _loadingImage.SetActive(false);
                     }));
                 }
                 break;
@@ -279,6 +282,7 @@ public class LeaderboardView : MonoBehaviour
                             rank++;
                             StartCoroutine(FrameChecker());
                         }
+                        _loadingImage.SetActive(false);
                     }));
                 }
                 break;
@@ -495,6 +499,8 @@ public class LeaderboardView : MonoBehaviour
                 item.Initialize(i, "", 0, null);
             }
         }
+        _loadingImage.SetActive(false);
+
         yield return null;
     }
 
