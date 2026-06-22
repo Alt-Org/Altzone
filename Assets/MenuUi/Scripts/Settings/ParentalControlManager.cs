@@ -9,6 +9,7 @@ using WebSocketSharp;
 public class ParentalControlManager : MonoBehaviour
 {
     public GameObject parentalControlPanel;
+    public GameObject activateLogInPanel;
     public GameObject passwordPanel;
     public GameObject parentalControlSettings;
     public TMP_Text description;
@@ -208,6 +209,7 @@ public class ParentalControlManager : MonoBehaviour
                 parentalControlSettings.SetActive(true);
                 passwordInput.text = "";
                 passwordPanel.SetActive(false);
+                activateLogInPanel.SetActive(false);
                 description.enabled = false;
 
 
@@ -235,6 +237,7 @@ public class ParentalControlManager : MonoBehaviour
     {
         parentalControlSettings.SetActive(false);
         passwordPanel.SetActive(true);
+        activateLogInPanel.SetActive(true);
         description.enabled = true;
 
 
@@ -298,6 +301,7 @@ public class ParentalControlManager : MonoBehaviour
             GetPassword();
             parentalControlSettings.SetActive(true);
             passwordPanel.SetActive(false);
+            activateLogInPanel.SetActive(false);
 
         } else
         {
@@ -394,6 +398,7 @@ public class ParentalControlManager : MonoBehaviour
 
         parentalControlPopupButton.SetActive(true);
         controlEnabledButton.SetActive(false);
+        activateLogInPanel.SetActive(true);
         //messageText.text = "";
      
 
