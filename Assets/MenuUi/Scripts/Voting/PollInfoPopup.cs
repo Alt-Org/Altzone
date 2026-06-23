@@ -5,21 +5,20 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Voting;
 using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.Model.Poco.Player;
+using MenuUI.Scripts;
 using System;
+using System.Collections;
+using Altzone.Scripts.Model.Poco.Player;
 
 public class PollInfoPopup : MonoBehaviour
 {
     public static PollInfoPopup Instance { get; private set; }
 
     [Header("UI Elements")]
-    [SerializeField] private TMP_Text nameText;
-    [SerializeField] private TMP_Text setNameText;
     [SerializeField] private TMP_Text weightText;
     [SerializeField] private TMP_Text valueText;
-    [SerializeField] private Image iconImage;
+    [SerializeField] private TMP_Text authorName;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text artistNameText;
     [SerializeField] private Image rarityImage;
@@ -27,7 +26,20 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text rarityText;
     [SerializeField] private Image greenFill;
     [SerializeField] private TMP_Text timer;
+
+    [Header("Furniture")]
     [SerializeField] private TMP_Text tradeTag;
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text setNameText;
+    [SerializeField] private Image iconImage;
+    [SerializeField] private Image setPosterBackground;
+    [SerializeField] private Image setFontName;
+
+    [Header("Expired Polls")]
+    [SerializeField] private TMP_Text resultText;
+    [SerializeField] private GameObject resultObject;
+    [SerializeField] private TMP_Text resultYes;
+    [SerializeField] private TMP_Text resultNo;
 
     [Header("Votes")]
     [SerializeField] private Button yesButton;
@@ -38,6 +50,7 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text noVotes;
     [SerializeField] private TMP_Text yesVotesButton;
     [SerializeField] private TMP_Text noVotesButton;
+    [SerializeField] private AddPlayerHeads playerHeads;
 
     [Header("Rarity Color Reference")]
     [SerializeField] private RarityColourReference rarityColourReference;
@@ -57,7 +70,10 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text clanTargetRoleText;
 
     private PollData _currentPollData;
-    public bool _pollEnded;
+    private Coroutine _timerCoroutine;
+
+    private readonly Color _green = HexToColor("#2FA36B");
+    private readonly Color _red = HexToColor("#C83A2D");
 
     private void Awake()
     {
@@ -68,6 +84,20 @@ public class PollInfoPopup : MonoBehaviour
             return;
         }
         Instance = this;
+    }
+
+    private void OnEnable()
+    {
+        _timerCoroutine = StartCoroutine(TimerUpdateLoop());
+    }
+
+    private void OnDisable()
+    {
+        if (_timerCoroutine != null)
+        {
+            StopCoroutine(_timerCoroutine);
+            _timerCoroutine = null;
+        }
     }
 
     private void OnDestroy()
@@ -100,18 +130,30 @@ public class PollInfoPopup : MonoBehaviour
         }
     }
 
+    private IEnumerator TimerUpdateLoop()
+    {
+        while (!_currentPollData.IsExpired)
+        {
+            UpdateTimerDisplay();
+            yield return new WaitForSeconds(1);
+        }
+        UpdateTimerDisplay();
+    }
+
     public void UpdateTimerDisplay(long secondsLeft = -1)
     {
         if (timer == null)
             return;
 
-        if (_pollEnded) {
-            var endDateTime = DateTimeOffset.FromUnixTimeSeconds(_currentPollData.EndTime).ToLocalTime();
+        if (_currentPollData.IsExpired)
+        {
+            DateTimeOffset endDateTime = DateTimeOffset.FromUnixTimeSeconds(_currentPollData.EndTime).ToLocalTime();
             timer.text = endDateTime.ToString("d.M. HH:mm");
             return;
         }
 
-        if (secondsLeft == -1) {
+        if (secondsLeft == -1)
+        {
             long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
             secondsLeft = _currentPollData.EndTime - currentTime;
         }
@@ -129,66 +171,143 @@ public class PollInfoPopup : MonoBehaviour
     }
 
     // Opens the popup and fills it with the data from the furniture in question
-    public void OpenFurniturePopup(PollData pollData)
+    public void OpenPopup(PollData pollData)
     {
+        Debug.Log($"PollData in OpenPopup {pollData}");
         if (pollData == null)
         {
-            Debug.LogWarning("PollInfoPopup Open called with null furniture!");
             return;
         }
 
-        _currentPollData = pollData;
-
-        SetValues();
+        SetValues(pollData);
     }
 
-    // We assume all data is furniture data for now
-    private void SetValues()
+    private void SetFurnitureData(FurniturePollData furnitureData)
     {
-        var furnitureData = _currentPollData as FurniturePollData;
         if (furnitureData == null || furnitureData.Furniture == null) return;
 
         bool isBuying = furnitureData.FurniturePollType == FurniturePollType.Buying;
         tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
 
-        nameText.text = furnitureData.Furniture.Name ?? "";
-        iconImage.sprite = furnitureData.Furniture.FurnitureInfo?.Image;
-        descriptionText.text = furnitureData.Furniture.FurnitureInfo?.ArtisticDescription ?? "";
-        valueText.text = $"{furnitureData.Furniture.Value}";
+        FurnitureInfo info = furnitureData.Furniture.FurnitureInfo;
 
-        /*
-        setNameText.text = furnitureData.Furniture.FurnitureInfo?.SetName ?? "";
+        if (info == null)
+            return;
 
-        string artistName = furniture.FurnitureInfo?.ArtistName;
-        artistNameText.text = string.IsNullOrEmpty(artistName) ? "" : $"Artist: {artistName}";
+        nameText.text = $"{info.SetName} {info.VisibleName}";
 
-        weightText.text = $"Weight: {furniture.Weight}";
-        rarityText.text = $"Rarity: {furniture.Rarity}";
+        iconImage.sprite = info.Image;
 
-        // Apply colour to the two background images of the card based on rarityColourReference
-        if (rarityColourReference != null)
+        if (info.SetPosterBackground != null && setPosterBackground != null)
         {
-            Color rarityColor = rarityColourReference.GetColor(furniture.Rarity);
-            rarityImage.color = rarityColor;
-
-            if (frontRarityImage != null)
-            {
-                frontRarityImage.color = rarityColor;
-            }
+            setPosterBackground.gameObject.SetActive(true);
+            setPosterBackground.sprite = info.SetPosterBackground;
         }
-        */
+        if (info.SetFontName != null && setFontName != null)
+        {
+            setFontName.gameObject.SetActive(true);
+            setFontName.sprite = info.SetFontName;
+        }
+
+        descriptionText.text = $"{info.ArtisticDescription}";
+        valueText.text = $"{furnitureData.Furniture.Value}";
+    }
+
+    private void SetClanRoleData(ClanRolePollData _)
+    {
+        Debug.LogWarning("ClanRolePoll not implemented yet");
+    }
+
+    private void SetExpiredPollInfo()
+    {
+        voteButtons.SetActive(false);
+        voteBar.SetActive(false);
+
+        int yesCount = _currentPollData.YesVotes?.Count ?? 0;
+        int noCount = _currentPollData.NoVotes?.Count ?? 0;
+        int totalCount = yesCount + noCount;
+
+        string yesPercent, noPercent;
+
+        if (totalCount <= 0)
+        {
+            return;
+        }
+
+        float yesVoteRatio = (float)yesCount / totalCount;
+        yesPercent = yesVoteRatio.ToString("P0");
+        noPercent = (1.0f - yesVoteRatio).ToString("P0");
+
+        resultYes.text = yesPercent;
+        resultNo.text = noPercent;
+
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+        if (player != null && player.ClanId != null)
+        {
+            store.GetClanData(player.ClanId, data => clan = data);
+        }
+
+        int requiredYesVotes = Mathf.CeilToInt(clan.Members.Count * 0.33f);
+        bool isAccepted = yesCount >= requiredYesVotes && yesCount > noCount;
+
+        resultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
+
+        resultText.text = isAccepted
+            ? "Hyv\u00E4ksytty".ToUpper()
+            : "Hyl\u00E4tty".ToUpper();
+
+        resultObject.SetActive(true);
+
+        ShowPollPanel();
+    }
+
+    private void SetValues(PollData pollData)
+    {
+        _currentPollData = pollData;
+
+        authorName.text = $"Luonut: {pollData?.Organizer}";
+
+        setPosterBackground.gameObject.SetActive(false);
+        setFontName.gameObject.SetActive(false);
+
+        if (pollData is FurniturePollData furniturePollData)
+        {
+            SetFurnitureData(furniturePollData);
+        }
+        else if (pollData is ClanRolePollData clanRolePollData)
+        {
+            SetClanRoleData(clanRolePollData);
+        }
+        else
+        {
+            Debug.LogError("Called PollInfo with unknown data");
+        }
 
         UpdateTimerDisplay();
 
-        string currentPollId = _currentPollData.Id;
+        int yesCount = _currentPollData.YesVotes.Count;
+        int noCount = _currentPollData.NoVotes.Count;
+        SetGreenFill(yesCount, noCount);
+
+        if (_currentPollData.IsExpired)
+        {
+            SetExpiredPollInfo();
+            return;
+        }
+
         // Enable and disable vote buttons and list based on whether the player has voted on the poll
         Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
         {
             if (this == null || data == null) return;
 
             bool hasVoted = !_currentPollData.NotVoted.Contains(data.Id);
-            Debug.Log(hasVoted);
 
+            resultObject.SetActive(false);
             voteButtons.SetActive(!hasVoted);
             voteBar.SetActive(hasVoted);
 
@@ -200,18 +319,24 @@ public class PollInfoPopup : MonoBehaviour
                 yesButton.onClick.AddListener(() => OnVoteButtonClicked(true));
                 noButton.onClick.AddListener(() => OnVoteButtonClicked(false));
             }
+            else
+            {
+                playerHeads.InstantiateHeads(_currentPollData.Id);
+            }
         });
 
-        int yesCount = _currentPollData.YesVotes.Count;
-        int noCount = _currentPollData.NoVotes.Count;
-        SetGreenFill(yesCount, noCount);
+        ShowPollPanel();
+    }
 
+    private void ShowPollPanel()
+    {
         gameObject.SetActive(true);
         furniturePollInfoObject.SetActive(true);
         if (clanRolePollInfoObject != null) clanRolePollInfoObject.SetActive(false);
     }
 
-    private void SetGreenFill(int yesCount, int noCount) {
+    private void SetGreenFill(int yesCount, int noCount)
+    {
         int totalCount = yesCount + noCount;
 
         float fillValue;
@@ -241,13 +366,20 @@ public class PollInfoPopup : MonoBehaviour
         int noCount = _currentPollData.NoVotes.Count;
         if (answer) yesCount += 1;
         else noCount += 1;
+        SetGreenFill(yesCount, noCount);
 
         _currentPollData.AddVote(answer, result =>
         {
+            if (!result)
+            {
+                SignalBus.OnChangePopupInfoSignal("Äänen antaminen epäonnistui");
+                return;
+            }
             voteButtons.SetActive(false);
             voteBar.SetActive(true);
-            SetGreenFill(yesCount, noCount);
+
             VotingActions.ReloadPollList?.Invoke();
+            playerHeads.InstantiateHeads(_currentPollData.Id);
         });
     }
 
@@ -283,5 +415,14 @@ public class PollInfoPopup : MonoBehaviour
         {
             target.SetActive(!target.activeSelf);
         }
+    }
+
+    private static Color HexToColor(string hex)
+    {
+        if (ColorUtility.TryParseHtmlString(hex, out Color color))
+        {
+            return color;
+        }
+        return Color.white;
     }
 }
