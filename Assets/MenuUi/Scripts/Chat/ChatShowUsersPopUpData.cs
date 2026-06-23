@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -42,13 +41,13 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _OrderButtonText;
 
     private string CurrentMessage;
-    private int LineOrder = 0;
-    private int currentOrder = 1;
+    private int LineOrder = 0;    //Whats the newest and the oldest reaction set
+    private int currentOrder = 1; //What type of order we are on the list
 
     private void Start()
     {
         _closeAllReactionButton.onClick.AddListener(LayoutButton);
-        _listOrderButton.onClick.AddListener(() => {currentOrder++; ListOrder(currentOrder);});
+        _listOrderButton.onClick.AddListener(() => {currentOrder++; ListOrderSystem(currentOrder);});
         reactiontext();
         foreach (Button button in _closeButtons)
         {
@@ -57,7 +56,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     }
 
     //Puts back the reactions and popup back to messageobject
-    public void ClosePopup()
+    private void ClosePopup()
     {
         for (int i = _userInfo.Count - 1; i >= 0; i--)
         {
@@ -71,25 +70,25 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         _scrollRect.content = null;
         CurrentMessage = null;
         gameObject.SetActive(false);
-        LineOrder = 0;
-
+        LineOrder = 0; 
+        currentOrder = 1; 
     }
 
     void OnEnable()
     {
         reactiontext();
+        ListOrderSystem(currentOrder);
     }
 
 
     //Incane user leaves the chat
     private void OnDisable()
     {
-        ListOrder(1);
         ClosePopup();
     }
 
 
-    public void reactiontext()
+    private void reactiontext()
     {
         int activeChildren = 0;
         foreach (Transform container in _userContent.transform)
@@ -123,24 +122,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
                 Mood mood = (Mood)Enum.Parse(typeof(Mood), Emoji.emoji);
 
-        //halts the system if there's already a same user on the list
-        for (int i = _userInfo.Count - 1; i >= 0; i--)
-        {
-            if (_userInfo[i]._id != Emoji.sender_id)
-                continue;
-
-
-            if (_userInfo[i]._id == Emoji.sender_id &&  _userInfo[i]._mood != mood)
-            {
-                RemoveUserReaction(Emoji.sender_id, message);
-                continue;
-            }
-            else if (_userInfo[i]._id == Emoji.sender_id && _userInfo[i]._mood == mood)
-            {
-                
-                return;
-            }
-        }
         LineOrder++;
             //Gets sprite
         Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
@@ -152,7 +133,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
        userData.SetReactionInfo(_userInfo[_userInfo.Count - 1]._avatar, _userInfo[_userInfo.Count - 1]._name, _userInfo[_userInfo.Count - 1]._id, _userInfo[_userInfo.Count - 1].Emoji);
         _usersReactionData.Add(userData);
         reactiontext();
-        ListOrder(currentOrder);
+        ListOrderSystem(currentOrder);
 
         if (CopiedReactionField.transform.childCount > 0)
         {
@@ -164,6 +145,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     //removes the userData
     public void RemoveUserReaction(string Userid, ChatMessage message)
     {
+        //Checks if it's on a correct Message section
         if (CurrentMessage != null)
         {
             if (CurrentMessage != message.Id)
@@ -201,7 +183,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     }
     //Sets the List in certain order
 
-    //Changes the reactions object sizes
+    //Copies the Reaction
     public void ReactionFieldCopyUpdate(GameObject ReactionField, MessageReactionsHandler ReactionHandler, ChatMessage message)
     {
 
@@ -215,10 +197,11 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         Destroy(CopiedReactionField);
 
-        CopiedReactionField = Instantiate(ReactionField, _reactionFieldLocation);
+            CopiedReactionField = Instantiate(ReactionField, _reactionFieldLocation);
 
-        _scrollRect.content = CopiedReactionField.GetComponent<RectTransform>();
+            _scrollRect.content = CopiedReactionField.GetComponent<RectTransform>();
 
+        //Changes the reactions object sizes
         foreach (RectTransform child in CopiedReactionField.transform)
         {
             ContentSizeFitter childFitter = child.GetComponent<ContentSizeFitter>();
@@ -232,7 +215,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     }
 
 
-    void ListOrder(int order)
+    void ListOrderSystem(int order)
     {
         if (order >= 6)
         {

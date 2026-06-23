@@ -6,7 +6,6 @@ using Altzone.Scripts.Chat;
 using UnityEngine;
 using UnityEngine.UI;
 using static ServerChatMessage;
-using static UnityEngine.InputSystem.DefaultInputActions;
 
 public class MessageReactionsHandler : AltMonoBehaviour
 {
@@ -39,7 +38,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     [SerializeField] public List<ServerReactions> ReactionData = new List<ServerReactions>(); //Used for addings data to ChatShowUserPopUpData
 
-    [SerializeField] private string playerID;
 
     void Start()
     {
@@ -52,13 +50,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
             GetComponent<MessageReactionResize>().UpdateSize();
         }));
 
-
-        //Puts up the players ID
-        StartCoroutine(GetPlayerData(player =>
-        {
-            playerID = player.Id;
-
-        }));
 
             //ReactionObjectHandler.OnReactionPressed += AddReaction;
 
@@ -219,14 +210,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
             HorizontalLayoutGroup reactionsFields = ReactionPanel.GetComponent<HorizontalLayoutGroup>();
 
-
-
-
             Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
             int i = _reactionList.FindIndex(m => m.Sprite == reactionSprite);
-
-
-
 
             // Checks if chosen reaction is already added to the selected message. If so, deletes it.
             foreach (ChatReactionHandler addedReaction in _reactionHandlers)
@@ -247,7 +232,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
                                 _reactionList[i].Selected = true;
 
                                 addedReaction.Select();
-                                
 
                             }
                     }));
@@ -260,13 +244,11 @@ public class MessageReactionsHandler : AltMonoBehaviour
             // Creates a reaction with the needed info and adds it to the selected message.
             GameObject newReaction = Instantiate(_addedReactionPrefab, reactionsFields.transform);
 
-
-
             ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
             chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
             chatReactionHandler.AddReaction(_reaction);
             _reactionHandlers.Add(chatReactionHandler);
-            chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler, _reaction, playerID, message));
+            chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler, _reaction, message));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(chatReactionHandler, message));
 
             StartCoroutine(GetPlayerData(player =>
@@ -302,12 +284,13 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// Toggles the added reactions as selected and unselected.
     /// </summary>
     /// <param name="reactionHandler"></param>
-    public void ToggleReaction(ChatReactionHandler reactionHandler, ServerReactions _reaction, string playerID, ChatMessage message)
+    public void ToggleReaction(ChatReactionHandler reactionHandler, ServerReactions _reaction, ChatMessage message)
     {
+
+
         ChatListener.Instance.SendReaction(!reactionHandler.Selected ? reactionHandler.Mood.ToString() : string.Empty, reactionHandler.MessageID, ChatListener.Instance.ActiveChatChannel);
         if (!_longClick)
         {
-
             ClearList(_reaction);
             
 
@@ -325,18 +308,15 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     private void ShowUsers(ChatReactionHandler reactionHandler, ChatMessage message)
     {
+
         if (_reactionPopup.gameObject.activeSelf)
             return;
-
 
         //Gets needed data for ChatShowUserPopUpData1
         _reactionPopup.gameObject.SetActive(true);
 
-
         //Changes the reactions object sizes
         _reactionPopup.ReactionFieldCopyUpdate(_reactionPaneldata._reactionField, this, message);
-
-
 
         foreach (var reactionData in ReactionData)
         {
@@ -345,16 +325,12 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
         _longClick = true;
 
-
-        //_usersWhoAdded.SetActive(true);
-
-        //_chatScript.OpenUsersWhoAddedReactionPanel();
-
         Invoke("ResetLongClick", 2);
+
     }
 
     //Used for ChatShowUsersPopUpData to update the data
-    void UpdateReactionData(List<ServerReactions> reactions, ChatMessage message)
+    private void UpdateReactionData(List<ServerReactions> reactions, ChatMessage message)
     {
         //Empties the data
         if (_reactionPopup.gameObject.activeSelf)
