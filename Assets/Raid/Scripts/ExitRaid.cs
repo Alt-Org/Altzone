@@ -18,6 +18,7 @@ public class ExitRaid : MonoBehaviour
     public bool raidEnded = false;
     [SerializeField] private Raid_Timer raid_timer;
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
+    [SerializeField] private Raid_EventLog eventLog;
 
     private void Awake()
     {
@@ -94,6 +95,9 @@ public class ExitRaid : MonoBehaviour
         }
 
         raidEnded = true;
+        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
+        eventLog?.LogSystemMessage("Peli p\u00E4\u00E4ttyi", "Game ended");
+
         SetLossHaloVisuals(reason);
         OnEndRaid();
         raid_timer.FinishRaid();
@@ -201,6 +205,11 @@ public class ExitRaid : MonoBehaviour
         if (raid_References == null)
         {
             raid_References = FindObjectOfType<Raid_References>();
+        }
+
+        if (eventLog == null)
+        {
+            eventLog = Raid_EventLog.FindForInventory(transform);
         }
     }
 }

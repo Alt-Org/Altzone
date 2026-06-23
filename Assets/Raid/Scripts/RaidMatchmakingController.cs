@@ -42,7 +42,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private Raid_LootTracking _lootTracking;
     private Raid_Timer _raidTimer;
     private ExitRaid _exitRaid;
-
     private RaidMatchmakingViews _views;
     private GameObject _overlayRoot;
     private GameObject _matchmakingPanel;

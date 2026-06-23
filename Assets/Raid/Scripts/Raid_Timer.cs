@@ -12,6 +12,7 @@ public class Raid_Timer : MonoBehaviour
 
     [SerializeField, Header("Raid Inventory ref")]
     private Raid_References raid_References;
+    [SerializeField] private Raid_EventLog eventLog;
 
     [Header("Timer texts")]
     public TextMeshProUGUI TimerText;
@@ -28,6 +29,8 @@ public class Raid_Timer : MonoBehaviour
     private bool startTextShown;
     private float initialCurrentTime;
     private float initialTimeUntilStart;
+    private int lastLoggedStartCountdownSecond = int.MaxValue;
+    private bool gameStartLogged;
 
     [Header("Limit settings")]
     public bool HasLimit;
@@ -62,6 +65,7 @@ public class Raid_Timer : MonoBehaviour
     {
         initialCurrentTime = CurrentTime;
         initialTimeUntilStart = TimeUntilStart;
+        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
 
         if (exitRaid == null)
         {
@@ -158,7 +162,9 @@ public class Raid_Timer : MonoBehaviour
                 {
                     if (StartTimerText != null)
                     {
-                        StartTimerText.text = Mathf.CeilToInt(TimeUntilStart).ToString();
+                        int countdownSecond = Mathf.CeilToInt(TimeUntilStart);
+                        StartTimerText.text = countdownSecond.ToString();
+                        LogStartCountdownSecond(countdownSecond);
                     }
                 }
             }
@@ -181,6 +187,7 @@ public class Raid_Timer : MonoBehaviour
             started = true;
             SetRaidControlsVisible(true);
             UpdateTimerFill();
+            LogGameStart();
             TimerStarted?.Invoke();
         }
             
@@ -193,6 +200,8 @@ public class Raid_Timer : MonoBehaviour
         startTextShown = false;
         CurrentTime = initialCurrentTime;
         TimeUntilStart = initialTimeUntilStart;
+        lastLoggedStartCountdownSecond = int.MaxValue;
+        gameStartLogged = false;
         timerStartTime = CurrentTime;
 
         if (StartTimerText != null && StartTimerText.transform.parent != null)
@@ -238,6 +247,30 @@ public class Raid_Timer : MonoBehaviour
         SetStartTimerVisualState(true);
         startTextShown = true;
         SetRaidControlsVisible(true);
+    }
+
+    private void LogStartCountdownSecond(int countdownSecond)
+    {
+        if (countdownSecond < 1 || countdownSecond > 3 || countdownSecond == lastLoggedStartCountdownSecond)
+        {
+            return;
+        }
+
+        lastLoggedStartCountdownSecond = countdownSecond;
+        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
+        eventLog?.LogSystemMessage($"Peli alkaa {countdownSecond}", $"Game starts {countdownSecond}");
+    }
+
+    private void LogGameStart()
+    {
+        if (gameStartLogged)
+        {
+            return;
+        }
+
+        gameStartLogged = true;
+        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
+        eventLog?.LogSystemMessage("Kokoaminen aloitettu", "Gathering started");
     }
 
     private void SetStartTimerVisualState(bool showStartText)

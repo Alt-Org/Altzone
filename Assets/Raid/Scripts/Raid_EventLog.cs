@@ -36,6 +36,7 @@ public class Raid_EventLog : MonoBehaviour
     [SerializeField] private RectTransform contentRoot;
     [SerializeField] private GameObject entryTemplate;
     [SerializeField] private AvatarFaceLoader avatarHeadTemplate;
+    [SerializeField] private Sprite systemMessageSprite;
     [SerializeField] private Color normalEntryColor = new(1f, 1f, 1f, 0.95f);
     [SerializeField] private Color trapEntryColor = new(1f, 1f, 1f, 0.95f);
 
@@ -45,8 +46,12 @@ public class Raid_EventLog : MonoBehaviour
 
     public static Raid_EventLog FindForInventory(Transform inventoryRoot)
     {
-        return inventoryRoot != null
+        Raid_EventLog eventLog = inventoryRoot != null
             ? inventoryRoot.GetComponentInChildren<Raid_EventLog>(true)
+            : null;
+
+        return eventLog != null
+            ? eventLog
             : FindObjectOfType<Raid_EventLog>(true);
     }
 
@@ -99,7 +104,20 @@ public class Raid_EventLog : MonoBehaviour
         AddEntry(actorName, message, trapEntryColor, characterId, avatarData);
     }
 
+    public void LogSystemMessage(string finnishMessage, string englishMessage = null)
+    {
+        string message = UseEnglish() && !string.IsNullOrWhiteSpace(englishMessage)
+            ? englishMessage
+            : finnishMessage;
+        AddEntry("System", message, normalEntryColor, CharacterID.None, null, true);
+    }
+
     private void AddEntry(string actorName, string message, Color color, CharacterID characterId, AvatarData avatarData)
+    {
+        AddEntry(actorName, message, color, characterId, avatarData, false);
+    }
+
+    private void AddEntry(string actorName, string message, Color color, CharacterID characterId, AvatarData avatarData, bool useSystemIcon)
     {
         if (!HasRequiredReferences())
         {
@@ -109,7 +127,7 @@ public class Raid_EventLog : MonoBehaviour
         entryTemplate.SetActive(false);
         GameObject entry = Instantiate(entryTemplate, contentRoot);
         entry.name = "EventLogEntry";
-        ConfigureEntry(entry, actorName, message, color, characterId, avatarData);
+        ConfigureEntry(entry, actorName, message, color, characterId, avatarData, useSystemIcon);
         entry.SetActive(true);
         entries.Enqueue(entry);
 
@@ -130,7 +148,7 @@ public class Raid_EventLog : MonoBehaviour
         scrollRoutine = StartCoroutine(ScrollToBottomNextFrame());
     }
 
-    private void ConfigureEntry(GameObject entry, string actorName, string message, Color color, CharacterID characterId, AvatarData avatarData)
+    private void ConfigureEntry(GameObject entry, string actorName, string message, Color color, CharacterID characterId, AvatarData avatarData, bool useSystemIcon)
     {
         TMP_Text messageText = FindMessageText(entry.transform);
 
@@ -142,7 +160,14 @@ public class Raid_EventLog : MonoBehaviour
             messageText.color = color;
         }
 
-        ConfigureIcon(FindAvatarSlot(entry.transform), actorName, characterId, avatarData);
+        Transform iconTransform = FindAvatarSlot(entry.transform);
+        if (useSystemIcon)
+        {
+            ConfigureSystemIcon(iconTransform);
+            return;
+        }
+
+        ConfigureIcon(iconTransform, actorName, characterId, avatarData);
     }
 
     private static TMP_Text FindMessageText(Transform entryTransform)
@@ -190,6 +215,34 @@ public class Raid_EventLog : MonoBehaviour
         {
             iconImage.enabled = true;
             iconImage.color = ResolveIconColor(actorName);
+            iconImage.preserveAspect = false;
+        }
+    }
+
+    private void ConfigureSystemIcon(Transform iconTransform)
+    {
+        if (iconTransform == null)
+        {
+            return;
+        }
+
+        SetAvatarHeadVisible(iconTransform, false);
+
+        Image iconImage = iconTransform.GetComponent<Image>();
+        if (iconImage == null)
+        {
+            return;
+        }
+
+        iconImage.enabled = true;
+        iconImage.raycastTarget = false;
+        iconImage.sprite = systemMessageSprite;
+        iconImage.color = Color.white;
+        iconImage.preserveAspect = systemMessageSprite != null;
+
+        if (systemMessageSprite == null)
+        {
+            iconImage.color = ResolveIconColor("System");
             iconImage.preserveAspect = false;
         }
     }
