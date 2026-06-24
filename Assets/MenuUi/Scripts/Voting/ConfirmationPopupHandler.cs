@@ -21,6 +21,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
     [SerializeField] private Button _declineButton;
     [SerializeField] private Button _leftArrowButton;
     [SerializeField] private Button _rightArrowButton;
+    [SerializeField] private GameObject _playTransactionPopUp;
 
     [SerializeField] private bool _furnitureShopPermission; //True=shop, false=voteväliaikainen ennen clanroles shop permissionin tarkastus implementaatiota
 
@@ -180,9 +181,8 @@ public class ConfirmationPopupHandler : MonoBehaviour
 
     private void BuyAvatarPiece()
     {
-        //Implement this later.
-
         ClosePopup();
+        OpenPlayTransactionPopup();
     }
 
     private void BuyFurniturePiece() //placeholderi ostomekanismille
@@ -219,5 +219,39 @@ public class ConfirmationPopupHandler : MonoBehaviour
         if (Background != null) Background.SetActive(false);
         if(_leftArrowButton != null) _leftArrowButton.gameObject.SetActive(false);
         if (_rightArrowButton != null) _rightArrowButton.gameObject.SetActive(false);
+    }
+
+    private void OpenPlayTransactionPopup()
+    {
+        if (_playTransactionPopUp == null || !_playTransactionPopUp.scene.IsValid())
+            _playTransactionPopUp = FindSceneGameObject("PlayTransactionPopUp");
+
+        if (_playTransactionPopUp == null)
+        {
+            Debug.LogWarning("PlayTransactionPopUp was not found in the scene.");
+            return;
+        }
+
+        _playTransactionPopUp.SetActive(true);
+        Transform panelTransform = _playTransactionPopUp.transform.Find("Panel");
+        if (panelTransform != null)
+            panelTransform.gameObject.SetActive(true);
+
+        _playTransactionPopUp.SendMessage("Open", SendMessageOptions.DontRequireReceiver);
+
+        _playTransactionPopUp.transform.SetAsLastSibling();
+    }
+
+    private GameObject FindSceneGameObject(string objectName)
+    {
+        GameObject[] gameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+
+        foreach (GameObject gameObject in gameObjects)
+        {
+            if (gameObject.name == objectName && gameObject.scene.IsValid())
+                return gameObject;
+        }
+
+        return null;
     }
 }
