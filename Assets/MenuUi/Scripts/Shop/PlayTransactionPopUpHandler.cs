@@ -10,14 +10,8 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private const string CancelButtonText = "Peruuta";
     private const string ExitButtonText = "Poistu";
     private const string RatingPromptText = "Miksi t\u00E4m\u00E4 on arvokas sinulle?";
-    private static readonly List<string> RatingOptions = new()
-    {
-        "\u2022 Tykk\u00E4\u00E4n tuotteen ulkoasusta",
-        "\u2022 Ostos on edullinen",
-        "\u2022 Hinnalla ei ole v\u00E4li\u00E4",
-        "\u2022 Klaanin yhteinen p\u00E4\u00E4t\u00F6s",
-        "\u2022 Haluan erottua paremmin"
-    };
+    private const string EmptyCardButtonText = "Kortti";
+    private const string MobileButtonText = "Mobiili";
     private static readonly Color CancelButtonTextColor = new Color(0.196f, 0.196f, 0.196f, 1f);
     private static readonly Color ExitButtonColor = new Color(0.118f, 0.165f, 0.878f, 1f);
 
@@ -34,13 +28,31 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
     private TMP_Text _primaryButtonLabel;
     private TMP_Text _cancelButtonLabel;
+    private TMP_Text _cardButtonLabel;
+    private TMP_Text _mobileButtonLabel;
     private TMP_Text _ratingDropdownLabel;
     private Image _cancelButtonBackground;
+    private RectTransform _primaryButtonRectTransform;
     private RectTransform _cancelButtonRectTransform;
     private TMP_Dropdown _ratingDropdown;
+    private TMP_Dropdown _savedCardDropdown;
+    private TMP_InputField _nameInputField;
     private TMP_InputField _cardInputField;
-    private TMP_InputField _cvvInputField;
+    private TMP_InputField _dateInputField;
+    private TMP_InputField _addCardCvvInputField;
+    private TMP_InputField _paymentCvvInputField;
+    private readonly List<SavedCard> _savedCards = new List<SavedCard>();
+    private int _selectedCardIndex = -1;
+    private bool _usingCardPayment;
     private TransactionState _state;
+
+    private class SavedCard
+    {
+        public string HolderName;
+        public string LastFourDigits;
+        public string DisplayNumber;
+        public string ExpiryDate;
+    }
 
     private enum TransactionState
     {
@@ -82,12 +94,19 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
         _primaryButtonLabel = _primaryButton != null ? _primaryButton.GetComponentInChildren<TMP_Text>(true) : null;
         _cancelButtonLabel = _cancelButton != null ? _cancelButton.GetComponentInChildren<TMP_Text>(true) : null;
+        _cardButtonLabel = _cardButton != null ? _cardButton.GetComponentInChildren<TMP_Text>(true) : null;
+        _mobileButtonLabel = _mobileButton != null ? _mobileButton.GetComponentInChildren<TMP_Text>(true) : null;
         _cancelButtonBackground = _cancelButton != null ? _cancelButton.GetComponent<Image>() : null;
+        _primaryButtonRectTransform = _primaryButton != null ? _primaryButton.GetComponent<RectTransform>() : null;
         _cancelButtonRectTransform = _cancelButton != null ? _cancelButton.GetComponent<RectTransform>() : null;
         _ratingDropdown = FindChildComponent<TMP_Dropdown>("RatingDropdown");
         _ratingDropdownLabel = _ratingDropdown != null ? _ratingDropdown.captionText : null;
-        _cardInputField = FindChildComponent<TMP_InputField>("CardInputField");
-        _cvvInputField = FindChildComponent<TMP_InputField>("CVVInputField");
+        _savedCardDropdown = FindChildComponentIn<TMP_Dropdown>(_selectCardWindow, "Dropdown");
+        _nameInputField = FindChildComponentIn<TMP_InputField>(_addCardWindow, "NameInputField");
+        _cardInputField = FindChildComponentIn<TMP_InputField>(_addCardWindow, "CardInputField");
+        _dateInputField = FindChildComponentIn<TMP_InputField>(_addCardWindow, "DateInputField");
+        _addCardCvvInputField = FindChildComponentIn<TMP_InputField>(_addCardWindow, "CVVInputField");
+        _paymentCvvInputField = FindChildComponentIn<TMP_InputField>(_selectCardWindow, "CVVInputField");
     }
 
     private void BindButtons()
@@ -123,6 +142,14 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
             if (_mobileButton.onClick.GetPersistentEventCount() == 0)
                 _mobileButton.onClick.AddListener(SelectMobilePayment);
         }
+
+        if (_savedCardDropdown != null)
+        {
+            _savedCardDropdown.onValueChanged.RemoveListener(SelectSavedCard);
+
+            if (_savedCardDropdown.onValueChanged.GetPersistentEventCount() == 0)
+                _savedCardDropdown.onValueChanged.AddListener(SelectSavedCard);
+        }
     }
 
     private void ShowState(TransactionState state)
@@ -155,7 +182,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         if (state == TransactionState.PostPayment)
             ResetRatingDropdown();
 
-        SelectCardPayment();
+        RefreshPaymentButtons();
     }
 
     public void PrimaryButtonClicked()
@@ -172,6 +199,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
     private void SubmitCard()
     {
+        AddCardFromInputs();
         ShowState(TransactionState.PrePayment);
     }
 
@@ -182,13 +210,21 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
     public void SelectCardPayment()
     {
-        if (_cardButton != null) _cardButton.interactable = false;
+        if (_savedCards.Count == 0)
+        {
+            SelectMobilePayment();
+            return;
+        }
+
+        _usingCardPayment = true;
         if (_mobileButton != null) _mobileButton.interactable = true;
+        if (_cardButton != null) _cardButton.interactable = false;
     }
 
     public void SelectMobilePayment()
     {
-        if (_cardButton != null) _cardButton.interactable = true;
+        _usingCardPayment = false;
+        if (_cardButton != null) _cardButton.interactable = _savedCards.Count > 0;
         if (_mobileButton != null) _mobileButton.interactable = false;
     }
 
@@ -213,8 +249,8 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         if (_cancelButtonRectTransform == null)
             return;
 
-        _cancelButtonRectTransform.anchorMin = isExitButton ? new Vector2(0.08f, 0.05f) : new Vector2(0.25f, 0f);
-        _cancelButtonRectTransform.anchorMax = isExitButton ? new Vector2(0.92f, 0.45f) : new Vector2(0.75f, 0.35f);
+        _cancelButtonRectTransform.anchorMin = isExitButton && _primaryButtonRectTransform != null ? _primaryButtonRectTransform.anchorMin : new Vector2(0.25f, 0f);
+        _cancelButtonRectTransform.anchorMax = isExitButton && _primaryButtonRectTransform != null ? _primaryButtonRectTransform.anchorMax : new Vector2(0.75f, 0.35f);
         _cancelButtonRectTransform.anchoredPosition = Vector2.zero;
         _cancelButtonRectTransform.sizeDelta = Vector2.zero;
     }
@@ -224,11 +260,118 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         if (_ratingDropdown == null)
             return;
 
-        _ratingDropdown.ClearOptions();
-        _ratingDropdown.AddOptions(RatingOptions);
         _ratingDropdown.value = 0;
         _ratingDropdown.RefreshShownValue();
         SetText(_ratingDropdownLabel, RatingPromptText);
+    }
+
+    private void AddCardFromInputs()
+    {
+        string cardNumber = GetInputText(_cardInputField);
+        string digits = GetDigits(cardNumber);
+        string lastFourDigits = digits.Length >= 4 ? digits.Substring(digits.Length - 4) : "0000";
+
+        SavedCard card = new SavedCard
+        {
+            HolderName = GetInputText(_nameInputField),
+            LastFourDigits = lastFourDigits,
+            DisplayNumber = GetCardDisplayNumber(cardNumber, lastFourDigits),
+            ExpiryDate = GetInputText(_dateInputField)
+        };
+
+        _savedCards.Add(card);
+        _selectedCardIndex = _savedCards.Count - 1;
+        _usingCardPayment = true;
+
+        if (_cardInputField != null) _cardInputField.text = string.Empty;
+        if (_addCardCvvInputField != null) _addCardCvvInputField.text = string.Empty;
+        if (_paymentCvvInputField != null) _paymentCvvInputField.text = string.Empty;
+
+        RefreshPaymentButtons();
+    }
+
+    private void RefreshPaymentButtons()
+    {
+        SetText(_cardButtonLabel, EmptyCardButtonText);
+        SetText(_mobileButtonLabel, MobileButtonText);
+        RefreshSavedCardDropdown();
+
+        if (_usingCardPayment && _savedCards.Count > 0)
+            SelectCardPayment();
+        else
+            SelectMobilePayment();
+    }
+
+    private void RefreshSavedCardDropdown()
+    {
+        if (_savedCardDropdown == null)
+            return;
+
+        _savedCardDropdown.onValueChanged.RemoveListener(SelectSavedCard);
+        _savedCardDropdown.ClearOptions();
+
+        List<string> cardOptions = new List<string>();
+        for (int i = 0; i < _savedCards.Count; i++)
+            cardOptions.Add(GetSavedCardText(_savedCards[i]));
+
+        _savedCardDropdown.AddOptions(cardOptions);
+        _savedCardDropdown.interactable = _savedCards.Count > 0;
+
+        if (_savedCards.Count > 0)
+        {
+            _selectedCardIndex = Mathf.Clamp(_selectedCardIndex, 0, _savedCards.Count - 1);
+            _savedCardDropdown.value = _selectedCardIndex;
+        }
+        else
+        {
+            _selectedCardIndex = -1;
+        }
+
+        _savedCardDropdown.RefreshShownValue();
+        _savedCardDropdown.onValueChanged.AddListener(SelectSavedCard);
+    }
+
+    private void SelectSavedCard(int selectedIndex)
+    {
+        if (selectedIndex < 0 || selectedIndex >= _savedCards.Count)
+            return;
+
+        _selectedCardIndex = selectedIndex;
+        _usingCardPayment = true;
+        SelectCardPayment();
+    }
+
+    private string GetSavedCardText(SavedCard card)
+    {
+        return "VISA  " + card.DisplayNumber;
+    }
+
+    private string GetCardDisplayNumber(string cardNumber, string lastFourDigits)
+    {
+        if (!string.IsNullOrWhiteSpace(cardNumber))
+            return cardNumber.Trim();
+
+        return "**** " + lastFourDigits;
+    }
+
+    private string GetInputText(TMP_InputField inputField)
+    {
+        return inputField != null ? inputField.text.Trim() : string.Empty;
+    }
+
+    private string GetDigits(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return string.Empty;
+
+        string digits = string.Empty;
+        for (int i = 0; i < value.Length; i++)
+        {
+            if (char.IsDigit(value[i]))
+                digits += value[i];
+        }
+
+        return digits;
     }
 
     private GameObject FindChildGameObject(string childName)
@@ -241,6 +384,22 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     {
         Transform child = FindChild(childName);
         return child != null ? child.GetComponent<T>() : null;
+    }
+
+    private T FindChildComponentIn<T>(GameObject parent, string childName) where T : Component
+    {
+        if (parent == null)
+            return null;
+
+        Transform[] children = parent.GetComponentsInChildren<Transform>(true);
+
+        foreach (Transform child in children)
+        {
+            if (child.name == childName)
+                return child.GetComponent<T>();
+        }
+
+        return null;
     }
 
     private Transform FindChild(string childName)

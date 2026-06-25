@@ -240,18 +240,43 @@ public class ConfirmationPopupHandler : MonoBehaviour
         _playTransactionPopUp.SendMessage("Open", SendMessageOptions.DontRequireReceiver);
 
         _playTransactionPopUp.transform.SetAsLastSibling();
+
+        if (!_playTransactionPopUp.activeInHierarchy)
+            Debug.LogWarning("PlayTransactionPopUp was found and enabled, but it is still inactive in hierarchy. Check whether one of its parent objects is disabled.");
     }
 
     private GameObject FindSceneGameObject(string objectName)
     {
         GameObject[] gameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
+        GameObject fallback = null;
 
         foreach (GameObject gameObject in gameObjects)
         {
-            if (gameObject.name == objectName && gameObject.scene.IsValid())
+            if (!gameObject.scene.IsValid() || gameObject.name != objectName)
+                continue;
+
+            if (IsUnderUIOverlay(gameObject))
                 return gameObject;
+
+            if (fallback == null)
+                fallback = gameObject;
         }
 
-        return null;
+        return fallback;
+    }
+
+    private bool IsUnderUIOverlay(GameObject gameObject)
+    {
+        Transform current = gameObject.transform;
+
+        while (current != null)
+        {
+            if (current.name == "UIOverlay" || current.name == "UIOverlayPanel")
+                return true;
+
+            current = current.parent;
+        }
+
+        return false;
     }
 }
