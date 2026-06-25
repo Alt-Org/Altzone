@@ -12,6 +12,7 @@ using Photon.Deterministic;
 
 // Battle Qsimulation usings
 using Battle.QSimulation.Projectile;
+using Battle.QSimulation.Game;
 
 namespace Battle.QSimulation.Player
 {
@@ -53,11 +54,13 @@ namespace Battle.QSimulation.Player
             // get components
             Transform2D*                              projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
             BattlePlayerClass100ProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattlePlayerClass100ProjectileQComponent>(projectileEntityRef);
+            PhysicsCollider2D* collider                                   = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
 
             // set Initial projectile direction and speed
             projectileTransform->Position = position;
             projectile->Direction         = direction;
             projectile->Speed             = speed;
+            projectile->Radius            = collider->Shape.Circle.Radius;
         }
 
         /// <summary>
@@ -71,7 +74,7 @@ namespace Battle.QSimulation.Player
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
-            filter.Transform->Position += filter.Projectile->Direction * filter.Projectile->Speed;
+            filter.Transform->Position += filter.Projectile->Direction * (filter.Projectile->Speed * f.DeltaTime);
         }
 
         /// <summary>
@@ -91,6 +94,43 @@ namespace Battle.QSimulation.Player
         {
             BattleProjectileQSystem.UpdateVelocity(f, emotionProjectile, playerClass100Projectile->Direction, BattleProjectileQSystem.SpeedChange.None);
             f.Destroy(playerClass100ProjectileEntityRef);
+        }
+
+        /// <summary>
+        /// Updates the player class 100 projectile's direction when it hits the arena border.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="arenaCollisionData">Collision data related to the arena.</param>
+        /// <param name="playerClass100ProjectileCollisionData">Collision data related to the class 100 projectile.</param>
+        public static void OnProjectileHitArenaBorder(
+            Frame f,
+            BattleCollisionQSystem.ArenaBorderCollisionData* arenaCollisionData,
+            BattleCollisionQSystem.PlayerClass100ProjectileCollisionData* playerClass100ProjectileCollisionData
+        )
+        {
+            BattlePlayerClass100ProjectileQComponent* playerClass100Projectile = playerClass100ProjectileCollisionData->Projectile;
+            EntityRef playerClass100ProjectileEntityRef                        = playerClass100ProjectileCollisionData->ProjectileEntity;
+            EntityRef otherEntity                                              = playerClass100ProjectileCollisionData->OtherEntity;
+            BattleArenaBorderQComponent* arenaBorder                           = arenaCollisionData->ArenaBorder;
+
+            FPVector2 normal      = arenaBorder->Normal;
+            FP collisionMinOffset = arenaBorder->CollisionMinOffset;
+
+            FPVector2 direction = FPVector2.Reflect(playerClass100Projectile->Direction, normal).Normalized;
+
+            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(playerClass100ProjectileEntityRef);
+            Transform2D* otherTransform      = f.Unsafe.GetPointer<Transform2D>(otherEntity);
+
+            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
+            FP collisionOffset     = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
+
+            if (collisionOffset - playerClass100Projectile->Radius < collisionMinOffset)
+            {
+                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + playerClass100Projectile->Radius);
+            }
+
+            playerClass100Projectile->Direction = direction;
         }
 
         /// <summary>
