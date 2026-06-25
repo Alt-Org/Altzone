@@ -75,10 +75,21 @@ public class GameModeChoiceScript : MonoBehaviour
     private void Start()
     {
         currentModeInt = 0;
-        amountOfModes = GameTypeReference.Instance.GetEnabledCount();
 
-        _list = GameTypeReference.Instance.GetGameTypeInfos().OrderBy(x => x.gameType).ToList();
-        currentModeInt = _list.FindIndex(x => x.gameType == _gameModeButton.SelectedGameType);
+        // Build list from only enabled game types so UI matches enabled count
+        _list = GameTypeReference.Instance.GetGameTypeInfos()
+            .Where(x => x.Enabled)
+            .OrderBy(x => x.gameType)
+            .ToList();
+
+        amountOfModes = _list.Count;
+
+        if (amountOfModes > 0)
+        {
+            currentModeInt = _list.FindIndex(x => x.gameType == _gameModeButton.SelectedGameType);
+            if (currentModeInt < 0) currentModeInt = 0;
+            SetData();
+        }
 
         _arrowLeft.onClick.AddListener(PressArrowLeft);
         _arrowRight.onClick.AddListener(PressArrowRight);

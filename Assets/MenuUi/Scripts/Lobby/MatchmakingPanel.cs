@@ -118,7 +118,7 @@ namespace MenuUi.Scripts.Lobby
 
             this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType, true));
             bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
-            if (!isLeader && InLobbyController.SelectedGameType != GameType.Clan2v2)
+            if (!isLeader && InLobbyController.SelectedGameType != GameType.Clan2v2 && InLobbyController.SelectedGameType != GameType.FriendLobby)
             {
                 Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
             }
