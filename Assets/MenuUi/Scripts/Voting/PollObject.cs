@@ -58,6 +58,8 @@ public class PollObject : MonoBehaviour
     private Coroutine updateCoroutine;
     private bool pollEnded = false;
 
+    private static SettingsCarrier.LanguageType Language => SettingsCarrier.Instance.Language;
+
     private readonly Color _green = HexToColor("#2FA36B");
     private readonly Color _red = HexToColor("#C83A2D");
 
@@ -274,9 +276,13 @@ public class PollObject : MonoBehaviour
 
             ResultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
 
-            ResultText.text = isAccepted
-                ? "Hyv\u00E4ksytty".ToUpper()
-                : "Hyl\u00E4tty".ToUpper();
+            ResultText.text = Language == SettingsCarrier.LanguageType.English
+                ? isAccepted
+                    ? "Accepted".ToUpper()
+                    : "Denied".ToUpper()
+                : isAccepted
+                    ? "Hyv\u00E4ksytty".ToUpper()
+                    : "Hyl\u00E4tty".ToUpper();
 
             ResultObject.SetActive(true);
             VoteBar.gameObject.SetActive(false);
@@ -349,11 +355,19 @@ public class PollObject : MonoBehaviour
         Image.gameObject.SetActive(true);
         SetRibbonBackground.gameObject.SetActive(true);
         FurnitureInfo info = furniturePollData.Furniture.FurnitureInfo;
-        PollTypeText.text = $"{info.SetName} {info.VisibleName}";
+        PollTypeText.text = Language == SettingsCarrier.LanguageType.English
+            ? $"{info.SetNameEnglish} {info.EnglishName}"
+            : $"{info.SetName} {info.VisibleName}";
 
         bool isBuying = furniturePollData.FurniturePollType == FurniturePollType.Buying;
         TradeBackground.color = isBuying ? _green : _red;
-        TradeText.text = isBuying ? "OSTO" : "MYYNTI";
+        TradeText.text = Language == SettingsCarrier.LanguageType.English
+            ? isBuying
+                ? "Buy".ToUpper()
+                : "Sell".ToUpper()
+            : isBuying
+                ? "Osto".ToUpper()
+                : "Myynti".ToUpper();
 
         Price.text = furniturePollData.Furniture.Value.ToString();
 

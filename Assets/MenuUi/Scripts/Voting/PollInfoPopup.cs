@@ -72,6 +72,8 @@ public class PollInfoPopup : MonoBehaviour
     private PollData _currentPollData;
     private Coroutine _timerCoroutine;
 
+    private static SettingsCarrier.LanguageType Language => SettingsCarrier.Instance.Language;
+
     private readonly Color _green = HexToColor("#2FA36B");
     private readonly Color _red = HexToColor("#C83A2D");
 
@@ -187,14 +189,23 @@ public class PollInfoPopup : MonoBehaviour
         if (furnitureData == null || furnitureData.Furniture == null) return;
 
         bool isBuying = furnitureData.FurniturePollType == FurniturePollType.Buying;
-        tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
+
+        tradeTag.text = Language == SettingsCarrier.LanguageType.English
+            ? isBuying
+                ? "Buy".ToUpper()
+                : "Sell".ToUpper()
+            : isBuying
+                ? "Osto".ToUpper()
+                : "Myynti".ToUpper();
 
         FurnitureInfo info = furnitureData.Furniture.FurnitureInfo;
 
         if (info == null)
             return;
 
-        nameText.text = $"{info.SetName} {info.VisibleName}";
+        nameText.text = Language == SettingsCarrier.LanguageType.English
+            ? $"{info.SetNameEnglish} {info.EnglishName}"
+            : $"{info.SetName} {info.VisibleName}";
 
         iconImage.sprite = info.Image;
 
@@ -209,7 +220,11 @@ public class PollInfoPopup : MonoBehaviour
             setFontName.sprite = info.SetFontName;
         }
 
-        descriptionText.text = $"{info.ArtisticDescription}";
+
+        descriptionText.text = Language == SettingsCarrier.LanguageType.English
+            ? $"{info.EnglishArtisticDescription}"
+            : $"{info.ArtisticDescription}";
+
         valueText.text = $"{furnitureData.Furniture.Value}";
     }
 
@@ -257,9 +272,13 @@ public class PollInfoPopup : MonoBehaviour
 
         resultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
 
-        resultText.text = isAccepted
-            ? "Hyv\u00E4ksytty".ToUpper()
-            : "Hyl\u00E4tty".ToUpper();
+        resultText.text = Language == SettingsCarrier.LanguageType.English
+            ? isAccepted
+                ? "Accepted".ToUpper()
+                : "Denied".ToUpper()
+            : isAccepted
+                ? "Hyv\u00E4ksytty".ToUpper()
+                : "Hyl\u00E4tty".ToUpper();
 
         resultObject.SetActive(true);
 
@@ -270,7 +289,9 @@ public class PollInfoPopup : MonoBehaviour
     {
         _currentPollData = pollData;
 
-        authorName.text = $"Luonut: {pollData?.Organizer}";
+        authorName.text = Language == SettingsCarrier.LanguageType.English
+            ? $"Created: {pollData?.Organizer}"
+            : $"Luonut: {pollData?.Organizer}";
 
         setPosterBackground.gameObject.SetActive(false);
         setFontName.gameObject.SetActive(false);
@@ -372,7 +393,11 @@ public class PollInfoPopup : MonoBehaviour
         {
             if (!result)
             {
-                SignalBus.OnChangePopupInfoSignal("Äänen antaminen epäonnistui");
+                string error = Language == SettingsCarrier.LanguageType.English
+                    ? "Voting failed"
+                    : "Äänen antaminen epäonnistui";
+
+                SignalBus.OnChangePopupInfoSignal(error);
                 return;
             }
             voteButtons.SetActive(false);

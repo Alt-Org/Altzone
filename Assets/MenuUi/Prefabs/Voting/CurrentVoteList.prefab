@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2471713120966451206}
   - component: {fileID: 669916724310034500}
   - component: {fileID: 6187207719256660622}
+  - component: {fileID: 932861332139363415}
   m_Layer: 5
   m_Name: NoPollsText
   m_TagString: Untagged
@@ -139,6 +140,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &932861332139363415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436495936943670232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Kun ehodotat ostosta kaupasta tai muutosta kivilinnayhteis\xF6si
+    asetuksiin, ne ratkaistaan t\xE4\xE4ll\xE4 demokraattisesti.\n\nOle ensimm\xE4inen
+    joka aloittaa \xE4\xE4nestyksen ja vie yhteis\xF6si eteenp\xE4in."
+  _englishText: 'When you suggest a purchase or a change in your community, they
+    will be decided here democratically.
+
+
+    Be the first to start a vote and take
+    your community forward.'
 --- !u!1 &2745182772082903440
 GameObject:
   m_ObjectHideFlags: 0
@@ -568,6 +590,7 @@ GameObject:
   - component: {fileID: 5172882138276249602}
   - component: {fileID: 2430036310999542599}
   - component: {fileID: 7857274758909854512}
+  - component: {fileID: 5794947307158460527}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -622,7 +645,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Yhteiset p\xE4\xE4t\xF6kset tehd\xE4\xE4n t\xE4\xE4ll\xE4!"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
   m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
@@ -694,6 +717,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5794947307158460527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5387694276042526545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Yhteiset p\xE4\xE4t\xF6kset tehd\xE4\xE4n t\xE4\xE4ll\xE4!"
+  _englishText: Common decisions are made here!
 --- !u!1 &5649078519774609336
 GameObject:
   m_ObjectHideFlags: 0
