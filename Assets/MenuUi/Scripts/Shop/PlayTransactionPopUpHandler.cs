@@ -44,6 +44,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private readonly List<SavedCard> _savedCards = new List<SavedCard>();
     private int _selectedCardIndex = -1;
     private bool _usingCardPayment;
+    private bool _ratingPromptOptionHidden;
     private TransactionState _state;
 
     private class SavedCard
@@ -70,6 +71,11 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private void OnEnable()
     {
         Open();
+    }
+
+    private void Update()
+    {
+        HideRatingPromptOptionWhenExpanded();
     }
 
     public void Open()
@@ -260,9 +266,47 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         if (_ratingDropdown == null)
             return;
 
-        _ratingDropdown.value = 0;
+        _ratingPromptOptionHidden = false;
+        _ratingDropdown.SetValueWithoutNotify(0);
         _ratingDropdown.RefreshShownValue();
         SetText(_ratingDropdownLabel, RatingPromptText);
+    }
+
+    private void HideRatingPromptOptionWhenExpanded()
+    {
+        if (_ratingDropdown == null)
+            return;
+
+        if (!_ratingDropdown.IsExpanded)
+        {
+            _ratingPromptOptionHidden = false;
+            return;
+        }
+
+        if (_ratingPromptOptionHidden)
+            return;
+
+        Transform dropdownList = _ratingDropdown.transform.Find("Dropdown List");
+        if (dropdownList == null)
+            return;
+
+        Toggle[] items = dropdownList.GetComponentsInChildren<Toggle>(false);
+        if (items.Length == 0)
+            return;
+
+        RectTransform promptItem = items[0].transform as RectTransform;
+        if (promptItem == null)
+            return;
+
+        RectTransform content = promptItem.parent as RectTransform;
+        float promptItemHeight = promptItem.rect.height;
+
+        promptItem.gameObject.SetActive(false);
+
+        if (content != null)
+            content.sizeDelta = new Vector2(content.sizeDelta.x, Mathf.Max(0f, content.sizeDelta.y - promptItemHeight));
+
+        _ratingPromptOptionHidden = true;
     }
 
     private void AddCardFromInputs()
