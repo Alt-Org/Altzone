@@ -15,6 +15,9 @@ public class ConfirmationPopupHandler : MonoBehaviour
     [SerializeField] private Image _itemIcon;
     [SerializeField] private TMP_Text _itemNameText;
     [SerializeField] private TMP_Text _itemPriceText;
+    [SerializeField] private Image _popupBackgroundImage;
+    [SerializeField] private VerticalGradientEffect _popupBackgroundGradient;
+    [SerializeField] private Image _popupTabImage;
 
     [SerializeField] private TextLanguageSelectorCaller _confirmText;
     [SerializeField] private Button _acceptButton;
@@ -24,6 +27,9 @@ public class ConfirmationPopupHandler : MonoBehaviour
     [SerializeField] private GameObject _playTransactionPopUp;
 
     [SerializeField] private bool _furnitureShopPermission; //True=shop, false=voteväliaikainen ennen clanroles shop permissionin tarkastus implementaatiota
+
+    [SerializeField] private Color _personificationShopPopupColor = new Color(0.188f, 0.804f, 0.325f, 0.93f);
+    [SerializeField] private Color _furnitureShopPopupColor = new Color(0.639f, 0.839f, 0.941f, 0.93f);
 
     private GameFurniture furniture;
     private AvatarPartInfo avatarpart;
@@ -47,6 +53,8 @@ public class ConfirmationPopupHandler : MonoBehaviour
 
     private void SetPopupActive(GameFurniture newFurniture)
     {
+        ApplyPopupStyle(_furnitureShopPopupColor);
+
         if (Background != null) Background.SetActive(true);
         if (_leftArrowButton != null) _leftArrowButton.gameObject.SetActive(true);
         if (_rightArrowButton != null)_rightArrowButton.gameObject.SetActive(true);
@@ -74,13 +82,13 @@ public class ConfirmationPopupHandler : MonoBehaviour
             switch (SettingsCarrier.Instance.Language)
             {
                 case SettingsCarrier.LanguageType.Finnish:
-                    _confirmText.SetText("Haluatko varmasti ostaa tämän huonekalun?");
+                    _confirmText.SetText("Haluatko ostaa tämän huonekalun?");
                     break;
                 case SettingsCarrier.LanguageType.English:
                     _confirmText.SetText("Are you sure you want to buy this item?");
                     break;
                 default:
-                    _confirmText.SetText("Haluatko varmasti ostaa tämän huonekalun?");
+                    _confirmText.SetText("Haluatko ostaa tämän huonekalun?");
                     break;
             }
         }
@@ -92,13 +100,13 @@ public class ConfirmationPopupHandler : MonoBehaviour
             switch (SettingsCarrier.Instance.Language)
             {
                 case SettingsCarrier.LanguageType.Finnish:
-                    _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
+                    _confirmText.SetText("Haluatko äänestää tästä huonekalusta?");
                     break;
                 case SettingsCarrier.LanguageType.English:
-                    _confirmText.SetText("Are you sure you want to start a vote for this item?");
+                    _confirmText.SetText("Do you want to vote for this item?");
                     break;
                 default:
-                    _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?");
+                    _confirmText.SetText("Haluatko äänestää tästä huonekalusta?");
                     break;
             }
         }//else
@@ -106,6 +114,8 @@ public class ConfirmationPopupHandler : MonoBehaviour
 
     private void SetPopupActiveAvatarPart(AvatarPartInfo part, Sprite icon, string itemName)
     {
+        ApplyPopupStyle(_personificationShopPopupColor);
+
         if (Background != null) Background.SetActive(true);
         if (_leftArrowButton != null) _leftArrowButton.gameObject.SetActive(false);
         if (_rightArrowButton != null) _rightArrowButton.gameObject.SetActive(false);
@@ -121,13 +131,13 @@ public class ConfirmationPopupHandler : MonoBehaviour
         switch (SettingsCarrier.Instance.Language)
         {
             case SettingsCarrier.LanguageType.Finnish:
-                _confirmText.SetText("Haluatko varmasti ostaa tämän personointipalan?");
+                _confirmText.SetText("Haluatko ostaa tämän personointipalan?");
                 break;
             case SettingsCarrier.LanguageType.English:
-                _confirmText.SetText("Are you sure you want to buy this personification piece?");
+                _confirmText.SetText("Do you want to buy this personification piece?");
                 break;
             default:
-                _confirmText.SetText("Haluatko varmasti ostaa tämän personointipalan?");
+                _confirmText.SetText("Haluatko ostaa tämän personointipalan?");
                 break;
         }
     }
@@ -137,6 +147,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
     //kirpputori äänestys
     public void SetPopupActiveClanStall(StorageFurniture storageFurniture = null)
     {
+        ApplyPopupStyle(_furnitureShopPopupColor);
 
         if (Background != null) Background.SetActive(true);
 
@@ -211,6 +222,28 @@ public class ConfirmationPopupHandler : MonoBehaviour
         _showingFront = !_showingFront;
         _itemIcon.sprite = _showingFront ? _frontSprite : _sideSprite;
     }
+    private void ApplyPopupStyle(Color accentColor)
+    {
+        if (_popupBackgroundGradient != null)
+        {
+            _popupBackgroundGradient.SetGradient(Color.white, accentColor);
+
+            if (_popupBackgroundImage != null)
+                _popupBackgroundImage.color = Color.white;
+        }
+        else if (_popupBackgroundImage != null)
+        {
+            _popupBackgroundImage.color = accentColor;
+        }
+
+        if (_popupTabImage == null)
+            return;
+
+        Color tabColor = accentColor;
+        tabColor.a = 1f;
+        _popupTabImage.color = tabColor;
+    }
+
     private void ClosePopup()
     {
         _showingFront = true;
