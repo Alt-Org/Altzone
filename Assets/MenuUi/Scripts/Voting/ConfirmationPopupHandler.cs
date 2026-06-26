@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
@@ -35,6 +36,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
     private AvatarPartInfo avatarpart;
     private Sprite _frontSprite;
     private Sprite _sideSprite;
+    private string _avatarItemName;
     private bool _showingFront = true;
 
     private StorageFurniture storageFurnitures;
@@ -123,6 +125,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         _itemNameText.text = itemName;
         _itemIcon.sprite = icon;
         avatarpart = part;
+        _avatarItemName = itemName;
         _itemPriceText.text = "100"; //Part.Value.ToString(); (muokkaa ensin GameFurnitureVisualizer:ista
         _acceptButton.onClick.RemoveAllListeners();
         _acceptButton.onClick.AddListener(() => BuyAvatarPiece());
@@ -186,6 +189,8 @@ public class ConfirmationPopupHandler : MonoBehaviour
         bool? result = null;
         if (furniture != null) PollManager.CreateShopFurniturePoll(FurniturePollType.Buying, furniture, c => result = c);
         yield return new WaitUntil(()=> result.HasValue);
+        if (result == true && furniture != null)
+            VotingActions.ShopItemInVoting?.Invoke(furniture.Name);
         VotingActions.ReloadPollList?.Invoke();
         ClosePopup();
     }
@@ -193,13 +198,18 @@ public class ConfirmationPopupHandler : MonoBehaviour
     private void BuyAvatarPiece()
     {
         ClosePopup();
-        OpenPlayTransactionPopup();
+        string boughtItemName = _avatarItemName;
+        OpenPlayTransactionPopup(() => VotingActions.AvatarShopItemBought?.Invoke(boughtItemName));
     }
 
     private void BuyFurniturePiece() //placeholderi ostomekanismille
     {
-        Debug.Log("Ostit juuri huonekalun");
+        if (furniture == null)
+            return;
+
         ClosePopup();
+        string boughtItemName = furniture.Name;
+        VotingActions.ShopItemBought?.Invoke(boughtItemName);
     }
 
     public IEnumerator CreateClanStallPollPopupCoroutine()
@@ -254,7 +264,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         if (_rightArrowButton != null) _rightArrowButton.gameObject.SetActive(false);
     }
 
-    private void OpenPlayTransactionPopup()
+    private void OpenPlayTransactionPopup(Action onPaymentCompleted = null)
     {
         if (_playTransactionPopUp == null || !_playTransactionPopUp.scene.IsValid())
             _playTransactionPopUp = FindSceneGameObject("PlayTransactionPopUp");
@@ -270,7 +280,11 @@ public class ConfirmationPopupHandler : MonoBehaviour
         if (panelTransform != null)
             panelTransform.gameObject.SetActive(true);
 
-        _playTransactionPopUp.SendMessage("Open", SendMessageOptions.DontRequireReceiver);
+        PlayTransactionPopUpHandler transactionPopUpHandler = _playTransactionPopUp.GetComponent<PlayTransactionPopUpHandler>();
+        if (transactionPopUpHandler != null)
+            transactionPopUpHandler.Open(onPaymentCompleted);
+        else
+            _playTransactionPopUp.SendMessage("Open", SendMessageOptions.DontRequireReceiver);
 
         _playTransactionPopUp.transform.SetAsLastSibling();
 

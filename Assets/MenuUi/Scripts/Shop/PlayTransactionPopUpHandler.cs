@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -46,6 +47,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private bool _usingCardPayment;
     private bool _ratingPromptOptionHidden;
     private TransactionState _state;
+    private Action _onPaymentCompleted;
 
     private class SavedCard
     {
@@ -78,8 +80,9 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         HideRatingPromptOptionWhenExpanded();
     }
 
-    public void Open()
+    public void Open(Action onPaymentCompleted = null)
     {
+        _onPaymentCompleted = onPaymentCompleted;
         CacheReferences();
         BindButtons();
         ShowState(TransactionState.AddCard);
@@ -212,6 +215,8 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private void SubmitPayment()
     {
         ShowState(TransactionState.PostPayment);
+        _onPaymentCompleted?.Invoke();
+        _onPaymentCompleted = null;
     }
 
     public void SelectCardPayment()
@@ -236,6 +241,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
     public void Close()
     {
+        _onPaymentCompleted = null;
         gameObject.SetActive(false);
     }
 
