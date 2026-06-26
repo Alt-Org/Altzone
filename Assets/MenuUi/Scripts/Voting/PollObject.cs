@@ -26,6 +26,7 @@ public class PollObject : MonoBehaviour
     [Header("Images")]
     [SerializeField] private Image Clock;
     [SerializeField] private Image Image;
+    [SerializeField] private Image SetRibbonBackground;
     [SerializeField] private Image GreenFill;
     [SerializeField] private Image Background;
     [SerializeField] private Image InfoBackground;
@@ -35,15 +36,15 @@ public class PollObject : MonoBehaviour
     [SerializeField] private TextMeshProUGUI TradeText;
     [SerializeField] private TextMeshProUGUI Price;
 
-    [Header("Buttons")]
-    [SerializeField] private Button ClockButton;
-    [SerializeField] private GameObject VoteYes;
-    [SerializeField] private GameObject VoteNo;
+    [Header("Poll Ended")]
+    [SerializeField] private GameObject ResultObject;
+    [SerializeField] private TextMeshProUGUI ResultText;
 
     [Header("Results")]
     [SerializeField] private GameObject YesVoters;
     [SerializeField] private GameObject NoVoters;
     [SerializeField] private GameObject ShowVoteButton;
+    [SerializeField] private GameObject VoteBar;
 
     [Header("PlayerHeads")]
     [SerializeField] private AddPlayerHeads playerHeads;
@@ -62,8 +63,6 @@ public class PollObject : MonoBehaviour
 
     private void Start()
     {
-        // ClockButton.onClick.AddListener(OnClockButtonClicked);
-
         if (pollData != null)
         {
             updateCoroutine = StartCoroutine(UpdateValues());
@@ -103,9 +102,6 @@ public class PollObject : MonoBehaviour
             {
                 pollEnded = true;
                 showEndTimeManually = true;
-                // ClockButton.interactable = false;
-                VoteYes.gameObject.SetActive(false);
-                VoteNo.gameObject.SetActive(false);
                 YesVoters.gameObject.SetActive(true);
                 NoVoters.gameObject.SetActive(true);
 
@@ -114,27 +110,14 @@ public class PollObject : MonoBehaviour
 
                 // Format and show local time. Example: "20.6. 13:50"
                 TimeLeftText.text = endDateTime.ToString("d.M. HH:mm");
-                PollInfoPopup.Instance._pollEnded = true;
-
-                if (PollInfoPopup.Instance != null && PollInfoPopup.Instance.gameObject.activeInHierarchy)
-                {
-                    PollInfoPopup.Instance.UpdateTimerDisplay(secondsLeft);
-                }
-
 
                 //PollManager.EndPoll(pollId);
 
                 yield break;
             }
 
-            Clock.fillAmount = 1 - (float)(secondsLeft) / totalDuration;
+            Clock.fillAmount = 1f - (secondsLeft / totalDuration);
             UpdateClockDisplay(secondsLeft);
-
-            if (PollInfoPopup.Instance != null && PollInfoPopup.Instance.gameObject.activeInHierarchy)
-            {
-                PollInfoPopup.Instance.UpdateTimerDisplay(secondsLeft);
-            }
-
 
             yield return new WaitForSeconds(1);
         }
@@ -210,7 +193,8 @@ public class PollObject : MonoBehaviour
     {
         // Reset UI elements
         Image.gameObject.SetActive(false);
-        avatarHandleGameObject.SetActive(false);
+        SetRibbonBackground.gameObject.SetActive(false);
+        // avatarHandleGameObject.SetActive(false);
 
         if (InfoBackground != null)
         {
@@ -246,10 +230,11 @@ public class PollObject : MonoBehaviour
         {
             player = data;
 
-            if(player != null)
+            if (player != null)
             {
                 bool hasVoted = !pollData.NotVoted.Contains(player.Id);
                 ShowVoteButton.gameObject.SetActive(!hasVoted);
+                VoteBar.gameObject.SetActive(hasVoted);
             }
             else
             {
@@ -272,17 +257,47 @@ public class PollObject : MonoBehaviour
 
         float fillValue = (totalCount > 0) ? (float)yesCount / totalCount : 0.5f;
 
+        if (pollData.IsExpired)
+        {
+            DataStore store = Storefront.Get();
+            ClanData clan = null;
+
+            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+            if (player != null && player.ClanId != null)
+            {
+                store.GetClanData(player.ClanId, data => clan = data);
+            }
+
+            int requiredYesVotes = Mathf.CeilToInt(clan.Members.Count * 0.33f);
+            bool isAccepted = yesCount >= requiredYesVotes && yesCount > noCount;
+
+            ResultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
+
+            ResultText.text = isAccepted
+                ? "Hyv\u00E4ksytty".ToUpper()
+                : "Hyl\u00E4tty".ToUpper();
+
+            ResultObject.SetActive(true);
+            VoteBar.gameObject.SetActive(false);
+            ShowVoteButton.gameObject.SetActive(false);
+
+            return;
+        }
+        else
+        {
+            ResultObject.SetActive(false);
+        }
+
         if (YesVotesText != null) YesVotesText.text = fillValue.ToString("P0");
         if (NoVotesText != null) NoVotesText.text = (1f - fillValue).ToString("P0");
 
         GreenFill.fillAmount = fillValue;
-
-        // playerHeads.InstantiateHeads(pollId);
     }
 
     private void SetClanRoleData(ClanRolePollData clanRolePoll)
     {
-        avatarHandleGameObject.SetActive(true);
+        // avatarHandleGameObject.SetActive(true);
 
         string memberName = "Unknown";
         string roleName = "None";
@@ -332,7 +347,9 @@ public class PollObject : MonoBehaviour
         }
 
         Image.gameObject.SetActive(true);
-        PollTypeText.text = furniturePollData.Furniture.Name;
+        SetRibbonBackground.gameObject.SetActive(true);
+        FurnitureInfo info = furniturePollData.Furniture.FurnitureInfo;
+        PollTypeText.text = $"{info.SetName} {info.VisibleName}";
 
         bool isBuying = furniturePollData.FurniturePollType == FurniturePollType.Buying;
         TradeBackground.color = isBuying ? _green : _red;
@@ -340,22 +357,21 @@ public class PollObject : MonoBehaviour
 
         Price.text = furniturePollData.Furniture.Value.ToString();
 
-        Sprite ribbonSprite = null;
 
         // Fetch the furniture info from StorageFurnitureReference
         FurnitureInfo furnitureInfo = StorageFurnitureReference.Instance.GetFurnitureInfo(furniturePollData.Furniture.Name);
-        if (furnitureInfo != null && furnitureInfo.RibbonImage != null)
+
+        Image.sprite = (furnitureInfo != null) ? furnitureInfo.Image : furniturePollData.Sprite;
+
+        if (furnitureInfo != null)
         {
-            ribbonSprite = furnitureInfo.RibbonImage;
+            SetRibbonBackground.sprite = furnitureInfo.SetRibbonBackground;
         }
 
-        // In the case of ribbonSprite is missing, show the normal furniture sprite
-        Image.sprite = ribbonSprite ?? furniturePollData.Sprite;
-
+        /*
         // Poll description for Furniture Polls
         if (PollDescriptionText != null && furniturePollData.Furniture != null)
         {
-            string furnitureName = furniturePollData.Furniture.Name ?? "Unknown Item";
             string priceText = furniturePollData.Furniture.Value.ToString();
             if (furniturePollData.FurniturePollType is FurniturePollType.Buying)
             {
@@ -366,6 +382,7 @@ public class PollObject : MonoBehaviour
                 PollDescriptionText.text = $"Suggesting {furnitureName} to be sold for {priceText}";
             }
         }
+        */
     }
 
 
@@ -407,15 +424,15 @@ public class PollObject : MonoBehaviour
 
         AvatarVisualData visualData = AvatarDesignLoader.Instance.LoadAvatarDesign(targetPlayer);
 
-        if (visualData != null && avatarFaceLoader != null)
-        {
-            Debug.LogWarning($"Loaded AvatarData successfully for {targetMember.Name}");
-            avatarFaceLoader.UpdateVisuals(visualData);
-        }
-        else
-        {
-            Debug.LogWarning($"Failed to load AvatarData for {targetMember.Name}");
-        }
+        // if (visualData != null && avatarFaceLoader != null)
+        // {
+        //     Debug.LogWarning($"Loaded AvatarData successfully for {targetMember.Name}");
+        //     // avatarFaceLoader.UpdateVisuals(visualData);
+        // }
+        // else
+        // {
+        //     Debug.LogWarning($"Failed to load AvatarData for {targetMember.Name}");
+        // }
     }
 
     public void SetPollId(string newPollId)
@@ -435,7 +452,6 @@ public class PollObject : MonoBehaviour
                 if (updateCoroutine != null) StopCoroutine(updateCoroutine);
                 pollEnded = false;
                 showEndTimeManually = false;
-                // ClockButton.interactable = true;
                 updateCoroutine = StartCoroutine(UpdateValues());
             }
         }
@@ -443,7 +459,6 @@ public class PollObject : MonoBehaviour
         {
             pollEnded = true;
             showEndTimeManually = true;
-            // ClockButton.interactable = false;
             Clock.fillAmount = 1f;
             UpdateClockDisplay();
         }
@@ -465,31 +480,24 @@ public class PollObject : MonoBehaviour
 
     public void ShowPollInfoPopup()
     {
-        if (pollData is FurniturePollData furniturePollData && furniturePollData.Furniture != null)
+        if (PollInfoPopup.Instance == null)
         {
-            if (PollInfoPopup.Instance != null)
-            {
-                PollInfoPopup.Instance.OpenFurniturePopup(pollData);
-            }
-            else
-            {
-                Debug.LogWarning("PollInfoPopup instance is not found in the scene.");
-            }
+            Debug.LogWarning("PollInfoPopup instance is not found in the scene.");
+            return;
         }
-        else if (pollData is ClanRolePollData clanRolePoll)
+        if (pollData == null)
         {
-            if (PollInfoPopup.Instance == null)
-            {
-                Debug.LogWarning("PollInfoPopup instance is not found in the scene.");
-                return;
-            }
+            return;
+        }
 
+        if (pollData is FurniturePollData)
+        {
+            PollInfoPopup.Instance.OpenPopup(pollData);
+        }
+        if (pollData is ClanRolePollData clanRolePoll)
+        {
             // Start coroutine to fetch clan data
             StartCoroutine(FetchClanMemberAndOpenPopup(clanRolePoll));
-        }
-        else
-        {
-            Debug.LogWarning("FurniturePollData or Furniture is null, cannot open PollInfoPopup.");
         }
     }
 
@@ -546,8 +554,10 @@ public class PollObject : MonoBehaviour
         PollInfoPopup.Instance.OpenClanRolePopup(targetMember.Name, currentRole, clanRolePoll.TargetRole);
     }
 
-    private static Color HexToColor(string hex) {
-        if (ColorUtility.TryParseHtmlString(hex, out Color color)) {
+    private static Color HexToColor(string hex)
+    {
+        if (ColorUtility.TryParseHtmlString(hex, out Color color))
+        {
             return color;
         }
         return Color.white;
