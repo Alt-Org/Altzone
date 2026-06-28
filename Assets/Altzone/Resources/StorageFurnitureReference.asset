@@ -1484,6 +1484,66 @@ MonoBehaviour:
         Value: 120
         Material: 
         Recycling: 
+    - Name: Desk
+      EnglishName: 
+      Image: {fileID: -1603503904, guid: b5b2a73f8512d164b92ee478cf57299d, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Ty\xF6p\xF6yt\xE4"
+      ArtisticDescription: "Ulkoisesti siisti ja hallittu ymp\xE4rist\xF6 voi k\xE4tke\xE4
+        n\xE4kym\xE4tt\xF6m\xE4n kamppailun, jossa mieli tasapainoilee j\xE4rjestyksen
+        tarpeen ja sis\xE4isen ahdistuksen v\xE4lill\xE4."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F42
+      BaseFurniture:
+        Name: Desk_Ocd
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 4, z: 2}
+        Placement: 0
+        Weight: 40
+        Value: 75
+        Material: 
+        Recycling: 
+    - Name: Floorlamp
+      EnglishName: 
+      Image: {fileID: -312511941, guid: c42e38874f65ebf4a9e525b31f2833e8, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Lattiavalaisin
+      ArtisticDescription: "Ulkoisesti siisti ja hallittu ymp\xE4rist\xF6 voi k\xE4tke\xE4
+        n\xE4kym\xE4tt\xF6m\xE4n kamppailun, jossa mieli tasapainoilee j\xE4rjestyksen
+        tarpeen ja sis\xE4isen ahdistuksen v\xE4lill\xE4."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F42
+      BaseFurniture:
+        Name: Floorlamp_Ocd
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 5, z: 1}
+        Placement: 0
+        Weight: 8
+        Value: 75
+        Material: 
+        Recycling: 
+    - Name: Toilet
+      EnglishName: 
+      Image: {fileID: 386586125, guid: 3dcd173abc6db1f4c9c56f674f3872ef, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Vessanp\xF6ntt\xF6"
+      ArtisticDescription: "Ulkoisesti siisti ja hallittu ymp\xE4rist\xF6 voi k\xE4tke\xE4
+        n\xE4kym\xE4tt\xF6m\xE4n kamppailun, jossa mieli tasapainoilee j\xE4rjestyksen
+        tarpeen ja sis\xE4isen ahdistuksen v\xE4lill\xE4."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F42
+      BaseFurniture:
+        Name: Toilet_Ocd
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 3, z: 2}
+        Placement: 1
+        Weight: 25
+        Value: 95
+        Material: 
+        Recycling: 
   - SetName: GuiltyPleasure
     SetNameEnglish: 
     SetRibbonBackground: {fileID: 21300000, guid: 5b5a2a1cae55fa14b978ecd33d502481,
@@ -1822,5 +1882,183 @@ MonoBehaviour:
         Placement: 0
         Weight: 90
         Value: 50
+        Material: 
+        Recycling: 
+  - SetName: Nostalgia
+    SetNameEnglish: 
+    SetRibbonBackground: {fileID: 0}
+    SetPosterBackground: {fileID: 0}
+    SetFontName: {fileID: 0}
+    ArtistName: "Emma Yrj\xF6vuori"
+    list:
+    - Name: Bed
+      EnglishName: 
+      Image: {fileID: -1474810086, guid: e69817062e0497d478a9a739bb25ba83, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "S\xE4nky"
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Bed_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 6, z: 5}
+        Placement: 0
+        Weight: 70
+        Value: 100
+        Material: 
+        Recycling: 
+    - Name: Shelving
+      EnglishName: 
+      Image: {fileID: 305347972, guid: 0f9e2b40c39ed5847850f1a8e211a574, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Hyllyst\xF6"
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Shelving_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 5, y: 5, z: 2}
+        Placement: 0
+        Weight: 30
+        Value: 70
+        Material: 
+        Recycling: 
+    - Name: ToyCars
+      EnglishName: 
+      Image: {fileID: 1664425949, guid: 859af315114e5564daa0f11f126e1238, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Leluautot
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: ToyCars_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 1, z: 2}
+        Placement: 0
+        Weight: 1
+        Value: 20
+        Material: 
+        Recycling: 
+    - Name: Carpet
+      EnglishName: 
+      Image: {fileID: 1585950306, guid: 07dc9693ba5e9884e8aa522ea8439749, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Matto
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Carpet_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 5, y: 0, z: 2}
+        Placement: 2
+        Weight: 5
+        Value: 50
+        Material: 
+        Recycling: 
+    - Name: Dollhouse
+      EnglishName: 
+      Image: {fileID: -1135692847, guid: 3eb77cf346d410749acadf8b38ad5c98, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Nukkekoti
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Dollhouse_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 2, z: 1}
+        Placement: 0
+        Weight: 1
+        Value: 30
+        Material: 
+        Recycling: 
+    - Name: Drawings
+      EnglishName: 
+      Image: {fileID: -1624178130, guid: c8fc9d8850a234e4fa18b39dd7852248, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Piirustukset
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Drawings_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 3, z: 0}
+        Placement: 4
+        Weight: 0.1
+        Value: 10
+        Material: 
+        Recycling: 
+    - Name: Stickers
+      EnglishName: 
+      Image: {fileID: -1528095977, guid: dccd3c5b76e8c014c8c5b01ce7e01af6, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Sein\xE4tarrat"
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Stickers_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 3, z: 0}
+        Placement: 4
+        Weight: 0.1
+        Value: 20
+        Material: 
+        Recycling: 
+    - Name: Table
+      EnglishName: 
+      Image: {fileID: 949945687, guid: 570e0d9cdccebca4b9e00485895822bf, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Ty\xF6p\xF6yt\xE4"
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Table_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 3, z: 4}
+        Placement: 4
+        Weight: 60
+        Value: 70
+        Material: 
+        Recycling: 
+    - Name: Window
+      EnglishName: 
+      Image: {fileID: 1529691592, guid: c1c664887d8ac714eaf9d92dd9875ef3, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Ikkuna
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Window_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 5, y: 3, z: 0}
+        Placement: 4
+        Weight: 10
+        Value: 30
         Material: 
         Recycling: 
