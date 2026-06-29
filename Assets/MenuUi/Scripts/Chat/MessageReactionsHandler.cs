@@ -36,7 +36,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private bool _longClick = false;
     private ChatShowUsersPopUpData _reactionPopup = Chat.instance?.ChatShowUsersPopUpData;
 
-    [SerializeField] public List<ServerReactions> ReactionData = new List<ServerReactions>(); //Used for addings data to ChatShowUserPopUpData
+    [SerializeField] public List<ServerReactions> _reactionData = new List<ServerReactions>(); //Used for addings data to ChatShowUserPopUpData
 
 
     void Start()
@@ -318,7 +318,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         //Changes the reactions object sizes
         _reactionPopup.ReactionFieldCopyUpdate(_reactionPaneldata._reactionField, this, message);
 
-        foreach (var reactionData in ReactionData)
+        foreach (var reactionData in _reactionData)
         {
             _reactionPopup.AddUsersReaction(message, reactionData);
         }
@@ -335,26 +335,26 @@ public class MessageReactionsHandler : AltMonoBehaviour
         //Empties the data
         if (_reactionPopup.gameObject.activeSelf)
         {
-            foreach (var i in ReactionData)
+            foreach (var i in _reactionData)
             {
                 _reactionPopup.RemoveUserReaction(i.sender_id, message);
             }
         }
 
-        ReactionData.Clear();
+        _reactionData.Clear();
 
 
         //Adds the data
         foreach (ServerReactions reaction in reactions)
         {
-            ReactionData.Add(reaction);
+            _reactionData.Add(reaction);
 
         }
 
         if (_reactionPopup.gameObject.activeSelf)
         {
 
-            foreach (var reactionData in ReactionData)
+            foreach (var reactionData in _reactionData)
             {
                 _reactionPopup.AddUsersReaction(message, reactionData);
 
@@ -400,9 +400,9 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private void ClearList(ServerReactions _reaction)
     {
 
-        for (int i = 0; i < ReactionData.Count; i++)
+        for (int i = 0; i < _reactionData.Count; i++)
         {
-            if (ReactionData[i].sender_id == _reaction.sender_id)
+            if (_reactionData[i].sender_id == _reaction.sender_id)
             {
                 foreach (var j in _reactionList)
                 {

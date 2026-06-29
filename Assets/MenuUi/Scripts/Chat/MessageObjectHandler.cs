@@ -161,7 +161,7 @@ public class MessageObjectHandler : MonoBehaviour
         ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, ReactionsPanel, message);
 
         //Used for ChatShowUsersPopUpData
-        ChildsScript.ReactionData.Add(EmojiId);
+        ChildsScript._reactionData.Add(EmojiId);
     }
 
     private void UpdateReactions(ChatChannelType chatChannelType, ChatMessage message)
