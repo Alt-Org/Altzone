@@ -9,7 +9,7 @@ public class HeartScript : MonoBehaviour
     private static readonly Vector2 LossHaloPadding = new Vector2(200f, 200f);
     private static readonly Vector2 LossHaloOffset = Vector2.zero;
 
-    public Raid_LootTracking raid_LootTracking;
+    [SerializeField] private Raid_LootTracking raid_LootTracking;
     [SerializeField, Min(1)] private int recentLootSlotCount = 3;
     [SerializeField] private Image[] recentLootImages;
     private readonly List<Sprite> recentLootSprites = new List<Sprite>();
@@ -17,7 +17,6 @@ public class HeartScript : MonoBehaviour
     private void Awake()
     {
         ResolveLootTracker();
-        ResolveRecentLootImages();
         if (raid_LootTracking != null)
         {
             UpdateRecentLootImages(raid_LootTracking.ListOfCollectedLoot);
@@ -33,7 +32,6 @@ public class HeartScript : MonoBehaviour
         ResolveLootTracker();
         if (raid_LootTracking != null)
         {
-            raid_LootTracking.CollectedLootChanged -= OnCollectedLootChanged;
             raid_LootTracking.CollectedLootChanged += OnCollectedLootChanged;
         }
     }
