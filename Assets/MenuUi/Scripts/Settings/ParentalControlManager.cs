@@ -9,6 +9,10 @@ using WebSocketSharp;
 
 public class ParentalControlManager : MonoBehaviour
 {
+    private SettingsCarrier carrier = SettingsCarrier.Instance;
+
+
+
     public GameObject parentalControlPanel;
     public GameObject activateLogInPanel;
     public GameObject passwordPanel;
@@ -117,7 +121,7 @@ public class ParentalControlManager : MonoBehaviour
         midMatchToggle.onValueChanged.AddListener(_ => SetEndMidMatch());
         endMatchToggle.onValueChanged.AddListener(_ => SetEndAfterMatch());
 
-        logInPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(passwordInput, value));
+        
 
     }
 
@@ -186,7 +190,7 @@ public class ParentalControlManager : MonoBehaviour
              }
 
 
-    public void SetPasswordVisibilityState(TMP_InputField passwordInputField, bool value)
+    public void SetPasswordVisibilityState(TMP_InputField passwordInputField, bool value) //is this currently in use?
     {
         if (value)
             passwordInputField.contentType = TMP_InputField.ContentType.Standard;
@@ -356,14 +360,14 @@ public class ParentalControlManager : MonoBehaviour
         parentalControlPanel.SetActive(true);
     }
 
-    public void CloseParentalControl()
+    public void CloseParentalControl() //currently not in use?
     {
         parentalControlPanel.SetActive(false);
         sessionPassword = "";
     }
 
 
-    public void ToggleParentalControl(bool isEnabled)
+    public void ToggleParentalControl(bool isEnabled) //currently not in use
     {
         PlayerPrefs.SetInt("ParentalControl", isEnabled ? 1 : 0);
         PlayerPrefs.Save();
@@ -376,6 +380,7 @@ public class ParentalControlManager : MonoBehaviour
         PlayerPrefs.SetString("password","");
         
         PlayerPrefs.SetInt("AllowLinks", 0);
+        carrier.AllowLinks = false;
         PlayerPrefs.SetInt("AllowChat", 0);
         PlayerPrefs.SetInt("AllowEmojis", 0);
         PlayerPrefs.SetInt("AllowTreasureHunt", 0);
@@ -426,6 +431,10 @@ public class ParentalControlManager : MonoBehaviour
         testToggle.isOn = (PlayerPrefs.GetInt("testToggle", 0) !=0);
 
     }
+
+
+    //Example, how to set values / toggles, is taken from SettingEditor, ShowButtonLabels
+
     public void SetInternetLinks ()
     {
         if (internetLinksToggle.isOn) {
@@ -437,12 +446,20 @@ public class ParentalControlManager : MonoBehaviour
             PlayerPrefs.SetInt("AllowLinks", 0);
         }
 
+        carrier.AllowLinks = internetLinksToggle.isOn;
+        Debug.Log("Carrier got the value " + carrier.AllowLinks + " for AllowLinks");
+        Debug.Log("internetLinks, set PlayerPrefs to " + PlayerPrefs.GetInt("AllowLinks"));
+
     }
 
     public void SetInternetLinksToggle() {
-        internetLinksToggle.isOn = (PlayerPrefs.GetInt("AllowLinks", 0) != 0);
-        Debug.Log("internetLinks, got value" + PlayerPrefs.GetInt("AllowLinks"));
-        Debug.Log("internetLinksToggle is set");
+        //internetLinksToggle.isOn = (PlayerPrefs.GetInt("AllowLinks", 0) != 0);
+
+        //get function has been moved to SettingsCarrier
+        internetLinksToggle.isOn = carrier.AllowLinks;
+
+        
+        //Debug.Log("internetLinksToggle is set");
 
        
     }

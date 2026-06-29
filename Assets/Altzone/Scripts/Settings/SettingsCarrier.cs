@@ -100,6 +100,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public delegate void LanguageChanged(LanguageType language);
     public static event LanguageChanged OnLanguageChanged;
 
+    //Events for ParentalControl
+    public event Action OnAllowLinksChange;
+
+
     // Constants
     public const string BattleShowDebugStatsOverlayKey = "BattleStatsOverlay";
     public const string BattleArenaScaleKey = "BattleUiArenaScale";
@@ -421,6 +425,11 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _mainMenuMusicName = PlayerPrefs.GetString("MainMenuMusic");
 
         ChatListener.OnActiveChannelChanged += SaveChatChannel;
+
+        //ParentalControl settings
+        _allowLinks = (PlayerPrefs.GetInt("AllowLinks", 1) ==1);
+        Debug.Log("AllowLinks value is fetched from PlayerPrefs to SettingsCarrier");
+
     }
 
     private void OnDestroy()
@@ -601,4 +610,42 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 return "";
         }
     }
+
+
+    // ParentalControl functions
+    // Example for getting / setting toggles is taken from ShowButtonLabels
+
+    // Social controls
+
+    private bool _allowLinks;
+
+    public bool AllowLinks
+    {
+        get {
+            return _allowLinks;
+
+        }
+
+        set
+        {
+            _allowLinks = value;
+            OnAllowLinksChange?.Invoke();
+        }
+
+    }
+
+
+    //TODO chatMessages, allowEmojis, allowTreasureHunt
+
+    //Money controls
+    //TODO monthlyLimit, activatePurchasesSeparately
+
+
+    //Time controls
+    //TODO dailyLimit, endMidMatch, endAfterMatch
+
+
+
+
+
 }
