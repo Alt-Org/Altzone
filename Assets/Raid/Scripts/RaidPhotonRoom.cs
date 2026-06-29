@@ -18,8 +18,6 @@ public static class RaidPhotonRoom
     public const string RaidInventorySizeKey = "raid_inv_size";
     public const string RaidInventorySeedKey = "raid_seed";
     public const string RaidTrapSlotsKey = "raid_traps";
-    public const string RaidClanWeightLimitsKey = "raid_w_limits";
-    public const string RaidPlayerWeightLimitsKey = "raid_p_limits";
 
     public const string PlayerIdKey = "raid_player_id";
     public const string PlayerClanIdKey = "raid_clan_id";
@@ -29,8 +27,6 @@ public static class RaidPhotonRoom
 
     public const byte LootRequestEvent = 80;
     public const byte LootAcceptedEvent = 81;
-    public const byte RemoveLootRequestEvent = 82;
-    public const byte RemoveLootAcceptedEvent = 83;
 
     public const int StateMatchmaking = 0;
     public const int StateLobby = 1;
@@ -59,30 +55,6 @@ public static class RaidPhotonRoom
             ClanId = clanId ?? string.Empty;
             ClanName = clanName ?? string.Empty;
             Count = count;
-        }
-    }
-
-    public struct ClanWeightLimit
-    {
-        public string ClanId;
-        public float MaxWeight;
-
-        public ClanWeightLimit(string clanId, float maxWeight)
-        {
-            ClanId = clanId ?? string.Empty;
-            MaxWeight = maxWeight;
-        }
-    }
-
-    public struct PlayerWeightLimit
-    {
-        public string PlayerId;
-        public float MaxWeight;
-
-        public PlayerWeightLimit(string playerId, float maxWeight)
-        {
-            PlayerId = playerId ?? string.Empty;
-            MaxWeight = maxWeight;
         }
     }
 
@@ -185,106 +157,6 @@ public static class RaidPhotonRoom
         }
 
         return clans.ToArray();
-    }
-
-    public static string EncodeClanWeightLimits(IEnumerable<ClanWeightLimit> limits)
-    {
-        if (limits == null)
-        {
-            return string.Empty;
-        }
-
-        StringBuilder builder = new StringBuilder();
-        foreach (ClanWeightLimit limit in limits)
-        {
-            if (string.IsNullOrWhiteSpace(limit.ClanId))
-            {
-                continue;
-            }
-
-            AppendSeparator(builder);
-            builder.Append(Escape(limit.ClanId));
-            builder.Append(':');
-            builder.Append(limit.MaxWeight.ToString(CultureInfo.InvariantCulture));
-        }
-
-        return builder.ToString();
-    }
-
-    public static ClanWeightLimit[] DecodeClanWeightLimits(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return Array.Empty<ClanWeightLimit>();
-        }
-
-        List<ClanWeightLimit> limits = new();
-        string[] entries = value.Split('|');
-        foreach (string entry in entries)
-        {
-            string[] parts = entry.Split(':');
-            if (parts.Length != 2)
-            {
-                continue;
-            }
-
-            if (float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float maxWeight))
-            {
-                limits.Add(new ClanWeightLimit(Unescape(parts[0]), maxWeight));
-            }
-        }
-
-        return limits.ToArray();
-    }
-
-    public static string EncodePlayerWeightLimits(IEnumerable<PlayerWeightLimit> limits)
-    {
-        if (limits == null)
-        {
-            return string.Empty;
-        }
-
-        StringBuilder builder = new StringBuilder();
-        foreach (PlayerWeightLimit limit in limits)
-        {
-            if (string.IsNullOrWhiteSpace(limit.PlayerId))
-            {
-                continue;
-            }
-
-            AppendSeparator(builder);
-            builder.Append(Escape(limit.PlayerId));
-            builder.Append(':');
-            builder.Append(limit.MaxWeight.ToString(CultureInfo.InvariantCulture));
-        }
-
-        return builder.ToString();
-    }
-
-    public static PlayerWeightLimit[] DecodePlayerWeightLimits(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return Array.Empty<PlayerWeightLimit>();
-        }
-
-        List<PlayerWeightLimit> limits = new();
-        string[] entries = value.Split('|');
-        foreach (string entry in entries)
-        {
-            string[] parts = entry.Split(':');
-            if (parts.Length != 2)
-            {
-                continue;
-            }
-
-            if (float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float maxWeight))
-            {
-                limits.Add(new PlayerWeightLimit(Unescape(parts[0]), maxWeight));
-            }
-        }
-
-        return limits.ToArray();
     }
 
     public static string EncodeAvatarData(AvatarData avatarData)

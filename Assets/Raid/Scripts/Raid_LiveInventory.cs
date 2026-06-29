@@ -139,13 +139,6 @@ public class Raid_LiveInventory : MonoBehaviour
             return;
         }
 
-        RaidMatchmakingController matchmakingController = RaidMatchmakingController.Instance;
-        if (matchmakingController != null && matchmakingController.IsSharedRaidActive)
-        {
-            matchmakingController.RequestRemoveCollectedLoot(lootIndex);
-            return;
-        }
-
         lootTracking.RemoveCollectedLootAt(lootIndex);
     }
 

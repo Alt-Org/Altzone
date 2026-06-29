@@ -29,7 +29,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     [SerializeField] private float retryDelaySeconds = 1.25f;
     [SerializeField] private int minInventoryRows = 6;
     [SerializeField] private int maxInventoryRowsExclusive = 12;
-    [SerializeField] private float fallbackClanWeightLimit = 200f;
     [SerializeField] private float matchmakingDotToggleSeconds = 0.5f;
     [SerializeField] private float matchmakingDotSpacing = 48f;
 
@@ -589,12 +588,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             ? _inventoryPage.BuildDeterministicTrapData(inventorySize, seed + 17)
             : Array.Empty<RaidPhotonRoom.TrapData>();
 
-        float clanMaxWeight = GetDefaultClanMaxWeight();
-        RaidPhotonRoom.PlayerWeightLimit[] playerLimits = validPlayers
-            .Select(player => new RaidPhotonRoom.PlayerWeightLimit(GetPlayerLootOwnerId(player), clanMaxWeight))
-            .Where(limit => !string.IsNullOrWhiteSpace(limit.PlayerId))
-            .ToArray();
-
         long startTimeMs = DateTimeOffset.UtcNow.AddSeconds(lobbyCountdownSeconds).ToUnixTimeMilliseconds();
         room.SetCustomProperties(new PhotonHashtable
         {
@@ -604,23 +597,12 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             { RaidPhotonRoom.RaidStartTimeKey, startTimeMs.ToString() },
             { RaidPhotonRoom.RaidInventorySizeKey, inventorySize },
             { RaidPhotonRoom.RaidInventorySeedKey, seed },
-            { RaidPhotonRoom.RaidTrapSlotsKey, RaidPhotonRoom.EncodeTraps(traps) },
-            { RaidPhotonRoom.RaidPlayerWeightLimitsKey, RaidPhotonRoom.EncodePlayerWeightLimits(playerLimits) }
+            { RaidPhotonRoom.RaidTrapSlotsKey, RaidPhotonRoom.EncodeTraps(traps) }
         });
 
         room.IsOpen = false;
         room.IsVisible = false;
         RefreshParticipantList(validPlayers);
-    }
-
-    private float GetDefaultClanMaxWeight()
-    {
-        if (_lootTracking != null && _lootTracking.MaxLootWeight > 0f)
-        {
-            return _lootTracking.MaxLootWeight;
-        }
-
-        return fallbackClanWeightLimit;
     }
 
     private void ConfigureRaidFromRoomIfReady()
@@ -639,23 +621,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         int inventorySize = GetRoomProperty(room, RaidPhotonRoom.RaidInventorySizeKey, 0);
         int seed = GetRoomProperty(room, RaidPhotonRoom.RaidInventorySeedKey, 0);
         string trapPayload = GetRoomProperty(room, RaidPhotonRoom.RaidTrapSlotsKey, string.Empty);
-        string limitPayload = GetRoomProperty(room, RaidPhotonRoom.RaidPlayerWeightLimitsKey, string.Empty);
 
         if (inventorySize <= 0)
         {
             return;
         }
 
-        RaidPhotonRoom.PlayerWeightLimit[] limits = RaidPhotonRoom.DecodePlayerWeightLimits(limitPayload);
-        if (_lootTracking != null)
-        {
-            _lootTracking.ResetLootOwnerCounts();
-            _lootTracking.SetDisplayedLootOwner(GetLocalLootOwnerId());
-            foreach (RaidPhotonRoom.PlayerWeightLimit limit in limits)
-            {
-                _lootTracking.SetLootOwnerLimit(limit.PlayerId, limit.MaxWeight);
-            }
-        }
+        _lootTracking?.ResetLootCount();
 
         RaidPhotonRoom.TrapData[] traps = RaidPhotonRoom.DecodeTraps(trapPayload);
         if (_inventoryHandler != null)
@@ -703,11 +675,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         if (_overlayRoot != null)
         {
             _overlayRoot.SetActive(false);
-        }
-
-        if (_lootTracking != null)
-        {
-            _lootTracking.SetDisplayedLootOwner(GetLocalLootOwnerId());
         }
 
         if (_raidTimer != null)
@@ -768,26 +735,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             SendOptions.SendReliable);
     }
 
-    public void RequestRemoveCollectedLoot(int lootIndex)
-    {
-        if (!IsSharedRaidActive || _exitRaid != null && _exitRaid.raidEnded)
-        {
-            return;
-        }
-
-        if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
-        {
-            HandleRemoveCollectedLootRequest(PhotonRealtimeClient.LocalPlayer.ActorNumber, lootIndex);
-            return;
-        }
-
-        PhotonRealtimeClient.Client.OpRaiseEvent(
-            RaidPhotonRoom.RemoveLootRequestEvent,
-            new object[] { lootIndex },
-            new RaiseEventArgs { Receivers = ReceiverGroup.MasterClient },
-            SendOptions.SendReliable);
-    }
-
     private void HandleLootRequest(int senderActorNumber, int slotIndex)
     {
         if (!IsSharedRaidActive || _inventoryPage == null || _lootedSlots.Contains(slotIndex))
@@ -798,12 +745,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         Player sender = GetRoomPlayer(senderActorNumber);
         string clanId = GetPlayerClanId(sender);
         if (sender == null || string.IsNullOrWhiteSpace(clanId) || !IsParticipatingClan(clanId))
-        {
-            return;
-        }
-
-        string lootOwnerId = GetPlayerLootOwnerId(sender);
-        if (string.IsNullOrWhiteSpace(lootOwnerId))
         {
             return;
         }
@@ -820,24 +761,23 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         string avatarPayload = GetPlayerAvatarPayload(sender);
         PhotonRealtimeClient.Client.OpRaiseEvent(
             RaidPhotonRoom.LootAcceptedEvent,
-            new object[] { slotIndex, senderActorNumber, lootOwnerId, weightMultiplier, characterId, avatarPayload },
+            new object[] { slotIndex, senderActorNumber, weightMultiplier, characterId, avatarPayload },
             new RaiseEventArgs { Receivers = ReceiverGroup.All },
             SendOptions.SendReliable);
     }
 
     private void ApplyLootAccepted(object[] data)
     {
-        if (data == null || data.Length < 4 || _inventoryPage == null)
+        if (data == null || data.Length < 3 || _inventoryPage == null)
         {
             return;
         }
 
         int slotIndex = Convert.ToInt32(data[0]);
         int actorNumber = Convert.ToInt32(data[1]);
-        string lootOwnerId = data[2] as string ?? string.Empty;
-        float weightMultiplier = Convert.ToSingle(data[3]);
-        int characterId = data.Length >= 5 ? Convert.ToInt32(data[4]) : (int)CharacterID.None;
-        string avatarPayload = data.Length >= 6 ? data[5] as string ?? string.Empty : string.Empty;
+        float weightMultiplier = Convert.ToSingle(data[2]);
+        int characterId = data.Length >= 4 ? Convert.ToInt32(data[3]) : (int)CharacterID.None;
+        string avatarPayload = data.Length >= 5 ? data[4] as string ?? string.Empty : string.Empty;
         AvatarData avatarData = RaidPhotonRoom.DecodeAvatarData(avatarPayload);
         bool triggeredByLocalPlayer = PhotonRealtimeClient.LocalPlayer != null
             && PhotonRealtimeClient.LocalPlayer.ActorNumber == actorNumber;
@@ -845,46 +785,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         string actorName = GetPlayerDisplayName(roomPlayer, actorNumber);
 
         _lootedSlots.Add(slotIndex);
-        _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, lootOwnerId, weightMultiplier, triggeredByLocalPlayer, actorName, (CharacterID)characterId, avatarData);
-    }
-
-    private void HandleRemoveCollectedLootRequest(int senderActorNumber, int lootIndex)
-    {
-        if (!IsSharedRaidActive || _lootTracking == null)
-        {
-            return;
-        }
-
-        Player sender = GetRoomPlayer(senderActorNumber);
-        string clanId = GetPlayerClanId(sender);
-        if (sender == null || string.IsNullOrWhiteSpace(clanId) || !IsParticipatingClan(clanId))
-        {
-            return;
-        }
-
-        string lootOwnerId = GetPlayerLootOwnerId(sender);
-        if (string.IsNullOrWhiteSpace(lootOwnerId))
-        {
-            return;
-        }
-
-        PhotonRealtimeClient.Client.OpRaiseEvent(
-            RaidPhotonRoom.RemoveLootAcceptedEvent,
-            new object[] { lootOwnerId, lootIndex },
-            new RaiseEventArgs { Receivers = ReceiverGroup.All },
-            SendOptions.SendReliable);
-    }
-
-    private void ApplyRemoveCollectedLootAccepted(object[] data)
-    {
-        if (data == null || data.Length < 2 || _lootTracking == null)
-        {
-            return;
-        }
-
-        string lootOwnerId = data[0] as string ?? string.Empty;
-        int lootIndex = Convert.ToInt32(data[1]);
-        _lootTracking.RemoveLootOwnerCollectedLootAt(lootOwnerId, lootIndex);
+        _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, weightMultiplier, triggeredByLocalPlayer, actorName, (CharacterID)characterId, avatarData);
     }
 
     private bool IsParticipatingClan(string clanId)
@@ -965,34 +866,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private string GetPlayerClanId(Player player)
     {
         return GetPlayerProperty(player, RaidPhotonRoom.PlayerClanIdKey, string.Empty);
-    }
-
-    private string GetPlayerLootOwnerId(Player player)
-    {
-        string playerId = GetPlayerProperty(player, RaidPhotonRoom.PlayerIdKey, string.Empty);
-        if (!string.IsNullOrWhiteSpace(playerId))
-        {
-            return playerId;
-        }
-
-        if (player != null && !string.IsNullOrWhiteSpace(player.UserId))
-        {
-            return player.UserId;
-        }
-
-        return player != null ? player.ActorNumber.ToString() : string.Empty;
-    }
-
-    private string GetLocalLootOwnerId()
-    {
-        if (!string.IsNullOrWhiteSpace(_localPlayerId))
-        {
-            return _localPlayerId;
-        }
-
-        return PhotonRealtimeClient.LocalPlayer != null
-            ? GetPlayerLootOwnerId(PhotonRealtimeClient.LocalPlayer)
-            : GameConfig.Get().PlayerSettings.PlayerGuid;
     }
 
     private string GetPlayerClanName(Player player)
@@ -1749,26 +1622,5 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        if (photonEvent.Code == RaidPhotonRoom.RemoveLootRequestEvent)
-        {
-            if (!PhotonRealtimeClient.LocalPlayer.IsMasterClient)
-            {
-                return;
-            }
-
-            object[] data = photonEvent.CustomData as object[];
-            if (data == null || data.Length < 1)
-            {
-                return;
-            }
-
-            HandleRemoveCollectedLootRequest(photonEvent.Sender, Convert.ToInt32(data[0]));
-            return;
-        }
-
-        if (photonEvent.Code == RaidPhotonRoom.RemoveLootAcceptedEvent)
-        {
-            ApplyRemoveCollectedLootAccepted(photonEvent.CustomData as object[]);
-        }
     }
 }

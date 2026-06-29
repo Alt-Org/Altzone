@@ -143,25 +143,25 @@ public class Raid_InventoryPage : MonoBehaviour
             GetLocalEventCharacterId(),
             GetLocalEventAvatarData());
 
-        ProcessLoot(index, itemWeight, null, 1f, true, actorContext, false);
+        ProcessLoot(index, itemWeight, 1f, true, actorContext, true, false);
     }
 
-    public void HandleNetworkLootAccepted(int index, int actorNumber, string lootOwnerId, float lootWeightMultiplier, bool triggeredByLocalPlayer, string playerName = null, CharacterID actorCharacterId = CharacterID.None, AvatarData actorAvatarData = null)
+    public void HandleNetworkLootAccepted(int index, int actorNumber, float lootWeightMultiplier, bool triggeredByLocalPlayer, string playerName = null, CharacterID actorCharacterId = CharacterID.None, AvatarData actorAvatarData = null)
     {
         ResolveReferences();
 
         LootActorContext actorContext = new LootActorContext(playerName, actorCharacterId, actorAvatarData);
-        ProcessLoot(index, 0f, lootOwnerId, lootWeightMultiplier, triggeredByLocalPlayer, actorContext, true);
+        ProcessLoot(index, 0f, lootWeightMultiplier, triggeredByLocalPlayer, actorContext, triggeredByLocalPlayer, true);
     }
 
-    private void ProcessLoot(int index, float expectedItemWeight, string lootOwnerId, float networkLootWeightMultiplier, bool applyTrapEffect, LootActorContext actorContext, bool useOwnerTracking)
+    private void ProcessLoot(int index, float expectedItemWeight, float networkLootWeightMultiplier, bool applyTrapEffect, LootActorContext actorContext, bool addToLootTracker, bool skipWeightValidation)
     {
         if (!CanLoot(index, out Raid_InventoryItem item))
         {
             return;
         }
 
-        if (!useOwnerTracking && !Mathf.Approximately(expectedItemWeight, item.ItemWeight))
+        if (!skipWeightValidation && !Mathf.Approximately(expectedItemWeight, item.ItemWeight))
         {
             return;
         }
@@ -169,7 +169,7 @@ public class Raid_InventoryPage : MonoBehaviour
         GameFurniture furniture = item.furnitureData;
         int trapType = item._bombType;
         bool isTrap = item.bomb;
-        float lootWeightMultiplier = useOwnerTracking
+        float lootWeightMultiplier = skipWeightValidation
             ? networkLootWeightMultiplier
             : ResolveLocalLootWeightMultiplier(isTrap, trapType);
 
@@ -183,7 +183,7 @@ public class Raid_InventoryPage : MonoBehaviour
             eventLog?.LogTrapTriggered(actorContext.PlayerName, trapType, actorContext.CharacterId, actorContext.AvatarData);
         }
 
-        if (LootItem(item, lootOwnerId, lootWeightMultiplier, useOwnerTracking))
+        if (LootItem(item, lootWeightMultiplier, addToLootTracker))
         {
             eventLog?.LogLootTaken(actorContext.PlayerName, furniture, lootWeightMultiplier, actorContext.CharacterId, actorContext.AvatarData);
         }
@@ -196,7 +196,7 @@ public class Raid_InventoryPage : MonoBehaviour
         }
     }
 
-    private bool LootItem(Raid_InventoryItem item, string lootOwnerId, float lootWeightMultiplier, bool useOwnerTracking)
+    private bool LootItem(Raid_InventoryItem item, float lootWeightMultiplier, bool addToLootTracker)
     {
         GameFurniture furniture = item.furnitureData;
         if (LootTracker == null || furniture == null)
@@ -210,18 +210,12 @@ public class Raid_InventoryPage : MonoBehaviour
         }
 
         Sprite lootSprite = item.CurrentItemSprite != null ? item.CurrentItemSprite : furniture?.FurnitureInfo?.Image;
-        Action<Sprite> updateRecentLootImage = !useOwnerTracking || LootTracker.IsDisplayedLootOwner(lootOwnerId)
-            ? UpdateHeartRecentLootSprite
-            : null;
+        Action<Sprite> updateRecentLootImage = addToLootTracker ? UpdateHeartRecentLootSprite : null;
         item.LaunchBall(lootSprite, updateRecentLootImage);
 
-        if (useOwnerTracking)
+        if (addToLootTracker)
         {
-            LootTracker.SetLootOwnerLootCount(lootOwnerId, furniture, LootTracker.MaxLootWeight, lootWeightMultiplier);
-        }
-        else
-        {
-            LootTracker.SetLootCount(furniture, LootTracker.MaxLootWeight, lootWeightMultiplier);
+            LootTracker.SetLootCount(furniture, lootWeightMultiplier);
             nextLootWeightDoubled = false;
         }
 
