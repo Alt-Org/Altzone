@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 120
+  spritePixelsToUnits: 256
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -160,7 +160,49 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: FurnitureNostalgiaDrawings1EmYr_0
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 47
+        width: 698
+        height: 613
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6430e1a80a5136a4aade1c302ec9ab47
+      internalID: -1624178130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FurnitureNostalgiaDrawings1EmYr_2
+      rect:
+        serializedVersion: 2
+        x: 918
+        y: 70
+        width: 272
+        height: 688
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 691e75efe314dd14fada64e62e5a3fe0
+      internalID: 1764908833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -171,7 +213,13 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      FurnitureNostalgiaDrawings1EmYr_0: -1624178130
+      FurnitureNostalgiaDrawings1EmYr_1: -223712791
+      FurnitureNostalgiaDrawings1EmYr_2: 1764908833
+      FurnitureNostalgiaDrawings1EmYr_3: -620393192
+      FurnitureNostalgiaDrawings1EmYr_4: 1170792349
+      FurnitureNostalgiaDrawings1EmYr_5: 698391959
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 120
+  spritePixelsToUnits: 256
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -160,7 +160,49 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: FurnitureNostalgiaStickersEmYr_0
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 35
+        width: 597
+        height: 711
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4eeac0c63d0bdf6478cde04dbf995a27
+      internalID: -1528095977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FurnitureNostalgiaStickersEmYr_2
+      rect:
+        serializedVersion: 2
+        x: 1008
+        y: 11
+        width: 406
+        height: 750
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da558bfde2b943044961295881d2366e
+      internalID: 1513483003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -171,7 +213,25 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      FurnitureNostalgiaStickersEmYr_0: -1528095977
+      FurnitureNostalgiaStickersEmYr_1: -1036841
+      FurnitureNostalgiaStickersEmYr_10: -718005818
+      FurnitureNostalgiaStickersEmYr_11: 780744741
+      FurnitureNostalgiaStickersEmYr_12: 2124327532
+      FurnitureNostalgiaStickersEmYr_13: 999071904
+      FurnitureNostalgiaStickersEmYr_14: -1055434694
+      FurnitureNostalgiaStickersEmYr_15: -2001172601
+      FurnitureNostalgiaStickersEmYr_16: -101184948
+      FurnitureNostalgiaStickersEmYr_17: -381299796
+      FurnitureNostalgiaStickersEmYr_2: 1513483003
+      FurnitureNostalgiaStickersEmYr_3: 1972484742
+      FurnitureNostalgiaStickersEmYr_4: 638566282
+      FurnitureNostalgiaStickersEmYr_5: 106874815
+      FurnitureNostalgiaStickersEmYr_6: 1780287749
+      FurnitureNostalgiaStickersEmYr_7: -660705873
+      FurnitureNostalgiaStickersEmYr_8: -654170171
+      FurnitureNostalgiaStickersEmYr_9: -1912796589
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
