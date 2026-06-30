@@ -2553,14 +2553,29 @@ PrefabInstance:
       objectReference: {fileID: 5786829121231365026}
     - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
+      propertyPath: _reactionData.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
       propertyPath: _reactionPaneldata.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
+      propertyPath: _reactionPaneldata.ReactionField
+      value: 
+      objectReference: {fileID: 7999296891796925201}
+    - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
       propertyPath: _reactionPaneldata._reactionField
       value: 
       objectReference: {fileID: 7999296891796925201}
+    - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: _reactionPaneldata.ReactionsContent
+      value: 
+      objectReference: {fileID: 7044005991725015127}
     - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: _reactionPaneldata._reactionsContent

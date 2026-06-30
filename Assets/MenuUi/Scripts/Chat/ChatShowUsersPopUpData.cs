@@ -8,6 +8,7 @@ using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Player;
 using static ServerChatMessage;
 using System.Linq;
+using Altzone.Scripts.Language;
 
 public class ChatShowUsersPopUpData : MonoBehaviour
 {
@@ -40,6 +41,9 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI _orderButtonText;
 
+
+    [SerializeField] private TextLanguageSelectorCaller _textLanguageSelectorCaller;
+
     private string _currentMessage;
     private int _lineOrder = 0;    //Whats the newest and the oldest reaction set
     private int _currentOrder = 1; //What type of order we are on the list
@@ -48,7 +52,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     {
         _closeAllReactionButton.onClick.AddListener(LayoutButton);
         _listOrderButton.onClick.AddListener(() => {_currentOrder++; ListOrderSystem(_currentOrder);});
-        reactiontext();
+        Reactiontext();
         foreach (Button button in _closeButtons)
         {
             button.onClick.AddListener(ClosePopup);
@@ -76,7 +80,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
     void OnEnable()
     {
-        reactiontext();
+        Reactiontext();
         ListOrderSystem(_currentOrder);
     }
 
@@ -88,7 +92,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     }
 
 
-    private void reactiontext()
+    private void Reactiontext()
     {
         int activeChildren = 0;
         foreach (Transform container in _userContent.transform)
@@ -100,9 +104,18 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         }
 
-        _reactionAmounText.text = $"{activeChildren} reaktiota";
+        //Language System
+        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+        {
+            _textLanguageSelectorCaller.SetText("{} reaktiota");
+        }
+        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+        {
+            _textLanguageSelectorCaller.SetText("{} reactions");
+        }
 
-        //_reactionAmount.SetText(SettingsCarrier.Instance.Language, new string[1] { activeChildren.ToString() });
+        _reactionAmounText.text = _reactionAmounText.text.Replace("{}", $"{activeChildren}");
+
     }
 
 
@@ -132,7 +145,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         UsersReactionData userData = newUserData.GetComponent<UsersReactionData>();
        userData.SetReactionInfo(_userInfo[_userInfo.Count - 1]._avatar, _userInfo[_userInfo.Count - 1]._name, _userInfo[_userInfo.Count - 1]._id, _userInfo[_userInfo.Count - 1].Emoji);
         _usersReactionData.Add(userData);
-        reactiontext();
+        Reactiontext();
         ListOrderSystem(_currentOrder);
 
         if (_copiedReactionField.transform.childCount > 0)
@@ -166,7 +179,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
             }
 
-        reactiontext();
+        Reactiontext();
 
         if(_copiedReactionField.transform.childCount == 0)
         {
@@ -231,14 +244,34 @@ public class ChatShowUsersPopUpData : MonoBehaviour
             case 1:
                 
                 _userInfo = _userInfo.OrderBy(m => m._order).ToList();
-                _orderButtonText.text = "Old";
+
+                //Language System
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                {
+                    _orderButtonText.text = "Vanha";
+                }
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                {
+                    _orderButtonText.text =  "Old";
+                }
+
                 _image.sprite = null;
                 break;
 
             //Newest => Oldest
             case 2:
                 _userInfo = _userInfo.OrderByDescending(m => m._order).ToList();
-                _orderButtonText.text = "New";
+
+                //Language System
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                {
+                    _orderButtonText.text = "Uusi";
+                }
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                {
+                    _orderButtonText.text = "New";
+                }
+
                 _image.sprite = null;
                 break;
 
