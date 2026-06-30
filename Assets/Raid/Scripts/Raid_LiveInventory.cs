@@ -18,6 +18,7 @@ public class Raid_LiveInventory : MonoBehaviour
     [SerializeField] private int collectedLootGridPaddingTop = 80;
     [SerializeField] private int collectedLootGridPaddingBottom = 40;
     [SerializeField] private int collectedLootColumnCount = 3;
+    [SerializeField] private Raid_References raidReferences;
 
     private CanvasGroup canvasGroup;
     private Raid_LootTracking lootTracking;
@@ -47,6 +48,11 @@ public class Raid_LiveInventory : MonoBehaviour
         }
 
         UnsubscribeLootTracking();
+    }
+
+    public void Show()
+    {
+        Show(ResolveLootTracking());
     }
 
     public void Show(Raid_LootTracking lootTracking)
@@ -286,6 +292,18 @@ public class Raid_LiveInventory : MonoBehaviour
     {
         Canvas canvas = menuRoot != null ? menuRoot.GetComponentInParent<Canvas>() : null;
         return canvas != null ? canvas.sortingOrder : 0;
+    }
+
+    private Raid_LootTracking ResolveLootTracking()
+    {
+        if (raidReferences == null)
+        {
+            raidReferences = Raid_References.Instance;
+        }
+
+        return raidReferences != null
+            ? raidReferences.LootTracking
+            : FindObjectOfType<Raid_LootTracking>();
     }
 
     private sealed class LiveRaidControlOverlayState

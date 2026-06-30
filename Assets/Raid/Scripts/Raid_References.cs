@@ -12,6 +12,18 @@ public class Raid_References : MonoBehaviour
     public Raid_InventoryHandler inventoryHandler;
     public Raid_LootTracking raid_LootTracking;
     [SerializeField] private Raid_EndMenu endMenuController;
+    [SerializeField] private Raid_LiveInventory liveInventory;
+
+    public static Raid_References Instance { get; private set; }
+
+    public Raid_InventoryHandler InventoryHandler
+    {
+        get
+        {
+            ResolveInventoryHandler();
+            return inventoryHandler;
+        }
+    }
 
     public Raid_EndMenu EndMenuController
     {
@@ -22,9 +34,41 @@ public class Raid_References : MonoBehaviour
         }
     }
 
+    public Raid_LootTracking LootTracking
+    {
+        get
+        {
+            ResolveLootTracking();
+            return raid_LootTracking;
+        }
+    }
+
+    public Raid_LiveInventory LiveInventory
+    {
+        get
+        {
+            ResolveLiveInventory();
+            return liveInventory;
+        }
+    }
+
     private void Awake()
     {
+        RegisterInstance();
         ResolveReferences();
+    }
+
+    private void OnEnable()
+    {
+        RegisterInstance();
+    }
+
+    private void OnDisable()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 
     private void Start()
@@ -78,26 +122,82 @@ public class Raid_References : MonoBehaviour
 
     private void ResolveReferences()
     {
-        if (inventoryHandler == null)
+        ResolveInventoryHandler();
+        ResolveLootTracking();
+        ResolveEndMenuController();
+    }
+
+    private void ResolveInventoryHandler()
+    {
+        if (inventoryHandler != null)
         {
-            TryGetComponent(out inventoryHandler);
+            return;
         }
 
-        if (inventoryHandler == null)
+        if (!TryGetComponent(out inventoryHandler))
         {
             inventoryHandler = FindObjectOfType<Raid_InventoryHandler>();
         }
+    }
 
-        if (raid_LootTracking == null)
+    private void ResolveLootTracking()
+    {
+        if (raid_LootTracking != null)
         {
-            TryGetComponent(out raid_LootTracking);
+            return;
         }
 
-        if (raid_LootTracking == null)
+        if (!TryGetComponent(out raid_LootTracking))
         {
             raid_LootTracking = FindObjectOfType<Raid_LootTracking>();
         }
+    }
 
-        ResolveEndMenuController();
+    private void ResolveLiveInventory()
+    {
+        if (liveInventory != null)
+        {
+            return;
+        }
+
+        liveInventory = Raid_LiveInventory.Instance;
+        if (liveInventory != null)
+        {
+            return;
+        }
+
+        liveInventory = FindObjectOfType<Raid_LiveInventory>(true);
+        if (liveInventory != null)
+        {
+            return;
+        }
+
+        Raid_LiveInventory prefab = Resources.Load<Raid_LiveInventory>("Prefabs/LiveInventory");
+        if (prefab == null)
+        {
+            Debug.LogError("Cannot open raid live inventory because Prefabs/LiveInventory is missing.");
+            return;
+        }
+
+        Transform parent = EndMenu != null && EndMenu.transform.parent != null
+            ? EndMenu.transform.parent
+            : transform.root;
+
+        liveInventory = Instantiate(prefab, parent, false);
+        liveInventory.name = "LiveInventory";
+    }
+
+    private void RegisterInstance()
+    {
+        if (Instance == null || Instance == this)
+        {
+            Instance = this;
+            return;
+        }
+
+        if (!Instance.gameObject.activeInHierarchy && gameObject.activeInHierarchy)
+        {
+            Instance = this;
+        }
     }
 }

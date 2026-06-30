@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
@@ -9,30 +8,50 @@ public class HeartScript : MonoBehaviour
     private static readonly Vector2 LossHaloPadding = new Vector2(200f, 200f);
     private static readonly Vector2 LossHaloOffset = Vector2.zero;
 
+    [SerializeField] private Raid_References raidReferences;
     [SerializeField] private Raid_LootTracking raid_LootTracking;
     [SerializeField, Min(1)] private int recentLootSlotCount = 3;
-    [SerializeField] private Image[] recentLootImages;
-    private readonly List<Sprite> recentLootSprites = new List<Sprite>();
+    [SerializeField] private List<Image> recentLootImages = new List<Image>();
+
+    private Raid_References RaidReferences
+    {
+        get
+        {
+            ResolveRaidReferences();
+            return raidReferences;
+        }
+    }
+
+    private Raid_LootTracking LootTracking
+    {
+        get
+        {
+            ResolveLootTracker();
+            return raid_LootTracking;
+        }
+    }
+
+    private IReadOnlyList<Image> RecentLootImages
+    {
+        get
+        {
+            ResolveRecentLootImages();
+            return recentLootImages;
+        }
+    }
 
     private void Awake()
     {
-        ResolveLootTracker();
-        if (raid_LootTracking != null)
-        {
-            UpdateRecentLootImages(raid_LootTracking.ListOfCollectedLoot);
-        }
-        else
-        {
-            UpdateRecentLootImages(null);
-        }
+        Raid_LootTracking lootTracking = LootTracking;
+        UpdateRecentLootImages(lootTracking != null ? lootTracking.ListOfCollectedLoot : null);
     }
 
     private void OnEnable()
     {
-        ResolveLootTracker();
-        if (raid_LootTracking != null)
+        Raid_LootTracking lootTracking = LootTracking;
+        if (lootTracking != null)
         {
-            raid_LootTracking.CollectedLootChanged += OnCollectedLootChanged;
+            lootTracking.CollectedLootChanged += OnCollectedLootChanged;
         }
     }
 
@@ -52,27 +71,26 @@ public class HeartScript : MonoBehaviour
             return;
         }
 
-        ResolveLootTracker();
-        Raid_LiveInventory liveInventory = ResolveLiveInventory();
-        if (liveInventory != null && raid_LootTracking != null)
+        Raid_LiveInventory liveInventory = RaidReferences != null ? RaidReferences.LiveInventory : Raid_LiveInventory.Instance;
+        if (liveInventory != null)
         {
-            liveInventory.Show(raid_LootTracking);
+            liveInventory.Show();
         }
     }
 
     public void UpdateRecentLootImages(IReadOnlyList<GameFurniture> collectedLoot)
     {
-        ResolveRecentLootImages();
+        IReadOnlyList<Image> images = RecentLootImages;
 
-        if (recentLootImages == null)
+        if (images == null)
         {
             return;
         }
 
         int collectedCount = collectedLoot != null ? collectedLoot.Count : 0;
-        for (int i = 0; i < recentLootImages.Length; i++)
+        for (int i = 0; i < images.Count; i++)
         {
-            Image recentLootImage = recentLootImages[i];
+            Image recentLootImage = images[i];
             if (recentLootImage == null)
             {
                 continue;
@@ -86,109 +104,15 @@ public class HeartScript : MonoBehaviour
         }
     }
 
-    public void UpdateRecentLootSprites(IReadOnlyList<Sprite> lootSprites)
-    {
-        ResolveRecentLootImages();
-        SyncRecentLootSprites(lootSprites);
-
-        if (recentLootImages == null)
-        {
-            return;
-        }
-
-        int spriteCount = lootSprites != null ? lootSprites.Count : 0;
-        for (int i = 0; i < recentLootImages.Length; i++)
-        {
-            Image recentLootImage = recentLootImages[i];
-            if (recentLootImage == null)
-            {
-                continue;
-            }
-
-            int spriteIndex = spriteCount - 1 - i;
-            Sprite sprite = spriteIndex >= 0 ? lootSprites[spriteIndex] : null;
-            recentLootImage.sprite = sprite;
-            recentLootImage.enabled = sprite != null;
-            recentLootImage.gameObject.SetActive(sprite != null);
-        }
-    }
-
-    public void AddRecentLootSprite(Sprite lootSprite)
-    {
-        if (lootSprite == null)
-        {
-            return;
-        }
-
-        recentLootSprites.Add(lootSprite);
-        UpdateRecentLootSprites(recentLootSprites);
-    }
-
     public void SetLossHaloVisible(bool visible)
     {
         Raid_RedHalo.SetVisible(gameObject, visible, LossHaloPadding, LossHaloOffset);
     }
 
-    private void SyncRecentLootSprites(IReadOnlyList<Sprite> lootSprites)
-    {
-        if (ReferenceEquals(lootSprites, recentLootSprites))
-        {
-            return;
-        }
-
-        recentLootSprites.Clear();
-        if (lootSprites == null)
-        {
-            return;
-        }
-
-        for (int i = 0; i < lootSprites.Count; i++)
-        {
-            recentLootSprites.Add(lootSprites[i]);
-        }
-    }
-
     private void OnCollectedLootChanged()
     {
-        UpdateRecentLootImages(raid_LootTracking != null ? raid_LootTracking.ListOfCollectedLoot : null);
-    }
-
-    private Raid_LiveInventory ResolveLiveInventory()
-    {
-        Raid_LiveInventory liveInventory = Raid_LiveInventory.Instance;
-        if (liveInventory != null)
-        {
-            return liveInventory;
-        }
-
-        liveInventory = FindObjectOfType<Raid_LiveInventory>(true);
-        if (liveInventory != null)
-        {
-            return liveInventory;
-        }
-
-        Raid_LiveInventory prefab = Resources.Load<Raid_LiveInventory>("Prefabs/LiveInventory");
-        if (prefab == null)
-        {
-            Debug.LogError("Cannot open raid live inventory because Prefabs/LiveInventory is missing.");
-            return null;
-        }
-
-        Transform parent = null;
-        Raid_References raidReferences = FindObjectOfType<Raid_References>();
-        if (raidReferences != null && raidReferences.EndMenu != null)
-        {
-            parent = raidReferences.EndMenu.transform.parent;
-        }
-
-        if (parent == null)
-        {
-            parent = transform.root;
-        }
-
-        liveInventory = Instantiate(prefab, parent, false);
-        liveInventory.name = "LiveInventory";
-        return liveInventory;
+        Raid_LootTracking lootTracking = LootTracking;
+        UpdateRecentLootImages(lootTracking != null ? lootTracking.ListOfCollectedLoot : null);
     }
 
     private void ResolveLootTracker()
@@ -198,14 +122,24 @@ public class HeartScript : MonoBehaviour
             return;
         }
 
-        Raid_References raidReferences = FindObjectOfType<Raid_References>();
-        if (raidReferences != null && raidReferences.raid_LootTracking != null)
+        Raid_References references = RaidReferences;
+        if (references != null && references.LootTracking != null)
         {
-            raid_LootTracking = raidReferences.raid_LootTracking;
+            raid_LootTracking = references.LootTracking;
             return;
         }
 
         raid_LootTracking = FindObjectOfType<Raid_LootTracking>();
+    }
+
+    private void ResolveRaidReferences()
+    {
+        if (raidReferences != null)
+        {
+            return;
+        }
+
+        raidReferences = Raid_References.Instance;
     }
 
     private void ResolveRecentLootImages()
@@ -215,26 +149,25 @@ public class HeartScript : MonoBehaviour
             return;
         }
 
+        recentLootImages ??= new List<Image>();
+        recentLootImages.Clear();
         int slotCount = Mathf.Max(1, recentLootSlotCount);
-        List<Image> resolvedImages = new List<Image>();
         for (int i = 1; i <= slotCount; i++)
         {
             Transform slot = transform.Find($"RecentLootImage{i}");
             if (slot != null && slot.TryGetComponent(out Image image))
             {
-                resolvedImages.Add(image);
+                recentLootImages.Add(image);
                 continue;
             }
 
             Debug.LogWarning($"Recent loot image slot RecentLootImage{i} is missing from {name}. Add it to the HeartPanel prefab instead of creating it at runtime.", this);
         }
-
-        recentLootImages = resolvedImages.ToArray();
     }
 
     private bool HasRecentLootImages()
     {
-        if (recentLootImages == null || recentLootImages.Length == 0)
+        if (recentLootImages == null || recentLootImages.Count == 0)
         {
             return false;
         }

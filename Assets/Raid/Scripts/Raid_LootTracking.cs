@@ -25,8 +25,7 @@ public class Raid_LootTracking : MonoBehaviour
     {
         if (raid_References == null)
         {
-            Raid_References[] references = FindObjectsOfType<Raid_References>(true);
-            raid_References = references.Length > 0 ? references[0] : null;
+            raid_References = Raid_References.Instance;
         }
 
         if (exitRaid == null)

@@ -112,7 +112,8 @@ public class ExitRaid : MonoBehaviour
         yield return Raid_EventPopup.ShowAndWait(this, GetPopupScenario(reason));
 
         Raid_EndMenu endMenu = raid_References.EndMenuController;
-        if (endMenu == null || raid_References.raid_LootTracking == null)
+        Raid_LootTracking lootTracking = raid_References.LootTracking;
+        if (endMenu == null || lootTracking == null)
         {
             Debug.LogError("Cannot show raid end menu because the end menu or loot tracking reference is missing.");
             yield break;
@@ -120,8 +121,8 @@ public class ExitRaid : MonoBehaviour
 
         endMenu.SetLossHaloVisible(reason == RaidEndReason.OutOfSpace);
         endMenu.SetOverWeightLimitBackground(reason == RaidEndReason.OutOfSpace);
-        endMenu.SetCollectedLoot(raid_References.raid_LootTracking.ListOfCollectedLoot);
-        endMenu.SetSpaceRemainingText(raid_References.raid_LootTracking.CurrentLootWeight, raid_References.raid_LootTracking.MaxLootWeight);
+        endMenu.SetCollectedLoot(lootTracking.ListOfCollectedLoot);
+        endMenu.SetSpaceRemainingText(lootTracking.CurrentLootWeight, lootTracking.MaxLootWeight);
         raid_References.ShowEndMenu();
     }
 
@@ -204,7 +205,7 @@ public class ExitRaid : MonoBehaviour
 
         if (raid_References == null)
         {
-            raid_References = FindObjectOfType<Raid_References>();
+            raid_References = Raid_References.Instance;
         }
 
         if (eventLog == null)

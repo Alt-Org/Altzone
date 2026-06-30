@@ -22,7 +22,6 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private Raid_Timer raid_Timer;
     [SerializeField] private ExitRaid exitraid;
     [SerializeField] private Raid_EventLog eventLog;
-    private HeartScript heartScript;
     [SerializeField] private bool firstItem = true;
     [SerializeField, Min(1)] private int trapAmount = 3;
     [SerializeField, Min(0f)] private float freezeDuration = 10f;
@@ -210,8 +209,7 @@ public class Raid_InventoryPage : MonoBehaviour
         }
 
         Sprite lootSprite = item.CurrentItemSprite != null ? item.CurrentItemSprite : furniture?.FurnitureInfo?.Image;
-        Action<Sprite> updateRecentLootImage = addToLootTracker ? UpdateHeartRecentLootSprite : null;
-        item.LaunchBall(lootSprite, updateRecentLootImage);
+        item.LaunchBall(lootSprite);
 
         if (addToLootTracker)
         {
@@ -524,14 +522,13 @@ public class Raid_InventoryPage : MonoBehaviour
     {
         if (raid_References == null)
         {
-            Raid_References[] references = FindObjectsOfType<Raid_References>(true);
-            raid_References = references.Length > 0 ? references[0] : null;
+            raid_References = Raid_References.Instance;
         }
 
         if (LootTracker == null)
         {
-            LootTracker = raid_References != null && raid_References.raid_LootTracking != null
-                ? raid_References.raid_LootTracking
+            LootTracker = raid_References != null
+                ? raid_References.LootTracking
                 : null;
         }
 
@@ -550,41 +547,6 @@ public class Raid_InventoryPage : MonoBehaviour
             exitraid = ExitRaid.Instance != null ? ExitRaid.Instance : FindObjectOfType<ExitRaid>();
         }
 
-        if (heartScript == null)
-        {
-            heartScript = raid_References != null && raid_References.Heart != null
-                && raid_References.Heart.TryGetComponent(out HeartScript referencedHeart)
-                    ? referencedHeart
-                : null;
-        }
-
-        if (heartScript == null)
-        {
-            GameObject heart = GameObject.FindWithTag("Heart");
-            if (heart != null && heart.TryGetComponent(out HeartScript foundHeart))
-            {
-                heartScript = foundHeart;
-            }
-        }
-
-        if (heartScript == null)
-        {
-            heartScript = FindObjectOfType<HeartScript>();
-        }
-    }
-
-    private void UpdateHeartRecentLootSprite(Sprite lootSprite)
-    {
-        if (lootSprite == null)
-        {
-            return;
-        }
-
-        ResolveReferences();
-        if (heartScript != null)
-        {
-            heartScript.AddRecentLootSprite(lootSprite);
-        }
     }
 
     private void SetBombsFromTrapData(RaidPhotonRoom.TrapData[] trapData)

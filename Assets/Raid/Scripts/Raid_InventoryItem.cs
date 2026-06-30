@@ -393,6 +393,11 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
     private void ResolveReferences()
     {
+        if (raid_References == null)
+        {
+            raid_References = Raid_References.Instance;
+        }
+
         if (Heart == null && raid_References != null)
         {
             Heart = raid_References.Heart;
@@ -406,12 +411,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         target = Heart != null && Heart.TryGetComponent(out RectTransform heartRect)
             ? heartRect
             : null;
-
-        if (raid_References == null)
-        {
-            Raid_References[] references = FindObjectsOfType<Raid_References>(true);
-            raid_References = references.Length > 0 ? references[0] : null;
-        }
 
         raidTimer = FindObjectOfType<Raid_Timer>();
         TryGetComponent(out audioSource);

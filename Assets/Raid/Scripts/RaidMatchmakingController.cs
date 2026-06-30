@@ -1426,9 +1426,14 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void ResolveReferences()
     {
-        _inventoryHandler = FindObjectOfType<Raid_InventoryHandler>();
+        Raid_References raidReferences = Raid_References.Instance;
+        _inventoryHandler = raidReferences != null
+            ? raidReferences.InventoryHandler
+            : FindObjectOfType<Raid_InventoryHandler>();
         _inventoryPage = FindObjectOfType<Raid_InventoryPage>();
-        _lootTracking = FindObjectOfType<Raid_LootTracking>();
+        _lootTracking = raidReferences != null
+            ? raidReferences.LootTracking
+            : FindObjectOfType<Raid_LootTracking>();
         _raidTimer = FindObjectOfType<Raid_Timer>();
         _exitRaid = FindObjectOfType<ExitRaid>();
     }
