@@ -64,8 +64,14 @@ public class Raid_TimerFillCircle : MaskableGraphic
         Vector2 center = rect.center + circumferenceCenterOffset * size;
         float inset = Mathf.Clamp(circumferenceInset, 0f, 0.25f);
         float outerRadius = size * (0.5f - inset);
+        if (outerRadius <= 0f)
+        {
+            return;
+        }
+
         float thicknessRatio = Mathf.Clamp(circumferenceThickness, 0.01f, 0.6f);
-        float thickness = Mathf.Clamp(size * thicknessRatio, 1f, outerRadius);
+        float minimumThickness = Mathf.Min(1f, outerRadius);
+        float thickness = Mathf.Clamp(size * thicknessRatio, minimumThickness, outerRadius);
         float innerRadius = outerRadius - thickness;
         int visibleSegments = Mathf.Max(1, Mathf.CeilToInt(segments * progress));
         float angleRange = Mathf.PI * 2f * progress;
