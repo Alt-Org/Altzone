@@ -1069,15 +1069,19 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        for (int i = _participantListRoot.childCount - 1; i >= 0; i--)
-        {
-            Destroy(_participantListRoot.GetChild(i).gameObject);
-        }
-
         if (_clanListItemTemplate == null)
         {
             Debug.LogError("Raid lobby clan list item template is not assigned in RaidMatchmakingViews.");
             return;
+        }
+
+        for (int i = _participantListRoot.childCount - 1; i >= 0; i--)
+        {
+            Transform child = _participantListRoot.GetChild(i);
+            if (child != _clanListItemTemplate.transform)
+            {
+                Destroy(child.gameObject);
+            }
         }
 
         var clanRows = players
@@ -1087,7 +1091,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             {
                 ClanName = group.Select(GetPlayerClanName).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name)) ?? group.Key,
                 PlayerCount = group.Count(),
-                FirstActorNumber = group.Min(player => player.ActorNumber)
+                FirstActorNumber = group.Min(player => player.ActorNumber),
+                Players = group.OrderBy(player => player.ActorNumber).ToList()
             })
             .OrderBy(row => row.FirstActorNumber)
             .ToList();
@@ -1098,15 +1103,26 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             RaidLobbyClanListItem row = Instantiate(_clanListItemTemplate, _participantListRoot);
             row.name = $"Clan {i + 1}";
             row.gameObject.SetActive(true);
-
-            float slotHeight = 1f / Mathf.Max(1, rowCount);
-            float padding = Mathf.Min(0.04f, slotHeight * 0.16f);
-            float maxY = 1f - i * slotHeight - padding;
-            float minY = 1f - (i + 1) * slotHeight + padding;
-
-            row.SetAnchors(minY, maxY);
-            row.Configure(clanRows[i].ClanName, clanRows[i].PlayerCount, RaidPhotonRoom.MaxPlayersPerClan);
+            row.SetTemplateStackPosition(i, rowCount, 0.04f);
+            row.Configure(
+                clanRows[i].ClanName,
+                clanRows[i].PlayerCount,
+                RaidPhotonRoom.MaxPlayersPerClan,
+                clanRows[i].Players.Select(CreatePlayerIconData).ToList());
         }
+    }
+
+    private RaidLobbyClanListItem.PlayerIconData CreatePlayerIconData(Player player)
+    {
+        int characterId = GetPlayerCharacterId(player);
+        CharacterID character = Enum.IsDefined(typeof(CharacterID), characterId)
+            ? (CharacterID)characterId
+            : CharacterID.None;
+
+        return new RaidLobbyClanListItem.PlayerIconData(
+            GetPlayerDisplayName(player, player?.ActorNumber ?? 0),
+            character,
+            RaidPhotonRoom.DecodeAvatarData(GetPlayerAvatarPayload(player)));
     }
 
     private void CreateOverlayUi()
