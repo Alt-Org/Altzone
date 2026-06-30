@@ -74,17 +74,17 @@ public class RaidLobbyClanListItem : MonoBehaviour
     public void Configure(string clanName, int playerCount, int maxPlayersPerClan, IReadOnlyList<PlayerIconData> players = null)
     {
         int clampedCount = Mathf.Clamp(playerCount, 0, Mathf.Max(0, maxPlayersPerClan));
-        string displayClanName = string.IsNullOrWhiteSpace(clanName)
-            ? GetCurrentLanguage() == SettingsCarrier.LanguageType.English ? "Clan" : "Klaani"
-            : clanName;
+        if (clanNameText != null)
+        {
+            clanNameText.text = string.IsNullOrWhiteSpace(clanName)
+                ? GetDefaultClanName()
+                : clanName;
+        }
 
-        SetLocalizedText(clanNameText, "{0}", "{0}", displayClanName);
-        SetLocalizedText(
-            playerCountText,
-            "Pelaajat {0}/{1}",
-            "Players {0}/{1}",
-            clampedCount.ToString(),
-            maxPlayersPerClan.ToString());
+        if (playerCountText != null)
+        {
+            playerCountText.text = GetPlayerCountText(clampedCount, maxPlayersPerClan);
+        }
 
         if (progressFill != null)
         {
@@ -239,22 +239,16 @@ public class RaidLobbyClanListItem : MonoBehaviour
         return Color.HSVToRGB(hue, 0.55f, 0.95f);
     }
 
-    private static void SetLocalizedText(TextMeshProUGUI textField, string finnishText, string englishText, params string[] additions)
+    private static string GetDefaultClanName()
     {
-        if (textField == null)
-        {
-            return;
-        }
+        return GetCurrentLanguage() == SettingsCarrier.LanguageType.English ? "Clan" : "Klaani";
+    }
 
-        TextLanguageSelectorCaller selector = textField.GetComponent<TextLanguageSelectorCaller>();
-        if (selector != null)
-        {
-            selector.SetText(GetCurrentLanguage(), additions);
-            return;
-        }
-
-        string format = GetCurrentLanguage() == SettingsCarrier.LanguageType.English ? englishText : finnishText;
-        textField.text = string.Format(format, additions);
+    private static string GetPlayerCountText(int playerCount, int maxPlayersPerClan)
+    {
+        return GetCurrentLanguage() == SettingsCarrier.LanguageType.English
+            ? $"Players {playerCount}/{maxPlayersPerClan}"
+            : $"Pelaajat {playerCount}/{maxPlayersPerClan}";
     }
 
     private static SettingsCarrier.LanguageType GetCurrentLanguage()
