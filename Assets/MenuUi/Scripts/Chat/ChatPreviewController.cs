@@ -18,6 +18,7 @@ public class ChatPreviewController : MonoBehaviour
     [SerializeField] private GameObject noMessagesTextGameobject;
     [SerializeField] private GameObject _chatMessagesContainer;
     [SerializeField] private Button _toggleChatButton;
+    [SerializeField] private Button _toggleOnlinePlayersButton;
     //[SerializeField] private TextMeshProUGUI _activeChatChannelText;
 
     private GameObject[] _chatMessageGameobjects;
@@ -25,6 +26,7 @@ public class ChatPreviewController : MonoBehaviour
     private Image _backgroundImage;
 
     [Header("Animations")]
+    //chat button
     public AnimationClip _chatButtonShrinkAnim;
     public AnimationClip _chatButtonExpandAnim;
     private Animation _chatButtonAnim;
@@ -32,6 +34,16 @@ public class ChatPreviewController : MonoBehaviour
     private RectTransform _chatButtonRect;
     private Vector2[] _chatButtonDefaultAnchors;
     private Vector2[] _chatButtonShrinkAnchors;
+
+    //online players button
+    public AnimationClip _onlinePlayersButtonShrinkAnim;
+    public AnimationClip _onlinePlayersButtonExpandAnim;
+    private Animation _onlinePlayersButtonAnim;
+
+
+    private RectTransform _onlinePlayersButtonRect;
+    private Vector2[] _onlinePlayersButtonDefaultAnchors;
+    private Vector2[] _onlinePlayersButtonShrinkAnchors;
 
     //public TextMeshProUGUI ActiveChatChannelText { get => _activeChatChannelText; set => _activeChatChannelText = value; }
 
@@ -42,6 +54,7 @@ public class ChatPreviewController : MonoBehaviour
         _toggleChatButton.onClick.AddListener(() => ToggleChatMessages(!_isEnabled, true));
 
         _chatButtonAnim = _toggleChatButton.GetComponent<Animation>();
+        _onlinePlayersButtonAnim = _toggleOnlinePlayersButton.GetComponent<Animation>();
         _chatMessageGameobjects = new GameObject[chatMessageAmount];
 
         for (int i = 0; i < chatMessageAmount; i++)
@@ -62,6 +75,12 @@ public class ChatPreviewController : MonoBehaviour
         _chatButtonDefaultAnchors[1] = _chatButtonRect.anchorMax;
         _chatButtonShrinkAnchors[0] = new Vector2(0f, 0.82f);
         _chatButtonShrinkAnchors[1] = new Vector2(0.15f, 1.3f);
+
+
+        _onlinePlayersButtonDefaultAnchors[0] = _onlinePlayersButtonRect.anchorMin;
+        _onlinePlayersButtonDefaultAnchors[1] = _onlinePlayersButtonRect.anchorMax;
+        _onlinePlayersButtonShrinkAnchors[0] = new Vector2(0.85f, 0.75f);
+        _onlinePlayersButtonShrinkAnchors[1] = new Vector2(1f, 1f);
     }
 
     private void Start()
@@ -112,7 +131,7 @@ public class ChatPreviewController : MonoBehaviour
         _chatMessagesContainer.SetActive(value);
         _isEnabled = value;
         ChatListener.Instance.ChatPreviewIsEnabled = value;
-
+        /*
         if (value)
             _chatButtonAnim.clip = _chatButtonExpandAnim;
         else
@@ -133,6 +152,30 @@ public class ChatPreviewController : MonoBehaviour
             {
                 _chatButtonRect.anchorMin = _chatButtonShrinkAnchors[0];
                 _chatButtonRect.anchorMax = _chatButtonShrinkAnchors[1];
+            }
+        }*/
+
+        // online players button animation
+        if (value)
+            _onlinePlayersButtonAnim.clip = _onlinePlayersButtonExpandAnim;
+        else
+            _onlinePlayersButtonAnim.clip = _onlinePlayersButtonShrinkAnim;
+
+        if (playAnimation)
+        {
+            _onlinePlayersButtonAnim.Play();
+        }
+        else
+        {
+            if (value)
+            {
+                _onlinePlayersButtonRect.anchorMin = _onlinePlayersButtonDefaultAnchors[0];
+                _onlinePlayersButtonRect.anchorMax = _onlinePlayersButtonDefaultAnchors[1];
+            }
+            else
+            {
+                _onlinePlayersButtonRect.anchorMin = _onlinePlayersButtonShrinkAnchors[0];
+                _onlinePlayersButtonRect.anchorMax = _onlinePlayersButtonShrinkAnchors[1];
             }
         }
 
