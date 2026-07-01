@@ -52,7 +52,6 @@ public class Raid_InventoryPage : MonoBehaviour
             LootTracker.ResetLootCount();
         }
 
-        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
         eventLog?.Clear();
     }
 
@@ -67,7 +66,6 @@ public class Raid_InventoryPage : MonoBehaviour
     public void InitializeInventoryUI(int InventorySize, RaidPhotonRoom.TrapData[] trapData = null)
     {
         ResolveReferences();
-        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
         eventLog?.Clear();
         ClearInventoryUI();
         ListOfFurniture = GetGameFurniture();
@@ -545,6 +543,11 @@ public class Raid_InventoryPage : MonoBehaviour
         if (exitraid == null)
         {
             exitraid = ExitRaid.Instance != null ? ExitRaid.Instance : FindObjectOfType<ExitRaid>();
+        }
+
+        if (eventLog == null && raid_References != null)
+        {
+            eventLog = raid_References.EventLog;
         }
 
     }

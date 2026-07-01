@@ -19,16 +19,7 @@ public class Raid_EventLog : MonoBehaviour
         new(0.21f, 0.78f, 1f, 1f),
         new(0.46f, 0.82f, 0.37f, 1f)
     };
-    private static readonly AvatarPiece[] AvatarPieces =
-    {
-        AvatarPiece.Hair,
-        AvatarPiece.Eyes,
-        AvatarPiece.Nose,
-        AvatarPiece.Mouth,
-        AvatarPiece.Clothes,
-        AvatarPiece.Feet,
-        AvatarPiece.Hands
-    };
+    private static readonly AvatarPiece[] AvatarPieces = (AvatarPiece[])Enum.GetValues(typeof(AvatarPiece));
 
     [SerializeField, Min(1)] private int maxEntries = 80;
     [SerializeField, Min(1)] private int visibleEntryCount = 2;
@@ -43,17 +34,6 @@ public class Raid_EventLog : MonoBehaviour
     private readonly Queue<GameObject> entries = new();
     private Coroutine scrollRoutine;
     private bool warnedMissingReferences;
-
-    public static Raid_EventLog FindForInventory(Transform inventoryRoot)
-    {
-        Raid_EventLog eventLog = inventoryRoot != null
-            ? inventoryRoot.GetComponentInChildren<Raid_EventLog>(true)
-            : null;
-
-        return eventLog != null
-            ? eventLog
-            : FindObjectOfType<Raid_EventLog>(true);
-    }
 
     private void Awake()
     {

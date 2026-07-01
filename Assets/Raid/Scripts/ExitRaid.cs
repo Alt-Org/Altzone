@@ -95,7 +95,6 @@ public class ExitRaid : MonoBehaviour
         }
 
         raidEnded = true;
-        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
         eventLog?.LogSystemMessage("Peli p\u00E4\u00E4ttyi", "Game ended");
 
         SetLossHaloVisuals(reason);
@@ -210,7 +209,7 @@ public class ExitRaid : MonoBehaviour
 
         if (eventLog == null)
         {
-            eventLog = Raid_EventLog.FindForInventory(transform);
+            eventLog = raid_References != null ? raid_References.EventLog : null;
         }
     }
 }

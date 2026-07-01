@@ -13,6 +13,7 @@ public class Raid_References : MonoBehaviour
     public Raid_LootTracking raid_LootTracking;
     [SerializeField] private Raid_EndMenu endMenuController;
     [SerializeField] private Raid_LiveInventory liveInventory;
+    [SerializeField] private Raid_EventLog eventLog;
 
     public static Raid_References Instance { get; private set; }
 
@@ -49,6 +50,15 @@ public class Raid_References : MonoBehaviour
         {
             ResolveLiveInventory();
             return liveInventory;
+        }
+    }
+
+    public Raid_EventLog EventLog
+    {
+        get
+        {
+            ResolveEventLog();
+            return eventLog;
         }
     }
 
@@ -125,6 +135,7 @@ public class Raid_References : MonoBehaviour
         ResolveInventoryHandler();
         ResolveLootTracking();
         ResolveEndMenuController();
+        ResolveEventLog();
     }
 
     private void ResolveInventoryHandler()
@@ -185,6 +196,20 @@ public class Raid_References : MonoBehaviour
 
         liveInventory = Instantiate(prefab, parent, false);
         liveInventory.name = "LiveInventory";
+    }
+
+    private void ResolveEventLog()
+    {
+        if (eventLog != null)
+        {
+            return;
+        }
+
+        eventLog = GetComponentInChildren<Raid_EventLog>(true);
+        if (eventLog == null)
+        {
+            eventLog = FindObjectOfType<Raid_EventLog>(true);
+        }
     }
 
     private void RegisterInstance()

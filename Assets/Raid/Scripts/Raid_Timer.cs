@@ -65,7 +65,7 @@ public class Raid_Timer : MonoBehaviour
     {
         initialCurrentTime = CurrentTime;
         initialTimeUntilStart = TimeUntilStart;
-        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
+        ResolveEventLog();
 
         if (exitRaid == null)
         {
@@ -257,7 +257,7 @@ public class Raid_Timer : MonoBehaviour
         }
 
         lastLoggedStartCountdownSecond = countdownSecond;
-        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
+        ResolveEventLog();
         eventLog?.LogSystemMessage($"Peli alkaa {countdownSecond}", $"Game starts {countdownSecond}");
     }
 
@@ -269,7 +269,7 @@ public class Raid_Timer : MonoBehaviour
         }
 
         gameStartLogged = true;
-        eventLog = eventLog != null ? eventLog : Raid_EventLog.FindForInventory(transform);
+        ResolveEventLog();
         eventLog?.LogSystemMessage("Kokoaminen aloitettu", "Gathering started");
     }
 
@@ -489,6 +489,24 @@ public class Raid_Timer : MonoBehaviour
     {
         CurrentTime = 0;
         UpdateTimerFill();
+    }
+
+    private void ResolveEventLog()
+    {
+        if (eventLog != null)
+        {
+            return;
+        }
+
+        if (raid_References == null)
+        {
+            raid_References = Raid_References.Instance;
+        }
+
+        if (raid_References != null)
+        {
+            eventLog = raid_References.EventLog;
+        }
     }
 
     public enum TimerFormat
