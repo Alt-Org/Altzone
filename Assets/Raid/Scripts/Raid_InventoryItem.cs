@@ -35,6 +35,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     
     private RectTransform target;
     private RectTransform itemBallRect;
+    private Raid_PointerClickBlocker itemBallClickBlocker;
     private HorizontalLayoutGroup layoutGroup;
     private Raid_Timer raidTimer;
     private Vector2 endLoc;
@@ -302,6 +303,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         endLoc = target.position + offset;
 
         ItemBall.transform.SetParent(Heart.transform);
+        SetItemBallClickBlocker(true);
         moving = true;
         t = 0f;
 
@@ -311,6 +313,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         if (itemBallRect == null)
         {
+            SetItemBallClickBlocker(false);
             moving = false;
             return;
         }
@@ -326,6 +329,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             onLootBallArrived?.Invoke(pendingRecentLootSprite);
             pendingRecentLootSprite = null;
             onLootBallArrived = null;
+            SetItemBallClickBlocker(false);
             if (ItemBall != null)
             {
                 ItemBall.SetActive(false);
@@ -419,6 +423,26 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         itemBallRect = ItemBall != null && ItemBall.TryGetComponent(out RectTransform rect)
             ? rect
             : null;
+        itemBallClickBlocker = ItemBall != null && ItemBall.TryGetComponent(out Raid_PointerClickBlocker clickBlocker)
+            ? clickBlocker
+            : null;
+
+        SetItemBallClickBlocker(false);
+    }
+
+    private void SetItemBallClickBlocker(bool blocksClicks)
+    {
+        if (ItemBall == null)
+        {
+            return;
+        }
+
+        if (itemBallClickBlocker == null && !ItemBall.TryGetComponent(out itemBallClickBlocker))
+        {
+            itemBallClickBlocker = ItemBall.AddComponent<Raid_PointerClickBlocker>();
+        }
+
+        itemBallClickBlocker.enabled = blocksClicks;
     }
 
     private static void SetSpriteIfAvailable(Image image, Sprite[] sprites, int index)
