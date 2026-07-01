@@ -6,6 +6,9 @@ using Altzone.Scripts.Model.Poco.Player;
 
 public static class RaidPhotonRoom
 {
+    private const char EntrySeparator = '|';
+    private const char FieldSeparator = ':';
+
     public const int RoomCapacity = 4;
     public const int RequiredPlayers = 4;
     public const int MaxPlayersPerClan = 2;
@@ -70,7 +73,7 @@ public static class RaidPhotonRoom
         {
             AppendSeparator(builder);
             builder.Append(trap.Index.ToString(CultureInfo.InvariantCulture));
-            builder.Append(':');
+            builder.Append(FieldSeparator);
             builder.Append(trap.Type.ToString(CultureInfo.InvariantCulture));
         }
 
@@ -85,10 +88,10 @@ public static class RaidPhotonRoom
         }
 
         List<TrapData> traps = new();
-        string[] entries = value.Split('|');
+        string[] entries = SplitEntries(value);
         foreach (string entry in entries)
         {
-            string[] parts = entry.Split(':');
+            string[] parts = SplitFields(entry);
             if (parts.Length != 2)
             {
                 continue;
@@ -121,9 +124,9 @@ public static class RaidPhotonRoom
 
             AppendSeparator(builder);
             builder.Append(Escape(clan.ClanId));
-            builder.Append(':');
+            builder.Append(FieldSeparator);
             builder.Append(clan.Count.ToString(CultureInfo.InvariantCulture));
-            builder.Append(':');
+            builder.Append(FieldSeparator);
             builder.Append(Escape(clan.ClanName));
         }
 
@@ -138,10 +141,10 @@ public static class RaidPhotonRoom
         }
 
         List<ClanEntry> clans = new();
-        string[] entries = value.Split('|');
+        string[] entries = SplitEntries(value);
         foreach (string entry in entries)
         {
-            string[] parts = entry.Split(':');
+            string[] parts = SplitFields(entry);
             if (parts.Length < 2)
             {
                 continue;
@@ -203,7 +206,7 @@ public static class RaidPhotonRoom
             return null;
         }
 
-        string[] parts = value.Split('|');
+        string[] parts = SplitEntries(value);
         if (parts.Length < 16)
         {
             return null;
@@ -256,11 +259,21 @@ public static class RaidPhotonRoom
         return Uri.UnescapeDataString(value ?? string.Empty);
     }
 
+    private static string[] SplitEntries(string value)
+    {
+        return value.Split(EntrySeparator);
+    }
+
+    private static string[] SplitFields(string value)
+    {
+        return value.Split(FieldSeparator);
+    }
+
     private static void AppendSeparator(StringBuilder builder)
     {
         if (builder.Length > 0)
         {
-            builder.Append('|');
+            builder.Append(EntrySeparator);
         }
     }
 }
