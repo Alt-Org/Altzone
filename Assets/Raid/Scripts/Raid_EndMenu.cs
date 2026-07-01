@@ -1,23 +1,21 @@
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
-[RequireComponent(typeof(CanvasGroup))]
 public class Raid_EndMenu : MonoBehaviour
 {
     public static Raid_EndMenu Instance { get; private set; }
 
     private static readonly Vector2 SpaceRemainingCloudMinimumSize = new Vector2(460f, 300f);
 
-    [SerializeField]
-    public RectTransform collectedFurniture;
-    public RectTransform content;
-    public Raid_InventoryItem itemPrefab;
+    [SerializeField] private RectTransform content;
     [SerializeField] private Raid_InventoryItem collectedLootItemPrefab;
     [SerializeField] private GameObject menuRoot;
+    [SerializeField] private WindowNavigation lobbyNavigation;
     [SerializeField] private Image backgroundImage;
     [SerializeField] private Sprite normalBackgroundSprite;
     [SerializeField] private Sprite overweightBackgroundSprite;
@@ -31,7 +29,6 @@ public class Raid_EndMenu : MonoBehaviour
     [SerializeField] private int collectedLootGridPaddingBottom = 40;
     [SerializeField] private int collectedLootColumnCount = 3;
 
-    private CanvasGroup canvasGroup;
     private bool initialized;
     private bool collectedLootLossHaloVisible;
     private Raid_TextHalo spaceRemainingHalo;
@@ -87,9 +84,9 @@ public class Raid_EndMenu : MonoBehaviour
             return;
         }
 
-        for (int i = 0; i < lootList.Count; i++)
+        foreach (GameFurniture loot in lootList)
         {
-            CreateCollectedLootIcon(lootList[i]);
+            CreateCollectedLootIcon(loot);
         }
     }
 
@@ -143,6 +140,12 @@ public class Raid_EndMenu : MonoBehaviour
 
     public void ReturnToLobby()
     {
+        if (lobbyNavigation != null)
+        {
+            StartCoroutine(lobbyNavigation.Navigate());
+            return;
+        }
+
         SceneManager.LoadScene("10-MenuUI");
     }
 
@@ -159,9 +162,9 @@ public class Raid_EndMenu : MonoBehaviour
             return;
         }
 
-        for (int i = content.childCount - 1; i >= 0; i--)
+        foreach (Transform child in content)
         {
-            Destroy(content.GetChild(i).gameObject);
+            Destroy(child.gameObject);
         }
     }
 
@@ -197,10 +200,9 @@ public class Raid_EndMenu : MonoBehaviour
             return;
         }
 
-        Raid_InventoryItem lootItemPrefab = collectedLootItemPrefab != null ? collectedLootItemPrefab : itemPrefab;
-        if (lootItemPrefab != null)
+        if (collectedLootItemPrefab != null)
         {
-            Raid_InventoryItem lootItem = Instantiate(lootItemPrefab, content);
+            Raid_InventoryItem lootItem = Instantiate(collectedLootItemPrefab, content);
             lootItem.name = "CollectedLootItem";
             lootItem.transform.localScale = collectedLootItemScale;
             lootItem.SetData(furniture);
@@ -210,7 +212,7 @@ public class Raid_EndMenu : MonoBehaviour
             return;
         }
 
-        Debug.LogError("Cannot show collected raid loot icon because collectedLootItemPrefab/itemPrefab is missing from the EndMenu prefab.", this);
+        Debug.LogError("Cannot show collected raid loot icon because collectedLootItemPrefab is missing from the EndMenu prefab.", this);
     }
 
     private void SetCollectedLootHaloVisible(bool visible)
@@ -220,9 +222,8 @@ public class Raid_EndMenu : MonoBehaviour
             return;
         }
 
-        for (int i = 0; i < content.childCount; i++)
+        foreach (Transform child in content)
         {
-            Transform child = content.GetChild(i);
             Raid_InventoryItem lootItem = child.GetComponent<Raid_InventoryItem>();
             if (lootItem != null)
             {
@@ -236,20 +237,13 @@ public class Raid_EndMenu : MonoBehaviour
     {
         EnsureInitialized();
 
-        if (canvasGroup == null)
+        if (menuRoot == null)
         {
-            Debug.LogError("Cannot set raid end menu visibility because CanvasGroup is missing from the EndMenu prefab.", this);
+            Debug.LogError("Cannot set raid end menu visibility because menuRoot is missing from the EndMenu prefab.", this);
             return;
         }
 
-        if (!menuRoot.activeSelf)
-        {
-            menuRoot.SetActive(true);
-        }
-
-        canvasGroup.alpha = visible ? 1f : 0f;
-        canvasGroup.interactable = visible;
-        canvasGroup.blocksRaycasts = visible;
+        menuRoot.SetActive(visible);
     }
 
     private void ConfigureCollectedLootLayout()
@@ -294,8 +288,6 @@ public class Raid_EndMenu : MonoBehaviour
             menuRoot = gameObject;
         }
 
-        canvasGroup = menuRoot.GetComponent<CanvasGroup>();
-
         initialized = true;
     }
 }
@@ -312,12 +304,18 @@ public sealed class Raid_TextHalo
     private bool visible;
     private Material originalMaterial;
     private Material haloMaterial;
+    private bool ownsHaloMaterial;
     private RectTransform cloudRect;
     private Image cloudImage;
 
-    public Raid_TextHalo(TMP_Text targetText, Settings settings)
+    public Raid_TextHalo(TMP_Text targetText, Settings settings, Material haloMaterial = null)
     {
         this.targetText = targetText;
+        if (haloMaterial != null)
+        {
+            settings.HaloMaterial = haloMaterial;
+        }
+
         this.settings = settings;
     }
 
@@ -433,11 +431,12 @@ public sealed class Raid_TextHalo
 
     public void Dispose()
     {
-        if (haloMaterial != null)
+        if (haloMaterial != null && ownsHaloMaterial)
         {
             UnityEngine.Object.Destroy(haloMaterial);
-            haloMaterial = null;
         }
+
+        haloMaterial = null;
 
         if (cloudRect != null)
         {
@@ -497,11 +496,19 @@ public sealed class Raid_TextHalo
         }
 
         originalMaterial = sourceMaterial;
+        if (settings.HaloMaterial != null)
+        {
+            haloMaterial = settings.HaloMaterial;
+            ownsHaloMaterial = false;
+            return;
+        }
+
         haloMaterial = new Material(sourceMaterial)
         {
             name = $"{sourceMaterial.name} Red Text Halo",
             hideFlags = HideFlags.HideAndDontSave
         };
+        ownsHaloMaterial = true;
 
         haloMaterial.EnableKeyword("GLOW_ON");
         haloMaterial.EnableKeyword("UNDERLAY_ON");
@@ -593,5 +600,6 @@ public sealed class Raid_TextHalo
         public Vector2 CloudMinimumSize;
         public Vector2 CloudOffset;
         public string CloudObjectName;
+        public Material HaloMaterial;
     }
 }
