@@ -717,7 +717,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     public void RequestLoot(int slotIndex)
     {
-        if (!IsSharedRaidActive || _exitRaid != null && _exitRaid.raidEnded)
+        if (!CanProcessSharedLoot(slotIndex))
         {
             return;
         }
@@ -737,7 +737,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void HandleLootRequest(int senderActorNumber, int slotIndex)
     {
-        if (!IsSharedRaidActive || _inventoryPage == null || _lootedSlots.Contains(slotIndex))
+        if (!CanProcessSharedLoot(slotIndex) || _lootedSlots.Contains(slotIndex))
         {
             return;
         }
@@ -759,11 +759,21 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         float weightMultiplier = _inventoryPage.GetNetworkLootWeightMultiplier(slotIndex);
         int characterId = GetPlayerCharacterId(sender);
         string avatarPayload = GetPlayerAvatarPayload(sender);
-        PhotonRealtimeClient.Client.OpRaiseEvent(
+        object[] acceptedLootData = { slotIndex, senderActorNumber, weightMultiplier, characterId, avatarPayload };
+        bool eventRaised = PhotonRealtimeClient.Client.OpRaiseEvent(
             RaidPhotonRoom.LootAcceptedEvent,
-            new object[] { slotIndex, senderActorNumber, weightMultiplier, characterId, avatarPayload },
-            new RaiseEventArgs { Receivers = ReceiverGroup.All },
+            acceptedLootData,
+            new RaiseEventArgs { Receivers = ReceiverGroup.Others },
             SendOptions.SendReliable);
+
+        if (eventRaised)
+        {
+            ApplyLootAccepted(acceptedLootData);
+        }
+        else
+        {
+            _lootedSlots.Remove(slotIndex);
+        }
     }
 
     private void ApplyLootAccepted(object[] data)
@@ -786,6 +796,14 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         _lootedSlots.Add(slotIndex);
         _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, weightMultiplier, triggeredByLocalPlayer, actorName, (CharacterID)characterId, avatarData);
+    }
+
+    private bool CanProcessSharedLoot(int slotIndex)
+    {
+        return IsSharedRaidActive
+            && _inventoryPage != null
+            && (_exitRaid == null || !_exitRaid.raidEnded)
+            && _inventoryPage.CanRequestLoot(slotIndex);
     }
 
     private bool IsParticipatingClan(string clanId)
@@ -910,14 +928,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return _localAvatarData;
         }
 
-        PlayerData playerData = null;
-        string playerGuid = GameConfig.Get().PlayerSettings.PlayerGuid;
-        if (!string.IsNullOrWhiteSpace(playerGuid))
-        {
-            Storefront.Get().GetPlayerData(playerGuid, data => playerData = data);
-        }
-
-        _localAvatarData = playerData?.AvatarData;
         return _localAvatarData;
     }
 
@@ -929,16 +939,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return currentAvatarId.Value;
         }
 
-        PlayerData playerData = null;
-        string playerGuid = GameConfig.Get().PlayerSettings.PlayerGuid;
-        if (!string.IsNullOrWhiteSpace(playerGuid))
-        {
-            Storefront.Get().GetPlayerData(playerGuid, data => playerData = data);
-        }
-
-        return playerData != null && Enum.IsDefined(typeof(CharacterID), playerData.SelectedCharacterId)
-            ? playerData.SelectedCharacterId
-            : (int)CharacterID.None;
+        return (int)CharacterID.None;
     }
 
     private void UpdateMatchmakingStatus()

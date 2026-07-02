@@ -123,6 +123,11 @@ public class Raid_InventoryPage : MonoBehaviour
         int index = ListOfUIItems.IndexOf(inventoryItem);
         if (RaidMatchmakingController.Instance != null && RaidMatchmakingController.Instance.ControlsInventorySetup)
         {
+            if (!CanLoot(index, out _))
+            {
+                return;
+            }
+
             RaidMatchmakingController.Instance.RequestLoot(index);
             return;
         }
@@ -148,12 +153,12 @@ public class Raid_InventoryPage : MonoBehaviour
         ResolveReferences();
 
         LootActorContext actorContext = new LootActorContext(playerName, actorCharacterId, actorAvatarData);
-        ProcessLoot(index, 0f, lootWeightMultiplier, triggeredByLocalPlayer, actorContext, triggeredByLocalPlayer, true);
+        ProcessLoot(index, 0f, lootWeightMultiplier, triggeredByLocalPlayer, actorContext, triggeredByLocalPlayer, true, true);
     }
 
-    private void ProcessLoot(int index, float expectedItemWeight, float networkLootWeightMultiplier, bool applyTrapEffect, LootActorContext actorContext, bool addToLootTracker, bool skipWeightValidation)
+    private void ProcessLoot(int index, float expectedItemWeight, float networkLootWeightMultiplier, bool applyTrapEffect, LootActorContext actorContext, bool addToLootTracker, bool skipWeightValidation, bool ignoreFreeze = false)
     {
-        if (!CanLoot(index, out Raid_InventoryItem item))
+        if (!CanLoot(index, out Raid_InventoryItem item, ignoreFreeze))
         {
             return;
         }
@@ -412,11 +417,17 @@ public class Raid_InventoryPage : MonoBehaviour
         Raid_InventoryItem item = GetInventoryItem(index);
         return item != null && item.bomb && item._bombType == 2 ? doubleWeightMultiplier : 1f;
     }
+
+    public bool CanRequestLoot(int index)
+    {
+        ResolveReferences();
+        return CanLoot(index, out _);
+    }
+
     public void SendBombLocationsRPC(string jsonBombs)
     {
-        Bombs = string.IsNullOrWhiteSpace(jsonBombs)
-            ? Array.Empty<BombData>()
-            : JsonUtility.FromJson<BombData[]>(jsonBombs);
+        SetBombsFromTrapData(RaidPhotonRoom.DecodeTraps(jsonBombs));
+        ApplyBombsToInventory();
     }
 
     private void StartFreeze()
@@ -506,14 +517,7 @@ public class Raid_InventoryPage : MonoBehaviour
             return new AvatarData(serverPlayer.name, serverPlayer.avatar);
         }
 
-        PlayerData playerData = null;
-        string playerGuid = GameConfig.Get().PlayerSettings.PlayerGuid;
-        if (!string.IsNullOrWhiteSpace(playerGuid))
-        {
-            Storefront.Get().GetPlayerData(playerGuid, data => playerData = data);
-        }
-
-        return playerData?.AvatarData;
+        return null;
     }
 
     private void ResolveReferences()
@@ -587,10 +591,10 @@ public class Raid_InventoryPage : MonoBehaviour
         ListOfUIItems.Clear();
     }
 
-    private bool CanLoot(int index, out Raid_InventoryItem item)
+    private bool CanLoot(int index, out Raid_InventoryItem item, bool ignoreFreeze = false)
     {
         item = GetInventoryItem(index);
-        if (item == null || inventoryFrozen)
+        if (item == null || inventoryFrozen && !ignoreFreeze)
         {
             return false;
         }
