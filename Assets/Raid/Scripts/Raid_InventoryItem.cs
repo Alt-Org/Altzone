@@ -64,6 +64,9 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     public GameFurniture furnitureData;
 
     private AudioSource audioSource;
+#pragma warning disable CS0612
+    [SerializeField] private SetVolume volumeSettings;
+#pragma warning restore CS0612
     private SettingsCarrier.SoundType soundType;
     private bool hasSoundType;
     public AudioClip pickUp;
@@ -77,12 +80,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
     public void Awake()
     {
-        ResolveReferences();
-
-        if (raidTimer != null)
-        {
-            raidTimer.TimeEnded += OnTimeEnded;
-        }
+        ResolveLocalReferences();
 
         if (empty && ItemImage != null)
         {
@@ -90,6 +88,25 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         }
 
         RefreshBombIndicator();
+    }
+
+    public void ConfigureSharedReferences(Raid_References references, GameObject heart, Raid_Timer timer)
+    {
+        if (raid_References == null)
+        {
+            raid_References = references;
+        }
+
+        if (Heart == null)
+        {
+            Heart = heart;
+        }
+
+        target = Heart != null && Heart.TryGetComponent(out RectTransform heartRect)
+            ? heartRect
+            : null;
+
+        SetRaidTimer(timer);
     }
 
     private void OnDestroy()
@@ -395,28 +412,8 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         SetSpriteIfAvailable(Aura, Auras, spriteIndex);
     }
 
-    private void ResolveReferences()
+    private void ResolveLocalReferences()
     {
-        if (raid_References == null)
-        {
-            raid_References = Raid_References.Instance;
-        }
-
-        if (Heart == null && raid_References != null)
-        {
-            Heart = raid_References.Heart;
-        }
-
-        if (Heart == null)
-        {
-            Heart = GameObject.FindWithTag("Heart");
-        }
-
-        target = Heart != null && Heart.TryGetComponent(out RectTransform heartRect)
-            ? heartRect
-            : null;
-
-        raidTimer = FindObjectOfType<Raid_Timer>();
         TryGetComponent(out audioSource);
         ResolveSoundType();
         TryGetComponent(out layoutGroup);
@@ -428,6 +425,26 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             : null;
 
         SetItemBallClickBlocker(false);
+    }
+
+    private void SetRaidTimer(Raid_Timer timer)
+    {
+        if (raidTimer == timer)
+        {
+            return;
+        }
+
+        if (raidTimer != null)
+        {
+            raidTimer.TimeEnded -= OnTimeEnded;
+        }
+
+        raidTimer = timer;
+
+        if (raidTimer != null)
+        {
+            raidTimer.TimeEnded += OnTimeEnded;
+        }
     }
 
     private void SetItemBallClickBlocker(bool blocksClicks)
@@ -497,19 +514,14 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        Component volumeComponent = GetComponent("SetVolume");
-        if (volumeComponent == null)
+        if (volumeSettings == null)
         {
-            return;
+            TryGetComponent(out volumeSettings);
         }
 
-        System.Reflection.FieldInfo soundTypeField = volumeComponent.GetType().GetField(
-            "_soundType",
-            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
-
-        if (soundTypeField?.GetValue(volumeComponent) is SettingsCarrier.SoundType resolvedSoundType)
+        if (volumeSettings != null)
         {
-            soundType = resolvedSoundType;
+            soundType = volumeSettings._soundType;
             hasSoundType = true;
         }
     }

@@ -22,6 +22,7 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] private Raid_Timer raid_Timer;
     [SerializeField] private ExitRaid exitraid;
     [SerializeField] private Raid_EventLog eventLog;
+    [SerializeField] private GameObject Heart;
     [SerializeField] private bool firstItem = true;
     [SerializeField, Min(1)] private int trapAmount = 3;
     [SerializeField, Min(0f)] private float freezeDuration = 10f;
@@ -80,6 +81,7 @@ public class Raid_InventoryPage : MonoBehaviour
         {
             Raid_InventoryItem UIItem = Instantiate(ItemPrefab, ContentPanel);
             UIItem.transform.localScale = new Vector3(1, 1, 0);
+            UIItem.ConfigureSharedReferences(raid_References, Heart, raid_Timer);
             UIItem.SetTrapIndicatorVisible(showTrapIndicators);
             ListOfUIItems.Add(UIItem);
             UIItem.OnItemClicked += HandleItemLooting;
@@ -530,6 +532,16 @@ public class Raid_InventoryPage : MonoBehaviour
         if (raid_Timer == null)
         {
             raid_Timer = FindObjectOfType<Raid_Timer>();
+        }
+
+        if (Heart == null && raid_References != null)
+        {
+            Heart = raid_References.Heart;
+        }
+
+        if (Heart == null)
+        {
+            Heart = GameObject.FindWithTag("Heart");
         }
 
         if (exitraid == null)
