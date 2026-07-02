@@ -248,54 +248,15 @@ public class Raid_InventoryPage : MonoBehaviour
 
     public void RandomizeInventoryContent(int InventorySize)
     {
-        List<GameFurniture> SmallItemList = WeightQuery(ListOfFurniture,0f,50f);
-        List<GameFurniture> MediumItemList = WeightQuery(ListOfFurniture,50f,80f);
-        List<GameFurniture> LargeItemList = WeightQuery(ListOfFurniture,80.1f,999f);
-
-        if (SmallItemList.Count == 0 && MediumItemList.Count == 0 && LargeItemList.Count == 0)
-        {
-            Debug.LogError("Raid inventory cannot be generated because no furniture was found.");
-            return;
-        }
-
-        for (int i = 0; i < InventorySize; i++)
-        {
-            int RandomFurniture;
-            int x = Random.Range(0, 3);
-            switch (x)
-            {
-                case 0:
-                    if (raid_InventoryHandler != null && raid_InventoryHandler.LargeItemMaxAmount != 0 && LargeItemList.Count != 0)
-                    {
-                        RandomFurniture = Random.Range(0,LargeItemList.Count);
-                        SetInventorySlotDataRPC(LargeItemList,i,RandomFurniture);
-                        raid_InventoryHandler.LargeItemMaxAmount--;
-                    } else {goto case 1;}
-                    break;
-                case 1:
-                    if (raid_InventoryHandler != null && raid_InventoryHandler.MediumItemMaxAmount != 0 && MediumItemList.Count != 0)
-                    {
-                        RandomFurniture = Random.Range(0,MediumItemList.Count);
-                        SetInventorySlotDataRPC(MediumItemList,i,RandomFurniture);
-                        raid_InventoryHandler.MediumItemMaxAmount--;
-                    } else {goto case 2;}
-                    break;
-                case 2:
-                    if (SmallItemList.Count != 0)
-                    {
-                        RandomFurniture = Random.Range(0,SmallItemList.Count);
-                        SetInventorySlotDataRPC(SmallItemList,i,RandomFurniture);
-                    }
-                    else if (!TrySetRandomInventorySlotData(MediumItemList, i) && !TrySetRandomInventorySlotData(LargeItemList, i))
-                    {
-                        return;
-                    }
-                    break;
-            }
-        }
-
+        RandomizeInventoryContent(InventorySize, new UnityInventoryRandom(), true);
     }
+
     public void RandomizeInventoryContentDeterministic(int InventorySize, int seed)
+    {
+        RandomizeInventoryContent(InventorySize, new SystemInventoryRandom(seed), false);
+    }
+
+    private void RandomizeInventoryContent(int inventorySize, IInventoryRandom random, bool updateInventoryHandlerAmounts)
     {
         List<GameFurniture> smallItemList = WeightQuery(ListOfFurniture, 0f, 50f);
         List<GameFurniture> mediumItemList = WeightQuery(ListOfFurniture, 50f, 80f);
@@ -309,24 +270,22 @@ public class Raid_InventoryPage : MonoBehaviour
 
         int largeRemaining = raid_InventoryHandler != null ? raid_InventoryHandler.LargeItemMaxAmount : 0;
         int mediumRemaining = raid_InventoryHandler != null ? raid_InventoryHandler.MediumItemMaxAmount : 0;
-        System.Random rng = new System.Random(seed);
-
-        for (int i = 0; i < InventorySize; i++)
+        for (int i = 0; i < inventorySize; i++)
         {
-            int choice = rng.Next(0, 3);
+            int choice = random.Range(0, 3);
             bool itemSet = false;
 
             switch (choice)
             {
                 case 0:
-                    if (largeRemaining > 0 && TrySetInventorySlotData(largeItemList, i, rng))
+                    if (largeRemaining > 0 && TrySetInventorySlotData(largeItemList, i, random))
                     {
                         largeRemaining--;
                         itemSet = true;
                     }
                     break;
                 case 1:
-                    if (mediumRemaining > 0 && TrySetInventorySlotData(mediumItemList, i, rng))
+                    if (mediumRemaining > 0 && TrySetInventorySlotData(mediumItemList, i, random))
                     {
                         mediumRemaining--;
                         itemSet = true;
@@ -334,21 +293,33 @@ public class Raid_InventoryPage : MonoBehaviour
                     break;
             }
 
-            if (!itemSet && TrySetInventorySlotData(smallItemList, i, rng))
+            if (!itemSet && TrySetInventorySlotData(smallItemList, i, random))
             {
                 itemSet = true;
             }
 
-            if (!itemSet && mediumRemaining > 0 && TrySetInventorySlotData(mediumItemList, i, rng))
+            if (!itemSet && mediumRemaining > 0 && TrySetInventorySlotData(mediumItemList, i, random))
             {
                 mediumRemaining--;
                 itemSet = true;
             }
 
-            if (!itemSet && largeRemaining > 0 && TrySetInventorySlotData(largeItemList, i, rng))
+            if (!itemSet && largeRemaining > 0 && TrySetInventorySlotData(largeItemList, i, random))
             {
                 largeRemaining--;
+                itemSet = true;
             }
+
+            if (!itemSet)
+            {
+                break;
+            }
+        }
+
+        if (updateInventoryHandlerAmounts && raid_InventoryHandler != null)
+        {
+            raid_InventoryHandler.LargeItemMaxAmount = largeRemaining;
+            raid_InventoryHandler.MediumItemMaxAmount = mediumRemaining;
         }
     }
     public void RandomizeBombs()
@@ -464,27 +435,44 @@ public class Raid_InventoryPage : MonoBehaviour
         ListOfUIItems[UiIndex].SetData(furniture);
     }
 
-    private bool TrySetInventorySlotData(List<GameFurniture> furnitureSet, int uiIndex, System.Random rng)
+    private bool TrySetInventorySlotData(List<GameFurniture> furnitureSet, int uiIndex, IInventoryRandom random)
     {
         if (furnitureSet == null || furnitureSet.Count == 0 || uiIndex < 0 || uiIndex >= ListOfUIItems.Count)
         {
             return false;
         }
 
-        int furnitureIndex = rng.Next(0, furnitureSet.Count);
+        int furnitureIndex = random.Range(0, furnitureSet.Count);
         SetInventorySlotDataRPC(furnitureSet, uiIndex, furnitureIndex);
         return true;
     }
 
-    private bool TrySetRandomInventorySlotData(List<GameFurniture> furnitureSet, int uiIndex)
+    private interface IInventoryRandom
     {
-        if (furnitureSet == null || furnitureSet.Count == 0 || uiIndex < 0 || uiIndex >= ListOfUIItems.Count)
+        int Range(int minInclusive, int maxExclusive);
+    }
+
+    private readonly struct UnityInventoryRandom : IInventoryRandom
+    {
+        public int Range(int minInclusive, int maxExclusive)
         {
-            return false;
+            return Random.Range(minInclusive, maxExclusive);
+        }
+    }
+
+    private readonly struct SystemInventoryRandom : IInventoryRandom
+    {
+        private readonly System.Random rng;
+
+        public SystemInventoryRandom(int seed)
+        {
+            rng = new System.Random(seed);
         }
 
-        SetInventorySlotDataRPC(furnitureSet, uiIndex, Random.Range(0, furnitureSet.Count));
-        return true;
+        public int Range(int minInclusive, int maxExclusive)
+        {
+            return rng.Next(minInclusive, maxExclusive);
+        }
     }
 
     private string GetLocalEventPlayerName()
