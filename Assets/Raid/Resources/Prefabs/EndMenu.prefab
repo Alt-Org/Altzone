@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2668198566995541017}
   - component: {fileID: 7581730394780298031}
-  - component: {fileID: 9203000000000000001}
   m_Layer: 5
   m_Name: EndMenu
   m_TagString: Untagged
@@ -56,11 +55,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74cc78280cfa86f47a5c28ae40868e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectedFurniture: {fileID: 6112746816069853310}
   content: {fileID: 4296145650629842064}
-  itemPrefab: {fileID: 7481540141435164365, guid: 59f733f3d92449d4a8da7c84514fdf3b,
+  collectedLootItemPrefab: {fileID: 7481540141435164365, guid: 9d8e0a9a6f9147d48b21b7c52f0a3e91,
     type: 3}
   menuRoot: {fileID: 683399793402178915}
+  lobbyNavigation: {fileID: 0}
   backgroundImage: {fileID: 486935528496687519}
   normalBackgroundSprite: {fileID: 21300000, guid: ca292ec662d733746a24248a335eba3a,
     type: 3}
@@ -70,18 +69,11 @@ MonoBehaviour:
   overweightEndResultText: {fileID: 9001000000000000001}
   spaceRemainingText: {fileID: 9102000000000000004}
   collectedLootItemScale: {x: 1.25, y: 1.25, z: 1}
---- !u!225 &9203000000000000001
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 683399793402178915}
-  m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
+  collectedLootGridCellSize: {x: 325, y: 430}
+  collectedLootGridSpacing: {x: 180, y: 310}
+  collectedLootGridPaddingTop: 80
+  collectedLootGridPaddingBottom: 40
+  collectedLootColumnCount: 3
 --- !u!1 &1381501735683521454
 GameObject:
   m_ObjectHideFlags: 0
@@ -250,7 +242,7 @@ RectTransform:
   m_Father: {fileID: 2668198566995541017}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.19}
-  m_AnchorMax: {x: 1, y: 0.79}
+  m_AnchorMax: {x: 1, y: 0.77}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -392,7 +384,7 @@ MonoBehaviour:
   m_text: "<size=200>Peli p\xE4\xE4tyi!</size>\n- Huonekalut lis\xE4tty varastoon
     -"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: eca1bd84f719d7146a5b636b4f4beff0, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
   m_sharedMaterial: {fileID: -2998110953030337146, guid: eca1bd84f719d7146a5b636b4f4beff0,
     type: 2}
   m_fontSharedMaterials: []
@@ -459,7 +451,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &9002000000000000001
@@ -741,7 +733,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.16992188}
-  m_SizeDelta: {x: -1920, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &5955692375267767895
 MonoBehaviour:
@@ -772,13 +764,13 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
+    m_Top: 80
+    m_Bottom: 40
   m_ChildAlignment: 1
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 325, y: 325}
-  m_Spacing: {x: 300, y: 90}
+  m_CellSize: {x: 325, y: 430}
+  m_Spacing: {x: 180, y: 310}
   m_Constraint: 1
   m_ConstraintCount: 3
 --- !u!1 &5437918297314473116
@@ -1057,8 +1049,8 @@ MonoBehaviour:
   m_text: "<size=200>Saalis menetetty!</size>\n- Syd\xE4men maksimipaino ylitetty
     -"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: eca1bd84f719d7146a5b636b4f4beff0, type: 2}
-  m_sharedMaterial: {fileID: -2998110953030337146, guid: eca1bd84f719d7146a5b636b4f4beff0,
+  m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
+  m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1213,8 +1205,8 @@ MonoBehaviour:
 
     /300 kg'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: eca1bd84f719d7146a5b636b4f4beff0, type: 2}
-  m_sharedMaterial: {fileID: -2998110953030337146, guid: eca1bd84f719d7146a5b636b4f4beff0,
+  m_fontAsset: {fileID: 11400000, guid: dcc089e132356ac4a9eb8090bee5e304, type: 2}
+  m_sharedMaterial: {fileID: 4752717343592566078, guid: dcc089e132356ac4a9eb8090bee5e304,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1239,7 +1231,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 144.85
+  m_fontSize: 150
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1

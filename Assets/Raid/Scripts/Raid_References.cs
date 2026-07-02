@@ -1,19 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(RaidMatchmakingController))]
 public class Raid_References : MonoBehaviour
 {
     [SerializeField, Header("Reference GameObjects")]
  
     public GameObject EndMenu;
-    public GameObject HeartHalves;
     public GameObject Heart;
 
     [SerializeField, Header("Reference game components")]
     public Raid_InventoryHandler inventoryHandler;
     public Raid_LootTracking raid_LootTracking;
     [SerializeField] private Raid_EndMenu endMenuController;
+    [SerializeField] private Raid_LiveInventory liveInventory;
+    [SerializeField] private Raid_EventLog eventLog;
+
+    public static Raid_References Instance { get; private set; }
+
+    public Raid_InventoryHandler InventoryHandler
+    {
+        get
+        {
+            ResolveInventoryHandler();
+            return inventoryHandler;
+        }
+    }
 
     public Raid_EndMenu EndMenuController
     {
@@ -24,9 +35,55 @@ public class Raid_References : MonoBehaviour
         }
     }
 
+    public Raid_LootTracking LootTracking
+    {
+        get
+        {
+            ResolveLootTracking();
+            return raid_LootTracking;
+        }
+    }
+
+    public Raid_LiveInventory LiveInventory
+    {
+        get
+        {
+            ResolveLiveInventory();
+            return liveInventory;
+        }
+    }
+
+    public Raid_EventLog EventLog
+    {
+        get
+        {
+            ResolveEventLog();
+            return eventLog;
+        }
+    }
+
+    private void Awake()
+    {
+        RegisterInstance();
+        ResolveReferences();
+    }
+
+    private void OnEnable()
+    {
+        RegisterInstance();
+    }
+
+    private void OnDisable()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
     private void Start()
     {
-        inventoryHandler = GameObject.Find("ScriptHolder").GetComponent<Raid_InventoryHandler>();
+        ResolveReferences();
 
         HideEndMenu();
     }
@@ -64,12 +121,108 @@ public class Raid_References : MonoBehaviour
 
         if (endMenuController == null && EndMenu != null)
         {
-            endMenuController = EndMenu.GetComponent<Raid_EndMenu>();
+            EndMenu.TryGetComponent(out endMenuController);
         }
 
         if (EndMenu == null && endMenuController != null)
         {
             EndMenu = endMenuController.MenuRoot;
+        }
+    }
+
+    private void ResolveReferences()
+    {
+        ResolveInventoryHandler();
+        ResolveLootTracking();
+        ResolveEndMenuController();
+        ResolveEventLog();
+    }
+
+    private void ResolveInventoryHandler()
+    {
+        if (inventoryHandler != null)
+        {
+            return;
+        }
+
+        if (!TryGetComponent(out inventoryHandler))
+        {
+            inventoryHandler = FindObjectOfType<Raid_InventoryHandler>();
+        }
+    }
+
+    private void ResolveLootTracking()
+    {
+        if (raid_LootTracking != null)
+        {
+            return;
+        }
+
+        if (!TryGetComponent(out raid_LootTracking))
+        {
+            raid_LootTracking = FindObjectOfType<Raid_LootTracking>();
+        }
+    }
+
+    private void ResolveLiveInventory()
+    {
+        if (liveInventory != null)
+        {
+            return;
+        }
+
+        liveInventory = Raid_LiveInventory.Instance;
+        if (liveInventory != null)
+        {
+            return;
+        }
+
+        liveInventory = FindObjectOfType<Raid_LiveInventory>(true);
+        if (liveInventory != null)
+        {
+            return;
+        }
+
+        Raid_LiveInventory prefab = Resources.Load<Raid_LiveInventory>("Prefabs/LiveInventory");
+        if (prefab == null)
+        {
+            Debug.LogError("Cannot open raid live inventory because Prefabs/LiveInventory is missing.");
+            return;
+        }
+
+        Transform parent = EndMenu != null && EndMenu.transform.parent != null
+            ? EndMenu.transform.parent
+            : transform.root;
+
+        liveInventory = Instantiate(prefab, parent, false);
+        liveInventory.name = "LiveInventory";
+    }
+
+    private void ResolveEventLog()
+    {
+        if (eventLog != null)
+        {
+            return;
+        }
+
+        eventLog = GetComponentInChildren<Raid_EventLog>(true);
+        if (eventLog == null)
+        {
+            eventLog = FindObjectOfType<Raid_EventLog>(true);
+        }
+    }
+
+    private void RegisterInstance()
+    {
+        if (Instance == null || Instance == this)
+        {
+            Instance = this;
+            return;
+        }
+
+        if (!Instance.gameObject.activeInHierarchy && gameObject.activeInHierarchy)
+        {
+            Instance = this;
         }
     }
 }

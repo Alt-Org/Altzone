@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ExitRaid : MonoBehaviour
@@ -19,6 +18,7 @@ public class ExitRaid : MonoBehaviour
     public bool raidEnded = false;
     [SerializeField] private Raid_Timer raid_timer;
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
+    [SerializeField] private Raid_EventLog eventLog;
 
     private void Awake()
     {
@@ -95,6 +95,9 @@ public class ExitRaid : MonoBehaviour
         }
 
         raidEnded = true;
+        eventLog?.LogSystemMessage("Peli p\u00E4\u00E4ttyi", "Game ended");
+
+        SetLossHaloVisuals(reason);
         OnEndRaid();
         raid_timer.FinishRaid();
 
@@ -108,15 +111,17 @@ public class ExitRaid : MonoBehaviour
         yield return Raid_EventPopup.ShowAndWait(this, GetPopupScenario(reason));
 
         Raid_EndMenu endMenu = raid_References.EndMenuController;
-        if (endMenu == null)
+        Raid_LootTracking lootTracking = raid_References.LootTracking;
+        if (endMenu == null || lootTracking == null)
         {
-            Debug.LogError("Cannot show raid end menu because the EndMenuController reference is missing.");
+            Debug.LogError("Cannot show raid end menu because the end menu or loot tracking reference is missing.");
             yield break;
         }
 
+        endMenu.SetLossHaloVisible(reason == RaidEndReason.OutOfSpace);
         endMenu.SetOverWeightLimitBackground(reason == RaidEndReason.OutOfSpace);
-        endMenu.SetCollectedLoot(raid_References.raid_LootTracking.ListOfCollectedLoot);
-        endMenu.SetSpaceRemainingText(raid_References.raid_LootTracking.CurrentLootWeight, raid_References.raid_LootTracking.MaxLootWeight);
+        endMenu.SetCollectedLoot(lootTracking.ListOfCollectedLoot);
+        endMenu.SetSpaceRemainingText(lootTracking.CurrentLootWeight, lootTracking.MaxLootWeight);
         raid_References.ShowEndMenu();
     }
 
@@ -131,6 +136,30 @@ public class ExitRaid : MonoBehaviour
         if (endMenu != null)
         {
             endMenu.SetEndReasonText(reason);
+        }
+    }
+
+    private void SetLossHaloVisuals(RaidEndReason reason)
+    {
+        HeartScript heartScript = raid_References != null
+            && raid_References.Heart != null
+            && raid_References.Heart.TryGetComponent(out HeartScript referencedHeart)
+            ? referencedHeart
+            : null;
+
+        if (heartScript == null)
+        {
+            heartScript = FindObjectOfType<HeartScript>();
+        }
+
+        if (heartScript != null)
+        {
+            heartScript.SetLossHaloVisible(reason == RaidEndReason.OutOfSpace);
+        }
+
+        if (raid_timer != null)
+        {
+            raid_timer.SetLossHaloVisible(true);
         }
     }
 
@@ -175,7 +204,12 @@ public class ExitRaid : MonoBehaviour
 
         if (raid_References == null)
         {
-            raid_References = FindObjectOfType<Raid_References>();
+            raid_References = Raid_References.Instance;
+        }
+
+        if (eventLog == null)
+        {
+            eventLog = raid_References != null ? raid_References.EventLog : null;
         }
     }
 }

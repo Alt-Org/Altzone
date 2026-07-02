@@ -1,16 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
+using Altzone.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngine.EventSystems;
 using Altzone.Scripts.Model.Poco.Game;
-//using Photon.Pun;
-//using static MenuUI.Scripts.Lobby.InRoom.RoomSetupManager;
 
 public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {
+    private static readonly Vector2 LossHaloPadding = new Vector2(70f, 70f);
+    private static readonly Vector2 LossHaloOffset = Vector2.zero;
+    private const int CollectedLootLayoutPaddingLeft = 25;
+    private const int CollectedLootLayoutPaddingRight = 25;
+    private const int CollectedLootLayoutPaddingTop = 15;
+    private const int CollectedLootLayoutPaddingBottom = 125;
+    private static readonly Vector2 CollectedLootWeightTextPosition = new Vector2(0f, -500f);
+    private static readonly Vector2 CollectedLootWeightTextSize = new Vector2(350f, 185f);
+
     [SerializeField] private Image ItemImage;
     [SerializeField] public float ItemWeight;
     [SerializeField] private GameObject Lock;
@@ -28,10 +34,11 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     [SerializeField] public Raid_References raid_References;
     
     private RectTransform target;
-    Vector2 endLoc;
-    Vector3 offset;
-    private float startTime;
-    private float journeyLength;
+    private RectTransform itemBallRect;
+    private Raid_PointerClickBlocker itemBallClickBlocker;
+    private HorizontalLayoutGroup layoutGroup;
+    private Raid_Timer raidTimer;
+    private Vector2 endLoc;
     private float t = 0f;
     [SerializeField] private float speed = 15f;
     [SerializeField] private TMP_Text ItemWeightPopUp;
@@ -46,8 +53,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
     private bool locked = false;
 
-    private bool spectator = false;
-
     private bool active = true;
 
     private bool triggered = false;
@@ -59,48 +64,61 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     public GameFurniture furnitureData;
 
     private AudioSource audioSource;
+    private SettingsCarrier.SoundType soundType;
+    private bool hasSoundType;
     public AudioClip pickUp;
     public AudioClip explosion;
 
-    //type 0: default, type 1: lock
+    [Tooltip("Trap type: 0 = end raid, 1 = freeze, 2 = double next loot weight.")]
     public int _bombType = 0; 
+    public Sprite CurrentItemSprite => ItemImage != null ? ItemImage.sprite : null;
+    private Sprite pendingRecentLootSprite;
+    private Action<Sprite> onLootBallArrived;
 
-    //public PhotonView _photonView { get; set; }
     public void Awake()
     {
-        Heart = GameObject.FindWithTag("Heart");
-        target = Heart.GetComponent<RectTransform>();
+        ResolveReferences();
 
-        raid_References = GameObject.Find("ScriptHolder").GetComponent<Raid_References>();
-
-        Raid_Timer raidTimer = FindObjectOfType<Raid_Timer>();
         if (raidTimer != null)
         {
             raidTimer.TimeEnded += OnTimeEnded;
         }
-        audioSource = GetComponent<AudioSource>();
-        if (empty)
+
+        if (empty && ItemImage != null)
         {
             ItemImage.gameObject.SetActive(false);
         }
-        RefreshBombIndicator();
 
-        //if ((PlayerRole)PhotonNetwork.LocalPlayer.CustomProperties["Role"] == PlayerRole.Spectator)
-            spectator = false;
+        RefreshBombIndicator();
     }
+
+    private void OnDestroy()
+    {
+        if (raidTimer != null)
+        {
+            raidTimer.TimeEnded -= OnTimeEnded;
+        }
+    }
+
     public void Update()
     {
         if (moving)
+        {
             BallToHeart();
+        }
     }
 
-    // Sets this slots data based on contents of GameFurniture
     public void SetData(GameFurniture gameFurniture)
     {
+        if (gameFurniture == null || ItemImage == null)
+        {
+            return;
+        }
+
         ItemWeight = (float)gameFurniture.Weight;
         furnitureData = gameFurniture;
         ItemImage.gameObject.SetActive(true);
-        ItemImage.sprite = gameFurniture.FurnitureInfo.Image;
+        ItemImage.sprite = gameFurniture.FurnitureInfo?.Image;
         SetItemWeightTextActive(showItemWeightText);
         empty = false;
         SetBGColor();
@@ -112,9 +130,53 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         SetItemWeightTextActive(showItemWeightText);
     }
 
+    public void SetCollectedLootDisplayLayout()
+    {
+        if (layoutGroup != null)
+        {
+            layoutGroup.padding = new RectOffset(
+                CollectedLootLayoutPaddingLeft,
+                CollectedLootLayoutPaddingRight,
+                CollectedLootLayoutPaddingTop,
+                CollectedLootLayoutPaddingBottom);
+        }
+
+        if (ItemWeightText == null)
+        {
+            return;
+        }
+
+        RectTransform weightTextRect = ItemWeightText.rectTransform;
+        weightTextRect.anchorMin = new Vector2(0.5f, 1f);
+        weightTextRect.anchorMax = new Vector2(0.5f, 1f);
+        weightTextRect.pivot = new Vector2(0.5f, 0.5f);
+        weightTextRect.anchoredPosition = CollectedLootWeightTextPosition;
+        weightTextRect.sizeDelta = CollectedLootWeightTextSize;
+    }
+
+    public void SetLossHaloVisible(bool visible)
+    {
+        if (ItemImage == null)
+        {
+            return;
+        }
+
+        Raid_RedHalo.SetVisible(ItemImage.gameObject, visible, LossHaloPadding, LossHaloOffset);
+    }
+
     public void RemoveData()
     {
-        ItemImage.gameObject.SetActive(false);
+        SetLossHaloVisible(false);
+
+        if (ItemImage != null)
+        {
+            ItemImage.sprite = null;
+            ItemImage.gameObject.SetActive(false);
+        }
+
+        ItemWeight = 0f;
+        furnitureData = null;
+        empty = true;
         bomb = false;
         RefreshBombIndicator();
     }
@@ -139,31 +201,17 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         if(!triggered && !timeEnded)
         {
-            string trapName;
-            switch (_bombType)
-            {
-                case 0:
-                    trapName = "EndGame";
-                    break;
-                case 1:
-                    trapName = "Freeze";
-                    break;
-                case 2:
-                    trapName = "DoubleWeight";
-                    break;
-                default:
-                    trapName = "Unknown";
-                    break;
-            }
-            Debug.Log($"(RAID) Trap triggered: {trapName} (type {_bombType})");
-            if(_bombType == 1)
+            if(_bombType == 1 && Bomb != null)
             {
                 Bomb.transform.localScale = new Vector2(3f, 3f);
             }
             SetTriggeredTrapSprite();
-            Bomb.SetActive(true);
+            if (Bomb != null)
+            {
+                Bomb.SetActive(true);
+            }
             triggered = true;
-            audioSource.PlayOneShot(explosion, SettingsCarrier.Instance.SentVolume(GetComponent<SetVolume>()._soundType));
+            PlayClip(explosion);
         }
         RefreshBombIndicator();
     }
@@ -172,6 +220,26 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         showTrapIndicator = visible;
         RefreshBombIndicator();
+    }
+
+    public void SetAuraVisible(bool visible)
+    {
+        if (Aura == null)
+        {
+            return;
+        }
+
+        Aura.gameObject.SetActive(visible);
+    }
+
+    public void SetBubbleVisible(bool visible)
+    {
+        if (Bubble == null)
+        {
+            return;
+        }
+
+        Bubble.gameObject.SetActive(visible);
     }
 
     private void RefreshBombIndicator()
@@ -215,36 +283,65 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         BombImage.sprite = trapSprite;
         BombImage.preserveAspect = true;
     }
-    public void LaunchBall()
+    public void LaunchBall(Sprite recentLootSprite = null, Action<Sprite> lootBallArrived = null)
     {
-        ItemWeightText.gameObject.SetActive(false);
-        audioSource.PlayOneShot(pickUp, SettingsCarrier.Instance.SentVolume(GetComponent<SetVolume>()._soundType));
-        offset = new Vector3(target.rect.width / 2, -target.rect.height / 2, 0f);
+        if (ItemBall == null || itemBallRect == null || Heart == null || target == null)
+        {
+            lootBallArrived?.Invoke(recentLootSprite);
+            return;
+        }
+
+        pendingRecentLootSprite = recentLootSprite;
+        onLootBallArrived = lootBallArrived;
+        if (ItemWeightText != null)
+        {
+            ItemWeightText.gameObject.SetActive(false);
+        }
+
+        PlayClip(pickUp);
+        Vector3 offset = new Vector3(target.rect.width / 2, -target.rect.height / 2, 0f);
         endLoc = target.position + offset;
 
         ItemBall.transform.SetParent(Heart.transform);
+        SetItemBallClickBlocker(true);
         moving = true;
+        t = 0f;
 
-        ItemWeightPopUp.gameObject.SetActive(true);
-        ItemWeightPopUp.text = ("+" + ItemWeight + "kg");
+        SetItemWeightPopUpVisible(true);
     }
     public void BallToHeart()
     {
+        if (itemBallRect == null)
+        {
+            SetItemBallClickBlocker(false);
+            moving = false;
+            return;
+        }
+
         t += speed * Time.deltaTime;
         float step = Mathf.SmoothStep(0f, 1f, t * Time.deltaTime);
-        Vector2 newPosition = Vector2.Lerp(ItemBall.GetComponent<RectTransform>().anchoredPosition, endLoc, step);
-        ItemBall.GetComponent<RectTransform>().anchoredPosition = newPosition;
+        Vector2 newPosition = Vector2.Lerp(itemBallRect.anchoredPosition, endLoc, step);
+        itemBallRect.anchoredPosition = newPosition;
 
-        if (Vector2.Distance(ItemBall.GetComponent<RectTransform>().anchoredPosition, endLoc) <= 20f)
+        if (Vector2.Distance(itemBallRect.anchoredPosition, endLoc) <= 20f)
         {
             moving = false;
-            Heart.GetComponent<HeartScript>().UpdateColor();
-            ItemBall.SetActive(false);
+            onLootBallArrived?.Invoke(pendingRecentLootSprite);
+            pendingRecentLootSprite = null;
+            onLootBallArrived = null;
+            SetItemBallClickBlocker(false);
+            if (ItemBall != null)
+            {
+                ItemBall.SetActive(false);
+            }
         }
     }
     public void SetLocked()
     {
-        Lock.SetActive(true);
+        if (Lock != null)
+        {
+            Lock.SetActive(true);
+        }
         locked = true;
     }
     
@@ -256,7 +353,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         }
         if (pointerData.button == PointerEventData.InputButton.Left)
         {
-            if (!spectator && active)
+            if (active)
             {
                 OnItemClicked?.Invoke(this);
             }       
@@ -266,41 +363,96 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             return;
         }
     }
-    void OnTimeEnded()
+    private void OnTimeEnded()
     {
         timeEnded = true;
         active = false;
     }
-    void SetBGColor()
+
+    private void SetBGColor()
     {
-        Debug.Log("SetBGColorissa: " + ItemWeight);
+        int spriteIndex;
         switch (ItemWeight)
         {
             case <= 1.0f:
-                Bubble.sprite = Bubbles[1];
-                Aura.sprite = Auras[1];
+                spriteIndex = 1;
                 break;
             case <= 7.5f:
-                Bubble.sprite = Bubbles[0];
-                Aura.sprite = Auras[0];
+                spriteIndex = 0;
                 break;
             case <= 40.0f:
-                Bubble.sprite = Bubbles[4];
-                Aura.sprite = Auras[4];
+                spriteIndex = 4;
                 break;
             case <= 70.0f:
-                Bubble.sprite = Bubbles[3];
-                Aura.sprite = Auras[3];
+                spriteIndex = 3;
                 break;
             default:
-                Bubble.sprite = Bubbles[2];
-                Aura.sprite = Auras[2];
+                spriteIndex = 2;
                 break;
-
         }
 
-            
+        SetSpriteIfAvailable(Bubble, Bubbles, spriteIndex);
+        SetSpriteIfAvailable(Aura, Auras, spriteIndex);
+    }
 
+    private void ResolveReferences()
+    {
+        if (raid_References == null)
+        {
+            raid_References = Raid_References.Instance;
+        }
+
+        if (Heart == null && raid_References != null)
+        {
+            Heart = raid_References.Heart;
+        }
+
+        if (Heart == null)
+        {
+            Heart = GameObject.FindWithTag("Heart");
+        }
+
+        target = Heart != null && Heart.TryGetComponent(out RectTransform heartRect)
+            ? heartRect
+            : null;
+
+        raidTimer = FindObjectOfType<Raid_Timer>();
+        TryGetComponent(out audioSource);
+        ResolveSoundType();
+        TryGetComponent(out layoutGroup);
+        itemBallRect = ItemBall != null && ItemBall.TryGetComponent(out RectTransform rect)
+            ? rect
+            : null;
+        itemBallClickBlocker = ItemBall != null && ItemBall.TryGetComponent(out Raid_PointerClickBlocker clickBlocker)
+            ? clickBlocker
+            : null;
+
+        SetItemBallClickBlocker(false);
+    }
+
+    private void SetItemBallClickBlocker(bool blocksClicks)
+    {
+        if (ItemBall == null)
+        {
+            return;
+        }
+
+        if (itemBallClickBlocker == null && !ItemBall.TryGetComponent(out itemBallClickBlocker))
+        {
+            itemBallClickBlocker = ItemBall.AddComponent<Raid_PointerClickBlocker>();
+        }
+
+        itemBallClickBlocker.enabled = blocksClicks;
+    }
+
+    private static void SetSpriteIfAvailable(Image image, Sprite[] sprites, int index)
+    {
+        if (image == null || sprites == null || index < 0 || index >= sprites.Length || sprites[index] == null)
+        {
+            return;
+        }
+
+        image.sprite = sprites[index];
     }
 
     private void SetItemWeightTextActive(bool isActive)
@@ -311,6 +463,54 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         }
 
         ItemWeightText.gameObject.SetActive(isActive);
-        ItemWeightText.text = ItemWeight + "kg";
+        ItemWeightText.text = $"{ItemWeight:F0} kg";
+    }
+
+    private void SetItemWeightPopUpVisible(bool visible)
+    {
+        if (ItemWeightPopUp == null)
+        {
+            return;
+        }
+
+        ItemWeightPopUp.gameObject.SetActive(visible);
+        if (visible)
+        {
+            ItemWeightPopUp.text = $"+{ItemWeight}kg";
+        }
+    }
+
+    private void PlayClip(AudioClip clip)
+    {
+        if (audioSource == null || clip == null || SettingsCarrier.Instance == null || !hasSoundType)
+        {
+            return;
+        }
+
+        audioSource.PlayOneShot(clip, SettingsCarrier.Instance.SentVolume(soundType));
+    }
+
+    private void ResolveSoundType()
+    {
+        if (hasSoundType)
+        {
+            return;
+        }
+
+        Component volumeComponent = GetComponent("SetVolume");
+        if (volumeComponent == null)
+        {
+            return;
+        }
+
+        System.Reflection.FieldInfo soundTypeField = volumeComponent.GetType().GetField(
+            "_soundType",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+
+        if (soundTypeField?.GetValue(volumeComponent) is SettingsCarrier.SoundType resolvedSoundType)
+        {
+            soundType = resolvedSoundType;
+            hasSoundType = true;
+        }
     }
 }

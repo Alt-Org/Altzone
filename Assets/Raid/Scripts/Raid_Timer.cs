@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.Language;
 using UnityEngine;
 using TMPro;
@@ -8,8 +6,13 @@ using UnityEngine.UI;
 
 public class Raid_Timer : MonoBehaviour
 {
+    private static readonly Vector2 LossHaloPadding = new Vector2(200f, 200f);
+    private static readonly Vector2 LossHaloOffset = Vector2.zero;
+    private static readonly Vector2 TimerTextHaloMinimumSize = new Vector2(260f, 220f);
+
     [SerializeField, Header("Raid Inventory ref")]
     private Raid_References raid_References;
+    [SerializeField] private Raid_EventLog eventLog;
 
     [Header("Timer texts")]
     public TextMeshProUGUI TimerText;
@@ -24,6 +27,10 @@ public class Raid_Timer : MonoBehaviour
     [Header("Start Timer settings")]
     public float TimeUntilStart;
     private bool startTextShown;
+    private float initialCurrentTime;
+    private float initialTimeUntilStart;
+    private int lastLoggedStartCountdownSecond = int.MaxValue;
+    private bool gameStartLogged;
 
     [Header("Limit settings")]
     public bool HasLimit;
@@ -32,9 +39,9 @@ public class Raid_Timer : MonoBehaviour
     [Header("Format settings")]
     public bool HasFormat;
     public TimerFormat Format;
-    private Dictionary<TimerFormat, string> TimeFormat = new Dictionary<TimerFormat, string>();
 
     public event Action TimeEnded;
+    public event Action TimerStarted;
     public ExitRaid exitRaid;
 
     private Color startColor = Color.white;
@@ -42,11 +49,23 @@ public class Raid_Timer : MonoBehaviour
     [SerializeField]
     private float duration;
 
-    void Start()
+    [Header("Timer fill")]
+    [SerializeField] private Raid_TimerFillCircle timerFillCircle;
+    [SerializeField] private CanvasGroup exitRaidButtonCanvasGroup;
+
+    private float timerStartTime;
+    private GameObject timerPanel;
+    private GameObject timerPanelBackground;
+    private Button exitRaidButton;
+    private Raid_TextHalo timerTextHalo;
+
+    public bool HasStarted => started;
+
+    private void Start()
     {
-        TimeFormat.Add(TimerFormat.Whole, "0");
-        TimeFormat.Add(TimerFormat.TenthDecimal, "0.0");
-        TimeFormat.Add(TimerFormat.HundrethsDecimal, "0.00");
+        initialCurrentTime = CurrentTime;
+        initialTimeUntilStart = TimeUntilStart;
+        ResolveEventLog();
 
         if (exitRaid == null)
         {
@@ -59,14 +78,40 @@ public class Raid_Timer : MonoBehaviour
         }
 
         SetStartTimerVisualState(false);
+        timerStartTime = CurrentTime;
+        EnsureTimerFillCircle();
+        SetRaidControlsVisible(false);
+        UpdateTimerFill();
     }
 
-    void Update()
+    private void OnDestroy()
     {
+        if (exitRaid != null)
+        {
+            exitRaid.ExitedRaid -= RaidExited;
+        }
+
+        timerTextHalo?.Dispose();
+    }
+
+    private void Update()
+    {
+        if (RaidMatchmakingController.Instance != null
+            && RaidMatchmakingController.Instance.ControlsInventorySetup
+            && !RaidMatchmakingController.Instance.HasReleasedGameplay)
+        {
+            SetRaidControlsVisible(false);
+            SetTimerText();
+            SetTimerFillProgress(0f);
+            return;
+        }
+
+        SetRaidControlsVisible(started || startTextShown);
+
         if (timerActive)
         {
             CurrentTime = CountUp ? CurrentTime += Time.deltaTime : CurrentTime -= Time.deltaTime;
-            if (CurrentTime <= 5)
+            if (CurrentTime <= 5f && TimerText != null)
             {
                 float t = Mathf.PingPong(Time.time / duration, 1f);
                 Color lerped = Color.Lerp(startColor, endColor, t);
@@ -76,6 +121,7 @@ public class Raid_Timer : MonoBehaviour
             if (HasLimit && ((CountUp && CurrentTime >= TimerLimit) || (!CountUp && CurrentTime <= TimerLimit)))
             {
                 OnTimeEnd();
+                Raid_LiveInventory.Instance?.HideLiveInventory();
                 if (exitRaid == null)
                 {
                     exitRaid = ExitRaid.Instance;
@@ -91,7 +137,11 @@ public class Raid_Timer : MonoBehaviour
                 }
                 CurrentTime = TimerLimit;
                 SetTimerText();
-                TimerText.color = Color.red;
+                UpdateTimerFill();
+                if (TimerText != null)
+                {
+                    TimerText.color = Color.red;
+                }
                 enabled = false;
             }
         }
@@ -110,27 +160,76 @@ public class Raid_Timer : MonoBehaviour
                 }
                 else
                 {
-                    StartTimerText.text = Mathf.CeilToInt(TimeUntilStart).ToString();
+                    if (StartTimerText != null)
+                    {
+                        int countdownSecond = Mathf.CeilToInt(TimeUntilStart);
+                        StartTimerText.text = countdownSecond.ToString();
+                        LogStartCountdownSecond(countdownSecond);
+                    }
                 }
             }
         }
         
         SetTimerText();
+        UpdateTimerFill();
     }
     public void StartTimer()
     {
-        StartTimerText.gameObject.transform.parent.gameObject.SetActive(false);
+        if (StartTimerText != null && StartTimerText.transform.parent != null)
+        {
+            StartTimerText.gameObject.transform.parent.gameObject.SetActive(false);
+        }
+
         if (!timerActive && !started)
         {
+            timerStartTime = CurrentTime;
             timerActive = true;
             started = true;
+            SetRaidControlsVisible(true);
+            UpdateTimerFill();
+            LogGameStart();
+            TimerStarted?.Invoke();
         }
             
+    }
+
+    public void ResetStartCountdown()
+    {
+        timerActive = false;
+        started = false;
+        startTextShown = false;
+        CurrentTime = initialCurrentTime;
+        TimeUntilStart = initialTimeUntilStart;
+        lastLoggedStartCountdownSecond = int.MaxValue;
+        gameStartLogged = false;
+        timerStartTime = CurrentTime;
+
+        if (StartTimerText != null && StartTimerText.transform.parent != null)
+        {
+            StartTimerText.transform.parent.gameObject.SetActive(true);
+            SetStartTimerVisualState(false);
+            StartTimerText.text = Mathf.CeilToInt(TimeUntilStart).ToString();
+        }
+
+        if (TimerText != null)
+        {
+            TimerText.color = startColor;
+        }
+
+        SetTimerText();
+        SetTimerTextHaloVisible(false);
+        SetRaidControlsVisible(false);
+        UpdateTimerFill();
     }
 
     private void ShowStartText()
     {
         if (startTextShown)
+        {
+            return;
+        }
+
+        if (StartTimerText == null)
         {
             return;
         }
@@ -147,6 +246,31 @@ public class Raid_Timer : MonoBehaviour
 
         SetStartTimerVisualState(true);
         startTextShown = true;
+        SetRaidControlsVisible(true);
+    }
+
+    private void LogStartCountdownSecond(int countdownSecond)
+    {
+        if (countdownSecond < 1 || countdownSecond > 3 || countdownSecond == lastLoggedStartCountdownSecond)
+        {
+            return;
+        }
+
+        lastLoggedStartCountdownSecond = countdownSecond;
+        ResolveEventLog();
+        eventLog?.LogSystemMessage($"Peli alkaa {countdownSecond}", $"Game starts {countdownSecond}");
+    }
+
+    private void LogGameStart()
+    {
+        if (gameStartLogged)
+        {
+            return;
+        }
+
+        gameStartLogged = true;
+        ResolveEventLog();
+        eventLog?.LogSystemMessage("Kokoaminen aloitettu", "Gathering started");
     }
 
     private void SetStartTimerVisualState(bool showStartText)
@@ -175,25 +299,214 @@ public class Raid_Timer : MonoBehaviour
         }
     }
 
+    private void SetRaidControlsVisible(bool visible)
+    {
+        ResolveRaidControlReferences();
+
+        if (timerPanel != null && timerPanel.activeSelf != visible)
+        {
+            timerPanel.SetActive(visible);
+        }
+
+        if (timerPanelBackground != null && timerPanelBackground.activeSelf != visible)
+        {
+            timerPanelBackground.SetActive(visible);
+        }
+
+        if (exitRaidButtonCanvasGroup != null)
+        {
+            exitRaidButtonCanvasGroup.alpha = visible ? 1f : 0f;
+            exitRaidButtonCanvasGroup.interactable = visible;
+            exitRaidButtonCanvasGroup.blocksRaycasts = visible;
+        }
+
+        if (exitRaidButton != null)
+        {
+            exitRaidButton.interactable = visible;
+        }
+    }
+
+    private void ResolveRaidControlReferences()
+    {
+        if (timerPanel == null && TimerText != null && TimerText.transform.parent != null)
+        {
+            timerPanel = TimerText.transform.parent.gameObject;
+        }
+
+        if (timerPanelBackground == null && timerPanel != null)
+        {
+            Transform background = timerPanel.transform.Find("background");
+            if (background == null && timerPanel.transform.parent != null)
+            {
+                background = timerPanel.transform.parent.Find("background");
+            }
+
+            if (background != null)
+            {
+                timerPanelBackground = background.gameObject;
+            }
+        }
+
+        if (exitRaid == null)
+        {
+            exitRaid = ExitRaid.Instance;
+        }
+
+        if (exitRaid == null)
+        {
+            return;
+        }
+
+        if (exitRaidButton == null)
+        {
+            exitRaidButton = exitRaid.GetComponent<Button>();
+        }
+    }
+
     public void FinishRaid()
     {
         timerActive = false;
+        UpdateTimerFill();
+    }
 
+    public void SetLossHaloVisible(bool visible)
+    {
+        ResolveRaidControlReferences();
+
+        GameObject haloTarget = timerPanel != null ? timerPanel : TimerText != null ? TimerText.transform.parent?.gameObject : null;
+        Raid_RedHalo.SetVisible(haloTarget, visible, LossHaloPadding, LossHaloOffset);
+        SetTimerTextHaloVisible(visible);
     }
 
     private void SetTimerText()
     {
-        //TimerText.text = HasFormat ? CurrentTime.ToString(TimeFormat[Format]) : CurrentTime.ToString();
-        TimerText.text = CurrentTime.ToString("F0");
+        if (TimerText == null)
+        {
+            return;
+        }
+
+        TimerText.text = CurrentTime.ToString(GetTimeFormat());
+        timerTextHalo?.Sync();
     }
-    void OnTimeEnd()
+
+    private string GetTimeFormat()
+    {
+        if (!HasFormat)
+        {
+            return "F0";
+        }
+
+        return Format switch
+        {
+            TimerFormat.TenthDecimal => "F1",
+            TimerFormat.HundrethsDecimal => "F2",
+            _ => "F0"
+        };
+    }
+
+    private void SetTimerTextHaloVisible(bool visible)
+    {
+        if (TimerText == null)
+        {
+            return;
+        }
+
+        if (timerTextHalo == null)
+        {
+            if (!visible)
+            {
+                return;
+            }
+
+            Raid_TextHalo.Settings settings = Raid_TextHalo.CreateDefaultSettings(
+                TimerTextHaloMinimumSize,
+                "TimerText_RedCloudHalo");
+            timerTextHalo = new Raid_TextHalo(TimerText, settings);
+        }
+
+        timerTextHalo.SetTarget(TimerText);
+        timerTextHalo.SetVisible(visible);
+    }
+
+    private void EnsureTimerFillCircle()
+    {
+        if (timerFillCircle == null && TimerText != null)
+        {
+            timerFillCircle = TimerText.GetComponentInParent<Raid_TimerFillCircle>(true);
+            if (timerFillCircle == null && TimerText.transform.parent != null)
+            {
+                timerFillCircle = TimerText.transform.parent.GetComponentInChildren<Raid_TimerFillCircle>(true);
+            }
+        }
+
+        if (timerFillCircle == null)
+        {
+            return;
+        }
+
+        timerFillCircle.raycastTarget = false;
+    }
+
+    private void UpdateTimerFill()
+    {
+        SetTimerFillProgress(CalculateTimerFillProgress());
+    }
+
+    private void SetTimerFillProgress(float progress)
+    {
+        if (timerFillCircle == null)
+        {
+            EnsureTimerFillCircle();
+        }
+
+        if (timerFillCircle != null)
+        {
+            timerFillCircle.Progress = progress;
+        }
+    }
+
+    private float CalculateTimerFillProgress()
+    {
+        if (!started)
+        {
+            return 1f;
+        }
+
+        if (Mathf.Approximately(timerStartTime, TimerLimit))
+        {
+            return Mathf.Approximately(CurrentTime, TimerLimit) ? 0f : 1f;
+        }
+
+        return 1f - Mathf.InverseLerp(timerStartTime, TimerLimit, CurrentTime);
+    }
+
+    private void OnTimeEnd()
     {
         TimeEnded?.Invoke();
     }
 
-    void RaidExited()
+    private void RaidExited()
     {
         CurrentTime = 0;
+        UpdateTimerFill();
+    }
+
+    private void ResolveEventLog()
+    {
+        if (eventLog != null)
+        {
+            return;
+        }
+
+        if (raid_References == null)
+        {
+            raid_References = Raid_References.Instance;
+        }
+
+        if (raid_References != null)
+        {
+            eventLog = raid_References.EventLog;
+        }
     }
 
     public enum TimerFormat
