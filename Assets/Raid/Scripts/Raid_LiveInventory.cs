@@ -27,6 +27,7 @@ public class Raid_LiveInventory : MonoBehaviour
     private LiveRaidControlOverlayState liveTimerPanelOverlayState;
     private LiveRaidControlOverlayState liveExitRaidButtonOverlayState;
     private readonly List<Raid_InventoryItem> collectedLootItems = new();
+    private bool collectedLootLayoutConfigured;
 
     public static Raid_LiveInventory Instance { get; private set; }
 
@@ -142,15 +143,7 @@ public class Raid_LiveInventory : MonoBehaviour
         lootItem.SetShowItemWeightText(true);
         lootItem.gameObject.SetActive(true);
 
-        Button removeButton = FindRemoveButton(lootItem.transform);
-        if (removeButton == null)
-        {
-            return true;
-        }
-
-        removeButton.gameObject.SetActive(true);
-        removeButton.onClick.RemoveAllListeners();
-        removeButton.onClick.AddListener(() => RemoveLiveInventoryItem(lootIndex));
+        SetRemoveButton(lootItem, true, lootIndex);
         return true;
     }
 
@@ -163,6 +156,7 @@ public class Raid_LiveInventory : MonoBehaviour
 
         Raid_InventoryItem lootItem = Instantiate(collectedLootItemPrefab, content);
         lootItem.name = "CollectedLootItem";
+        ConfigureRemoveButton(lootItem);
         collectedLootItems.Add(lootItem);
         return lootItem;
     }
@@ -173,6 +167,7 @@ public class Raid_LiveInventory : MonoBehaviour
         {
             if (collectedLootItems[i] != null)
             {
+                SetRemoveButton(collectedLootItems[i], false, -1);
                 collectedLootItems[i].gameObject.SetActive(false);
             }
         }
@@ -180,7 +175,7 @@ public class Raid_LiveInventory : MonoBehaviour
 
     private void RemoveLiveInventoryItem(int lootIndex)
     {
-        if (lootTracking == null)
+        if (lootTracking == null || lootIndex < 0)
         {
             return;
         }
@@ -257,7 +252,7 @@ public class Raid_LiveInventory : MonoBehaviour
 
     private void ConfigureCollectedLootLayout()
     {
-        if (content == null)
+        if (collectedLootLayoutConfigured || content == null)
         {
             return;
         }
@@ -274,6 +269,7 @@ public class Raid_LiveInventory : MonoBehaviour
         gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         gridLayoutGroup.constraintCount = collectedLootColumnCount;
         gridLayoutGroup.childAlignment = TextAnchor.UpperCenter;
+        collectedLootLayoutConfigured = true;
     }
 
     private void BringLiveRaidControlsToFront()
@@ -438,6 +434,44 @@ public class Raid_LiveInventory : MonoBehaviour
         }
     }
 
+    private void ConfigureRemoveButton(Raid_InventoryItem lootItem)
+    {
+        if (lootItem == null)
+        {
+            return;
+        }
+
+        Button removeButton = FindRemoveButton(lootItem.transform);
+        if (removeButton == null)
+        {
+            return;
+        }
+
+        LiveInventoryRemoveButton removeHandler = removeButton.GetComponent<LiveInventoryRemoveButton>();
+        if (removeHandler == null)
+        {
+            removeHandler = removeButton.gameObject.AddComponent<LiveInventoryRemoveButton>();
+        }
+
+        removeHandler.Initialize(this, removeButton);
+    }
+
+    private static void SetRemoveButton(Raid_InventoryItem lootItem, bool visible, int lootIndex)
+    {
+        Button removeButton = FindRemoveButton(lootItem != null ? lootItem.transform : null);
+        if (removeButton == null)
+        {
+            return;
+        }
+
+        removeButton.gameObject.SetActive(visible);
+        LiveInventoryRemoveButton removeHandler = removeButton.GetComponent<LiveInventoryRemoveButton>();
+        if (removeHandler != null)
+        {
+            removeHandler.SetLootIndex(lootIndex);
+        }
+    }
+
     private static Button FindRemoveButton(Transform parent)
     {
         Transform existing = parent != null ? parent.Find("RemoveCollectedLootButton") : null;
@@ -469,5 +503,50 @@ public class Raid_LiveInventory : MonoBehaviour
         }
 
         return null;
+    }
+
+    private sealed class LiveInventoryRemoveButton : MonoBehaviour
+    {
+        private Raid_LiveInventory owner;
+        private Button button;
+        private int lootIndex = -1;
+
+        public void Initialize(Raid_LiveInventory owner, Button button)
+        {
+            this.owner = owner;
+            if (this.button == button)
+            {
+                return;
+            }
+
+            if (this.button != null)
+            {
+                this.button.onClick.RemoveListener(OnClick);
+            }
+
+            this.button = button;
+            if (this.button != null)
+            {
+                this.button.onClick.AddListener(OnClick);
+            }
+        }
+
+        public void SetLootIndex(int lootIndex)
+        {
+            this.lootIndex = lootIndex;
+        }
+
+        private void OnDestroy()
+        {
+            if (button != null)
+            {
+                button.onClick.RemoveListener(OnClick);
+            }
+        }
+
+        private void OnClick()
+        {
+            owner?.RemoveLiveInventoryItem(lootIndex);
+        }
     }
 }

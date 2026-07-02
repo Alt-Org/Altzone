@@ -39,6 +39,7 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField] BombData[] Bombs;
 
     List<Raid_InventoryItem> ListOfUIItems = new List<Raid_InventoryItem>();
+    private readonly Dictionary<Raid_InventoryItem, int> itemIndices = new Dictionary<Raid_InventoryItem, int>();
 
     List<GameFurniture> ListOfFurniture = new List<GameFurniture>();
     private bool inventoryFrozen;
@@ -84,6 +85,7 @@ public class Raid_InventoryPage : MonoBehaviour
             UIItem.ConfigureSharedReferences(raid_References, Heart, raid_Timer);
             UIItem.SetTrapIndicatorVisible(showTrapIndicators);
             ListOfUIItems.Add(UIItem);
+            itemIndices[UIItem] = i;
             UIItem.OnItemClicked += HandleItemLooting;
         }
 
@@ -122,7 +124,11 @@ public class Raid_InventoryPage : MonoBehaviour
             return;
         }
 
-        int index = ListOfUIItems.IndexOf(inventoryItem);
+        if (!itemIndices.TryGetValue(inventoryItem, out int index))
+        {
+            return;
+        }
+
         if (RaidMatchmakingController.Instance != null && RaidMatchmakingController.Instance.ControlsInventorySetup)
         {
             if (!CanLoot(index, out _))
@@ -260,9 +266,11 @@ public class Raid_InventoryPage : MonoBehaviour
 
     private void RandomizeInventoryContent(int inventorySize, IInventoryRandom random, bool updateInventoryHandlerAmounts)
     {
-        List<GameFurniture> smallItemList = WeightQuery(ListOfFurniture, 0f, 50f);
-        List<GameFurniture> mediumItemList = WeightQuery(ListOfFurniture, 50f, 80f);
-        List<GameFurniture> largeItemList = WeightQuery(ListOfFurniture, 80.1f, 999f);
+        CategorizeFurnitureByWeight(
+            ListOfFurniture,
+            out List<GameFurniture> smallItemList,
+            out List<GameFurniture> mediumItemList,
+            out List<GameFurniture> largeItemList);
 
         if (smallItemList.Count == 0 && mediumItemList.Count == 0 && largeItemList.Count == 0)
         {
@@ -589,6 +597,7 @@ public class Raid_InventoryPage : MonoBehaviour
         }
 
         ListOfUIItems.Clear();
+        itemIndices.Clear();
     }
 
     private bool CanLoot(int index, out Raid_InventoryItem item, bool ignoreFreeze = false)
@@ -681,6 +690,46 @@ public class Raid_InventoryPage : MonoBehaviour
         {
             int swapIndex = Random.Range(0, i + 1);
             (values[i], values[swapIndex]) = (values[swapIndex], values[i]);
+        }
+    }
+
+    private static void CategorizeFurnitureByWeight(
+        List<GameFurniture> furnitureList,
+        out List<GameFurniture> smallItems,
+        out List<GameFurniture> mediumItems,
+        out List<GameFurniture> largeItems)
+    {
+        smallItems = new List<GameFurniture>();
+        mediumItems = new List<GameFurniture>();
+        largeItems = new List<GameFurniture>();
+
+        if (furnitureList == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < furnitureList.Count; i++)
+        {
+            GameFurniture furniture = furnitureList[i];
+            if (furniture == null)
+            {
+                continue;
+            }
+
+            if (furniture.Weight >= 0f && furniture.Weight <= 50f)
+            {
+                smallItems.Add(furniture);
+            }
+
+            if (furniture.Weight >= 50f && furniture.Weight <= 80f)
+            {
+                mediumItems.Add(furniture);
+            }
+
+            if (furniture.Weight >= 80.1f && furniture.Weight <= 999f)
+            {
+                largeItems.Add(furniture);
+            }
         }
     }
 }

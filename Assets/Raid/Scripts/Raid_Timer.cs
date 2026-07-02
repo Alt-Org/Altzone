@@ -60,6 +60,9 @@ public class Raid_Timer : MonoBehaviour
     private Raid_TextHalo timerTextHalo;
     private bool raidControlsVisibilityInitialized;
     private bool raidControlsVisible;
+    private int lastDisplayedTimerValue = int.MinValue;
+    private TimerFormat lastTimerFormat;
+    private bool lastHasFormat;
 
     public bool HasStarted => started;
 
@@ -392,8 +395,33 @@ public class Raid_Timer : MonoBehaviour
             return;
         }
 
+        int displayValue = GetDisplayTimerValue();
+        if (displayValue == lastDisplayedTimerValue && HasFormat == lastHasFormat && Format == lastTimerFormat)
+        {
+            return;
+        }
+
+        lastDisplayedTimerValue = displayValue;
+        lastHasFormat = HasFormat;
+        lastTimerFormat = Format;
+
         TimerText.text = CurrentTime.ToString(GetTimeFormat());
         timerTextHalo?.Sync();
+    }
+
+    private int GetDisplayTimerValue()
+    {
+        if (!HasFormat)
+        {
+            return Mathf.RoundToInt(CurrentTime);
+        }
+
+        return Format switch
+        {
+            TimerFormat.TenthDecimal => Mathf.RoundToInt(CurrentTime * 10f),
+            TimerFormat.HundrethsDecimal => Mathf.RoundToInt(CurrentTime * 100f),
+            _ => Mathf.RoundToInt(CurrentTime)
+        };
     }
 
     private string GetTimeFormat()

@@ -104,21 +104,10 @@ public class Raid_EventLog : MonoBehaviour
             return;
         }
 
-        entryTemplate.SetActive(false);
-        GameObject entry = Instantiate(entryTemplate, contentRoot);
-        entry.name = "EventLogEntry";
+        GameObject entry = GetReusableEntry();
         ConfigureEntry(entry, actorName, message, color, characterId, avatarData, useSystemIcon);
         entry.SetActive(true);
         entries.Enqueue(entry);
-
-        while (entries.Count > maxEntries)
-        {
-            GameObject removedEntry = entries.Dequeue();
-            if (removedEntry != null)
-            {
-                Destroy(removedEntry);
-            }
-        }
 
         if (scrollRoutine != null)
         {
@@ -126,6 +115,28 @@ public class Raid_EventLog : MonoBehaviour
         }
 
         scrollRoutine = StartCoroutine(ScrollToBottomNextFrame());
+    }
+
+    private GameObject GetReusableEntry()
+    {
+        entryTemplate.SetActive(false);
+
+        while (entries.Count >= maxEntries)
+        {
+            GameObject reusableEntry = entries.Dequeue();
+            if (reusableEntry == null)
+            {
+                continue;
+            }
+
+            reusableEntry.transform.SetParent(contentRoot, false);
+            reusableEntry.transform.SetAsLastSibling();
+            return reusableEntry;
+        }
+
+        GameObject entry = Instantiate(entryTemplate, contentRoot);
+        entry.name = "EventLogEntry";
+        return entry;
     }
 
     private void ConfigureEntry(GameObject entry, string actorName, string message, Color color, CharacterID characterId, AvatarData avatarData, bool useSystemIcon)
