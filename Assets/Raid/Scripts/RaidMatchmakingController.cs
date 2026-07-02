@@ -68,6 +68,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private bool _callbacksRegistered;
     private bool _matchmakingSearchVisualsEnabled;
     private bool _debugInventoryMode;
+    private bool _lobbyCountdownActive;
     private bool _showFiveMatchmakingDots = true;
     private float _nextMatchmakingDotToggleTime;
     private Coroutine _debugStartCoroutine;
@@ -112,32 +113,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         UpdateMatchmakingDots();
 
-        if (!IsCurrentRoomRaid())
+        if (_lobbyCountdownActive)
         {
-            return;
-        }
-
-        Room room = PhotonRealtimeClient.CurrentRoom;
-        int state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
-
-        if (state == RaidPhotonRoom.StateMatchmaking)
-        {
-            UpdateMatchmakingStatus();
-            return;
-        }
-
-        if (state == RaidPhotonRoom.StateLobby)
-        {
-            ConfigureRaidFromRoomIfReady();
-            ShowLobby();
             UpdateLobbyCountdown();
-            return;
-        }
-
-        if (state == RaidPhotonRoom.StateStarted)
-        {
-            ConfigureRaidFromRoomIfReady();
-            BeginGameplay();
         }
     }
 
@@ -482,9 +460,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         SetLocalPlayerRaidProperties();
-        ConfigureRaidFromRoomIfReady();
         RefreshParticipantList();
-        UpdateMatchmakingStatus();
+        HandleCurrentRaidRoomState();
 
         if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
         {
@@ -572,6 +549,44 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
     }
 
+    private void HandleCurrentRaidRoomState()
+    {
+        if (!IsCurrentRoomRaid())
+        {
+            _lobbyCountdownActive = false;
+            return;
+        }
+
+        Room room = PhotonRealtimeClient.CurrentRoom;
+        int state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
+
+        if (state == RaidPhotonRoom.StateMatchmaking)
+        {
+            _lobbyCountdownActive = false;
+            UpdateMatchmakingStatus();
+            return;
+        }
+
+        if (state == RaidPhotonRoom.StateLobby)
+        {
+            ConfigureRaidFromRoomIfReady();
+            ShowLobby();
+            _lobbyCountdownActive = true;
+            UpdateLobbyCountdown();
+            return;
+        }
+
+        if (state == RaidPhotonRoom.StateStarted)
+        {
+            _lobbyCountdownActive = false;
+            ConfigureRaidFromRoomIfReady();
+            BeginGameplay();
+            return;
+        }
+
+        _lobbyCountdownActive = false;
+    }
+
     private void StartLobbyCountdown(List<Player> validPlayers, RaidPhotonRoom.ClanEntry[] clanEntries)
     {
         Room room = PhotonRealtimeClient.CurrentRoom;
@@ -641,7 +656,20 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void UpdateLobbyCountdown()
     {
+        if (!IsCurrentRoomRaid())
+        {
+            _lobbyCountdownActive = false;
+            return;
+        }
+
         Room room = PhotonRealtimeClient.CurrentRoom;
+        int state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
+        if (state != RaidPhotonRoom.StateLobby)
+        {
+            _lobbyCountdownActive = false;
+            return;
+        }
+
         string startTimeValue = GetRoomProperty(room, RaidPhotonRoom.RaidStartTimeKey, string.Empty);
         if (!long.TryParse(startTimeValue, out long startTimeMs))
         {
@@ -1562,6 +1590,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         _inventoryInitialized = false;
         _gameplayReleased = false;
         _sharedRaidActive = false;
+        _lobbyCountdownActive = false;
         _lootedSlots.Clear();
 
         if (_surrendering)
@@ -1580,7 +1609,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     public void OnPlayerEnteredRoom(Player newPlayer)
     {
+        if (!IsCurrentRoomRaid())
+        {
+            return;
+        }
+
         RefreshParticipantList();
+        HandleCurrentRaidRoomState();
         if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
         {
             RefreshMasterRoomState();
@@ -1589,7 +1624,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     public void OnPlayerLeftRoom(Player otherPlayer)
     {
+        if (!IsCurrentRoomRaid())
+        {
+            return;
+        }
+
         RefreshParticipantList();
+        HandleCurrentRaidRoomState();
         if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
         {
             RefreshMasterRoomState();
@@ -1598,13 +1639,39 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged)
     {
-        ConfigureRaidFromRoomIfReady();
-        RefreshParticipantList();
+        if (!IsCurrentRoomRaid())
+        {
+            return;
+        }
+
+        bool raidStateChanged = propertiesThatChanged.ContainsKey(RaidPhotonRoom.RaidStateKey);
+        bool setupChanged = propertiesThatChanged.ContainsKey(RaidPhotonRoom.RaidSetupReadyKey)
+            || propertiesThatChanged.ContainsKey(RaidPhotonRoom.RaidInventorySizeKey)
+            || propertiesThatChanged.ContainsKey(RaidPhotonRoom.RaidInventorySeedKey)
+            || propertiesThatChanged.ContainsKey(RaidPhotonRoom.RaidTrapSlotsKey);
+        bool lobbyDisplayChanged = propertiesThatChanged.ContainsKey(RaidPhotonRoom.RaidClanCountsKey)
+            || propertiesThatChanged.ContainsKey(RaidPhotonRoom.RaidStartTimeKey);
+
+        if (raidStateChanged || setupChanged || lobbyDisplayChanged)
+        {
+            HandleCurrentRaidRoomState();
+        }
+
+        if (setupChanged || lobbyDisplayChanged)
+        {
+            RefreshParticipantList();
+        }
     }
 
     public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps)
     {
+        if (!IsCurrentRoomRaid())
+        {
+            return;
+        }
+
         RefreshParticipantList();
+        HandleCurrentRaidRoomState();
         if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
         {
             RefreshMasterRoomState();
@@ -1613,6 +1680,12 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     public void OnMasterClientSwitched(Player newMasterClient)
     {
+        if (!IsCurrentRoomRaid())
+        {
+            return;
+        }
+
+        HandleCurrentRaidRoomState();
         if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
         {
             RefreshMasterRoomState();
