@@ -26,6 +26,7 @@ public class Raid_LiveInventory : MonoBehaviour
     private Transform liveExitRaidButton;
     private LiveRaidControlOverlayState liveTimerPanelOverlayState;
     private LiveRaidControlOverlayState liveExitRaidButtonOverlayState;
+    private readonly List<Raid_InventoryItem> collectedLootItems = new();
 
     public static Raid_LiveInventory Instance { get; private set; }
 
@@ -100,42 +101,81 @@ public class Raid_LiveInventory : MonoBehaviour
     private void SetCollectedLoot(IReadOnlyList<GameFurniture> lootList)
     {
         ConfigureCollectedLootLayout();
-        ClearCollectedLoot();
 
         if (content == null || lootList == null)
         {
+            HideUnusedCollectedLootItems(0);
             return;
         }
 
+        int displayedLootCount = 0;
         for (int i = 0; i < lootList.Count; i++)
         {
-            CreateCollectedLootIcon(lootList[i], i);
+            if (!TryShowCollectedLootIcon(lootList[i], i, displayedLootCount))
+            {
+                continue;
+            }
+
+            displayedLootCount++;
         }
+
+        HideUnusedCollectedLootItems(displayedLootCount);
     }
 
-    private void CreateCollectedLootIcon(GameFurniture furniture, int lootIndex)
+    private bool TryShowCollectedLootIcon(GameFurniture furniture, int lootIndex, int itemIndex)
     {
         if (collectedLootItemPrefab == null || furniture?.FurnitureInfo?.Image == null || content == null)
         {
-            return;
+            return false;
         }
 
-        Raid_InventoryItem lootItem = Instantiate(collectedLootItemPrefab, content);
-        lootItem.name = "CollectedLootItem";
+        Raid_InventoryItem lootItem = GetOrCreateCollectedLootItem(itemIndex);
+        if (lootItem == null)
+        {
+            return false;
+        }
+
+        lootItem.transform.SetSiblingIndex(itemIndex);
         lootItem.transform.localScale = collectedLootItemScale;
         lootItem.SetData(furniture);
         lootItem.SetCollectedLootDisplayLayout();
         lootItem.SetShowItemWeightText(true);
+        lootItem.gameObject.SetActive(true);
 
         Button removeButton = FindRemoveButton(lootItem.transform);
         if (removeButton == null)
         {
-            return;
+            return true;
         }
 
         removeButton.gameObject.SetActive(true);
         removeButton.onClick.RemoveAllListeners();
         removeButton.onClick.AddListener(() => RemoveLiveInventoryItem(lootIndex));
+        return true;
+    }
+
+    private Raid_InventoryItem GetOrCreateCollectedLootItem(int itemIndex)
+    {
+        if (itemIndex < collectedLootItems.Count)
+        {
+            return collectedLootItems[itemIndex];
+        }
+
+        Raid_InventoryItem lootItem = Instantiate(collectedLootItemPrefab, content);
+        lootItem.name = "CollectedLootItem";
+        collectedLootItems.Add(lootItem);
+        return lootItem;
+    }
+
+    private void HideUnusedCollectedLootItems(int firstUnusedIndex)
+    {
+        for (int i = firstUnusedIndex; i < collectedLootItems.Count; i++)
+        {
+            if (collectedLootItems[i] != null)
+            {
+                collectedLootItems[i].gameObject.SetActive(false);
+            }
+        }
     }
 
     private void RemoveLiveInventoryItem(int lootIndex)
@@ -161,19 +201,6 @@ public class Raid_LiveInventory : MonoBehaviour
         if (backButton != null)
         {
             backButton.gameObject.SetActive(true);
-        }
-    }
-
-    private void ClearCollectedLoot()
-    {
-        if (content == null)
-        {
-            return;
-        }
-
-        for (int i = content.childCount - 1; i >= 0; i--)
-        {
-            Destroy(content.GetChild(i).gameObject);
         }
     }
 
