@@ -58,6 +58,8 @@ public class Raid_Timer : MonoBehaviour
     private GameObject timerPanelBackground;
     private Button exitRaidButton;
     private Raid_TextHalo timerTextHalo;
+    private bool raidControlsVisibilityInitialized;
+    private bool raidControlsVisible;
 
     public bool HasStarted => started;
 
@@ -77,6 +79,7 @@ public class Raid_Timer : MonoBehaviour
             exitRaid.ExitedRaid += RaidExited;
         }
 
+        ResolveRaidControlReferences();
         SetStartTimerVisualState(false);
         timerStartTime = CurrentTime;
         EnsureTimerFillCircle();
@@ -301,7 +304,13 @@ public class Raid_Timer : MonoBehaviour
 
     private void SetRaidControlsVisible(bool visible)
     {
-        ResolveRaidControlReferences();
+        if (raidControlsVisibilityInitialized && raidControlsVisible == visible)
+        {
+            return;
+        }
+
+        raidControlsVisibilityInitialized = true;
+        raidControlsVisible = visible;
 
         if (timerPanel != null && timerPanel.activeSelf != visible)
         {
@@ -371,8 +380,6 @@ public class Raid_Timer : MonoBehaviour
 
     public void SetLossHaloVisible(bool visible)
     {
-        ResolveRaidControlReferences();
-
         GameObject haloTarget = timerPanel != null ? timerPanel : TimerText != null ? TimerText.transform.parent?.gameObject : null;
         Raid_RedHalo.SetVisible(haloTarget, visible, LossHaloPadding, LossHaloOffset);
         SetTimerTextHaloVisible(visible);
