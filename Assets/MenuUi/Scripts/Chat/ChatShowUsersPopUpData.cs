@@ -1,55 +1,58 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using static MessageReactionsHandler;
 using System;
 using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Player;
 using static ServerChatMessage;
 using System.Linq;
+using Altzone.Scripts.Language;
 
 public class ChatShowUsersPopUpData : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI ReactionAmounText;
+    [Header("Buttons")]
     [SerializeField] private Button[] _closeButtons;
     [SerializeField] private Button _closeAllReactionButton;
     [SerializeField] private Button _listOrderButton;
-    [SerializeField] private GameObject ShowUsersPopUp;
 
-    [Header("Scripts")]
-    public MessageReactionsHandler _messageReactionsHandler;
+    [Header("For Copied Reactions")]
+    [SerializeField] private Transform _reactionFieldLocation;
+    private GameObject _copiedReactionField;
+    [SerializeField] private Transform _popUpAllReactions;
+    [SerializeField] private ScrollRect _scrollRect;
+
     [Header("User Info")]
-
     [SerializeField] private VerticalLayoutGroup _userContent;
     [SerializeField] private GameObject _userData;
     private List<UsersReactionData> _usersReactionData = new();
     [SerializeField] private List<UserReactionInfo> _userInfo;
 
     [Header("Reactions")]
+    [SerializeField] private TextMeshProUGUI _reactionAmounText;
     [SerializeField] private List<ReactionObject> _reactionList;
     [SerializeField] private GameObject _allReactions;
-    public GameObject _selectedReaction;
+    [SerializeField] private GameObject _selectedReaction;
     [SerializeField] private GameObject _noReactions;
-    public GameObject CopiedReactionField;
-    public Transform ReactionFieldLocation;
-    public Transform PopUpAllReactions;
+
+    [Header("List Order")]
     [SerializeField] private Sprite[] _sprites;
     [SerializeField] private Image _image;
-    [SerializeField] private TextMeshProUGUI _OrderButtonText;
-    private int LineOrder = 0;
-    private int currentOrder = 1;
+    [SerializeField] private TextMeshProUGUI _orderButtonText;
 
 
-    //[SerializeField] private TextLanguageSelectorCaller _reactionAmount;
+    [SerializeField] private TextLanguageSelectorCaller _textLanguageSelectorCaller;
+
+    private string _currentMessage;
+    private int _lineOrder = 0;    //Whats the newest and the oldest reaction set
+    private int _currentOrder = 1; //What type of order we are on the list
+
     private void Start()
     {
         _closeAllReactionButton.onClick.AddListener(LayoutButton);
-        _listOrderButton.onClick.AddListener(() => currentOrder++);
-        _listOrderButton.onClick.AddListener(() => ListOrder(currentOrder));
-        reactiontext();
+        _listOrderButton.onClick.AddListener(() => {_currentOrder++; ListOrderSystem(_currentOrder);});
+        Reactiontext();
         foreach (Button button in _closeButtons)
         {
             button.onClick.AddListener(ClosePopup);
@@ -57,10 +60,8 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     }
 
     //Puts back the reactions and popup back to messageobject
-    public void ClosePopup()
+    private void ClosePopup()
     {
-
-        //---- Put the new data that been added to popup here ----
         for (int i = _userInfo.Count - 1; i >= 0; i--)
         {
             Destroy(_userInfo[i].UserDataObj);
@@ -68,30 +69,30 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         _userInfo.Clear();
 
-        Destroy(CopiedReactionField);
-        CopiedReactionField = null;
-        _messageReactionsHandler = null;
+        Destroy(_copiedReactionField);
+        _copiedReactionField = null;
+        _scrollRect.content = null;
+        _currentMessage = null;
         gameObject.SetActive(false);
-        LineOrder = 0;
-
+        _lineOrder = 0; 
+        _currentOrder = 1; 
     }
 
     void OnEnable()
     {
-        reactiontext();
+        Reactiontext();
+        ListOrderSystem(_currentOrder);
     }
 
 
     //Incane user leaves the chat
     private void OnDisable()
     {
-        
-        ListOrder(1);
         ClosePopup();
     }
 
 
-    public void reactiontext()
+    private void Reactiontext()
     {
         int activeChildren = 0;
         foreach (Transform container in _userContent.transform)
@@ -103,49 +104,51 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         }
 
-        ReactionAmounText.text = $"{activeChildren} reaktiota";
+        //Language System
+        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+        {
+            _textLanguageSelectorCaller.SetText("{} reaktiota");
+        }
+        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+        {
+            _textLanguageSelectorCaller.SetText("{} reactions");
+        }
 
-        //_reactionAmount.SetText(SettingsCarrier.Instance.Language, new string[1] { activeChildren.ToString() });
+        _reactionAmounText.text = _reactionAmounText.text.Replace("{}", $"{activeChildren}");
+
     }
 
 
 
     public void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
     {
-        LineOrder++;
-                Mood mood = (Mood)Enum.Parse(typeof(Mood), Emoji.emoji);
-
-        //halts the system if there's already a same user on the list
-        for (int i = _userInfo.Count - 1; i >= 0; i--)
+        //Checks if it's on a correct Message section
+        if (_currentMessage != null)
         {
-            if (_userInfo[i]._id != Emoji.sender_id)
-                continue;
-
-
-            if (_userInfo[i]._id == Emoji.sender_id &&  _userInfo[i]._mood != mood)
-            {
-                RemoveUserReaction(Emoji.sender_id);
-                continue;
-            }
-            else if (_userInfo[i]._id == Emoji.sender_id && _userInfo[i]._mood == mood)
-            {
-                
+            if (_currentMessage != message.Id)
                 return;
-            }
         }
+        else
+        {
+            _currentMessage = message.Id;
+        }
+
+        Mood mood = (Mood)Enum.Parse(typeof(Mood), Emoji.emoji);
+
+        _lineOrder++;
             //Gets sprite
         Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
 
         //Sets up the Data
         GameObject newUserData = Instantiate(_userData, _userContent.transform);
-        _userInfo.Add(new UserReactionInfo { _avatar = message.Avatar, _id = Emoji.sender_id, _name = Emoji.playerName, Emoji = reactionSprite, UserDataObj = newUserData, _mood = mood, _order = LineOrder});
+        _userInfo.Add(new UserReactionInfo { _avatar = message.Avatar, _id = Emoji.sender_id, _name = Emoji.playerName, Emoji = reactionSprite, UserDataObj = newUserData, _mood = mood, _order = _lineOrder});
         UsersReactionData userData = newUserData.GetComponent<UsersReactionData>();
        userData.SetReactionInfo(_userInfo[_userInfo.Count - 1]._avatar, _userInfo[_userInfo.Count - 1]._name, _userInfo[_userInfo.Count - 1]._id, _userInfo[_userInfo.Count - 1].Emoji);
         _usersReactionData.Add(userData);
-        reactiontext();
-        ListOrder(currentOrder);
+        Reactiontext();
+        ListOrderSystem(_currentOrder);
 
-        if (CopiedReactionField.transform.childCount > 0)
+        if (_copiedReactionField.transform.childCount > 0)
         {
             _noReactions.SetActive(false);
         }
@@ -153,10 +156,15 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     }
 
     //removes the userData
-    public void RemoveUserReaction(string Userid)
+    public void RemoveUserReaction(string Userid, ChatMessage message)
     {
+        //Checks if it's on a correct Message section
+        if (_currentMessage != null)
+        {
+            if (_currentMessage != message.Id)
+                return;
+        }
 
-        
         for (int i = _userInfo.Count - 1; i >= 0; i--)
             {
 
@@ -165,13 +173,15 @@ public class ChatShowUsersPopUpData : MonoBehaviour
                 _userInfo[i].UserDataObj.transform.SetParent(null);
                 Destroy(_userInfo[i].UserDataObj);
                 _userInfo.RemoveAt(i);
-                LineOrder--;
+                _lineOrder--;
                 }
 
 
             }
-                reactiontext();
-        if(CopiedReactionField.transform.childCount == 0)
+
+        Reactiontext();
+
+        if(_copiedReactionField.transform.childCount == 0)
         {
             _noReactions.SetActive(true);
         }
@@ -186,17 +196,45 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         _selectedReaction.SetActive(true);
         }
     }
-    //Sets the List in certain order
+
+    //Copies the Reaction
+    public void ReactionFieldCopyUpdate(GameObject ReactionField, MessageReactionsHandler ReactionHandler, ChatMessage message)
+    {
+
+        //Checks if it's on a correct Message section
+        if (_currentMessage != null)
+        {
+            if (_currentMessage != message.Id)
+                return;
+        }
 
 
+        Destroy(_copiedReactionField);
+
+        _copiedReactionField = Instantiate(ReactionField, _reactionFieldLocation);
+
+        _scrollRect.content = _copiedReactionField.GetComponent<RectTransform>();
+
+        //Changes the reactions object sizes
+        foreach (RectTransform child in _copiedReactionField.transform)
+        {
+            ContentSizeFitter childFitter = child.GetComponent<ContentSizeFitter>();
+            childFitter.enabled = false;
+
+            child.sizeDelta = new Vector2(150, 110);
+        }
+
+        ReactionHandler.GenarateReactionObjects(_popUpAllReactions);
+
+    }
 
 
-    void ListOrder(int order)
+    void ListOrderSystem(int order)
     {
         if (order >= 6)
         {
-            currentOrder = 1;
-            order = currentOrder;
+            _currentOrder = 1;
+            order = _currentOrder;
         }
         switch (order)
         {
@@ -204,41 +242,57 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
             //Oldest => Newest
             case 1:
-                Debug.LogWarning("FIND ME Order 1");
+                
                 _userInfo = _userInfo.OrderBy(m => m._order).ToList();
-                _OrderButtonText.text = "Old";
+
+                //Language System
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                {
+                    _orderButtonText.text = "Vanha";
+                }
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                {
+                    _orderButtonText.text =  "Old";
+                }
+
                 _image.sprite = null;
                 break;
 
             //Newest => Oldest
             case 2:
-                Debug.LogWarning("FIND ME Order 2");
                 _userInfo = _userInfo.OrderByDescending(m => m._order).ToList();
-                _OrderButtonText.text = "New";
+
+                //Language System
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                {
+                    _orderButtonText.text = "Uusi";
+                }
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                {
+                    _orderButtonText.text = "New";
+                }
+
                 _image.sprite = null;
                 break;
 
             // A => Z By Username
             case 3:
-                Debug.LogWarning("FIND ME Order 3");
                 _userInfo = _userInfo.OrderBy(m => m._name.ToLower().Trim()).ToList();
-                _OrderButtonText.text = "A-Z";
+                _orderButtonText.text = "A-Z";
                 _image.sprite = null;
                 break;
 
             // Z => A By Username
             case 4:
-                Debug.LogWarning("FIND ME Order 4");
                 _userInfo = _userInfo.OrderByDescending(m => m._name.ToLower().Trim()).ToList();
-                _OrderButtonText.text = "Z-A";
+                _orderButtonText.text = "Z-A";
                 _image.sprite = null;
                 break;
 
             //Sadness => Love by Reactions
             case 5:
-                Debug.LogWarning("FIND ME Order 5");
                 _userInfo = _userInfo.OrderBy(m => m._mood).ToList();
-                _OrderButtonText.text = "";
+                _orderButtonText.text = "";
                 if (_sprites[4] != null)
                 _image.sprite = _sprites[4];
                 break;
