@@ -95,7 +95,7 @@ public class ExitRaid : MonoBehaviour
         }
 
         raidEnded = true;
-        eventLog?.LogSystemMessage("Peli p\u00E4\u00E4ttyi", "Game ended");
+        eventLog?.LogSystemMessage(UseEnglish() ? "Game ended" : "Peli p\u00E4\u00E4ttyi");
 
         SetLossHaloVisuals(reason);
         OnEndRaid();
@@ -211,5 +211,11 @@ public class ExitRaid : MonoBehaviour
         {
             eventLog = raid_References != null ? raid_References.EventLog : null;
         }
+    }
+
+    private static bool UseEnglish()
+    {
+        return SettingsCarrier.Instance != null
+            && SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English;
     }
 }

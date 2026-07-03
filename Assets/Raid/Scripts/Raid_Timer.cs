@@ -264,7 +264,7 @@ public class Raid_Timer : MonoBehaviour
 
         lastLoggedStartCountdownSecond = countdownSecond;
         ResolveEventLog();
-        eventLog?.LogSystemMessage($"Peli alkaa {countdownSecond}", $"Game starts {countdownSecond}");
+        eventLog?.LogSystemMessage(UseEnglish() ? $"Game starts {countdownSecond}" : $"Peli alkaa {countdownSecond}");
     }
 
     private void LogGameStart()
@@ -276,7 +276,7 @@ public class Raid_Timer : MonoBehaviour
 
         gameStartLogged = true;
         ResolveEventLog();
-        eventLog?.LogSystemMessage("Kokoaminen aloitettu", "Gathering started");
+        eventLog?.LogSystemMessage(UseEnglish() ? "Gathering started" : "Kokoaminen aloitettu");
     }
 
     private void SetStartTimerVisualState(bool showStartText)
@@ -542,6 +542,12 @@ public class Raid_Timer : MonoBehaviour
         {
             eventLog = raid_References.EventLog;
         }
+    }
+
+    private static bool UseEnglish()
+    {
+        return SettingsCarrier.Instance != null
+            && SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English;
     }
 
     public enum TimerFormat

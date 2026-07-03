@@ -35,14 +35,6 @@ public class Raid_EventLog : MonoBehaviour
     private Coroutine scrollRoutine;
     private bool warnedMissingReferences;
 
-    private void Awake()
-    {
-        if (entryTemplate != null)
-        {
-            entryTemplate.SetActive(false);
-        }
-    }
-
     public void Clear()
     {
         foreach (GameObject entry in entries)
@@ -54,10 +46,6 @@ public class Raid_EventLog : MonoBehaviour
         }
 
         entries.Clear();
-        if (entryTemplate != null)
-        {
-            entryTemplate.SetActive(false);
-        }
     }
 
     public void LogLootTaken(string playerName, GameFurniture furniture, float lootWeightMultiplier = 1f, CharacterID characterId = CharacterID.None, AvatarData avatarData = null)
@@ -84,20 +72,12 @@ public class Raid_EventLog : MonoBehaviour
         AddEntry(actorName, message, trapEntryColor, characterId, avatarData);
     }
 
-    public void LogSystemMessage(string finnishMessage, string englishMessage = null)
+    public void LogSystemMessage(string message)
     {
-        string message = UseEnglish() && !string.IsNullOrWhiteSpace(englishMessage)
-            ? englishMessage
-            : finnishMessage;
         AddEntry("System", message, normalEntryColor, CharacterID.None, null, true);
     }
 
-    private void AddEntry(string actorName, string message, Color color, CharacterID characterId, AvatarData avatarData)
-    {
-        AddEntry(actorName, message, color, characterId, avatarData, false);
-    }
-
-    private void AddEntry(string actorName, string message, Color color, CharacterID characterId, AvatarData avatarData, bool useSystemIcon)
+    private void AddEntry(string actorName, string message, Color color, CharacterID characterId, AvatarData avatarData, bool useSystemIcon = false)
     {
         if (!HasRequiredReferences())
         {
@@ -119,8 +99,6 @@ public class Raid_EventLog : MonoBehaviour
 
     private GameObject GetReusableEntry()
     {
-        entryTemplate.SetActive(false);
-
         while (entries.Count >= maxEntries)
         {
             GameObject reusableEntry = entries.Dequeue();
