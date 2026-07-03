@@ -14,6 +14,7 @@ public class Raid_References : MonoBehaviour
     [SerializeField] private Raid_EndMenu endMenuController;
     [SerializeField] private Raid_LiveInventory liveInventory;
     [SerializeField] private Raid_EventLog eventLog;
+    [SerializeField] private Raid_Timer raidTimer;
 
     public static Raid_References Instance { get; private set; }
 
@@ -59,6 +60,15 @@ public class Raid_References : MonoBehaviour
         {
             ResolveEventLog();
             return eventLog;
+        }
+    }
+
+    public Raid_Timer RaidTimer
+    {
+        get
+        {
+            ResolveRaidTimer();
+            return raidTimer;
         }
     }
 
@@ -136,6 +146,7 @@ public class Raid_References : MonoBehaviour
         ResolveLootTracking();
         ResolveEndMenuController();
         ResolveEventLog();
+        ResolveRaidTimer();
     }
 
     private void ResolveInventoryHandler()
@@ -210,6 +221,16 @@ public class Raid_References : MonoBehaviour
         {
             eventLog = FindObjectOfType<Raid_EventLog>(true);
         }
+    }
+
+    private void ResolveRaidTimer()
+    {
+        if (raidTimer != null)
+        {
+            return;
+        }
+
+        raidTimer = FindObjectOfType<Raid_Timer>();
     }
 
     private void RegisterInstance()

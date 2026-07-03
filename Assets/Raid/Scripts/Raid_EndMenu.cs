@@ -207,7 +207,6 @@ public class Raid_EndMenu : MonoBehaviour
             lootItem.transform.localScale = collectedLootItemScale;
             lootItem.SetData(furniture);
             lootItem.SetLossHaloVisible(collectedLootLossHaloVisible);
-            lootItem.SetCollectedLootDisplayLayout();
             lootItem.SetShowItemWeightText(true);
             return;
         }

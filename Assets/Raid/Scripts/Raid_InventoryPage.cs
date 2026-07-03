@@ -539,7 +539,9 @@ public class Raid_InventoryPage : MonoBehaviour
 
         if (raid_Timer == null)
         {
-            raid_Timer = FindObjectOfType<Raid_Timer>();
+            raid_Timer = raid_References != null
+                ? raid_References.RaidTimer
+                : null;
         }
 
         if (Heart == null && raid_References != null)

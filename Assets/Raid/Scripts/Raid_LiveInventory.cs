@@ -139,7 +139,6 @@ public class Raid_LiveInventory : MonoBehaviour
         lootItem.transform.SetSiblingIndex(itemIndex);
         lootItem.transform.localScale = collectedLootItemScale;
         lootItem.SetData(furniture);
-        lootItem.SetCollectedLootDisplayLayout();
         lootItem.SetShowItemWeightText(true);
         lootItem.gameObject.SetActive(true);
 

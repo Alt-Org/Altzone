@@ -10,13 +10,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {
     private static readonly Vector2 LossHaloPadding = new Vector2(70f, 70f);
     private static readonly Vector2 LossHaloOffset = Vector2.zero;
-    private const int CollectedLootLayoutPaddingLeft = 25;
-    private const int CollectedLootLayoutPaddingRight = 25;
-    private const int CollectedLootLayoutPaddingTop = 15;
-    private const int CollectedLootLayoutPaddingBottom = 125;
-    private static readonly Vector2 CollectedLootWeightTextPosition = new Vector2(0f, -500f);
-    private static readonly Vector2 CollectedLootWeightTextSize = new Vector2(350f, 185f);
-
     [SerializeField] private Image ItemImage;
     [SerializeField] public float ItemWeight;
     [SerializeField] private GameObject Lock;
@@ -36,7 +29,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     private RectTransform target;
     private RectTransform itemBallRect;
     private Raid_PointerClickBlocker itemBallClickBlocker;
-    private HorizontalLayoutGroup layoutGroup;
     private Raid_Timer raidTimer;
     private Vector2 endLoc;
     private float t = 0f;
@@ -145,30 +137,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         showItemWeightText = show;
         SetItemWeightTextActive(showItemWeightText);
-    }
-
-    public void SetCollectedLootDisplayLayout()
-    {
-        if (layoutGroup != null)
-        {
-            layoutGroup.padding = new RectOffset(
-                CollectedLootLayoutPaddingLeft,
-                CollectedLootLayoutPaddingRight,
-                CollectedLootLayoutPaddingTop,
-                CollectedLootLayoutPaddingBottom);
-        }
-
-        if (ItemWeightText == null)
-        {
-            return;
-        }
-
-        RectTransform weightTextRect = ItemWeightText.rectTransform;
-        weightTextRect.anchorMin = new Vector2(0.5f, 1f);
-        weightTextRect.anchorMax = new Vector2(0.5f, 1f);
-        weightTextRect.pivot = new Vector2(0.5f, 0.5f);
-        weightTextRect.anchoredPosition = CollectedLootWeightTextPosition;
-        weightTextRect.sizeDelta = CollectedLootWeightTextSize;
     }
 
     public void SetLossHaloVisible(bool visible)
@@ -416,7 +384,6 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         TryGetComponent(out audioSource);
         ResolveSoundType();
-        TryGetComponent(out layoutGroup);
         itemBallRect = ItemBall != null && ItemBall.TryGetComponent(out RectTransform rect)
             ? rect
             : null;
