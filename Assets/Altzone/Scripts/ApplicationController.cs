@@ -15,7 +15,7 @@ namespace Altzone.Scripts
 {
     public class ApplicationController : MonoBehaviour
     {
-        public static readonly int VersionNumber = 237;
+        public static readonly int VersionNumber = 243;
 
         public delegate void ApplicationResume();
         public static event ApplicationResume OnAppResume;

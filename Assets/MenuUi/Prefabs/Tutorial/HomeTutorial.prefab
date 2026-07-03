@@ -21,12 +21,12 @@ PrefabInstance:
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
-      value: This is the Home-screen button (The screen we currently are in.)
+      value: "This is the \nHome-screen button \n(The screen we \ncurrently are in.)"
       objectReference: {fileID: 0}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _finnishText
-      value: "T\xE4m\xE4 on koti-sivun painike (Eli sivu jossa juuri nyt ollaan)"
+      value: "T\xE4m\xE4 on \nkoti-sivun painike \n(Eli sivu, jolla \njuuri nyt ollaan)"
       objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
@@ -132,6 +132,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463056338333048296, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -187,12 +192,12 @@ PrefabInstance:
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
-      value: Here you can find clans Daily Tasks. (Not ready yet.)
+      value: "Here you can find \nclans Daily Tasks. \n(Not ready yet.)"
       objectReference: {fileID: 0}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _finnishText
-      value: "T\xE4\xE4lt\xE4 l\xF6ytyy klaanin DailyTaskit. (Eiv\xE4t t\xE4ysin
+      value: "T\xE4\xE4lt\xE4 l\xF6ytyy \nklaanin DailyTaskit. \n(Eiv\xE4t t\xE4ysin
         valmiita viel\xE4)"
       objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
@@ -300,6 +305,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463056338333048296, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -340,14 +350,14 @@ PrefabInstance:
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
-      value: "From here you can get to \nCharacterGallery\nwhere you can choose your
-        battle characters."
+      value: "From here you can get to \nDefence CharacterGallery\nwhere you can
+        choose your battle characters."
       objectReference: {fileID: 0}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _finnishText
-      value: "T\xE4st\xE4 p\xE4\xE4see \nHahmoGalleriaan, \njossa voit valita hahmosi
-        battle\xE4 varten."
+      value: "T\xE4st\xE4 p\xE4\xE4see \nSoturiGalleriaan, \njossa voit valita\nhahmosi
+        taisteluita varten."
       objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
@@ -454,6 +464,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463056338333048296, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -499,15 +514,16 @@ PrefabInstance:
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
-      value: Here is the games shop where you can buy new furniture for your clan
-        or maybe you are interested in a new look for your avatar. (Not ready yet.)
+      value: "Here is the games shop \nwhere you can buy new \nfurniture for your
+        clan \nor maybe you are interested\nin a new look for your avatar. \n(Not
+        ready yet.)"
       objectReference: {fileID: 0}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _finnishText
-      value: "T\xE4\xE4lt\xE4 l\xF6ytyy pelin kauppa, jonka kautta klaanille voidaan
-        ostaa huonekaluja tai sitten vaikka uusia vaatteita hahmollesi. (Ei ihan
-        valmis viel\xE4)"
+      value: "T\xE4\xE4lt\xE4 l\xF6ytyy pelin kauppa, \njonka kautta klaanille \nvoidaan
+        ostaa huonekaluja \ntai sitten vaikka \nuusia vaatteita hahmollesi. \n(Ei
+        ihan valmis viel\xE4)"
       objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
@@ -615,6 +631,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463056338333048296, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -655,13 +676,13 @@ PrefabInstance:
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
-      value: By pressing here you can get to clan storage where the clans furniture
-        is stored.
+      value: "By pressing here \nyou can get to clan storage \nwhere the clans furniture
+        is stored."
       objectReference: {fileID: 0}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _finnishText
-      value: "T\xE4st\xE4 painamalla p\xE4\xE4see klaanin varastoon, jossa huonekaluja
+      value: "T\xE4st\xE4 painamalla \np\xE4\xE4see klaanin varastoon, \njossa huonekaluja
         s\xE4ilytet\xE4\xE4n."
       objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
@@ -769,6 +790,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463056338333048296, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1334,14 +1360,14 @@ PrefabInstance:
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
-      value: Here you can find clans polls which are used to choose which furniture
-        to buy. And how the clan is managed. (Not ready yet.)
+      value: "Here you can find clans polls \nwhich are used to choose \nwhich furniture
+        to buy. \nAnd how the clan is managed. \n(Not ready yet.)"
       objectReference: {fileID: 0}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _finnishText
-      value: "T\xE4\xE4lt\xE4 l\xF6ytyy klaanin \xE4\xE4nestykset, joilla p\xE4\xE4tet\xE4\xE4n
-        mit\xE4 klaani ostaa ja miten klaania hallinnoidaan. (Ei ihan valmis viel\xE4)"
+      value: "T\xE4\xE4lt\xE4 l\xF6ytyy klaanin \xE4\xE4nestykset, \njoilla p\xE4\xE4tet\xE4\xE4n
+        mit\xE4 klaani ostaa\nja miten klaania hallinnoidaan. \n(Ei ihan valmis viel\xE4)"
       objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
@@ -1449,6 +1475,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8463056338333048296, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1488,17 +1519,17 @@ PrefabInstance:
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
-      value: Here you can see your currently selected battle characters.
+      value: "Here you can see \nyour currently selected \nbattle characters."
       objectReference: {fileID: 0}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _finnishText
-      value: "T\xE4ss\xE4 n\xE4kyy t\xE4ll\xE4 hetkell\xE4 valitut hahmosi."
+      value: "T\xE4ss\xE4 n\xE4kyy\nt\xE4ll\xE4 hetkell\xE4 \nvalitut hahmosi."
       objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: m_text
-      value: "T\xE4ss\xE4 n\xE4kyy t\xE4ll\xE4 hetkell\xE4 valitut hahmosi."
+      value: "T\xE4ss\xE4 n\xE4kyy \nt\xE4ll\xE4 hetkell\xE4 \nvalitut hahmosi."
       objectReference: {fileID: 0}
     - target: {fileID: 8260917805380307090, guid: 09d5130a97124924e906394830620820,
         type: 3}
@@ -1614,6 +1645,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463056338333048296, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1677,8 +1713,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
+      propertyPath: _englishText
+      value: "By pressing here \nyou can get to Battle."
+      objectReference: {fileID: 0}
+    - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
+        type: 3}
       propertyPath: _finnishText
-      value: "T\xE4st\xE4 painamalla p\xE4\xE4set battleen "
+      value: "T\xE4st\xE4 painamalla \np\xE4\xE4set battleen "
       objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
@@ -1799,6 +1840,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463056338333048296, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1863,17 +1909,17 @@ PrefabInstance:
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
-      value: This takes you to the Guards castle (Clan house)
+      value: "This takes you \nto the Guards castle \n(Clan house)"
       objectReference: {fileID: 0}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _finnishText
-      value: "T\xE4m\xE4 vie sinut Vartioston kivilinnaan (Klaanitalo)"
+      value: "T\xE4m\xE4 vie sinut \nVartioston kivilinnaan \n(Klaanitalo)"
       objectReference: {fileID: 0}
     - target: {fileID: 8096678758041759329, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: m_text
-      value: "T\xE4m\xE4 vie sinut Vartioston kivilinnaan (Klaanitalo)"
+      value: "T\xE4m\xE4 vie sinut \nVartioston kivilinnaan \n(Klaanitalo)"
       objectReference: {fileID: 0}
     - target: {fileID: 8260917805380307090, guid: 09d5130a97124924e906394830620820,
         type: 3}
@@ -1989,6 +2035,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463056338333048296, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: m_HorizontalFit
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

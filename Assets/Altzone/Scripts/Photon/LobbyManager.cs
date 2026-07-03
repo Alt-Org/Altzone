@@ -3503,6 +3503,7 @@ namespace Altzone.Scripts.Lobby
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
             _gamePlayedOut = false;
+            CurrentRooms = null;
 
             // Clearing player position key from own custom properties
             if (PhotonRealtimeClient.LocalPlayer.HasCustomProperty(PlayerPositionKey)) PhotonRealtimeClient.LocalPlayer.RemoveCustomProperty(PlayerPositionKey);
@@ -3560,14 +3561,38 @@ namespace Altzone.Scripts.Lobby
 
         public void OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            List<LobbyRoomInfo> lobbyRoomList = new();
+            List<LobbyRoomInfo> lobbyRoomList = CurrentRooms != null
+                ? CurrentRooms.ToList()
+                : new List<LobbyRoomInfo>();
+
             foreach (RoomInfo roomInfo in roomList)
             {
-                lobbyRoomList.Add(new(roomInfo));
+                LobbyRoomInfo updatedRoom = new(roomInfo);
+                int existingIndex = lobbyRoomList.FindIndex(room => room.Name.Equals(updatedRoom.Name, StringComparison.Ordinal));
+                if (existingIndex != -1)
+                {
+                    lobbyRoomList.RemoveAt(existingIndex);
+                }
+
+                if (!updatedRoom.RemovedFromList)
+                {
+                    lobbyRoomList.Add(updatedRoom);
+                }
             }
+
+            if (lobbyRoomList.Any(room => room.RemovedFromList))
+            {
+                lobbyRoomList = lobbyRoomList.Where(room => !room.RemovedFromList).ToList();
+            }
+
+            CurrentRooms = lobbyRoomList.AsReadOnly();
             LobbyOnRoomListUpdate?.Invoke(lobbyRoomList);
         }
-        public void OnLeftLobby() { LobbyOnLeftLobby?.Invoke(); }
+        public void OnLeftLobby()
+        {
+            CurrentRooms = null;
+            LobbyOnLeftLobby?.Invoke();
+        }
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics) { LobbyOnLobbyStatisticsUpdate?.Invoke(); }
         public void OnFriendListUpdate(List<FriendInfo> friendList) {
             _friendList = friendList;

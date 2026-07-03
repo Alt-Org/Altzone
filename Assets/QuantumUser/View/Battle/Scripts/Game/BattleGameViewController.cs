@@ -288,6 +288,7 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleGiveUpStateChange>(this, QEventOnGiveUpStateChange);
             QuantumEvent.Subscribe<EventBattleStoneCharacterPlayHitAnimation>(this, QEventOnStoneCharacterPlayHitAnimation);
             QuantumEvent.Subscribe<EventBattleSpecialJoystickVisibilityChange>(this, QEventOnBattleSpecialJoystickVisibilityChange);
+            QuantumEvent.Subscribe<EventBattleCharacterDeath>(this, QEventOnBattleCharacterDeath);
 
             // Subscribing to Debug events
             QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
@@ -685,7 +686,7 @@ namespace Battle.View.Game
         /// <param name="e">The event data.</param>
         private void QEventOnShieldHit(EventBattleShieldHit e)
         {
-            if (e.Team == LocalPlayerTeam && e.ShieldAttached)
+            if (e.Team == LocalPlayerTeam && e.DefenceUpdateVisual)
             {
                 _uiController.PlayerInfoHandler.UpdateDefenceVisual(e.Slot, e.CharacterNumber, (float)e.DefencePercentage);
             }
@@ -731,6 +732,19 @@ namespace Battle.View.Game
         {
             if (e.Slot != LocalPlayerSlot) return;
             _uiController.JoystickHandler.SetShow(e.Show, BattleUiElementType.SpecialJoystick);
+        }
+
+        /// <summary>
+        /// Private handler method for EventBattleCharacterDeath QuantumEvent.<br/>
+        /// Handles calling <see cref="BattleUiPlayerInfoHandler.MarkCharacterDead">MarkCharacterDead</see>
+        /// in <see cref="BattleGameViewController._uiController">_uiController's</see>
+        /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>
+        /// </summary>
+        ///
+        /// <param name="e">The event data.</param>
+        private void QEventOnBattleCharacterDeath(EventBattleCharacterDeath e)
+        {
+            _uiController.PlayerInfoHandler.MarkCharacterDead(e.Slot, e.CharacterNumber);
         }
 
         /// <summary>

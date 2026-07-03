@@ -674,6 +674,11 @@ namespace Battle.View.Player
         /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         private bool _isInPlay;
 
+        /// <summary>Is shield attached.</summary>
+        ///
+        /// See [{Attached/Detached Shield}](#page-concepts-player-character-entity-shield-attach) for more info.
+        private bool _shieldAttached;
+
         /// <summary>Reference to the active character class view controller.</summary>
         ///
         /// See [{PlayerCharacterClassViewControllers}](#page-concepts-player-view-character-class-controller) for more info.
@@ -757,7 +762,7 @@ namespace Battle.View.Player
                 StopCoroutine(_stunCoroutine);
             }
 
-            _stunCoroutine = StartCoroutine(StunCoroutine((float)e.StunDurationSec, e.ProjectileEmotion, e.Team, e.ShieldAttached, e.ShieldNumber));
+            _stunCoroutine = StartCoroutine(StunCoroutine((float)e.StunDurationSec, e.ProjectileEmotion, e.Team, e.ShieldNumber));
 
             _classViewController.OnCharacterHit(e);
 
@@ -794,7 +799,9 @@ namespace Battle.View.Player
         {
             if (EntityRef != e.ERef) return;
 
-            if (e.ShieldAttached)
+            _shieldAttached = e.ShieldAttached;
+
+            if (_shieldAttached)
             {
                 SetHandOnShieldSprite(e.Team, e.ShieldNumber);
             }
@@ -836,11 +843,10 @@ namespace Battle.View.Player
         /// <param name="stunDurationSec">Duration of the stun.</param>
         /// <param name="emotion">Emotion state during the stun.</param>
         /// <param name="teamNumber">Team number of the player.</param>
-        /// <param name="shieldAttached">Is shield attached.</param>
         /// <param name="shieldNumber">Number of the shield.</param>
         ///
         /// <returns>Coroutine IEnumerator.</returns>
-        private IEnumerator StunCoroutine(float stunDurationSec, BattleEmotionState emotion, BattleTeamNumber teamNumber, bool shieldAttached, int shieldNumber)
+        private IEnumerator StunCoroutine(float stunDurationSec, BattleEmotionState emotion, BattleTeamNumber teamNumber, int shieldNumber)
         {
             //{ set stun sprites
 
@@ -859,7 +865,7 @@ namespace Battle.View.Player
 
             SetHandSprite(SpriteSheetMap.Enum.HandsScared);
 
-            if (shieldAttached)
+            if (_shieldAttached)
             {
                 _playerShieldViewControllers[shieldNumber].SetShieldNoSprite();
             }
@@ -897,7 +903,7 @@ namespace Battle.View.Player
 
             SetHeadSprite(SpriteSheetMap.Enum.Head1);
 
-            if (shieldAttached)
+            if (_shieldAttached)
             {
                 SetHandOnShieldSprite(teamNumber, shieldNumber);
                 BattlePlayerShieldViewController.ShieldSide shieldSide = BattleGameViewController.LocalPlayerTeam == teamNumber ? BattlePlayerShieldViewController.ShieldSide.Top : BattlePlayerShieldViewController.ShieldSide.Bottom;

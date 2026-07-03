@@ -66,6 +66,7 @@ MonoBehaviour:
   - {fileID: 563227481481763360}
   _isInRoom: 0
   _dragAndDropIcon: {fileID: 21300000, guid: 2b97cb9f3e0fb3246b6e9bd2accc3d8c, type: 3}
+  _button: {fileID: 0}
 --- !u!114 &8597767715181568943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,7 +175,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34.85
+  m_fontSize: 48
   m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -308,14 +309,14 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 6691270648693797485}
-  - {fileID: 7615109156260062823}
   - {fileID: 5162689959517446653}
+  - {fileID: 7615109156260062823}
   m_Father: {fileID: 4360322479057356688}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 428.65198, y: 0}
+  m_SizeDelta: {x: 820.43207, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &7342600966108598931
 CanvasRenderer:

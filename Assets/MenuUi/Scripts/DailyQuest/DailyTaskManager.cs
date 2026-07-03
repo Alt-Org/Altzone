@@ -42,8 +42,11 @@ public class DailyTaskManager : AltMonoBehaviour
     private PlayerTask _currentTask;
 
     // Track's the state of choose task popup, for proper Popup state on task selection
-    private bool _chooseTaskActive = false;
+    private bool _chooseTaskPopupActive = false;
 
+    // This is for the TurboEducation ChooseTask (so if the current task was a forced selection or not)
+    private bool _currentTaskForced;
+    public bool CurrentTaskForced { get { return _currentTaskForced; } set { _currentTaskForced = value; } }
     #endregion
 
 
@@ -63,6 +66,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
     void Start()
     {
+        DailyTaskProgressManager.OnTaskDone += ClearCurrentTask;
         ChooseTask.OnChooseTaskShown += ChooseTaskShown;
         ChooseTask.OnChooseTaskHidden += ChooseTaskHidden;
         StartCoroutine(DataSetup());
@@ -70,17 +74,18 @@ public class DailyTaskManager : AltMonoBehaviour
 
     private void OnDestroy()
     {
+        DailyTaskProgressManager.OnTaskDone -= ClearCurrentTask;
         ChooseTask.OnChooseTaskShown -= ChooseTaskShown;
         ChooseTask.OnChooseTaskHidden -= ChooseTaskHidden;
     }
 
     void ChooseTaskShown()
     {
-        _chooseTaskActive = true;
+        _chooseTaskPopupActive = true;
     }
     void ChooseTaskHidden()
     {
-        _chooseTaskActive = false;
+        _chooseTaskPopupActive = false;
     }
 
     /// <summary>
@@ -385,7 +390,23 @@ public class DailyTaskManager : AltMonoBehaviour
         yield break;
     }
 
-    public IEnumerator CancelTask(System.Action<bool> done)
+    public void StartCancelTask()
+    {
+        if (_currentTask == null) return;
+
+        PopupData data = new(PopupData.PopupDataType.CancelTask);
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            ShowPopupAndHandleResponse("Haluatko peruuttaa nykyisen tehtävän?", data);
+        }
+        else
+        {
+            ShowPopupAndHandleResponse("Do you want to cancel your current task?", data);
+        }
+
+    }
+
+    private IEnumerator CancelTask(System.Action<bool> done)
     {
         PlayerData playerData = _currentPlayerData;
         PlayerData savePlayerData = null;
@@ -447,6 +468,7 @@ public class DailyTaskManager : AltMonoBehaviour
         Debug.Log("Task id: " + _ownTaskId + ", has been cleard.");
         _ownTaskId = null;
         _currentTask = null;
+        CurrentTaskForced = false;
     }
 
     /// <summary>
@@ -468,9 +490,13 @@ public class DailyTaskManager : AltMonoBehaviour
         switch (data.Value.Type)
         {
             case PopupData.PopupDataType.OwnTask:
-                // On TurboEducation mode, if the chooseTaskWindow is not active, show PopupWindowType.Info so the player can't choose a new task
-                // (Accept window is still needed on TurboEducation to make sure the player can choose a task from the given options)
-                if (GameConfig.Get().GameVersionType == VersionType.TurboEducation && !_chooseTaskActive)
+                // On TurboEducation mode, if the current task is forced for player, don't allow changing it
+                if (GameConfig.Get().GameVersionType == VersionType.TurboEducation && _currentTaskForced)
+                {
+                    windowType = Popup.PopupWindowType.Info;
+                }
+                // If the popup is for the current task, show task info (can't change to same task)
+                else if (_currentTask != null && data.Value.OwnPage.Id == _currentTask.Id)
                 {
                     windowType = Popup.PopupWindowType.Info;
                 }
@@ -480,6 +506,7 @@ public class DailyTaskManager : AltMonoBehaviour
             case PopupData.PopupDataType.CancelTask: windowType = Popup.PopupWindowType.Cancel; break;
             case PopupData.PopupDataType.ClanMilestone: windowType = Popup.PopupWindowType.ClanMilestone; break;
             case PopupData.PopupDataType.MultipleChoice: windowType = Popup.PopupWindowType.MultipleChoice; break;
+
             default: windowType = Popup.PopupWindowType.Accept; break;
         }
 
@@ -495,6 +522,7 @@ public class DailyTaskManager : AltMonoBehaviour
             {
                 case PopupData.PopupDataType.OwnTask:
                     {
+                        // If player already has a task, cancel current task before selecting new one
                         if (_currentPlayerData != null && _currentPlayerData.Task != null)
                         {
                             StartCoroutine(CancelTask(data2 => done = data2));
@@ -502,6 +530,7 @@ public class DailyTaskManager : AltMonoBehaviour
                             done = null;
                         }
 
+                        // Find new task
                         StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data2 => done = data2));
                         yield return new WaitUntil(() => (_currentPlayerData.Task != null || done != null));
 

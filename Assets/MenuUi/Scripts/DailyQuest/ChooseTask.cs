@@ -4,22 +4,51 @@ using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ChooseTask : MonoBehaviour
 {
 
+    /// <summary>
+    /// This enum is only for testing to be more easy to quickly switch between task selection and random question from the inspector
+    /// </summary>
+    public enum ChooseTaskPopupType
+    {
+        None,
+        TaskSelection,
+        RandomQuestion
+    }
+
+    [SerializeField]
+    private ChooseTaskPopupType _popupType;
+
+    [Header("Task Selection")]
     [SerializeField]
     [Tooltip("The window where the tasks are shown in")]
-    private RectTransform _selectionWindow;
+    private RectTransform _taskSelectionWindow;
 
     [SerializeField]
     [Tooltip("The object that's children are going to be the parents of the task cards")]
     private RectTransform _taskCardHolder;
 
+    [Header("Random Question")]
     [SerializeField]
-    [Tooltip("The UI overlay to disable the buttons in when the ChooseTask window is active")]
-    private RectTransform _UIOverlay;
+    [Tooltip("The window where the random questions are shown in")]
+    private RectTransform _randomQuestionWindow;
+
+    [SerializeField]
+    [Tooltip("The question")]
+    private TextMeshProUGUI _randomQuestionTitle;
+
+    [SerializeField]
+    [Tooltip("The object that's children are going to the Random Question answers")]
+    private RectTransform _randomQuestionAnswerHolder;
+
+    [SerializeField]
+    [Tooltip("The random question answer prefab")]
+    private GameObject _randomQuestionAnswerPrefab;
 
     [SerializeField]
     [Tooltip("Temporary Holder for tutorial controller until a more parmanent solution is figured out.")]
@@ -66,20 +95,22 @@ public class ChooseTask : MonoBehaviour
 
 
         // Show popup every other battle on turboeducation
-        if (_gameVersion == VersionType.TurboEducation)
+        if (_gameVersion == VersionType.TurboEducation && _popupType != ChooseTaskPopupType.None)
         {
-            if (DailyTaskProgressManager.Instance.HasOnGoingTask())
+            if (DailyTaskProgressManager.Instance.HasOnGoingTask() && DailyTaskManager.Instance.CurrentTaskForced)
             {
                 _shouldShowPopup = false;
             }
             else
             {
+
                 if (_shouldShowPopup)
                 {
                     ShowSelectionWindow();
                 }
 
                 _shouldShowPopup = !_shouldShowPopup;
+
             }
         }
         _initialized = true;
@@ -107,18 +138,70 @@ public class ChooseTask : MonoBehaviour
     }
 
     /// <summary>
-    /// Generate the task options and show them to the user
+    /// Generate the task options or a random question with answers and show them to the user
     /// </summary>
     public void ShowSelectionWindow()
     {
-        GenerateTaskOptions();
-        _selectionWindow.gameObject.SetActive(true);
-        OnChooseTaskShown?.Invoke();
+        if (_popupType == ChooseTaskPopupType.TaskSelection)
+        {
+            GenerateTaskOptions();
+            _taskSelectionWindow.gameObject.SetActive(true);
+            OnChooseTaskShown?.Invoke();
+
+
+        }
+        else if (_popupType == ChooseTaskPopupType.RandomQuestion)
+        {
+            CreateRandomQuestion();
+            _randomQuestionWindow.gameObject.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// Gets a random RandomQuestionData from the RandomQuestionConfig and creates the answer options for the question
+    /// </summary>
+    private void CreateRandomQuestion()
+    {
+        DeleteRandomQuestionAnswers();
+
+        // Get every question
+        List<RandomQuestionData> questions = RandomQuestionConfig.Instance.GetRandomQuestions();
+
+        // Get random question
+        System.Random rand = new System.Random();
+        int index = rand.Next(questions.Count);
+
+        RandomQuestionData question = questions[index];
+
+        // Show the question title for the player
+        _randomQuestionTitle.text = question.Question;
+
+        // Create answers for the player to select from
+        foreach (RandomQuestionAnswer questionAnswer in question.answers)
+        {
+            GameObject answerObj = Instantiate(_randomQuestionAnswerPrefab, _randomQuestionAnswerHolder);
+            answerObj.GetComponentInChildren<TextMeshProUGUI>().text = questionAnswer.Answer;
+            answerObj.GetComponentInChildren<Image>().color = questionAnswer.color;
+            answerObj.GetComponentInChildren<Button>().onClick.AddListener(() => { HideSelectionWindow(); });
+
+        }
+
+    }
+
+    /// <summary>
+    /// Destroys the current random question answers that are parented by _randomQuestionAnswerHolder
+    /// </summary>
+    private void DeleteRandomQuestionAnswers()
+    {
+        for (int i = 0; i < _randomQuestionAnswerHolder.childCount; i++)
+        {
+            Destroy(_randomQuestionAnswerHolder.GetChild(i).gameObject);
+        }
     }
 
 
     /// <summary>
-    /// Delete the task options and hide the selection window
+    /// Delete the task options or the random question answers and hide the selection window
     /// </summary>
     public void HideSelectionWindow(PlayerTask task)
     {
@@ -127,9 +210,22 @@ public class ChooseTask : MonoBehaviour
 
     public void HideSelectionWindow()
     {
-        _selectionWindow.gameObject.SetActive(false);
-        DeleteTaskCards();
-        OnChooseTaskHidden?.Invoke();
+        if (_taskSelectionWindow.gameObject.activeSelf)
+        {
+            _taskSelectionWindow.gameObject.SetActive(false);
+            DeleteTaskCards();
+            DailyTaskManager.Instance.CurrentTaskForced = true;
+            OnChooseTaskHidden?.Invoke();
+
+
+        }
+        if (_randomQuestionWindow.gameObject.activeSelf)
+        {
+            _randomQuestionWindow.gameObject.SetActive(false);
+            DeleteRandomQuestionAnswers();
+        }
+
+
     }
 
 

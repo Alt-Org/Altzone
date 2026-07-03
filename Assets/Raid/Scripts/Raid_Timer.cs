@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Language;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using System;
+using UnityEngine.UI;
 
 public class Raid_Timer : MonoBehaviour
 {
@@ -14,9 +15,6 @@ public class Raid_Timer : MonoBehaviour
     public TextMeshProUGUI TimerText;
     public TextMeshProUGUI StartTimerText;
 
-    [Header("Timer graphic")]
-    public Image Lungs;
-
     [Header("Timer settings")]
     public float CurrentTime;
     public bool CountUp;
@@ -25,6 +23,7 @@ public class Raid_Timer : MonoBehaviour
 
     [Header("Start Timer settings")]
     public float TimeUntilStart;
+    private bool startTextShown;
 
     [Header("Limit settings")]
     public bool HasLimit;
@@ -38,7 +37,6 @@ public class Raid_Timer : MonoBehaviour
     public event Action TimeEnded;
     public ExitRaid exitRaid;
 
-    public Image lungsEmpty;
     private Color startColor = Color.white;
     private Color endColor = Color.red;
     [SerializeField]
@@ -50,10 +48,17 @@ public class Raid_Timer : MonoBehaviour
         TimeFormat.Add(TimerFormat.TenthDecimal, "0.0");
         TimeFormat.Add(TimerFormat.HundrethsDecimal, "0.00");
 
+        if (exitRaid == null)
+        {
+            exitRaid = ExitRaid.Instance;
+        }
+
         if (exitRaid != null)
         {
             exitRaid.ExitedRaid += RaidExited;
         }
+
+        SetStartTimerVisualState(false);
     }
 
     void Update()
@@ -66,22 +71,23 @@ public class Raid_Timer : MonoBehaviour
                 float t = Mathf.PingPong(Time.time / duration, 1f);
                 Color lerped = Color.Lerp(startColor, endColor, t);
 
-                lungsEmpty.color = lerped;
                 TimerText.color = lerped;
             }
             if (HasLimit && ((CountUp && CurrentTime >= TimerLimit) || (!CountUp && CurrentTime <= TimerLimit)))
             {
                 OnTimeEnd();
-                raid_References.RedScreen.SetActive(true);
-                raid_References.EndMenu.GetComponent<Raid_EndMenu>().SetCollectedLoot(raid_References.raid_LootTracking.ListOfCollectedLoot);
-                raid_References.EndMenu.SetActive(true);
-                if (raid_References.OutOfSpace.enabled || raid_References.RaidEndedText.enabled)
+                if (exitRaid == null)
                 {
-                    raid_References.OutOfTime.enabled = false;
+                    exitRaid = ExitRaid.Instance;
                 }
-                else if (!raid_References.OutOfSpace.enabled && !raid_References.RaidEndedText.enabled)
+
+                if (exitRaid != null)
                 {
-                    raid_References.OutOfTime.enabled = true;
+                    exitRaid.EndRaid(ExitRaid.RaidEndReason.OutOfTime);
+                }
+                else
+                {
+                    Debug.LogError("Raid timer ended, but ExitRaid.Instance was not available.");
                 }
                 CurrentTime = TimerLimit;
                 SetTimerText();
@@ -94,16 +100,22 @@ public class Raid_Timer : MonoBehaviour
             if (!started)
             {
                 TimeUntilStart -= Time.deltaTime;
-                StartTimerText.text = "Aikaa alkuun: " + TimeUntilStart.ToString("F0");
-                if (TimeUntilStart <= 0)
+                if (TimeUntilStart <= -1f)
                 {
                     StartTimer();
+                }
+                else if (TimeUntilStart <= 0f)
+                {
+                    ShowStartText();
+                }
+                else
+                {
+                    StartTimerText.text = Mathf.CeilToInt(TimeUntilStart).ToString();
                 }
             }
         }
         
         SetTimerText();
-        SetTimerGraphic();
     }
     public void StartTimer()
     {
@@ -115,6 +127,54 @@ public class Raid_Timer : MonoBehaviour
         }
             
     }
+
+    private void ShowStartText()
+    {
+        if (startTextShown)
+        {
+            return;
+        }
+
+        TextLanguageSelectorCaller textLanguageSelector = StartTimerText.GetComponent<TextLanguageSelectorCaller>();
+        if (textLanguageSelector != null)
+        {
+            textLanguageSelector.SetText(string.Empty);
+        }
+        else
+        {
+            StartTimerText.text = "Aloita!";
+        }
+
+        SetStartTimerVisualState(true);
+        startTextShown = true;
+    }
+
+    private void SetStartTimerVisualState(bool showStartText)
+    {
+        if (StartTimerText == null)
+        {
+            return;
+        }
+
+        Transform startTimerParent = StartTimerText.transform.parent;
+        if (startTimerParent == null)
+        {
+            return;
+        }
+
+        Image timerBackgroundImage = startTimerParent.GetComponent<Image>();
+        if (timerBackgroundImage != null)
+        {
+            timerBackgroundImage.enabled = showStartText;
+        }
+
+        Transform overlay = startTimerParent.Find("Overlay");
+        if (overlay != null)
+        {
+            overlay.gameObject.SetActive(!showStartText);
+        }
+    }
+
     public void FinishRaid()
     {
         timerActive = false;
@@ -126,14 +186,11 @@ public class Raid_Timer : MonoBehaviour
         //TimerText.text = HasFormat ? CurrentTime.ToString(TimeFormat[Format]) : CurrentTime.ToString();
         TimerText.text = CurrentTime.ToString("F0");
     }
-    private void SetTimerGraphic()
-    {
-        Lungs.fillAmount = 1.0f - (10.0f - CurrentTime) * 0.1f;
-    }
     void OnTimeEnd()
     {
         TimeEnded?.Invoke();
     }
+
     void RaidExited()
     {
         CurrentTime = 0;
