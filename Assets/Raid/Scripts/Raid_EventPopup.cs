@@ -50,6 +50,7 @@ public class Raid_EventPopup : MonoBehaviour
     private const string PopupResourcePath = "Prefabs/RaidEventPopup";
     private const float DefaultShowTime = 1.75f;
     private const float DefaultStartCountdownStepTime = 1f;
+    private const int DefaultStartCountdownSeconds = 3;
 
     private static Raid_EventPopup instance;
 
@@ -61,6 +62,7 @@ public class Raid_EventPopup : MonoBehaviour
     [SerializeField] private TextMeshProUGUI messageText;
     [SerializeField] private TextMeshProUGUI MultText;
     [SerializeField] private float showTime = DefaultShowTime;
+    [SerializeField, Min(1)] private int startCountdownSeconds = DefaultStartCountdownSeconds;
     [SerializeField] private ScenarioVisual[] scenarioVisuals;
 
     private void Awake()
@@ -68,7 +70,16 @@ public class Raid_EventPopup : MonoBehaviour
         if (instance == null || instance == this)
         {
             instance = this;
+            return;
         }
+
+        if (instance.gameObject == gameObject)
+        {
+            Destroy(this);
+            return;
+        }
+
+        Destroy(gameObject);
     }
 
     private void OnDestroy()
@@ -79,34 +90,24 @@ public class Raid_EventPopup : MonoBehaviour
         }
     }
 
-    public static void Show(MonoBehaviour owner, Scenario scenario)
+    public static void Show(MonoBehaviour owner, Scenario scenario, float duration = -1f, Canvas parentCanvas = null)
     {
         if (owner == null)
         {
             return;
         }
 
-        owner.StartCoroutine(ShowAndWait(owner, scenario));
+        owner.StartCoroutine(ShowAndWait(owner, scenario, duration, null, parentCanvas));
     }
 
-    public static void Show(MonoBehaviour owner, Scenario scenario, float duration)
+    public static IEnumerator ShowAndWait(
+        MonoBehaviour owner,
+        Scenario scenario,
+        float duration = -1f,
+        Action onComplete = null,
+        Canvas parentCanvas = null)
     {
-        if (owner == null)
-        {
-            return;
-        }
-
-        owner.StartCoroutine(ShowAndWait(owner, scenario, duration));
-    }
-
-    public static IEnumerator ShowAndWait(MonoBehaviour owner, Scenario scenario, Action onComplete = null)
-    {
-        yield return ShowAndWait(owner, scenario, -1f, onComplete);
-    }
-
-    public static IEnumerator ShowAndWait(MonoBehaviour owner, Scenario scenario, float duration, Action onComplete = null)
-    {
-        Raid_EventPopup popup = GetOrCreate(owner);
+        Raid_EventPopup popup = GetOrCreate(owner, parentCanvas);
         if (popup == null)
         {
             onComplete?.Invoke();
@@ -117,7 +118,11 @@ public class Raid_EventPopup : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    public static IEnumerator ShowStartCountdownAndWait(MonoBehaviour owner, float stepTime = DefaultStartCountdownStepTime, Action onComplete = null)
+    public static IEnumerator ShowStartCountdownAndWait(
+        MonoBehaviour owner,
+        float stepTime = DefaultStartCountdownStepTime,
+        Action onComplete = null,
+        Canvas parentCanvas = null)
     {
         if (owner == null)
         {
@@ -125,7 +130,7 @@ public class Raid_EventPopup : MonoBehaviour
             yield break;
         }
 
-        Raid_EventPopup popup = GetOrCreate(owner);
+        Raid_EventPopup popup = GetOrCreate(owner, parentCanvas);
         if (popup == null)
         {
             onComplete?.Invoke();
@@ -144,14 +149,14 @@ public class Raid_EventPopup : MonoBehaviour
         }
     }
 
-    private static Raid_EventPopup GetOrCreate(MonoBehaviour owner)
+    private static Raid_EventPopup GetOrCreate(MonoBehaviour owner, Canvas parentCanvas = null)
     {
         if (instance != null)
         {
             return instance;
         }
 
-        instance = FindObjectOfType<Raid_EventPopup>(true);
+        instance = FindExistingInstance();
         if (instance != null)
         {
             return instance;
@@ -164,8 +169,7 @@ public class Raid_EventPopup : MonoBehaviour
             return null;
         }
 
-        Canvas parentCanvas = owner != null ? owner.GetComponentInParent<Canvas>() : null;
-        parentCanvas ??= FindObjectOfType<Canvas>(true);
+        parentCanvas ??= owner != null ? owner.GetComponentInParent<Canvas>() : null;
 
         instance = parentCanvas != null
             ? Instantiate(prefab, parentCanvas.transform, false)
@@ -173,6 +177,33 @@ public class Raid_EventPopup : MonoBehaviour
         instance.name = "Raid Event Popup";
         instance.gameObject.SetActive(false);
         return instance;
+    }
+
+    private static Raid_EventPopup FindExistingInstance()
+    {
+        Raid_EventPopup[] popups = FindObjectsOfType<Raid_EventPopup>(true);
+        if (popups == null || popups.Length == 0)
+        {
+            return null;
+        }
+
+        Raid_EventPopup selectedPopup = popups[0];
+        for (int i = 1; i < popups.Length; i++)
+        {
+            if (popups[i] != null)
+            {
+                if (popups[i].gameObject == selectedPopup.gameObject)
+                {
+                    Destroy(popups[i]);
+                }
+                else
+                {
+                    Destroy(popups[i].gameObject);
+                }
+            }
+        }
+
+        return selectedPopup;
     }
 
     private IEnumerator ShowRoutine(Scenario scenario, float duration)
@@ -232,11 +263,10 @@ public class Raid_EventPopup : MonoBehaviour
         string startText = string.IsNullOrWhiteSpace(visual.Message)
             ? GetLocalizedText("Aloita", "Start")
             : visual.Message;
-        string[] countdownSteps = { "3", "2", "1", startText };
-
-        foreach (string step in countdownSteps)
+        int secondsUntilStart = Mathf.Max(1, startCountdownSeconds);
+        while (secondsUntilStart > 0)
         {
-            SetLocalizedText(messageText, step, visual.TextColor);
+            SetLocalizedText(messageText, secondsUntilStart.ToString(), visual.TextColor);
             SetLocalizedText(MultText, string.Empty, visual.TextColor);
             if (MultText != null)
             {
@@ -244,8 +274,17 @@ public class Raid_EventPopup : MonoBehaviour
             }
 
             yield return new WaitForSeconds(stepTime);
+            secondsUntilStart--;
         }
 
+        SetLocalizedText(messageText, startText, visual.TextColor);
+        SetLocalizedText(MultText, string.Empty, visual.TextColor);
+        if (MultText != null)
+        {
+            MultText.gameObject.SetActive(false);
+        }
+
+        yield return new WaitForSeconds(stepTime);
         gameObject.SetActive(false);
     }
 
