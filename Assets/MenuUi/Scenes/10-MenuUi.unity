@@ -2974,7 +2974,8 @@ MonoBehaviour:
   _taskCardHolder: {fileID: 1825810833}
   _randomQuestionWindow: {fileID: 635271545}
   _randomQuestionTitle: {fileID: 635271547}
-  _randomQuestionAnswerHolder: {fileID: 635271546}
+  _multipleAnswerHolder: {fileID: 635271546}
+  _doubleAnswerHolder: {fileID: 635271548}
   _randomQuestionAnswerPrefab: {fileID: 8684121234280421085, guid: a207dcf4d122dc04da732bcaa3950a7a,
     type: 3}
   _tutorial: {fileID: 977609554}
@@ -4727,6 +4728,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &635271548 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5356975879242888089, guid: b22ac05b761dcf041b2b032e31d07a94,
+    type: 3}
+  m_PrefabInstance: {fileID: 635271544}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &667346629
 GameObject:
   m_ObjectHideFlags: 0

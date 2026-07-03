@@ -44,6 +44,12 @@ public class ChooseTask : MonoBehaviour
 
     [SerializeField]
     [Tooltip("The object that's children are going to the Random Question answers")]
+
+    private RectTransform _multipleAnswerHolder;
+    [SerializeField]
+    [Tooltip("The object that's children are going to the Random Question answers")]
+    private RectTransform _doubleAnswerHolder;
+
     private RectTransform _randomQuestionAnswerHolder;
 
     [SerializeField]
@@ -176,26 +182,47 @@ public class ChooseTask : MonoBehaviour
         // Show the question title for the player
         _randomQuestionTitle.text = question.Question;
 
-        // Create answers for the player to select from
-        foreach (RandomQuestionAnswer questionAnswer in question.answers)
+        // Select the proper answer holder
+        if (question.answers.Count > 2)
         {
-            GameObject answerObj = Instantiate(_randomQuestionAnswerPrefab, _randomQuestionAnswerHolder);
-            answerObj.GetComponentInChildren<TextMeshProUGUI>().text = questionAnswer.Answer;
-            answerObj.GetComponentInChildren<Image>().color = questionAnswer.color;
-            answerObj.GetComponentInChildren<Button>().onClick.AddListener(() => { HideSelectionWindow(); });
+            _randomQuestionAnswerHolder = _multipleAnswerHolder;
+            _doubleAnswerHolder.gameObject.SetActive(false);
+            _multipleAnswerHolder.gameObject.SetActive(true);
+        }
+        else
+        {
+            _randomQuestionAnswerHolder = _doubleAnswerHolder;
+            _doubleAnswerHolder.gameObject.SetActive(true);
+            _multipleAnswerHolder.gameObject.SetActive(false);
 
         }
+
+        // Create answers for the player to select from
+        foreach (RandomQuestionAnswer questionAnswer in question.answers)
+            {
+                GameObject answerObj = Instantiate(_randomQuestionAnswerPrefab, _randomQuestionAnswerHolder);
+                answerObj.GetComponentInChildren<TextMeshProUGUI>().text = questionAnswer.Answer;
+                //answerObj.GetComponentInChildren<Image>().color = questionAnswer.color;
+                answerObj.GetComponentInChildren<Button>().onClick.AddListener(() => { HideSelectionWindow(); });
+
+            }
 
     }
 
     /// <summary>
-    /// Destroys the current random question answers that are parented by _randomQuestionAnswerHolder
+    /// Destroys the current random question answers that are parented by _doubleAnswerHolder and _multipleAnswerHolder
     /// </summary>
     private void DeleteRandomQuestionAnswers()
     {
-        for (int i = 0; i < _randomQuestionAnswerHolder.childCount; i++)
+
+        for (int i = 0; i < _doubleAnswerHolder.childCount; i++)
         {
-            Destroy(_randomQuestionAnswerHolder.GetChild(i).gameObject);
+            Destroy(_doubleAnswerHolder.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < _multipleAnswerHolder.childCount; i++)
+        {
+            Destroy(_multipleAnswerHolder.GetChild(i).gameObject);
         }
     }
 
