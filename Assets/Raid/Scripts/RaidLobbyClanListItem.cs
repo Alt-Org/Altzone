@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Altzone.Scripts;
 using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.AvatarEditor;
 using TMPro;
 using UnityEngine;
@@ -13,17 +10,6 @@ using UnityEngine.UI;
 
 public class RaidLobbyClanListItem : MonoBehaviour
 {
-    private static readonly AvatarPiece[] AvatarPieces =
-    {
-        AvatarPiece.Hair,
-        AvatarPiece.Eyes,
-        AvatarPiece.Nose,
-        AvatarPiece.Mouth,
-        AvatarPiece.Clothes,
-        AvatarPiece.Feet,
-        AvatarPiece.Hands
-    };
-
     [SerializeField] private TextMeshProUGUI clanNameText;
     [SerializeField] private TextMeshProUGUI playerCountText;
     [SerializeField] private RectTransform progressFill;
@@ -141,7 +127,7 @@ public class RaidLobbyClanListItem : MonoBehaviour
             return false;
         }
 
-        AvatarVisualData visualData = CreateAvatarVisualData(player.AvatarData, player.CharacterId);
+        AvatarVisualData visualData = AvatarDesignLoader.CreateAvatarVisualDataFallback(player.AvatarData, player.CharacterId);
         if (visualData == null)
         {
             return false;
@@ -173,63 +159,12 @@ public class RaidLobbyClanListItem : MonoBehaviour
         }
     }
 
-    private static AvatarVisualData CreateAvatarVisualData(AvatarData avatarData, CharacterID characterId)
-    {
-        AvatarPartsReference avatarPartsReference = AvatarPartsReference.Instance;
-        if (avatarData == null || avatarPartsReference == null)
-        {
-            return null;
-        }
-
-        AvatarVisualData visualData = new();
-        foreach (AvatarPiece piece in AvatarPieces)
-        {
-            int pieceId = avatarData.GetPieceID(piece);
-            if (pieceId <= 0)
-            {
-                continue;
-            }
-
-            visualData.SetAvatarPiece(piece, avatarPartsReference.GetAvatarPartById(pieceId.ToString(CultureInfo.InvariantCulture)));
-            visualData.SetColor(piece, ParseAvatarColor(avatarData.GetPieceColor(piece)));
-        }
-
-        visualData.SkinColor = ParseAvatarColor(avatarData.Color);
-        visualData.ClassColor = ResolveClassColor(characterId);
-        return visualData;
-    }
-
     private static void DisableAvatarRaycasts(AvatarFaceLoader avatarFaceLoader)
     {
         foreach (Graphic graphic in avatarFaceLoader.GetComponentsInChildren<Graphic>(true))
         {
             graphic.raycastTarget = false;
         }
-    }
-
-    private static Color ParseAvatarColor(string colorValue)
-    {
-        if (string.IsNullOrWhiteSpace(colorValue))
-        {
-            return Color.white;
-        }
-
-        string normalizedColor = colorValue.StartsWith("#", StringComparison.Ordinal)
-            ? colorValue
-            : "#" + colorValue;
-        return ColorUtility.TryParseHtmlString(normalizedColor, out Color color)
-            ? color
-            : Color.white;
-    }
-
-    private static Color ResolveClassColor(CharacterID characterId)
-    {
-        if (characterId == CharacterID.None || ClassReference.Instance == null)
-        {
-            return Color.white;
-        }
-
-        return ClassReference.Instance.GetColor(BaseCharacter.GetClass(characterId));
     }
 
     private static Color ResolveFallbackIconColor(string playerName)

@@ -95,8 +95,6 @@ MonoBehaviour:
   scrollRect: {fileID: 7542349187606789074}
   contentRoot: {fileID: 7542349187606789019}
   entryTemplate: {fileID: 7542349187606789058}
-  avatarHeadTemplate: {fileID: 2907023324437588145, guid: 242eb41c9b6db9841a5c6610aa625c54,
-    type: 3}
   systemMessageSprite: {fileID: 21300000, guid: 827e55f8331900b47aa990c5dcdc1bc6,
     type: 3}
   normalEntryColor: {r: 1, g: 1, b: 1, a: 0.95}
@@ -356,6 +354,7 @@ GameObject:
   - component: {fileID: 7542349187606789059}
   - component: {fileID: 7542349187606789060}
   - component: {fileID: 7542349187606789062}
+  - component: {fileID: 7605187291563204421}
   m_Layer: 5
   m_Name: EntryTemplate
   m_TagString: Untagged
@@ -413,6 +412,21 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: 0
   m_LayoutPriority: 1
+--- !u!114 &7605187291563204421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7542349187606789058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1f92ec77b11475d9f7b9af5b2c43c2d, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  messageText: {fileID: 7542349187606789061}
+  iconImage: {fileID: 7542349187606789015}
+  avatarFaceLoader: {fileID: 9087436182241067651}
 --- !u!1 &7542349187606789064
 GameObject:
   m_ObjectHideFlags: 0
@@ -1185,6 +1199,12 @@ PrefabInstance:
 --- !u!224 &6076832195252004271 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4395214235301648805, guid: 242eb41c9b6db9841a5c6610aa625c54,
+    type: 3}
+  m_PrefabInstance: {fileID: 7542349187606789130}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9087436182241067651 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2907023324437588145, guid: 242eb41c9b6db9841a5c6610aa625c54,
     type: 3}
   m_PrefabInstance: {fileID: 7542349187606789130}
   m_PrefabAsset: {fileID: 0}

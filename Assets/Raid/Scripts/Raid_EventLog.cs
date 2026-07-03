@@ -4,29 +4,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts.ReferenceSheets;
-using MenuUi.Scripts.AvatarEditor;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Raid_EventLog : MonoBehaviour
 {
-    private static readonly Color[] IconColors =
-    {
-        new(1f, 0.62f, 0.12f, 1f),
-        new(0.71f, 0.36f, 1f, 1f),
-        new(0.21f, 0.78f, 1f, 1f),
-        new(0.46f, 0.82f, 0.37f, 1f)
-    };
-    private static readonly AvatarPiece[] AvatarPieces = (AvatarPiece[])Enum.GetValues(typeof(AvatarPiece));
-
     [SerializeField, Min(1)] private int maxEntries = 80;
     [SerializeField, Min(1)] private int visibleEntryCount = 2;
     [SerializeField] private ScrollRect scrollRect;
     [SerializeField] private RectTransform contentRoot;
     [SerializeField] private GameObject entryTemplate;
-    [SerializeField] private AvatarFaceLoader avatarHeadTemplate;
     [SerializeField] private Sprite systemMessageSprite;
     [SerializeField] private Color normalEntryColor = new(1f, 1f, 1f, 0.95f);
     [SerializeField] private Color trapEntryColor = new(1f, 1f, 1f, 0.95f);
@@ -119,241 +106,18 @@ public class Raid_EventLog : MonoBehaviour
 
     private void ConfigureEntry(GameObject entry, string actorName, string message, Color color, CharacterID characterId, AvatarData avatarData, bool useSystemIcon)
     {
-        TMP_Text messageText = FindMessageText(entry.transform);
-
-        ApplyEntryLayout(entry, messageText);
-
-        if (messageText != null)
-        {
-            messageText.text = message;
-            messageText.color = color;
-        }
-
-        Transform iconTransform = FindAvatarSlot(entry.transform);
-        if (useSystemIcon)
-        {
-            ConfigureSystemIcon(iconTransform);
-            return;
-        }
-
-        ConfigureIcon(iconTransform, actorName, characterId, avatarData);
-    }
-
-    private static TMP_Text FindMessageText(Transform entryTransform)
-    {
-        if (entryTransform == null)
-        {
-            return null;
-        }
-
-        TMP_Text messageText = entryTransform.Find("Message")?.GetComponent<TMP_Text>();
-        if (messageText != null)
-        {
-            return messageText;
-        }
-
-        messageText = entryTransform.GetComponent<TMP_Text>();
-        return messageText != null
-            ? messageText
-            : entryTransform.GetComponentInChildren<TMP_Text>(true);
-    }
-
-    private static Transform FindAvatarSlot(Transform entryTransform)
-    {
-        return entryTransform == null
-            ? null
-            : entryTransform.Find("Profile Image") ?? entryTransform.Find("Icon");
-    }
-
-    private void ConfigureIcon(Transform iconTransform, string actorName, CharacterID characterId, AvatarData avatarData)
-    {
-        if (iconTransform == null)
-        {
-            return;
-        }
-
-        Image iconImage = iconTransform.GetComponent<Image>();
-        if (TryConfigureAvatarIcon(iconTransform, iconImage, characterId, avatarData))
-        {
-            return;
-        }
-
-        SetAvatarHeadVisible(iconTransform, false);
-
-        if (iconImage != null)
-        {
-            iconImage.enabled = true;
-            iconImage.color = ResolveIconColor(actorName);
-            iconImage.preserveAspect = false;
-        }
-    }
-
-    private void ConfigureSystemIcon(Transform iconTransform)
-    {
-        if (iconTransform == null)
-        {
-            return;
-        }
-
-        SetAvatarHeadVisible(iconTransform, false);
-
-        Image iconImage = iconTransform.GetComponent<Image>();
-        if (iconImage == null)
-        {
-            return;
-        }
-
-        iconImage.enabled = true;
-        iconImage.raycastTarget = false;
-        iconImage.sprite = systemMessageSprite;
-        iconImage.color = Color.white;
-        iconImage.preserveAspect = systemMessageSprite != null;
-
-        if (systemMessageSprite == null)
-        {
-            iconImage.color = ResolveIconColor("System");
-            iconImage.preserveAspect = false;
-        }
-    }
-
-    private bool TryConfigureAvatarIcon(Transform iconTransform, Image iconImage, CharacterID characterId, AvatarData avatarData)
-    {
-        if (avatarData == null)
-        {
-            return false;
-        }
-
-        AvatarVisualData visualData = CreateAvatarVisualData(avatarData, characterId);
-        if (visualData == null)
-        {
-            return false;
-        }
-
-        AvatarFaceLoader avatarFaceLoader = iconTransform.GetComponentInChildren<AvatarFaceLoader>(true);
-        if (avatarFaceLoader == null)
-        {
-            if (avatarHeadTemplate == null)
-            {
-                return false;
-            }
-
-            avatarFaceLoader = Instantiate(avatarHeadTemplate, iconTransform);
-            avatarFaceLoader.name = "CharacterHeadImage";
-        }
-
-        avatarFaceLoader.SetUseOwnAvatarVisuals(false);
-        DisableAvatarRaycasts(avatarFaceLoader);
-
-        if (iconImage != null)
-        {
-            iconImage.enabled = false;
-            iconImage.raycastTarget = false;
-        }
-
-        avatarFaceLoader.gameObject.SetActive(true);
-        avatarFaceLoader.UpdateVisuals(visualData);
-        return true;
-    }
-
-    private static void SetAvatarHeadVisible(Transform iconTransform, bool isVisible)
-    {
-        if (iconTransform == null)
-        {
-            return;
-        }
-
-        AvatarFaceLoader avatarFaceLoader = iconTransform.GetComponentInChildren<AvatarFaceLoader>(true);
-        if (avatarFaceLoader != null)
-        {
-            avatarFaceLoader.gameObject.SetActive(isVisible);
-        }
-    }
-
-    private AvatarVisualData CreateAvatarVisualData(AvatarData avatarData, CharacterID characterId)
-    {
-        AvatarPartsReference avatarPartsReference = AvatarPartsReference.Instance;
-        if (avatarData == null || avatarPartsReference == null)
-        {
-            return null;
-        }
-
-        AvatarVisualData visualData = new();
-        foreach (AvatarPiece piece in AvatarPieces)
-        {
-            int pieceId = avatarData.GetPieceID(piece);
-            if (pieceId <= 0)
-            {
-                continue;
-            }
-
-            visualData.SetAvatarPiece(piece, avatarPartsReference.GetAvatarPartById(pieceId.ToString(CultureInfo.InvariantCulture)));
-            visualData.SetColor(piece, ParseAvatarColor(avatarData.GetPieceColor(piece)));
-        }
-
-        visualData.SkinColor = ParseAvatarColor(avatarData.Color);
-        visualData.ClassColor = ResolveClassColor(characterId);
-        return visualData;
-    }
-
-    private static void DisableAvatarRaycasts(AvatarFaceLoader avatarFaceLoader)
-    {
-        if (avatarFaceLoader == null)
-        {
-            return;
-        }
-
-        foreach (Graphic graphic in avatarFaceLoader.GetComponentsInChildren<Graphic>(true))
-        {
-            graphic.raycastTarget = false;
-        }
-    }
-
-    private static Color ParseAvatarColor(string colorValue)
-    {
-        if (string.IsNullOrWhiteSpace(colorValue))
-        {
-            return Color.white;
-        }
-
-        string normalizedColor = colorValue.StartsWith("#", StringComparison.Ordinal)
-            ? colorValue
-            : "#" + colorValue;
-        return ColorUtility.TryParseHtmlString(normalizedColor, out Color color)
-            ? color
-            : Color.white;
-    }
-
-    private static Color ResolveClassColor(CharacterID characterId)
-    {
-        if (characterId == CharacterID.None || ClassReference.Instance == null)
-        {
-            return Color.white;
-        }
-
-        return ClassReference.Instance.GetColor(BaseCharacter.GetClass(characterId));
-    }
-
-    private void ApplyEntryLayout(GameObject entry, TMP_Text messageText)
-    {
         if (entry == null)
         {
             return;
         }
 
-        float rowHeight = GetRuntimeEntryHeight();
-        if (entry.TryGetComponent(out LayoutElement layoutElement))
+        if (!entry.TryGetComponent(out RaidEventLogEntryHandler entryHandler))
         {
-            layoutElement.ignoreLayout = false;
-            layoutElement.minHeight = rowHeight;
-            layoutElement.preferredHeight = rowHeight;
-            layoutElement.flexibleHeight = 0f;
+            entryHandler = entry.AddComponent<RaidEventLogEntryHandler>();
         }
 
-        if (entry.transform is RectTransform entryRect)
-        {
-            entryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rowHeight);
-        }
-
+        entryHandler.ApplyLayout(GetRuntimeEntryHeight());
+        entryHandler.Configure(actorName, message, color, characterId, avatarData, systemMessageSprite, useSystemIcon);
     }
 
     private float GetTemplateEntryHeight()
@@ -388,19 +152,6 @@ public class Raid_EventLog : MonoBehaviour
         }
 
         return 31f;
-    }
-
-    private float GetTemplateFontSize()
-    {
-        TMP_Text templateText = null;
-        if (entryTemplate != null)
-        {
-            templateText = FindMessageText(entryTemplate.transform);
-        }
-
-        return templateText != null && templateText.fontSize > 0f
-            ? templateText.fontSize
-            : 13f;
     }
 
     private float GetRuntimeEntryHeight()
@@ -472,10 +223,7 @@ public class Raid_EventLog : MonoBehaviour
             return "item";
         }
 
-        bool useEnglish = SettingsCarrier.Instance != null
-            && SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English;
-
-        string displayName = useEnglish
+        string displayName = UseEnglish()
             ? furniture.FurnitureInfo?.EnglishName
             : furniture.FurnitureInfo?.VisibleName;
 
@@ -517,21 +265,6 @@ public class Raid_EventLog : MonoBehaviour
     {
         return SettingsCarrier.Instance != null
             && SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English;
-    }
-
-    private static Color ResolveIconColor(string actorName)
-    {
-        int hash = 0;
-        if (!string.IsNullOrWhiteSpace(actorName))
-        {
-            foreach (char character in actorName)
-            {
-                hash = hash * 31 + character;
-            }
-        }
-
-        int colorIndex = Math.Abs(hash % IconColors.Length);
-        return IconColors[colorIndex];
     }
 
 }
