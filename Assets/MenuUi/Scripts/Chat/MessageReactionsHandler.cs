@@ -32,12 +32,15 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     private List<ReactionObjectHandler> _reactions = new();
     private List<ChatReactionHandler> _reactionHandlers = new();
+    public List<ChatReactionHandler> ReactionHandlers { get => _reactionHandlers; }
+
     private List<int> _commonReactions = new();
     private bool _longClick = false;
     private ChatShowUsersPopUpData _reactionPopup = Chat.instance?.ChatShowUsersPopUpData;
 
     [SerializeField] public List<ServerReactions> _reactionData = new List<ServerReactions>(); //Used for addings data to ChatShowUserPopUpData
 
+    private string _pLayerId; ///Used for <see cref="ListReset"/>
 
     void Start()
     {
@@ -50,7 +53,10 @@ public class MessageReactionsHandler : AltMonoBehaviour
             GetComponent<MessageReactionResize>().UpdateSize();
         }));
 
-
+        StartCoroutine(GetPlayerData(player =>
+        {
+            _pLayerId = player.Id;
+        }));
             //ReactionObjectHandler.OnReactionPressed += AddReaction;
 
 
@@ -163,6 +169,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// </summary>
     public void UpdateReactions(List<ServerReactions> reactions, string messageid, ChatMessage message)
     {
+        ResetReactionPopUpData(message);
+
         foreach (ChatReactionHandler addedReaction in _reactionHandlers)
         {
             addedReaction.ResetReactions();
@@ -185,9 +193,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
             RemoveReaction(removableReactions[i]);
         }
 
-            UpdateReactionData(reactions, message);
-
-
             //Used for "ChatShowUserPopUpData"
             if (_reactionPopup.gameObject.activeSelf)
         {
@@ -201,11 +206,20 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// </summary>
     public void AddReaction(ServerReactions reaction, Mood mood, string message_id, GameObject ReactionPanel, ChatMessage message)
     {
+
         if (_selectedMessage != null)
         {
             string messageID = _selectedMessage.Id;
             if (messageID != message_id)
                 return;
+
+            //Adds the data for reaction popup
+            _reactionData.Add(reaction);
+
+            if (_reactionPopup.gameObject.activeSelf)
+            {
+                _reactionPopup.AddUsersReaction(message, reaction); 
+            }
 
             HorizontalLayoutGroup reactionsFields = ReactionPanel.GetComponent<HorizontalLayoutGroup>();
 
@@ -226,7 +240,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
                             {
                                 
                                 //Refreshes the reaction selection
-                                ListReset(reaction);
+                                ListReset();
 
                                 _reactionList[i].Selected = true;
 
@@ -247,7 +261,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
             chatReactionHandler.SetReactionInfo(reactionSprite, messageID, mood);
             chatReactionHandler.AddReaction(reaction);
             _reactionHandlers.Add(chatReactionHandler);
-            chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler, reaction));
+            chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
             chatReactionHandler.LongClickButton.onLongClick.AddListener(() => ShowUsers(message));
 
             StartCoroutine(GetPlayerData(player =>
@@ -259,7 +273,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
                         chatReactionHandler.Select();
 
                         //Refreshes the reaction selection
-                        ListReset(reaction);
+                        ListReset();
                         _reactionList[i].Selected = true;
 
                     } 
@@ -283,15 +297,15 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// Toggles the added reactions as selected and unselected.
     /// </summary>
     /// <param name="reactionHandler"></param>
-    public void ToggleReaction(ChatReactionHandler reactionHandler, ServerReactions reaction)
+    public void ToggleReaction(ChatReactionHandler reactionHandler)
     {
 
 
         ChatListener.Instance.SendReaction(!reactionHandler.Selected ? reactionHandler.Mood.ToString() : string.Empty, reactionHandler.MessageID, ChatListener.Instance.ActiveChatChannel);
         if (!_longClick)
         {
-            ListReset(reaction);
-            
+
+                ListReset();
 
             if (reactionHandler.Selected)
             {
@@ -324,12 +338,12 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
         _longClick = true;
 
-        Invoke("ResetLongClick", 2);
+        Invoke(nameof(ResetLongClick), 2);
 
     }
 
-    //Used for ChatShowUsersPopUpData to update the data
-    private void UpdateReactionData(List<ServerReactions> reactions, ChatMessage message)
+    //Used for ChatShowUsersPopUpData
+    private void ResetReactionPopUpData(ChatMessage message)
     {
         //Empties the data
         if (_reactionPopup.gameObject.activeSelf)
@@ -342,23 +356,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
         _reactionData.Clear();
 
-
-        //Adds the data
-        foreach (ServerReactions reaction in reactions)
-        {
-            _reactionData.Add(reaction);
-
-        }
-
-        if (_reactionPopup.gameObject.activeSelf)
-        {
-
-            foreach (var reactionData in _reactionData)
-            {
-                _reactionPopup.AddUsersReaction(message, reactionData);
-
-            }
-        }
     }
 
     private void ResetLongClick()
@@ -388,12 +385,12 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
 
     //Restart the reaction selection back to Zero
-    private void ListReset(ServerReactions _reaction)
+    private void ListReset()
     {
 
         for (int i = 0; i < _reactionData.Count; i++)
         {
-            if (_reactionData[i].sender_id == _reaction.sender_id)
+            if (_reactionData[i].sender_id == _pLayerId)
             {
                 foreach (var j in _reactionList)
                 {

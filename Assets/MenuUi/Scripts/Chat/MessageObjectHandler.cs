@@ -160,8 +160,6 @@ public class MessageObjectHandler : MonoBehaviour
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
         ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, ReactionsPanel, message);
 
-        //Used for ChatShowUsersPopUpData
-        ChildsScript._reactionData.Add(EmojiId);
     }
 
     private void UpdateReactions(ChatChannelType chatChannelType, ChatMessage message)

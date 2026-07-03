@@ -222,8 +222,19 @@ public class ChatShowUsersPopUpData : MonoBehaviour
             childFitter.enabled = false;
 
             child.sizeDelta = new Vector2(150, 110);
-        }
 
+            ChatReactionHandler Childhandler = child.GetComponent<ChatReactionHandler>();
+
+            //Adds the toggle system to the copied button to direct the data to its original place
+            foreach (ChatReactionHandler i in ReactionHandler.ReactionHandlers)
+            {
+                if(Childhandler.Mood == i.Mood)
+                {
+                    Childhandler.Button.onClick.AddListener(() => ReactionHandler.ToggleReaction(i));
+                }
+            }
+
+        }
         ReactionHandler.GenarateReactionObjects(_popUpAllReactions);
 
     }
