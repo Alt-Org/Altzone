@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Language;
-using Altzone.Scripts.Model.Poco.Game;
-using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using TMPro;
 using UnityEngine;
@@ -12,38 +10,38 @@ public class RaidLobbyClanListItem : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI clanNameText;
     [SerializeField] private TextMeshProUGUI playerCountText;
-    [SerializeField] private RectTransform progressFill;
+    [SerializeField] private Image progressFill;
     [SerializeField] private Image[] playerIcons;
+    [SerializeField] private AvatarFaceLoader[] playerAvatarFaceLoaders;
 
     private RectTransform _rectTransform;
 
     private RectTransform RectTransform => _rectTransform ??= (RectTransform)transform;
 
-    public readonly struct PlayerIconData
-    {
-        public PlayerIconData(string playerName, CharacterID characterId, AvatarData avatarData)
-        {
-            PlayerName = playerName;
-            CharacterId = characterId;
-            AvatarData = avatarData;
-        }
+    private const float BottomPadding = 0.02f;
 
-        public string PlayerName { get; }
-        public CharacterID CharacterId { get; }
-        public AvatarData AvatarData { get; }
+    private void Awake()
+    {
+        ResolveReferences();
+    }
+
+    private void OnValidate()
+    {
+        ResolveReferences();
     }
 
     public void SetTemplateStackPosition(int index, int rowCount, float spacing)
     {
         Vector2 anchorMin = RectTransform.anchorMin;
         Vector2 anchorMax = RectTransform.anchorMax;
+
         float clampedSpacing = Mathf.Max(0f, spacing);
         float templateTop = anchorMax.y;
-        const float bottomPadding = 0.02f;
         float templateBottom = anchorMin.y;
         float templateHeight = templateTop - templateBottom;
         int clampedRowCount = Mathf.Max(1, rowCount);
-        float availableHeight = templateTop - bottomPadding;
+        float availableHeight = templateTop - BottomPadding;
+
         float rowHeight = Mathf.Min(
             templateHeight,
             (availableHeight - clampedSpacing * (clampedRowCount - 1)) / clampedRowCount);
@@ -57,8 +55,10 @@ public class RaidLobbyClanListItem : MonoBehaviour
         RectTransform.sizeDelta = Vector2.zero;
     }
 
-    public void Configure(string clanName, int playerCount, int maxPlayersPerClan, IReadOnlyList<PlayerIconData> players = null)
+    public void Configure(string clanName, int playerCount, int maxPlayersPerClan, IReadOnlyList<RaidPlayerIconData> players = null)
     {
+        ResolveReferences();
+
         int clampedCount = Mathf.Clamp(playerCount, 0, Mathf.Max(0, maxPlayersPerClan));
         if (clanNameText != null)
         {
@@ -75,9 +75,7 @@ public class RaidLobbyClanListItem : MonoBehaviour
         if (progressFill != null)
         {
             float fill = maxPlayersPerClan <= 0 ? 0f : Mathf.Clamp01((float)clampedCount / maxPlayersPerClan);
-            progressFill.anchorMax = new Vector2(fill, progressFill.anchorMax.y);
-            progressFill.anchoredPosition = Vector2.zero;
-            progressFill.sizeDelta = Vector2.zero;
+            progressFill.fillAmount = fill;
         }
 
         if (playerIcons == null)
@@ -93,36 +91,39 @@ public class RaidLobbyClanListItem : MonoBehaviour
                 playerIcons[i].gameObject.SetActive(hasPlayer);
                 if (hasPlayer)
                 {
-                    PlayerIconData player = players != null && i < players.Count
+                    RaidPlayerIconData player = players != null && i < players.Count
                         ? players[i]
                         : default;
-                    ConfigurePlayerIcon(playerIcons[i], player);
+                    ConfigurePlayerIcon(i, player);
                 }
             }
         }
     }
 
-    private void ConfigurePlayerIcon(Image iconImage, PlayerIconData player)
+    private void ConfigurePlayerIcon(int iconIndex, RaidPlayerIconData player)
     {
+        Image iconImage = playerIcons[iconIndex];
+        AvatarFaceLoader avatarFaceLoader = GetPlayerAvatarFaceLoader(iconIndex);
+
         if (iconImage == null)
         {
             return;
         }
 
-        if (TryConfigureAvatarIcon(iconImage, player))
+        if (TryConfigureAvatarIcon(iconImage, avatarFaceLoader, player))
         {
             return;
         }
 
-        SetAvatarHeadVisible(iconImage.transform, false);
+        SetAvatarHeadVisible(avatarFaceLoader, false);
         iconImage.enabled = true;
         iconImage.color = ResolveFallbackIconColor(player.PlayerName);
         iconImage.preserveAspect = true;
     }
 
-    private bool TryConfigureAvatarIcon(Image iconImage, PlayerIconData player)
+    private bool TryConfigureAvatarIcon(Image iconImage, AvatarFaceLoader avatarFaceLoader, RaidPlayerIconData player)
     {
-        if (player.AvatarData == null)
+        if (player.AvatarData == null || avatarFaceLoader == null)
         {
             return false;
         }
@@ -133,14 +134,7 @@ public class RaidLobbyClanListItem : MonoBehaviour
             return false;
         }
 
-        AvatarFaceLoader avatarFaceLoader = iconImage.GetComponentInChildren<AvatarFaceLoader>(true);
-        if (avatarFaceLoader == null)
-        {
-            return false;
-        }
-
         avatarFaceLoader.SetUseOwnAvatarVisuals(false);
-        DisableAvatarRaycasts(avatarFaceLoader);
 
         iconImage.enabled = false;
         iconImage.raycastTarget = false;
@@ -150,20 +144,11 @@ public class RaidLobbyClanListItem : MonoBehaviour
         return true;
     }
 
-    private static void SetAvatarHeadVisible(Transform iconTransform, bool isVisible)
+    private static void SetAvatarHeadVisible(AvatarFaceLoader avatarFaceLoader, bool isVisible)
     {
-        AvatarFaceLoader avatarFaceLoader = iconTransform.GetComponentInChildren<AvatarFaceLoader>(true);
         if (avatarFaceLoader != null)
         {
             avatarFaceLoader.gameObject.SetActive(isVisible);
-        }
-    }
-
-    private static void DisableAvatarRaycasts(AvatarFaceLoader avatarFaceLoader)
-    {
-        foreach (Graphic graphic in avatarFaceLoader.GetComponentsInChildren<Graphic>(true))
-        {
-            graphic.raycastTarget = false;
         }
     }
 
@@ -188,12 +173,30 @@ public class RaidLobbyClanListItem : MonoBehaviour
 
     private static SettingsCarrier.LanguageType GetCurrentLanguage()
     {
-        SettingsCarrier.LanguageType language = SettingsCarrier.Instance != null
-            ? SettingsCarrier.Instance.Language
-            : SettingsCarrier.LanguageType.Finnish;
+        SettingsCarrier.LanguageType language = SettingsCarrier.Instance ? SettingsCarrier.Instance.Language : SettingsCarrier.LanguageType.Finnish;
 
         return language == SettingsCarrier.LanguageType.English
             ? SettingsCarrier.LanguageType.English
             : SettingsCarrier.LanguageType.Finnish;
+    }
+
+    private AvatarFaceLoader GetPlayerAvatarFaceLoader(int index)
+    {
+        return playerAvatarFaceLoaders != null && index >= 0 && index < playerAvatarFaceLoaders.Length
+            ? playerAvatarFaceLoaders[index]
+            : null;
+    }
+
+    private void ResolveReferences()
+    {
+        if (playerIcons == null)
+        {
+            return;
+        }
+
+        if (playerAvatarFaceLoaders == null || playerAvatarFaceLoaders.Length != playerIcons.Length)
+        {
+            playerAvatarFaceLoaders = new AvatarFaceLoader[playerIcons.Length];
+        }
     }
 }

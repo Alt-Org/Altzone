@@ -1152,14 +1152,14 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
     }
 
-    private RaidLobbyClanListItem.PlayerIconData CreatePlayerIconData(Player player)
+    private RaidPlayerIconData CreatePlayerIconData(Player player)
     {
         int characterId = GetPlayerCharacterId(player);
         CharacterID character = Enum.IsDefined(typeof(CharacterID), characterId)
             ? (CharacterID)characterId
             : CharacterID.None;
 
-        return new RaidLobbyClanListItem.PlayerIconData(
+        return new RaidPlayerIconData(
             GetPlayerDisplayName(player, player?.ActorNumber ?? 0),
             character,
             RaidPhotonRoom.DecodeAvatarData(GetPlayerAvatarPayload(player)));

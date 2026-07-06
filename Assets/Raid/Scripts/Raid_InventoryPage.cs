@@ -141,7 +141,7 @@ public class Raid_InventoryPage : MonoBehaviour
         ResolveReferences();
         TryStartTimerOnFirstLoot();
 
-        LootActorContext actorContext = new LootActorContext(
+        RaidPlayerIconData actorContext = new RaidPlayerIconData(
             GetLocalEventPlayerName(),
             GetLocalEventCharacterId(),
             GetLocalEventAvatarData());
@@ -153,11 +153,11 @@ public class Raid_InventoryPage : MonoBehaviour
     {
         ResolveReferences();
 
-        LootActorContext actorContext = new LootActorContext(playerName, actorCharacterId, actorAvatarData);
+        RaidPlayerIconData actorContext = new RaidPlayerIconData(playerName, actorCharacterId, actorAvatarData);
         ProcessLoot(index, 0f, lootWeightMultiplier, triggeredByLocalPlayer, actorContext, true, true);
     }
 
-    private void ProcessLoot(int index, float expectedItemWeight, float networkLootWeightMultiplier, bool isLocalLoot, LootActorContext actorContext, bool skipWeightValidation, bool ignoreFreeze = false)
+    private void ProcessLoot(int index, float expectedItemWeight, float networkLootWeightMultiplier, bool isLocalLoot, RaidPlayerIconData actorContext, bool skipWeightValidation, bool ignoreFreeze = false)
     {
         if (!CanLoot(index, out Raid_InventoryItem item, ignoreFreeze, isLocalLoot))
         {
@@ -638,20 +638,6 @@ public class Raid_InventoryPage : MonoBehaviour
     {
         public int bombIndex;
         public Raid_InventoryItem.TrapType bombType;
-    }
-
-    private readonly struct LootActorContext
-    {
-        public LootActorContext(string playerName, CharacterID characterId, AvatarData avatarData)
-        {
-            PlayerName = playerName;
-            CharacterId = characterId;
-            AvatarData = avatarData;
-        }
-
-        public string PlayerName { get; }
-        public CharacterID CharacterId { get; }
-        public AvatarData AvatarData { get; }
     }
 
     private interface IInventoryRandom
