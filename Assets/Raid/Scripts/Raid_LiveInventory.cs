@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(CanvasGroup))]
 public class Raid_LiveInventory : MonoBehaviour
 {
     [SerializeField] private RectTransform content;
@@ -20,7 +19,6 @@ public class Raid_LiveInventory : MonoBehaviour
     [SerializeField] private int collectedLootColumnCount = 3;
     [SerializeField] private Raid_References raidReferences;
 
-    private CanvasGroup canvasGroup;
     private Raid_LootTracking lootTracking;
     private Transform liveTimerPanel;
     private Transform liveExitRaidButton;
@@ -50,6 +48,12 @@ public class Raid_LiveInventory : MonoBehaviour
         }
 
         UnsubscribeLootTracking();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeLootTracking();
+        RestoreLiveRaidControlSiblingOrder();
     }
 
     public void Show()
@@ -202,20 +206,10 @@ public class Raid_LiveInventory : MonoBehaviour
     {
         EnsureInitialized();
 
-        if (canvasGroup == null)
+        if (menuRoot != null && menuRoot.activeSelf != visible)
         {
-            Debug.LogError("Cannot set raid live inventory visibility because CanvasGroup is missing from the LiveInventory prefab.", this);
-            return;
+            menuRoot.SetActive(visible);
         }
-
-        if (!menuRoot.activeSelf)
-        {
-            menuRoot.SetActive(true);
-        }
-
-        canvasGroup.alpha = visible ? 1f : 0f;
-        canvasGroup.interactable = visible;
-        canvasGroup.blocksRaycasts = visible;
     }
 
     private void EnsureInitialized()
@@ -224,8 +218,6 @@ public class Raid_LiveInventory : MonoBehaviour
         {
             menuRoot = gameObject;
         }
-
-        canvasGroup = menuRoot.GetComponent<CanvasGroup>();
 
         ResolveBackButton();
         if (backButton != null)

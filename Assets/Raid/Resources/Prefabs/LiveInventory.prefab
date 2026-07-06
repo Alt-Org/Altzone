@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2668198566995541017}
   - component: {fileID: 7581730394780298031}
-  - component: {fileID: 9203000000000000001}
   m_Layer: 5
   m_Name: LiveInventory
   m_TagString: Untagged
@@ -69,18 +68,6 @@ MonoBehaviour:
   collectedLootGridPaddingTop: 80
   collectedLootGridPaddingBottom: 40
   collectedLootColumnCount: 3
---- !u!225 &9203000000000000001
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 683399793402178915}
-  m_Enabled: 1
-  m_Alpha: 0
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
 --- !u!1 &1381501735683521454
 GameObject:
   m_ObjectHideFlags: 0
