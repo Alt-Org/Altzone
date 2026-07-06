@@ -778,7 +778,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         Raid_InventoryItem item = _inventoryPage.GetInventoryItem(slotIndex);
-        if (item == null || item.ItemWeight <= 0f || item.furnitureData == null)
+        if (item == null || item.ItemWeight <= 0f || item.FurnitureData == null)
         {
             return;
         }

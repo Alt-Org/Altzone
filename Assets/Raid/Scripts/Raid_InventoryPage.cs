@@ -33,8 +33,7 @@ public class Raid_InventoryPage : MonoBehaviour
     public class BombData
     {
         public int bombIndex;
-        [Tooltip("Trap type: 0 = end raid, 1 = freeze, 2 = double next loot weight.")]
-        public int bombType;
+        public Raid_InventoryItem.TrapType bombType;
     }
     [SerializeField] BombData[] Bombs;
 
@@ -176,9 +175,10 @@ public class Raid_InventoryPage : MonoBehaviour
             return;
         }
 
-        GameFurniture furniture = item.furnitureData;
-        int trapType = item._bombType;
-        bool isTrap = item.bomb;
+        GameFurniture furniture = item.FurnitureData;
+        Raid_InventoryItem.TrapType trapType = item.CurrentTrapType;
+        int trapTypeValue = (int)trapType;
+        bool isTrap = item.HasTrap;
         float lootWeightMultiplier = skipWeightValidation
             ? networkLootWeightMultiplier
             : ResolveLocalLootWeightMultiplier(isTrap, trapType);
@@ -190,15 +190,13 @@ public class Raid_InventoryPage : MonoBehaviour
                 item.TriggerTrap();
             }
 
-            eventLog?.LogTrapTriggered(actorContext.PlayerName, trapType, actorContext.CharacterId, actorContext.AvatarData);
+            eventLog?.LogTrapTriggered(actorContext.PlayerName, trapTypeValue, actorContext.CharacterId, actorContext.AvatarData);
         }
 
         if (LootItem(item, lootWeightMultiplier, addToLootTracker))
         {
             eventLog?.LogLootTaken(actorContext.PlayerName, furniture, lootWeightMultiplier, actorContext.CharacterId, actorContext.AvatarData);
         }
-
-        item.ItemWeight = 0f;
 
         if (isTrap && applyTrapEffect)
         {
@@ -208,7 +206,7 @@ public class Raid_InventoryPage : MonoBehaviour
 
     private bool LootItem(Raid_InventoryItem item, float lootWeightMultiplier, bool addToLootTracker)
     {
-        GameFurniture furniture = item.furnitureData;
+        GameFurniture furniture = item.FurnitureData;
         if (LootTracker == null || furniture == null)
         {
             if (LootTracker == null)
@@ -351,7 +349,7 @@ public class Raid_InventoryPage : MonoBehaviour
             Bombs[i] = new BombData
             {
                 bombIndex = availableIndices[i],
-                bombType = i < 3 ? i : Random.Range(0, 3)
+                bombType = (Raid_InventoryItem.TrapType)(i < 3 ? i : Random.Range(0, 3))
             };
         }
     }
@@ -396,7 +394,7 @@ public class Raid_InventoryPage : MonoBehaviour
     public float GetNetworkLootWeightMultiplier(int index)
     {
         Raid_InventoryItem item = GetInventoryItem(index);
-        return item != null && item.bomb && item._bombType == 2 ? doubleWeightMultiplier : 1f;
+        return item != null && item.HasTrap && item.CurrentTrapType == Raid_InventoryItem.TrapType.DoubleNextLootWeight ? doubleWeightMultiplier : 1f;
     }
 
     public bool CanRequestLoot(int index)
@@ -580,7 +578,7 @@ public class Raid_InventoryPage : MonoBehaviour
             RaidPhotonRoom.TrapData trap = trapData[i];
             if (trap.Index >= 0 && trap.Index < ListOfUIItems.Count)
             {
-                bombs.Add(new BombData { bombIndex = trap.Index, bombType = trap.Type });
+                bombs.Add(new BombData { bombIndex = trap.Index, bombType = (Raid_InventoryItem.TrapType)trap.Type });
             }
         }
 
@@ -620,7 +618,7 @@ public class Raid_InventoryPage : MonoBehaviour
             return false;
         }
 
-        return item.ItemWeight > 0f && item.furnitureData != null;
+        return item.ItemWeight > 0f && item.FurnitureData != null;
     }
 
     private void TryStartTimerOnFirstLoot()
@@ -634,9 +632,9 @@ public class Raid_InventoryPage : MonoBehaviour
         firstItem = false;
     }
 
-    private float ResolveLocalLootWeightMultiplier(bool isTrap, int trapType)
+    private float ResolveLocalLootWeightMultiplier(bool isTrap, Raid_InventoryItem.TrapType trapType)
     {
-        if (isTrap && trapType == 2)
+        if (isTrap && trapType == Raid_InventoryItem.TrapType.DoubleNextLootWeight)
         {
             nextLootWeightDoubled = true;
         }
@@ -644,18 +642,18 @@ public class Raid_InventoryPage : MonoBehaviour
         return nextLootWeightDoubled ? doubleWeightMultiplier : 1f;
     }
 
-    private void ApplyTrapEffect(int trapType)
+    private void ApplyTrapEffect(Raid_InventoryItem.TrapType trapType)
     {
         switch (trapType)
         {
-            case 0:
+            case Raid_InventoryItem.TrapType.EndRaid:
                 exitraid.EndRaid();
                 break;
-            case 1:
+            case Raid_InventoryItem.TrapType.Freeze:
                 Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.Freeze, freezeDuration);
                 StartFreeze();
                 break;
-            case 2:
+            case Raid_InventoryItem.TrapType.DoubleNextLootWeight:
                 Raid_EventPopup.Show(this, Raid_EventPopup.Scenario.DoubleWeight);
                 break;
         }

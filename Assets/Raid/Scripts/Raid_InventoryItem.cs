@@ -5,13 +5,21 @@ using TMPro;
 using System;
 using UnityEngine.EventSystems;
 using Altzone.Scripts.Model.Poco.Game;
+using UnityEngine.Serialization;
 
 public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 {
+    public enum TrapType
+    {
+        EndRaid = 0,
+        Freeze = 1,
+        DoubleNextLootWeight = 2
+    }
+
     private static readonly Vector2 LossHaloPadding = new Vector2(70f, 70f);
     private static readonly Vector2 LossHaloOffset = Vector2.zero;
+
     [SerializeField] private Image ItemImage;
-    [SerializeField] public float ItemWeight;
     [SerializeField] private GameObject Lock;
     [SerializeField] private GameObject Bomb;
     [SerializeField] private Image BombImage;
@@ -20,55 +28,52 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     [SerializeField] private GameObject BombIndicator;
     [SerializeField] private GameObject ItemBall;
     [SerializeField] private GameObject Heart;
-    [SerializeField] public Image Aura;
-    [SerializeField] public Image Bubble;
-    [SerializeField] public Sprite[] Auras;
-    [SerializeField] public Sprite[] Bubbles;
-    [SerializeField] public Raid_References raid_References;
-    
+    [SerializeField] private Image Aura;
+    [SerializeField] private Image Bubble;
+    [SerializeField] private Sprite[] Auras;
+    [SerializeField] private Sprite[] Bubbles;
+    [SerializeField] private TMP_Text ItemWeightPopUp;
+    [SerializeField] private TMP_Text ItemWeightText;
+    [SerializeField] private bool showItemWeightText = false;
+    [SerializeField] private float speed = 15f;
+    [SerializeField, FormerlySerializedAs("ItemWeight")] private float itemWeight;
+    [SerializeField, FormerlySerializedAs("raid_References")] private Raid_References raidReferences;
+    [SerializeField, FormerlySerializedAs("furnitureData")] private GameFurniture furnitureData;
+    [SerializeField, FormerlySerializedAs("bomb")] private bool hasTrap = false;
+    [SerializeField, FormerlySerializedAs("_bombType")] private TrapType trapType = TrapType.EndRaid;
+    [SerializeField] private AudioClip pickUp;
+    [SerializeField] private AudioClip explosion;
+#pragma warning disable CS0612
+    [SerializeField] private SetVolume volumeSettings;
+#pragma warning restore CS0612
+
+    public event Action<Raid_InventoryItem> OnItemClicked;
+    public event Action<Sprite> OnLootBallArrived;
+
+    public float ItemWeight => itemWeight;
+    public GameFurniture FurnitureData => furnitureData;
+    public bool HasTrap => hasTrap;
+    public TrapType CurrentTrapType => trapType;
+    public Sprite CurrentItemSprite => ItemImage != null ? ItemImage.sprite : null;
+
     private RectTransform target;
     private RectTransform itemBallRect;
     private Raid_PointerClickBlocker itemBallClickBlocker;
     private Raid_Timer raidTimer;
     private Vector2 endLoc;
     private float t = 0f;
-    [SerializeField] private float speed = 15f;
-    [SerializeField] private TMP_Text ItemWeightPopUp;
-    [SerializeField] private TMP_Text ItemWeightText;
-    [SerializeField] private bool showItemWeightText = false;
-
-    public event Action<Raid_InventoryItem> OnItemClicked;
-
     private bool moving = false;
-
     private bool empty = true;
-
     private bool locked = false;
-
     private bool active = true;
-
     private bool triggered = false;
-
-    public bool bomb = false;
     private bool showTrapIndicator = true;
-
     private bool timeEnded = false;
-    public GameFurniture furnitureData;
-
     private AudioSource audioSource;
-#pragma warning disable CS0612
-    [SerializeField] private SetVolume volumeSettings;
-#pragma warning restore CS0612
     private SettingsCarrier.SoundType soundType;
     private bool hasSoundType;
-    public AudioClip pickUp;
-    public AudioClip explosion;
-
-    [Tooltip("Trap type: 0 = end raid, 1 = freeze, 2 = double next loot weight.")]
-    public int _bombType = 0; 
-    public Sprite CurrentItemSprite => ItemImage != null ? ItemImage.sprite : null;
     private Sprite pendingRecentLootSprite;
-    private Action<Sprite> onLootBallArrived;
+    private Action<Sprite> pendingLootBallArrived;
 
     public void Awake()
     {
@@ -84,9 +89,9 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
     public void ConfigureSharedReferences(Raid_References references, GameObject heart, Raid_Timer timer)
     {
-        if (raid_References == null)
+        if (raidReferences == null)
         {
-            raid_References = references;
+            raidReferences = references;
         }
 
         if (Heart == null)
@@ -124,7 +129,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        ItemWeight = (float)gameFurniture.Weight;
+        itemWeight = (float)gameFurniture.Weight;
         furnitureData = gameFurniture;
         ItemImage.gameObject.SetActive(true);
         ItemImage.sprite = gameFurniture.FurnitureInfo?.Image;
@@ -159,12 +164,13 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             ItemImage.gameObject.SetActive(false);
         }
 
-        ItemWeight = 0f;
+        itemWeight = 0f;
         furnitureData = null;
         empty = true;
-        bomb = false;
+        hasTrap = false;
         RefreshBombIndicator();
     }
+
     public void SetBomb(int bombType)
     {
         SetTrap(bombType);
@@ -172,11 +178,17 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
     public void SetTrap(int trapType)
     {
-        _bombType = trapType;
-        bomb = true;
+        SetTrap((TrapType)trapType);
+    }
+
+    public void SetTrap(TrapType type)
+    {
+        trapType = type;
+        hasTrap = true;
         triggered = false;
         RefreshBombIndicator();
     }
+
     public void TriggerBomb()
     {
         TriggerTrap();
@@ -186,7 +198,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         if(!triggered && !timeEnded)
         {
-            if(_bombType == 1 && Bomb != null)
+            if(trapType == TrapType.Freeze && Bomb != null)
             {
                 Bomb.transform.localScale = new Vector2(3f, 3f);
             }
@@ -234,7 +246,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        BombIndicator.SetActive(bomb && !triggered && showTrapIndicator);
+        BombIndicator.SetActive(hasTrap && !triggered && showTrapIndicator);
     }
 
     private void SetTriggeredTrapSprite()
@@ -254,12 +266,13 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             BombImage = Bomb.GetComponent<Image>();
         }
 
-        if (BombImage == null || TrapSprites == null || _bombType < 0 || _bombType >= TrapSprites.Length)
+        int trapSpriteIndex = (int)trapType;
+        if (BombImage == null || TrapSprites == null || trapSpriteIndex < 0 || trapSpriteIndex >= TrapSprites.Length)
         {
             return;
         }
 
-        Sprite trapSprite = TrapSprites[_bombType];
+        Sprite trapSprite = TrapSprites[trapSpriteIndex];
         if (trapSprite == null)
         {
             return;
@@ -273,11 +286,12 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         if (ItemBall == null || itemBallRect == null || Heart == null || target == null)
         {
             lootBallArrived?.Invoke(recentLootSprite);
+            OnLootBallArrived?.Invoke(recentLootSprite);
             return;
         }
 
         pendingRecentLootSprite = recentLootSprite;
-        onLootBallArrived = lootBallArrived;
+        pendingLootBallArrived = lootBallArrived;
         if (ItemWeightText != null)
         {
             ItemWeightText.gameObject.SetActive(false);
@@ -311,9 +325,10 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         if (Vector2.Distance(itemBallRect.anchoredPosition, endLoc) <= 20f)
         {
             moving = false;
-            onLootBallArrived?.Invoke(pendingRecentLootSprite);
+            pendingLootBallArrived?.Invoke(pendingRecentLootSprite);
+            OnLootBallArrived?.Invoke(pendingRecentLootSprite);
             pendingRecentLootSprite = null;
-            onLootBallArrived = null;
+            pendingLootBallArrived = null;
             SetItemBallClickBlocker(false);
             if (ItemBall != null)
             {
@@ -357,7 +372,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     private void SetBGColor()
     {
         int spriteIndex;
-        switch (ItemWeight)
+        switch (itemWeight)
         {
             case <= 1.0f:
                 spriteIndex = 1;
@@ -447,7 +462,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         }
 
         ItemWeightText.gameObject.SetActive(isActive);
-        ItemWeightText.text = $"{ItemWeight:F0} kg";
+        ItemWeightText.text = $"{itemWeight:F0} kg";
     }
 
     private void SetItemWeightPopUpVisible(bool visible)
@@ -460,7 +475,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         ItemWeightPopUp.gameObject.SetActive(visible);
         if (visible)
         {
-            ItemWeightPopUp.text = $"+{ItemWeight}kg";
+            ItemWeightPopUp.text = $"+{itemWeight}kg";
         }
     }
 
