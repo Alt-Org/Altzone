@@ -765,7 +765,11 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void HandleLootRequest(int senderActorNumber, int slotIndex)
     {
-        if (!CanProcessSharedLoot(slotIndex) || _lootedSlots.Contains(slotIndex))
+        bool requestFromLocalPlayer = PhotonRealtimeClient.LocalPlayer != null
+            && PhotonRealtimeClient.LocalPlayer.ActorNumber == senderActorNumber;
+        bool ignoreLocalPlayerState = !requestFromLocalPlayer;
+
+        if (!CanProcessSharedLoot(slotIndex, ignoreLocalPlayerState) || _lootedSlots.Contains(slotIndex))
         {
             return;
         }
@@ -826,12 +830,19 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, weightMultiplier, triggeredByLocalPlayer, actorName, (CharacterID)characterId, avatarData);
     }
 
-    private bool CanProcessSharedLoot(int slotIndex)
+    private bool CanProcessSharedLoot(int slotIndex, bool ignoreLocalPlayerState = false)
     {
+        if (ignoreLocalPlayerState)
+        {
+            return IsCurrentRoomRaid()
+                && _inventoryPage != null
+                && _inventoryPage.HasLootableItem(slotIndex);
+        }
+
         return IsSharedRaidActive
             && _inventoryPage != null
-            && (_exitRaid == null || !_exitRaid.raidEnded)
-            && _inventoryPage.CanRequestLoot(slotIndex);
+            && (_exitRaid == null || ignoreLocalPlayerState || !_exitRaid.raidEnded)
+            && _inventoryPage.CanRequestLoot(slotIndex, ignoreLocalPlayerState, ignoreLocalPlayerState);
     }
 
     private bool IsParticipatingClan(string clanId)

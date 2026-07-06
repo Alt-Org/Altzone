@@ -84,6 +84,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             ItemImage.gameObject.SetActive(false);
         }
 
+        SetTrapVisualRaycastTarget(false);
         RefreshBombIndicator();
     }
 
@@ -186,6 +187,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         trapType = type;
         hasTrap = true;
         triggered = false;
+        SetTrapVisualRaycastTarget(false);
         RefreshBombIndicator();
     }
 
@@ -205,6 +207,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             SetTriggeredTrapSprite();
             if (Bomb != null)
             {
+                SetTrapVisualRaycastTarget(false);
                 Bomb.SetActive(true);
             }
             triggered = true;
@@ -280,6 +283,30 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
 
         BombImage.sprite = trapSprite;
         BombImage.preserveAspect = true;
+        BombImage.raycastTarget = false;
+    }
+
+    private void SetTrapVisualRaycastTarget(bool raycastTarget)
+    {
+        SetGraphicRaycastTarget(Bomb, raycastTarget);
+        SetGraphicRaycastTarget(BombIndicator, raycastTarget);
+    }
+
+    private static void SetGraphicRaycastTarget(GameObject root, bool raycastTarget)
+    {
+        if (root == null)
+        {
+            return;
+        }
+
+        Graphic[] graphics = root.GetComponentsInChildren<Graphic>(true);
+        for (int i = 0; i < graphics.Length; i++)
+        {
+            if (graphics[i] != null)
+            {
+                graphics[i].raycastTarget = raycastTarget;
+            }
+        }
     }
     public void LaunchBall(Sprite recentLootSprite = null, Action<Sprite> lootBallArrived = null)
     {

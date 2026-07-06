@@ -29,16 +29,10 @@ public class Raid_InventoryPage : MonoBehaviour
     [SerializeField, Min(1f)] private float doubleWeightMultiplier = 2f;
     [SerializeField, Header("Trap settings")] private bool showTrapIndicators = true;
 
-    [System.Serializable]
-    public class BombData
-    {
-        public int bombIndex;
-        public Raid_InventoryItem.TrapType bombType;
-    }
     [SerializeField] BombData[] Bombs;
 
     List<Raid_InventoryItem> ListOfUIItems = new List<Raid_InventoryItem>();
-    private readonly Dictionary<Raid_InventoryItem, int> itemIndices = new Dictionary<Raid_InventoryItem, int>();
+    private readonly Dictionary<int, int> itemIndicesByInstanceId = new Dictionary<int, int>();
 
     List<GameFurniture> ListOfFurniture = new List<GameFurniture>();
     private bool inventoryFrozen;
@@ -84,7 +78,7 @@ public class Raid_InventoryPage : MonoBehaviour
             UIItem.ConfigureSharedReferences(raid_References, Heart, raid_Timer);
             UIItem.SetTrapIndicatorVisible(showTrapIndicators);
             ListOfUIItems.Add(UIItem);
-            itemIndices[UIItem] = i;
+            itemIndicesByInstanceId[UIItem.GetInstanceID()] = i;
             UIItem.OnItemClicked += HandleItemLooting;
         }
 
@@ -123,7 +117,7 @@ public class Raid_InventoryPage : MonoBehaviour
             return;
         }
 
-        if (!itemIndices.TryGetValue(inventoryItem, out int index))
+        if (!itemIndicesByInstanceId.TryGetValue(inventoryItem.GetInstanceID(), out int index))
         {
             return;
         }
@@ -152,7 +146,7 @@ public class Raid_InventoryPage : MonoBehaviour
             GetLocalEventCharacterId(),
             GetLocalEventAvatarData());
 
-        ProcessLoot(index, itemWeight, 1f, true, actorContext, true, false);
+        ProcessLoot(index, itemWeight, 1f, true, actorContext, false);
     }
 
     public void HandleNetworkLootAccepted(int index, int actorNumber, float lootWeightMultiplier, bool triggeredByLocalPlayer, string playerName = null, CharacterID actorCharacterId = CharacterID.None, AvatarData actorAvatarData = null)
@@ -160,12 +154,12 @@ public class Raid_InventoryPage : MonoBehaviour
         ResolveReferences();
 
         LootActorContext actorContext = new LootActorContext(playerName, actorCharacterId, actorAvatarData);
-        ProcessLoot(index, 0f, lootWeightMultiplier, triggeredByLocalPlayer, actorContext, triggeredByLocalPlayer, true, true);
+        ProcessLoot(index, 0f, lootWeightMultiplier, triggeredByLocalPlayer, actorContext, true, true);
     }
 
-    private void ProcessLoot(int index, float expectedItemWeight, float networkLootWeightMultiplier, bool applyTrapEffect, LootActorContext actorContext, bool addToLootTracker, bool skipWeightValidation, bool ignoreFreeze = false)
+    private void ProcessLoot(int index, float expectedItemWeight, float networkLootWeightMultiplier, bool isLocalLoot, LootActorContext actorContext, bool skipWeightValidation, bool ignoreFreeze = false)
     {
-        if (!CanLoot(index, out Raid_InventoryItem item, ignoreFreeze))
+        if (!CanLoot(index, out Raid_InventoryItem item, ignoreFreeze, isLocalLoot))
         {
             return;
         }
@@ -185,20 +179,16 @@ public class Raid_InventoryPage : MonoBehaviour
 
         if (isTrap)
         {
-            if (applyTrapEffect)
-            {
-                item.TriggerTrap();
-            }
-
+            item.TriggerTrap();
             eventLog?.LogTrapTriggered(actorContext.PlayerName, trapTypeValue, actorContext.CharacterId, actorContext.AvatarData);
         }
 
-        if (LootItem(item, lootWeightMultiplier, addToLootTracker))
+        if (LootItem(item, lootWeightMultiplier, isLocalLoot))
         {
             eventLog?.LogLootTaken(actorContext.PlayerName, furniture, lootWeightMultiplier, actorContext.CharacterId, actorContext.AvatarData);
         }
 
-        if (isTrap && applyTrapEffect)
+        if (isTrap && isLocalLoot)
         {
             ApplyTrapEffect(trapType);
         }
@@ -207,13 +197,8 @@ public class Raid_InventoryPage : MonoBehaviour
     private bool LootItem(Raid_InventoryItem item, float lootWeightMultiplier, bool addToLootTracker)
     {
         GameFurniture furniture = item.FurnitureData;
-        if (LootTracker == null || furniture == null)
+        if (furniture == null)
         {
-            if (LootTracker == null)
-            {
-                Debug.LogError("Cannot loot item because Raid_InventoryPage is missing Raid_LootTracking reference.", this);
-            }
-
             return false;
         }
 
@@ -222,6 +207,12 @@ public class Raid_InventoryPage : MonoBehaviour
 
         if (addToLootTracker)
         {
+            if (LootTracker == null)
+            {
+                Debug.LogError("Cannot loot item because Raid_InventoryPage is missing Raid_LootTracking reference.", this);
+                return false;
+            }
+
             LootTracker.SetLootCount(furniture, lootWeightMultiplier);
             nextLootWeightDoubled = false;
         }
@@ -397,10 +388,16 @@ public class Raid_InventoryPage : MonoBehaviour
         return item != null && item.HasTrap && item.CurrentTrapType == Raid_InventoryItem.TrapType.DoubleNextLootWeight ? doubleWeightMultiplier : 1f;
     }
 
-    public bool CanRequestLoot(int index)
+    public bool CanRequestLoot(int index, bool ignoreFreeze = false, bool ignoreRaidEnded = false)
     {
         ResolveReferences();
-        return CanLoot(index, out _);
+        return CanLoot(index, out _, ignoreFreeze, true, ignoreRaidEnded);
+    }
+
+    public bool HasLootableItem(int index)
+    {
+        Raid_InventoryItem item = GetInventoryItem(index);
+        return item != null && item.ItemWeight > 0f && item.FurnitureData != null;
     }
 
     public void SendBombLocationsRPC(string jsonBombs)
@@ -453,34 +450,6 @@ public class Raid_InventoryPage : MonoBehaviour
         int furnitureIndex = random.Range(0, furnitureSet.Count);
         SetInventorySlotDataRPC(furnitureSet, uiIndex, furnitureIndex);
         return true;
-    }
-
-    private interface IInventoryRandom
-    {
-        int Range(int minInclusive, int maxExclusive);
-    }
-
-    private readonly struct UnityInventoryRandom : IInventoryRandom
-    {
-        public int Range(int minInclusive, int maxExclusive)
-        {
-            return Random.Range(minInclusive, maxExclusive);
-        }
-    }
-
-    private readonly struct SystemInventoryRandom : IInventoryRandom
-    {
-        private readonly System.Random rng;
-
-        public SystemInventoryRandom(int seed)
-        {
-            rng = new System.Random(seed);
-        }
-
-        public int Range(int minInclusive, int maxExclusive)
-        {
-            return rng.Next(minInclusive, maxExclusive);
-        }
     }
 
     private string GetLocalEventPlayerName()
@@ -597,10 +566,10 @@ public class Raid_InventoryPage : MonoBehaviour
         }
 
         ListOfUIItems.Clear();
-        itemIndices.Clear();
+        itemIndicesByInstanceId.Clear();
     }
 
-    private bool CanLoot(int index, out Raid_InventoryItem item, bool ignoreFreeze = false)
+    private bool CanLoot(int index, out Raid_InventoryItem item, bool ignoreFreeze = false, bool requireLootTracker = true, bool ignoreRaidEnded = false)
     {
         item = GetInventoryItem(index);
         if (item == null || inventoryFrozen && !ignoreFreeze)
@@ -608,12 +577,17 @@ public class Raid_InventoryPage : MonoBehaviour
             return false;
         }
 
-        if (raid_Timer == null || LootTracker == null || exitraid == null)
+        if (raid_Timer == null || exitraid == null || requireLootTracker && LootTracker == null)
         {
             return false;
         }
 
-        if (raid_Timer.CurrentTime <= 0f || LootTracker.CurrentLootWeight > LootTracker.MaxLootWeight || exitraid.raidEnded)
+        if (raid_Timer.CurrentTime <= 0f || !ignoreRaidEnded && exitraid.raidEnded)
+        {
+            return false;
+        }
+
+        if (requireLootTracker && LootTracker.CurrentLootWeight > LootTracker.MaxLootWeight)
         {
             return false;
         }
@@ -659,6 +633,13 @@ public class Raid_InventoryPage : MonoBehaviour
         }
     }
 
+    [System.Serializable]
+    public class BombData
+    {
+        public int bombIndex;
+        public Raid_InventoryItem.TrapType bombType;
+    }
+
     private readonly struct LootActorContext
     {
         public LootActorContext(string playerName, CharacterID characterId, AvatarData avatarData)
@@ -671,6 +652,34 @@ public class Raid_InventoryPage : MonoBehaviour
         public string PlayerName { get; }
         public CharacterID CharacterId { get; }
         public AvatarData AvatarData { get; }
+    }
+
+    private interface IInventoryRandom
+    {
+        int Range(int minInclusive, int maxExclusive);
+    }
+
+    private readonly struct UnityInventoryRandom : IInventoryRandom
+    {
+        public int Range(int minInclusive, int maxExclusive)
+        {
+            return Random.Range(minInclusive, maxExclusive);
+        }
+    }
+
+    private readonly struct SystemInventoryRandom : IInventoryRandom
+    {
+        private readonly System.Random rng;
+
+        public SystemInventoryRandom(int seed)
+        {
+            rng = new System.Random(seed);
+        }
+
+        public int Range(int minInclusive, int maxExclusive)
+        {
+            return rng.Next(minInclusive, maxExclusive);
+        }
     }
 
     private static List<int> BuildSequentialIndexList(int count)
