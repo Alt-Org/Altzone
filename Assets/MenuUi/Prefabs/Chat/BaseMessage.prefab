@@ -1427,7 +1427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
+  m_HorizontalFit: 2
   m_VerticalFit: 2
 --- !u!1 &8709729911892892704
 GameObject:
@@ -1440,7 +1440,7 @@ GameObject:
   - component: {fileID: 6897423349860991160}
   - component: {fileID: 1748575566865397314}
   m_Layer: 5
-  m_Name: Reactions (1)
+  m_Name: Reactions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2553,14 +2553,29 @@ PrefabInstance:
       objectReference: {fileID: 5786829121231365026}
     - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
+      propertyPath: _reactionData.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
       propertyPath: _reactionPaneldata.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
+      propertyPath: _reactionPaneldata.ReactionField
+      value: 
+      objectReference: {fileID: 7999296891796925201}
+    - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
       propertyPath: _reactionPaneldata._reactionField
       value: 
       objectReference: {fileID: 7999296891796925201}
+    - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
+        type: 3}
+      propertyPath: _reactionPaneldata.ReactionsContent
+      value: 
+      objectReference: {fileID: 7044005991725015127}
     - target: {fileID: 8509604158101261262, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: _reactionPaneldata._reactionsContent
