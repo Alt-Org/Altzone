@@ -635,7 +635,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         int inventorySize = GetRoomProperty(room, RaidPhotonRoom.RaidInventorySizeKey, 0);
         int seed = GetRoomProperty(room, RaidPhotonRoom.RaidInventorySeedKey, 0);
-        string trapPayload = GetRoomProperty(room, RaidPhotonRoom.RaidTrapSlotsKey, string.Empty);
+        byte[] trapPayload = GetRoomProperty(room, RaidPhotonRoom.RaidTrapSlotsKey, Array.Empty<byte>());
 
         if (inventorySize <= 0)
         {

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using Altzone.PhotonSerializer;
 using Altzone.Scripts.Model.Poco.Player;
 
 public static class RaidPhotonRoom
@@ -61,50 +63,51 @@ public static class RaidPhotonRoom
         }
     }
 
-    public static string EncodeTraps(IEnumerable<TrapData> traps)
+    public static byte[] EncodeTraps(IEnumerable<TrapData> traps)
     {
-        if (traps == null)
+        TrapData[] trapArray = traps?.ToArray() ?? Array.Empty<TrapData>();
+        byte[] bytes = Array.Empty<byte>();
+
+        Serializer.Serialize(trapArray.Length, ref bytes);
+        foreach (TrapData trap in trapArray)
         {
-            return string.Empty;
+            Serializer.Serialize(trap.Index, ref bytes);
+            Serializer.Serialize(trap.Type, ref bytes);
         }
 
-        StringBuilder builder = new StringBuilder();
-        foreach (TrapData trap in traps)
-        {
-            AppendSeparator(builder);
-            builder.Append(trap.Index.ToString(CultureInfo.InvariantCulture));
-            builder.Append(FieldSeparator);
-            builder.Append(trap.Type.ToString(CultureInfo.InvariantCulture));
-        }
-
-        return builder.ToString();
+        return bytes;
     }
 
-    public static TrapData[] DecodeTraps(string value)
+    public static TrapData[] DecodeTraps(byte[] value)
     {
-        if (string.IsNullOrWhiteSpace(value))
+        if (value == null || value.Length == 0)
         {
             return Array.Empty<TrapData>();
         }
 
-        List<TrapData> traps = new();
-        string[] entries = SplitEntries(value);
-        foreach (string entry in entries)
+        try
         {
-            string[] parts = SplitFields(entry);
-            if (parts.Length != 2)
+            int offset = 0;
+            int trapCount = Serializer.DeserializeInt(value, ref offset);
+            if (trapCount <= 0)
             {
-                continue;
+                return Array.Empty<TrapData>();
             }
 
-            if (int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out int index)
-                && int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int type))
+            List<TrapData> traps = new(trapCount);
+            for (int i = 0; i < trapCount; i++)
             {
+                int index = Serializer.DeserializeInt(value, ref offset);
+                int type = Serializer.DeserializeInt(value, ref offset);
                 traps.Add(new TrapData(index, type));
             }
-        }
 
-        return traps.ToArray();
+            return traps.ToArray();
+        }
+        catch
+        {
+            return Array.Empty<TrapData>();
+        }
     }
 
     public static string EncodeClanCounts(IEnumerable<ClanEntry> clans)

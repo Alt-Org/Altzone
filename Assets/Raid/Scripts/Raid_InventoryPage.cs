@@ -400,12 +400,6 @@ public class Raid_InventoryPage : MonoBehaviour
         return item != null && item.ItemWeight > 0f && item.FurnitureData != null;
     }
 
-    public void SendBombLocationsRPC(string jsonBombs)
-    {
-        SetBombsFromTrapData(RaidPhotonRoom.DecodeTraps(jsonBombs));
-        ApplyBombsToInventory();
-    }
-
     private void StartFreeze()
     {
         if (freezeRoutine != null)
