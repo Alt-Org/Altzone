@@ -24,10 +24,7 @@ public class AvatarShopStorage : ShopPanelStorage
     [Space(5f)]
 
     [Header("Prefabs")]
-    [SerializeField] private GameFurnitureVisualizer _commonPrefab;
-    [SerializeField] private GameFurnitureVisualizer _rarePrefab;
-    [SerializeField] private GameFurnitureVisualizer _epicPrefab;
-    [SerializeField] private GameFurnitureVisualizer _antiquePrefab;
+    [SerializeField] private GameFurnitureVisualizer _avatarShopItemPrefab;
 
     [Header("PopUp")]
     [SerializeField] private GameObject _popUp;
@@ -36,8 +33,6 @@ public class AvatarShopStorage : ShopPanelStorage
     [SerializeField] private AvatarPartsReference _avatarPartsReference;
 
     private Dictionary<string, Transform> _rarityToParent;
-    //private Dictionary<FurnitureRarity, Transform> _rarityToParent;
-    private Dictionary<FurnitureRarity, GameFurnitureVisualizer> _rarityToPrefab;
 
     private List<GameFurniture> gameFurnitures;
     private List<GameFurnitureVisualizer> gameFurnituresOnScene;
@@ -70,17 +65,6 @@ public class AvatarShopStorage : ShopPanelStorage
             } 
 
         }
-
-
-
-
-        _rarityToPrefab = new Dictionary<FurnitureRarity, GameFurnitureVisualizer>
-        {
-            {FurnitureRarity.Common, _commonPrefab},
-            {FurnitureRarity.Rare, _rarePrefab},
-            {FurnitureRarity.Epic, _epicPrefab},
-            {FurnitureRarity.Antique, _antiquePrefab}
-        };
         gameFurnitures = new();
         gameFurnituresOnScene = new();
     }
@@ -111,16 +95,16 @@ public class AvatarShopStorage : ShopPanelStorage
                 
                 if (_rarityToParent.TryGetValue(avatarSectiondata.SetName, out Transform _parent))
                 {
-                    if (_rarityToPrefab.TryGetValue(FurnitureRarity.Rare, out GameFurnitureVisualizer _prefab))
+                    if (_avatarShopItemPrefab != null)
                     {
-                        Debug.Log("Furniture of " + avatarpartData.Id + "" + avatarpartData.Name + " is created");
-                        var newItem = Instantiate(_prefab, _parent);
+                        Debug.Log("Avatar shop item of " + avatarpartData.Id + "" + avatarpartData.Name + " is created");
+                        var newItem = Instantiate(_avatarShopItemPrefab, _parent);
                         newItem.Initialize(avatarpartData, _popUp);
                         gameFurnituresOnScene.Add(newItem);
                     }
                     else
                     {
-                        //Debug.LogWarning($"Prefab for Rarity {avatarpartData.Rarity} is not defined!");
+                        Debug.LogWarning("Avatar shop item prefab is not defined!");
                     }
                 }
                 else
@@ -143,8 +127,7 @@ public class AvatarShopStorage : ShopPanelStorage
         if(_isInitiallyRebuild)
             return;
 
-        _isInitiallyRebuild = false;
         LayoutRebuilder.ForceRebuildLayoutImmediate(_Content);
-        return;
+        _isInitiallyRebuild = true;
     }
 }

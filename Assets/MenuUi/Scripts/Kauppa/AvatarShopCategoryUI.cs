@@ -2,13 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AvatarShopCategoryUI : MonoBehaviour
 {
     [SerializeField] private TMP_Dropdown categoryDropdown;
+    [SerializeField] private BaseScrollRect shopScrollRect;
 
     [Header("Entire category containers")]
     [SerializeField] private List<GameObject> categoryGroups;
+
+    private Coroutine refreshCoroutine;
 
     private void Start()
     {
@@ -43,5 +47,51 @@ public class AvatarShopCategoryUI : MonoBehaviour
         {
             categoryGroups[i].SetActive(i == index);
         }
+
+        RefreshLayout(index);
+
+        if (refreshCoroutine != null)
+        {
+            StopCoroutine(refreshCoroutine);
+        }
+
+        refreshCoroutine = StartCoroutine(RefreshLayoutNextFrame(index));
+    }
+
+    private IEnumerator RefreshLayoutNextFrame(int index)
+    {
+        yield return null;
+        RefreshLayout(index);
+        refreshCoroutine = null;
+    }
+
+    private void RefreshLayout(int index)
+    {
+        if (shopScrollRect == null)
+        {
+            shopScrollRect = GetComponentInParent<BaseScrollRect>();
+        }
+
+        Canvas.ForceUpdateCanvases();
+
+        if (index >= 0 && index < categoryGroups.Count && categoryGroups[index] != null
+            && categoryGroups[index].transform is RectTransform selectedGroup)
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(selectedGroup);
+        }
+
+        if (shopScrollRect != null)
+        {
+            shopScrollRect.StopMovement();
+
+            if (shopScrollRect.Content != null)
+            {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(shopScrollRect.Content);
+            }
+
+            shopScrollRect.VerticalNormalizedPosition = 1f;
+        }
+
+        Canvas.ForceUpdateCanvases();
     }
 }

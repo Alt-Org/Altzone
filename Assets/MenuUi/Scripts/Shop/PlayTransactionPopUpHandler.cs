@@ -13,6 +13,9 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private const string RatingPromptText = "Miksi t\u00E4m\u00E4 on arvokas sinulle?";
     private const string EmptyCardButtonText = "Kortti";
     private const string MobileButtonText = "Mobiili";
+    private const string RequiredMarkerText = "<color=#FF0000>*</color>";
+    private const int ExpiryDateDigitCount = 4;
+    private const int CvvDigitCount = 3;
     private static readonly Color CancelButtonTextColor = new Color(0.196f, 0.196f, 0.196f, 1f);
     private static readonly Color ExitButtonColor = new Color(0.118f, 0.165f, 0.878f, 1f);
 
@@ -42,12 +45,23 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private TMP_InputField _dateInputField;
     private TMP_InputField _addCardCvvInputField;
     private TMP_InputField _paymentCvvInputField;
+    private TMP_Text _nameInputFieldLabel;
+    private TMP_Text _cardInputFieldLabel;
+    private TMP_Text _dateInputFieldLabel;
+    private TMP_Text _addCardCvvInputFieldLabel;
+    private TMP_Text _paymentCvvInputFieldLabel;
+    private string _nameInputFieldLabelText;
+    private string _cardInputFieldLabelText;
+    private string _dateInputFieldLabelText;
+    private string _addCardCvvInputFieldLabelText;
+    private string _paymentCvvInputFieldLabelText;
     private readonly List<SavedCard> _savedCards = new List<SavedCard>();
     private int _selectedCardIndex = -1;
     private bool _usingCardPayment;
     private bool _ratingPromptOptionHidden;
     private TransactionState _state;
     private Action _onPaymentCompleted;
+    private bool _updatingInputFieldText;
 
     private class SavedCard
     {
@@ -68,6 +82,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     {
         CacheReferences();
         BindButtons();
+        BindInputFields();
     }
 
     private void OnEnable()
@@ -85,6 +100,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         _onPaymentCompleted = onPaymentCompleted;
         CacheReferences();
         BindButtons();
+        BindInputFields();
         ShowState(TransactionState.AddCard);
     }
 
@@ -116,6 +132,10 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         _dateInputField = FindChildComponentIn<TMP_InputField>(_addCardWindow, "DateInputField");
         _addCardCvvInputField = FindChildComponentIn<TMP_InputField>(_addCardWindow, "CVVInputField");
         _paymentCvvInputField = FindChildComponentIn<TMP_InputField>(_selectCardWindow, "CVVInputField");
+        if (_paymentCvvInputField == null)
+            _paymentCvvInputField = FindChildComponentIn<TMP_InputField>(_selectCardWindow, "CVVCheckField");
+
+        CacheRequiredFieldLabels();
     }
 
     private void BindButtons()
@@ -161,6 +181,53 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         }
     }
 
+    private void BindInputFields()
+    {
+        BindInputField(_nameInputField);
+        BindNumericInputField(_cardInputField);
+        BindDateInputField(_dateInputField);
+        BindNumericInputField(_addCardCvvInputField, CvvDigitCount);
+        BindNumericInputField(_paymentCvvInputField, CvvDigitCount);
+        ClearInputFieldPlaceholder(_addCardCvvInputField);
+        ClearInputFieldPlaceholder(_paymentCvvInputField);
+    }
+
+    private void BindInputField(TMP_InputField inputField)
+    {
+        if (inputField == null)
+            return;
+
+        inputField.onValueChanged.RemoveListener(InputFieldValueChanged);
+        inputField.onValueChanged.AddListener(InputFieldValueChanged);
+    }
+
+    private void BindNumericInputField(TMP_InputField inputField, int maxDigits = 0)
+    {
+        if (inputField == null)
+            return;
+
+        inputField.contentType = TMP_InputField.ContentType.IntegerNumber;
+        inputField.characterValidation = TMP_InputField.CharacterValidation.Digit;
+        inputField.keyboardType = TouchScreenKeyboardType.NumberPad;
+        if (maxDigits > 0)
+            inputField.characterLimit = maxDigits;
+        BindInputField(inputField);
+        SanitizeNumericInputField(inputField, maxDigits);
+    }
+
+    private void BindDateInputField(TMP_InputField inputField)
+    {
+        if (inputField == null)
+            return;
+
+        inputField.contentType = TMP_InputField.ContentType.Standard;
+        inputField.characterValidation = TMP_InputField.CharacterValidation.None;
+        inputField.keyboardType = TouchScreenKeyboardType.NumberPad;
+        inputField.characterLimit = ExpiryDateDigitCount + 2;
+        BindInputField(inputField);
+        SanitizeDateInputField(inputField);
+    }
+
     private void ShowState(TransactionState state)
     {
         _state = state;
@@ -191,6 +258,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         if (state == TransactionState.PostPayment)
             ResetRatingDropdown();
 
+        RefreshRequiredFieldLabels();
         RefreshPaymentButtons();
     }
 
@@ -208,12 +276,22 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
     private void SubmitCard()
     {
+        RefreshRequiredFieldLabels();
+
+        if (!IsAddCardFormValid())
+            return;
+
         AddCardFromInputs();
         ShowState(TransactionState.PrePayment);
     }
 
     private void SubmitPayment()
     {
+        RefreshRequiredFieldLabels();
+
+        if (!IsPaymentFormValid())
+            return;
+
         ShowState(TransactionState.PostPayment);
         _onPaymentCompleted?.Invoke();
         _onPaymentCompleted = null;
@@ -230,6 +308,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         _usingCardPayment = true;
         if (_mobileButton != null) _mobileButton.interactable = true;
         if (_cardButton != null) _cardButton.interactable = false;
+        RefreshRequiredFieldLabels();
     }
 
     public void SelectMobilePayment()
@@ -237,6 +316,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         _usingCardPayment = false;
         if (_cardButton != null) _cardButton.interactable = _savedCards.Count > 0;
         if (_mobileButton != null) _mobileButton.interactable = false;
+        RefreshRequiredFieldLabels();
     }
 
     public void Close()
@@ -319,7 +399,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     {
         string cardNumber = GetInputText(_cardInputField);
         string digits = GetDigits(cardNumber);
-        string lastFourDigits = digits.Length >= 4 ? digits.Substring(digits.Length - 4) : "0000";
+        string lastFourDigits = digits.Substring(digits.Length - 4);
 
         SavedCard card = new SavedCard
         {
@@ -338,6 +418,135 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         if (_paymentCvvInputField != null) _paymentCvvInputField.text = string.Empty;
 
         RefreshPaymentButtons();
+    }
+
+    private void CacheRequiredFieldLabels()
+    {
+        _nameInputFieldLabel = FindTitleText(_nameInputField);
+        _cardInputFieldLabel = FindTitleText(_cardInputField);
+        _dateInputFieldLabel = FindTitleText(_dateInputField);
+        _addCardCvvInputFieldLabel = FindTitleText(_addCardCvvInputField);
+        _paymentCvvInputFieldLabel = FindTitleText(_paymentCvvInputField);
+
+        _nameInputFieldLabelText = GetRequiredFieldLabelText(_nameInputFieldLabel, _nameInputFieldLabelText);
+        _cardInputFieldLabelText = GetRequiredFieldLabelText(_cardInputFieldLabel, _cardInputFieldLabelText);
+        _dateInputFieldLabelText = GetRequiredFieldLabelText(_dateInputFieldLabel, _dateInputFieldLabelText);
+        _addCardCvvInputFieldLabelText = GetRequiredFieldLabelText(_addCardCvvInputFieldLabel, _addCardCvvInputFieldLabelText);
+        _paymentCvvInputFieldLabelText = GetRequiredFieldLabelText(_paymentCvvInputFieldLabel, _paymentCvvInputFieldLabelText);
+    }
+
+    private void RefreshRequiredFieldLabels()
+    {
+        SetRequiredFieldLabel(_nameInputFieldLabel, _nameInputFieldLabelText, !HasText(_nameInputField));
+        SetRequiredFieldLabel(_cardInputFieldLabel, _cardInputFieldLabelText, GetDigits(GetInputText(_cardInputField)).Length < 4);
+        SetRequiredFieldLabel(_dateInputFieldLabel, _dateInputFieldLabelText, GetDigits(GetInputText(_dateInputField)).Length < ExpiryDateDigitCount);
+        SetRequiredFieldLabel(_addCardCvvInputFieldLabel, _addCardCvvInputFieldLabelText, GetDigits(GetInputText(_addCardCvvInputField)).Length < CvvDigitCount);
+
+        bool paymentCvvRequired = _state == TransactionState.PrePayment && _usingCardPayment;
+        SetRequiredFieldLabel(_paymentCvvInputFieldLabel, _paymentCvvInputFieldLabelText, paymentCvvRequired && GetDigits(GetInputText(_paymentCvvInputField)).Length < CvvDigitCount);
+    }
+
+    private void InputFieldValueChanged(string value)
+    {
+        SanitizeNumericInputFields();
+        RefreshRequiredFieldLabels();
+    }
+
+    private void SanitizeNumericInputFields()
+    {
+        if (_updatingInputFieldText)
+            return;
+
+        SanitizeNumericInputField(_cardInputField);
+        SanitizeDateInputField(_dateInputField);
+        SanitizeNumericInputField(_addCardCvvInputField, CvvDigitCount);
+        SanitizeNumericInputField(_paymentCvvInputField, CvvDigitCount);
+    }
+
+    private void SanitizeNumericInputField(TMP_InputField inputField, int maxDigits = 0)
+    {
+        if (inputField == null)
+            return;
+
+        string digits = GetDigits(inputField.text);
+        if (maxDigits > 0 && digits.Length > maxDigits)
+            digits = digits.Substring(0, maxDigits);
+
+        if (inputField.text == digits)
+            return;
+
+        _updatingInputFieldText = true;
+        inputField.SetTextWithoutNotify(digits);
+        inputField.caretPosition = digits.Length;
+        inputField.stringPosition = digits.Length;
+        _updatingInputFieldText = false;
+    }
+
+    private void SanitizeDateInputField(TMP_InputField inputField)
+    {
+        if (inputField == null)
+            return;
+
+        string formattedDate = GetFormattedExpiryDate(inputField.text);
+        if (inputField.text == formattedDate)
+            return;
+
+        _updatingInputFieldText = true;
+        inputField.SetTextWithoutNotify(formattedDate);
+        inputField.caretPosition = formattedDate.Length;
+        inputField.stringPosition = formattedDate.Length;
+        _updatingInputFieldText = false;
+    }
+
+    private void SetRequiredFieldLabel(TMP_Text label, string labelText, bool showRequiredMarker)
+    {
+        if (label == null)
+            return;
+
+        label.text = showRequiredMarker ? labelText + RequiredMarkerText : labelText;
+    }
+
+    private string GetRequiredFieldLabelText(TMP_Text label, string fallbackLabelText)
+    {
+        if (label == null)
+            return fallbackLabelText ?? string.Empty;
+
+        string labelText = label.text;
+        if (labelText.EndsWith(RequiredMarkerText, StringComparison.Ordinal))
+            labelText = labelText.Substring(0, labelText.Length - RequiredMarkerText.Length);
+
+        return labelText;
+    }
+
+    private bool IsAddCardFormValid()
+    {
+        if (!HasText(_nameInputField))
+            return FocusInputField(_nameInputField);
+
+        if (GetDigits(GetInputText(_cardInputField)).Length < 4)
+            return FocusInputField(_cardInputField);
+
+        if (GetDigits(GetInputText(_dateInputField)).Length < ExpiryDateDigitCount)
+            return FocusInputField(_dateInputField);
+
+        if (GetDigits(GetInputText(_addCardCvvInputField)).Length < CvvDigitCount)
+            return FocusInputField(_addCardCvvInputField);
+
+        return true;
+    }
+
+    private bool IsPaymentFormValid()
+    {
+        if (!_usingCardPayment)
+            return true;
+
+        if (_selectedCardIndex < 0 || _selectedCardIndex >= _savedCards.Count)
+            return false;
+
+        if (GetDigits(GetInputText(_paymentCvvInputField)).Length < CvvDigitCount)
+            return FocusInputField(_paymentCvvInputField);
+
+        return true;
     }
 
     private void RefreshPaymentButtons()
@@ -409,6 +618,42 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         return inputField != null ? inputField.text.Trim() : string.Empty;
     }
 
+    private string GetFormattedExpiryDate(string value)
+    {
+        string digits = GetDigits(value);
+        if (digits.Length > ExpiryDateDigitCount)
+            digits = digits.Substring(0, ExpiryDateDigitCount);
+
+        if (digits.Length < 2)
+            return digits;
+
+        if (digits.Length == 2)
+            return digits + "/ ";
+
+        return digits.Substring(0, 2) + "/ " + digits.Substring(2);
+    }
+
+    private bool HasText(TMP_InputField inputField)
+    {
+        return !string.IsNullOrWhiteSpace(GetInputText(inputField));
+    }
+
+    private bool HasDigits(TMP_InputField inputField)
+    {
+        return GetDigits(GetInputText(inputField)).Length > 0;
+    }
+
+    private bool FocusInputField(TMP_InputField inputField)
+    {
+        if (inputField != null)
+        {
+            inputField.Select();
+            inputField.ActivateInputField();
+        }
+
+        return false;
+    }
+
     private string GetDigits(string value)
     {
         if (string.IsNullOrEmpty(value))
@@ -450,6 +695,25 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         }
 
         return null;
+    }
+
+    private TMP_Text FindTitleText(TMP_InputField inputField)
+    {
+        if (inputField == null)
+            return null;
+
+        Transform titleTransform = inputField.transform.Find("TitleText");
+        return titleTransform != null ? titleTransform.GetComponent<TMP_Text>() : null;
+    }
+
+    private void ClearInputFieldPlaceholder(TMP_InputField inputField)
+    {
+        if (inputField == null || inputField.placeholder == null)
+            return;
+
+        TMP_Text placeholderText = inputField.placeholder.GetComponent<TMP_Text>();
+        if (placeholderText != null)
+            placeholderText.text = string.Empty;
     }
 
     private Transform FindChild(string childName)
