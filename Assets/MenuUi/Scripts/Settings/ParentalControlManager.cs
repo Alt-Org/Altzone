@@ -385,6 +385,7 @@ public class ParentalControlManager : MonoBehaviour
         carrier.ChatMessages = false;
         Debug.Log("Carrier's chat messages is set to" + carrier.ChatMessages);
         PlayerPrefs.SetInt("AllowEmojis", 0);
+        carrier.AllowEmojis = false;
         PlayerPrefs.SetInt("AllowTreasureHunt", 0);
         PlayerPrefs.SetInt("MonthlyLimit", 0);
         PlayerPrefs.SetInt("MonthlySpendingLimit", 0);
@@ -501,12 +502,16 @@ public class ParentalControlManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("AllowEmojis", 0);
         }
+        carrier.AllowEmojis = emojiCommentsToggle.isOn;
+
 
     }
     public void SetEmojisToggle()
     {
-        emojiCommentsToggle.isOn = (PlayerPrefs.GetInt("AllowEmojis", 0) != 0);
-        
+        //emojiCommentsToggle.isOn = (PlayerPrefs.GetInt("AllowEmojis", 0) != 0);
+        emojiCommentsToggle.isOn = carrier.AllowEmojis;
+
+
 
     }
 
