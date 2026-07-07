@@ -104,6 +104,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public event Action OnAllowLinksChange;
     public event Action OnChatMessagesChange;
     public event Action OnAllowEmojisChange;
+    public event Action OnAllowTreasureHuntChange;
 
 
     // Constants
@@ -433,6 +434,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         Debug.Log("AllowLinks value is fetched from PlayerPrefs to SettingsCarrier");
         _chatMessages = (PlayerPrefs.GetInt("AllowChat", 1) ==1);
         _allowEmojis = (PlayerPrefs.GetInt("AllowEmojis", 1) == 1);
+        _allowTreasureHunt = (PlayerPrefs.GetInt("AllowTreasureHunt", 1) ==1);
 
     }
 
@@ -701,8 +703,37 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     }
 
+    private bool _allowTreasureHunt;
 
-    //TODO allowTreasureHunt
+    public bool AllowTreasureHunt
+    {
+        get
+        {
+            return _allowTreasureHunt;
+        }
+
+        set
+        {
+            _allowTreasureHunt = value;
+
+            if (_allowTreasureHunt)
+            {
+                PlayerPrefs.SetInt("AllowTreasureHunt", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("AllowTreasureHunt", 0);
+            }
+
+
+            OnAllowTreasureHuntChange?.Invoke();
+        }
+
+
+    }
+
+
+  
 
     //Money controls
     //TODO monthlyLimit, activatePurchasesSeparately

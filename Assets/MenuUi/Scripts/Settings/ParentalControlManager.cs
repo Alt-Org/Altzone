@@ -387,6 +387,7 @@ public class ParentalControlManager : MonoBehaviour
         PlayerPrefs.SetInt("AllowEmojis", 0);
         carrier.AllowEmojis = false;
         PlayerPrefs.SetInt("AllowTreasureHunt", 0);
+        carrier.AllowTreasureHunt = false;
         PlayerPrefs.SetInt("MonthlyLimit", 0);
         PlayerPrefs.SetInt("MonthlySpendingLimit", 0);
         PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
@@ -527,11 +528,12 @@ public class ParentalControlManager : MonoBehaviour
             PlayerPrefs.SetInt("AllowTreasureHunt", 0);
         }
 
+        carrier.AllowTreasureHunt = treasureHuntToggle.isOn;
     }
     public void SetTreasureHuntToggle()
     {
-        treasureHuntToggle.isOn = (PlayerPrefs.GetInt("AllowTreasureHunt", 0) != 0);
-
+        //treasureHuntToggle.isOn = (PlayerPrefs.GetInt("AllowTreasureHunt", 0) != 0);
+        treasureHuntToggle.isOn = carrier.AllowTreasureHunt;
 
     }
 
