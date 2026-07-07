@@ -613,7 +613,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
 
     // ParentalControl functions
-    // Example for getting / setting toggles is taken from ShowButtonLabels
+    // Example for getting / setting toggles is taken mostly from ShowButtonLabels
 
     // Social controls
 
@@ -629,6 +629,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         set
         {
             _allowLinks = value;
+            if (_allowLinks)
+            {
+                PlayerPrefs.SetInt("AllowLinks", 1);
+
+            }
+            else
+            {
+                PlayerPrefs.SetInt("AllowLinks", 0);
+            }
             OnAllowLinksChange?.Invoke();
         }
 
