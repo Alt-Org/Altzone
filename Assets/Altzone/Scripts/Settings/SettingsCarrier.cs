@@ -107,6 +107,9 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public event Action OnAllowTreasureHuntChange;
     //TODO monthly limit
     public event Action OnActivatePurchasesSeparatelyChange;
+    //TODO daily limit
+    public event Action OnEndMidMatchChange;
+    public event Action OnEndAfterMatchChange;
 
 
     // Constants
@@ -437,7 +440,14 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _chatMessages = (PlayerPrefs.GetInt("AllowChat", 1) ==1);
         _allowEmojis = (PlayerPrefs.GetInt("AllowEmojis", 1) == 1);
         _allowTreasureHunt = (PlayerPrefs.GetInt("AllowTreasureHunt", 1) ==1);
+        //TODO monthly limit
         _activatePurchasesSeparately = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 1) ==1);
+        //TODO daily limit
+        _endMidMatch = (PlayerPrefs.GetInt("EndMidMatch", 1) == 1);
+        _endAfterMatch = (PlayerPrefs.GetInt("EndAfterMatch", 1) == 1);
+
+
+
 
     }
 
@@ -769,13 +779,70 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
 
-    
+
 
 
     //Time controls
-    //TODO dailyLimit, endMidMatch, endAfterMatch
+    //TODO dailyLimit
 
 
+    private bool _endMidMatch;
+
+    public bool EndMidMatch
+    {
+        get
+        {
+            return _endMidMatch;
+        }
+
+        set
+        {
+            _endMidMatch = value;
+
+            if (_endMidMatch)
+            {
+                PlayerPrefs.SetInt("EndMidMatch", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("EndMidMatch", 0);
+            }
+
+
+            OnEndMidMatchChange?.Invoke();
+        }
+
+
+    }
+
+    private bool _endAfterMatch;
+
+    public bool EndAfterMatch
+    {
+        get
+        {
+            return _endAfterMatch;
+        }
+
+        set
+        {
+            _endAfterMatch = value;
+
+            if (_endAfterMatch)
+            {
+                PlayerPrefs.SetInt("EndAfterMatch", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("EndAfterMatch", 0);
+            }
+
+
+            OnEndAfterMatchChange?.Invoke();
+        }
+
+
+    }
 
 
 

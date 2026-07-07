@@ -397,7 +397,9 @@ public class ParentalControlManager : MonoBehaviour
         //TODO carrier
         PlayerPrefs.SetInt("DailyTimeLimit", 0);  
         PlayerPrefs.SetInt("EndMidMatch", 0);
+        carrier.EndMidMatch = false;
         PlayerPrefs.SetInt("EndAfterMatch", 1);
+        carrier.EndAfterMatch = true;
         PlayerPrefs.Save();
         SetInternetLinksToggle();
         SetChatMessagesToggle();
@@ -635,11 +637,12 @@ public class ParentalControlManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("EndMidMatch", 0);
         }
-
+        carrier.EndMidMatch = midMatchToggle.isOn;
     }
     public void SetEndMidMatchToggle()
     {
-        midMatchToggle.isOn = (PlayerPrefs.GetInt("EndMidMatch", 0) != 0);
+        //midMatchToggle.isOn = (PlayerPrefs.GetInt("EndMidMatch", 0) != 0);
+        midMatchToggle.isOn = carrier.EndMidMatch;
 
 
     }
@@ -654,11 +657,12 @@ public class ParentalControlManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("EndAfterMatch", 0);
         }
-
+        carrier.EndAfterMatch = endMatchToggle.isOn;
     }
     public void SetEndAfterMatchToggle()
     {
-        endMatchToggle.isOn = (PlayerPrefs.GetInt("EndAfterMatch", 0) != 0);
+        //endMatchToggle.isOn = (PlayerPrefs.GetInt("EndAfterMatch", 0) != 0);
+        endMatchToggle.isOn = carrier.EndAfterMatch;
 
 
     }
