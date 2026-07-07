@@ -267,8 +267,7 @@ public class PollInfoPopup : MonoBehaviour
             store.GetClanData(player.ClanId, data => clan = data);
         }
 
-        int requiredYesVotes = Mathf.CeilToInt(clan.Members.Count * 0.33f);
-        bool isAccepted = yesCount >= requiredYesVotes && yesCount > noCount;
+        bool isAccepted = yesVoteRatio > _currentPollData.minPercentage;
 
         resultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
 

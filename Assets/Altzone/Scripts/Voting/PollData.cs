@@ -46,6 +46,7 @@ namespace Altzone.Scripts.Voting
         public long StartTime;
         public long EndTime;
         public Sprite Sprite;
+        public int minPercentage;
 
         public List<string> NotVoted;
         public List<PollVoteData> YesVotes;
@@ -68,6 +69,7 @@ namespace Altzone.Scripts.Voting
         public PollData(ServerPoll poll)
         {
             Id = poll._id;
+            minPercentage = poll.minPercentage;
             StartTime = poll.startedAt !=null ?((DateTimeOffset)DateTime.Parse(poll.startedAt).ToLocalTime()).ToUnixTimeSeconds(): 0;
             if(DateTime.TryParse(poll.endsOn, out DateTime time))
                 EndTime = ((DateTimeOffset)time.ToLocalTime()).ToUnixTimeSeconds();

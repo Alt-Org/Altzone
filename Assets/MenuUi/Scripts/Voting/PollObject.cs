@@ -271,8 +271,7 @@ public class PollObject : MonoBehaviour
                 store.GetClanData(player.ClanId, data => clan = data);
             }
 
-            int requiredYesVotes = Mathf.CeilToInt(clan.Members.Count * 0.33f);
-            bool isAccepted = yesCount >= requiredYesVotes && yesCount > noCount;
+            bool isAccepted = totalCount == 0 && (float)yesCount / totalCount > pollData.minPercentage;
 
             ResultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
 
