@@ -382,6 +382,8 @@ public class ParentalControlManager : MonoBehaviour
         PlayerPrefs.SetInt("AllowLinks", 0);
         carrier.AllowLinks = false;
         PlayerPrefs.SetInt("AllowChat", 0);
+        carrier.ChatMessages = false;
+        Debug.Log("Carrier's chat messages is set to" + carrier.ChatMessages);
         PlayerPrefs.SetInt("AllowEmojis", 0);
         PlayerPrefs.SetInt("AllowTreasureHunt", 0);
         PlayerPrefs.SetInt("MonthlyLimit", 0);
@@ -474,14 +476,16 @@ public class ParentalControlManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("AllowChat", 0);
         }
-
+        carrier.ChatMessages = chatMessagesToggle.isOn;
+        Debug.Log("Carrier got the value " + carrier.ChatMessages + " for ChatMessages");
     }
 
 
     public void SetChatMessagesToggle()
     {
-        chatMessagesToggle.isOn = (PlayerPrefs.GetInt("AllowChat", 0) != 0);
-        Debug.Log("chat, got value" + PlayerPrefs.GetInt("AllowChat"));
+        //chatMessagesToggle.isOn = (PlayerPrefs.GetInt("AllowChat", 0) != 0);
+        chatMessagesToggle.isOn = carrier.ChatMessages;
+        //Debug.Log("chat, got value" + PlayerPrefs.GetInt("AllowChat"));
         Debug.Log("chatMessagesToggle is set");
 
     }

@@ -102,6 +102,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     //Events for ParentalControl
     public event Action OnAllowLinksChange;
+    public event Action OnChatMessagesChange;
 
 
     // Constants
@@ -429,6 +430,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         //ParentalControl settings
         _allowLinks = (PlayerPrefs.GetInt("AllowLinks", 1) ==1);
         Debug.Log("AllowLinks value is fetched from PlayerPrefs to SettingsCarrier");
+        _chatMessages = (PlayerPrefs.GetInt("AllowChat", 1) ==1);
 
     }
 
@@ -644,7 +646,31 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
 
-    //TODO chatMessages, allowEmojis, allowTreasureHunt
+    private bool _chatMessages;
+    public bool ChatMessages {
+        get { return _chatMessages;
+        }
+
+        set {
+            _chatMessages = value;
+
+            if (_chatMessages)
+            {
+                PlayerPrefs.SetInt("AllowChat", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("AllowChat", 0);
+            }
+
+
+            OnChatMessagesChange?.Invoke();
+        }
+
+
+    }
+
+    //TODO allowEmojis, allowTreasureHunt
 
     //Money controls
     //TODO monthlyLimit, activatePurchasesSeparately
