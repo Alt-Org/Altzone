@@ -12,6 +12,9 @@ using UnityEngine.UI;
 
 public class ConfirmationPopupHandler : MonoBehaviour
 {
+    private const float AvatarPartPrice = 100f;
+    private const string EuroSuffix = " €";
+
     [SerializeField] private GameObject Background;
     [SerializeField] private Image _itemIcon;
     [SerializeField] private TMP_Text _itemNameText;
@@ -126,7 +129,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         _itemIcon.sprite = icon;
         avatarpart = part;
         _avatarItemName = itemName;
-        _itemPriceText.text = "100"; //Part.Value.ToString(); (muokkaa ensin GameFurnitureVisualizer:ista
+        _itemPriceText.text = FormatEuroPrice(AvatarPartPrice);
         _acceptButton.onClick.RemoveAllListeners();
         _acceptButton.onClick.AddListener(() => BuyAvatarPiece());
         _declineButton.onClick.RemoveAllListeners();
@@ -325,5 +328,10 @@ public class ConfirmationPopupHandler : MonoBehaviour
         }
 
         return false;
+    }
+
+    private static string FormatEuroPrice(float value)
+    {
+        return $"{value:0.##}{EuroSuffix}";
     }
 }
