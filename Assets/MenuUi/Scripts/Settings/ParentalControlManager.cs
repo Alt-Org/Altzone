@@ -389,9 +389,12 @@ public class ParentalControlManager : MonoBehaviour
         PlayerPrefs.SetInt("AllowTreasureHunt", 0);
         carrier.AllowTreasureHunt = false;
         PlayerPrefs.SetInt("MonthlyLimit", 0);
+        //TODO carrier
         PlayerPrefs.SetInt("MonthlySpendingLimit", 0);
         PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
+        carrier.ActivatePurchasesSeparately = false;
         PlayerPrefs.SetInt("MaxPlayTime", 0);
+        //TODO carrier
         PlayerPrefs.SetInt("DailyTimeLimit", 0);  
         PlayerPrefs.SetInt("EndMidMatch", 0);
         PlayerPrefs.SetInt("EndAfterMatch", 1);
@@ -594,10 +597,12 @@ public class ParentalControlManager : MonoBehaviour
             PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
         }
 
+        carrier.ActivatePurchasesSeparately = independentSpendingActivationToggle.isOn;
     }
     public void SetIndependentSpendingActivationToggle()
     {
-        independentSpendingActivationToggle.isOn = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 0) != 0);
+        //independentSpendingActivationToggle.isOn = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 0) != 0);
+        independentSpendingActivationToggle.isOn = carrier.ActivatePurchasesSeparately;
 
 
     }

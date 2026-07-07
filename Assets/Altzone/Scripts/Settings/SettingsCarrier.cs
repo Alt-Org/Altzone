@@ -105,6 +105,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public event Action OnChatMessagesChange;
     public event Action OnAllowEmojisChange;
     public event Action OnAllowTreasureHuntChange;
+    //TODO monthly limit
+    public event Action OnActivatePurchasesSeparatelyChange;
 
 
     // Constants
@@ -435,6 +437,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _chatMessages = (PlayerPrefs.GetInt("AllowChat", 1) ==1);
         _allowEmojis = (PlayerPrefs.GetInt("AllowEmojis", 1) == 1);
         _allowTreasureHunt = (PlayerPrefs.GetInt("AllowTreasureHunt", 1) ==1);
+        _activatePurchasesSeparately = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 1) ==1);
 
     }
 
@@ -732,11 +735,41 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     }
 
-
-  
-
     //Money controls
-    //TODO monthlyLimit, activatePurchasesSeparately
+    //TODO monthlyLimit
+
+
+    private bool _activatePurchasesSeparately;
+
+    public bool ActivatePurchasesSeparately
+    {
+        get
+        {
+            return _activatePurchasesSeparately;
+        }
+
+        set
+        {
+            _activatePurchasesSeparately = value;
+
+            if (_activatePurchasesSeparately)
+            {
+                PlayerPrefs.SetInt("ActivatePurchasesSeparately", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
+            }
+
+
+            OnActivatePurchasesSeparatelyChange?.Invoke();
+        }
+
+
+    }
+
+
+    
 
 
     //Time controls
