@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class Raid_LiveInventory : MonoBehaviour
 {
-    private delegate bool RemoveCollectedLoot(int lootIndex);
-
     [SerializeField] private RectTransform content;
     [SerializeField] private Raid_InventoryItem collectedLootItemPrefab;
     [SerializeField] private GameObject menuRoot;
@@ -131,7 +129,7 @@ public class Raid_LiveInventory : MonoBehaviour
         lootItem.SetShowItemWeightText(true);
         lootItem.gameObject.SetActive(true);
 
-        SetRemoveButton(lootItem, true, lootIndex);
+        SetRemoveButton(lootItem, lootIndex);
         return true;
     }
 
@@ -144,7 +142,6 @@ public class Raid_LiveInventory : MonoBehaviour
 
         Raid_InventoryItem lootItem = Instantiate(collectedLootItemPrefab, content);
         lootItem.name = "CollectedLootItem";
-        ConfigureRemoveButton(lootItem);
         collectedLootItems.Add(lootItem);
         return lootItem;
     }
@@ -155,7 +152,7 @@ public class Raid_LiveInventory : MonoBehaviour
         {
             if (collectedLootItems[i] != null)
             {
-                SetRemoveButton(collectedLootItems[i], false, -1);
+                SetRemoveButton(collectedLootItems[i], -1);
                 collectedLootItems[i].gameObject.SetActive(false);
             }
         }
@@ -237,53 +234,16 @@ public class Raid_LiveInventory : MonoBehaviour
         }
     }
 
-    private void ConfigureRemoveButton(Raid_InventoryItem lootItem)
+    private void SetRemoveButton(Raid_InventoryItem lootItem, int lootIndex)
     {
         if (lootItem == null)
         {
             return;
         }
 
-        Button removeButton = FindRemoveButton(lootItem.transform);
-        if (removeButton == null)
-        {
-            return;
-        }
-
-        LiveInventoryRemoveButton removeHandler = removeButton.GetComponent<LiveInventoryRemoveButton>();
-        if (removeHandler == null)
-        {
-            removeHandler = removeButton.gameObject.AddComponent<LiveInventoryRemoveButton>();
-        }
-
-        removeHandler.Initialize(removeButton);
-    }
-
-    private void SetRemoveButton(Raid_InventoryItem lootItem, bool visible, int lootIndex)
-    {
-        Button removeButton = FindRemoveButton(lootItem != null ? lootItem.transform : null);
-        if (removeButton == null)
-        {
-            return;
-        }
-
-        removeButton.gameObject.SetActive(visible);
-        LiveInventoryRemoveButton removeHandler = removeButton.GetComponent<LiveInventoryRemoveButton>();
-        if (removeHandler != null)
-        {
-            RemoveCollectedLoot removeCollectedLoot = visible && lootTracking != null
-                ? lootTracking.RemoveCollectedLootAt
-                : null;
-            removeHandler.SetRemoveAction(removeCollectedLoot, lootIndex);
-        }
-    }
-
-    private static Button FindRemoveButton(Transform parent)
-    {
-        Transform existing = parent != null ? parent.Find("RemoveCollectedLootButton") : null;
-        return existing != null && existing.TryGetComponent(out Button existingButton)
-            ? existingButton
-            : null;
+        lootItem.SetLiveInventoryRemoveAction(
+            lootIndex >= 0 && lootTracking != null ? lootTracking.RemoveCollectedLootAt : null,
+            lootIndex);
     }
 
     private static Transform FindChildRecursive(Transform root, string childName)
@@ -309,50 +269,5 @@ public class Raid_LiveInventory : MonoBehaviour
         }
 
         return null;
-    }
-
-    private sealed class LiveInventoryRemoveButton : MonoBehaviour
-    {
-        private Button button;
-        private RemoveCollectedLoot removeCollectedLoot;
-        private int lootIndex = -1;
-
-        public void Initialize(Button button)
-        {
-            if (this.button == button)
-            {
-                return;
-            }
-
-            if (this.button != null)
-            {
-                this.button.onClick.RemoveListener(OnClick);
-            }
-
-            this.button = button;
-            if (this.button != null)
-            {
-                this.button.onClick.AddListener(OnClick);
-            }
-        }
-
-        public void SetRemoveAction(RemoveCollectedLoot removeCollectedLoot, int lootIndex)
-        {
-            this.removeCollectedLoot = removeCollectedLoot;
-            this.lootIndex = lootIndex;
-        }
-
-        private void OnDestroy()
-        {
-            if (button != null)
-            {
-                button.onClick.RemoveListener(OnClick);
-            }
-        }
-
-        private void OnClick()
-        {
-            removeCollectedLoot?.Invoke(lootIndex);
-        }
     }
 }

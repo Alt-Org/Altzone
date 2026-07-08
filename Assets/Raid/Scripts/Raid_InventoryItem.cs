@@ -30,6 +30,7 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     [SerializeField] private GameObject Heart;
     [SerializeField] private Image Aura;
     [SerializeField] private Image Bubble;
+    [SerializeField] private Button removeCollectedLootButton;
     [SerializeField] private Sprite[] Auras;
     [SerializeField] private Sprite[] Bubbles;
     [SerializeField] private TMP_Text ItemWeightPopUp;
@@ -74,10 +75,13 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     private bool hasSoundType;
     private Sprite pendingRecentLootSprite;
     private Action<Sprite> pendingLootBallArrived;
+    private Func<int, bool> removeCollectedLoot;
+    private int lootIndex = -1;
 
     public void Awake()
     {
         ResolveLocalReferences();
+        InitializeLiveInventoryRemoveButton();
 
         if (empty && ItemImage != null)
         {
@@ -113,6 +117,11 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
         {
             raidTimer.TimeEnded -= OnTimeEnded;
         }
+
+        if (removeCollectedLootButton != null)
+        {
+            removeCollectedLootButton.onClick.RemoveListener(OnRemoveCollectedLootClicked);
+        }
     }
 
     public void Update()
@@ -143,6 +152,19 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
     {
         showItemWeightText = show;
         SetItemWeightTextActive(showItemWeightText);
+    }
+
+    public void SetLiveInventoryRemoveAction(Func<int, bool> removeCollectedLoot, int lootIndex)
+    {
+        InitializeLiveInventoryRemoveButton();
+
+        this.removeCollectedLoot = removeCollectedLoot;
+        this.lootIndex = lootIndex;
+
+        if (removeCollectedLootButton != null)
+        {
+            removeCollectedLootButton.gameObject.SetActive(lootIndex >= 0);
+        }
     }
 
     public void SetLossHaloVisible(bool visible)
@@ -434,6 +456,38 @@ public class Raid_InventoryItem : MonoBehaviour, IPointerClickHandler
             : null;
 
         SetItemBallClickBlocker(false);
+    }
+
+    private void InitializeLiveInventoryRemoveButton()
+    {
+        ResolveRemoveCollectedLootButton();
+        if (removeCollectedLootButton == null)
+        {
+            return;
+        }
+
+        removeCollectedLootButton.onClick.RemoveListener(OnRemoveCollectedLootClicked);
+        removeCollectedLootButton.onClick.AddListener(OnRemoveCollectedLootClicked);
+        removeCollectedLootButton.gameObject.SetActive(lootIndex >= 0);
+    }
+
+    private void ResolveRemoveCollectedLootButton()
+    {
+        if (removeCollectedLootButton != null)
+        {
+            return;
+        }
+
+        Transform buttonTransform = transform.Find("RemoveCollectedLootButton");
+        if (buttonTransform != null)
+        {
+            removeCollectedLootButton = buttonTransform.GetComponent<Button>();
+        }
+    }
+
+    private void OnRemoveCollectedLootClicked()
+    {
+        removeCollectedLoot?.Invoke(lootIndex);
     }
 
     private void SetRaidTimer(Raid_Timer timer)
