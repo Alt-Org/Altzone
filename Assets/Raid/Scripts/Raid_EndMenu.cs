@@ -22,7 +22,6 @@ public class Raid_EndMenu : MonoBehaviour
     [SerializeField] private GameObject normalEndResultText;
     [SerializeField] private GameObject overweightEndResultText;
     [SerializeField] private TMP_Text spaceRemainingText;
-    [SerializeField] private Vector3 collectedLootItemScale = Vector3.one;
     [SerializeField] private Vector2 collectedLootGridCellSize = new Vector2(325f, 430f);
     [SerializeField] private Vector2 collectedLootGridSpacing = new Vector2(180f, 310f);
     [SerializeField] private int collectedLootGridPaddingTop = 80;
@@ -204,7 +203,6 @@ public class Raid_EndMenu : MonoBehaviour
         {
             Raid_InventoryItem lootItem = Instantiate(collectedLootItemPrefab, content);
             lootItem.name = "CollectedLootItem";
-            lootItem.transform.localScale = collectedLootItemScale;
             lootItem.SetData(furniture);
             lootItem.SetLossHaloVisible(collectedLootLossHaloVisible);
             lootItem.SetShowItemWeightText(true);

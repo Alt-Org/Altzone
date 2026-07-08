@@ -11,7 +11,6 @@ public class Raid_LiveInventory : MonoBehaviour
     [SerializeField] private GameObject menuRoot;
     [SerializeField] private TMP_Text spaceRemainingText;
     [SerializeField] private Button backButton;
-    [SerializeField] private Vector3 collectedLootItemScale = Vector3.one;
     [SerializeField] private Vector2 collectedLootGridCellSize = new Vector2(325f, 430f);
     [SerializeField] private Vector2 collectedLootGridSpacing = new Vector2(180f, 310f);
     [SerializeField] private int collectedLootGridPaddingTop = 80;
@@ -141,7 +140,6 @@ public class Raid_LiveInventory : MonoBehaviour
         }
 
         lootItem.transform.SetSiblingIndex(itemIndex);
-        lootItem.transform.localScale = collectedLootItemScale;
         lootItem.SetData(furniture);
         lootItem.SetShowItemWeightText(true);
         lootItem.gameObject.SetActive(true);
