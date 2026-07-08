@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 public class ConfirmationPopupHandler : MonoBehaviour
 {
-    private const float AvatarPartPrice = 100f;
+    private const float AvatarPartPrice = 1.99f;
     private const string EuroSuffix = " €";
 
     [SerializeField] private GameObject Background;

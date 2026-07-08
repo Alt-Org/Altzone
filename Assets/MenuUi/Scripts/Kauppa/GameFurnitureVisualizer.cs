@@ -20,7 +20,7 @@ public class GameFurnitureVisualizer : MonoBehaviour
     [SerializeField] private GameObject _votingIconObject;
     private const string BoughtText = "Ostettu";
     private const float PriceTextDefaultAnchorMaxX = 0.6876221f;
-    private const float AvatarPartPrice = 100f;
+    private const float AvatarPartPrice = 1.99f;
     private const string EuroSuffix = "€";
     private GameFurniture _gameFurniture;
     private AvatarPartInfo _avatarPart;
@@ -59,7 +59,7 @@ public class GameFurnitureVisualizer : MonoBehaviour
     {
         _gameFurniture = null;
         _avatarPart = avatarPart;
-        _avatarItemName = string.IsNullOrWhiteSpace(_avatarPart.VisibleName) ? _avatarPart.Name : _avatarPart.VisibleName;
+        _avatarItemName = GetAvatarDisplayName(_avatarPart);
         if (_themeText != null)
             _themeText.text = string.Empty;
         _productText.text = _avatarItemName;
@@ -67,7 +67,7 @@ public class GameFurnitureVisualizer : MonoBehaviour
         SetAvailableState();
         SetCoinImageVisible(false);
         _contentImage.sprite = _avatarPart.IconImage ? _avatarPart.IconImage : _avatarPart.AvatarImage;
-        gameObject.GetComponent<GameFurniturePasser>().SetAvatarPart(_avatarPart, _contentImage.sprite, _productText.text);
+        gameObject.GetComponent<GameFurniturePasser>().SetAvatarPart(_avatarPart, _contentImage.sprite, _avatarItemName);
         _button.onClick.AddListener(() => confirmationPopUp.SetActive(true));
         _button.onClick.AddListener(() => gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1"));
     }
@@ -185,6 +185,30 @@ public class GameFurnitureVisualizer : MonoBehaviour
     private static string FormatEuroPrice(float value)
     {
         return $"{value:0.##}{EuroSuffix}";
+    }
+
+    private static string GetAvatarDisplayName(AvatarPartInfo avatarPart)
+    {
+        if (avatarPart == null)
+            return string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(avatarPart.Name))
+            return TrimAvatarNamePrefix(avatarPart.Name);
+
+        if (!string.IsNullOrWhiteSpace(avatarPart.VisibleName))
+            return avatarPart.VisibleName;
+
+        return TrimAvatarNamePrefix(avatarPart.name);
+    }
+
+    private static string TrimAvatarNamePrefix(string name)
+    {
+        const string Prefix = "Avatar";
+
+        if (string.IsNullOrWhiteSpace(name))
+            return string.Empty;
+
+        return name.StartsWith(Prefix) ? name.Substring(Prefix.Length) : name;
     }
 
     private void SetFurnitureDisplayName(GameFurniture gameFurniture)
