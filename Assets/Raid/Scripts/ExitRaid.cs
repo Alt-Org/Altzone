@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ExitRaid : MonoBehaviour
 {
@@ -20,10 +21,14 @@ public class ExitRaid : MonoBehaviour
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
     [SerializeField] private Raid_EventLog eventLog;
 
+    private Button exitRaidButton;
+    private CanvasGroup exitRaidButtonCanvasGroup;
+
     private void Awake()
     {
         RegisterInstance();
         ResolveReferences();
+        ResolveButtonReferences();
     }
 
     private void OnEnable()
@@ -61,6 +66,23 @@ public class ExitRaid : MonoBehaviour
         }
 
         Raid_ExitConfirmationPopup.Show(() => EndRaid(RaidEndReason.PlayerExit));
+    }
+
+    public void SetButtonVisible(bool visible)
+    {
+        ResolveButtonReferences();
+
+        if (exitRaidButtonCanvasGroup != null)
+        {
+            exitRaidButtonCanvasGroup.alpha = visible ? 1f : 0f;
+            exitRaidButtonCanvasGroup.interactable = visible;
+            exitRaidButtonCanvasGroup.blocksRaycasts = visible;
+        }
+
+        if (exitRaidButton != null)
+        {
+            exitRaidButton.interactable = visible;
+        }
     }
 
     public void EndRaid()
@@ -210,6 +232,19 @@ public class ExitRaid : MonoBehaviour
         if (eventLog == null)
         {
             eventLog = raid_References != null ? raid_References.EventLog : null;
+        }
+    }
+
+    private void ResolveButtonReferences()
+    {
+        if (exitRaidButton == null)
+        {
+            TryGetComponent(out exitRaidButton);
+        }
+
+        if (exitRaidButtonCanvasGroup == null)
+        {
+            TryGetComponent(out exitRaidButtonCanvasGroup);
         }
     }
 

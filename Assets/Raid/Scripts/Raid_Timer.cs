@@ -51,12 +51,10 @@ public class Raid_Timer : MonoBehaviour
 
     [Header("Timer fill")]
     [SerializeField] private Raid_TimerFillCircle timerFillCircle;
-    [SerializeField] private CanvasGroup exitRaidButtonCanvasGroup;
 
     private float timerStartTime;
     private GameObject timerPanel;
     private GameObject timerPanelBackground;
-    private Button exitRaidButton;
     private Raid_TextHalo timerTextHalo;
     private bool raidControlsVisibilityInitialized;
     private bool raidControlsVisible;
@@ -325,17 +323,7 @@ public class Raid_Timer : MonoBehaviour
             timerPanelBackground.SetActive(visible);
         }
 
-        if (exitRaidButtonCanvasGroup != null)
-        {
-            exitRaidButtonCanvasGroup.alpha = visible ? 1f : 0f;
-            exitRaidButtonCanvasGroup.interactable = visible;
-            exitRaidButtonCanvasGroup.blocksRaycasts = visible;
-        }
-
-        if (exitRaidButton != null)
-        {
-            exitRaidButton.interactable = visible;
-        }
+        exitRaid?.SetButtonVisible(visible);
     }
 
     private void ResolveRaidControlReferences()
@@ -369,10 +357,7 @@ public class Raid_Timer : MonoBehaviour
             return;
         }
 
-        if (exitRaidButton == null)
-        {
-            exitRaidButton = exitRaid.GetComponent<Button>();
-        }
+        exitRaid.SetButtonVisible(raidControlsVisible);
     }
 
     public void FinishRaid()
