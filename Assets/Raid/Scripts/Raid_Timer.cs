@@ -23,6 +23,7 @@ public class Raid_Timer : MonoBehaviour
     public bool CountUp;
     private bool timerActive;
     private bool started;
+    private bool finished;
 
     [Header("Start Timer settings")]
     public float TimeUntilStart;
@@ -51,13 +52,12 @@ public class Raid_Timer : MonoBehaviour
 
     [Header("Timer fill")]
     [SerializeField] private Raid_TimerFillCircle timerFillCircle;
+    [SerializeField] private Raid_Controls raidControls;
 
     private float timerStartTime;
-    private GameObject timerPanel;
-    private GameObject timerPanelBackground;
     private Raid_TextHalo timerTextHalo;
-    private bool raidControlsVisibilityInitialized;
-    private bool raidControlsVisible;
+    private RaidMatchmakingController matchmakingController;
+    private bool waitingForGameplayRelease;
     private int lastDisplayedTimerValue = int.MinValue;
     private TimerFormat lastTimerFormat;
     private bool lastHasFormat;
@@ -80,16 +80,19 @@ public class Raid_Timer : MonoBehaviour
             exitRaid.ExitedRaid += RaidExited;
         }
 
-        ResolveRaidControlReferences();
+        ResolveRaidControls();
         SetStartTimerVisualState(false);
         timerStartTime = CurrentTime;
         EnsureTimerFillCircle();
-        SetRaidControlsVisible(false);
+        raidControls.SetVisible(false);
         UpdateTimerFill();
+        SubscribeGameplayReleaseChanged();
     }
 
     private void OnDestroy()
     {
+        UnsubscribeGameplayReleaseChanged();
+
         if (exitRaid != null)
         {
             exitRaid.ExitedRaid -= RaidExited;
@@ -100,17 +103,10 @@ public class Raid_Timer : MonoBehaviour
 
     private void Update()
     {
-        if (RaidMatchmakingController.Instance != null
-            && RaidMatchmakingController.Instance.ControlsInventorySetup
-            && !RaidMatchmakingController.Instance.HasReleasedGameplay)
+        if (waitingForGameplayRelease || finished)
         {
-            SetRaidControlsVisible(false);
-            SetTimerText();
-            SetTimerFillProgress(0f);
             return;
         }
-
-        SetRaidControlsVisible(started || startTextShown);
 
         if (timerActive)
         {
@@ -189,7 +185,7 @@ public class Raid_Timer : MonoBehaviour
             timerStartTime = CurrentTime;
             timerActive = true;
             started = true;
-            SetRaidControlsVisible(true);
+            raidControls.SetVisible(true);
             UpdateTimerFill();
             LogGameStart();
             TimerStarted?.Invoke();
@@ -201,6 +197,8 @@ public class Raid_Timer : MonoBehaviour
     {
         timerActive = false;
         started = false;
+        finished = false;
+        waitingForGameplayRelease = false;
         startTextShown = false;
         CurrentTime = initialCurrentTime;
         TimeUntilStart = initialTimeUntilStart;
@@ -222,7 +220,7 @@ public class Raid_Timer : MonoBehaviour
 
         SetTimerText();
         SetTimerTextHaloVisible(false);
-        SetRaidControlsVisible(false);
+        raidControls.SetVisible(false);
         UpdateTimerFill();
     }
 
@@ -250,7 +248,7 @@ public class Raid_Timer : MonoBehaviour
 
         SetStartTimerVisualState(true);
         startTextShown = true;
-        SetRaidControlsVisible(true);
+        raidControls.SetVisible(true);
     }
 
     private void LogStartCountdownSecond(int countdownSecond)
@@ -303,61 +301,24 @@ public class Raid_Timer : MonoBehaviour
         }
     }
 
-    private void SetRaidControlsVisible(bool visible)
+    private void ResolveRaidControls()
     {
-        if (raidControlsVisibilityInitialized && raidControlsVisible == visible)
-        {
-            return;
-        }
-
-        raidControlsVisibilityInitialized = true;
-        raidControlsVisible = visible;
-
-        if (timerPanel != null && timerPanel.activeSelf != visible)
-        {
-            timerPanel.SetActive(visible);
-        }
-
-        if (timerPanelBackground != null && timerPanelBackground.activeSelf != visible)
-        {
-            timerPanelBackground.SetActive(visible);
-        }
-
-        exitRaid?.SetButtonVisible(visible);
-    }
-
-    private void ResolveRaidControlReferences()
-    {
-        if (timerPanel == null && TimerText != null && TimerText.transform.parent != null)
-        {
-            timerPanel = TimerText.transform.parent.gameObject;
-        }
-
-        if (timerPanelBackground == null && timerPanel != null)
-        {
-            Transform background = timerPanel.transform.Find("background");
-            if (background == null && timerPanel.transform.parent != null)
-            {
-                background = timerPanel.transform.parent.Find("background");
-            }
-
-            if (background != null)
-            {
-                timerPanelBackground = background.gameObject;
-            }
-        }
-
         if (exitRaid == null)
         {
             exitRaid = ExitRaid.Instance;
         }
 
-        if (exitRaid == null)
+        if (raidControls == null)
         {
-            return;
+            TryGetComponent(out raidControls);
         }
 
-        exitRaid.SetButtonVisible(raidControlsVisible);
+        if (raidControls == null)
+        {
+            raidControls = gameObject.AddComponent<Raid_Controls>();
+        }
+
+        raidControls.Initialize(TimerText, exitRaid);
     }
 
     public void FinishRaid()
@@ -366,9 +327,59 @@ public class Raid_Timer : MonoBehaviour
         UpdateTimerFill();
     }
 
+    public void HideRaidControlsForEndMenu()
+    {
+        finished = true;
+        raidControls.SetVisible(false);
+    }
+
+    private void SubscribeGameplayReleaseChanged()
+    {
+        matchmakingController = RaidMatchmakingController.Instance;
+        if (matchmakingController == null || !matchmakingController.ControlsInventorySetup)
+        {
+            waitingForGameplayRelease = false;
+            return;
+        }
+
+        matchmakingController.GameplayReleasedChanged -= OnGameplayReleasedChanged;
+        matchmakingController.GameplayReleasedChanged += OnGameplayReleasedChanged;
+        OnGameplayReleasedChanged(matchmakingController.HasReleasedGameplay);
+    }
+
+    private void UnsubscribeGameplayReleaseChanged()
+    {
+        if (matchmakingController != null)
+        {
+            matchmakingController.GameplayReleasedChanged -= OnGameplayReleasedChanged;
+        }
+    }
+
+    private void OnGameplayReleasedChanged(bool released)
+    {
+        waitingForGameplayRelease = !released;
+        if (released)
+        {
+            UpdateTimerFill();
+            return;
+        }
+
+        ResetTimerForGameplaySetup();
+    }
+
+    private void ResetTimerForGameplaySetup()
+    {
+        ResetStartCountdown();
+        waitingForGameplayRelease = true;
+        raidControls.SetVisible(false);
+        SetTimerFillProgress(0f);
+    }
+
     public void SetLossHaloVisible(bool visible)
     {
-        GameObject haloTarget = timerPanel != null ? timerPanel : TimerText != null ? TimerText.transform.parent?.gameObject : null;
+        GameObject haloTarget = raidControls != null
+            ? raidControls.GetTimerPanelTarget(TimerText)
+            : TimerText != null ? TimerText.transform.parent?.gameObject : null;
         Raid_RedHalo.SetVisible(haloTarget, visible, LossHaloPadding, LossHaloOffset);
         SetTimerTextHaloVisible(visible);
     }

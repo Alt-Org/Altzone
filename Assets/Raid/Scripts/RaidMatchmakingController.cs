@@ -75,6 +75,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     public static RaidMatchmakingController Instance { get; private set; }
 
+    public event Action<bool> GameplayReleasedChanged;
+
     public bool ControlsInventorySetup => !_debugInventoryMode;
     public bool HasReleasedGameplay => _gameplayReleased;
     public bool IsSharedRaidActive => _sharedRaidActive && IsCurrentRoomRaid();
@@ -172,7 +174,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private void StartDebugInventoryMode()
     {
         _surrendering = true;
-        _gameplayReleased = true;
+        SetGameplayReleased(true);
         _sharedRaidActive = false;
         _inventoryInitialized = false;
 
@@ -698,7 +700,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        _gameplayReleased = true;
+        SetGameplayReleased(true);
         _sharedRaidActive = false;
         if (_overlayRoot != null)
         {
@@ -719,6 +721,17 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         {
             _sharedRaidActive = true;
         }
+    }
+
+    private void SetGameplayReleased(bool released)
+    {
+        if (_gameplayReleased == released)
+        {
+            return;
+        }
+
+        _gameplayReleased = released;
+        GameplayReleasedChanged?.Invoke(_gameplayReleased);
     }
 
     private void OnRaidTimerStarted()
@@ -1599,7 +1612,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         ResetRaidStartCountdown();
         _inventoryInitialized = false;
-        _gameplayReleased = false;
+        SetGameplayReleased(false);
         _sharedRaidActive = false;
         _lobbyCountdownActive = false;
         _lootedSlots.Clear();

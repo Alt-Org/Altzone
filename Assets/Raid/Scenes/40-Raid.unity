@@ -757,6 +757,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1918953309}
   - component: {fileID: 1918953308}
+  - component: {fileID: 1918953310}
   m_Layer: 0
   m_Name: TimeManager
   m_TagString: Untagged
@@ -789,6 +790,22 @@ MonoBehaviour:
   exitRaid: {fileID: 0}
   duration: 0.8
   timerFillCircle: {fileID: 0}
+  raidControls: {fileID: 1918953310}
+--- !u!114 &1918953310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918953307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9f372b3d2ea4c2f90831dbb5766ed62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timerPanel: {fileID: 0}
+  timerPanelBackground: {fileID: 0}
+  exitRaid: {fileID: 0}
 --- !u!4 &1918953309
 Transform:
   m_ObjectHideFlags: 0

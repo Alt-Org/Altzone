@@ -100,6 +100,8 @@ public class Raid_References : MonoBehaviour
 
     public void ShowEndMenu()
     {
+        RaidTimer?.HideRaidControlsForEndMenu();
+
         if (EndMenuController != null)
         {
             EndMenuController.Show();
