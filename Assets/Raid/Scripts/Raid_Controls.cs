@@ -42,11 +42,31 @@ public class Raid_Controls : MonoBehaviour
 
     private void ResolveTimerPanel(TextMeshProUGUI timerText)
     {
-        if (timerPanel == null && timerText != null && timerText.transform.parent != null)
+        if (timerPanel != null || timerText == null)
         {
-            timerPanel = timerText.transform.parent.gameObject;
+            return;
         }
 
+        Transform timerPanelTransform = FindAncestor(timerText.transform, "TimerPanel");
+        timerPanel = timerPanelTransform != null
+            ? timerPanelTransform.gameObject
+            : timerText.transform.parent?.gameObject;
+    }
+
+    private static Transform FindAncestor(Transform child, string ancestorName)
+    {
+        Transform current = child;
+        while (current != null)
+        {
+            if (current.name == ancestorName)
+            {
+                return current;
+            }
+
+            current = current.parent;
+        }
+
+        return null;
     }
 
     private void ApplyCurrentVisibility()

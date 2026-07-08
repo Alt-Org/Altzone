@@ -56,7 +56,8 @@ public class Raid_Timer : MonoBehaviour
 
     private void Start()
     {
-        initialCurrentTime = CurrentTime;
+        initialCurrentTime = GetInitialCurrentTime();
+        CurrentTime = initialCurrentTime;
         initialTimeUntilStart = TimeUntilStart;
         ResolveEventLog();
 
@@ -72,7 +73,7 @@ public class Raid_Timer : MonoBehaviour
 
         ResolveRaidControls();
         ResolveTimerViews();
-        timerStartTime = CurrentTime;
+        timerStartTime = initialCurrentTime;
         raidControls.SetVisible(false);
         UpdateTimerFill();
         SubscribeGameplayReleaseChanged();
@@ -100,8 +101,8 @@ public class Raid_Timer : MonoBehaviour
 
         if (timerActive)
         {
-            CurrentTime = CountUp ? CurrentTime += Time.deltaTime : CurrentTime -= Time.deltaTime;
-            if (CurrentTime <= 5f)
+            CurrentTime += CountUp ? Time.deltaTime : -Time.deltaTime;
+            if (IsWithinWarningTime())
             {
                 timerView.SetWarningPulse(duration);
             }
@@ -159,7 +160,8 @@ public class Raid_Timer : MonoBehaviour
 
         if (!timerActive && !started)
         {
-            timerStartTime = CurrentTime;
+            CurrentTime = initialCurrentTime;
+            timerStartTime = initialCurrentTime;
             timerActive = true;
             started = true;
             raidControls.SetVisible(true);
@@ -181,7 +183,7 @@ public class Raid_Timer : MonoBehaviour
         TimeUntilStart = initialTimeUntilStart;
         lastLoggedStartCountdownSecond = int.MaxValue;
         gameStartLogged = false;
-        timerStartTime = CurrentTime;
+        timerStartTime = initialCurrentTime;
 
         startTimerView.ResetView(TimeUntilStart);
         timerView.ResetView(CurrentTime, HasFormat, Format, CalculateTimerFillProgress());
@@ -359,6 +361,21 @@ public class Raid_Timer : MonoBehaviour
         }
 
         return 1f - Mathf.InverseLerp(timerStartTime, TimerLimit, CurrentTime);
+    }
+
+    private float GetInitialCurrentTime()
+    {
+        return CountUp ? 0f : CurrentTime;
+    }
+
+    private bool IsWithinWarningTime()
+    {
+        if (!HasLimit)
+        {
+            return !CountUp && CurrentTime <= 5f;
+        }
+
+        return Mathf.Abs(TimerLimit - CurrentTime) <= 5f;
     }
 
     private void OnTimeEnd()
