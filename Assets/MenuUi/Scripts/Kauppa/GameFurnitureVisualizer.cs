@@ -7,6 +7,7 @@ using Altzone.Scripts.AvatarPartsInfo;
 public class GameFurnitureVisualizer : MonoBehaviour
 {
     [SerializeField] private Image _contentImage;
+    [SerializeField] private TMP_Text _themeText;
     [SerializeField] private TMP_Text _productText;
     [SerializeField] private TMP_Text _priceText;
     [SerializeField] private Button _button;
@@ -44,7 +45,7 @@ public class GameFurnitureVisualizer : MonoBehaviour
     {
         _gameFurniture = gameFurniture;
         _avatarPart = null;
-        _productText.text = _gameFurniture.Name;
+        SetFurnitureDisplayName(_gameFurniture);
         _priceText.text = _gameFurniture.Value.ToString();
         SetAvailableState();
         SetCoinImageVisible(true);
@@ -59,6 +60,8 @@ public class GameFurnitureVisualizer : MonoBehaviour
         _gameFurniture = null;
         _avatarPart = avatarPart;
         _avatarItemName = string.IsNullOrWhiteSpace(_avatarPart.VisibleName) ? _avatarPart.Name : _avatarPart.VisibleName;
+        if (_themeText != null)
+            _themeText.text = string.Empty;
         _productText.text = _avatarItemName;
         _priceText.text = FormatEuroPrice(AvatarPartPrice); //_avatarPart.Value.ToString();
         SetAvailableState();
@@ -182,5 +185,57 @@ public class GameFurnitureVisualizer : MonoBehaviour
     private static string FormatEuroPrice(float value)
     {
         return $"{value:0.##}{EuroSuffix}";
+    }
+
+    private void SetFurnitureDisplayName(GameFurniture gameFurniture)
+    {
+        (string itemName, string themeName) = GetFurnitureDisplayNameParts(gameFurniture);
+
+        if (_themeText != null)
+            _themeText.text = EscapeRichText(themeName);
+
+        if (_productText != null)
+            _productText.text = EscapeRichText(itemName);
+    }
+
+    private static (string itemName, string themeName) GetFurnitureDisplayNameParts(GameFurniture gameFurniture)
+    {
+        if (gameFurniture == null)
+            return (string.Empty, string.Empty);
+
+        string itemName = gameFurniture.FurnitureInfo?.VisibleName;
+        string themeName = gameFurniture.FurnitureInfo?.SetName;
+
+        if (string.IsNullOrWhiteSpace(itemName) || string.IsNullOrWhiteSpace(themeName))
+        {
+            (string parsedItemName, string parsedThemeName) = ParseFurnitureName(gameFurniture.Name);
+            itemName = string.IsNullOrWhiteSpace(itemName) ? parsedItemName : itemName;
+            themeName = string.IsNullOrWhiteSpace(themeName) ? parsedThemeName : themeName;
+        }
+
+        return (itemName, themeName);
+    }
+
+    private static (string itemName, string themeName) ParseFurnitureName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return (string.Empty, string.Empty);
+
+        string[] parts = name.Split('_');
+        if (parts.Length != 2)
+            return (name, string.Empty);
+
+        return (parts[0], parts[1]);
+    }
+
+    private static string EscapeRichText(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return string.Empty;
+
+        return text
+            .Replace("&", "&amp;")
+            .Replace("<", "&lt;")
+            .Replace(">", "&gt;");
     }
 }
