@@ -1,15 +1,9 @@
-using Altzone.Scripts.Language;
 using UnityEngine;
 using TMPro;
 using System;
-using UnityEngine.UI;
 
 public class Raid_Timer : MonoBehaviour
 {
-    private static readonly Vector2 LossHaloPadding = new Vector2(200f, 200f);
-    private static readonly Vector2 LossHaloOffset = Vector2.zero;
-    private static readonly Vector2 TimerTextHaloMinimumSize = new Vector2(260f, 220f);
-
     [SerializeField, Header("Raid Inventory ref")]
     private Raid_References raid_References;
     [SerializeField] private Raid_EventLog eventLog;
@@ -43,24 +37,20 @@ public class Raid_Timer : MonoBehaviour
 
     public event Action TimeEnded;
     public event Action TimerStarted;
+    public event Action<float> TimerFillProgressChanged;
     public ExitRaid exitRaid;
 
-    private Color startColor = Color.white;
-    private Color endColor = Color.red;
     [SerializeField]
     private float duration;
 
     [Header("Timer fill")]
-    [SerializeField] private Raid_TimerFillCircle timerFillCircle;
+    [SerializeField] private Raid_TimerView timerView;
+    [SerializeField] private Raid_StartTimerView startTimerView;
     [SerializeField] private Raid_Controls raidControls;
 
     private float timerStartTime;
-    private Raid_TextHalo timerTextHalo;
     private RaidMatchmakingController matchmakingController;
     private bool waitingForGameplayRelease;
-    private int lastDisplayedTimerValue = int.MinValue;
-    private TimerFormat lastTimerFormat;
-    private bool lastHasFormat;
 
     public bool HasStarted => started;
 
@@ -81,9 +71,8 @@ public class Raid_Timer : MonoBehaviour
         }
 
         ResolveRaidControls();
-        SetStartTimerVisualState(false);
+        ResolveTimerViews();
         timerStartTime = CurrentTime;
-        EnsureTimerFillCircle();
         raidControls.SetVisible(false);
         UpdateTimerFill();
         SubscribeGameplayReleaseChanged();
@@ -92,13 +81,14 @@ public class Raid_Timer : MonoBehaviour
     private void OnDestroy()
     {
         UnsubscribeGameplayReleaseChanged();
+        UnsubscribeTimerView();
 
         if (exitRaid != null)
         {
             exitRaid.ExitedRaid -= RaidExited;
         }
 
-        timerTextHalo?.Dispose();
+        timerView?.Dispose();
     }
 
     private void Update()
@@ -111,12 +101,9 @@ public class Raid_Timer : MonoBehaviour
         if (timerActive)
         {
             CurrentTime = CountUp ? CurrentTime += Time.deltaTime : CurrentTime -= Time.deltaTime;
-            if (CurrentTime <= 5f && TimerText != null)
+            if (CurrentTime <= 5f)
             {
-                float t = Mathf.PingPong(Time.time / duration, 1f);
-                Color lerped = Color.Lerp(startColor, endColor, t);
-
-                TimerText.color = lerped;
+                timerView.SetWarningPulse(duration);
             }
             if (HasLimit && ((CountUp && CurrentTime >= TimerLimit) || (!CountUp && CurrentTime <= TimerLimit)))
             {
@@ -138,10 +125,7 @@ public class Raid_Timer : MonoBehaviour
                 CurrentTime = TimerLimit;
                 SetTimerText();
                 UpdateTimerFill();
-                if (TimerText != null)
-                {
-                    TimerText.color = Color.red;
-                }
+                timerView.SetEndColor();
                 enabled = false;
             }
         }
@@ -160,12 +144,8 @@ public class Raid_Timer : MonoBehaviour
                 }
                 else
                 {
-                    if (StartTimerText != null)
-                    {
-                        int countdownSecond = Mathf.CeilToInt(TimeUntilStart);
-                        StartTimerText.text = countdownSecond.ToString();
-                        LogStartCountdownSecond(countdownSecond);
-                    }
+                    startTimerView.SetCountdown(TimeUntilStart);
+                    LogStartCountdownSecond(Mathf.CeilToInt(TimeUntilStart));
                 }
             }
         }
@@ -175,10 +155,7 @@ public class Raid_Timer : MonoBehaviour
     }
     public void StartTimer()
     {
-        if (StartTimerText != null && StartTimerText.transform.parent != null)
-        {
-            StartTimerText.gameObject.transform.parent.gameObject.SetActive(false);
-        }
+        startTimerView.Hide();
 
         if (!timerActive && !started)
         {
@@ -206,22 +183,9 @@ public class Raid_Timer : MonoBehaviour
         gameStartLogged = false;
         timerStartTime = CurrentTime;
 
-        if (StartTimerText != null && StartTimerText.transform.parent != null)
-        {
-            StartTimerText.transform.parent.gameObject.SetActive(true);
-            SetStartTimerVisualState(false);
-            StartTimerText.text = Mathf.CeilToInt(TimeUntilStart).ToString();
-        }
-
-        if (TimerText != null)
-        {
-            TimerText.color = startColor;
-        }
-
-        SetTimerText();
-        SetTimerTextHaloVisible(false);
+        startTimerView.ResetView(TimeUntilStart);
+        timerView.ResetView(CurrentTime, HasFormat, Format, CalculateTimerFillProgress());
         raidControls.SetVisible(false);
-        UpdateTimerFill();
     }
 
     private void ShowStartText()
@@ -231,22 +195,7 @@ public class Raid_Timer : MonoBehaviour
             return;
         }
 
-        if (StartTimerText == null)
-        {
-            return;
-        }
-
-        TextLanguageSelectorCaller textLanguageSelector = StartTimerText.GetComponent<TextLanguageSelectorCaller>();
-        if (textLanguageSelector != null)
-        {
-            textLanguageSelector.SetText(string.Empty);
-        }
-        else
-        {
-            StartTimerText.text = "Aloita!";
-        }
-
-        SetStartTimerVisualState(true);
+        startTimerView.ShowStartText();
         startTextShown = true;
         raidControls.SetVisible(true);
     }
@@ -275,32 +224,6 @@ public class Raid_Timer : MonoBehaviour
         eventLog?.LogSystemMessage(UseEnglish() ? "Gathering started" : "Kokoaminen aloitettu");
     }
 
-    private void SetStartTimerVisualState(bool showStartText)
-    {
-        if (StartTimerText == null)
-        {
-            return;
-        }
-
-        Transform startTimerParent = StartTimerText.transform.parent;
-        if (startTimerParent == null)
-        {
-            return;
-        }
-
-        Image timerBackgroundImage = startTimerParent.GetComponent<Image>();
-        if (timerBackgroundImage != null)
-        {
-            timerBackgroundImage.enabled = showStartText;
-        }
-
-        Transform overlay = startTimerParent.Find("Overlay");
-        if (overlay != null)
-        {
-            overlay.gameObject.SetActive(!showStartText);
-        }
-    }
-
     private void ResolveRaidControls()
     {
         if (exitRaid == null)
@@ -319,6 +242,36 @@ public class Raid_Timer : MonoBehaviour
         }
 
         raidControls.Initialize(TimerText, exitRaid);
+    }
+
+    private void ResolveTimerViews()
+    {
+        if (timerView == null)
+        {
+            TryGetComponent(out timerView);
+        }
+
+        if (timerView == null)
+        {
+            timerView = gameObject.AddComponent<Raid_TimerView>();
+        }
+
+        timerView.Initialize(TimerText);
+        TimerFillProgressChanged -= timerView.SetFillProgress;
+        TimerFillProgressChanged += timerView.SetFillProgress;
+
+        if (startTimerView == null)
+        {
+            TryGetComponent(out startTimerView);
+        }
+
+        if (startTimerView == null)
+        {
+            startTimerView = gameObject.AddComponent<Raid_StartTimerView>();
+        }
+
+        startTimerView.Initialize(StartTimerText);
+        startTimerView.ResetView(TimeUntilStart);
     }
 
     public void FinishRaid()
@@ -372,7 +325,7 @@ public class Raid_Timer : MonoBehaviour
         ResetStartCountdown();
         waitingForGameplayRelease = true;
         raidControls.SetVisible(false);
-        SetTimerFillProgress(0f);
+        TimerFillProgressChanged?.Invoke(0f);
     }
 
     public void SetLossHaloVisible(bool visible)
@@ -380,120 +333,17 @@ public class Raid_Timer : MonoBehaviour
         GameObject haloTarget = raidControls != null
             ? raidControls.GetTimerPanelTarget(TimerText)
             : TimerText != null ? TimerText.transform.parent?.gameObject : null;
-        Raid_RedHalo.SetVisible(haloTarget, visible, LossHaloPadding, LossHaloOffset);
-        SetTimerTextHaloVisible(visible);
+        timerView.SetLossHaloVisible(visible, haloTarget);
     }
 
     private void SetTimerText()
     {
-        if (TimerText == null)
-        {
-            return;
-        }
-
-        int displayValue = GetDisplayTimerValue();
-        if (displayValue == lastDisplayedTimerValue && HasFormat == lastHasFormat && Format == lastTimerFormat)
-        {
-            return;
-        }
-
-        lastDisplayedTimerValue = displayValue;
-        lastHasFormat = HasFormat;
-        lastTimerFormat = Format;
-
-        TimerText.text = CurrentTime.ToString(GetTimeFormat());
-        timerTextHalo?.Sync();
-    }
-
-    private int GetDisplayTimerValue()
-    {
-        if (!HasFormat)
-        {
-            return Mathf.RoundToInt(CurrentTime);
-        }
-
-        return Format switch
-        {
-            TimerFormat.TenthDecimal => Mathf.RoundToInt(CurrentTime * 10f),
-            TimerFormat.HundrethsDecimal => Mathf.RoundToInt(CurrentTime * 100f),
-            _ => Mathf.RoundToInt(CurrentTime)
-        };
-    }
-
-    private string GetTimeFormat()
-    {
-        if (!HasFormat)
-        {
-            return "F0";
-        }
-
-        return Format switch
-        {
-            TimerFormat.TenthDecimal => "F1",
-            TimerFormat.HundrethsDecimal => "F2",
-            _ => "F0"
-        };
-    }
-
-    private void SetTimerTextHaloVisible(bool visible)
-    {
-        if (TimerText == null)
-        {
-            return;
-        }
-
-        if (timerTextHalo == null)
-        {
-            if (!visible)
-            {
-                return;
-            }
-
-            Raid_TextHalo.Settings settings = Raid_TextHalo.CreateDefaultSettings(
-                TimerTextHaloMinimumSize,
-                "TimerText_RedCloudHalo");
-            timerTextHalo = new Raid_TextHalo(TimerText, settings);
-        }
-
-        timerTextHalo.SetTarget(TimerText);
-        timerTextHalo.SetVisible(visible);
-    }
-
-    private void EnsureTimerFillCircle()
-    {
-        if (timerFillCircle == null && TimerText != null)
-        {
-            timerFillCircle = TimerText.GetComponentInParent<Raid_TimerFillCircle>(true);
-            if (timerFillCircle == null && TimerText.transform.parent != null)
-            {
-                timerFillCircle = TimerText.transform.parent.GetComponentInChildren<Raid_TimerFillCircle>(true);
-            }
-        }
-
-        if (timerFillCircle == null)
-        {
-            return;
-        }
-
-        timerFillCircle.raycastTarget = false;
+        timerView.SetText(CurrentTime, HasFormat, Format);
     }
 
     private void UpdateTimerFill()
     {
-        SetTimerFillProgress(CalculateTimerFillProgress());
-    }
-
-    private void SetTimerFillProgress(float progress)
-    {
-        if (timerFillCircle == null)
-        {
-            EnsureTimerFillCircle();
-        }
-
-        if (timerFillCircle != null)
-        {
-            timerFillCircle.Progress = progress;
-        }
+        TimerFillProgressChanged?.Invoke(CalculateTimerFillProgress());
     }
 
     private float CalculateTimerFillProgress()
@@ -520,6 +370,14 @@ public class Raid_Timer : MonoBehaviour
     {
         CurrentTime = 0;
         UpdateTimerFill();
+    }
+
+    private void UnsubscribeTimerView()
+    {
+        if (timerView != null)
+        {
+            TimerFillProgressChanged -= timerView.SetFillProgress;
+        }
     }
 
     private void ResolveEventLog()

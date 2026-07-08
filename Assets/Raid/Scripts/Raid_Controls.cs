@@ -5,7 +5,6 @@ using UnityEngine;
 public class Raid_Controls : MonoBehaviour
 {
     [SerializeField] private GameObject timerPanel;
-    [SerializeField] private GameObject timerPanelBackground;
     [SerializeField] private ExitRaid exitRaid;
 
     private bool? visible;
@@ -48,21 +47,6 @@ public class Raid_Controls : MonoBehaviour
             timerPanel = timerText.transform.parent.gameObject;
         }
 
-        if (timerPanelBackground != null || timerPanel == null)
-        {
-            return;
-        }
-
-        Transform background = timerPanel.transform.Find("background");
-        if (background == null && timerPanel.transform.parent != null)
-        {
-            background = timerPanel.transform.parent.Find("background");
-        }
-
-        if (background != null)
-        {
-            timerPanelBackground = background.gameObject;
-        }
     }
 
     private void ApplyCurrentVisibility()
@@ -78,11 +62,6 @@ public class Raid_Controls : MonoBehaviour
         if (timerPanel != null && timerPanel.activeSelf != visible)
         {
             timerPanel.SetActive(visible);
-        }
-
-        if (timerPanelBackground != null && timerPanelBackground.activeSelf != visible)
-        {
-            timerPanelBackground.SetActive(visible);
         }
 
         if (exitRaid == null)
