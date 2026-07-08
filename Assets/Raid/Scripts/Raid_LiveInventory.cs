@@ -13,11 +13,6 @@ public class Raid_LiveInventory : MonoBehaviour
     [SerializeField] private GameObject menuRoot;
     [SerializeField] private TMP_Text spaceRemainingText;
     [SerializeField] private Button backButton;
-    [SerializeField] private Vector2 collectedLootGridCellSize = new Vector2(325f, 430f);
-    [SerializeField] private Vector2 collectedLootGridSpacing = new Vector2(180f, 310f);
-    [SerializeField] private int collectedLootGridPaddingTop = 80;
-    [SerializeField] private int collectedLootGridPaddingBottom = 40;
-    [SerializeField] private int collectedLootColumnCount = 3;
     [SerializeField] private Raid_References raidReferences;
 
     private Raid_LootTracking lootTracking;
@@ -26,7 +21,6 @@ public class Raid_LiveInventory : MonoBehaviour
     private LiveRaidControlOverlayState liveTimerPanelOverlayState;
     private LiveRaidControlOverlayState liveExitRaidButtonOverlayState;
     private readonly List<Raid_InventoryItem> collectedLootItems = new();
-    private bool collectedLootLayoutConfigured;
 
     public static Raid_LiveInventory Instance { get; private set; }
 
@@ -106,8 +100,6 @@ public class Raid_LiveInventory : MonoBehaviour
 
     private void SetCollectedLoot(IReadOnlyList<GameFurniture> lootList)
     {
-        ConfigureCollectedLootLayout();
-
         if (content == null || lootList == null)
         {
             HideUnusedCollectedLootItems(0);
@@ -229,28 +221,6 @@ public class Raid_LiveInventory : MonoBehaviour
         {
             backButton = backTransform.GetComponent<Button>();
         }
-    }
-
-    private void ConfigureCollectedLootLayout()
-    {
-        if (collectedLootLayoutConfigured || content == null)
-        {
-            return;
-        }
-
-        GridLayoutGroup gridLayoutGroup = content.GetComponent<GridLayoutGroup>();
-        if (gridLayoutGroup == null)
-        {
-            return;
-        }
-
-        gridLayoutGroup.cellSize = collectedLootGridCellSize;
-        gridLayoutGroup.spacing = collectedLootGridSpacing;
-        gridLayoutGroup.padding = new RectOffset(0, 0, collectedLootGridPaddingTop, collectedLootGridPaddingBottom);
-        gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-        gridLayoutGroup.constraintCount = collectedLootColumnCount;
-        gridLayoutGroup.childAlignment = TextAnchor.UpperCenter;
-        collectedLootLayoutConfigured = true;
     }
 
     private void BringLiveRaidControlsToFront()
