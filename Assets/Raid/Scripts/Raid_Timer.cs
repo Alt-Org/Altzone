@@ -404,9 +404,10 @@ public class Raid_Timer : MonoBehaviour
             return;
         }
 
-        if (raid_References == null)
+        Raid_References instance = Raid_References.Instance;
+        if (instance != null)
         {
-            raid_References = Raid_References.Instance;
+            raid_References = instance;
         }
 
         if (raid_References != null)
