@@ -16,10 +16,6 @@ public class Raid_LiveInventory : MonoBehaviour
     [SerializeField] private Raid_References raidReferences;
 
     private Raid_LootTracking lootTracking;
-    private Transform liveTimerPanel;
-    private Transform liveExitRaidButton;
-    private LiveRaidControlOverlayState liveTimerPanelOverlayState;
-    private LiveRaidControlOverlayState liveExitRaidButtonOverlayState;
     private readonly List<Raid_InventoryItem> collectedLootItems = new();
 
     public static Raid_LiveInventory Instance { get; private set; }
@@ -48,7 +44,6 @@ public class Raid_LiveInventory : MonoBehaviour
     private void OnDisable()
     {
         UnsubscribeLootTracking();
-        RestoreLiveRaidControlSiblingOrder();
     }
 
     public void Show()
@@ -72,13 +67,11 @@ public class Raid_LiveInventory : MonoBehaviour
         SetBackButtonVisible();
         Refresh();
         SetVisible(true);
-        BringLiveRaidControlsToFront();
     }
 
     public void Hide()
     {
         UnsubscribeLootTracking();
-        RestoreLiveRaidControlSiblingOrder();
         SetVisible(false);
     }
 
@@ -223,51 +216,6 @@ public class Raid_LiveInventory : MonoBehaviour
         }
     }
 
-    private void BringLiveRaidControlsToFront()
-    {
-        ResolveLiveRaidControls();
-
-        BringLiveRaidControlToFront(liveExitRaidButton, ref liveExitRaidButtonOverlayState, true);
-        BringLiveRaidControlToFront(liveTimerPanel, ref liveTimerPanelOverlayState, false);
-    }
-
-    private void RestoreLiveRaidControlSiblingOrder()
-    {
-        RestoreLiveRaidControl(ref liveTimerPanelOverlayState);
-        RestoreLiveRaidControl(ref liveExitRaidButtonOverlayState);
-    }
-
-    private void BringLiveRaidControlToFront(Transform control, ref LiveRaidControlOverlayState overlayState, bool needsRaycaster)
-    {
-        if (control == null)
-        {
-            return;
-        }
-
-        control.gameObject.SetActive(true);
-        SetCanvasGroupsVisible(control);
-
-        overlayState ??= new LiveRaidControlOverlayState(control, needsRaycaster);
-        overlayState.Apply(GetLiveInventorySortingOrder() + 10);
-    }
-
-    private void RestoreLiveRaidControl(ref LiveRaidControlOverlayState overlayState)
-    {
-        if (overlayState == null)
-        {
-            return;
-        }
-
-        overlayState.Restore();
-        overlayState = null;
-    }
-
-    private int GetLiveInventorySortingOrder()
-    {
-        Canvas canvas = menuRoot != null ? menuRoot.GetComponentInParent<Canvas>() : null;
-        return canvas != null ? canvas.sortingOrder : 0;
-    }
-
     private Raid_LootTracking ResolveLootTracking()
     {
         if (raidReferences == null)
@@ -278,102 +226,6 @@ public class Raid_LiveInventory : MonoBehaviour
         return raidReferences != null
             ? raidReferences.LootTracking
             : FindObjectOfType<Raid_LootTracking>();
-    }
-
-    private sealed class LiveRaidControlOverlayState
-    {
-        private readonly Canvas canvas;
-        private readonly GraphicRaycaster raycaster;
-        private readonly bool addedCanvas;
-        private readonly bool addedRaycaster;
-        private readonly bool originalOverrideSorting;
-        private readonly int originalSortingOrder;
-        private readonly int originalSortingLayerID;
-
-        public LiveRaidControlOverlayState(Transform control, bool needsRaycaster)
-        {
-            canvas = control.GetComponent<Canvas>();
-            if (canvas == null)
-            {
-                canvas = control.gameObject.AddComponent<Canvas>();
-                addedCanvas = true;
-            }
-
-            originalOverrideSorting = canvas.overrideSorting;
-            originalSortingOrder = canvas.sortingOrder;
-            originalSortingLayerID = canvas.sortingLayerID;
-
-            if (needsRaycaster)
-            {
-                raycaster = control.GetComponent<GraphicRaycaster>();
-                if (raycaster == null)
-                {
-                    raycaster = control.gameObject.AddComponent<GraphicRaycaster>();
-                    addedRaycaster = true;
-                }
-            }
-        }
-
-        public void Apply(int sortingOrder)
-        {
-            canvas.overrideSorting = true;
-            canvas.sortingOrder = sortingOrder;
-        }
-
-        public void Restore()
-        {
-            if (canvas == null)
-            {
-                return;
-            }
-
-            canvas.overrideSorting = originalOverrideSorting;
-            canvas.sortingOrder = originalSortingOrder;
-            canvas.sortingLayerID = originalSortingLayerID;
-
-            if (addedRaycaster && raycaster != null)
-            {
-                Destroy(raycaster);
-            }
-
-            if (addedCanvas)
-            {
-                Destroy(canvas);
-            }
-        }
-    }
-
-    private void ResolveLiveRaidControls()
-    {
-        Transform root = menuRoot != null && menuRoot.transform.parent != null
-            ? menuRoot.transform.parent
-            : null;
-
-        if (root == null)
-        {
-            return;
-        }
-
-        if (liveTimerPanel == null)
-        {
-            liveTimerPanel = FindChildRecursive(root, "TimerPanel");
-        }
-
-        if (liveExitRaidButton == null)
-        {
-            liveExitRaidButton = FindChildRecursive(root, "ExitRaidButton");
-        }
-    }
-
-    private static void SetCanvasGroupsVisible(Transform root)
-    {
-        CanvasGroup[] canvasGroups = root.GetComponentsInChildren<CanvasGroup>(true);
-        for (int i = 0; i < canvasGroups.Length; i++)
-        {
-            canvasGroups[i].alpha = 1f;
-            canvasGroups[i].interactable = true;
-            canvasGroups[i].blocksRaycasts = true;
-        }
     }
 
     private void UnsubscribeLootTracking()
