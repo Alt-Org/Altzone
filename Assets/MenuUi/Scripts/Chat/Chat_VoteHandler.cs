@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Window;
 using MenuUi.Scripts.AvatarEditor;
+using MenuUi.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static OnlinePlayersPanelItem;
 
 public class ChatVoteHandler : AltMonoBehaviour
 {
@@ -26,32 +28,36 @@ public class ChatVoteHandler : AltMonoBehaviour
 
     //Voting List
     [SerializeField] private List<VotersData> _candidatesList;
-    [SerializeField] private List<SavedVotersData> _savedData; //Mainly just a place holder for test data
+    [SerializeField] private List<SavedVotersData> _savedData; //Mainly just a place holder for data testing
     [SerializeField] private List<string> _votedUsers;
 
 
     [Header("Removing Player")]
     [SerializeField] private GameObject _voteRemove; 
     [SerializeField] private AvatarFaceLoader _removeAvatar;
+    [SerializeField] private string _removeid;
     [SerializeField] private TextMeshProUGUI _removeName;
     [SerializeField] private TextMeshProUGUI _removeDate;
 
+    [SerializeField] private Button _checkProfile;
+    [SerializeField] private Button _buttonRemoveVote;
 
+    [SerializeField] private Button _changeOptionVote; //Place holder for moving the other voting system
 
-    [SerializeField] private Button _changeVote; //Place holder
+    public static event PlayerPanelCloseRequested OnPlayerPanelCloseRequested;
 
 
     void Start()
     {
 
         _voteRegime.SetActive(true);
-
+        _voteRemove.SetActive(true);
 
 
         SetMessageInfo();
 
         //_Sav
-        foreach(var i in _savedData)
+        foreach (var i in _savedData)
         {
         CandidateData(i.Name, i.Id);
         }
@@ -59,10 +65,11 @@ public class ChatVoteHandler : AltMonoBehaviour
 
         StartCoroutine(GetPlayerData(player =>
         {
+             RemovePlayer(player);
             _voteButton.onClick.AddListener(() => VotedButton(player.Id, player.Name));
         }));
 
-        _changeVote.onClick.AddListener(() => change());
+        _changeOptionVote.onClick.AddListener(() => change());
 
         _voteRemove.SetActive(false);
     }
@@ -91,6 +98,10 @@ public class ChatVoteHandler : AltMonoBehaviour
         }));
 
     }
+
+      ///               ///
+     /// Voting Regime ///
+    ///               ///
 
     ///Adds the Candidates to the selection
     private void CandidateData(string Usersname, string UserID)
@@ -179,8 +190,45 @@ public class ChatVoteHandler : AltMonoBehaviour
 
 
     }
+      ///               ///
+     /// Remove Player ///
+    ///               ///
+    private void RemovePlayer(PlayerData player)
+    {
+
+            if (player.AvatarData != null) _removeAvatar.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(player.AvatarData));
+            _removeid = player.Id;
+            _removeName.text = player.Name;
+
+            //_date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
 
 
+        if (player != null)
+            _checkProfile.onClick.AddListener(() =>
+            {
+                StartCoroutine(GetProfile(player.Id));
+            });
+
+        _buttonRemoveVote.onClick.AddListener(() => Debug.LogWarning("Find me: You have voted to remove this player == " + _removeName.text));
+
+
+    }
+
+    //Check Profile
+    private IEnumerator GetProfile(string playerID)
+    {
+        ServerPlayer serverPlayer = null;
+        bool timeout = false;
+
+        StartCoroutine(ServerManager.Instance.GetOtherPlayerFromServer(playerID, c => serverPlayer = c));
+
+        StartCoroutine(WaitUntilTimeout(3, c => timeout = c));
+        yield return new WaitUntil(() => serverPlayer != null || timeout);
+
+        DataCarrier.AddData(DataCarrier.PlayerProfile, new PlayerData(serverPlayer));
+        yield return _checkProfile.GetComponent<WindowNavigation>().Navigate();
+        OnPlayerPanelCloseRequested?.Invoke();
+    }
 
 }
 

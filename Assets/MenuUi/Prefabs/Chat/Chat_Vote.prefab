@@ -994,9 +994,11 @@ MonoBehaviour:
   _name: {fileID: 3693726532897905059}
   _time: {fileID: 8701536110064891510}
   _date: {fileID: 2533703019532433944}
+  _voteRegime: {fileID: 2855744572958629699}
   _voteUserPrefab: {fileID: 8666026173381370132, guid: 67ab2d7aa3e97ac4ba80f59ccd295707,
     type: 3}
   _candidateBoard: {fileID: 7140819818999518062}
+  _voteButton: {fileID: 2262978890382486739}
   _candidatesList: []
   _savedData:
   - Name: Jane Juliet
@@ -1007,14 +1009,15 @@ MonoBehaviour:
     Id: 1444EU4
   - Name: Columbia
     Id: 60
-  _voteButton: {fileID: 2262978890382486739}
   _votedUsers: []
+  _voteRemove: {fileID: 6750730140633730984}
   _removeAvatar: {fileID: 3070587437594168587}
+  _removeid: 
   _removeName: {fileID: 934398073888469784}
   _removeDate: {fileID: 2831567340733206044}
-  _voteRegime: {fileID: 712471840497266442}
-  _voteRemove: {fileID: 6750730140633730984}
-  _changeVote: {fileID: 6736870939927995149}
+  _checkProfile: {fileID: 4183282965737712704}
+  _buttonRemoveVote: {fileID: 4480743009963602307}
+  _changeOptionVote: {fileID: 6736870939927995149}
 --- !u!1 &2773992382878581648
 GameObject:
   m_ObjectHideFlags: 0
@@ -1989,6 +1992,7 @@ GameObject:
   - component: {fileID: 7255026546100403162}
   - component: {fileID: 4183282965737712704}
   - component: {fileID: 7192078365972356003}
+  - component: {fileID: 1289866096804507621}
   m_Layer: 0
   m_Name: CheckProfile_button
   m_TagString: Untagged
@@ -2113,6 +2117,22 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 10, y: -10}
   m_UseGraphicAlpha: 1
+--- !u!114 &1289866096804507621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5818030487986348757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add5e7c7ed4ccb44095b7029429e7fe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: e159432f6bd8572419fea7a32165e31b, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
+  _isCurrentPopOutWindow: 0
 --- !u!1 &5836658647884080128
 GameObject:
   m_ObjectHideFlags: 0
