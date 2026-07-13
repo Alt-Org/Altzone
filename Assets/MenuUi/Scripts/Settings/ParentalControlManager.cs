@@ -1,7 +1,8 @@
 using System;
-using System.Runtime.CompilerServices;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using Altzone.Scripts.AzDebug;
+using Newtonsoft.Json.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -388,9 +389,9 @@ public class ParentalControlManager : MonoBehaviour
         carrier.AllowEmojis = false;
         PlayerPrefs.SetInt("AllowTreasureHunt", 0);
         carrier.AllowTreasureHunt = false;
-        PlayerPrefs.SetInt("MonthlyLimit", 0);
+        PlayerPrefs.SetFloat("MonthlyLimit", 0);
         //TODO carrier
-        PlayerPrefs.SetInt("MonthlySpendingLimit", 0);
+        PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
         PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
         carrier.ActivatePurchasesSeparately = false;
         PlayerPrefs.SetInt("MaxPlayTime", 0);
@@ -566,17 +567,66 @@ public class ParentalControlManager : MonoBehaviour
     public void SetMonthlyLimit()
     {
         //money control: monthly spending limit
+        //Debug.Log(monthlyLimitInput.GetType() + " type of monthly limit input field");
         string money = monthlyLimitInput.text;
-        if (money.IsNullOrEmpty())
+        //Debug.Log(money.GetType() + "type of money string");
+        float moneyFloat = float.Parse(monthlyLimitInput.text);
+        //Debug.Log("Got money limit " + moneyFloat);
+
+        /*
+        if (float.TryParse(monthlyLimitInput.text, out float limit))
         {
-            PlayerPrefs.SetFloat("MonthlyLimit", 0);
+            moneyFloat = limit;
+            Debug.Log("Tried float.TryParse for monthly limit got value " + limit);
+        }
+        else {
+            moneyFloat = 0;
+        }
+        */
+        /*
+        if (Single.TryParse(monthlyLimitInput.text, out float limit2))
+        {
+            moneyFloat = limit2;
+            Debug.Log("Tried Single.TryParse for monthly limit");
         }
         else
         {
-            PlayerPrefs.SetFloat("MonthlyLimit", float.Parse(money));
+            moneyFloat = 0;
         }
-        
+        */
 
+         
+
+
+
+        if (money.IsNullOrEmpty())
+        {
+            PlayerPrefs.SetFloat("MonthlyLimit", 0);
+            PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
+            PlayerPrefs.Save();
+
+
+        }
+        else if (moneyFloat < 0)
+        {
+            PlayerPrefs.SetFloat("MonthlyLimit", 0);
+            PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
+            Debug.Log("Negative money amount, value thus set to 0");
+            //TODO some kind of message, please input a positive value??
+            PlayerPrefs.Save();
+
+        }
+        else //if (moneyFloat >= 0) 
+        {
+            PlayerPrefs.SetFloat("MonthlyLimit", float.Parse(money));
+            PlayerPrefs.SetFloat("MonthlySpendingLimit", float.Parse(money));
+            Debug.Log("Set money limit to" + float.Parse(money));
+            PlayerPrefs.Save();
+
+
+        }
+        //monthlyLimitInput.Select();
+        
 
     }
 
@@ -584,6 +634,11 @@ public class ParentalControlManager : MonoBehaviour
     {
         float getInput = PlayerPrefs.GetFloat("MonthlyLimit");
         monthlyLimitInput.text = getInput.ToString();
+        //Debug.Log("Got monthly limit" + getInput);
+
+        //float getInput2 = PlayerPrefs.GetFloat("MonthlySpendingLimit");
+       // monthlyLimitInput.text = getInput2.ToString();
+        
 
     }
 
@@ -617,6 +672,13 @@ public class ParentalControlManager : MonoBehaviour
             PlayerPrefs.SetFloat("MaxPlayTime", time);
             PlayerPrefs.Save();
         }
+
+        /*
+        else {
+            PlayerPrefs.SetFloat("MaxPlayTime", 0);
+            PlayerPrefs.Save();
+        }
+        */
     }
 
     public void GetTimeLimit()
