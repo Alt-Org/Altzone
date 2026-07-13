@@ -5,18 +5,15 @@ using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Config;
-using Altzone.Scripts.Language;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Photon.Client;
 using Photon.Realtime;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 [DefaultExecutionOrder(-100)]
 public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, ILobbyCallbacks, IMatchmakingCallbacks, IInRoomCallbacks, IOnEventCallback
@@ -42,16 +39,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private Raid_Timer _raidTimer;
     private ExitRaid _exitRaid;
     private RaidMatchmakingViews _views;
-    private GameObject _overlayRoot;
-    private GameObject _matchmakingPanel;
-    private GameObject _lobbyPanel;
-    private TextMeshProUGUI _matchmakingTitleText;
-    private TextMeshProUGUI _matchmakingStatusText;
-    private TextMeshProUGUI _matchmakingDetailText;
-    private GameObject[] _matchmakingDots;
-    private TextMeshProUGUI _lobbyCountdownText;
-    private Transform _participantListRoot;
-    private RaidLobbyClanListItem _clanListItemTemplate;
 
     private string _localPlayerName = "Player";
     private string _localPlayerId = string.Empty;
@@ -70,7 +57,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private bool _debugInventoryMode;
     private bool _lobbyCountdownActive;
     private bool _showFiveMatchmakingDots = true;
-    private float _nextMatchmakingDotToggleTime;
+    private Coroutine _matchmakingDotsCoroutine;
+    private Coroutine _lobbyCountdownCoroutine;
     private Coroutine _debugStartCoroutine;
 
     public static RaidMatchmakingController Instance { get; private set; }
@@ -111,16 +99,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         StartCoroutine(StartRaidMatchmakingFlow());
     }
 
-    private void Update()
-    {
-        UpdateMatchmakingDots();
-
-        if (_lobbyCountdownActive)
-        {
-            UpdateLobbyCountdown();
-        }
-    }
-
     private void OnDestroy()
     {
         if (Instance == this)
@@ -128,6 +106,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             Instance = null;
         }
 
+        StopMatchmakingDots();
+        StopLobbyCountdownUpdates();
         UnregisterRaidTimerStarted();
         UnregisterPhotonCallbacks();
     }
@@ -173,6 +153,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void StartDebugInventoryMode()
     {
+        StopMatchmakingDots();
+        StopLobbyCountdownUpdates();
         _surrendering = true;
         SetGameplayReleased(true);
         _sharedRaidActive = false;
@@ -183,10 +165,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             PhotonRealtimeClient.LeaveRoom(false);
         }
 
-        if (_overlayRoot != null)
-        {
-            _overlayRoot.SetActive(false);
-        }
+        _views?.Hide();
 
         if (_lootTracking != null)
         {
@@ -555,7 +534,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         if (!IsCurrentRoomRaid())
         {
-            _lobbyCountdownActive = false;
+            StopLobbyCountdownUpdates();
             return;
         }
 
@@ -564,7 +543,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         if (state == RaidPhotonRoom.StateMatchmaking)
         {
-            _lobbyCountdownActive = false;
+            StopLobbyCountdownUpdates();
             UpdateMatchmakingStatus();
             return;
         }
@@ -573,20 +552,19 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         {
             ConfigureRaidFromRoomIfReady();
             ShowLobby();
-            _lobbyCountdownActive = true;
-            UpdateLobbyCountdown();
+            StartLobbyCountdownUpdates();
             return;
         }
 
         if (state == RaidPhotonRoom.StateStarted)
         {
-            _lobbyCountdownActive = false;
+            StopLobbyCountdownUpdates();
             ConfigureRaidFromRoomIfReady();
             BeginGameplay();
             return;
         }
 
-        _lobbyCountdownActive = false;
+        StopLobbyCountdownUpdates();
     }
 
     private void StartLobbyCountdown(List<Player> validPlayers, RaidPhotonRoom.ClanEntry[] clanEntries)
@@ -682,7 +660,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         float secondsRemaining = Mathf.Max(0f, (startTimeMs - nowMs) / 1000f);
         TimeSpan remaining = TimeSpan.FromSeconds(Mathf.CeilToInt(secondsRemaining));
         string timeText = $"{(int)remaining.TotalMinutes}:{remaining.Seconds:00}";
-        SetLocalizedText(_lobbyCountdownText, "Kokoaminen alkaa\n{0}", "Gathering starts\n{0}", timeText);
+        _views?.SetLobbyCountdown(timeText);
 
         if (secondsRemaining <= 0f && PhotonRealtimeClient.LocalPlayer.IsMasterClient)
         {
@@ -693,6 +671,38 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
     }
 
+    private void StartLobbyCountdownUpdates()
+    {
+        _lobbyCountdownActive = true;
+        UpdateLobbyCountdown();
+
+        if (_lobbyCountdownCoroutine == null)
+        {
+            _lobbyCountdownCoroutine = StartCoroutine(UpdateLobbyCountdownRoutine());
+        }
+    }
+
+    private void StopLobbyCountdownUpdates()
+    {
+        _lobbyCountdownActive = false;
+        if (_lobbyCountdownCoroutine != null)
+        {
+            StopCoroutine(_lobbyCountdownCoroutine);
+            _lobbyCountdownCoroutine = null;
+        }
+    }
+
+    private IEnumerator UpdateLobbyCountdownRoutine()
+    {
+        while (_lobbyCountdownActive)
+        {
+            yield return new WaitForSeconds(0.25f);
+            UpdateLobbyCountdown();
+        }
+
+        _lobbyCountdownCoroutine = null;
+    }
+
     private void BeginGameplay()
     {
         if (_gameplayReleased)
@@ -700,12 +710,11 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
+        StopMatchmakingDots();
+        StopLobbyCountdownUpdates();
         SetGameplayReleased(true);
         _sharedRaidActive = false;
-        if (_overlayRoot != null)
-        {
-            _overlayRoot.SetActive(false);
-        }
+        _views?.Hide();
 
         if (_raidTimer != null)
         {
@@ -1001,111 +1010,82 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        int currentPlayers = GetRaidPlayersWithClans().Count;
-        ShowMatchmakingSearchState(currentPlayers);
+        ShowMatchmakingSearchState(GetCurrentRaidPlayerCount());
+    }
+
+    private int GetCurrentRaidPlayerCount()
+    {
+        return IsCurrentRoomRaid() ? GetRaidPlayersWithClans().Count : 1;
+    }
+
+    private void ShowMatchmakingSearchVisuals(int currentPlayers)
+    {
+        _views?.ShowMatchmakingSearchState(
+            currentPlayers,
+            RaidPhotonRoom.RequiredPlayers,
+            _showFiveMatchmakingDots,
+            matchmakingDotSpacing);
     }
 
     private void ShowMatchmaking(string title, string status, string detail)
     {
         _matchmakingSearchVisualsEnabled = false;
-
-        if (_overlayRoot != null)
-        {
-            _overlayRoot.SetActive(true);
-        }
-
-        if (_matchmakingPanel != null)
-        {
-            _matchmakingPanel.SetActive(true);
-        }
-
-        if (_lobbyPanel != null)
-        {
-            _lobbyPanel.SetActive(false);
-        }
-
-        SetText(_matchmakingTitleText, title);
-        SetText(_matchmakingStatusText, status);
-        SetText(_matchmakingDetailText, detail);
-        SetTextActive(_matchmakingStatusText, !string.IsNullOrWhiteSpace(status));
-        SetTextActive(_matchmakingDetailText, !string.IsNullOrWhiteSpace(detail));
-        SetMatchmakingDotsActive(0);
+        StopMatchmakingDots();
+        _views?.ShowMatchmaking(title, status, detail);
     }
 
     private void ShowMatchmakingSearchState(int currentPlayers)
     {
         _matchmakingSearchVisualsEnabled = true;
-
-        if (_overlayRoot != null)
-        {
-            _overlayRoot.SetActive(true);
-        }
-
-        if (_matchmakingPanel != null)
-        {
-            _matchmakingPanel.SetActive(true);
-        }
-
-        if (_lobbyPanel != null)
-        {
-            _lobbyPanel.SetActive(false);
-        }
-
-        bool playersFound = currentPlayers > 1;
-        SetText(
-            _matchmakingTitleText,
-            GetCurrentLanguage() == SettingsCarrier.LanguageType.English
-                ? (playersFound ? "Players found" : "Searching for players")
-                : (playersFound ? "Pelaajia l\u00F6ydetty" : "Etsit\u00E4\u00E4n pelaajia"));
-
-        SetTextActive(_matchmakingStatusText, playersFound);
-        if (playersFound)
-        {
-            SetText(_matchmakingStatusText, $"{currentPlayers} / {RaidPhotonRoom.RequiredPlayers}");
-        }
-
-        SetTextActive(_matchmakingDetailText, false);
-        SetMatchmakingDotText();
+        ShowMatchmakingSearchVisuals(currentPlayers);
+        StartMatchmakingDots();
     }
 
-    private void UpdateMatchmakingDots()
+    private void StartMatchmakingDots()
     {
-        if (!_matchmakingSearchVisualsEnabled || _matchmakingPanel == null || !_matchmakingPanel.activeInHierarchy)
+        if (_matchmakingDotsCoroutine == null)
         {
-            return;
+            _matchmakingDotsCoroutine = StartCoroutine(UpdateMatchmakingDotsRoutine());
+        }
+    }
+
+    private void StopMatchmakingDots()
+    {
+        _matchmakingSearchVisualsEnabled = false;
+        if (_matchmakingDotsCoroutine != null)
+        {
+            StopCoroutine(_matchmakingDotsCoroutine);
+            _matchmakingDotsCoroutine = null;
+        }
+    }
+
+    private IEnumerator UpdateMatchmakingDotsRoutine()
+    {
+        while (_matchmakingSearchVisualsEnabled)
+        {
+            yield return new WaitForSeconds(Mathf.Max(0.1f, matchmakingDotToggleSeconds));
+
+            if (_views == null || !_views.IsMatchmakingPanelVisible)
+            {
+                continue;
+            }
+
+            _showFiveMatchmakingDots = !_showFiveMatchmakingDots;
+            SetMatchmakingDotText();
         }
 
-        if (Time.time < _nextMatchmakingDotToggleTime)
-        {
-            return;
-        }
-
-        _showFiveMatchmakingDots = !_showFiveMatchmakingDots;
-        _nextMatchmakingDotToggleTime = Time.time + Mathf.Max(0.1f, matchmakingDotToggleSeconds);
-        SetMatchmakingDotText();
+        _matchmakingDotsCoroutine = null;
     }
 
     private void SetMatchmakingDotText()
     {
-        SetMatchmakingDotsActive(_showFiveMatchmakingDots ? 5 : 4);
+        ShowMatchmakingSearchVisuals(GetCurrentRaidPlayerCount());
     }
 
     private void ShowLobby()
     {
-        if (_overlayRoot != null)
-        {
-            _overlayRoot.SetActive(true);
-        }
-
-        if (_matchmakingPanel != null)
-        {
-            _matchmakingPanel.SetActive(false);
-        }
-
-        if (_lobbyPanel != null)
-        {
-            _lobbyPanel.SetActive(true);
-        }
+        StopMatchmakingDots();
+        _views?.ShowLobby();
     }
 
     private void RefreshParticipantList()
@@ -1117,27 +1097,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void RefreshParticipantList(List<Player> players)
     {
-        if (_participantListRoot == null)
-        {
-            return;
-        }
-
-        if (_clanListItemTemplate == null)
-        {
-            Debug.LogError("Raid lobby clan list item template is not assigned in RaidMatchmakingViews.");
-            return;
-        }
-
-        for (int i = _participantListRoot.childCount - 1; i >= 0; i--)
-        {
-            Transform child = _participantListRoot.GetChild(i);
-            if (child != _clanListItemTemplate.transform)
-            {
-                Destroy(child.gameObject);
-            }
-        }
-
-        var clanRows = players
+        List<RaidLobbyClanRowData> clanRows = players
             .Where(player => !string.IsNullOrWhiteSpace(GetPlayerClanId(player)))
             .GroupBy(GetPlayerClanId)
             .Select(group => new
@@ -1148,21 +1108,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
                 Players = group.OrderBy(player => player.ActorNumber).ToList()
             })
             .OrderBy(row => row.FirstActorNumber)
+            .Select(row => new RaidLobbyClanRowData(
+                row.ClanName,
+                row.PlayerCount,
+                row.Players.Select(CreatePlayerIconData).ToList()))
             .ToList();
 
-        int rowCount = clanRows.Count;
-        for (int i = 0; i < rowCount; i++)
-        {
-            RaidLobbyClanListItem row = Instantiate(_clanListItemTemplate, _participantListRoot);
-            row.name = $"Clan {i + 1}";
-            row.gameObject.SetActive(true);
-            row.SetTemplateStackPosition(i, rowCount, 0.04f);
-            row.Configure(
-                clanRows[i].ClanName,
-                clanRows[i].PlayerCount,
-                RaidPhotonRoom.MaxPlayersPerClan,
-                clanRows[i].Players.Select(CreatePlayerIconData).ToList());
-        }
+        _views?.RefreshParticipantList(clanRows, RaidPhotonRoom.MaxPlayersPerClan);
     }
 
     private RaidPlayerIconData CreatePlayerIconData(Player player)
@@ -1190,26 +1142,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         _views.Initialize(OnSurrenderPressed, OnDebugStartPressed);
-        AssignViewReferences(_views);
-    }
-
-    private void AssignViewReferences(RaidMatchmakingViews views)
-    {
-        _overlayRoot = views.Root;
-        _matchmakingPanel = views.MatchmakingPanel;
-        _lobbyPanel = views.LobbyPanel;
-        _matchmakingTitleText = views.MatchmakingTitleText;
-        _matchmakingStatusText = views.MatchmakingStatusText;
-        _matchmakingDetailText = views.MatchmakingDetailText;
-        _matchmakingDots = views.MatchmakingDots;
-        ResolveMatchmakingDotsFallback();
-        _lobbyCountdownText = views.LobbyCountdownText;
-        _participantListRoot = views.ParticipantListRoot;
-        _clanListItemTemplate = views.ClanListItemTemplate;
-        if (_clanListItemTemplate != null)
-        {
-            _clanListItemTemplate.gameObject.SetActive(false);
-        }
     }
 
     private void OnSurrenderPressed()
@@ -1312,103 +1244,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         return room != null
             && GetRoomProperty(room, PhotonBattleRoom.GameTypeKey, (int)GameType.None) == (int)GameType.Raid
             && GetRoomProperty(room, RaidPhotonRoom.RaidMatchmakingKey, false);
-    }
-
-    private static void SetText(TextMeshProUGUI textField, string text)
-    {
-        if (textField == null)
-        {
-            return;
-        }
-
-        textField.text = text;
-    }
-
-    private static void SetTextActive(TextMeshProUGUI textField, bool isActive)
-    {
-        if (textField == null)
-        {
-            return;
-        }
-
-        textField.gameObject.SetActive(isActive);
-    }
-
-    private void SetMatchmakingDotsActive(int visibleCount)
-    {
-        if (_matchmakingDots == null)
-        {
-            return;
-        }
-
-        for (int i = 0; i < _matchmakingDots.Length; i++)
-        {
-            GameObject dot = _matchmakingDots[i];
-            if (dot == null)
-            {
-                continue;
-            }
-
-            bool isVisible = i < visibleCount;
-            dot.SetActive(isVisible);
-
-            if (isVisible && dot.transform is RectTransform dotTransform)
-            {
-                float startX = -matchmakingDotSpacing * (visibleCount - 1) * 0.5f;
-                dotTransform.anchoredPosition = new Vector2(startX + matchmakingDotSpacing * i, 0f);
-            }
-        }
-    }
-
-    private void ResolveMatchmakingDotsFallback()
-    {
-        if (_matchmakingDots != null && _matchmakingDots.Length > 0)
-        {
-            return;
-        }
-
-        Transform dotRoot = _matchmakingPanel != null
-            ? _matchmakingPanel.transform.Find("MatchmakingDots")
-            : null;
-        if (dotRoot == null)
-        {
-            return;
-        }
-
-        _matchmakingDots = new GameObject[dotRoot.childCount];
-        for (int i = 0; i < dotRoot.childCount; i++)
-        {
-            _matchmakingDots[i] = dotRoot.GetChild(i).gameObject;
-        }
-    }
-
-    private static void SetLocalizedText(TextMeshProUGUI textField, string finnishText, string englishText, params string[] additions)
-    {
-        if (textField == null)
-        {
-            return;
-        }
-
-        TextLanguageSelectorCaller selector = textField.GetComponent<TextLanguageSelectorCaller>();
-        if (selector != null)
-        {
-            selector.SetText(GetCurrentLanguage(), additions ?? Array.Empty<string>());
-            return;
-        }
-
-        string format = GetCurrentLanguage() == SettingsCarrier.LanguageType.English ? englishText : finnishText;
-        textField.text = string.Format(format, additions ?? Array.Empty<string>());
-    }
-
-    private static SettingsCarrier.LanguageType GetCurrentLanguage()
-    {
-        SettingsCarrier.LanguageType language = SettingsCarrier.Instance != null
-            ? SettingsCarrier.Instance.Language
-            : SettingsCarrier.LanguageType.Finnish;
-
-        return language == SettingsCarrier.LanguageType.English
-            ? SettingsCarrier.LanguageType.English
-            : SettingsCarrier.LanguageType.Finnish;
     }
 
     private static T GetRoomInfoProperty<T>(RoomInfo room, string key, T defaultValue)
@@ -1614,7 +1449,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         _inventoryInitialized = false;
         SetGameplayReleased(false);
         _sharedRaidActive = false;
-        _lobbyCountdownActive = false;
+        StopLobbyCountdownUpdates();
         _lootedSlots.Clear();
 
         if (_surrendering)
