@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TMPro;
 using Altzone.Scripts.Model.Poco.Game;
@@ -193,22 +194,33 @@ public class GameFurnitureVisualizer : MonoBehaviour
             return string.Empty;
 
         if (!string.IsNullOrWhiteSpace(avatarPart.Name))
-            return TrimAvatarNamePrefix(avatarPart.Name);
+            return CleanAvatarDisplayName(avatarPart.Name);
 
         if (!string.IsNullOrWhiteSpace(avatarPart.VisibleName))
-            return avatarPart.VisibleName;
+            return CleanAvatarDisplayName(avatarPart.VisibleName);
 
-        return TrimAvatarNamePrefix(avatarPart.name);
+        return CleanAvatarDisplayName(avatarPart.name);
     }
 
-    private static string TrimAvatarNamePrefix(string name)
+    private static string CleanAvatarDisplayName(string name)
     {
         const string Prefix = "Avatar";
+        const string Suffix = "Default";
 
         if (string.IsNullOrWhiteSpace(name))
             return string.Empty;
 
-        return name.StartsWith(Prefix) ? name.Substring(Prefix.Length) : name;
+        string displayName = name.Trim();
+
+        if (displayName.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase))
+            displayName = displayName.Substring(Prefix.Length);
+
+        displayName = displayName.Trim(' ', '_', '-');
+
+        if (displayName.EndsWith(Suffix, StringComparison.OrdinalIgnoreCase))
+            displayName = displayName.Substring(0, displayName.Length - Suffix.Length);
+
+        return displayName.Trim(' ', '_', '-');
     }
 
     private void SetFurnitureDisplayName(GameFurniture gameFurniture)
