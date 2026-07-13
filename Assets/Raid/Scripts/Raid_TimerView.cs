@@ -88,9 +88,14 @@ public class Raid_TimerView : MonoBehaviour
         }
     }
 
-    public void SetLossHaloVisible(bool visible, GameObject haloTarget)
+    public void SetLossHaloVisible(bool visible, GameObject backgroundHaloTarget, GameObject clockHaloTarget)
     {
-        Raid_RedHalo.SetVisible(haloTarget, visible, LossHaloPadding, LossHaloOffset);
+        Raid_RedHalo.SetVisible(backgroundHaloTarget, visible, LossHaloPadding, LossHaloOffset);
+        if (clockHaloTarget != backgroundHaloTarget)
+        {
+            Raid_RedHalo.SetVisible(clockHaloTarget, visible, LossHaloPadding, LossHaloOffset);
+        }
+
         SetTimerTextHaloVisible(visible);
     }
 

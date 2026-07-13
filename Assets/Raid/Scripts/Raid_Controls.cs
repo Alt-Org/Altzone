@@ -5,6 +5,8 @@ using UnityEngine;
 public class Raid_Controls : MonoBehaviour
 {
     [SerializeField] private GameObject timerPanel;
+    [SerializeField] private GameObject timerPanelBackground;
+    [SerializeField] private GameObject timerPanelClock;
     [SerializeField] private ExitRaid exitRaid;
 
     private bool? visible;
@@ -32,12 +34,13 @@ public class Raid_Controls : MonoBehaviour
         ApplyVisibility(visible);
     }
 
-    public GameObject GetTimerPanelTarget(TextMeshProUGUI timerText)
+    public void GetTimerPanelHaloTargets(TextMeshProUGUI timerText, out GameObject backgroundTarget, out GameObject clockTarget)
     {
         ResolveTimerPanel(timerText);
-        return timerPanel != null
-            ? timerPanel
-            : timerText != null ? timerText.transform.parent?.gameObject : null;
+        ResolveTimerPanelHaloTargets(timerText);
+
+        backgroundTarget = timerPanelBackground;
+        clockTarget = timerPanelClock;
     }
 
     private void ResolveTimerPanel(TextMeshProUGUI timerText)
@@ -48,9 +51,22 @@ public class Raid_Controls : MonoBehaviour
         }
 
         Transform timerPanelTransform = FindAncestor(timerText.transform, "TimerPanel");
-        timerPanel = timerPanelTransform != null
-            ? timerPanelTransform.gameObject
-            : timerText.transform.parent?.gameObject;
+        timerPanel = timerPanelTransform != null ? timerPanelTransform.gameObject : null;
+    }
+
+    private void ResolveTimerPanelHaloTargets(TextMeshProUGUI timerText)
+    {
+        if (timerPanelBackground == null && timerPanel != null)
+        {
+            Transform background = FindDescendant(timerPanel.transform, "background");
+            timerPanelBackground = background != null ? background.gameObject : null;
+        }
+
+        if (timerPanelClock == null)
+        {
+            Transform clock = timerPanel != null ? FindDescendant(timerPanel.transform, "Clock") : null;
+            timerPanelClock = clock != null ? clock.gameObject : null;
+        }
     }
 
     private static Transform FindAncestor(Transform child, string ancestorName)
@@ -64,6 +80,30 @@ public class Raid_Controls : MonoBehaviour
             }
 
             current = current.parent;
+        }
+
+        return null;
+    }
+
+    private static Transform FindDescendant(Transform root, string descendantName)
+    {
+        if (root == null)
+        {
+            return null;
+        }
+
+        if (root.name == descendantName)
+        {
+            return root;
+        }
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            Transform result = FindDescendant(root.GetChild(i), descendantName);
+            if (result != null)
+            {
+                return result;
+            }
         }
 
         return null;

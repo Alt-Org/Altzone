@@ -332,10 +332,14 @@ public class Raid_Timer : MonoBehaviour
 
     public void SetLossHaloVisible(bool visible)
     {
-        GameObject haloTarget = raidControls != null
-            ? raidControls.GetTimerPanelTarget(TimerText)
-            : TimerText != null ? TimerText.transform.parent?.gameObject : null;
-        timerView.SetLossHaloVisible(visible, haloTarget);
+        GameObject backgroundHaloTarget = null;
+        GameObject clockHaloTarget = null;
+        if (raidControls != null)
+        {
+            raidControls.GetTimerPanelHaloTargets(TimerText, out backgroundHaloTarget, out clockHaloTarget);
+        }
+
+        timerView.SetLossHaloVisible(visible, backgroundHaloTarget, clockHaloTarget);
     }
 
     private void SetTimerText()
