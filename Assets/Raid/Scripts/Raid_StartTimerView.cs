@@ -1,12 +1,15 @@
 using Altzone.Scripts.Language;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 public class Raid_StartTimerView : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI startTimerText;
     [SerializeField] private GameObject startTimerRoot;
+    [SerializeField] private Image timerBackgroundImage;
+    [SerializeField] private GameObject overlay;
 
     public void Initialize(TextMeshProUGUI startTimerText)
     {
@@ -16,6 +19,7 @@ public class Raid_StartTimerView : MonoBehaviour
         }
 
         ResolveStartTimerRoot();
+        ResolveCountdownVisuals();
     }
 
     public void ResetView(float timeUntilStart)
@@ -26,6 +30,7 @@ public class Raid_StartTimerView : MonoBehaviour
         }
 
         SetRootVisible(true);
+        SetCountdownVisualsVisible(true);
         SetCountdown(timeUntilStart);
     }
 
@@ -59,6 +64,7 @@ public class Raid_StartTimerView : MonoBehaviour
             startTimerText.text = "Aloita!";
         }
 
+        SetPostCountdownVisualsVisible();
     }
 
     private void SetRootVisible(bool visible)
@@ -80,6 +86,69 @@ public class Raid_StartTimerView : MonoBehaviour
         if (startTimerText.transform.parent != null)
         {
             startTimerRoot = startTimerText.transform.parent.gameObject;
+        }
+    }
+
+    private void ResolveCountdownVisuals()
+    {
+        ResolveStartTimerRoot();
+        if (startTimerRoot == null)
+        {
+            return;
+        }
+
+        if (timerBackgroundImage == null)
+        {
+            timerBackgroundImage = startTimerRoot.GetComponent<Image>();
+        }
+
+        if (overlay == null)
+        {
+            Transform overlayTransform = startTimerRoot.transform.Find("Overlay");
+            if (overlayTransform != null)
+            {
+                overlay = overlayTransform.gameObject;
+            }
+        }
+    }
+
+    private void SetCountdownVisualsVisible(bool visible)
+    {
+        ResolveCountdownVisuals();
+
+        if (timerBackgroundImage != null && timerBackgroundImage.enabled == visible)
+        {
+            timerBackgroundImage.enabled = !visible;
+        }
+
+        if (overlay != null && overlay.activeSelf != visible)
+        {
+            overlay.SetActive(visible);
+        }
+
+        if (startTimerText != null && startTimerText.gameObject.activeSelf != visible)
+        {
+            startTimerText.gameObject.SetActive(visible);
+        }
+    }
+
+    private void SetPostCountdownVisualsVisible()
+    {
+        ResolveCountdownVisuals();
+
+        if (timerBackgroundImage != null && !timerBackgroundImage.enabled)
+        {
+            timerBackgroundImage.enabled = true;
+        }
+
+        if (overlay != null && overlay.activeSelf)
+        {
+            overlay.SetActive(false);
+        }
+
+        if (startTimerText != null && !startTimerText.gameObject.activeSelf)
+        {
+            startTimerText.gameObject.SetActive(true);
         }
     }
 }
