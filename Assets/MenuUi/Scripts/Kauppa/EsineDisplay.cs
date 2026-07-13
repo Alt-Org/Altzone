@@ -115,6 +115,7 @@ public class EsineDisplay : AdPosterHandler
     {
         if (_manager != null)
         {
+            // Passes gameObject (specific ad poster instance) so pop up knows which ad was clicked, needed for navigation arrows in clan stall pop up
             _manager.OpenPopup(_furnitures, gameObject);
         }
         

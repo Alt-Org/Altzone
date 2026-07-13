@@ -171,9 +171,12 @@ public class ClanStallPopupHandler : MonoBehaviour
 
     }
 
+    // Initializes navigation for Clan Stall pop up arrows. 
     public void navigateClanStalls(List<GameObject> adPosters, GameObject clickedAd)
     {
         _ads = adPosters;
+
+        // Finds the position of clicked ad from the list of ads
         _adsIndex = _ads.IndexOf(clickedAd);
 
         if (_adsIndex == -1)
@@ -181,7 +184,6 @@ public class ClanStallPopupHandler : MonoBehaviour
             _adsIndex = 0;
         }
 
-        Debug.Log("posterin indeksi" + _adsIndex);
 
         Button nextBtn = _arrowNext.GetComponent<Button>();
         Button prevBtn = _arrowPrevious.GetComponent<Button>();
@@ -192,9 +194,11 @@ public class ClanStallPopupHandler : MonoBehaviour
         prevBtn.onClick.RemoveAllListeners();
         prevBtn.onClick.AddListener(prevStall);
 
-        //updateStallAds();
+
     }
 
+
+    // Moves to next Clan Stall
     private void nextStall()
     {
         _adsIndex++;
@@ -207,6 +211,7 @@ public class ClanStallPopupHandler : MonoBehaviour
         updateStallAds();
     }
 
+    // Moves to previous Clan Stall
     private void prevStall()
     {
         _adsIndex--;
@@ -219,6 +224,7 @@ public class ClanStallPopupHandler : MonoBehaviour
         updateStallAds();
     }
 
+    // Clears the Clan Stall pop up from old advertisement, and creates a new advertisement from the list of Clan Stall ads in Flea Market.
     private void updateStallAds()
     {
         if (_ads == null)
@@ -226,14 +232,19 @@ public class ClanStallPopupHandler : MonoBehaviour
             return;
         }
 
-        GameObject testiAd = _ads[_adsIndex];
-        EsineDisplay esineDisplay = testiAd.GetComponent<EsineDisplay>();
+        // Gets current index from list
+        GameObject currentAd = _ads[_adsIndex];
 
+        // Gets furnitures for the advertisement
+        EsineDisplay esineDisplay = currentAd.GetComponent<EsineDisplay>();
+
+        // Clears the pop up from content
         for (int i = _content.transform.childCount; i > 0; i--)
         {
             Destroy(_content.transform.GetChild(i - 1).gameObject);
         }
 
+        // Creates furnitures for pop up
         if (esineDisplay != null) {
             CreateStalls(esineDisplay.Furnitures);
         }
