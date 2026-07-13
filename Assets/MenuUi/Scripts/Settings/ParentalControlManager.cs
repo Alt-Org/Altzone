@@ -396,8 +396,7 @@ public class ParentalControlManager : MonoBehaviour
         carrier.ActivatePurchasesSeparately = false;
         PlayerPrefs.SetFloat("MaxPlayTime", 1);
         PlayerPrefs.SetFloat("DailyTimeLimit", 1);
-        //TODO carrier
-        PlayerPrefs.SetInt("DailyTimeLimit", 0);  
+        carrier.MaxPlayTime = 1;  
         PlayerPrefs.SetInt("EndMidMatch", 0);
         carrier.EndMidMatch = false;
         PlayerPrefs.SetInt("EndAfterMatch", 1);
@@ -702,6 +701,7 @@ public class ParentalControlManager : MonoBehaviour
                 PlayerPrefs.SetFloat("MaxPlayTime", time);
                 Debug.Log("Set time limit to " + time);
                 PlayerPrefs.SetFloat("DailyTimeLimit", time);
+                carrier.MaxPlayTime = time;
                 PlayerPrefs.Save();
 
             }
@@ -709,6 +709,7 @@ public class ParentalControlManager : MonoBehaviour
                 PlayerPrefs.SetFloat("MaxPlayTime", 24);
                 Debug.Log("Set time limit to " + 24);
                 PlayerPrefs.SetFloat("DailyTimeLimit", 24);
+                carrier.MaxPlayTime = 24;
                 PlayerPrefs.Save();
 
             }
@@ -716,6 +717,7 @@ public class ParentalControlManager : MonoBehaviour
 
                 PlayerPrefs.SetFloat("MaxPlayTime", 1);
                 PlayerPrefs.SetFloat("DailyTimeLimit", time);
+                carrier.MaxPlayTime = 1;
                 PlayerPrefs.Save();
             }
             
@@ -733,9 +735,10 @@ public class ParentalControlManager : MonoBehaviour
 
     public void GetTimeLimit()
     {
-        float getTime = PlayerPrefs.GetFloat("MaxPlayTime");
-        timeLimitInput.text = getTime.ToString();
-        Debug.Log("Got time limit " + getTime);
+        //float getTime = PlayerPrefs.GetFloat("MaxPlayTime");
+        timeLimitInput.text = carrier.MaxPlayTime.ToString();
+        //timeLimitInput.text = getTime.ToString();
+        //Debug.Log("Got time limit " + getTime);
 
     }
 

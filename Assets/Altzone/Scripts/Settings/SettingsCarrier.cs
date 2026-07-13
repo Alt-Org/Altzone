@@ -107,7 +107,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public event Action OnAllowTreasureHuntChange;
     public event Action OnMonthlyLimitChange;
     public event Action OnActivatePurchasesSeparatelyChange;
-    //TODO daily limit
+    public event Action OnMaxPlayTimeChange;
     public event Action OnEndMidMatchChange;
     public event Action OnEndAfterMatchChange;
 
@@ -442,7 +442,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _allowTreasureHunt = (PlayerPrefs.GetInt("AllowTreasureHunt", 1) ==1);
         _monthlyLimit = (PlayerPrefs.GetFloat("MonthlyLimit"));
         _activatePurchasesSeparately = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 1) ==1);
-        //TODO daily limit
+        _maxPlayTime = (PlayerPrefs.GetFloat("MaxPlayTime"));
         _endMidMatch = (PlayerPrefs.GetInt("EndMidMatch", 1) == 1);
         _endAfterMatch = (PlayerPrefs.GetInt("EndAfterMatch", 1) == 1);
 
@@ -804,8 +804,37 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
 
     //Time controls
-    //TODO dailyLimit
+    private float _maxPlayTime;
 
+    public float MaxPlayTime
+    {
+        get => _maxPlayTime;
+
+        set
+        {
+            if (_maxPlayTime == value) return;
+            _maxPlayTime = value;
+            if (_maxPlayTime > 1 && _maxPlayTime <= 24)
+            {
+                PlayerPrefs.SetFloat("MaxPlayTime", (float)value);
+            }
+
+            else if (_maxPlayTime > 25) {
+                PlayerPrefs.SetFloat("MaxPlayTime", 24);
+            }
+            else
+            {
+                PlayerPrefs.SetFloat("MaxPlayTime", 1);
+            }
+
+
+            OnMaxPlayTimeChange?.Invoke();
+
+        }
+
+
+
+    }
 
     private bool _endMidMatch;
 
