@@ -105,7 +105,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public event Action OnChatMessagesChange;
     public event Action OnAllowEmojisChange;
     public event Action OnAllowTreasureHuntChange;
-    //TODO monthly limit
+    public event Action OnMonthlyLimitChange;
     public event Action OnActivatePurchasesSeparatelyChange;
     //TODO daily limit
     public event Action OnEndMidMatchChange;
@@ -440,7 +440,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _chatMessages = (PlayerPrefs.GetInt("AllowChat", 1) ==1);
         _allowEmojis = (PlayerPrefs.GetInt("AllowEmojis", 1) == 1);
         _allowTreasureHunt = (PlayerPrefs.GetInt("AllowTreasureHunt", 1) ==1);
-        //TODO monthly limit
+        _monthlyLimit = (PlayerPrefs.GetFloat("MonthlyLimit"));
         _activatePurchasesSeparately = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 1) ==1);
         //TODO daily limit
         _endMidMatch = (PlayerPrefs.GetInt("EndMidMatch", 1) == 1);
@@ -746,7 +746,28 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     //Money controls
-    //TODO monthlyLimit
+    private float _monthlyLimit;
+    public float MonthlyLimit {
+        get => _monthlyLimit;
+        
+        set {
+            if (_monthlyLimit == value) return;
+            _monthlyLimit = value;
+            if (_monthlyLimit > 0) {
+                PlayerPrefs.SetFloat("MonthlyLimit", (float)value);
+            } else
+            {
+                PlayerPrefs.SetFloat("MonthlyLimit", 0);
+            }
+
+
+                OnMonthlyLimitChange?.Invoke();
+
+            }
+
+        
+
+    }
 
 
     private bool _activatePurchasesSeparately;

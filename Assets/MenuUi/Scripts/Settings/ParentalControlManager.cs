@@ -390,7 +390,7 @@ public class ParentalControlManager : MonoBehaviour
         PlayerPrefs.SetInt("AllowTreasureHunt", 0);
         carrier.AllowTreasureHunt = false;
         PlayerPrefs.SetFloat("MonthlyLimit", 0);
-        //TODO carrier
+        carrier.MonthlyLimit = 0;
         PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
         PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
         carrier.ActivatePurchasesSeparately = false;
@@ -603,6 +603,7 @@ public class ParentalControlManager : MonoBehaviour
         {
             PlayerPrefs.SetFloat("MonthlyLimit", 0);
             PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
+            carrier.MonthlyLimit = 0;
             PlayerPrefs.Save();
 
 
@@ -612,6 +613,7 @@ public class ParentalControlManager : MonoBehaviour
             PlayerPrefs.SetFloat("MonthlyLimit", 0);
             PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
             Debug.Log("Negative money amount, value thus set to 0");
+            carrier.MonthlyLimit = 0;
             //TODO some kind of message, please input a positive value??
             PlayerPrefs.Save();
 
@@ -620,6 +622,8 @@ public class ParentalControlManager : MonoBehaviour
         {
             PlayerPrefs.SetFloat("MonthlyLimit", float.Parse(money));
             PlayerPrefs.SetFloat("MonthlySpendingLimit", float.Parse(money));
+            carrier.MonthlyLimit = float.Parse(money);
+            Debug.Log("Carrier got the monthly limit " + carrier.MonthlyLimit);
             Debug.Log("Set money limit to" + float.Parse(money));
             PlayerPrefs.Save();
 
@@ -632,13 +636,14 @@ public class ParentalControlManager : MonoBehaviour
 
     public void GetMonthlyLimit()
     {
-        float getInput = PlayerPrefs.GetFloat("MonthlyLimit");
-        monthlyLimitInput.text = getInput.ToString();
+        //float getInput = PlayerPrefs.GetFloat("MonthlyLimit");
+        //monthlyLimitInput.text = getInput.ToString();
         //Debug.Log("Got monthly limit" + getInput);
-
+        monthlyLimitInput.text = carrier.MonthlyLimit.ToString();
+        Debug.Log("Got from the carrier monthly limit " + carrier.MonthlyLimit);
         //float getInput2 = PlayerPrefs.GetFloat("MonthlySpendingLimit");
-       // monthlyLimitInput.text = getInput2.ToString();
-        
+        // monthlyLimitInput.text = getInput2.ToString();
+
 
     }
 
