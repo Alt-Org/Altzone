@@ -109,7 +109,7 @@ public class ParentalControlManager : MonoBehaviour
         messageTextPopUpLength.enabled = false;
 
         controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1;
-        timeLimitInput.text = 10f.ToString(); //PlayerPrefs.GetFloat("MaxPlayTime", 2f).ToString();
+        //timeLimitInput.text = 10f.ToString(); //PlayerPrefs.GetFloat("MaxPlayTime", 2f).ToString();
 
         testToggle.onValueChanged.AddListener(_ => SetTestToggle());
         internetLinksToggle.onValueChanged.AddListener(_ => SetInternetLinks());
@@ -394,7 +394,8 @@ public class ParentalControlManager : MonoBehaviour
         PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
         PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
         carrier.ActivatePurchasesSeparately = false;
-        PlayerPrefs.SetInt("MaxPlayTime", 0);
+        PlayerPrefs.SetFloat("MaxPlayTime", 1);
+        PlayerPrefs.SetFloat("DailyTimeLimit", 1);
         //TODO carrier
         PlayerPrefs.SetInt("DailyTimeLimit", 0);  
         PlayerPrefs.SetInt("EndMidMatch", 0);
@@ -672,12 +673,56 @@ public class ParentalControlManager : MonoBehaviour
 
     public void SetTimeLimit()
     {
-        if (float.TryParse(timeLimitInput.text, out float time))
+
+        string timeInput = timeLimitInput.text;
+        float timeFloat = float.Parse(timeLimitInput.text);
+        /*
+        if (timeFloat > 1)
         {
-            PlayerPrefs.SetFloat("MaxPlayTime", time);
+            PlayerPrefs.SetFloat("DailyTimeLimit", float.Parse(timeInput));
             PlayerPrefs.Save();
         }
+        else
+        {
+            PlayerPrefs.SetFloat("DailyTimeLimit", 1);
+            PlayerPrefs.Save();
 
+        }
+
+        */
+
+        if (float.TryParse(timeLimitInput.text, out float time))
+        {
+
+
+
+
+            if (time > 1 && time <= 24)
+            {
+                PlayerPrefs.SetFloat("MaxPlayTime", time);
+                Debug.Log("Set time limit to " + time);
+                PlayerPrefs.SetFloat("DailyTimeLimit", time);
+                PlayerPrefs.Save();
+
+            }
+            else if (time > 24) {
+                PlayerPrefs.SetFloat("MaxPlayTime", 24);
+                Debug.Log("Set time limit to " + 24);
+                PlayerPrefs.SetFloat("DailyTimeLimit", 24);
+                PlayerPrefs.Save();
+
+            }
+            else {
+
+                PlayerPrefs.SetFloat("MaxPlayTime", 1);
+                PlayerPrefs.SetFloat("DailyTimeLimit", time);
+                PlayerPrefs.Save();
+            }
+            
+
+            
+        }
+        
         /*
         else {
             PlayerPrefs.SetFloat("MaxPlayTime", 0);
@@ -690,6 +735,7 @@ public class ParentalControlManager : MonoBehaviour
     {
         float getTime = PlayerPrefs.GetFloat("MaxPlayTime");
         timeLimitInput.text = getTime.ToString();
+        Debug.Log("Got time limit " + getTime);
 
     }
 
