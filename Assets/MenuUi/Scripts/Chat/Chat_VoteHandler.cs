@@ -20,16 +20,17 @@ public class ChatVoteHandler : AltMonoBehaviour
     [SerializeField] private TextMeshProUGUI _time;
     [SerializeField] private TextMeshProUGUI _date;
 
-    [Header("Regime Voting")]
+    [Header("Select removal")]
+    [SerializeField] private TextMeshProUGUI _voteRole;
     [SerializeField] private GameObject _voteRegime;
     [SerializeField] private GameObject _voteUserPrefab;
     [SerializeField] private Transform _candidateBoard;
-    [SerializeField] private Button  _voteButton;
-
+    [SerializeField] private Button _voteButton;
+    [SerializeField] private VotersData _selectedCandidate; 
     //Voting List
     [SerializeField] private List<VotersData> _candidatesList;
     [SerializeField] private List<SavedVotersData> _savedData; //Mainly just a place holder for data testing
-    [SerializeField] private List<string> _votedUsers;
+    [SerializeField] private List<string> _votedUsers; //Used to check who has voted already
 
 
     [Header("Removing Player")]
@@ -41,10 +42,16 @@ public class ChatVoteHandler : AltMonoBehaviour
 
     [SerializeField] private Button _checkProfile;
     [SerializeField] private Button _buttonRemoveVote;
+    public static event PlayerPanelCloseRequested OnPlayerPanelCloseRequested;
+
+    [Header("Countdown")]
+    [SerializeField] private TextMeshProUGUI _countDownText;
+    [SerializeField] private float  _countDownTime;
+    [SerializeField] private bool _timesout;
+    [SerializeField] private GameObject _voteEndCover;
+
 
     [SerializeField] private Button _changeOptionVote; //Place holder for moving the other voting system
-
-    public static event PlayerPanelCloseRequested OnPlayerPanelCloseRequested;
 
 
     void Start()
@@ -56,24 +63,71 @@ public class ChatVoteHandler : AltMonoBehaviour
 
         SetMessageInfo();
 
-        //_Sav
         foreach (var i in _savedData)
         {
         CandidateData(i.Name, i.Id);
         }
         LayoutRebuilder.ForceRebuildLayoutImmediate(_candidateBoard.GetComponent<RectTransform>());
 
-        StartCoroutine(GetPlayerData(player =>
-        {
-             RemovePlayer(player);
-            _voteButton.onClick.AddListener(() => VotedButton(player.Id, player.Name));
-        }));
+
+
+
+        _voteButton.onClick.AddListener(() => ChangeToRemoveSection());
 
         _changeOptionVote.onClick.AddListener(() => change());
 
         _voteRemove.SetActive(false);
     }
 
+
+    ///Countdown system
+    private void Update()
+    {
+        _countDownTime -= Time.deltaTime;
+
+        if (_countDownTime <= 0)
+        {
+            _countDownText.text = "Time is out!";
+            enabled = false;
+            _timesout = true;
+            _voteEndCover.SetActive(true);
+            return;
+        }
+
+
+        int hour = Mathf.FloorToInt(_countDownTime / 3600);
+        int minute = Mathf.FloorToInt((_countDownTime % 3600) / 60);
+        int sec = Mathf.FloorToInt(_countDownTime % 60);
+
+        _countDownText.text = $"{hour : 00} : {minute : 00} : {sec: 00}";
+    }
+
+
+    //Checks first if player has or hasent voted yet if no then proceed
+    void ChangeToRemoveSection()
+    {
+        if (_candidatesList.All(x => x.IsSelected == false))
+        {
+            Debug.LogWarning("FIND ME: candidate not found");
+            return;
+        }
+
+        _voteRegime.SetActive(false);
+        _voteRemove.SetActive(true);
+
+        //Imports candidate data
+        RemovePlayerData(_selectedCandidate);
+
+        //Voting system
+        StartCoroutine(GetPlayerData(player =>
+        {
+            _buttonRemoveVote.onClick.AddListener(() => VoteRemoveButton(player.Id, player.Name));
+        }));
+
+    }
+
+
+    ///Testing system 
     void change()
     {
         _voteRegime.SetActive(!_voteRegime.activeSelf);
@@ -81,7 +135,7 @@ public class ChatVoteHandler : AltMonoBehaviour
     }
 
 
-    //Sets the users who put up the vote up data (it only uses the current users data right now as a place  holder)
+    //Sets the users who put up the vote up data (it only uses the current users data right now as a place holder)
     public void SetMessageInfo()
     {
         StartCoroutine(GetPlayerData(player =>
@@ -90,18 +144,12 @@ public class ChatVoteHandler : AltMonoBehaviour
         _id = player.Id;
         _name.text = player.Name;
 
-
-            
-
             //_time.text = $"{message.Timestamp.Hour}:{message.Timestamp.Minute:D2}";
             //_date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
         }));
 
     }
 
-      ///               ///
-     /// Voting Regime ///
-    ///               ///
 
     ///Adds the Candidates to the selection
     private void CandidateData(string Usersname, string UserID)
@@ -112,35 +160,39 @@ public class ChatVoteHandler : AltMonoBehaviour
         GameObject newCandidate = Instantiate(_voteUserPrefab, _candidateBoard);
         Chat_VoteNameData userData = newCandidate.GetComponent<Chat_VoteNameData>();
 
-        StartCoroutine(GetPlayerData(player =>
-        {
-            userData.VoteButton.onClick.AddListener(() => buttonClicked(userData, player.Id));
-        }));
 
-        _candidatesList.Add(new VotersData { Name = Usersname, Id = UserID, Button = userData.VoteButton, IsSelected = false, ButtonColor = userData.ButtonColor});
+
+
+        _candidatesList.Add(new VotersData { VoteObject = userData.gameObject, Name = Usersname, Id = UserID, Button = userData.VoteButton, IsSelected = false, ButtonColor = userData.ButtonColor});
         userData.SetUserInfo(Usersname, UserID);
-
-
+        userData.VoteButton.onClick.AddListener(() => buttonClicked(userData));
 
     }
 
     ///Selecting the Candidate:
     /*[Sets the every button back to original color before checking who got selected/deselected]*/
-    public void buttonClicked(Chat_VoteNameData userData, string votersID)
+    public void buttonClicked(Chat_VoteNameData userData)
     {
+        if (_timesout)
+            return;
 
-        foreach(var i in _votedUsers)
+
+        foreach (var i in _votedUsers)
         {
-            if(i == votersID)
+            StartCoroutine(GetPlayerData(player =>
+            {
+            if (i == player.Id)
             {
                 Debug.LogWarning("FIND ME: Sorry but u have already voted");
                 return;
             }
+
+            }));
         }
 
+        _selectedCandidate = null;
 
-
-        foreach(var i in _candidatesList)
+        foreach (var i in _candidatesList)
         {
             i.ButtonColor.color = new Color32(29, 25, 25, 255);
 
@@ -150,6 +202,7 @@ public class ChatVoteHandler : AltMonoBehaviour
 
                 if(i.IsSelected)
                 {
+                    _selectedCandidate = i;
                     userData.ButtonColor.color = Color.blue;
                 }
 
@@ -162,59 +215,61 @@ public class ChatVoteHandler : AltMonoBehaviour
     }
 
     //Voting System
-    public void VotedButton(string votersID, string votersName)
+    public void VoteRemoveButton(string votersID, string votersName)
     {
-        if(_candidatesList.All(x => x.IsSelected == false))
-        {
-            Debug.LogWarning("FIND ME: candidate not found");
+
+        if(_timesout)
             return;
-        }
 
 
-        foreach(var i in _candidatesList)
-        {
+        Debug.LogWarning("FIND ME THIS USER " + votersName + " VOTED TO == " + _selectedCandidate.Name);
+        _selectedCandidate.Votes++;
+        _selectedCandidate.VotersID.Add(votersID);
+        _selectedCandidate.IsSelected = false;
+        _votedUsers.Add(votersID);
 
-            if(i.IsSelected & i.VotersID != votersID)
-            {
-                i.ButtonColor.color = new Color32(29, 25, 25, 255);
 
-                Debug.LogWarning("FIND ME THIS USER " + votersName + " VOTED TO == " + i.Name);
-                i.Votes++;
-                i.VotersID = votersID;
-                i.IsSelected = false;
-                _votedUsers.Add(votersID);
-            }
+        _voteRegime.SetActive(true);
+        _voteRemove.SetActive(false);
 
-        }
-        
-
+        _selectedCandidate.ButtonColor.color = new Color32(29, 25, 25, 255);
+        _selectedCandidate = null;
 
     }
-      ///               ///
-     /// Remove Player ///
-    ///               ///
-    private void RemovePlayer(PlayerData player)
+
+
+    //imports candidates data
+    private void RemovePlayerData(VotersData userData)
     {
 
+        if (_timesout)
+            return;
+
+        ///This player is simply a place holder as i dont have any other candidates to put in here rn
+        ///        |    |
+        ///      \\      //
+        ///       \\    //
+        ///        \\  //
+        ///         \\//
+        StartCoroutine(GetPlayerData(player =>
+        {
             if (player.AvatarData != null) _removeAvatar.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(player.AvatarData));
-            _removeid = player.Id;
-            _removeName.text = player.Name;
 
-            //_date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
-
-
-        if (player != null)
+            if (player != null)
             _checkProfile.onClick.AddListener(() =>
             {
                 StartCoroutine(GetProfile(player.Id));
             });
+        }));
 
-        _buttonRemoveVote.onClick.AddListener(() => Debug.LogWarning("Find me: You have voted to remove this player == " + _removeName.text));
+        _removeid = userData.Id;
+        _removeName.text = userData.Name;
 
+        //_date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
 
     }
 
-    //Check Profile
+    //Check Profile of the candidate system
     private IEnumerator GetProfile(string playerID)
     {
         ServerPlayer serverPlayer = null;
@@ -244,13 +299,14 @@ public class SavedVotersData
 [Serializable]
 public class VotersData
 {
+    public GameObject VoteObject;
     public string Name;
     public string Id;
     public Button Button;
     public bool IsSelected;
     public Image ButtonColor;
     public int Votes;
-    public string VotersID;
-
+    public List<string> VotersID = new List<string>(); //Checks who has voted this candidate
+    public AvatarFaceLoader Avatar;
 
 }
