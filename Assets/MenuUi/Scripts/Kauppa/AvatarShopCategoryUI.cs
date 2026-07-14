@@ -1,16 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Player;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class AvatarShopCategoryUI : MonoBehaviour
 {
+    [System.Serializable]
+    private class CategoryGroup
+    {
+        public AvatarPiece AvatarPiece;
+        public GameObject Group;
+    }
+
     [SerializeField] private TMP_Dropdown categoryDropdown;
     [SerializeField] private BaseScrollRect shopScrollRect;
 
     [Header("Entire category containers")]
-    [SerializeField] private List<GameObject> categoryGroups;
+    [SerializeField] private List<CategoryGroup> categoryGroups;
 
     private Coroutine refreshCoroutine;
 
@@ -29,9 +37,9 @@ public class AvatarShopCategoryUI : MonoBehaviour
 
         List<string> options = new();
 
-        foreach (GameObject group in categoryGroups)
+        foreach (CategoryGroup categoryGroup in categoryGroups)
         {
-            Transform titleTransform = group.transform.GetChild(0);
+            Transform titleTransform = categoryGroup.Group.transform.GetChild(0);
 
             TMP_Text titleText = titleTransform.GetComponentInChildren<TMP_Text>();
 
@@ -43,29 +51,36 @@ public class AvatarShopCategoryUI : MonoBehaviour
 
     private void OnCategoryChanged(int index)
     {
-        for (int i = 0; i < categoryGroups.Count; i++)
+        if (index < 0 || index >= categoryGroups.Count)
         {
-            categoryGroups[i].SetActive(i == index);
+            return;
         }
 
-        RefreshLayout(index);
+        AvatarPiece selectedPiece = categoryGroups[index].AvatarPiece;
+
+        foreach (CategoryGroup categoryGroup in categoryGroups)
+        {
+            categoryGroup.Group.SetActive(categoryGroup.AvatarPiece == selectedPiece);
+        }
+
+        RefreshLayout(selectedPiece);
 
         if (refreshCoroutine != null)
         {
             StopCoroutine(refreshCoroutine);
         }
 
-        refreshCoroutine = StartCoroutine(RefreshLayoutNextFrame(index));
+        refreshCoroutine = StartCoroutine(RefreshLayoutNextFrame(selectedPiece));
     }
 
-    private IEnumerator RefreshLayoutNextFrame(int index)
+    private IEnumerator RefreshLayoutNextFrame(AvatarPiece avatarPiece)
     {
         yield return null;
-        RefreshLayout(index);
+        RefreshLayout(avatarPiece);
         refreshCoroutine = null;
     }
 
-    private void RefreshLayout(int index)
+    private void RefreshLayout(AvatarPiece avatarPiece)
     {
         if (shopScrollRect == null)
         {
@@ -74,8 +89,9 @@ public class AvatarShopCategoryUI : MonoBehaviour
 
         Canvas.ForceUpdateCanvases();
 
-        if (index >= 0 && index < categoryGroups.Count && categoryGroups[index] != null
-            && categoryGroups[index].transform is RectTransform selectedGroup)
+        CategoryGroup selectedCategory = categoryGroups.Find(categoryGroup => categoryGroup.AvatarPiece == avatarPiece);
+
+        if (selectedCategory?.Group != null && selectedCategory.Group.transform is RectTransform selectedGroup)
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(selectedGroup);
         }
