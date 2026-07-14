@@ -19,6 +19,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
     [SerializeField] private Image _itemIcon;
     [SerializeField] private TMP_Text _itemNameText;
     [SerializeField] private TMP_Text _itemPriceText;
+    [SerializeField] private GameObject _coinImage;
     [SerializeField] private Image _popupBackgroundImage;
     [SerializeField] private VerticalGradientEffect _popupBackgroundGradient;
     [SerializeField] private Image _popupTabImage;
@@ -67,6 +68,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         furniture = newFurniture;
         _itemNameText.text = furniture.Name;
         _itemPriceText.text = furniture.Value.ToString();
+        SetCoinImageVisible(true);
         _itemIcon.sprite = furniture.FurnitureInfo.Image;
         _frontSprite = furniture.FurnitureInfo.Image;
         _sideSprite = furniture.FurnitureInfo.SidewaysImage;
@@ -130,6 +132,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         avatarpart = part;
         _avatarItemName = itemName;
         _itemPriceText.text = FormatEuroPrice(AvatarPartPrice);
+        SetCoinImageVisible(false);
         _acceptButton.onClick.RemoveAllListeners();
         _acceptButton.onClick.AddListener(() => BuyAvatarPiece());
         _declineButton.onClick.RemoveAllListeners();
@@ -333,5 +336,11 @@ public class ConfirmationPopupHandler : MonoBehaviour
     private static string FormatEuroPrice(float value)
     {
         return $"{value:0.##}{EuroSuffix}";
+    }
+
+    private void SetCoinImageVisible(bool isVisible)
+    {
+        if (_coinImage != null)
+            _coinImage.SetActive(isVisible);
     }
 }
