@@ -14,7 +14,7 @@ public class AvatarShopCategoryUI : MonoBehaviour
     }
 
     [SerializeField] private TMP_Dropdown categoryDropdown;
-    [SerializeField] private BaseScrollRect shopScrollRect;
+    [SerializeField] private AvatarShopStorage avatarShopStorage;
 
     [Header("Entire category containers")]
     [SerializeField] private List<CategoryGroup> categoryGroups;
@@ -65,11 +65,6 @@ public class AvatarShopCategoryUI : MonoBehaviour
 
     private void RefreshLayout(AvatarPiece avatarPiece)
     {
-        if (shopScrollRect == null)
-        {
-            shopScrollRect = GetComponentInParent<BaseScrollRect>();
-        }
-
         Canvas.ForceUpdateCanvases();
 
         CategoryGroup selectedCategory = categoryGroups.Find(categoryGroup => categoryGroup.AvatarPiece == avatarPiece);
@@ -78,6 +73,8 @@ public class AvatarShopCategoryUI : MonoBehaviour
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(selectedGroup);
         }
+
+        BaseScrollRect shopScrollRect = avatarShopStorage.ScrollRect;
 
         if (shopScrollRect != null)
         {

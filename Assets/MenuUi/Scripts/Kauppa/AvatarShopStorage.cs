@@ -10,7 +10,10 @@ using Altzone.Scripts.AvatarPartsInfo;
 public class AvatarShopStorage : ShopPanelStorage
 {
     [SerializeField] private RectTransform _Content;
+    [SerializeField] private BaseScrollRect _scrollRect;
     private bool _isInitiallyRebuild = false;
+
+    public BaseScrollRect ScrollRect => _scrollRect;
 
     [Space(5f)]
 
