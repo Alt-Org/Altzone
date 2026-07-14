@@ -13,20 +13,24 @@ public class GameFurnitureVisualizer : MonoBehaviour
     [SerializeField] private TMP_Text _priceText;
     [SerializeField] private Button _button;
     [SerializeField] private Image _coinImage;
-    [SerializeField] private RectTransform _priceTextTransform;
     [SerializeField] private GameObject _priceObject;
     [SerializeField] private GameObject _buyButtonObject;
     [SerializeField] private GameObject _boughtBottomObject;
     [SerializeField] private GameObject _votingBottomObject;
     [SerializeField] private GameObject _votingIconObject;
     private const string BoughtText = "Ostettu";
-    private const float PriceTextDefaultAnchorMaxX = 0.6876221f;
     private const float AvatarPartPrice = 1.99f;
     private const string EuroSuffix = "€";
     private GameFurniture _gameFurniture;
     private AvatarPartInfo _avatarPart;
     private string _avatarItemName;
-    private DrivenRectTransformTracker m_Tracker;
+
+    private enum ShopItemState
+    {
+        Available,
+        Bought,
+        InVoting
+    }
 
     private void OnEnable()
     {
@@ -48,7 +52,7 @@ public class GameFurnitureVisualizer : MonoBehaviour
         _avatarPart = null;
         SetFurnitureDisplayName(_gameFurniture);
         _priceText.text = _gameFurniture.Value.ToString();
-        SetAvailableState();
+        SetState(ShopItemState.Available);
         SetCoinImageVisible(true);
         _contentImage.sprite = _gameFurniture.FurnitureInfo.RibbonImage? _gameFurniture.FurnitureInfo.RibbonImage : _gameFurniture.FurnitureInfo.Image;
         gameObject.GetComponent<GameFurniturePasser>().SetGameFurniture(gameFurniture);
@@ -65,7 +69,7 @@ public class GameFurnitureVisualizer : MonoBehaviour
             _themeText.text = string.Empty;
         _productText.text = _avatarItemName;
         _priceText.text = FormatEuroPrice(AvatarPartPrice); //_avatarPart.Value.ToString();
-        SetAvailableState();
+        SetState(ShopItemState.Available);
         SetCoinImageVisible(false);
         _contentImage.sprite = _avatarPart.IconImage ? _avatarPart.IconImage : _avatarPart.AvatarImage;
         gameObject.GetComponent<GameFurniturePasser>().SetAvatarPart(_avatarPart, _contentImage.sprite, _avatarItemName);
@@ -78,7 +82,7 @@ public class GameFurnitureVisualizer : MonoBehaviour
         if (_gameFurniture == null || _gameFurniture.Name != itemName)
             return;
 
-        SetBoughtState();
+        SetState(ShopItemState.Bought);
     }
 
     private void HandleAvatarShopItemBought(string itemName)
@@ -86,7 +90,7 @@ public class GameFurnitureVisualizer : MonoBehaviour
         if (_avatarPart == null || _avatarItemName != itemName)
             return;
 
-        SetBoughtState();
+        SetState(ShopItemState.Bought);
     }
 
     private void HandleShopItemInVoting(string itemName)
@@ -94,87 +98,35 @@ public class GameFurnitureVisualizer : MonoBehaviour
         if (_gameFurniture == null || _gameFurniture.Name != itemName)
             return;
 
-        SetVotingState();
+        SetState(ShopItemState.InVoting);
     }
 
-    private void SetAvailableState()
+    private void SetState(ShopItemState state)
     {
-        SetBoughtVisual(false);
-        SetVotingVisual(false);
+        bool isAvailable = state == ShopItemState.Available;
+        bool isBought = state == ShopItemState.Bought;
+        bool isInVoting = state == ShopItemState.InVoting;
 
-        if (_button != null)
-            _button.interactable = true;
-    }
-
-    private void SetBoughtState()
-    {
-        if (_priceText != null)
+        if (isBought && _priceText != null)
             _priceText.text = BoughtText;
 
-        SetVotingVisual(false);
-        SetBoughtVisual(true);
-
-        if (_button != null)
-            _button.interactable = false;
-    }
-
-    private void SetVotingState()
-    {
-        SetBoughtVisual(false);
-        SetVotingVisual(true);
-
-        if (_button != null)
-            _button.interactable = false;
-    }
-
-    private void SetBoughtVisual(bool isBought)
-    {
         if (_boughtBottomObject != null)
             _boughtBottomObject.SetActive(isBought);
 
-        if (_priceObject != null)
-            _priceObject.SetActive(!isBought);
-
-        if (_buyButtonObject != null)
-            _buyButtonObject.SetActive(!isBought);
-
-        if (_boughtBottomObject == null)
-            SetBottomPriceState(isBought);
-    }
-
-    private void SetVotingVisual(bool isInVoting)
-    {
         if (_votingBottomObject != null)
             _votingBottomObject.SetActive(isInVoting);
 
         if (_votingIconObject != null)
             _votingIconObject.SetActive(isInVoting);
 
-        if (!isInVoting)
-            return;
-
         if (_priceObject != null)
-            _priceObject.SetActive(false);
+            _priceObject.SetActive(isAvailable);
 
         if (_buyButtonObject != null)
-            _buyButtonObject.SetActive(false);
+            _buyButtonObject.SetActive(isAvailable);
 
-        if (_boughtBottomObject != null)
-            _boughtBottomObject.SetActive(false);
-    }
-
-    private void SetBottomPriceState(bool isBought)
-    {
-        if (_coinImage != null)
-            _coinImage.gameObject.SetActive(!isBought);
-
-        if (_priceTextTransform == null)
-            return;
-
-        _priceTextTransform.anchorMin = Vector2.zero;
-        _priceTextTransform.anchorMax = isBought ? Vector2.one : new Vector2(PriceTextDefaultAnchorMaxX, 1f);
-        _priceTextTransform.anchoredPosition = Vector2.zero;
-        _priceTextTransform.sizeDelta = Vector2.zero;
+        if (_button != null)
+            _button.interactable = isAvailable;
     }
 
     private void SetCoinImageVisible(bool isVisible)
