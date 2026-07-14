@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Player;
 using TMPro;
@@ -19,8 +18,6 @@ public class AvatarShopCategoryUI : MonoBehaviour
 
     [Header("Entire category containers")]
     [SerializeField] private List<CategoryGroup> categoryGroups;
-
-    private Coroutine refreshCoroutine;
 
     private void Start()
     {
@@ -64,20 +61,6 @@ public class AvatarShopCategoryUI : MonoBehaviour
         }
 
         RefreshLayout(selectedPiece);
-
-        if (refreshCoroutine != null)
-        {
-            StopCoroutine(refreshCoroutine);
-        }
-
-        refreshCoroutine = StartCoroutine(RefreshLayoutNextFrame(selectedPiece));
-    }
-
-    private IEnumerator RefreshLayoutNextFrame(AvatarPiece avatarPiece)
-    {
-        yield return null;
-        RefreshLayout(avatarPiece);
-        refreshCoroutine = null;
     }
 
     private void RefreshLayout(AvatarPiece avatarPiece)
