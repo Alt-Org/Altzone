@@ -307,10 +307,11 @@ MonoBehaviour:
   _postPaymentWindow: {fileID: 6937742820026109112}
   _primaryButton: {fileID: 153334007496793525}
   _cancelButton: {fileID: 8400957716477404692}
+  _exitButton: {fileID: 8678319904503601482}
   _cardButton: {fileID: 3866428686412006034}
   _mobileButton: {fileID: 0}
   _rememberCardButton: {fileID: 6411626135655186329}
-  _ratingDropdown: {fileID: 7887056552011291367}
+  _ratingDropdownHandler: {fileID: 943800000000000001}
   _savedCardListSource: {fileID: 4255575350827823623}
   _selectedCardRow: {fileID: 910100000000000001}
   _savedCardRowTemplate: {fileID: 910100000000000011}
@@ -2895,7 +2896,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7712345678901234569}
+        m_TargetAssemblyTypeName: PlayTransactionPopUpHandler, MainMenu
+        m_MethodName: InputFieldValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3391,14 +3404,14 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 0
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 2
   m_RegexValue:
   m_GlobalPointSize: 14
   m_CharacterLimit: 16
@@ -3422,7 +3435,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7712345678901234569}
+        m_TargetAssemblyTypeName: PlayTransactionPopUpHandler, MainMenu
+        m_MethodName: InputFieldValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3457,7 +3482,7 @@ GameObject:
   - component: {fileID: 1211415350232160319}
   - component: {fileID: 8678319904503601482}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: ExitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3504,7 +3529,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.118, g: 0.165, b: 0.878, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3564,7 +3589,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1211415350232160319}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7712345678901234569}
+        m_TargetAssemblyTypeName: PlayTransactionPopUpHandler, MainMenu
+        m_MethodName: Close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2750848431574092036
 GameObject:
   m_ObjectHideFlags: 0
@@ -6456,7 +6493,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier:
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.118, g: 0.165, b: 0.878, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6516,7 +6553,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5327287121501964107}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7712345678901234569}
+        m_TargetAssemblyTypeName: PlayTransactionPopUpHandler, MainMenu
+        m_MethodName: ToggleRememberCard
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5490806971085717782
 GameObject:
   m_ObjectHideFlags: 0
@@ -7710,8 +7759,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281479730
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -8074,14 +8123,14 @@ MonoBehaviour:
   m_ContentType: 0
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
   m_CharacterValidation: 0
   m_RegexValue:
   m_GlobalPointSize: 14
-  m_CharacterLimit: 16
+  m_CharacterLimit: 6
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -8102,7 +8151,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7712345678901234569}
+        m_TargetAssemblyTypeName: PlayTransactionPopUpHandler, MainMenu
+        m_MethodName: InputFieldValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -8554,6 +8615,7 @@ GameObject:
   - component: {fileID: 4597458046082202704}
   - component: {fileID: 6401880499202076708}
   - component: {fileID: 7887056552011291367}
+  - component: {fileID: 943800000000000001}
   m_Layer: 5
   m_Name: RatingDropdown
   m_TagString: Untagged
@@ -8694,6 +8756,21 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_AlphaFadeSpeed: 0.15
+--- !u!114 &943800000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8397252460442258776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43dc8097aca04de6a3f44f0ebdf8993e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _dropdown: {fileID: 7887056552011291367}
+  _captionLabel: {fileID: 8521433190324360545}
+  _promptText: "Miksi t\xE4m\xE4 on arvokas sinulle?"
 --- !u!1 &8454273622367934093
 GameObject:
   m_ObjectHideFlags: 0
@@ -8820,17 +8897,17 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 0
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 2
   m_RegexValue:
   m_GlobalPointSize: 14
-  m_CharacterLimit: 16
+  m_CharacterLimit: 3
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls: []
@@ -8851,7 +8928,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7712345678901234569}
+        m_TargetAssemblyTypeName: PlayTransactionPopUpHandler, MainMenu
+        m_MethodName: InputFieldValueChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []

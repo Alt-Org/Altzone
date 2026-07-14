@@ -9,16 +9,12 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private const string AddCardButtonText = "Lis\u00E4\u00E4 kortti";
     private const string PayButtonText = "Maksa";
     private const string CancelButtonText = "Peruuta";
-    private const string ExitButtonText = "Poistu";
-    private const string RatingPromptText = "Miksi t\u00E4m\u00E4 on arvokas sinulle?";
     private const string EmptyCardButtonText = "Kortti";
     private const string MobileButtonText = "Mobiili";
     private const string AddAnotherCardText = "+ Lis\u00E4\u00E4 kortti";
     private const string RequiredMarkerText = "<color=#FF0000>*</color>";
     private const int ExpiryDateDigitCount = 4;
     private const int CvvDigitCount = 3;
-    private static readonly Color CancelButtonTextColor = new Color(0.196f, 0.196f, 0.196f, 1f);
-    private static readonly Color ExitButtonColor = new Color(0.118f, 0.165f, 0.878f, 1f);
     private static readonly Color CardRowTextColor = new Color(0.196f, 0.196f, 0.196f, 1f);
     private static readonly Color RememberCardEnabledColor = new Color(0.118f, 0.165f, 0.878f, 1f);
     private static readonly Color RememberCardDisabledColor = new Color(0.75f, 0.78f, 0.84f, 1f);
@@ -31,6 +27,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
     [SerializeField] private Button _primaryButton;
     [SerializeField] private Button _cancelButton;
+    [SerializeField] private Button _exitButton;
     [SerializeField] private Button _cardButton;
     [SerializeField] private Button _mobileButton;
     [SerializeField] private Button _rememberCardButton;
@@ -39,12 +36,8 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private TMP_Text _cancelButtonLabel;
     private TMP_Text _cardButtonLabel;
     private TMP_Text _mobileButtonLabel;
-    private TMP_Text _ratingDropdownLabel;
-    private Image _cancelButtonBackground;
     private Image _rememberCardBackground;
-    private RectTransform _primaryButtonRectTransform;
-    private RectTransform _cancelButtonRectTransform;
-    [SerializeField] private TMP_Dropdown _ratingDropdown;
+    [SerializeField] private DropdownPromptOptionHandler _ratingDropdownHandler;
     [SerializeField] private TMP_Dropdown _savedCardListSource;
     private RectTransform _savedCardListRoot;
     private TMP_Text _savedCardListTitle;
@@ -54,7 +47,6 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private Button _selectedCardRowButton;
     private Button _addCardRowButton;
     private TMP_Text _selectedCardRowLabel;
-    private TMP_Text _savedCardRowTemplateLabel;
     private TMP_Text _addCardRowLabel;
     [SerializeField] private TMP_InputField _nameInputField;
     [SerializeField] private TMP_InputField _cardInputField;
@@ -70,11 +62,10 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private string _addCardCvvInputFieldLabelText;
     private readonly List<SavedCard> _savedCards = new List<SavedCard>();
     private readonly List<GameObject> _savedCardRows = new List<GameObject>();
-    private int _selectedCardIndex = -1;
+    private SavedCard _selectedCard;
     private bool _usingCardPayment;
     private bool _rememberCard = true;
     private bool _savedCardListExpanded;
-    private bool _ratingPromptOptionHidden;
     private TransactionState _state;
     private Action _onPaymentCompleted;
     private bool _updatingInputFieldText;
@@ -98,8 +89,6 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private void Awake()
     {
         CacheReferences();
-        BindButtons();
-        BindInputFields();
     }
 
     private void OnEnable()
@@ -107,17 +96,10 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         Open();
     }
 
-    private void Update()
-    {
-        HideRatingPromptOptionWhenExpanded();
-    }
-
     public void Open(Action onPaymentCompleted = null)
     {
         _onPaymentCompleted = onPaymentCompleted;
         CacheReferences();
-        BindButtons();
-        BindInputFields();
         RemoveTemporaryCards();
         _savedCardListExpanded = false;
         ShowState(_savedCards.Count > 0 ? TransactionState.PrePayment : TransactionState.AddCard);
@@ -129,108 +111,16 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         _cancelButtonLabel = _cancelButton != null ? _cancelButton.GetComponentInChildren<TMP_Text>(true) : null;
         _cardButtonLabel = _cardButton != null ? _cardButton.GetComponentInChildren<TMP_Text>(true) : null;
         _mobileButtonLabel = _mobileButton != null ? _mobileButton.GetComponentInChildren<TMP_Text>(true) : null;
-        _cancelButtonBackground = _cancelButton != null ? _cancelButton.GetComponent<Image>() : null;
         _rememberCardBackground = _rememberCardButton != null ? _rememberCardButton.GetComponent<Image>() : null;
-        _primaryButtonRectTransform = _primaryButton != null ? _primaryButton.GetComponent<RectTransform>() : null;
-        _cancelButtonRectTransform = _cancelButton != null ? _cancelButton.GetComponent<RectTransform>() : null;
-        _ratingDropdownLabel = _ratingDropdown != null ? _ratingDropdown.captionText : null;
         _savedCardListRoot = _savedCardListSource != null ? _savedCardListSource.transform as RectTransform : null;
         Transform savedCardTitleTransform = _savedCardListSource != null ? _savedCardListSource.transform.Find("TitleText") : null;
         _savedCardListTitle = savedCardTitleTransform != null ? savedCardTitleTransform.GetComponent<TMP_Text>() : null;
         _selectedCardRowButton = _selectedCardRow != null ? _selectedCardRow.GetComponent<Button>() : null;
         _addCardRowButton = _addCardRow != null ? _addCardRow.GetComponent<Button>() : null;
         _selectedCardRowLabel = _selectedCardRow != null ? _selectedCardRow.GetComponentInChildren<TMP_Text>(true) : null;
-        _savedCardRowTemplateLabel = _savedCardRowTemplate != null ? _savedCardRowTemplate.GetComponentInChildren<TMP_Text>(true) : null;
         _addCardRowLabel = _addCardRow != null ? _addCardRow.GetComponentInChildren<TMP_Text>(true) : null;
         PrepareSavedCardListRoot();
         CacheRequiredFieldLabels();
-    }
-
-    private void BindButtons()
-    {
-        if (_primaryButton != null)
-        {
-            _primaryButton.onClick.RemoveListener(PrimaryButtonClicked);
-
-            if (_primaryButton.onClick.GetPersistentEventCount() == 0)
-                _primaryButton.onClick.AddListener(PrimaryButtonClicked);
-        }
-
-        if (_cancelButton != null)
-        {
-            _cancelButton.onClick.RemoveListener(Close);
-
-            if (_cancelButton.onClick.GetPersistentEventCount() == 0)
-                _cancelButton.onClick.AddListener(Close);
-        }
-
-        if (_cardButton != null)
-        {
-            _cardButton.onClick.RemoveListener(SelectCardPayment);
-
-            if (_cardButton.onClick.GetPersistentEventCount() == 0)
-                _cardButton.onClick.AddListener(SelectCardPayment);
-        }
-
-        if (_mobileButton != null)
-        {
-            _mobileButton.onClick.RemoveListener(SelectMobilePayment);
-
-            if (_mobileButton.onClick.GetPersistentEventCount() == 0)
-                _mobileButton.onClick.AddListener(SelectMobilePayment);
-        }
-
-        if (_rememberCardButton != null)
-        {
-            _rememberCardButton.onClick.RemoveListener(ToggleRememberCard);
-            _rememberCardButton.onClick.AddListener(ToggleRememberCard);
-        }
-
-        RefreshRememberCardStyle();
-    }
-
-    private void BindInputFields()
-    {
-        BindInputField(_nameInputField);
-        BindNumericInputField(_cardInputField);
-        BindDateInputField(_dateInputField);
-        BindNumericInputField(_addCardCvvInputField, CvvDigitCount);
-    }
-
-    private void BindInputField(TMP_InputField inputField)
-    {
-        if (inputField == null)
-            return;
-
-        inputField.onValueChanged.RemoveListener(InputFieldValueChanged);
-        inputField.onValueChanged.AddListener(InputFieldValueChanged);
-    }
-
-    private void BindNumericInputField(TMP_InputField inputField, int maxDigits = 0)
-    {
-        if (inputField == null)
-            return;
-
-        inputField.contentType = TMP_InputField.ContentType.IntegerNumber;
-        inputField.characterValidation = TMP_InputField.CharacterValidation.Digit;
-        inputField.keyboardType = TouchScreenKeyboardType.NumberPad;
-        if (maxDigits > 0)
-            inputField.characterLimit = maxDigits;
-        BindInputField(inputField);
-        SanitizeNumericInputField(inputField, maxDigits);
-    }
-
-    private void BindDateInputField(TMP_InputField inputField)
-    {
-        if (inputField == null)
-            return;
-
-        inputField.contentType = TMP_InputField.ContentType.Standard;
-        inputField.characterValidation = TMP_InputField.CharacterValidation.None;
-        inputField.keyboardType = TouchScreenKeyboardType.NumberPad;
-        inputField.characterLimit = ExpiryDateDigitCount + 2;
-        BindInputField(inputField);
-        SanitizeDateInputField(inputField);
     }
 
     private void ShowState(TransactionState state)
@@ -250,18 +140,19 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
             if (state == TransactionState.AddCard)
             {
-                SetText(_primaryButtonLabel, AddCardButtonText);
+                if (_primaryButtonLabel != null) _primaryButtonLabel.text = AddCardButtonText;
             }
             else if (state == TransactionState.PrePayment)
             {
-                SetText(_primaryButtonLabel, PayButtonText);
+                if (_primaryButtonLabel != null) _primaryButtonLabel.text = PayButtonText;
             }
         }
 
-        SetText(_cancelButtonLabel, state == TransactionState.PostPayment ? ExitButtonText : CancelButtonText);
-        SetCancelButtonStyle(state == TransactionState.PostPayment);
+        if (_cancelButton != null) _cancelButton.gameObject.SetActive(state != TransactionState.PostPayment);
+        if (_exitButton != null) _exitButton.gameObject.SetActive(state == TransactionState.PostPayment);
+        if (_cancelButtonLabel != null) _cancelButtonLabel.text = CancelButtonText;
         if (state == TransactionState.PostPayment)
-            ResetRatingDropdown();
+            _ratingDropdownHandler?.ResetPrompt();
 
         RefreshRequiredFieldLabels();
         RefreshPaymentButtons();
@@ -326,7 +217,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         ShowState(TransactionState.AddCard);
     }
 
-    private void ToggleRememberCard()
+    public void ToggleRememberCard()
     {
         _rememberCard = !_rememberCard;
         RefreshRememberCardStyle();
@@ -336,76 +227,6 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     {
         _onPaymentCompleted = null;
         gameObject.SetActive(false);
-    }
-
-    private void SetText(TMP_Text text, string value)
-    {
-        if (text != null) text.text = value;
-    }
-
-    private void SetCancelButtonStyle(bool isExitButton)
-    {
-        if (_cancelButtonBackground != null)
-            _cancelButtonBackground.color = isExitButton ? ExitButtonColor : Color.white;
-
-        if (_cancelButtonLabel != null)
-            _cancelButtonLabel.color = isExitButton ? Color.white : CancelButtonTextColor;
-
-        if (_cancelButtonRectTransform == null)
-            return;
-
-        _cancelButtonRectTransform.anchorMin = isExitButton && _primaryButtonRectTransform != null ? _primaryButtonRectTransform.anchorMin : new Vector2(0.25f, 0f);
-        _cancelButtonRectTransform.anchorMax = isExitButton && _primaryButtonRectTransform != null ? _primaryButtonRectTransform.anchorMax : new Vector2(0.75f, 0.35f);
-        _cancelButtonRectTransform.anchoredPosition = Vector2.zero;
-        _cancelButtonRectTransform.sizeDelta = Vector2.zero;
-    }
-
-    private void ResetRatingDropdown()
-    {
-        if (_ratingDropdown == null)
-            return;
-
-        _ratingPromptOptionHidden = false;
-        _ratingDropdown.SetValueWithoutNotify(0);
-        _ratingDropdown.RefreshShownValue();
-        SetText(_ratingDropdownLabel, RatingPromptText);
-    }
-
-    private void HideRatingPromptOptionWhenExpanded()
-    {
-        if (_ratingDropdown == null)
-            return;
-
-        if (!_ratingDropdown.IsExpanded)
-        {
-            _ratingPromptOptionHidden = false;
-            return;
-        }
-
-        if (_ratingPromptOptionHidden)
-            return;
-
-        Transform dropdownList = _ratingDropdown.transform.Find("Dropdown List");
-        if (dropdownList == null)
-            return;
-
-        Toggle[] items = dropdownList.GetComponentsInChildren<Toggle>(false);
-        if (items.Length == 0)
-            return;
-
-        RectTransform promptItem = items[0].transform as RectTransform;
-        if (promptItem == null)
-            return;
-
-        RectTransform content = promptItem.parent as RectTransform;
-        float promptItemHeight = promptItem.rect.height;
-
-        promptItem.gameObject.SetActive(false);
-
-        if (content != null)
-            content.sizeDelta = new Vector2(content.sizeDelta.x, Mathf.Max(0f, content.sizeDelta.y - promptItemHeight));
-
-        _ratingPromptOptionHidden = true;
     }
 
     private void AddCardFromInputs()
@@ -424,7 +245,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         };
 
         _savedCards.Add(card);
-        _selectedCardIndex = _savedCards.Count - 1;
+        _selectedCard = card;
         _usingCardPayment = true;
         _savedCardListExpanded = false;
 
@@ -456,7 +277,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         SetRequiredFieldLabel(_addCardCvvInputFieldLabel, _addCardCvvInputFieldLabelText, GetDigits(GetInputText(_addCardCvvInputField)).Length < CvvDigitCount);
     }
 
-    private void InputFieldValueChanged(string value)
+    public void InputFieldValueChanged(string value)
     {
         SanitizeNumericInputFields();
         RefreshRequiredFieldLabels();
@@ -549,16 +370,13 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         if (!_usingCardPayment)
             return true;
 
-        if (_selectedCardIndex < 0 || _selectedCardIndex >= _savedCards.Count)
-            return false;
-
-        return true;
+        return _selectedCard != null && _savedCards.Contains(_selectedCard);
     }
 
     private void RefreshPaymentButtons()
     {
-        SetText(_cardButtonLabel, EmptyCardButtonText);
-        SetText(_mobileButtonLabel, MobileButtonText);
+        if (_cardButtonLabel != null) _cardButtonLabel.text = EmptyCardButtonText;
+        if (_mobileButtonLabel != null) _mobileButtonLabel.text = MobileButtonText;
         RefreshSavedCardList();
 
         if (_usingCardPayment && _savedCards.Count > 0)
@@ -588,7 +406,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
             _savedCardListTitle.color = CardRowTextColor;
         }
 
-        SetText(_addCardRowLabel, AddAnotherCardText);
+        if (_addCardRowLabel != null) _addCardRowLabel.text = AddAnotherCardText;
         SetCardRowActive(_selectedCardRow, false);
         SetCardRowActive(_savedCardRowTemplate, false);
         SetCardRowActive(_addCardRow, false);
@@ -613,18 +431,15 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         }
         _savedCardRows.Clear();
 
-        if (_savedCards.Count > 0)
-            _selectedCardIndex = Mathf.Clamp(_selectedCardIndex, 0, _savedCards.Count - 1);
-        else
-            _selectedCardIndex = -1;
+        if (_selectedCard == null || !_savedCards.Contains(_selectedCard))
+            _selectedCard = _savedCards.Count > 0 ? _savedCards[0] : null;
 
-        if (_selectedCardIndex < 0)
+        if (_selectedCard == null)
             return;
 
         if (!_savedCardListExpanded)
         {
-            int selectedIndex = _selectedCardIndex;
-            ConfigurePrefabCardRow(_selectedCardRow, _selectedCardRowButton, _selectedCardRowLabel, GetSavedCardText(_savedCards[selectedIndex]), ToggleSavedCardList);
+            ConfigurePrefabCardRow(_selectedCardRow, _selectedCardRowButton, _selectedCardRowLabel, GetSavedCardText(_selectedCard), ToggleSavedCardList);
             SetCardRowActive(_selectedCardRow, true);
             SetCardRowActive(_addCardRow, false);
             return;
@@ -633,12 +448,12 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         SetCardRowActive(_selectedCardRow, false);
         for (int i = 0; i < _savedCards.Count; i++)
         {
-            int cardIndex = i;
+            SavedCard card = _savedCards[i];
             GameObject cardRow = Instantiate(_selectedCardRow, _savedCardListRoot);
-            cardRow.name = "SavedCardRow" + cardIndex;
-            cardRow.transform.SetSiblingIndex(_savedCardRowTemplate.transform.GetSiblingIndex() + cardIndex + 1);
-            AlignClonedCardRow(cardRow.GetComponent<RectTransform>(), _selectedCardRow.GetComponent<RectTransform>(), cardIndex);
-            ConfigurePrefabCardRow(cardRow, cardRow.GetComponent<Button>(), cardRow.GetComponentInChildren<TMP_Text>(true), GetSavedCardText(_savedCards[cardIndex]), () => SelectSavedCard(cardIndex));
+            cardRow.name = "SavedCardRow" + i;
+            cardRow.transform.SetSiblingIndex(_savedCardRowTemplate.transform.GetSiblingIndex() + i + 1);
+            AlignClonedCardRow(cardRow.GetComponent<RectTransform>(), _selectedCardRow.GetComponent<RectTransform>(), i);
+            ConfigurePrefabCardRow(cardRow, cardRow.GetComponent<Button>(), cardRow.GetComponentInChildren<TMP_Text>(true), GetSavedCardText(card), () => SelectSavedCard(card));
             SetCardRowActive(cardRow, true);
             _savedCardRows.Add(cardRow);
         }
@@ -654,7 +469,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         if (row == null)
             return;
 
-        SetText(label, labelText);
+        if (label != null) label.text = labelText;
         if (button == null)
             return;
 
@@ -692,12 +507,12 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         RefreshSavedCardList();
     }
 
-    private void SelectSavedCard(int selectedIndex)
+    private void SelectSavedCard(SavedCard card)
     {
-        if (selectedIndex < 0 || selectedIndex >= _savedCards.Count)
+        if (card == null || !_savedCards.Contains(card))
             return;
 
-        _selectedCardIndex = selectedIndex;
+        _selectedCard = card;
         _usingCardPayment = true;
         _savedCardListExpanded = false;
         SelectCardPayment();
@@ -713,7 +528,8 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private void RemoveTemporaryCards()
     {
         _savedCards.RemoveAll(card => !card.Remembered);
-        _selectedCardIndex = _savedCards.Count > 0 ? Mathf.Clamp(_selectedCardIndex, 0, _savedCards.Count - 1) : -1;
+        if (_selectedCard == null || !_savedCards.Contains(_selectedCard))
+            _selectedCard = _savedCards.Count > 0 ? _savedCards[0] : null;
         _usingCardPayment = _savedCards.Count > 0;
         _savedCardListExpanded = false;
     }
@@ -754,11 +570,6 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private bool HasText(TMP_InputField inputField)
     {
         return !string.IsNullOrWhiteSpace(GetInputText(inputField));
-    }
-
-    private bool HasDigits(TMP_InputField inputField)
-    {
-        return GetDigits(GetInputText(inputField)).Length > 0;
     }
 
     private bool FocusInputField(TMP_InputField inputField)
