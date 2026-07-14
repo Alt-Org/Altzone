@@ -39,6 +39,10 @@ public class ChooseTask : MonoBehaviour
     private RectTransform _randomQuestionWindow;
 
     [SerializeField]
+    [Tooltip("The background image to scale")]
+    private RectTransform _randomQuestionBackground;
+
+    [SerializeField]
     [Tooltip("The question")]
     private TextMeshProUGUI _randomQuestionTitle;
 
@@ -72,6 +76,9 @@ public class ChooseTask : MonoBehaviour
     public static event ChooseTaskHidden OnChooseTaskHidden;
 
     private static bool _shouldShowPopup = false;
+
+    private float _bgStepHeight = 0.06f;
+    private float _initialBgSize = 0.55f;
 
     IEnumerator Initialize()
     {
@@ -188,6 +195,13 @@ public class ChooseTask : MonoBehaviour
             _randomQuestionAnswerHolder = _multipleAnswerHolder;
             _doubleAnswerHolder.gameObject.SetActive(false);
             _multipleAnswerHolder.gameObject.SetActive(true);
+
+            // Scale background accordingly
+            float yPos = _initialBgSize - (_bgStepHeight * question.answers.Count);
+
+            _randomQuestionBackground.anchorMin = new Vector2(
+                _randomQuestionBackground.anchorMin.x,
+                yPos);
         }
         else
         {
@@ -195,18 +209,22 @@ public class ChooseTask : MonoBehaviour
             _doubleAnswerHolder.gameObject.SetActive(true);
             _multipleAnswerHolder.gameObject.SetActive(false);
 
+            // Scale background accordingly
+            _randomQuestionBackground.anchorMin = new Vector2(
+                _randomQuestionBackground.anchorMin.x,
+                _initialBgSize);
+
         }
 
         // Create answers for the player to select from
         foreach (RandomQuestionAnswer questionAnswer in question.answers)
-            {
-                GameObject answerObj = Instantiate(_randomQuestionAnswerPrefab, _randomQuestionAnswerHolder);
-                answerObj.GetComponentInChildren<TextMeshProUGUI>().text = questionAnswer.Answer;
-                //answerObj.GetComponentInChildren<Image>().color = questionAnswer.color;
-                answerObj.GetComponentInChildren<Button>().onClick.AddListener(() => { HideSelectionWindow(); });
+        {
+            GameObject answerObj = Instantiate(_randomQuestionAnswerPrefab, _randomQuestionAnswerHolder);
+            answerObj.GetComponentInChildren<TextMeshProUGUI>().text = questionAnswer.Answer;
+            //answerObj.GetComponentInChildren<Image>().color = questionAnswer.color;
+            answerObj.GetComponentInChildren<Button>().onClick.AddListener(() => { HideSelectionWindow(); });
 
-            }
-
+        }
     }
 
     /// <summary>

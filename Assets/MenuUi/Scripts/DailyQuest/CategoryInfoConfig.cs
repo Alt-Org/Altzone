@@ -6,6 +6,16 @@ public class CategoryInfo
 {
 
     [HideInInspector]
+    public string Id
+    {
+        get
+        {
+            return id;
+
+        }
+    }
+
+    [HideInInspector]
     public string Name
     {
         get
@@ -64,6 +74,8 @@ public class CategoryInfo
 
         }
     }
+
+    [SerializeField] private string id;
     [SerializeField] private string name;
     [SerializeField] private string englishName;
     [SerializeField] private Color color;

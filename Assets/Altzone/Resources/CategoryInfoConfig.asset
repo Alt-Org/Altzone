@@ -12,4 +12,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 363a3077d0148ad48964eeb5c506ee96, type: 3}
   m_Name: CategoryInfoConfig
   m_EditorClassIdentifier: 
-  _categories: []
+  _categories:
+  - id: functional
+    name: Toiminnallinen pelilukutaito
+    englishName: Functional game literacy
+    color: {r: 0.627451, g: 1, b: 1, a: 1}
+    title: "Mit\xE4 on toiminnallinen pelilukutaito?"
+    englishTitle: What is functional game literacy?
+    description: "T\xE4ss\xE4 pelaaja tutustuu pelin toimintamahdollisuuksiin; miten
+      k\xE4ytt\xF6liittym\xE4ss\xE4 navigoidaan, mink\xE4laisia pelimekaniikkoja
+      peli sis\xE4lt\xE4\xE4, ja miten pelimaailmassa toimitaan niiden v\xE4lityksell\xE4."
+    englishDescription: Here the player explores the functional possibilities of
+      the game; how to navigate the user interface, what kinds of game mechanics
+      the game contains, and how to operate within the game world through them.
+  - id: social
+    name: Sosiaalinen pelilukutaito
+    englishName: Social game literacy
+    color: {r: 0.52156866, g: 0.92549026, b: 0.5294118, a: 1}
+    title: "Mit\xE4 on sosiaalinen pelilukutaito?"
+    englishTitle: What is social game literacy?
+    description: "T\xE4ss\xE4 pelaaja tutustuu pelin vuorovaikutteisiin mahdollisuuksiin;
+      miten toisten pelaajien kanssa ollaan vuorovaikutuksessa (pelillinen vuorovaikutus,
+      emojit, erilaiset chat-vaihtoehdot ym.)"
+    englishDescription: Here the player gets to know the possibilities of interaction
+      in the game; how to interact with other players (in-game interactions, emojis,
+      different chat options, etc.)
+  - id: story-based
+    name: Tarinallinen pelilukutaito
+    englishName: Story-based game literacy
+    color: {r: 1, g: 0.6627451, b: 0.36078432, a: 1}
+    title: "Mit\xE4 on tarinallinen pelilukutaito?"
+    englishTitle: What is story-based game literacy?
+    description: "T\xE4ss\xE4 pelaaja tutustuu pelin tarinalliseen ulottuvuuteen;
+      miten pelihahmot, pelin maailma, pelin tapahtumat ja pelin audiovisuaaliset
+      vihjeet, sek\xE4 pelaajan personointi kertovat tarinaa?"
+    englishDescription: "Here the player explores the narrative dimension of the
+      game; how the game characters, the game world, the game events, and the audiovisual
+      cues, as well as the player\u2019s personalization, tell a story."
+  - id: cultural
+    name: Kulttuurinen pelilukutaito
+    englishName: Cultural game literacy
+    color: {r: 0.9333334, g: 0.43529415, b: 0.42352945, a: 1}
+    title: "Mit\xE4 on kulttuurinen pelilukutaito?"
+    englishTitle: What is cultural game literacy?
+    description: "T\xE4ss\xE4 pelaaja tutustuu peliin kulttuurisen teoksena"
+    englishDescription: 'Here the player explores the narrative dimension of the
+      game: how characters, the game world, events and audiovisual cues, as well
+      as player personalization, tell a story.'
+  - id: ethical
+    name: Eettinen pelilukutaito
+    englishName: Ethical game literacy
+    color: {r: 1, g: 0.9921569, b: 0.2627451, a: 1}
+    title: "Mit\xE4 on eettinen pelilukutaito?"
+    englishTitle: What is ethical game literacy?
+    description: "T\xE4ss\xE4 pelaaja tutustuu pelin eettisiin n\xE4k\xF6kulmiin"
+    englishDescription: Here the player explores the ethical perspectives of games.
