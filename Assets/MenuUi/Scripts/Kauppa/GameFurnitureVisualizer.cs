@@ -197,8 +197,11 @@ public class GameFurnitureVisualizer : MonoBehaviour
         if (string.IsNullOrWhiteSpace(itemName) || string.IsNullOrWhiteSpace(themeName))
         {
             (string parsedItemName, string parsedThemeName) = ParseFurnitureName(gameFurniture.Name);
-            itemName = string.IsNullOrWhiteSpace(itemName) ? parsedItemName : itemName;
-            themeName = string.IsNullOrWhiteSpace(themeName) ? parsedThemeName : themeName;
+            if (string.IsNullOrWhiteSpace(itemName))
+                itemName = parsedItemName;
+
+            if (string.IsNullOrWhiteSpace(themeName))
+                themeName = parsedThemeName;
         }
 
         return (itemName, themeName);

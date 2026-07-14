@@ -23,17 +23,17 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private static readonly Color RememberCardEnabledColor = new Color(0.118f, 0.165f, 0.878f, 1f);
     private static readonly Color RememberCardDisabledColor = new Color(0.75f, 0.78f, 0.84f, 1f);
 
-    private GameObject _panel;
-    private GameObject _addCardWindow;
-    private GameObject _prePaymentWindow;
-    private GameObject _selectCardWindow;
-    private GameObject _postPaymentWindow;
+    [SerializeField] private GameObject _panel;
+    [SerializeField] private GameObject _addCardWindow;
+    [SerializeField] private GameObject _prePaymentWindow;
+    [SerializeField] private GameObject _selectCardWindow;
+    [SerializeField] private GameObject _postPaymentWindow;
 
-    private Button _primaryButton;
-    private Button _cancelButton;
-    private Button _cardButton;
-    private Button _mobileButton;
-    private Button _rememberCardButton;
+    [SerializeField] private Button _primaryButton;
+    [SerializeField] private Button _cancelButton;
+    [SerializeField] private Button _cardButton;
+    [SerializeField] private Button _mobileButton;
+    [SerializeField] private Button _rememberCardButton;
 
     private TMP_Text _primaryButtonLabel;
     private TMP_Text _cancelButtonLabel;
@@ -44,22 +44,22 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private Image _rememberCardBackground;
     private RectTransform _primaryButtonRectTransform;
     private RectTransform _cancelButtonRectTransform;
-    private TMP_Dropdown _ratingDropdown;
-    private TMP_Dropdown _savedCardListSource;
+    [SerializeField] private TMP_Dropdown _ratingDropdown;
+    [SerializeField] private TMP_Dropdown _savedCardListSource;
     private RectTransform _savedCardListRoot;
     private TMP_Text _savedCardListTitle;
-    private GameObject _selectedCardRow;
-    private GameObject _savedCardRowTemplate;
-    private GameObject _addCardRow;
+    [SerializeField] private GameObject _selectedCardRow;
+    [SerializeField] private GameObject _savedCardRowTemplate;
+    [SerializeField] private GameObject _addCardRow;
     private Button _selectedCardRowButton;
     private Button _addCardRowButton;
     private TMP_Text _selectedCardRowLabel;
     private TMP_Text _savedCardRowTemplateLabel;
     private TMP_Text _addCardRowLabel;
-    private TMP_InputField _nameInputField;
-    private TMP_InputField _cardInputField;
-    private TMP_InputField _dateInputField;
-    private TMP_InputField _addCardCvvInputField;
+    [SerializeField] private TMP_InputField _nameInputField;
+    [SerializeField] private TMP_InputField _cardInputField;
+    [SerializeField] private TMP_InputField _dateInputField;
+    [SerializeField] private TMP_InputField _addCardCvvInputField;
     private TMP_Text _nameInputFieldLabel;
     private TMP_Text _cardInputFieldLabel;
     private TMP_Text _dateInputFieldLabel;
@@ -125,18 +125,6 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
     private void CacheReferences()
     {
-        _panel = FindChildGameObject("Panel");
-        _addCardWindow = FindChildGameObject("AddCardWindow");
-        _prePaymentWindow = FindChildGameObject("PrePaymentWIndow");
-        _selectCardWindow = FindChildGameObject("SelectCardWindow");
-        _postPaymentWindow = FindChildGameObject("PostPaymentWindow");
-
-        _primaryButton = FindChildComponent<Button>("AddCardButton");
-        _cancelButton = FindChildComponent<Button>("CancelButton");
-        _cardButton = FindChildComponent<Button>("CardButtonPlaceholder");
-        _mobileButton = FindChildComponent<Button>("MobileButtonPlaceholder");
-        _rememberCardButton = FindChildComponentIn<Button>(_addCardWindow, "RememberCardToggle");
-
         _primaryButtonLabel = _primaryButton != null ? _primaryButton.GetComponentInChildren<TMP_Text>(true) : null;
         _cancelButtonLabel = _cancelButton != null ? _cancelButton.GetComponentInChildren<TMP_Text>(true) : null;
         _cardButtonLabel = _cardButton != null ? _cardButton.GetComponentInChildren<TMP_Text>(true) : null;
@@ -145,25 +133,16 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         _rememberCardBackground = _rememberCardButton != null ? _rememberCardButton.GetComponent<Image>() : null;
         _primaryButtonRectTransform = _primaryButton != null ? _primaryButton.GetComponent<RectTransform>() : null;
         _cancelButtonRectTransform = _cancelButton != null ? _cancelButton.GetComponent<RectTransform>() : null;
-        _ratingDropdown = FindChildComponent<TMP_Dropdown>("RatingDropdown");
         _ratingDropdownLabel = _ratingDropdown != null ? _ratingDropdown.captionText : null;
-        _savedCardListSource = FindChildComponentIn<TMP_Dropdown>(_selectCardWindow, "SavedCardList");
         _savedCardListRoot = _savedCardListSource != null ? _savedCardListSource.transform as RectTransform : null;
         Transform savedCardTitleTransform = _savedCardListSource != null ? _savedCardListSource.transform.Find("TitleText") : null;
         _savedCardListTitle = savedCardTitleTransform != null ? savedCardTitleTransform.GetComponent<TMP_Text>() : null;
-        _selectedCardRow = FindChildGameObjectIn(_savedCardListSource != null ? _savedCardListSource.gameObject : null, "SelectedCardRow");
-        _savedCardRowTemplate = FindChildGameObjectIn(_savedCardListSource != null ? _savedCardListSource.gameObject : null, "SavedCardRowTemplate");
-        _addCardRow = FindChildGameObjectIn(_savedCardListSource != null ? _savedCardListSource.gameObject : null, "AddCardRow");
         _selectedCardRowButton = _selectedCardRow != null ? _selectedCardRow.GetComponent<Button>() : null;
         _addCardRowButton = _addCardRow != null ? _addCardRow.GetComponent<Button>() : null;
         _selectedCardRowLabel = _selectedCardRow != null ? _selectedCardRow.GetComponentInChildren<TMP_Text>(true) : null;
         _savedCardRowTemplateLabel = _savedCardRowTemplate != null ? _savedCardRowTemplate.GetComponentInChildren<TMP_Text>(true) : null;
         _addCardRowLabel = _addCardRow != null ? _addCardRow.GetComponentInChildren<TMP_Text>(true) : null;
         PrepareSavedCardListRoot();
-        _nameInputField = FindChildComponentIn<TMP_InputField>(_addCardWindow, "NameInputField");
-        _cardInputField = FindChildComponentIn<TMP_InputField>(_addCardWindow, "CardInputField");
-        _dateInputField = FindChildComponentIn<TMP_InputField>(_addCardWindow, "DateInputField");
-        _addCardCvvInputField = FindChildComponentIn<TMP_InputField>(_addCardWindow, "CVVInputField");
         CacheRequiredFieldLabels();
     }
 
@@ -216,7 +195,6 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         BindNumericInputField(_cardInputField);
         BindDateInputField(_dateInputField);
         BindNumericInputField(_addCardCvvInputField, CvvDigitCount);
-        ClearInputFieldPlaceholder(_addCardCvvInputField);
     }
 
     private void BindInputField(TMP_InputField inputField)
@@ -809,50 +787,6 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         return digits;
     }
 
-    private GameObject FindChildGameObject(string childName)
-    {
-        Transform child = FindChild(childName);
-        return child != null ? child.gameObject : null;
-    }
-
-    private T FindChildComponent<T>(string childName) where T : Component
-    {
-        Transform child = FindChild(childName);
-        return child != null ? child.GetComponent<T>() : null;
-    }
-
-    private T FindChildComponentIn<T>(GameObject parent, string childName) where T : Component
-    {
-        if (parent == null)
-            return null;
-
-        Transform[] children = parent.GetComponentsInChildren<Transform>(true);
-
-        foreach (Transform child in children)
-        {
-            if (child.name == childName)
-                return child.GetComponent<T>();
-        }
-
-        return null;
-    }
-
-    private GameObject FindChildGameObjectIn(GameObject parent, string childName)
-    {
-        if (parent == null)
-            return null;
-
-        Transform[] children = parent.GetComponentsInChildren<Transform>(true);
-
-        foreach (Transform child in children)
-        {
-            if (child.name == childName)
-                return child.gameObject;
-        }
-
-        return null;
-    }
-
     private TMP_Text FindTitleText(TMP_InputField inputField)
     {
         if (inputField == null)
@@ -862,26 +796,4 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         return titleTransform != null ? titleTransform.GetComponent<TMP_Text>() : null;
     }
 
-    private void ClearInputFieldPlaceholder(TMP_InputField inputField)
-    {
-        if (inputField == null || inputField.placeholder == null)
-            return;
-
-        TMP_Text placeholderText = inputField.placeholder.GetComponent<TMP_Text>();
-        if (placeholderText != null)
-            placeholderText.text = string.Empty;
-    }
-
-    private Transform FindChild(string childName)
-    {
-        Transform[] children = GetComponentsInChildren<Transform>(true);
-
-        foreach (Transform child in children)
-        {
-            if (child.name == childName)
-                return child;
-        }
-
-        return null;
-    }
 }

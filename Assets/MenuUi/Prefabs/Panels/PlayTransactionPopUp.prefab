@@ -300,6 +300,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a1cb97d8f1a406f8d3a0ee2f8ef5b2a, type: 3}
   m_Name:
   m_EditorClassIdentifier:
+  _panel: {fileID: 3529558476765089228}
+  _addCardWindow: {fileID: 604385264831621518}
+  _prePaymentWindow: {fileID: 1298008993771918331}
+  _selectCardWindow: {fileID: 8380753664812439041}
+  _postPaymentWindow: {fileID: 6937742820026109112}
+  _primaryButton: {fileID: 153334007496793525}
+  _cancelButton: {fileID: 8400957716477404692}
+  _cardButton: {fileID: 3866428686412006034}
+  _mobileButton: {fileID: 0}
+  _rememberCardButton: {fileID: 6411626135655186329}
+  _ratingDropdown: {fileID: 7887056552011291367}
+  _savedCardListSource: {fileID: 4255575350827823623}
+  _selectedCardRow: {fileID: 910100000000000001}
+  _savedCardRowTemplate: {fileID: 910100000000000011}
+  _addCardRow: {fileID: 910100000000000021}
+  _nameInputField: {fileID: 2614498638139136872}
+  _cardInputField: {fileID: 467000323610909051}
+  _dateInputField: {fileID: 4357143218166982512}
+  _addCardCvvInputField: {fileID: 5856843539624932043}
 --- !u!1 &632734521475039322
 GameObject:
   m_ObjectHideFlags: 0
@@ -9144,7 +9163,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: kk / vv
+  m_text:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: e6de96579f6e6464f89038dac1ad2882, type: 2}
   m_sharedMaterial: {fileID: -6395784680899376689, guid: e6de96579f6e6464f89038dac1ad2882,
