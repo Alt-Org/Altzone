@@ -381,10 +381,14 @@ namespace Battle.QSimulation.Projectile
                 case BattleCollisionTriggerType.SoulWall:
                     BattleSoulWallQComponent* soulWall = ((BattleCollisionQSystem.SoulWallCollisionData*)data)->SoulWall;
 
-                    if (projectile->EmotionCurrent == BattleEmotionState.Love)
+                    // disabled for testing
+                    /*if (projectile->EmotionCurrent == BattleEmotionState.Love)
                     {
                         SetEmotion(f, projectile, projectile->EmotionBase);
-                    }
+                    }*/
+
+                    // enabled for testing
+                    SetEmotion(f, projectile, soulWall->Emotion);
 
                     normal             = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;

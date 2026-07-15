@@ -43,12 +43,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 120
+  spritePixelsToUnits: 256
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 1024
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -160,7 +160,49 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: FurnitureOcdToiletMeLa_0
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 70
+        width: 600
+        height: 769
+      alignment: 9
+      pivot: {x: 0.35, y: 0.0575}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b3e3dc84b872cc40a65412749863141
+      internalID: 386586125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FurnitureOcdToiletMeLa_2
+      rect:
+        serializedVersion: 2
+        x: 1055
+        y: 76
+        width: 548
+        height: 741
+      alignment: 9
+      pivot: {x: 0.525, y: -0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b875275d7dca854291c034745176566
+      internalID: 1045240447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -171,7 +213,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      FurnitureOcdToiletMeLa_0: 386586125
+      FurnitureOcdToiletMeLa_1: 1291784470
+      FurnitureOcdToiletMeLa_2: 1045240447
+      FurnitureOcdToiletMeLa_3: 1869754722
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
