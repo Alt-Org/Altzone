@@ -822,7 +822,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        _lootedSlots.Add(slotIndex);
         float weightMultiplier = _inventoryPage.GetNetworkLootWeightMultiplier(slotIndex);
         int characterId = GetPlayerCharacterId(sender);
         string avatarPayload = GetPlayerAvatarPayload(sender);
@@ -836,10 +835,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         if (eventRaised)
         {
             ApplyLootAccepted(acceptedLootData);
-        }
-        else
-        {
-            _lootedSlots.Remove(slotIndex);
         }
     }
 
