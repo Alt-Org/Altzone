@@ -11,7 +11,7 @@ public static class RaidPhotonRoom
     private const char EntrySeparator = '|';
     private const char FieldSeparator = ':';
 
-    public const int RoomCapacity = 4;
+    public const int RoomCapacity = 8;
     public const int RequiredPlayers = 4;
     public const int MaxPlayersPerClan = 2;
 

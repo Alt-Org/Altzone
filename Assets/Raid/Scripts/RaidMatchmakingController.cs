@@ -22,7 +22,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private const float DebugInventoryModeRaidTimeSeconds = 45f;
     private const float DebugInventoryModeStartCountdownSeconds = 3f;
 
-    [SerializeField] private float lobbyCountdownSeconds = 10f;
+    [SerializeField] private float lobbyCountdownSeconds = 30f;
     [SerializeField] private float retryDelaySeconds = 1.25f;
     [SerializeField] private int minInventoryRows = 6;
     [SerializeField] private int maxInventoryRowsExclusive = 12;
@@ -303,9 +303,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             ExpectedCustomRoomProperties = new PhotonHashtable
             {
                 { PhotonBattleRoom.GameTypeKey, (int)GameType.Raid },
-                { RaidPhotonRoom.RaidMatchmakingKey, true },
-                { RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking },
-                { RaidPhotonRoom.RaidSetupReadyKey, false }
+                { RaidPhotonRoom.RaidMatchmakingKey, true }
             },
             ExpectedMaxPlayers = RaidPhotonRoom.RoomCapacity,
             Lobby = createArgs.Lobby
@@ -387,13 +385,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return false;
         }
 
-        if (GetRoomInfoProperty(room, RaidPhotonRoom.RaidSetupReadyKey, false))
-        {
-            return false;
-        }
-
         int state = GetRoomInfoProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
-        if (state != RaidPhotonRoom.StateMatchmaking)
+        if (state != RaidPhotonRoom.StateMatchmaking && state != RaidPhotonRoom.StateLobby)
         {
             return false;
         }
@@ -460,11 +453,11 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         int state = GetRoomProperty(PhotonRealtimeClient.CurrentRoom, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
-        if (state != RaidPhotonRoom.StateMatchmaking)
+        if (state != RaidPhotonRoom.StateMatchmaking && state != RaidPhotonRoom.StateLobby)
         {
             _rejectedRoomNames.Add(PhotonRealtimeClient.CurrentRoom.Name);
             _waitingForRetryLeave = true;
-            ShowMatchmaking("Finding Raid players", "That Raid room is no longer in matchmaking.", "Trying another room...");
+            ShowMatchmaking("Finding Raid players", "That Raid room has already started.", "Trying another room...");
             PhotonRealtimeClient.LeaveRoom(false);
             yield break;
         }
@@ -478,6 +471,15 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             PhotonRealtimeClient.LeaveRoom(false);
             yield break;
         }
+
+        // Player properties have now had time to reach the room. Re-apply the
+        // current room state so late joiners see the lobby and its clan list.
+        RefreshParticipantList();
+        HandleCurrentRaidRoomState();
+        if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+        {
+            RefreshMasterRoomState();
+        }
     }
 
     private void RefreshMasterRoomState()
@@ -489,7 +491,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         Room room = PhotonRealtimeClient.CurrentRoom;
         int state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
-        if (state != RaidPhotonRoom.StateMatchmaking)
+        if (state != RaidPhotonRoom.StateMatchmaking && state != RaidPhotonRoom.StateLobby)
         {
             return;
         }
@@ -505,9 +507,15 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             && validPlayers.Count <= RaidPhotonRoom.RoomCapacity
             && clanEntries.All(clan => clan.Count <= RaidPhotonRoom.MaxPlayersPerClan);
 
-        if (validClanFormation)
+        if (state == RaidPhotonRoom.StateMatchmaking && validClanFormation)
         {
             StartLobbyCountdown(validPlayers, clanEntries);
+        }
+        else if (state == RaidPhotonRoom.StateLobby
+            && validClanFormation
+            && validPlayers.Count == RaidPhotonRoom.RoomCapacity)
+        {
+            StartRaid(room);
         }
     }
 
@@ -576,8 +584,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             { RaidPhotonRoom.RaidTrapSlotsKey, RaidPhotonRoom.EncodeTraps(traps) }
         });
 
-        room.IsOpen = false;
-        room.IsVisible = false;
+        room.IsOpen = true;
+        room.IsVisible = true;
         RefreshParticipantList(validPlayers);
     }
 
@@ -645,11 +653,18 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         if (secondsRemaining <= 0f && PhotonRealtimeClient.LocalPlayer.IsMasterClient)
         {
-            room.SetCustomProperties(new PhotonHashtable
-            {
-                { RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateStarted }
-            });
+            StartRaid(room);
         }
+    }
+
+    private static void StartRaid(Room room)
+    {
+        room.IsOpen = false;
+        room.IsVisible = false;
+        room.SetCustomProperties(new PhotonHashtable
+        {
+            { RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateStarted }
+        });
     }
 
     private void StartLobbyCountdownUpdates()
