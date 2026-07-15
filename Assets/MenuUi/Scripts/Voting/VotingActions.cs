@@ -4,6 +4,10 @@ using Altzone.Scripts.Voting;
 using Altzone.Scripts.AvatarPartsInfo;
 public static class VotingActions
 {
+    public delegate void PlayTransactionRequested(Action onPaymentCompleted);
+
+    public static event PlayTransactionRequested OnPlayTransactionRequested;
+
     public static Action<GameFurniture> PassShopItem;
     public static Action<AvatarPartInfo> PassShopItemAvatar;
     public static Action<string> ShopItemBought;
@@ -12,4 +16,9 @@ public static class VotingActions
     public static Action PollPopupReady;
     public static Action<string> PassPollId;
     public static Action ReloadPollList;
+
+    public static void RequestPlayTransaction(Action onPaymentCompleted = null)
+    {
+        OnPlayTransactionRequested?.Invoke(onPaymentCompleted);
+    }
 }

@@ -88,12 +88,13 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
     private void Awake()
     {
+        VotingActions.OnPlayTransactionRequested += OpenFromRequest;
         CacheReferences();
     }
 
-    private void OnEnable()
+    private void OnDestroy()
     {
-        Open();
+        VotingActions.OnPlayTransactionRequested -= OpenFromRequest;
     }
 
     public void Open(Action onPaymentCompleted = null)
@@ -103,6 +104,13 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         RemoveTemporaryCards();
         _savedCardListExpanded = false;
         ShowState(_savedCards.Count > 0 ? TransactionState.PrePayment : TransactionState.AddCard);
+    }
+
+    private void OpenFromRequest(Action onPaymentCompleted)
+    {
+        gameObject.SetActive(true);
+        Open(onPaymentCompleted);
+        transform.SetAsLastSibling();
     }
 
     private void CacheReferences()
@@ -226,7 +234,8 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     public void Close()
     {
         _onPaymentCompleted = null;
-        gameObject.SetActive(false);
+        if (_panel != null)
+            _panel.SetActive(false);
     }
 
     private void AddCardFromInputs()

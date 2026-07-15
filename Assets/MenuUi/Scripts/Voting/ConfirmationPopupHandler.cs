@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Clan;
@@ -30,8 +28,6 @@ public class ConfirmationPopupHandler : MonoBehaviour
     [SerializeField] private Button _declineButton;
     [SerializeField] private Button _leftArrowButton;
     [SerializeField] private Button _rightArrowButton;
-    [SerializeField] private GameObject _playTransactionPopUp;
-
     [SerializeField] private Color _personificationShopPopupColor = new Color(0.188f, 0.804f, 0.325f, 0.93f);
     [SerializeField] private Color _furnitureShopPopupColor = new Color(0.639f, 0.839f, 0.941f, 0.93f);
 
@@ -220,7 +216,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
     {
         ClosePopup();
         string boughtItemName = _avatarItemName;
-        OpenPlayTransactionPopup(() => VotingActions.AvatarShopItemBought?.Invoke(boughtItemName));
+        VotingActions.RequestPlayTransaction(() => VotingActions.AvatarShopItemBought?.Invoke(boughtItemName));
     }
 
     private void BuyFurniturePiece() => StartCoroutine(BuyFurniturePieceCoroutine());
@@ -291,69 +287,6 @@ public class ConfirmationPopupHandler : MonoBehaviour
         if (Background != null) Background.SetActive(false);
         if(_leftArrowButton != null) _leftArrowButton.gameObject.SetActive(false);
         if (_rightArrowButton != null) _rightArrowButton.gameObject.SetActive(false);
-    }
-
-    private void OpenPlayTransactionPopup(Action onPaymentCompleted = null)
-    {
-        if (_playTransactionPopUp == null || !_playTransactionPopUp.scene.IsValid())
-            _playTransactionPopUp = FindSceneGameObject("PlayTransactionPopUp");
-
-        if (_playTransactionPopUp == null)
-        {
-            Debug.LogWarning("PlayTransactionPopUp was not found in the scene.");
-            return;
-        }
-
-        _playTransactionPopUp.SetActive(true);
-        Transform panelTransform = _playTransactionPopUp.transform.Find("Panel");
-        if (panelTransform != null)
-            panelTransform.gameObject.SetActive(true);
-
-        PlayTransactionPopUpHandler transactionPopUpHandler = _playTransactionPopUp.GetComponent<PlayTransactionPopUpHandler>();
-        if (transactionPopUpHandler != null)
-            transactionPopUpHandler.Open(onPaymentCompleted);
-        else
-            _playTransactionPopUp.SendMessage("Open", SendMessageOptions.DontRequireReceiver);
-
-        _playTransactionPopUp.transform.SetAsLastSibling();
-
-        if (!_playTransactionPopUp.activeInHierarchy)
-            Debug.LogWarning("PlayTransactionPopUp was found and enabled, but it is still inactive in hierarchy. Check whether one of its parent objects is disabled.");
-    }
-
-    private GameObject FindSceneGameObject(string objectName)
-    {
-        GameObject[] gameObjects = Resources.FindObjectsOfTypeAll<GameObject>();
-        GameObject fallback = null;
-
-        foreach (GameObject gameObject in gameObjects)
-        {
-            if (!gameObject.scene.IsValid() || gameObject.name != objectName)
-                continue;
-
-            if (IsUnderUIOverlay(gameObject))
-                return gameObject;
-
-            if (fallback == null)
-                fallback = gameObject;
-        }
-
-        return fallback;
-    }
-
-    private bool IsUnderUIOverlay(GameObject gameObject)
-    {
-        Transform current = gameObject.transform;
-
-        while (current != null)
-        {
-            if (current.name == "UIOverlay" || current.name == "UIOverlayPanel")
-                return true;
-
-            current = current.parent;
-        }
-
-        return false;
     }
 
     private static string FormatEuroPrice(float value)
