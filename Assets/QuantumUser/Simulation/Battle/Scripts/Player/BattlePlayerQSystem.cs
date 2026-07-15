@@ -39,7 +39,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Calls BattlePlayerManager::SpawnPlayer for players that are in the game.
+        /// Calls <see cref="BattlePlayerManager.SpawnPlayer">BattlePlayerManager.SpawnPlayer</see> for players that are in the game.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -209,7 +209,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Calls BattlePlayerClassManager::OnGameStart for every player's selected character.
+        /// Calls <see cref="BattlePlayerClassManager.OnGameStart">BattlePlayerClassManager.OnGameStart</see> for every player's selected character.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>

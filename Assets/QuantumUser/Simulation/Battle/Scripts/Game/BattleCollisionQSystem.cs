@@ -33,17 +33,17 @@ namespace Battle.QSimulation.Game
         public struct ProjectileCollisionData
         {
             public BattleProjectileQComponent* Projectile;
-            public EntityRef ProjectileEntity;
+            public EntityRef ProjectileEntityRef;
             public BattleEmotionState ProjectileEmotionBase;
             public BattleEmotionState ProjectileEmotionCurrent;
-            public EntityRef OtherEntity;
+            public EntityRef OtherEntityRef;
         }
 
         public struct PlayerClass100ProjectileCollisionData
         {
             public BattlePlayerClass100ProjectileQComponent* Projectile;
-            public EntityRef ProjectileEntity;
-            public EntityRef OtherEntity;
+            public EntityRef ProjectileEntityRef;
+            public EntityRef OtherEntityRef;
         }
 
         public struct ArenaBorderCollisionData
@@ -70,7 +70,7 @@ namespace Battle.QSimulation.Game
         public struct GoalCollisionData
         {
             public BattleProjectileQComponent* Projectile;
-            public EntityRef ProjectileEntity;
+            public EntityRef ProjectileEntityRef;
             public BattleGoalQComponent* Goal;
         }
 
@@ -126,8 +126,8 @@ namespace Battle.QSimulation.Game
                         Projectile               = projectile,
                         ProjectileEmotionBase    = projectile->EmotionBase,
                         ProjectileEmotionCurrent = projectile->EmotionCurrent,
-                        ProjectileEntity         = info.Entity,
-                        OtherEntity              = info.Other
+                        ProjectileEntityRef         = info.Entity,
+                        OtherEntityRef              = info.Other
                     };
 
                     switch (collisionTrigger->Type)
@@ -206,7 +206,7 @@ namespace Battle.QSimulation.Game
                             GoalCollisionData goalCollisionData = new()
                             {
                                 Projectile       = projectile,
-                                ProjectileEntity = info.Entity,
+                                ProjectileEntityRef = info.Entity,
                                 Goal             = f.Unsafe.GetPointer<BattleGoalQComponent>(info.Other)
                             };
 
@@ -250,12 +250,12 @@ namespace Battle.QSimulation.Game
                 {
                     BattlePlayerClass100ProjectileQComponent* playerClass100Projectile = f.Unsafe.GetPointer<BattlePlayerClass100ProjectileQComponent>(info.Entity);
 
-                        PlayerClass100ProjectileCollisionData playerClass100ProjectileCollisionData = new()
-                        {
-                            Projectile = playerClass100Projectile,
-                            ProjectileEntity = info.Entity,
-                            OtherEntity = info.Other
-                        };
+                    PlayerClass100ProjectileCollisionData playerClass100ProjectileCollisionData = new()
+                    {
+                        Projectile          = playerClass100Projectile,
+                        ProjectileEntityRef = info.Entity,
+                        OtherEntityRef      = info.Other
+                    };
 
                     switch (collisionTrigger->Type)
                     {

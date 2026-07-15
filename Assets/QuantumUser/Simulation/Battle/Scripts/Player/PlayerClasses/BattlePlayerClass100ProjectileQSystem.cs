@@ -54,13 +54,13 @@ namespace Battle.QSimulation.Player
             // get components
             Transform2D*                              projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
             BattlePlayerClass100ProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattlePlayerClass100ProjectileQComponent>(projectileEntityRef);
-            PhysicsCollider2D* collider                                   = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
+            PhysicsCollider2D*                        projectileCollider  = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
 
             // set Initial projectile direction and speed
             projectileTransform->Position = position;
             projectile->Direction         = direction;
             projectile->Speed             = speed;
-            projectile->Radius            = collider->Shape.Circle.Radius;
+            projectile->Radius            = projectileCollider->Shape.Circle.Radius;
         }
 
         /// <summary>
@@ -109,25 +109,25 @@ namespace Battle.QSimulation.Player
             BattleCollisionQSystem.PlayerClass100ProjectileCollisionData* playerClass100ProjectileCollisionData
         )
         {
-            BattlePlayerClass100ProjectileQComponent* playerClass100Projectile = playerClass100ProjectileCollisionData->Projectile;
-            EntityRef playerClass100ProjectileEntityRef                        = playerClass100ProjectileCollisionData->ProjectileEntity;
-            EntityRef otherEntity                                              = playerClass100ProjectileCollisionData->OtherEntity;
-            BattleArenaBorderQComponent* arenaBorder                           = arenaCollisionData->ArenaBorder;
+            BattlePlayerClass100ProjectileQComponent* playerClass100Projectile          = playerClass100ProjectileCollisionData->Projectile;
+            EntityRef                                 playerClass100ProjectileEntityRef = playerClass100ProjectileCollisionData->ProjectileEntityRef;
+            EntityRef                                 arenaBorderEntityRef              = playerClass100ProjectileCollisionData->OtherEntityRef;
+            BattleArenaBorderQComponent*              arenaBorder                       = arenaCollisionData->ArenaBorder;
 
             FPVector2 normal      = arenaBorder->Normal;
             FP collisionMinOffset = arenaBorder->CollisionMinOffset;
 
             FPVector2 direction = FPVector2.Reflect(playerClass100Projectile->Direction, normal).Normalized;
 
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(playerClass100ProjectileEntityRef);
-            Transform2D* otherTransform      = f.Unsafe.GetPointer<Transform2D>(otherEntity);
+            Transform2D* playerClass100ProjectileTransform = f.Unsafe.GetPointer<Transform2D>(playerClass100ProjectileEntityRef);
+            Transform2D* arenaBorderTransform              = f.Unsafe.GetPointer<Transform2D>(arenaBorderEntityRef);
 
-            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
+            FPVector2 offsetVector = playerClass100ProjectileTransform->Position - arenaBorderTransform->Position;
             FP collisionOffset     = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
 
             if (collisionOffset - playerClass100Projectile->Radius < collisionMinOffset)
             {
-                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + playerClass100Projectile->Radius);
+                playerClass100ProjectileTransform->Position += normal * (collisionMinOffset - collisionOffset + playerClass100Projectile->Radius);
             }
 
             playerClass100Projectile->Direction = direction;

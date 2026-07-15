@@ -69,25 +69,16 @@ namespace Battle.QSimulation.Player
 
             playerData->DisableMovement = true;
 
-            BattlePlayerCharacterID characterID = playerData->CharacterId;
-
-            switch (characterID)
+            switch (playerData->CharacterId)
             {
                 case BattlePlayerCharacterID.Character101:
-                    HandleAiming(f, playerData, playerEntity, specialInput);
-                    break;
-                case BattlePlayerCharacterID.Character102:
-                    HandleAutoAim(f, playerEntity, specialInput);
-                    break;
                 case BattlePlayerCharacterID.Character103:
-                    HandleAiming(f, playerData, playerEntity, specialInput);
-                    break;
-                case BattlePlayerCharacterID.Character104:
-                    HandleAutoAim(f, playerEntity, specialInput);
-                    break;
                 case BattlePlayerCharacterID.Character105:
                     HandleAiming(f, playerData, playerEntity, specialInput);
                     break;
+
+                case BattlePlayerCharacterID.Character102:
+                case BattlePlayerCharacterID.Character104:
                 case BattlePlayerCharacterID.Character106:
                     HandleAutoAim(f, playerEntity, specialInput);
                     break;
@@ -124,8 +115,8 @@ namespace Battle.QSimulation.Player
             BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
             //BattleDebugLogger.WarningFormat(f, nameof(BattlePlayerClass100), "Joystick ( state: {0}, Direction: {1} )", specialInput->JoystickState, specialInput->JoystickValue);
 
-            Transform2D* playerTransform                  = f.Unsafe.GetPointer<Transform2D>(playerEntity);
-            BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
+            Transform2D*                        playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
+            BattlePlayerClass100DataQComponent* classData       = GetClassData(f, playerEntity);
 
             bool joystickDown         = specialInput->JoystickState != BattleJoystickState.Up;
             bool projectileOnCooldown = classData->CooldownTimer.IsRunning(f);
