@@ -40,7 +40,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private ExitRaid _exitRaid;
     private RaidMatchmakingViews _views;
 
-    private string _localPlayerName = "Player";
+    private string _localPlayerName = string.Empty;
     private string _localPlayerId = string.Empty;
     private string _localClanId = string.Empty;
     private string _localClanName = string.Empty;
@@ -116,6 +116,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         yield return LoadLocalClanData();
 
+        if (string.IsNullOrWhiteSpace(_localPlayerName) || string.IsNullOrWhiteSpace(_localPlayerId))
+        {
+            Debug.LogError("Raid matchmaking could not load valid local player data from the DataStore.");
+            ShowMatchmaking("Raid matchmaking unavailable", "Player data could not be loaded.", string.Empty);
+            yield break;
+        }
+
         if (string.IsNullOrWhiteSpace(_localClanId))
         {
             ShowMatchmaking("Raid requires a clan", "Join a clan before entering Raid matchmaking.", string.Empty);
@@ -184,48 +191,24 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         PlayerData playerData = null;
         ClanData clanData = null;
 
-        if (ServerManager.Instance != null)
+        bool playerLoaded = false;
+        Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
         {
-            ServerPlayer serverPlayer = ServerManager.Instance.Player;
-            _localPlayerName = serverPlayer?.name ?? _localPlayerName;
-            _localPlayerId = serverPlayer?._id ?? serverPlayer?.uniqueIdentifier ?? string.Empty;
-            _localClanId = serverPlayer?.clan_id ?? string.Empty;
-            _localClanName = ServerManager.Instance.Clan?.name ?? string.Empty;
-            if (serverPlayer?.avatar != null)
-            {
-                _localAvatarData = new AvatarData(_localPlayerName, serverPlayer.avatar);
-            }
+            playerData = data;
+            playerLoaded = true;
+        });
+
+        yield return new WaitUntil(() => playerLoaded);
+
+        if (playerData == null)
+        {
+            yield break;
         }
 
-        if (string.IsNullOrWhiteSpace(_localClanId) || _localAvatarData == null)
-        {
-            bool playerLoaded = false;
-            Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data =>
-            {
-                playerData = data;
-                playerLoaded = true;
-            });
-
-            yield return new WaitUntil(() => playerLoaded);
-
-            if (playerData != null)
-            {
-                _localPlayerName = string.IsNullOrWhiteSpace(playerData.Name) ? _localPlayerName : playerData.Name;
-                if (string.IsNullOrWhiteSpace(_localPlayerId))
-                {
-                    _localPlayerId = !string.IsNullOrWhiteSpace(playerData.Id)
-                        ? playerData.Id
-                        : playerData.UniqueIdentifier ?? string.Empty;
-                }
-
-                if (string.IsNullOrWhiteSpace(_localClanId))
-                {
-                    _localClanId = playerData.ClanId ?? string.Empty;
-                }
-
-                _localAvatarData ??= playerData.AvatarData;
-            }
-        }
+        _localPlayerName = playerData.Name;
+        _localPlayerId = playerData.Id;
+        _localClanId = playerData.ClanId ?? string.Empty;
+        _localAvatarData = playerData.AvatarData;
 
         if (!string.IsNullOrWhiteSpace(_localClanId) && string.IsNullOrWhiteSpace(_localClanName))
         {
@@ -240,17 +223,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             _localClanName = clanData?.Name ?? _localClanId;
         }
 
-        if (string.IsNullOrWhiteSpace(_localPlayerName))
-        {
-            _localPlayerName = PhotonRealtimeClient.NickName;
-        }
-
-        if (string.IsNullOrWhiteSpace(_localPlayerId))
-        {
-            _localPlayerId = GameConfig.Get().PlayerSettings.PlayerGuid;
-        }
-
-        if (!string.IsNullOrWhiteSpace(_localPlayerName) && PhotonRealtimeClient.Client != null)
+        if (PhotonRealtimeClient.Client != null)
         {
             PhotonRealtimeClient.NickName = _localPlayerName;
         }
