@@ -630,12 +630,12 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         RefreshParticipantList();
     }
 
-    private void UpdateLobbyCountdown()
+    private float UpdateLobbyCountdown()
     {
         if (!IsCurrentRoomRaid())
         {
             _lobbyCountdownActive = false;
-            return;
+            return 0f;
         }
 
         Room room = PhotonRealtimeClient.CurrentRoom;
@@ -643,13 +643,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         if (state != RaidPhotonRoom.RaidState.Lobby)
         {
             _lobbyCountdownActive = false;
-            return;
+            return 0f;
         }
 
         long startTimeMs = GetRoomProperty(room, RaidPhotonRoom.RaidStartTimeKey, -1L);
         if (startTimeMs < 0)
         {
-            return;
+            return 0.25f;
         }
 
         long nowMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -662,6 +662,14 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         {
             StartRaid(room);
         }
+
+        long millisecondsUntilNextSecond = millisecondsRemaining % 1000L;
+        if (millisecondsUntilNextSecond == 0L)
+        {
+            millisecondsUntilNextSecond = 1000L;
+        }
+
+        return millisecondsUntilNextSecond / 1000f;
     }
 
     private static void StartRaid(Room room)
@@ -676,7 +684,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private void StartLobbyCountdownUpdates()
     {
         _lobbyCountdownActive = true;
-        UpdateLobbyCountdown();
 
         if (_lobbyCountdownCoroutine == null)
         {
@@ -698,8 +705,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         while (_lobbyCountdownActive)
         {
-            yield return new WaitForSeconds(0.25f);
-            UpdateLobbyCountdown();
+            float secondsUntilNextUpdate = UpdateLobbyCountdown();
+            if (!_lobbyCountdownActive)
+            {
+                break;
+            }
+
+            yield return new WaitForSeconds(secondsUntilNextUpdate);
         }
 
         _lobbyCountdownCoroutine = null;
