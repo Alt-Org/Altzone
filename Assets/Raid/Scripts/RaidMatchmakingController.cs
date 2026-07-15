@@ -876,8 +876,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         return IsSharedRaidActive
             && _inventoryPage != null
-            && (_exitRaid == null || ignoreLocalPlayerState || !_exitRaid.raidEnded)
-            && _inventoryPage.CanRequestLoot(slotIndex, ignoreLocalPlayerState, ignoreLocalPlayerState);
+            && (_exitRaid == null || !_exitRaid.raidEnded)
+            && _inventoryPage.CanRequestLoot(slotIndex);
     }
 
     private bool IsParticipatingClan(string clanId)
