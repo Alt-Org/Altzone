@@ -4,93 +4,64 @@ using UnityEngine;
 [System.Serializable]
 public class CategoryInfo
 {
-
-    [HideInInspector]
     public string Id
     {
         get
         {
-            return id;
-
+            return _id;
         }
     }
 
-    [HideInInspector]
     public string Name
     {
         get
         {
-            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
-            {
-                return englishName;
-            }
-            else
-            {
-                return name;
-            }
-
+            return SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+                ? _englishName : _name;
         }
     }
 
-    [HideInInspector]
     public Color Color
     {
         get
         {
-            return color;
+            return _color;
         }
     }
 
-    [HideInInspector]
     public string Title
     {
         get
         {
-            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
-            {
-                return englishTitle;
-            }
-            else
-            {
-                return title;
-            }
-                
+            return SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+                ? _englishTitle : _title;
         }
     }
 
-    [HideInInspector]
     public string Description
     {
         get
         {
-            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
-            {
-                return englishDescription;
-            }
-            else
-            {
-                return description;
-            }
+            return SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+                ? _englishDescription : _description;
 
         }
     }
 
-    [SerializeField] private string id;
-    [SerializeField] private string name;
-    [SerializeField] private string englishName;
-    [SerializeField] private Color color;
+    [SerializeField] private string _id;
+    [SerializeField] private string _name;
+    [SerializeField] private string _englishName;
+    [SerializeField] private Color _color;
 
-    [SerializeField] private string title;
-    [SerializeField] private string englishTitle;
-    [SerializeField] private string description;
-    [SerializeField] private string englishDescription;
-
+    [SerializeField] private string _title;
+    [SerializeField] private string _englishTitle;
+    [SerializeField] private string _description;
+    [SerializeField] private string _englishDescription;
 }
 
 [CreateAssetMenu(fileName = "NewCategoryInfoConfig", menuName = "ALT-Zone/DailyTask/CategoryInfoConfig")]
 public class CategoryInfoConfig : ScriptableObject
 {
-
     private static CategoryInfoConfig _instance;
 
     public static CategoryInfoConfig Instance
@@ -109,7 +80,4 @@ public class CategoryInfoConfig : ScriptableObject
     [SerializeField] private List<CategoryInfo> _categories;
 
     public List<CategoryInfo> GetCategoryInfos() => _categories;
-
-
-
 }

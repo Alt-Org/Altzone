@@ -221,7 +221,6 @@ public class ChooseTask : MonoBehaviour
         {
             GameObject answerObj = Instantiate(_randomQuestionAnswerPrefab, _randomQuestionAnswerHolder);
             answerObj.GetComponentInChildren<TextMeshProUGUI>().text = questionAnswer.Answer;
-            //answerObj.GetComponentInChildren<Image>().color = questionAnswer.color;
             answerObj.GetComponentInChildren<Button>().onClick.AddListener(() => { HideSelectionWindow(); });
 
         }

@@ -9,23 +9,21 @@ public class CategoryInfoPopup : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _titleText;
     [SerializeField] private TextMeshProUGUI _descriptionText;
 
-    private static CategoryInfoPopup instance;
+    private static CategoryInfoPopup _instance;
 
     public void Awake()
     {
-        if (instance != null && instance != this)
+        if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
-        instance = this;
+        _instance = this;
     }
-
 
     public static void ShowCategoryInfo(string categoryId)
     {
-        
         List<CategoryInfo> categories = CategoryInfoConfig.Instance.GetCategoryInfos();
 
         bool showPopup = false;
@@ -34,19 +32,19 @@ public class CategoryInfoPopup : MonoBehaviour
         {
             if (category.Id.ToLower() == categoryId.ToLower())
             {
-                instance._nameText.text = category.Name;
-                instance._nameText.color = category.Color;
-                instance._titleText.text = category.Title;
-                instance._descriptionText.text = category.Description;
+                _instance._nameText.text = category.Name;
+                _instance._nameText.color = category.Color;
+                _instance._titleText.text = category.Title;
+                _instance._descriptionText.text = category.Description;
                 showPopup = true;
                 break;
             }
         }
-        instance._categoryInfoWindow.SetActive(showPopup);
+        _instance._categoryInfoWindow.SetActive(showPopup);
     }
 
     public static void HideCategoryInfo()
     {
-        instance._categoryInfoWindow.SetActive(false);
+        _instance._categoryInfoWindow.SetActive(false);
     }
 }
