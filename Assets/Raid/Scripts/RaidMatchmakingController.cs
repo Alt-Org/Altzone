@@ -446,27 +446,38 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         yield return new WaitForSeconds(0.5f);
 
+        if (!PhotonRealtimeClient.InRoom)
+        {
+            yield break;
+        }
+
         if (!IsCurrentRoomRaid())
         {
+            _waitingForRetryLeave = true;
+            ShowMatchmaking("Finding Raid players", "Joined room is not a Raid matchmaking room.", "Trying another room...");
+            PhotonRealtimeClient.LeaveRoom(false);
             yield break;
         }
 
         int state = GetRoomProperty(PhotonRealtimeClient.CurrentRoom, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
         if (state != RaidPhotonRoom.StateMatchmaking)
         {
+            _rejectedRoomNames.Add(PhotonRealtimeClient.CurrentRoom.Name);
+            _waitingForRetryLeave = true;
+            ShowMatchmaking("Finding Raid players", "That Raid room is no longer in matchmaking.", "Trying another room...");
+            PhotonRealtimeClient.LeaveRoom(false);
             yield break;
         }
 
         int localClanPlayers = CountPlayersInClan(_localClanId);
-        if (localClanPlayers <= RaidPhotonRoom.MaxPlayersPerClan)
+        if (localClanPlayers > RaidPhotonRoom.MaxPlayersPerClan)
         {
+            _rejectedRoomNames.Add(PhotonRealtimeClient.CurrentRoom.Name);
+            _waitingForRetryLeave = true;
+            ShowMatchmaking("Finding Raid players", "Your clan already has two players in that Raid room.", "Trying another room...");
+            PhotonRealtimeClient.LeaveRoom(false);
             yield break;
         }
-
-        _rejectedRoomNames.Add(PhotonRealtimeClient.CurrentRoom.Name);
-        _waitingForRetryLeave = true;
-        ShowMatchmaking("Finding Raid players", "Your clan already has two players in that Raid room.", "Trying another room...");
-        PhotonRealtimeClient.LeaveRoom(false);
     }
 
     private void RefreshMasterRoomState()
@@ -493,9 +504,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         bool validClanFormation = validPlayers.Count >= RaidPhotonRoom.RequiredPlayers
             && validPlayers.Count <= RaidPhotonRoom.RoomCapacity
             && clanEntries.All(clan => clan.Count <= RaidPhotonRoom.MaxPlayersPerClan);
-
-        room.IsOpen = !validClanFormation;
-        room.IsVisible = !validClanFormation;
 
         if (validClanFormation)
         {
@@ -1396,10 +1404,15 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     public void OnJoinedRoom()
     {
-        if (IsCurrentRoomRaid())
+        _joiningOrCreatingRoom = false;
+
+        if (!IsCurrentRoomRaid())
         {
-            HandleJoinedRaidRoom();
+            StartCoroutine(ValidateLocalRoomMembership());
+            return;
         }
+
+        HandleJoinedRaidRoom();
     }
 
     public void OnJoinRoomFailed(short returnCode, string message)
