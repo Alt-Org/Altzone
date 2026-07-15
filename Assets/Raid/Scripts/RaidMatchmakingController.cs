@@ -409,7 +409,11 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        SetLocalPlayerRaidProperties();
+        if (!SetLocalPlayerRaidProperties())
+        {
+            return;
+        }
+
         RefreshParticipantList();
         HandleCurrentRaidRoomState();
 
@@ -421,14 +425,14 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         StartCoroutine(ValidateLocalRoomMembership());
     }
 
-    private void SetLocalPlayerRaidProperties()
+    private bool SetLocalPlayerRaidProperties()
     {
         if (PhotonRealtimeClient.LocalPlayer == null || string.IsNullOrWhiteSpace(_localClanId))
         {
-            return;
+            return false;
         }
 
-        PhotonRealtimeClient.LocalPlayer.SetCustomProperties(new PhotonHashtable
+        return PhotonRealtimeClient.LocalPlayer.SetCustomProperties(new PhotonHashtable
         {
             { RaidPhotonRoom.PlayerIdKey, _localPlayerId },
             { RaidPhotonRoom.PlayerClanIdKey, _localClanId },
@@ -1173,7 +1177,11 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             yield break;
         }
 
-        SetLocalPlayerRaidProperties();
+        if (!SetLocalPlayerRaidProperties())
+        {
+            _debugStartCoroutine = null;
+            yield break;
+        }
 
         float timeout = Time.time + 2f;
         while (IsCurrentRoomRaid()
