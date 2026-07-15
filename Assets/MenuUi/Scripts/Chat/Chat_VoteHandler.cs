@@ -42,7 +42,9 @@ public class ChatVoteHandler : AltMonoBehaviour
 
     [SerializeField] private Button _checkProfile;
     [SerializeField] private Button _buttonRemoveVote;
+    [SerializeField] private GameObject _votedDone;
     public static event PlayerPanelCloseRequested OnPlayerPanelCloseRequested;
+
 
     [Header("Countdown")]
     [SerializeField] private TextMeshProUGUI _countDownText;
@@ -52,12 +54,19 @@ public class ChatVoteHandler : AltMonoBehaviour
 
 
     [SerializeField] private Button _changeOptionVote; //Place holder for moving the other voting system
+    [SerializeField] private string _playerID;
 
 
     void Start()
     {
 
-        _voteRegime.SetActive(true);
+        StartCoroutine(GetPlayerData(player =>
+        {
+            _playerID = player.Id;
+        }));
+
+
+            _voteRegime.SetActive(true);
         _voteRemove.SetActive(true);
 
 
@@ -90,6 +99,10 @@ public class ChatVoteHandler : AltMonoBehaviour
             _countDownText.text = "Time is out!";
             enabled = false;
             _timesout = true;
+
+            _voteRegime.SetActive(false);
+            _voteRemove.SetActive(false);
+            _votedDone.SetActive(false);
             _voteEndCover.SetActive(true);
             return;
         }
@@ -179,15 +192,13 @@ public class ChatVoteHandler : AltMonoBehaviour
 
         foreach (var i in _votedUsers)
         {
-            StartCoroutine(GetPlayerData(player =>
-            {
-            if (i == player.Id)
+
+            if (i == _playerID)
             {
                 Debug.LogWarning("FIND ME: Sorry but u have already voted");
                 return;
             }
 
-            }));
         }
 
         _selectedCandidate = null;
@@ -229,11 +240,13 @@ public class ChatVoteHandler : AltMonoBehaviour
         _votedUsers.Add(votersID);
 
 
-        _voteRegime.SetActive(true);
         _voteRemove.SetActive(false);
 
-        _selectedCandidate.ButtonColor.color = new Color32(29, 25, 25, 255);
+        //_selectedCandidate.ButtonColor.color = new Color32(29, 25, 25, 255);
         _selectedCandidate = null;
+
+
+        _votedDone.SetActive(true);
 
     }
 
