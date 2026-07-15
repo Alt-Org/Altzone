@@ -668,10 +668,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         room.IsOpen = false;
         room.IsVisible = false;
-        room.SetCustomProperties(new PhotonHashtable
-        {
-            { RaidPhotonRoom.RaidStateKey, (int)RaidPhotonRoom.RaidState.Started }
-        });
+        room.SetCustomProperty(
+            RaidPhotonRoom.RaidStateKey,
+            (int)RaidPhotonRoom.RaidState.Started);
     }
 
     private void StartLobbyCountdownUpdates()
