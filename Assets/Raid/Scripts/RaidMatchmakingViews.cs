@@ -57,11 +57,6 @@ public class RaidMatchmakingViews : MonoBehaviour
         }
 
         ResolveMatchmakingDotsFallback();
-
-        if (clanListItemTemplate != null)
-        {
-            clanListItemTemplate.gameObject.SetActive(false);
-        }
     }
 
     public void Hide()
@@ -138,11 +133,7 @@ public class RaidMatchmakingViews : MonoBehaviour
 
         for (int i = participantListRoot.childCount - 1; i >= 0; i--)
         {
-            Transform child = participantListRoot.GetChild(i);
-            if (child != clanListItemTemplate.transform)
-            {
-                Destroy(child.gameObject);
-            }
+            Destroy(participantListRoot.GetChild(i).gameObject);
         }
 
         int rowCount = clanRows?.Count ?? 0;
