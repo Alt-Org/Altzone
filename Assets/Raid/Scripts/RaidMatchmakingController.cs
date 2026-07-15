@@ -27,7 +27,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     [SerializeField] private int minInventoryRows = 6;
     [SerializeField] private int maxInventoryRowsExclusive = 12;
     [SerializeField] private float matchmakingDotToggleSeconds = 0.5f;
-    [SerializeField] private float matchmakingDotSpacing = 48f;
 
     private readonly Dictionary<string, RoomInfo> _knownRooms = new();
     private readonly HashSet<string> _rejectedRoomNames = new(StringComparer.Ordinal);
@@ -1022,15 +1021,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         return IsCurrentRoomRaid() ? GetRaidPlayersWithClans().Count : 1;
     }
 
-    private void ShowMatchmakingSearchVisuals(int currentPlayers)
-    {
-        _views?.ShowMatchmakingSearchState(
-            currentPlayers,
-            RaidPhotonRoom.RequiredPlayers,
-            _showFiveMatchmakingDots,
-            matchmakingDotSpacing);
-    }
-
     private void ShowMatchmaking(string title, string status, string detail)
     {
         _matchmakingSearchVisualsEnabled = false;
@@ -1041,7 +1031,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private void ShowMatchmakingSearchState(int currentPlayers)
     {
         _matchmakingSearchVisualsEnabled = true;
-        ShowMatchmakingSearchVisuals(currentPlayers);
+        _views?.ShowMatchmakingSearchState(currentPlayers, _showFiveMatchmakingDots);
         StartMatchmakingDots();
     }
 
@@ -1075,15 +1065,10 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             }
 
             _showFiveMatchmakingDots = !_showFiveMatchmakingDots;
-            SetMatchmakingDotText();
+            _views.UpdateMatchmakingDots(_showFiveMatchmakingDots);
         }
 
         _matchmakingDotsCoroutine = null;
-    }
-
-    private void SetMatchmakingDotText()
-    {
-        ShowMatchmakingSearchVisuals(GetCurrentRaidPlayerCount());
     }
 
     private void ShowLobby()

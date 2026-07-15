@@ -14,6 +14,7 @@ public class RaidMatchmakingViews : MonoBehaviour
     [SerializeField] private TextMeshProUGUI matchmakingStatusText;
     [SerializeField] private TextMeshProUGUI matchmakingDetailText;
     [SerializeField] private GameObject[] matchmakingDots;
+    [SerializeField] private float matchmakingDotSpacing = 48f;
     [SerializeField] private TextMeshProUGUI lobbyCountdownText;
     [SerializeField] private Transform participantListRoot;
     [SerializeField] private RaidLobbyClanListItem clanListItemTemplate;
@@ -79,10 +80,10 @@ public class RaidMatchmakingViews : MonoBehaviour
         SetText(matchmakingDetailText, detail);
         SetTextActive(matchmakingStatusText, !string.IsNullOrWhiteSpace(status));
         SetTextActive(matchmakingDetailText, !string.IsNullOrWhiteSpace(detail));
-        SetMatchmakingDotsActive(0, 0f);
+        SetMatchmakingDotsActive(0);
     }
 
-    public void ShowMatchmakingSearchState(int currentPlayers, int requiredPlayers, bool showFiveDots, float dotSpacing)
+    public void ShowMatchmakingSearchState(int currentPlayers, bool showFiveDots)
     {
         gameObject.SetActive(true);
         SetActive(matchmakingPanel, true);
@@ -98,11 +99,16 @@ public class RaidMatchmakingViews : MonoBehaviour
         SetTextActive(matchmakingStatusText, playersFound);
         if (playersFound)
         {
-            SetText(matchmakingStatusText, $"{currentPlayers} / {requiredPlayers}");
+            SetText(matchmakingStatusText, $"{currentPlayers} / {RaidPhotonRoom.RequiredPlayers}");
         }
 
         SetTextActive(matchmakingDetailText, false);
-        SetMatchmakingDotsActive(showFiveDots ? 5 : 4, dotSpacing);
+        UpdateMatchmakingDots(showFiveDots);
+    }
+
+    public void UpdateMatchmakingDots(bool showFiveDots)
+    {
+        SetMatchmakingDotsActive(showFiveDots ? 5 : 4);
     }
 
     public void ShowLobby()
@@ -188,7 +194,7 @@ public class RaidMatchmakingViews : MonoBehaviour
         }
     }
 
-    private void SetMatchmakingDotsActive(int visibleCount, float dotSpacing)
+    private void SetMatchmakingDotsActive(int visibleCount)
     {
         if (matchmakingDots == null)
         {
@@ -208,8 +214,8 @@ public class RaidMatchmakingViews : MonoBehaviour
 
             if (isVisible && dot.transform is RectTransform dotTransform)
             {
-                float startX = -dotSpacing * (visibleCount - 1) * 0.5f;
-                dotTransform.anchoredPosition = new Vector2(startX + dotSpacing * i, 0f);
+                float startX = -matchmakingDotSpacing * (visibleCount - 1) * 0.5f;
+                dotTransform.anchoredPosition = new Vector2(startX + matchmakingDotSpacing * i, 0f);
             }
         }
     }
