@@ -767,7 +767,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void ResetRaidStartCountdown()
     {
-        UnregisterRaidTimerStarted();
         _raidTimer?.ResetStartCountdown();
     }
 
