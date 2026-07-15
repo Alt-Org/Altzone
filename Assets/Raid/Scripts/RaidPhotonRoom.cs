@@ -34,9 +34,13 @@ public static class RaidPhotonRoom
     public const byte LootRequestEvent = 80;
     public const byte LootAcceptedEvent = 81;
 
-    public const int StateMatchmaking = 0;
-    public const int StateLobby = 1;
-    public const int StateStarted = 2;
+    public enum RaidState
+    {
+        Error = -1,
+        Matchmaking = 0,
+        Lobby = 1,
+        Started = 2
+    }
 
     public struct TrapData
     {

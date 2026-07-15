@@ -334,7 +334,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             { PhotonBattleRoom.GameTypeKey, (int)GameType.Raid },
             { RaidPhotonRoom.RaidMatchmakingKey, true },
             { RaidPhotonRoom.RaidClanCountsKey, string.Empty },
-            { RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking },
+            { RaidPhotonRoom.RaidStateKey, (int)RaidPhotonRoom.RaidState.Matchmaking },
             { RaidPhotonRoom.RaidSetupReadyKey, false }
         };
 
@@ -388,8 +388,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return false;
         }
 
-        int state = GetRoomInfoProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
-        if (state != RaidPhotonRoom.StateMatchmaking && state != RaidPhotonRoom.StateLobby)
+        RaidPhotonRoom.RaidState state = GetRoomInfoProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.RaidState.Error);
+        if (state != RaidPhotonRoom.RaidState.Matchmaking && state != RaidPhotonRoom.RaidState.Lobby)
         {
             return false;
         }
@@ -459,8 +459,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             yield break;
         }
 
-        int state = GetRoomProperty(PhotonRealtimeClient.CurrentRoom, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
-        if (state != RaidPhotonRoom.StateMatchmaking && state != RaidPhotonRoom.StateLobby)
+        RaidPhotonRoom.RaidState state = GetRoomProperty(PhotonRealtimeClient.CurrentRoom, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.RaidState.Error);
+        if (state != RaidPhotonRoom.RaidState.Matchmaking && state != RaidPhotonRoom.RaidState.Lobby)
         {
             _rejectedRoomNames.Add(PhotonRealtimeClient.CurrentRoom.Name);
             _waitingForRetryLeave = true;
@@ -497,8 +497,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         Room room = PhotonRealtimeClient.CurrentRoom;
-        int state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
-        if (state != RaidPhotonRoom.StateMatchmaking && state != RaidPhotonRoom.StateLobby)
+        RaidPhotonRoom.RaidState state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.RaidState.Error);
+        if (state != RaidPhotonRoom.RaidState.Matchmaking && state != RaidPhotonRoom.RaidState.Lobby)
         {
             return;
         }
@@ -514,11 +514,11 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             && validPlayers.Count <= RaidPhotonRoom.RoomCapacity
             && clanEntries.All(clan => clan.Count <= RaidPhotonRoom.MaxPlayersPerClan);
 
-        if (state == RaidPhotonRoom.StateMatchmaking && validClanFormation)
+        if (state == RaidPhotonRoom.RaidState.Matchmaking && validClanFormation)
         {
             StartLobbyCountdown(validPlayers, clanEntries);
         }
-        else if (state == RaidPhotonRoom.StateLobby
+        else if (state == RaidPhotonRoom.RaidState.Lobby
             && validClanFormation
             && validPlayers.Count == RaidPhotonRoom.RoomCapacity)
         {
@@ -535,16 +535,16 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         Room room = PhotonRealtimeClient.CurrentRoom;
-        int state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
+        RaidPhotonRoom.RaidState state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.RaidState.Error);
 
-        if (state == RaidPhotonRoom.StateMatchmaking)
+        if (state == RaidPhotonRoom.RaidState.Matchmaking)
         {
             StopLobbyCountdownUpdates();
             UpdateMatchmakingStatus();
             return;
         }
 
-        if (state == RaidPhotonRoom.StateLobby)
+        if (state == RaidPhotonRoom.RaidState.Lobby)
         {
             ConfigureRaidFromRoomIfReady();
             ShowLobby();
@@ -552,7 +552,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        if (state == RaidPhotonRoom.StateStarted)
+        if (state == RaidPhotonRoom.RaidState.Started)
         {
             StopLobbyCountdownUpdates();
             ConfigureRaidFromRoomIfReady();
@@ -583,7 +583,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         room.SetCustomProperties(new PhotonHashtable
         {
             { RaidPhotonRoom.RaidClanCountsKey, RaidPhotonRoom.EncodeClanCounts(clanEntries) },
-            { RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateLobby },
+            { RaidPhotonRoom.RaidStateKey, (int)RaidPhotonRoom.RaidState.Lobby },
             { RaidPhotonRoom.RaidSetupReadyKey, true },
             { RaidPhotonRoom.RaidStartTimeKey, startTimeMs.ToString() },
             { RaidPhotonRoom.RaidInventorySizeKey, inventorySize },
@@ -639,8 +639,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         Room room = PhotonRealtimeClient.CurrentRoom;
-        int state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
-        if (state != RaidPhotonRoom.StateLobby)
+        RaidPhotonRoom.RaidState state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.RaidState.Error);
+        if (state != RaidPhotonRoom.RaidState.Lobby)
         {
             _lobbyCountdownActive = false;
             return;
@@ -670,7 +670,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         room.IsVisible = false;
         room.SetCustomProperties(new PhotonHashtable
         {
-            { RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateStarted }
+            { RaidPhotonRoom.RaidStateKey, (int)RaidPhotonRoom.RaidState.Started }
         });
     }
 
@@ -1212,8 +1212,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
 
         Room room = PhotonRealtimeClient.CurrentRoom;
-        int state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.StateMatchmaking);
-        if (state != RaidPhotonRoom.StateMatchmaking)
+        RaidPhotonRoom.RaidState state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.RaidState.Error);
+        if (state != RaidPhotonRoom.RaidState.Matchmaking)
         {
             ShowMatchmaking("Debug Raid start unavailable", "Raid is already leaving matchmaking.", string.Empty);
             return;
@@ -1271,6 +1271,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         try
         {
+            if (typeof(T).IsEnum)
+            {
+                object underlyingValue = Convert.ChangeType(value, Enum.GetUnderlyingType(typeof(T)));
+                T enumValue = (T)Enum.ToObject(typeof(T), underlyingValue);
+                return Enum.IsDefined(typeof(T), enumValue) ? enumValue : defaultValue;
+            }
+
             return (T)Convert.ChangeType(value, typeof(T));
         }
         catch
@@ -1293,6 +1300,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         try
         {
+            if (typeof(T).IsEnum)
+            {
+                object underlyingValue = Convert.ChangeType(value, Enum.GetUnderlyingType(typeof(T)));
+                T enumValue = (T)Enum.ToObject(typeof(T), underlyingValue);
+                return Enum.IsDefined(typeof(T), enumValue) ? enumValue : defaultValue;
+            }
+
             return (T)Convert.ChangeType(value, typeof(T));
         }
         catch
