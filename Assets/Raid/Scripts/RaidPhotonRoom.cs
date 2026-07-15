@@ -68,6 +68,85 @@ public static class RaidPhotonRoom
         }
     }
 
+    public readonly struct LootAcceptedData
+    {
+        public int SlotIndex { get; }
+        public int ActorNumber { get; }
+        public float WeightMultiplier { get; }
+        public int CharacterId { get; }
+        public string AvatarPayload { get; }
+
+        public LootAcceptedData(int slotIndex, int actorNumber, float weightMultiplier, int characterId, string avatarPayload)
+        {
+            SlotIndex = slotIndex;
+            ActorNumber = actorNumber;
+            WeightMultiplier = weightMultiplier;
+            CharacterId = characterId;
+            AvatarPayload = avatarPayload ?? string.Empty;
+        }
+    }
+
+    public static byte[] EncodeLootRequest(int slotIndex)
+    {
+        byte[] bytes = Array.Empty<byte>();
+        Serializer.Serialize(slotIndex, ref bytes);
+        return bytes;
+    }
+
+    public static bool TryDecodeLootRequest(byte[] bytes, out int slotIndex)
+    {
+        slotIndex = default;
+        if (bytes == null || bytes.Length != sizeof(int))
+        {
+            return false;
+        }
+
+        int offset = 0;
+        slotIndex = Serializer.DeserializeInt(bytes, ref offset);
+        return true;
+    }
+
+    public static byte[] EncodeLootAccepted(LootAcceptedData data)
+    {
+        byte[] bytes = Array.Empty<byte>();
+        Serializer.Serialize(data.SlotIndex, ref bytes);
+        Serializer.Serialize(data.ActorNumber, ref bytes);
+        Serializer.Serialize(data.WeightMultiplier, ref bytes);
+        Serializer.Serialize(data.CharacterId, ref bytes);
+        Serializer.Serialize(data.AvatarPayload, ref bytes);
+        return bytes;
+    }
+
+    public static bool TryDecodeLootAccepted(byte[] bytes, out LootAcceptedData data)
+    {
+        data = default;
+        if (bytes == null || bytes.Length < sizeof(int) * 5)
+        {
+            return false;
+        }
+
+        try
+        {
+            int offset = 0;
+            int slotIndex = Serializer.DeserializeInt(bytes, ref offset);
+            int actorNumber = Serializer.DeserializeInt(bytes, ref offset);
+            float weightMultiplier = Serializer.DeserializeFloat(bytes, ref offset);
+            int characterId = Serializer.DeserializeInt(bytes, ref offset);
+            string avatarPayload = Serializer.DeserializeString(bytes, ref offset);
+            if (offset != bytes.Length)
+            {
+                return false;
+            }
+
+            data = new LootAcceptedData(slotIndex, actorNumber, weightMultiplier, characterId, avatarPayload);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+    }
+
     public static byte[] EncodeTraps(IEnumerable<TrapData> traps)
     {
         TrapData[] trapArray = traps?.ToArray() ?? Array.Empty<TrapData>();

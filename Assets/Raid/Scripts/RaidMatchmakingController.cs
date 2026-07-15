@@ -248,7 +248,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         onCompleted?.Invoke(CanUsePhotonMatchmaking());
     }
 
-    private bool CanUsePhotonMatchmaking()
+    private static bool CanUsePhotonMatchmaking()
     {
         return PhotonRealtimeClient.Client != null
             && PhotonRealtimeClient.Client.IsConnectedAndReady
@@ -291,7 +291,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
     }
 
-    private bool JoinRandomOrCreateRaidRoom()
+    private static bool JoinRandomOrCreateRaidRoom()
     {
         RoomOptions roomOptions = CreateRaidRoomOptions();
         EnterRoomArgs createArgs = new()
@@ -315,7 +315,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         return PhotonRealtimeClient.Client.OpJoinRandomOrCreateRoom(joinRandomArgs, createArgs);
     }
 
-    private bool CreateRaidRoom()
+    private static bool CreateRaidRoom()
     {
         EnterRoomArgs createArgs = new()
         {
@@ -327,7 +327,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         return PhotonRealtimeClient.Client.OpCreateRoom(createArgs);
     }
 
-    private RoomOptions CreateRaidRoomOptions()
+    private static RoomOptions CreateRaidRoomOptions()
     {
         PhotonHashtable customRoomProperties = new()
         {
@@ -793,7 +793,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         PhotonRealtimeClient.Client.OpRaiseEvent(
             RaidPhotonRoom.LootRequestEvent,
-            new object[] { slotIndex },
+            RaidPhotonRoom.EncodeLootRequest(slotIndex),
             new RaiseEventArgs { Receivers = ReceiverGroup.MasterClient },
             SendOptions.SendReliable);
     }
@@ -825,39 +825,35 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         float weightMultiplier = _inventoryPage.GetNetworkLootWeightMultiplier(slotIndex);
         int characterId = GetPlayerCharacterId(sender);
         string avatarPayload = GetPlayerAvatarPayload(sender);
-        object[] acceptedLootData = { slotIndex, senderActorNumber, weightMultiplier, characterId, avatarPayload };
+        RaidPhotonRoom.LootAcceptedData acceptedLootData = new(slotIndex, senderActorNumber, weightMultiplier, characterId, avatarPayload);
+        byte[] acceptedLootBytes = RaidPhotonRoom.EncodeLootAccepted(acceptedLootData);
         bool eventRaised = PhotonRealtimeClient.Client.OpRaiseEvent(
             RaidPhotonRoom.LootAcceptedEvent,
-            acceptedLootData,
+            acceptedLootBytes,
             new RaiseEventArgs { Receivers = ReceiverGroup.Others },
             SendOptions.SendReliable);
 
         if (eventRaised)
         {
-            ApplyLootAccepted(acceptedLootData);
+            ApplyLootAccepted(acceptedLootBytes);
         }
     }
 
-    private void ApplyLootAccepted(object[] data)
+    private void ApplyLootAccepted(byte[] bytes)
     {
-        if (data == null || data.Length < 3 || _inventoryPage == null)
+        if (_inventoryPage == null || !RaidPhotonRoom.TryDecodeLootAccepted(bytes, out RaidPhotonRoom.LootAcceptedData data))
         {
             return;
         }
 
-        int slotIndex = Convert.ToInt32(data[0]);
-        int actorNumber = Convert.ToInt32(data[1]);
-        float weightMultiplier = Convert.ToSingle(data[2]);
-        int characterId = data.Length >= 4 ? Convert.ToInt32(data[3]) : (int)CharacterID.None;
-        string avatarPayload = data.Length >= 5 ? data[4] as string ?? string.Empty : string.Empty;
-        AvatarData avatarData = RaidPhotonRoom.DecodeAvatarData(avatarPayload);
+        AvatarData avatarData = RaidPhotonRoom.DecodeAvatarData(data.AvatarPayload);
         bool triggeredByLocalPlayer = PhotonRealtimeClient.LocalPlayer != null
-            && PhotonRealtimeClient.LocalPlayer.ActorNumber == actorNumber;
-        Player roomPlayer = GetRoomPlayer(actorNumber);
-        string actorName = GetPlayerDisplayName(roomPlayer, actorNumber);
+            && PhotonRealtimeClient.LocalPlayer.ActorNumber == data.ActorNumber;
+        Player roomPlayer = GetRoomPlayer(data.ActorNumber);
+        string actorName = GetPlayerDisplayName(roomPlayer, data.ActorNumber);
 
-        _lootedSlots.Add(slotIndex);
-        _inventoryPage.HandleNetworkLootAccepted(slotIndex, actorNumber, weightMultiplier, triggeredByLocalPlayer, actorName, (CharacterID)characterId, avatarData);
+        _lootedSlots.Add(data.SlotIndex);
+        _inventoryPage.HandleNetworkLootAccepted(data.SlotIndex, data.ActorNumber, data.WeightMultiplier, triggeredByLocalPlayer, actorName, (CharacterID)data.CharacterId, avatarData);
     }
 
     private bool CanProcessSharedLoot(int slotIndex, bool ignoreLocalPlayerState = false)
@@ -875,7 +871,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             && _inventoryPage.CanRequestLoot(slotIndex);
     }
 
-    private bool IsParticipatingClan(string clanId)
+    private static bool IsParticipatingClan(string clanId)
     {
         if (string.IsNullOrWhiteSpace(clanId) || !IsCurrentRoomRaid())
         {
@@ -886,7 +882,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         return RaidPhotonRoom.DecodeClanCounts(clans).Any(clan => clan.ClanId == clanId);
     }
 
-    private Player GetRoomPlayer(int actorNumber)
+    private static Player GetRoomPlayer(int actorNumber)
     {
         if (!IsCurrentRoomRaid())
         {
@@ -907,7 +903,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         return actorNumber > 0 ? $"Player {actorNumber}" : "Player";
     }
 
-    private string GetClanDisplayName(Player player, int actorNumber)
+    private static string GetClanDisplayName(Player player, int actorNumber)
     {
         string clanName = GetPlayerClanName(player);
         return string.IsNullOrWhiteSpace(clanName)
@@ -915,7 +911,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             : clanName;
     }
 
-    private List<Player> GetRaidPlayersWithClans()
+    private static List<Player> GetRaidPlayersWithClans()
     {
         if (!IsCurrentRoomRaid())
         {
@@ -928,7 +924,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             .ToList();
     }
 
-    private RaidPhotonRoom.ClanEntry[] BuildClanEntries(List<Player> players)
+    private static RaidPhotonRoom.ClanEntry[] BuildClanEntries(List<Player> players)
     {
         return players
             .GroupBy(GetPlayerClanId)
@@ -940,7 +936,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             .ToArray();
     }
 
-    private int CountPlayersInClan(string clanId)
+    private static int CountPlayersInClan(string clanId)
     {
         if (string.IsNullOrWhiteSpace(clanId) || !IsCurrentRoomRaid())
         {
@@ -950,17 +946,17 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         return PhotonRealtimeClient.CurrentRoom.Players.Values.Count(player => GetPlayerClanId(player) == clanId);
     }
 
-    private string GetPlayerClanId(Player player)
+    private static string GetPlayerClanId(Player player)
     {
         return GetPlayerProperty(player, RaidPhotonRoom.PlayerClanIdKey, string.Empty);
     }
 
-    private string GetPlayerClanName(Player player)
+    private static string GetPlayerClanName(Player player)
     {
         return GetPlayerProperty(player, RaidPhotonRoom.PlayerClanNameKey, string.Empty);
     }
 
-    private int GetPlayerCharacterId(Player player)
+    private static int GetPlayerCharacterId(Player player)
     {
         return GetPlayerProperty(player, RaidPhotonRoom.PlayerCharacterIdKey, (int)CharacterID.None);
     }
@@ -1000,7 +996,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         return _localAvatarData;
     }
 
-    private int GetLocalCharacterId()
+    private static int GetLocalCharacterId()
     {
         int? currentAvatarId = ServerManager.Instance?.Player?.currentAvatarId;
         if (currentAvatarId.HasValue && Enum.IsDefined(typeof(CharacterID), currentAvatarId.Value))
@@ -1021,7 +1017,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         ShowMatchmakingSearchState(GetCurrentRaidPlayerCount());
     }
 
-    private int GetCurrentRaidPlayerCount()
+    private static int GetCurrentRaidPlayerCount()
     {
         return IsCurrentRoomRaid() ? GetRaidPlayersWithClans().Count : 1;
     }
@@ -1254,7 +1250,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
     }
 
-    private bool IsCurrentRoomRaid()
+    private static bool IsCurrentRoomRaid()
     {
         Room room = PhotonRealtimeClient.CurrentRoom;
         return room != null
@@ -1595,21 +1591,38 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
                 return;
             }
 
-            object[] data = photonEvent.CustomData as object[];
-            if (data == null || data.Length < 1)
+            byte[] bytes = GetEventBytes(photonEvent.CustomData);
+            if (!RaidPhotonRoom.TryDecodeLootRequest(bytes, out int slotIndex))
             {
                 return;
             }
 
-            HandleLootRequest(photonEvent.Sender, Convert.ToInt32(data[0]));
+            HandleLootRequest(photonEvent.Sender, slotIndex);
             return;
         }
 
         if (photonEvent.Code == RaidPhotonRoom.LootAcceptedEvent)
         {
-            ApplyLootAccepted(photonEvent.CustomData as object[]);
+            ApplyLootAccepted(GetEventBytes(photonEvent.CustomData));
             return;
         }
 
+    }
+
+    private static byte[] GetEventBytes(object customData)
+    {
+        if (customData is byte[] bytes)
+        {
+            return bytes;
+        }
+
+        if (customData is ByteArraySlice slice)
+        {
+            byte[] sliceBytes = new byte[slice.Count];
+            Buffer.BlockCopy(slice.Buffer, slice.Offset, sliceBytes, 0, slice.Count);
+            return sliceBytes;
+        }
+
+        return null;
     }
 }
