@@ -179,6 +179,7 @@ namespace Battle.QSimulation.Game
                     // Transition from GetReadyToPlay to Playing
                     if (gameSession->TimeUntilStartSec <= FP._0)
                     {
+                        BattlePlayerQSystem.OnGameStart(f);
                         BattleProjectileQSystem.Launch(f);
                         f.Events.BattleViewGameStart();
                         gameSession->State = BattleGameState.Playing;

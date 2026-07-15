@@ -39,7 +39,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Calls BattlePlayerManager::SpawnPlayer for players that are in the game.
+        /// Calls <see cref="BattlePlayerManager.SpawnPlayer">BattlePlayerManager.SpawnPlayer</see> for players that are in the game.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -206,6 +206,24 @@ namespace Battle.QSimulation.Player
             );
         ExitNoHit:
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.Player);
+        }
+
+        /// <summary>
+        /// Calls <see cref="BattlePlayerClassManager.OnGameStart">BattlePlayerClassManager.OnGameStart</see> for every player's selected character.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        public static void OnGameStart(Frame f)
+        {
+            foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
+            {
+                if (playerHandle.PlayState.IsNotInGame()) continue;
+
+                BattlePlayerEntityRef entityRef        = playerHandle.GetSelectedCharacterEntityRef(f);
+                BattlePlayerDataQComponent* playerData = entityRef.GetDataQComponent(f);
+
+                BattlePlayerClassManager.OnGameStart(f, playerHandle, playerData, entityRef);
+            }
         }
 
         /// <summary>
@@ -633,7 +651,7 @@ namespace Battle.QSimulation.Player
 
             if (!playerData->StunCooldown.IsRunning(f))
             {
-                playerData->MovementEnabled = true;
+                playerData->MovementEnabled = !playerData->DisableMovement;
                 playerData->RotationEnabled = !playerData->DisableRotation;
             }
 

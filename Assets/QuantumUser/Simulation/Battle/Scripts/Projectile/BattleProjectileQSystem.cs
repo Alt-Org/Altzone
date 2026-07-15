@@ -121,6 +121,24 @@ namespace Battle.QSimulation.Projectile
             f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
         }
 
+        /// <summary>
+        /// Gets the projectile's EntityRef.
+        /// </summary>
+        ///
+        /// Public version of @cref{GetProjectileEntityRef(Frame\, BattleProjectileSystemDataQSingleton*\, bool)}.<br/>
+        /// Used outside of @cref{BattleProjectileQSystem}.<br/>
+        /// Also used internally when there's no need for a seperate reference to a @cref{Quantum,BattleProjectileSystemDataQSingleton}.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>The EntityRef of the projectile.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static EntityRef GetProjectileEntityRef(Frame f)
+        {
+            BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
+            return GetProjectileEntityRef(f, projectileSystemData);
+        }
+
         #endregion Public - Helper Methods
 
         #region Public - Control Methods
@@ -178,8 +196,8 @@ namespace Battle.QSimulation.Projectile
             projectile->EmotionCurrent    = 0;
             projectile->EmotionBase       = 0;
 
-            BattleEntityID projectileEntityGroupID = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
-            GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityGroupID;
+            BattleEntityID projectileEntityID = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
+            GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityID;
 
             SetHeld(projectile, true);
         }
@@ -195,8 +213,7 @@ namespace Battle.QSimulation.Projectile
             BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
 
             // get references
-            BattleEntityID              projectileGroupID = projectileSystemData->ProjectileEntityID;
-            EntityRef                   projectileRef     = BattleEntityManager.Get(f, projectileGroupID, updateViewPlayState: true);
+            EntityRef                   projectileRef     = GetProjectileEntityRef(f, projectileSystemData, updateViewPlayState: true);
             BattleProjectileQComponent* projectile        = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileRef);
 
             // retrieve the projectiles spec
@@ -325,7 +342,7 @@ namespace Battle.QSimulation.Projectile
             {
                 // move the projectile
                 FPVector2 newPosition = transform->Position + projectile->Direction * (projectile->Speed * f.DeltaTime);
-                BattleEntityManager.MoveCompound(f, GetProjectileEntity(f), newPosition, FP._0);
+                BattleEntityManager.MoveCompound(f, GetProjectileEntityRef(f), newPosition, FP._0);
             }
 
             // reset CollisionFlags for next frame
@@ -348,8 +365,8 @@ namespace Battle.QSimulation.Projectile
 
             // unpack projectileCollisionData
             BattleProjectileQComponent* projectile       = projectileCollisionData->Projectile;
-            EntityRef                   projectileEntity = projectileCollisionData->ProjectileEntity;
-            EntityRef                   otherEntity      = projectileCollisionData->OtherEntity;
+            EntityRef                   projectileEntity = projectileCollisionData->ProjectileEntityRef;
+            EntityRef                   otherEntity      = projectileCollisionData->OtherEntityRef;
 
             // set default values
             BattlePlayerCollisionType collisionType      = BattlePlayerCollisionType.Reflect;
@@ -446,11 +463,13 @@ namespace Battle.QSimulation.Projectile
         /// <param name="winningTeam">The BattleTeamNumber of the team that won.</param>
         public unsafe void BattleOnGameOver(Frame f, BattleTeamNumber winningTeam)
         {
-            EntityRef projectileEntityRef = GetProjectileEntity(f);
-            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
+            BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
+
+            EntityRef                   projectileEntityRef = GetProjectileEntityRef(f, projectileSystemData);
+            BattleProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
 
             SetHeld(projectile, true);
-            BattleEntityManager.Return(f, GetProjectileSystemData(f)->ProjectileEntityID);
+            BattleEntityManager.Return(f, projectileSystemData->ProjectileEntityID);
         }
 
         #endregion Public - Gameflow Methods
@@ -463,17 +482,38 @@ namespace Battle.QSimulation.Projectile
         #region Private Static Methods
 
         /// <summary>
-        /// Private helper method to get projectile entity
+        /// Private helper method for getting the BattleProjectileSystemDataQSingleton from the %Quantum %Frame.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         ///
-        /// <returns>Returns projectile entity.</returns>
-        private static EntityRef GetProjectileEntity(Frame f)
+        /// <returns>Pointer to the BattleProjectileSystemData singleton.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static BattleProjectileSystemDataQSingleton* GetProjectileSystemData(Frame f)
         {
-            ComponentFilter<BattleProjectileQComponent> filter = f.Filter<BattleProjectileQComponent>();
-            filter.Next(out EntityRef entity, out _);
-            return entity;
+            if (!f.Unsafe.TryGetPointerSingleton(out BattleProjectileSystemDataQSingleton* projectileSystemData))
+            {
+                s_debugLogger.Error(f, "ProjectileSystemData singleton not found!");
+            }
+
+            return projectileSystemData;
+        }
+
+        /// <summary>
+        /// Gets the projectile's EntityRef.
+        /// </summary>
+        ///
+        /// Internal version of @cref{GetProjectileEntityRef(Frame)}.<br/>
+        /// Used when there's already a reference to <paramref name="projectileSystemData"/>.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectileSystemData">Pointer to the projectile system data singleton.</param>
+        ///
+        /// <returns>The EntityRef of the projectile.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static EntityRef GetProjectileEntityRef(Frame f, BattleProjectileSystemDataQSingleton* projectileSystemData, bool updateViewPlayState = false)
+        {
+            return BattleEntityManager.Get(f, projectileSystemData->ProjectileEntityID, updateViewPlayState);
         }
 
         /// <summary>
@@ -528,24 +568,6 @@ namespace Battle.QSimulation.Projectile
 
             normal = shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f);
             return true;
-        }
-
-        /// <summary>
-        /// Private helper method for getting the BattleProjectileSystemDataQSingleton from the %Quantum %Frame.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        ///
-        /// <returns>Pointer to the BattleProjectileSystemData singleton.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static BattleProjectileSystemDataQSingleton* GetProjectileSystemData(Frame f)
-        {
-            if (!f.Unsafe.TryGetPointerSingleton(out BattleProjectileSystemDataQSingleton* projectileSystemData))
-            {
-                s_debugLogger.Error(f, "ProjectileSystemData singleton not found!");
-            }
-
-            return projectileSystemData;
         }
 
         #endregion Private Static Methods
