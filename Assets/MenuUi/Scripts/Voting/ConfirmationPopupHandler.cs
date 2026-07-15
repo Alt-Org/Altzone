@@ -207,14 +207,22 @@ public class ConfirmationPopupHandler : MonoBehaviour
         OpenPlayTransactionPopup(() => VotingActions.AvatarShopItemBought?.Invoke(boughtItemName));
     }
 
-    private void BuyFurniturePiece() //placeholderi ostomekanismille
+    private void BuyFurniturePiece() => StartCoroutine(BuyFurniturePieceCoroutine());
+
+    private IEnumerator BuyFurniturePieceCoroutine()
     {
         if (furniture == null)
-            return;
+            yield break;
+
+        string boughtItemName = furniture.Name;
+        bool? result = null;
+        PollManager.CreateShopFurniturePoll(FurniturePollType.Buying, furniture, c => result = c);
+        yield return new WaitUntil(() => result.HasValue);
+
+        if (result == true)
+            VotingActions.ShopItemBought?.Invoke(boughtItemName);
 
         ClosePopup();
-        string boughtItemName = furniture.Name;
-        VotingActions.ShopItemBought?.Invoke(boughtItemName);
     }
 
     public IEnumerator CreateClanStallPollPopupCoroutine()
