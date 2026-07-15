@@ -37,7 +37,6 @@ public class ConfirmationPopupHandler : MonoBehaviour
     [SerializeField] private Color _furnitureShopPopupColor = new Color(0.639f, 0.839f, 0.941f, 0.93f);
 
     private GameFurniture furniture;
-    private AvatarPartInfo avatarpart;
     private Sprite _frontSprite;
     private Sprite _sideSprite;
     private string _avatarItemName;
@@ -119,7 +118,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         }//else
     }
 
-    private void SetPopupActiveAvatarPart(AvatarPartInfo part, Sprite icon, string itemName)
+    private void SetPopupActiveAvatarPart(AvatarPartInfo part)
     {
         ApplyPopupStyle(_personificationShopPopupColor);
 
@@ -127,9 +126,9 @@ public class ConfirmationPopupHandler : MonoBehaviour
         if (_leftArrowButton != null) _leftArrowButton.gameObject.SetActive(false);
         if (_rightArrowButton != null) _rightArrowButton.gameObject.SetActive(false);
 
+        string itemName = AvatarPartDisplay.GetName(part);
         _itemNameText.text = itemName;
-        _itemIcon.sprite = icon;
-        avatarpart = part;
+        _itemIcon.sprite = AvatarPartDisplay.GetImage(part);
         _avatarItemName = itemName;
         _itemPriceText.text = FormatEuroPrice(AvatarPartPrice);
         SetCoinImageVisible(false);

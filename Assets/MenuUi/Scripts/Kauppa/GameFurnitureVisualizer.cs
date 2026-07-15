@@ -64,15 +64,15 @@ public class GameFurnitureVisualizer : MonoBehaviour
     {
         _gameFurniture = null;
         _avatarPart = avatarPart;
-        _avatarItemName = GetAvatarDisplayName(_avatarPart);
+        _avatarItemName = AvatarPartDisplay.GetName(_avatarPart);
         if (_themeText != null)
             _themeText.text = string.Empty;
         _productText.text = _avatarItemName;
         _priceText.text = FormatEuroPrice(AvatarPartPrice); //_avatarPart.Value.ToString();
         SetState(ShopItemState.Available);
         SetCoinImageVisible(false);
-        _contentImage.sprite = _avatarPart.IconImage ? _avatarPart.IconImage : _avatarPart.AvatarImage;
-        gameObject.GetComponent<GameFurniturePasser>().SetAvatarPart(_avatarPart, _contentImage.sprite, _avatarItemName);
+        _contentImage.sprite = AvatarPartDisplay.GetImage(_avatarPart);
+        gameObject.GetComponent<GameFurniturePasser>().SetAvatarPart(_avatarPart);
         _button.onClick.AddListener(() => confirmationPopUp.SetActive(true));
         _button.onClick.AddListener(() => gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1"));
     }
@@ -140,41 +140,6 @@ public class GameFurnitureVisualizer : MonoBehaviour
         return $"{value:0.##}{EuroSuffix}";
     }
 
-    private static string GetAvatarDisplayName(AvatarPartInfo avatarPart)
-    {
-        if (avatarPart == null)
-            return string.Empty;
-
-        if (!string.IsNullOrWhiteSpace(avatarPart.Name))
-            return CleanAvatarDisplayName(avatarPart.Name);
-
-        if (!string.IsNullOrWhiteSpace(avatarPart.VisibleName))
-            return CleanAvatarDisplayName(avatarPart.VisibleName);
-
-        return CleanAvatarDisplayName(avatarPart.name);
-    }
-
-    private static string CleanAvatarDisplayName(string name)
-    {
-        const string Prefix = "Avatar";
-        const string Suffix = "Default";
-
-        if (string.IsNullOrWhiteSpace(name))
-            return string.Empty;
-
-        string displayName = name.Trim();
-
-        if (displayName.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase))
-            displayName = displayName.Substring(Prefix.Length);
-
-        displayName = displayName.Trim(' ', '_', '-');
-
-        if (displayName.EndsWith(Suffix, StringComparison.OrdinalIgnoreCase))
-            displayName = displayName.Substring(0, displayName.Length - Suffix.Length);
-
-        return displayName.Trim(' ', '_', '-');
-    }
-
     private void SetFurnitureDisplayName(GameFurniture gameFurniture)
     {
         (string itemName, string themeName) = GetFurnitureDisplayNameParts(gameFurniture);
@@ -228,5 +193,40 @@ public class GameFurnitureVisualizer : MonoBehaviour
             .Replace("&", "&amp;")
             .Replace("<", "&lt;")
             .Replace(">", "&gt;");
+    }
+}
+
+internal static class AvatarPartDisplay
+{
+    public static Sprite GetImage(AvatarPartInfo avatarPart)
+    {
+        return avatarPart.IconImage ? avatarPart.IconImage : avatarPart.AvatarImage;
+    }
+
+    public static string GetName(AvatarPartInfo avatarPart)
+    {
+        if (avatarPart == null)
+            return string.Empty;
+
+        string displayName = !string.IsNullOrWhiteSpace(avatarPart.Name)
+            ? avatarPart.Name
+            : !string.IsNullOrWhiteSpace(avatarPart.VisibleName)
+                ? avatarPart.VisibleName
+                : avatarPart.name;
+
+        const string Prefix = "Avatar";
+        const string Suffix = "Default";
+
+        displayName = displayName.Trim();
+
+        if (displayName.StartsWith(Prefix, StringComparison.OrdinalIgnoreCase))
+            displayName = displayName.Substring(Prefix.Length);
+
+        displayName = displayName.Trim(' ', '_', '-');
+
+        if (displayName.EndsWith(Suffix, StringComparison.OrdinalIgnoreCase))
+            displayName = displayName.Substring(0, displayName.Length - Suffix.Length);
+
+        return displayName.Trim(' ', '_', '-');
     }
 }
