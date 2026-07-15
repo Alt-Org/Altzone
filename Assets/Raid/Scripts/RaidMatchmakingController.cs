@@ -646,19 +646,19 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        string startTimeValue = GetRoomProperty(room, RaidPhotonRoom.RaidStartTimeKey, string.Empty);
-        if (!long.TryParse(startTimeValue, out long startTimeMs))
+        long startTimeMs = GetRoomProperty(room, RaidPhotonRoom.RaidStartTimeKey, -1L);
+        if (startTimeMs < 0)
         {
             return;
         }
 
         long nowMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        float secondsRemaining = Mathf.Max(0f, (startTimeMs - nowMs) / 1000f);
-        TimeSpan remaining = TimeSpan.FromSeconds(Mathf.CeilToInt(secondsRemaining));
+        long millisecondsRemaining = Math.Max(0L, startTimeMs - nowMs);
+        TimeSpan remaining = TimeSpan.FromMilliseconds(millisecondsRemaining);
         string timeText = $"{(int)remaining.TotalMinutes}:{remaining.Seconds:00}";
         _views?.SetLobbyCountdown(timeText);
 
-        if (secondsRemaining <= 0f && PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+        if (millisecondsRemaining == 0L && PhotonRealtimeClient.LocalPlayer.IsMasterClient)
         {
             StartRaid(room);
         }
