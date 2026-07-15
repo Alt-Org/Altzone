@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.AvatarPartsInfo;
 using Altzone.Scripts.Language;
+using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Voting;
 using MenuUi.Scripts.Storage;
@@ -30,8 +31,6 @@ public class ConfirmationPopupHandler : MonoBehaviour
     [SerializeField] private Button _leftArrowButton;
     [SerializeField] private Button _rightArrowButton;
     [SerializeField] private GameObject _playTransactionPopUp;
-
-    [SerializeField] private bool _furnitureShopPermission; //True=shop, false=voteväliaikainen ennen clanroles shop permissionin tarkastus implementaatiota
 
     [SerializeField] private Color _personificationShopPopupColor = new Color(0.188f, 0.804f, 0.325f, 0.93f);
     [SerializeField] private Color _furnitureShopPopupColor = new Color(0.639f, 0.839f, 0.941f, 0.93f);
@@ -80,7 +79,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         _declineButton.onClick.RemoveAllListeners();
         _declineButton.onClick.AddListener(() => ClosePopup());
 
-        if (_furnitureShopPermission)
+        if (HasFurnitureShopPermission())
         {
             _acceptButton.onClick.RemoveAllListeners();
             _acceptButton.onClick.AddListener(() => BuyFurniturePiece());
@@ -116,6 +115,23 @@ public class ConfirmationPopupHandler : MonoBehaviour
                     break;
             }
         }//else
+    }
+
+    private static bool HasFurnitureShopPermission()
+    {
+        ServerManager serverManager = ServerManager.Instance;
+        if (serverManager == null || serverManager.Player == null || serverManager.Clan == null)
+            return false;
+
+        if (serverManager.Player.clan_id != serverManager.Clan._id)
+            return false;
+
+        string roleId = serverManager.Player.clanRole_id;
+        if (string.IsNullOrEmpty(roleId))
+            return false;
+
+        ClanRoles role = serverManager.Clan.roles?.Find(candidate => candidate._id == roleId);
+        return role?.rights?.shop == true;
     }
 
     private void SetPopupActiveAvatarPart(AvatarPartInfo part)
