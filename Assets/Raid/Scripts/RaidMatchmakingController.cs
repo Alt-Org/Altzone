@@ -142,9 +142,10 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             yield return new WaitUntil(() => !PhotonRealtimeClient.InRoom);
         }
 
-        yield return WaitForPhotonReady();
+        bool photonReady = false;
+        yield return WaitForPhotonReady(isReady => photonReady = isReady);
 
-        if (!CanUsePhotonMatchmaking())
+        if (!photonReady)
         {
             ShowMatchmaking("Raid matchmaking unavailable", "Photon is not ready for room matchmaking.", PhotonRealtimeClient.NetworkClientState.ToString());
             yield break;
@@ -229,7 +230,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         }
     }
 
-    private IEnumerator WaitForPhotonReady()
+    private IEnumerator WaitForPhotonReady(Action<bool> onCompleted)
     {
         if (PhotonRealtimeClient.Client != null && !PhotonRealtimeClient.IsConnected && PhotonRealtimeClient.CanConnect)
         {
@@ -243,6 +244,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             ShowMatchmaking("Connecting to Raid matchmaking", "Waiting for Photon master server...", PhotonRealtimeClient.NetworkClientState.ToString());
             yield return new WaitForSeconds(0.25f);
         }
+
+        onCompleted?.Invoke(CanUsePhotonMatchmaking());
     }
 
     private bool CanUsePhotonMatchmaking()
@@ -391,7 +394,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return false;
         }
 
-        RaidPhotonRoom.ClanEntry[] clans = RaidPhotonRoom.DecodeClanCounts(GetRoomInfoProperty(room, RaidPhotonRoom.RaidClanCountsKey, string.Empty));
+        RaidPhotonRoom.ClanEntry[] clans = RaidPhotonRoom.GetClanCounts(room);
         RaidPhotonRoom.ClanEntry existing = clans.FirstOrDefault(clan => clan.ClanId == _localClanId);
         return string.IsNullOrWhiteSpace(existing.ClanId) || existing.Count < RaidPhotonRoom.MaxPlayersPerClan;
     }
@@ -1229,8 +1232,12 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         yield return new WaitForSeconds(retryDelaySeconds);
         if (!_surrendering && !PhotonRealtimeClient.InRoom)
         {
-            yield return WaitForPhotonReady();
-            JoinOrCreateRaidRoom();
+            bool photonReady = false;
+            yield return WaitForPhotonReady(isReady => photonReady = isReady);
+            if (photonReady)
+            {
+                JoinOrCreateRaidRoom();
+            }
         }
     }
 

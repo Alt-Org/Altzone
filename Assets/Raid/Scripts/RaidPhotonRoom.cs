@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Altzone.PhotonSerializer;
 using Altzone.Scripts.Model.Poco.Player;
+using Photon.Realtime;
 
 public static class RaidPhotonRoom
 {
@@ -163,6 +164,18 @@ public static class RaidPhotonRoom
         }
 
         return clans.ToArray();
+    }
+
+    public static ClanEntry[] GetClanCounts(RoomInfo room)
+    {
+        if (room?.CustomProperties == null
+            || !room.CustomProperties.TryGetValue(RaidClanCountsKey, out object value)
+            || value is not string encodedClanCounts)
+        {
+            return Array.Empty<ClanEntry>();
+        }
+
+        return DecodeClanCounts(encodedClanCounts);
     }
 
     public static string EncodeAvatarData(AvatarData avatarData)
