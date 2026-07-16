@@ -1090,18 +1090,11 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         List<RaidLobbyClanRowData> clanRows = players
             .Where(player => !string.IsNullOrWhiteSpace(GetPlayerClanId(player)))
             .GroupBy(GetPlayerClanId)
-            .Select(group => new
-            {
-                ClanName = group.Select(GetPlayerClanName).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name)) ?? group.Key,
-                PlayerCount = group.Count(),
-                FirstActorNumber = group.Min(player => player.ActorNumber),
-                Players = group.OrderBy(player => player.ActorNumber).ToList()
-            })
-            .OrderBy(row => row.FirstActorNumber)
-            .Select(row => new RaidLobbyClanRowData(
-                row.ClanName,
-                row.PlayerCount,
-                row.Players.Select(CreatePlayerIconData).ToList()))
+            .OrderBy(group => group.Min(player => player.ActorNumber))
+            .Select(group => new RaidLobbyClanRowData(
+                group.Select(GetPlayerClanName).FirstOrDefault(name => !string.IsNullOrWhiteSpace(name)) ?? group.Key,
+                group.Count(),
+                group.OrderBy(player => player.ActorNumber).Select(CreatePlayerIconData).ToList()))
             .ToList();
 
         _views?.RefreshParticipantList(clanRows, RaidPhotonRoom.MaxPlayersPerClan);
