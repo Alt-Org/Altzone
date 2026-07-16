@@ -18,19 +18,19 @@ public class RaidMatchmakingViews : MonoBehaviour
     [SerializeField] private TextMeshProUGUI lobbyCountdownText;
     [SerializeField] private Transform participantListRoot;
     [SerializeField] private RaidLobbyClanListItem clanListItemTemplate;
-    [SerializeField] private Button surrenderButton;
+    [SerializeField] private Button exitRaidButton;
     [SerializeField] private Button debugStartButton;
 
-    private Action _surrenderAction;
+    private Action _exitRaidAction;
     private Action _debugStartAction;
 
     public bool IsMatchmakingPanelVisible => matchmakingPanel != null && matchmakingPanel.activeInHierarchy;
 
     private void OnDestroy()
     {
-        if (surrenderButton != null)
+        if (exitRaidButton != null)
         {
-            surrenderButton.onClick.RemoveListener(OnSurrenderPressed);
+            exitRaidButton.onClick.RemoveListener(OnExitRaidPressed);
         }
 
         if (debugStartButton != null)
@@ -39,15 +39,15 @@ public class RaidMatchmakingViews : MonoBehaviour
         }
     }
 
-    public void Initialize(Action surrenderAction, Action debugStartAction)
+    public void Initialize(Action exitRaidAction, Action debugStartAction)
     {
-        _surrenderAction = surrenderAction;
+        _exitRaidAction = exitRaidAction;
         _debugStartAction = debugStartAction;
 
-        if (surrenderButton != null)
+        if (exitRaidButton != null)
         {
-            surrenderButton.onClick.RemoveListener(OnSurrenderPressed);
-            surrenderButton.onClick.AddListener(OnSurrenderPressed);
+            exitRaidButton.onClick.RemoveListener(OnExitRaidPressed);
+            exitRaidButton.onClick.AddListener(OnExitRaidPressed);
         }
 
         if (debugStartButton != null)
@@ -155,9 +155,9 @@ public class RaidMatchmakingViews : MonoBehaviour
         }
     }
 
-    private void OnSurrenderPressed()
+    private void OnExitRaidPressed()
     {
-        _surrenderAction?.Invoke();
+        _exitRaidAction?.Invoke();
     }
 
     private void OnDebugStartPressed()

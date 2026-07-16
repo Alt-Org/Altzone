@@ -46,7 +46,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private bool _joiningOrCreatingRoom;
     private bool _waitingForRetryLeave;
-    private bool _surrendering;
+    private bool _exitingRaid;
     private bool _inventoryInitialized;
     private bool _gameplayReleased;
     private bool _sharedRaidActive;
@@ -164,7 +164,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         StopMatchmakingDots();
         StopLobbyCountdownUpdates();
-        _surrendering = true;
+        _exitingRaid = true;
         SetGameplayReleased(true);
         _sharedRaidActive = false;
         _inventoryInitialized = false;
@@ -760,7 +760,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void OnRaidTimerStarted()
     {
-        if (IsCurrentRoomRaid() && !_surrendering && (_exitRaid == null || !_exitRaid.raidEnded))
+        if (IsCurrentRoomRaid() && !_exitingRaid && (_exitRaid == null || !_exitRaid.raidEnded))
         {
             _sharedRaidActive = true;
         }
@@ -1123,12 +1123,12 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        _views.Initialize(OnSurrenderPressed, OnDebugStartPressed);
+        _views.Initialize(OnExitRaidPressed, OnDebugStartPressed);
     }
 
-    private void OnSurrenderPressed()
+    private void OnExitRaidPressed()
     {
-        _surrendering = true;
+        _exitingRaid = true;
         if (PhotonRealtimeClient.InRoom)
         {
             PhotonRealtimeClient.LeaveRoom(false);
@@ -1248,7 +1248,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private IEnumerator RetryMatchmakingAfterDelay()
     {
         yield return new WaitForSeconds(retryDelaySeconds);
-        if (!_surrendering && !PhotonRealtimeClient.InRoom)
+        if (!_exitingRaid && !PhotonRealtimeClient.InRoom)
         {
             bool photonReady = false;
             yield return WaitForPhotonReady(isReady => photonReady = isReady);
@@ -1390,7 +1390,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     public void OnConnectedToMaster()
     {
-        if (!_joiningOrCreatingRoom && !_surrendering && !PhotonRealtimeClient.InRoom && !string.IsNullOrWhiteSpace(_localClanId))
+        if (!_joiningOrCreatingRoom && !_exitingRaid && !PhotonRealtimeClient.InRoom && !string.IsNullOrWhiteSpace(_localClanId))
         {
             JoinOrCreateRaidRoom();
         }
@@ -1493,7 +1493,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         StopLobbyCountdownUpdates();
         _lootedSlots.Clear();
 
-        if (_surrendering)
+        if (_exitingRaid)
         {
             return;
         }

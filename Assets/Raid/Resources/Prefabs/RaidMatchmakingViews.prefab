@@ -67,7 +67,7 @@ MonoBehaviour:
   lobbyCountdownText: {fileID: 11003}
   participantListRoot: {fileID: 10001}
   clanListItemTemplate: {fileID: 12002, guid: 6b9f3ad3d2094ccab18472a582343f55, type: 3}
-  surrenderButton: {fileID: 7004}
+  exitRaidButton: {fileID: 7004}
   debugStartButton: {fileID: 13004}
 --- !u!1 &2000
 GameObject:
@@ -723,7 +723,7 @@ GameObject:
   - component: {fileID: 7003}
   - component: {fileID: 7004}
   m_Layer: 5
-  m_Name: Surrender Button
+  m_Name: Exit Raid Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -844,7 +844,7 @@ GameObject:
   - component: {fileID: 8003}
   - component: {fileID: 8004}
   m_Layer: 5
-  m_Name: SurrenderButtonLabel
+  m_Name: ExitRaidButtonLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
