@@ -1151,7 +1151,10 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         if (!IsCurrentRoomRaid())
         {
-            ShowMatchmakingMessage("Debug Raid start unavailable", "Join a Raid matchmaking room first.", string.Empty);
+            ShowMatchmakingMessage(
+                GetLocalizedText("Raidin debug-aloitus ei ole k\u00E4ytett\u00E4viss\u00E4", "Debug Raid start unavailable"),
+                GetLocalizedText("Liity ensin Raid-pelinmuodostushuoneeseen.", "Join a Raid matchmaking room first."),
+                string.Empty);
             _debugStartCoroutine = null;
             yield break;
         }
@@ -1168,7 +1171,10 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             && string.IsNullOrWhiteSpace(GetPlayerClanId(PhotonRealtimeClient.LocalPlayer))
             && Time.time < timeout)
         {
-            ShowMatchmakingMessage("Debug starting Raid", "Waiting for player clan data...", string.Empty);
+            ShowMatchmakingMessage(
+                GetLocalizedText("K\u00E4ynnistet\u00E4\u00E4n Raid debug-tilassa", "Debug starting Raid"),
+                GetLocalizedText("Odotetaan pelaajan klaanitietoja...", "Waiting for player clan data..."),
+                string.Empty);
             yield return new WaitForSeconds(0.1f);
         }
 
@@ -1180,13 +1186,19 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         if (!IsCurrentRoomRaid())
         {
-            ShowMatchmakingMessage("Debug Raid start unavailable", "Join a Raid matchmaking room first.", string.Empty);
+            ShowMatchmakingMessage(
+                GetLocalizedText("Raidin debug-aloitus ei ole k\u00E4ytett\u00E4viss\u00E4", "Debug Raid start unavailable"),
+                GetLocalizedText("Liity ensin Raid-pelinmuodostushuoneeseen.", "Join a Raid matchmaking room first."),
+                string.Empty);
             return;
         }
 
         if (PhotonRealtimeClient.LocalPlayer == null || !PhotonRealtimeClient.LocalPlayer.IsMasterClient)
         {
-            ShowMatchmakingMessage("Debug Raid start unavailable", "Only the room leader can force-start a Raid.", string.Empty);
+            ShowMatchmakingMessage(
+                GetLocalizedText("Raidin debug-aloitus ei ole k\u00E4ytett\u00E4viss\u00E4", "Debug Raid start unavailable"),
+                GetLocalizedText("Vain huoneen johtaja voi pakottaa Raidin alkamaan.", "Only the room leader can force-start a Raid."),
+                string.Empty);
             return;
         }
 
@@ -1194,7 +1206,10 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         RaidPhotonRoom.RaidState state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.RaidState.Error);
         if (state != RaidPhotonRoom.RaidState.Matchmaking)
         {
-            ShowMatchmakingMessage("Debug Raid start unavailable", "Raid is already leaving matchmaking.", string.Empty);
+            ShowMatchmakingMessage(
+                GetLocalizedText("Raidin debug-aloitus ei ole k\u00E4ytett\u00E4viss\u00E4", "Debug Raid start unavailable"),
+                GetLocalizedText("Raid on jo poistumassa pelinmuodostuksesta.", "Raid is already leaving matchmaking."),
+                string.Empty);
             return;
         }
 
@@ -1206,12 +1221,28 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         if (!canDebugStart)
         {
-            ShowMatchmakingMessage("Debug Raid start unavailable", "No valid Raid players are ready yet.", "Wait for player clan data to sync, then try again.");
+            ShowMatchmakingMessage(
+                GetLocalizedText("Raidin debug-aloitus ei ole k\u00E4ytett\u00E4viss\u00E4", "Debug Raid start unavailable"),
+                GetLocalizedText("Yht\u00E4\u00E4n kelvollista Raid-pelaajaa ei ole viel\u00E4 valmiina.", "No valid Raid players are ready yet."),
+                GetLocalizedText("Odota pelaajien klaanitietojen synkronoitumista ja yrit\u00E4 sitten uudelleen.", "Wait for player clan data to sync, then try again."));
             return;
         }
 
-        ShowMatchmakingMessage("Debug starting Raid", "Starting without required player count.", $"{validPlayers.Count}/{RaidPhotonRoom.RequiredPlayers} players");
+        ShowMatchmakingMessage(
+            GetLocalizedText("K\u00E4ynnistet\u00E4\u00E4n Raid debug-tilassa", "Debug starting Raid"),
+            GetLocalizedText("Aloitetaan ilman vaadittua pelaajam\u00E4\u00E4r\u00E4\u00E4.", "Starting without required player count."),
+            GetLocalizedText(
+                $"{validPlayers.Count}/{RaidPhotonRoom.RequiredPlayers} pelaajaa",
+                $"{validPlayers.Count}/{RaidPhotonRoom.RequiredPlayers} players"));
         StartLobbyCountdown(validPlayers, clanEntries);
+    }
+
+    private static string GetLocalizedText(string finnishText, string englishText)
+    {
+        return SettingsCarrier.Instance != null
+            && SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+                ? englishText
+                : finnishText;
     }
 
     private IEnumerator RetryMatchmakingAfterDelay()
