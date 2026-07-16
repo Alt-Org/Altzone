@@ -118,13 +118,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         if (string.IsNullOrWhiteSpace(_localPlayerName) || string.IsNullOrWhiteSpace(_localPlayerId))
         {
             Debug.LogError("Raid matchmaking could not load valid local player data from the DataStore.");
-            ShowMatchmaking("Raid matchmaking unavailable", "Player data could not be loaded.", string.Empty);
+            ShowMatchmakingMessage("Raid matchmaking unavailable", "Player data could not be loaded.", string.Empty);
             yield break;
         }
 
         if (string.IsNullOrWhiteSpace(_localClanId))
         {
-            ShowMatchmaking("Raid requires a clan", "Join a clan before entering Raid matchmaking.", string.Empty);
+            ShowMatchmakingMessage("Raid requires a clan", "Join a clan before entering Raid matchmaking.", string.Empty);
             yield break;
         }
 
@@ -136,7 +136,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
                 yield break;
             }
 
-            ShowMatchmaking("Preparing Raid matchmaking", "Leaving the previous room...", string.Empty);
+            ShowMatchmakingMessage("Preparing Raid matchmaking", "Leaving the previous room...", string.Empty);
             PhotonRealtimeClient.LeaveRoom(false);
             yield return new WaitUntil(() => !PhotonRealtimeClient.InRoom);
         }
@@ -146,7 +146,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         if (!photonReady)
         {
-            ShowMatchmaking("Raid matchmaking unavailable", "Photon is not ready for room matchmaking.", PhotonRealtimeClient.NetworkClientState.ToString());
+            ShowMatchmakingMessage("Raid matchmaking unavailable", "Photon is not ready for room matchmaking.", PhotonRealtimeClient.NetworkClientState.ToString());
             yield break;
         }
 
@@ -233,14 +233,14 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         if (PhotonRealtimeClient.Client != null && !PhotonRealtimeClient.IsConnected && PhotonRealtimeClient.CanConnect)
         {
-            ShowMatchmaking("Connecting to Raid matchmaking", "Connecting to Photon...", string.Empty);
+            ShowMatchmakingMessage("Connecting to Raid matchmaking", "Connecting to Photon...", string.Empty);
             PhotonRealtimeClient.Connect(_localPlayerName);
         }
 
         float timeout = Time.time + 20f;
         while (!CanUsePhotonMatchmaking() && Time.time < timeout)
         {
-            ShowMatchmaking("Connecting to Raid matchmaking", "Waiting for Photon master server...", PhotonRealtimeClient.NetworkClientState.ToString());
+            ShowMatchmakingMessage("Connecting to Raid matchmaking", "Waiting for Photon master server...", PhotonRealtimeClient.NetworkClientState.ToString());
             yield return new WaitForSeconds(0.25f);
         }
 
@@ -453,7 +453,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         if (!IsCurrentRoomRaid())
         {
             _waitingForRetryLeave = true;
-            ShowMatchmaking("Finding Raid players", "Joined room is not a Raid matchmaking room.", "Trying another room...");
+            ShowMatchmakingMessage("Finding Raid players", "Joined room is not a Raid matchmaking room.", "Trying another room...");
             PhotonRealtimeClient.LeaveRoom(false);
             yield break;
         }
@@ -463,7 +463,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         {
             _rejectedRoomNames.Add(PhotonRealtimeClient.CurrentRoom.Name);
             _waitingForRetryLeave = true;
-            ShowMatchmaking("Finding Raid players", "That Raid room has already started.", "Trying another room...");
+            ShowMatchmakingMessage("Finding Raid players", "That Raid room has already started.", "Trying another room...");
             PhotonRealtimeClient.LeaveRoom(false);
             yield break;
         }
@@ -473,7 +473,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         {
             _rejectedRoomNames.Add(PhotonRealtimeClient.CurrentRoom.Name);
             _waitingForRetryLeave = true;
-            ShowMatchmaking("Finding Raid players", "Your clan already has two players in that Raid room.", "Trying another room...");
+            ShowMatchmakingMessage("Finding Raid players", "Your clan already has two players in that Raid room.", "Trying another room...");
             PhotonRealtimeClient.LeaveRoom(false);
             yield break;
         }
@@ -1021,11 +1021,12 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         return IsCurrentRoomRaid() ? GetRaidPlayersWithClans().Count : 1;
     }
 
-    private void ShowMatchmaking(string title, string status, string detail)
+    private void ShowMatchmakingMessage(string title, string status, string detail)
     {
         _matchmakingSearchVisualsEnabled = false;
         StopMatchmakingDots();
-        _views?.ShowMatchmaking(title, status, detail);
+        _views?.ShowMatchmaking();
+        _views?.UpdateMatchmakingTexts(title, status, detail);
     }
 
     private void ShowMatchmakingSearchState(int currentPlayers)
@@ -1158,7 +1159,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         if (!IsCurrentRoomRaid())
         {
-            ShowMatchmaking("Debug Raid start unavailable", "Join a Raid matchmaking room first.", string.Empty);
+            ShowMatchmakingMessage("Debug Raid start unavailable", "Join a Raid matchmaking room first.", string.Empty);
             _debugStartCoroutine = null;
             yield break;
         }
@@ -1175,7 +1176,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             && string.IsNullOrWhiteSpace(GetPlayerClanId(PhotonRealtimeClient.LocalPlayer))
             && Time.time < timeout)
         {
-            ShowMatchmaking("Debug starting Raid", "Waiting for player clan data...", string.Empty);
+            ShowMatchmakingMessage("Debug starting Raid", "Waiting for player clan data...", string.Empty);
             yield return new WaitForSeconds(0.1f);
         }
 
@@ -1187,13 +1188,13 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     {
         if (!IsCurrentRoomRaid())
         {
-            ShowMatchmaking("Debug Raid start unavailable", "Join a Raid matchmaking room first.", string.Empty);
+            ShowMatchmakingMessage("Debug Raid start unavailable", "Join a Raid matchmaking room first.", string.Empty);
             return;
         }
 
         if (PhotonRealtimeClient.LocalPlayer == null || !PhotonRealtimeClient.LocalPlayer.IsMasterClient)
         {
-            ShowMatchmaking("Debug Raid start unavailable", "Only the room leader can force-start a Raid.", string.Empty);
+            ShowMatchmakingMessage("Debug Raid start unavailable", "Only the room leader can force-start a Raid.", string.Empty);
             return;
         }
 
@@ -1201,7 +1202,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         RaidPhotonRoom.RaidState state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.RaidState.Error);
         if (state != RaidPhotonRoom.RaidState.Matchmaking)
         {
-            ShowMatchmaking("Debug Raid start unavailable", "Raid is already leaving matchmaking.", string.Empty);
+            ShowMatchmakingMessage("Debug Raid start unavailable", "Raid is already leaving matchmaking.", string.Empty);
             return;
         }
 
@@ -1213,11 +1214,11 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
         if (!canDebugStart)
         {
-            ShowMatchmaking("Debug Raid start unavailable", "No valid Raid players are ready yet.", "Wait for player clan data to sync, then try again.");
+            ShowMatchmakingMessage("Debug Raid start unavailable", "No valid Raid players are ready yet.", "Wait for player clan data to sync, then try again.");
             return;
         }
 
-        ShowMatchmaking("Debug starting Raid", "Starting without required player count.", $"{validPlayers.Count}/{RaidPhotonRoom.RequiredPlayers} players");
+        ShowMatchmakingMessage("Debug starting Raid", "Starting without required player count.", $"{validPlayers.Count}/{RaidPhotonRoom.RequiredPlayers} players");
         StartLobbyCountdown(validPlayers, clanEntries);
     }
 
@@ -1373,7 +1374,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     public void OnDisconnected(DisconnectCause cause)
     {
-        ShowMatchmaking("Raid matchmaking disconnected", cause.ToString(), string.Empty);
+        ShowMatchmakingMessage("Raid matchmaking disconnected", cause.ToString(), string.Empty);
     }
 
     public void OnRegionListReceived(RegionHandler regionHandler)
@@ -1386,7 +1387,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     public void OnCustomAuthenticationFailed(string debugMessage)
     {
-        ShowMatchmaking("Raid matchmaking authentication failed", debugMessage, string.Empty);
+        ShowMatchmakingMessage("Raid matchmaking authentication failed", debugMessage, string.Empty);
     }
 
     public void OnJoinedLobby()
@@ -1428,7 +1429,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     public void OnCreateRoomFailed(short returnCode, string message)
     {
         _joiningOrCreatingRoom = false;
-        ShowMatchmaking("Finding Raid players", "Could not create a Raid room.", message);
+        ShowMatchmakingMessage("Finding Raid players", "Could not create a Raid room.", message);
         StartCoroutine(RetryMatchmakingAfterDelay());
     }
 
@@ -1448,14 +1449,14 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     public void OnJoinRoomFailed(short returnCode, string message)
     {
         _joiningOrCreatingRoom = false;
-        ShowMatchmaking("Finding Raid players", "Could not join that Raid room.", message);
+        ShowMatchmakingMessage("Finding Raid players", "Could not join that Raid room.", message);
         StartCoroutine(RetryMatchmakingAfterDelay());
     }
 
     public void OnJoinRandomFailed(short returnCode, string message)
     {
         _joiningOrCreatingRoom = false;
-        ShowMatchmaking("Finding Raid players", "No matching Raid room was found.", message);
+        ShowMatchmakingMessage("Finding Raid players", "No matching Raid room was found.", message);
         StartCoroutine(RetryMatchmakingAfterDelay());
     }
 
@@ -1473,7 +1474,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             return;
         }
 
-        ShowMatchmaking("Finding Raid players", "Rejoining Raid matchmaking...", string.Empty);
+        ShowMatchmakingMessage("Finding Raid players", "Rejoining Raid matchmaking...", string.Empty);
         if (_waitingForRetryLeave)
         {
             _waitingForRetryLeave = false;

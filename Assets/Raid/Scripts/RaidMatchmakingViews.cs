@@ -64,18 +64,22 @@ public class RaidMatchmakingViews : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void ShowMatchmaking(string title, string status, string detail)
+    public void ShowMatchmaking()
     {
         gameObject.SetActive(true);
         SetActive(matchmakingPanel, true);
         SetActive(lobbyPanel, false);
 
+        SetMatchmakingDotsActive(0);
+    }
+
+    public void UpdateMatchmakingTexts(string title, string status, string detail)
+    {
         SetText(matchmakingTitleText, title);
         SetText(matchmakingStatusText, status);
         SetText(matchmakingDetailText, detail);
         SetTextActive(matchmakingStatusText, !string.IsNullOrWhiteSpace(status));
         SetTextActive(matchmakingDetailText, !string.IsNullOrWhiteSpace(detail));
-        SetMatchmakingDotsActive(0);
     }
 
     public void ShowMatchmakingSearchState(int currentPlayers, bool showFiveDots)
