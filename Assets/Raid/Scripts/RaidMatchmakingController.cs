@@ -27,6 +27,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     [SerializeField] private int minInventoryRows = 6;
     [SerializeField] private int maxInventoryRowsExclusive = 12;
     [SerializeField] private float matchmakingDotToggleSeconds = 0.5f;
+    [SerializeField] private RaidMatchmakingViews _views;
 
     private readonly Dictionary<string, RoomInfo> _knownRooms = new();
     private readonly HashSet<string> _rejectedRoomNames = new(StringComparer.Ordinal);
@@ -37,8 +38,6 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private Raid_LootTracking _lootTracking;
     private Raid_Timer _raidTimer;
     private ExitRaid _exitRaid;
-    private RaidMatchmakingViews _views;
-
     private string _localPlayerName = string.Empty;
     private string _localPlayerId = string.Empty;
     private string _localClanId = string.Empty;
@@ -1115,12 +1114,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void CreateOverlayUi()
     {
-        _views = FindObjectsOfType<RaidMatchmakingViews>(true)
-            .FirstOrDefault(view => view.gameObject.scene.IsValid());
-
         if (_views == null)
         {
-            Debug.LogError("Raid matchmaking views are missing from the Raid scene. Add RaidMatchmakingViews to 40-Raid.");
+            Debug.LogError("Raid matchmaking views are not assigned. Assign RaidMatchmakingViews in 40-Raid.");
             return;
         }
 
