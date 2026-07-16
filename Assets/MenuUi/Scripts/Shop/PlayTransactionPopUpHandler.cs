@@ -12,9 +12,12 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     private const string EmptyCardButtonText = "Kortti";
     private const string MobileButtonText = "Mobiili";
     private const string AddAnotherCardText = "+ Lis\u00E4\u00E4 kortti";
+    private const string SelectedCardTitleText = "Valittu kortti";
+    private const string SelectCardTitleText = "Valitse k\u00E4ytett\u00E4v\u00E4 kortti";
     private const string RequiredMarkerText = "<color=#FF0000>*</color>";
     private const int ExpiryDateDigitCount = 4;
     private const int CvvDigitCount = 3;
+    private const int MaxSavedCardCount = 3;
     private static readonly Color CardRowTextColor = new Color(0.196f, 0.196f, 0.196f, 1f);
     private static readonly Color RememberCardEnabledColor = new Color(0.118f, 0.165f, 0.878f, 1f);
     private static readonly Color RememberCardDisabledColor = new Color(0.75f, 0.78f, 0.84f, 1f);
@@ -31,6 +34,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     [SerializeField] private Button _cardButton;
     [SerializeField] private Button _mobileButton;
     [SerializeField] private Button _rememberCardButton;
+    [SerializeField] private Image _rememberCardCheckmark;
 
     private TMP_Text _primaryButtonLabel;
     private TMP_Text _cancelButtonLabel;
@@ -44,6 +48,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     [SerializeField] private GameObject _selectedCardRow;
     [SerializeField] private GameObject _savedCardRowTemplate;
     [SerializeField] private GameObject _addCardRow;
+    [SerializeField] private Button _changeCardButton;
     private Button _selectedCardRowButton;
     private Button _addCardRowButton;
     private TMP_Text _selectedCardRowLabel;
@@ -129,6 +134,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         _addCardRowLabel = _addCardRow != null ? _addCardRow.GetComponentInChildren<TMP_Text>(true) : null;
         PrepareSavedCardListRoot();
         CacheRequiredFieldLabels();
+        RefreshRememberCardStyle();
     }
 
     private void ShowState(TransactionState state)
@@ -180,6 +186,9 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
     private void SubmitCard()
     {
+        if (_savedCards.Count >= MaxSavedCardCount)
+            return;
+
         RefreshRequiredFieldLabels();
 
         if (!IsAddCardFormValid())
@@ -221,8 +230,20 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
     public void ShowAddCardForm()
     {
+        if (_savedCards.Count >= MaxSavedCardCount)
+            return;
+
         _savedCardListExpanded = false;
         ShowState(TransactionState.AddCard);
+    }
+
+    public void ShowSavedCardList()
+    {
+        if (_savedCards.Count == 0)
+            return;
+
+        _savedCardListExpanded = true;
+        RefreshSavedCardList();
     }
 
     public void ToggleRememberCard()
@@ -411,7 +432,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
 
         if (_savedCardListTitle != null)
         {
-            _savedCardListTitle.text = "Kortit";
+            _savedCardListTitle.text = SelectedCardTitleText;
             _savedCardListTitle.color = CardRowTextColor;
         }
 
@@ -446,9 +467,15 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         if (_selectedCard == null)
             return;
 
+        if (_savedCardListTitle != null)
+            _savedCardListTitle.text = _savedCardListExpanded ? SelectCardTitleText : SelectedCardTitleText;
+        if (_changeCardButton != null)
+            _changeCardButton.gameObject.SetActive(!_savedCardListExpanded);
+
         if (!_savedCardListExpanded)
         {
-            ConfigurePrefabCardRow(_selectedCardRow, _selectedCardRowButton, _selectedCardRowLabel, GetSavedCardText(_selectedCard), ToggleSavedCardList);
+            ConfigurePrefabCardRow(_selectedCardRow, _selectedCardRowButton, _selectedCardRowLabel, GetSavedCardText(_selectedCard), null);
+            ConfigureDeleteButton(_selectedCardRow, null);
             SetCardRowActive(_selectedCardRow, true);
             SetCardRowActive(_addCardRow, false);
             return;
@@ -463,14 +490,19 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
             cardRow.transform.SetSiblingIndex(_savedCardRowTemplate.transform.GetSiblingIndex() + i + 1);
             AlignClonedCardRow(cardRow.GetComponent<RectTransform>(), _selectedCardRow.GetComponent<RectTransform>(), i);
             ConfigurePrefabCardRow(cardRow, cardRow.GetComponent<Button>(), cardRow.GetComponentInChildren<TMP_Text>(true), GetSavedCardText(card), () => SelectSavedCard(card));
+            ConfigureDeleteButton(cardRow, () => DeleteSavedCard(card));
             SetCardRowActive(cardRow, true);
             _savedCardRows.Add(cardRow);
         }
 
-        _addCardRow.transform.SetSiblingIndex(_savedCardRowTemplate.transform.GetSiblingIndex() + _savedCards.Count + 1);
-        AlignClonedCardRow(_addCardRow.GetComponent<RectTransform>(), _selectedCardRow.GetComponent<RectTransform>(), _savedCards.Count);
-        ConfigurePrefabCardRow(_addCardRow, _addCardRowButton, _addCardRowLabel, AddAnotherCardText, ShowAddCardForm);
-        SetCardRowActive(_addCardRow, true);
+        bool canAddCard = _savedCards.Count < MaxSavedCardCount;
+        if (canAddCard)
+        {
+            _addCardRow.transform.SetSiblingIndex(_savedCardRowTemplate.transform.GetSiblingIndex() + _savedCards.Count + 1);
+            AlignClonedCardRow(_addCardRow.GetComponent<RectTransform>(), _selectedCardRow.GetComponent<RectTransform>(), _savedCards.Count);
+            ConfigurePrefabCardRow(_addCardRow, _addCardRowButton, _addCardRowLabel, AddAnotherCardText, ShowAddCardForm);
+        }
+        SetCardRowActive(_addCardRow, canAddCard);
     }
 
     private void ConfigurePrefabCardRow(GameObject row, Button button, TMP_Text label, string labelText, UnityEngine.Events.UnityAction onClick)
@@ -483,7 +515,22 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
             return;
 
         button.onClick.RemoveAllListeners();
-        button.onClick.AddListener(onClick);
+        button.enabled = onClick != null;
+        if (onClick != null)
+            button.onClick.AddListener(onClick);
+    }
+
+    private void ConfigureDeleteButton(GameObject row, UnityEngine.Events.UnityAction onClick)
+    {
+        Transform deleteButtonTransform = row != null ? row.transform.Find("DeleteButton") : null;
+        Button deleteButton = deleteButtonTransform != null ? deleteButtonTransform.GetComponent<Button>() : null;
+        if (deleteButton == null)
+            return;
+
+        deleteButton.gameObject.SetActive(onClick != null);
+        deleteButton.onClick.RemoveAllListeners();
+        if (onClick != null)
+            deleteButton.onClick.AddListener(onClick);
     }
 
     private void AlignClonedCardRow(RectTransform row, RectTransform template, int rowIndex)
@@ -494,7 +541,7 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         float rowHeight = template.anchorMax.y - template.anchorMin.y;
         float rowGap = rowHeight * 0.28f;
         float top = 1f - rowIndex * (rowHeight + rowGap);
-        row.anchorMin = new Vector2(template.anchorMin.x, Mathf.Max(0f, top - rowHeight));
+        row.anchorMin = new Vector2(template.anchorMin.x, top - rowHeight);
         row.anchorMax = new Vector2(template.anchorMax.x, top);
         row.anchoredPosition = Vector2.zero;
         row.sizeDelta = template.sizeDelta;
@@ -505,15 +552,6 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
     {
         if (row != null)
             row.SetActive(isActive);
-    }
-
-    private void ToggleSavedCardList()
-    {
-        if (_savedCards.Count == 0)
-            return;
-
-        _savedCardListExpanded = !_savedCardListExpanded;
-        RefreshSavedCardList();
     }
 
     private void SelectSavedCard(SavedCard card)
@@ -528,10 +566,31 @@ public class PlayTransactionPopUpHandler : MonoBehaviour
         RefreshSavedCardList();
     }
 
+    private void DeleteSavedCard(SavedCard card)
+    {
+        if (card == null || !_savedCards.Remove(card))
+            return;
+
+        if (_selectedCard == card)
+            _selectedCard = _savedCards.Count > 0 ? _savedCards[0] : null;
+
+        if (_savedCards.Count == 0)
+        {
+            _usingCardPayment = false;
+            _savedCardListExpanded = false;
+            ShowState(TransactionState.AddCard);
+            return;
+        }
+
+        RefreshPaymentButtons();
+    }
+
     private void RefreshRememberCardStyle()
     {
         if (_rememberCardBackground != null)
             _rememberCardBackground.color = _rememberCard ? RememberCardEnabledColor : RememberCardDisabledColor;
+        if (_rememberCardCheckmark != null)
+            _rememberCardCheckmark.gameObject.SetActive(_rememberCard);
     }
 
     private void RemoveTemporaryCards()
