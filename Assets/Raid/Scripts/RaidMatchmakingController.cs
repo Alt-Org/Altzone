@@ -87,6 +87,9 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private void Start()
     {
+        // Other singleton instances register during Awake, after this controller's early Awake.
+        ResolveReferences();
+
         if (_debugInventoryMode)
         {
             StartDebugInventoryMode();
@@ -1316,15 +1319,16 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
     private void ResolveReferences()
     {
         Raid_References raidReferences = Raid_References.Instance;
-        _inventoryHandler = raidReferences != null
-            ? raidReferences.InventoryHandler
-            : FindObjectOfType<Raid_InventoryHandler>();
-        _inventoryPage = FindObjectOfType<Raid_InventoryPage>();
-        _lootTracking = raidReferences != null
-            ? raidReferences.LootTracking
-            : FindObjectOfType<Raid_LootTracking>();
-        _raidTimer = FindObjectOfType<Raid_Timer>();
-        _exitRaid = FindObjectOfType<ExitRaid>();
+        if (raidReferences == null)
+        {
+            TryGetComponent(out raidReferences);
+        }
+
+        _inventoryHandler = raidReferences?.InventoryHandler;
+        _inventoryPage = raidReferences?.InventoryPage;
+        _lootTracking = raidReferences?.LootTracking;
+        _raidTimer = raidReferences?.RaidTimer;
+        _exitRaid = ExitRaid.Instance;
     }
 
     private void RegisterPhotonCallbacks()

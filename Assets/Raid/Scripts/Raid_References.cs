@@ -11,6 +11,7 @@ public class Raid_References : MonoBehaviour
     [SerializeField, Header("Reference game components")]
     public Raid_InventoryHandler inventoryHandler;
     public Raid_LootTracking raid_LootTracking;
+    [SerializeField] private Raid_InventoryPage inventoryPage;
     [SerializeField] private Raid_EndMenu endMenuController;
     [SerializeField] private Raid_LiveInventory liveInventory;
     [SerializeField] private Raid_EventLog eventLog;
@@ -33,6 +34,15 @@ public class Raid_References : MonoBehaviour
         {
             ResolveEndMenuController();
             return endMenuController;
+        }
+    }
+
+    public Raid_InventoryPage InventoryPage
+    {
+        get
+        {
+            ResolveInventoryPage();
+            return inventoryPage;
         }
     }
 
@@ -145,6 +155,7 @@ public class Raid_References : MonoBehaviour
     private void ResolveReferences()
     {
         ResolveInventoryHandler();
+        ResolveInventoryPage();
         ResolveLootTracking();
         ResolveEndMenuController();
         ResolveEventLog();
@@ -161,6 +172,14 @@ public class Raid_References : MonoBehaviour
         if (!TryGetComponent(out inventoryHandler))
         {
             inventoryHandler = FindObjectOfType<Raid_InventoryHandler>();
+        }
+    }
+
+    private void ResolveInventoryPage()
+    {
+        if (inventoryPage == null)
+        {
+            inventoryPage = FindObjectOfType<Raid_InventoryPage>(true);
         }
     }
 
