@@ -47,6 +47,9 @@ namespace MenuUi.Scripts.CharacterGallery
         private FilterType _currentFilter = FilterType.All;
         private List<int> filterEnumValues;
 
+        // Store existing sprites for CharacterClassTypes to not create duplicates and save memory
+        private Dictionary<CharacterClassType, Sprite> _classBgSprites = new();
+
         // List of character slots in character grid
         private readonly List<CharacterSlot> _characterSlots = new();
         public List<CharacterSlot> CharacterSlots => _characterSlots;
@@ -172,13 +175,31 @@ namespace MenuUi.Scripts.CharacterGallery
 
             CharacterClassType classType = CustomCharacter.GetClass(charID);
             string classNameIcon = _classReference.GetName(classType);
-            Color bgColor = _classReference.GetColor(classType);
-            Color bgAltColor = _classReference.GetAlternativeColor(classType);
+            
             Sprite classIcon = _classReference.GetCornerIcon(classType);
 
+            Sprite bgImage;
 
-            CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-            charSlot.SetInfo(info.GalleryImage, bgColor, bgAltColor, info.Name, classNameIcon, classIcon, charID);
+            // If there already is a sprite generated for this classtype, use the existing one
+            if (_classBgSprites.TryGetValue(classType, out var sprite))
+            {
+                bgImage = sprite;
+            }
+            // If there is no sprite for this classtype, create a new one
+            else
+            {
+                Color bgColor = _classReference.GetColor(classType);
+                Color bgAltColor = _classReference.GetAlternativeColor(classType);
+                Color bgDeepColor = _classReference.GetDeepColor(classType);
+                bgImage = ThreeColorGradient.GenerateGradient(bgColor, bgAltColor, bgDeepColor);
+
+                // Store the sprite to the dictionary
+                _classBgSprites.Add(classType, bgImage);
+            }
+
+
+                CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
+            charSlot.SetInfo(info.GalleryImage, bgImage, info.Name, classNameIcon, classIcon, charID);
 
             _characterSlots.Add(charSlot);
 

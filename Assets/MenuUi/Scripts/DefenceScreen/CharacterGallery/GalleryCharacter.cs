@@ -122,7 +122,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// <param name="name">Character's name which to display.</param>
         /// <param name="id">Character's ID.</param>
         /// <param name="originalSlot">The original inventory slot for the GalleryCharacter prefab.</param>
-        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, CharacterID id, CharacterSlot originalSlot)
+        public void SetInfo(Sprite sprite, Sprite bgImage, string name, string className, CharacterID id, CharacterSlot originalSlot)
         {
             _spriteImage.sprite = sprite;
             _characterNameText.text = name;
@@ -134,8 +134,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 _classNameText.text = className;
             }
             _id = id;
-            _backgroundLowerImage.color = bgAltColor;
-            _backgroundUpperImage.color = bgColor;
+
+            _backgroundUpperImage.sprite = bgImage;
             _originalSlot = originalSlot;
 
             if (_classIcon && _classReference)
