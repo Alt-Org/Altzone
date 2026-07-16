@@ -538,30 +538,26 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
         Room room = PhotonRealtimeClient.CurrentRoom;
         RaidPhotonRoom.RaidState state = GetRoomProperty(room, RaidPhotonRoom.RaidStateKey, RaidPhotonRoom.RaidState.Error);
 
-        if (state == RaidPhotonRoom.RaidState.Matchmaking)
+        switch (state)
         {
-            StopLobbyCountdownUpdates();
-            UpdateMatchmakingStatus();
-            return;
+            case RaidPhotonRoom.RaidState.Matchmaking:
+                StopLobbyCountdownUpdates();
+                UpdateMatchmakingStatus();
+                return;
+            case RaidPhotonRoom.RaidState.Lobby:
+                ConfigureRaidFromRoomIfReady();
+                ShowLobby();
+                StartLobbyCountdownUpdates();
+                return;
+            case RaidPhotonRoom.RaidState.Started:
+                StopLobbyCountdownUpdates();
+                ConfigureRaidFromRoomIfReady();
+                BeginGameplay();
+                return;
+            default:
+                StopLobbyCountdownUpdates();
+                return;
         }
-
-        if (state == RaidPhotonRoom.RaidState.Lobby)
-        {
-            ConfigureRaidFromRoomIfReady();
-            ShowLobby();
-            StartLobbyCountdownUpdates();
-            return;
-        }
-
-        if (state == RaidPhotonRoom.RaidState.Started)
-        {
-            StopLobbyCountdownUpdates();
-            ConfigureRaidFromRoomIfReady();
-            BeginGameplay();
-            return;
-        }
-
-        StopLobbyCountdownUpdates();
     }
 
     private void StartLobbyCountdown(List<Player> validPlayers, RaidPhotonRoom.ClanEntry[] clanEntries)
