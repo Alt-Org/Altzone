@@ -18,6 +18,8 @@ public class EsineDisplay : AdPosterHandler
     private Color? _adColour = null;
     private Sprite _adFrames = null;
 
+    public List<StorageFurniture> Furnitures => _furnitures;
+
 
     void Start()
     {
@@ -113,7 +115,8 @@ public class EsineDisplay : AdPosterHandler
     {
         if (_manager != null)
         {
-            _manager.OpenPopup(_furnitures);
+            // Passes gameObject (specific ad poster instance) so pop up knows which ad was clicked, needed for navigation arrows in clan stall pop up
+            _manager.OpenPopup(_furnitures, gameObject);
         }
         
     }
