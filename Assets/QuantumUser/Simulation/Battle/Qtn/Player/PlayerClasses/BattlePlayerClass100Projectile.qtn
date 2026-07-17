@@ -4,4 +4,6 @@ component BattlePlayerClass100ProjectileQComponent
     FPVector2 Direction;
     [HideInInspector]
     FP Speed;
+    [HideInInspector]
+    FP Radius;
 }
