@@ -40,7 +40,7 @@ public class ClanStallPopupHandler : MonoBehaviour
 
 
 
-    //TO DO: kirpputori äänestys
+    //TO DO: kirpputori Ã¤Ã¤nestys
     void Start()
     {
         //_suggestVotingButton.onClick.AddListener(() => { _confirmPopup.SetPopupActiveClanStall();  });
@@ -126,16 +126,16 @@ public class ClanStallPopupHandler : MonoBehaviour
         _price.text = _furn.Value.ToString();
 
         //Furniture weight
-        _weight.text = "• Paino " + _furn.Weight + " KG";
+        _weight.text = "â€¢ Paino " + _furn.Weight + " KG";
 
         //Furniture diagnostic number
-        _diagnoseNumber.text = "• " + _furn.Info.DiagnoseNumber;
+        _diagnoseNumber.text = "â€¢ " + _furn.Info.DiagnoseNumber;
 
         //Furniture designer/artist
-        _artist.text = "• Suunnittelu: " + _furn.Info.ArtistName;
+        _artist.text = "â€¢ Suunnittelu: " + _furn.Info.ArtistName;
 
         //Furniture description
-        _artisticDescription.text = "• " + _furn.Info.ArtisticDescription;
+        _artisticDescription.text = "â€¢ " + _furn.Info.ArtisticDescription;
     }
 
   
