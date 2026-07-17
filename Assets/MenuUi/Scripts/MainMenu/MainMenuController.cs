@@ -143,13 +143,20 @@ namespace MenuUi.Scripts.MainMenu
         }
 
         /// <summary>
-        /// This is to enable/disable specified objects and buttons on TurboEducation when a task is active
+        /// This is to enable/disable specified objects and buttons on TurboEducation when a forced task is active
         /// </summary>
         private void UpdateTurboEdObjectsState()
         {
             if (GameConfig.Get().GameVersionType == VersionType.TurboEducation)
             {
-                SetTurboEdObjectsState(!DailyTaskProgressManager.Instance.HasOnGoingTask());
+                if (DailyTaskProgressManager.Instance.HasOnGoingTask() && DailyTaskManager.Instance.CurrentTaskForced)
+                {
+                    SetTurboEdObjectsState(false);
+                }
+                else
+                {
+                    SetTurboEdObjectsState(true);
+                }
             }
         }
 

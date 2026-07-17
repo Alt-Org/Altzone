@@ -7,7 +7,7 @@ using static ServerChatMessage;
 
 public class ChatReactionHandler : MonoBehaviour
 {
-    [SerializeField] private GameObject _messageReaction;
+    public GameObject _messageReaction;
     [SerializeField] private TextMeshProUGUI _counter;
     [SerializeField] private Image _reactionImage;
     [SerializeField] private Button _button;
@@ -22,7 +22,7 @@ public class ChatReactionHandler : MonoBehaviour
     public int Count => _count;
     public bool Selected => _selected;
 
-    private Mood _mood;
+    [SerializeField] private Mood _mood;
     private string _messageID;
     private int _count = 0;
     private bool _selected;

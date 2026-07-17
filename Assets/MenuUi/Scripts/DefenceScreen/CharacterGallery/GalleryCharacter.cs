@@ -23,8 +23,9 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Image _backgroundBorderImage;
         [SerializeField] private Image _backgroundLowerImage;
         [SerializeField] private Image _backgroundUpperImage;
+        [SerializeField] private Image _backgroundOverride;
         [SerializeField] private TextMeshProUGUI _characterNameText;
-        [SerializeField] private Image _classNameIcon;
+        [SerializeField] private TextMeshProUGUI _classNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
         [SerializeField] private Material _grayScaleMaterial;
@@ -122,20 +123,21 @@ namespace MenuUi.Scripts.CharacterGallery
         /// <param name="name">Character's name which to display.</param>
         /// <param name="id">Character's ID.</param>
         /// <param name="originalSlot">The original inventory slot for the GalleryCharacter prefab.</param>
-        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, Sprite classNameIcon, CharacterID id, CharacterSlot originalSlot)
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, CharacterID id, CharacterSlot originalSlot)
         {
             _spriteImage.sprite = sprite;
             _characterNameText.text = name;
-            if (classNameIcon == null)
-                _classNameIcon.gameObject.SetActive(false);
+            if (string.IsNullOrEmpty(className))
+                _classNameText.gameObject.SetActive(false);
             else
             {
-                _classNameIcon.gameObject.SetActive(true);
-                _classNameIcon.sprite = classNameIcon;
+                _classNameText.gameObject.SetActive(true);
+                _classNameText.text = className;
             }
             _id = id;
-            _backgroundLowerImage.color = bgColor;
-            _backgroundUpperImage.color = bgAltColor;
+
+            _backgroundLowerImage.color = bgAltColor;
+            _backgroundUpperImage.color = bgColor;
             _originalSlot = originalSlot;
 
             if (_classIcon && _classReference)
@@ -143,6 +145,18 @@ namespace MenuUi.Scripts.CharacterGallery
                 _classIcon.sprite = _classReference.GetCornerIcon(CustomCharacter.GetClass(id));
                 _classIcon.enabled = _classIcon.sprite != null;
             }
+        }
+
+        public void GradientOverride(Sprite bgImage)
+        {
+            if(bgImage == null)
+            {
+                _backgroundOverride.sprite = null;
+                _backgroundOverride.gameObject.SetActive(false);
+                return;
+            }
+            _backgroundOverride.sprite = bgImage;
+            _backgroundOverride.gameObject.SetActive(true);
         }
 
 

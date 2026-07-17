@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _desensitizerNameFinnish: Tunnoton
   _desensitizerNameEnglish: Desensitizer
-  _desensitizerColor: {r: 0.13725491, g: 0.69411767, b: 0.69411767, a: 1}
-  _desensitizerAlternativeColor: {r: 0.37254903, g: 0.8039216, b: 0.8039216, a: 1}
+  _desensitizerColor: {r: 0.42745098, g: 0.8117647, b: 0.7921569, a: 1}
+  _desensitizerAlternativeColor: {r: 0.9411765, g: 0.9254902, b: 0.8784314, a: 1}
+  _desensitizerDeepColor: {r: 0.8784314, g: 0.8352941, b: 0.72156864, a: 1}
   _desensitizerFrame: {fileID: 21300000, guid: 8986eb9b3eef1114f92d2653be2f6cab, type: 3}
   _desensitizerCornerIcon: {fileID: 21300000, guid: bad414b4c1bae7e4f96d492e83b42bb2,
     type: 3}
@@ -35,8 +36,9 @@ MonoBehaviour:
     has its limits.
   _tricksterNameFinnish: "H\xE4m\xE4\xE4j\xE4"
   _tricksterNameEnglish: Trickster
-  _tricksterColor: {r: 0.37647063, g: 0.7294118, b: 0.37647063, a: 1}
-  _tricksterAlternativeColor: {r: 0.46666667, g: 0.8980392, b: 0.46666667, a: 1}
+  _tricksterColor: {r: 0.3647059, g: 0.76862746, b: 0.3529412, a: 1}
+  _tricksterAlternativeColor: {r: 0.95686275, g: 0.9411765, b: 0.8352941, a: 1}
+  _tricksterDeepColor: {r: 0.8980392, g: 0.8509804, b: 0.5176471, a: 1}
   _tricksterFrame: {fileID: 21300000, guid: 7f70ad98f7f01db41bafe5dd07c3fd35, type: 3}
   _tricksterCornerIcon: {fileID: 21300000, guid: 6e84e4c3a2d400f438be437826ed5abd,
     type: 3}
@@ -56,8 +58,9 @@ MonoBehaviour:
     them, while leaving others guessing at an unexpected move. "
   _obedientNameFinnish: Tottelija
   _obedientNameEnglish: Obedient
-  _obedientColor: {r: 0.8352941, g: 0.8352941, b: 0.105882354, a: 1}
-  _obedientAlternativeColor: {r: 1, g: 1, b: 0.4, a: 1}
+  _obedientColor: {r: 0.92941177, g: 0.83137256, b: 0.2901961, a: 1}
+  _obedientAlternativeColor: {r: 0.8862745, g: 0.9137255, b: 0.9411765, a: 1}
+  _obedientDeepColor: {r: 0.6627451, g: 0.75686276, b: 0.8509804, a: 1}
   _obedientFrame: {fileID: 21300000, guid: a85f88f04776d5140bd521112cdb8a26, type: 3}
   _obedientCornerIcon: {fileID: 21300000, guid: afc086fe899f85f4ca33ba72d38a607b,
     type: 3}
@@ -76,8 +79,9 @@ MonoBehaviour:
     unable to grow or move forward.
   _projectorNameFinnish: Peilaaja
   _projectorNameEnglish: Projector
-  _projectorColor: {r: 0.8745098, g: 0.5254902, b: 0.09019608, a: 1}
-  _projectorAlternativeColor: {r: 0.94509804, g: 0.65882355, b: 0.29411766, a: 1}
+  _projectorColor: {r: 0.9411765, g: 0.627451, b: 0.3137255, a: 1}
+  _projectorAlternativeColor: {r: 0.8745098, g: 0.9098039, b: 0.93333334, a: 1}
+  _projectorDeepColor: {r: 0.65882355, g: 0.7607843, b: 0.84313726, a: 1}
   _projectorFrame: {fileID: 21300000, guid: 801725e4cd15d294182d91861519540c, type: 3}
   _projectorCornerIcon: {fileID: 21300000, guid: e1f2a882b3e18df4e8d21ca0afe8f5c3,
     type: 3}
@@ -98,8 +102,9 @@ MonoBehaviour:
     up, as they cannot handle their own messes or take responsibility. "
   _retroflectorNameFinnish: Torjuja
   _retroflectorNameEnglish: Retroflector
-  _retroflectorColor: {r: 0.69411767, g: 0.19607843, b: 0.19607843, a: 1}
-  _retroflectorAlternativeColor: {r: 0.9137255, g: 0.33333334, b: 0.33333334, a: 1}
+  _retroflectorColor: {r: 0.8784314, g: 0.4392157, b: 0.4392157, a: 1}
+  _retroflectorAlternativeColor: {r: 0.9411765, g: 0.9098039, b: 0.89411765, a: 1}
+  _retroflectorDeepColor: {r: 0.87058824, g: 0.7490196, b: 0.69411767, a: 1}
   _retroflectorFrame: {fileID: 21300000, guid: 2c697fa8ec4259f4fbac2ca0121a27b2, type: 3}
   _retroflectorCornerIcon: {fileID: 21300000, guid: 07133b819c13bae4c8c6cdc3b3205e95,
     type: 3}
@@ -118,8 +123,9 @@ MonoBehaviour:
     for the Ego, even though they pay a heavy price by resorting to unhealthy means.
   _confluentNameFinnish: Sulautuja
   _confluentNameEnglish: Confluent
-  _confluentColor: {r: 0.5372549, g: 0.11372549, b: 0.5372549, a: 1}
-  _confluentAlternativeColor: {r: 0.69411767, g: 0.30588236, b: 0.69411767, a: 1}
+  _confluentColor: {r: 0.83137256, g: 0.53333336, b: 0.8784314, a: 1}
+  _confluentAlternativeColor: {r: 0.85882354, g: 0.9254902, b: 0.8784314, a: 1}
+  _confluentDeepColor: {r: 0.57254905, g: 0.827451, b: 0.6431373, a: 1}
   _confluentFrame: {fileID: 21300000, guid: c85d5545634946d4998288d053151ab6, type: 3}
   _confluentCornerIcon: {fileID: 21300000, guid: 4465914b30e24cd4d8b1c38034b54eaf,
     type: 3}
@@ -139,9 +145,10 @@ MonoBehaviour:
     without their support network they become highly vulnerable.
   _intellectualizerNameFinnish: "\xC4lyllist\xE4j\xE4"
   _intellectualizerNameEnglish: Intellectualizer
-  _intellectualizerColor: {r: 0.32156864, g: 0.13333334, b: 0.58431375, a: 1}
-  _intellectualizerAlternativeColor: {r: 0.52156866, g: 0.34117648, b: 0.7647059,
+  _intellectualizerColor: {r: 0.6901961, g: 0.627451, b: 0.9607843, a: 1}
+  _intellectualizerAlternativeColor: {r: 0.95686275, g: 0.90588236, b: 0.83137256,
     a: 1}
+  _intellectualizerDeepColor: {r: 0.89411765, g: 0.76862746, b: 0.5647059, a: 1}
   _intellectualizerFrame: {fileID: 21300000, guid: fc12ad5b40d27a3408323ac1cbd3e4b4,
     type: 3}
   _intellectualizerCornerIcon: {fileID: 21300000, guid: 7dda66d5aa65dad45b85939de1d20c70,

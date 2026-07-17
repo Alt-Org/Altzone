@@ -738,7 +738,7 @@ public class ServerManager : MonoBehaviour
                     }
                 });
             }
-            yield return new WaitUntil(() => list != null);
+            yield return new WaitUntil(() => list != null || heartBeat == false);
             while (timeCurrent < timeToNext)
             {
                 yield return null;
@@ -872,6 +872,60 @@ public class ServerManager : MonoBehaviour
             {
                 if (callback != null)
                     callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator CheckEmotionInServer(Action<bool> callback)
+    {
+        if (Player == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "player/emotioncheck", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator UpdateEmotionToServer(string emotion, Action<bool> callback)
+    {
+        if (Player == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        string body = JObject.FromObject(
+            new
+            {
+                emotion = emotion,
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "player/emotion", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
             }
         }));
     }
@@ -1405,7 +1459,14 @@ public class ServerManager : MonoBehaviour
             yield break;
         }
 
-        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "online-players/ping", "", AccessToken, request =>
+        string body = JObject.FromObject(
+            new
+            {
+                client_version = ApplicationController.VersionNumber.ToString(),
+            }
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "online-players/ping", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {

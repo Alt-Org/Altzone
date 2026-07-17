@@ -69,7 +69,9 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
-        public string emotionSelectorDate = null;
+        private DateTime _emotionSelectorDate = DateTime.MinValue;
+
+        public DateTime EmotionSelectionDate => _emotionSelectorDate;
 
         public string daysBetweenInput = "0";
 
@@ -83,6 +85,8 @@ namespace Altzone.Scripts.Model.Poco.Player
             Emotion.Blank.ToString(),
             Emotion.Blank.ToString()
         };
+
+        public List<DailyEmotion> _playerDataEmotions = new();
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
@@ -254,7 +258,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public void UpdatePlayerData(ServerPlayer player)
         {
             Debug.Log("UpdatePlayerData raw emotion count: " + (_playerDataEmotionList == null ? -1 : _playerDataEmotionList.Count));
-            Debug.Log("UpdatePlayerData raw emotion date: " + emotionSelectorDate);
+            Debug.Log("UpdatePlayerData raw emotion date: " + _emotionSelectorDate);
 
             Assert.IsTrue(player._id.IsSet());
             Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
@@ -280,6 +284,7 @@ namespace Altzone.Scripts.Model.Poco.Player
                     Emotion.Blank, Emotion.Blank, Emotion.Blank,
                     Emotion.Blank, Emotion.Blank, Emotion.Blank, Emotion.Blank
                 };
+            _playerDataEmotions = FormatEmotions(player.emotions);
             if (daysBetweenInput == null) daysBetweenInput = "0";
 
             
@@ -497,6 +502,31 @@ namespace Altzone.Scripts.Model.Poco.Player
             return true;
         }
 
+        private List<DailyEmotion> FormatEmotions(List<ServerEmotions> serverEmotions)
+        {
+            List<DailyEmotion> emotions = new();
 
+            foreach(ServerEmotions emotion in serverEmotions)
+            {
+                emotions.Add(new(emotion));
+            }
+
+            emotions = emotions.OrderByDescending(o => o.DateTime).ToList();
+
+            if(emotions.Count > 0) _emotionSelectorDate = emotions[0].DateTime;
+
+            return emotions;
+        }
+
+        public void AddEmotion(Emotion emotion)
+        {
+            List<DailyEmotion> emotions = new();
+
+            _playerDataEmotions.Add(new(emotion));
+
+            _playerDataEmotions = _playerDataEmotions.OrderByDescending(o => o.DateTime).ToList();
+
+            _emotionSelectorDate = DateTime.UtcNow.Date;
+        }
     }
 }

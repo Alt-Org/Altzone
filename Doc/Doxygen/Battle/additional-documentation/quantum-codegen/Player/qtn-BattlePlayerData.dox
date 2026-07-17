@@ -11,6 +11,26 @@
 
 // ---------------------------------------------------------------------------------------------------- //
 
+/// @enum Quantum::BattlePlayerSpawnBehaviour
+/// <summary>
+/// Enum used to define which spawn behaviour a character uses.
+/// </summary>
+///
+/// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
+///
+/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
+/// @var Quantum::BattlePlayerSpawnBehaviour Quantum::BattlePlayerSpawnBehaviour::DefaultPosition
+/// <summary>Character spawns in the position defined in the arena spec.</summary>
+///
+/// @var Quantum::BattlePlayerSpawnBehaviour Quantum::BattlePlayerSpawnBehaviour::CharactersPreviousPosition
+/// <summary>Character spawns in the position it despawned in.</summary>
+///
+/// @var Quantum::BattlePlayerSpawnBehaviour Quantum::BattlePlayerSpawnBehaviour::PreviousCharactersPosition
+/// <summary>Character spawns in the position the last character despawned in.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
 /// @struct Quantum::BattlePlayerDataQComponent
 /// <summary>
 /// Contains player's data, including ids, stats, position, size, hitboxlists, etc.
@@ -67,6 +87,10 @@
 /// @var bool Quantum::BattlePlayerDataQComponent::DisableRotation
 /// <summary>Whether rotating the character is disabled or not.</summary>
 /// Part of @ref PlayerAttributes "Player's attributes"
+///
+/// @var bool Quantum::BattlePlayerDataQComponent::SpawnBehaviour
+/// <summary>Which spawn behaviour this character uses.</summary>
+/// Part of @ref PlayerAttributes "Player's attributes"
 /// @}
 
 /// @anchor PlayerState
@@ -86,7 +110,11 @@
 /// Part of @ref PlayerState "Player's current state related data"
 ///
 /// @var FrameTimer Quantum::BattlePlayerDataQComponent::StunCooldown
-/// <summary> Timer used for the cooldown on the character being stunned.</summary>
+/// <summary>Timer used for the cooldown on the character being stunned.</summary>
+/// Part of @ref PlayerState "Player's current state related data"
+///
+/// @var FrameTimer Quantum::BattlePlayerDataQComponent::ShieldHitCooldown
+/// <summary>Timer used for the cooldown on the shield getting hit.</summary>
 /// Part of @ref PlayerState "Player's current state related data"
 /// @}
 
@@ -146,6 +174,18 @@
 /// Part of @ref Bot "Bot related data"
 /// @}
 
+/// @anchor View
+/// @name View related data
+/// @{
+/// @var FPVector2 Quantum::BattlePlayerDataQComponent::ViewPosition
+/// <summary>Position used by view logic for adjusting the player's view model.</summary>
+/// part of @ref View "View related data"
+///
+/// @var FPVector2 Quantum::BattlePlayerDataQComponent::ViewMovementVector
+/// <summary>Direction used by view logic for player movement animation.</summary>
+/// part of @ref View "View related data"
+/// @}
+
 /// @name Quantum Built-in
 /// @{
 ///
@@ -178,6 +218,9 @@
 ///
 /// @var bool Quantum::BattlePlayerDataTemplateQComponent::DisableRotation
 /// <summary>Bool for disabling rotation for character.</summary>
+///
+/// @var bool Quantum::BattlePlayerDataTemplateQComponent::SpawnBehaviour
+/// <summary>Which spawn behaviour this character uses.</summary>
 
 /// @name Quantum Built-in
 /// @{

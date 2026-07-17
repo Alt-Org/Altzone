@@ -10,6 +10,7 @@ using Altzone.Scripts.Model.Poco.Game;
 public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 {
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
+    [SerializeField] private ExitRaid exitRaid;
 
     [SerializeField, Header("Reference game components")] private TMP_Text CurrentLootText;
     [SerializeField] private TMP_Text OutOfText;
@@ -24,6 +25,11 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
     public void Awake()
     {
+        if (exitRaid == null)
+        {
+            exitRaid = ExitRaid.Instance;
+        }
+
 /*        _photonView = gameObject.AddComponent<PhotonView>();
         _photonView.ViewID = 3;
         if (PhotonNetwork.IsMasterClient)
@@ -41,6 +47,7 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         MaxLootWeight = maxLootWeight;
         //Debug.Log("maxLootWeight has been set");
         this.MaxLootText.text = MaxLootWeight.ToString() + " kg";
+        UpdateHeartLootText();
     }
 
     public void ResetLootCount()
@@ -50,11 +57,12 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
         CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
         OutOfText.text = "Out of";
         MaxLootText.text =  MaxLootWeight.ToString() + " kg";
+        UpdateHeartLootText();
     }
 
-    public void SetLootCount(GameFurniture furniture, float MaxLootWeight)
+    public void SetLootCount(GameFurniture furniture, float MaxLootWeight, float lootWeightMultiplier = 1f)
     {
-        float AddedLootWeight = (float)furniture.Weight;
+        float AddedLootWeight = (float)furniture.Weight * lootWeightMultiplier;
         ListOfCollectedLoot.Add(furniture);
 
         float NewLootWeight = CurrentLootWeight + AddedLootWeight;
@@ -62,14 +70,10 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
 
         CurrentLootText.text = NewLootWeight.ToString() + " kg";
         MaxLootText.text = MaxLootWeight.ToString() + " kg";
-        float weightTMP = MaxLootWeight - NewLootWeight;
-        HeartLootText.text = (MaxLootWeight - NewLootWeight).ToString("F0");
+        UpdateHeartLootText();
         if (CurrentLootWeight > MaxLootWeight)
         {
             //EndScreen
-            raid_References.RedScreen.SetActive(true);
-            raid_References.EndMenu.SetActive(true);
-            raid_References.OutOfSpace.enabled = true;
 
             //HeartBreak animation
             Color tmp = raid_References.Heart.GetComponent<Image>().color;
@@ -80,7 +84,34 @@ public class Raid_LootTracking : MonoBehaviour//PunCallbacks
             }
             raid_References.HeartHalves.SetActive(true);
             raid_References.Heart.GetComponent<Image>().enabled = false;
+
+            if (exitRaid == null)
+            {
+                exitRaid = ExitRaid.Instance;
+            }
+
+            if (exitRaid != null)
+            {
+                exitRaid.EndRaid(ExitRaid.RaidEndReason.OutOfSpace);
+            }
+            else
+            {
+                Raid_EndMenu endMenu = raid_References.EndMenuController;
+                if (endMenu != null)
+                {
+                    endMenu.SetEndReasonText(ExitRaid.RaidEndReason.OutOfSpace);
+                    endMenu.SetOverWeightLimitBackground(true);
+                    endMenu.SetSpaceRemainingText(CurrentLootWeight, MaxLootWeight);
+                }
+
+                raid_References.ShowEndMenu();
+            }
         }
+    }
+
+    private void UpdateHeartLootText()
+    {
+        HeartLootText.text = $"{CurrentLootWeight:F0}kg\n/{MaxLootWeight:F0}kg";
     }
     
 }

@@ -129,7 +129,9 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
+    public QBoolean DisableMovement;
     public QBoolean DisableRotation;
+    public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
     public QBoolean MovementEnabled;
     public QBoolean RotationEnabled;
     public FP CurrentDefence;
@@ -158,7 +160,9 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Stats, out result.Stats);
       converter.Convert(this.GridExtendTop, out result.GridExtendTop);
       converter.Convert(this.GridExtendBottom, out result.GridExtendBottom);
+      converter.Convert(this.DisableMovement, out result.DisableMovement);
       converter.Convert(this.DisableRotation, out result.DisableRotation);
+      converter.Convert(this.SpawnBehaviour, out result.SpawnBehaviour);
       converter.Convert(this.MovementEnabled, out result.MovementEnabled);
       converter.Convert(this.RotationEnabled, out result.RotationEnabled);
       converter.Convert(this.CurrentDefence, out result.CurrentDefence);
@@ -234,6 +238,17 @@ namespace Quantum.Prototypes.Unity {
     public override Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype();
       converter.Convert(this.ERef, out result.ERef);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
+  public unsafe partial class BattleProjectileTriggerQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattleProjectileTriggerQComponentPrototype> {
+    public Quantum.QuantumEntityPrototype ProjectileEntityRef;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleProjectileTriggerQComponentPrototype prototype);
+    public override Quantum.Prototypes.BattleProjectileTriggerQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattleProjectileTriggerQComponentPrototype();
+      converter.Convert(this.ProjectileEntityRef, out result.ProjectileEntityRef);
       ConvertUser(converter, ref result);
       return result;
     }

@@ -53,13 +53,13 @@ namespace Battle.QSimulation.Player
             if (grab)
             {
                 Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
-                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntity);
+                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntityRef);
 
                 FPVector2 toProjectile = transformProjectile->Position - transformPlayer->Position;
 
-                BattleProjectileQSystem.SetHeld(f, projectileCollisionData->Projectile, true);
+                BattleProjectileQSystem.SetHeld(projectileCollisionData->Projectile, true);
                 data->IsHoldingProjectile = true;
-                data->HeldProjectileEntity = projectileCollisionData->ProjectileEntity;
+                data->HeldProjectileEntity = projectileCollisionData->ProjectileEntityRef;
                 data->HeldProjectileAngleRadians = FPVector2.RadiansSigned(FPVector2.Up, toProjectile);
                 data->HeldProjectileDistance = shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset + projectileCollisionData->Projectile->Radius;
                 data->HoldStartFrame = f.Number;
@@ -68,8 +68,8 @@ namespace Battle.QSimulation.Player
             {
                 BattleProjectileQSystem.HandleIntersection(f,
                     projectileCollisionData->Projectile,
-                    projectileCollisionData->ProjectileEntity,
-                    projectileCollisionData->OtherEntity,
+                    projectileCollisionData->ProjectileEntityRef,
+                    projectileCollisionData->OtherEntityRef,
                     shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f),
                     shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset
                 );
@@ -89,7 +89,8 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle for the player.</param>
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
-        public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity)
+        /// <param name="specialInput">Pointer to special input (unused)</param>
+        public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
         {
             BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
             if (!data->IsHoldingProjectile) return;
@@ -103,11 +104,10 @@ namespace Battle.QSimulation.Player
 
             if (teammateHandle.PlayState.IsInPlay())
             {
+                BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(data->HeldProjectileEntity);
+                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(data->HeldProjectileEntity);
                 Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(playerEntity);
                 Transform2D* transformTeammate = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
-                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(data->HeldProjectileEntity);
-                BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(data->HeldProjectileEntity);
-
                 FPVector2 targetPosition = transformTeammate->Position;
                 targetPosition.Y += (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FP._4 : -FP._4) * BattleGridManager.GridScaleFactor;
 
@@ -119,12 +119,12 @@ namespace Battle.QSimulation.Player
 
                 FPVector2 newDirection = FPVector2.Rotate(FPVector2.Up, newAngle);
 
-                transformProjectile->Position = transformPlayer->Position + newDirection * data->HeldProjectileDistance;
+                BattleEntityManager.MoveCompound(f, data->HeldProjectileEntity, transformPlayer->Position + newDirection * data->HeldProjectileDistance, FP._0);
 
                 if (newAngle == angleTeammate)
                 {
                     BattleProjectileQSystem.UpdateVelocity(f, projectile, newDirection, BattleProjectileQSystem.SpeedChange.Increment, passed: true);
-                    BattleProjectileQSystem.SetHeld(f, projectile, false);
+                    BattleProjectileQSystem.SetHeld(projectile, false);
                     data->IsHoldingProjectile = false;
                     playerHandle.AllowCharacterSwapping = true;
                 }

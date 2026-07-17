@@ -42,6 +42,7 @@ namespace Altzone.Scripts.Voting
     public class PollData
     {
         public string Id;
+        public string Organizer;
         public long StartTime;
         public long EndTime;
         public Sprite Sprite;
@@ -76,7 +77,11 @@ namespace Altzone.Scripts.Voting
             List<string> clanMembers = new List<string>();
             ClanData clan = null;
             Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, c => clan=c);
-            if (clan.Members != null) clanMembers = clan.Members.Select(member => member.Id).ToList();
+            if (clan.Members != null)
+            {
+                clanMembers = clan.Members.Select(member => member.Id).ToList();
+                Organizer = clan.Members.Find(member => member.Id == poll.organizer?.player_id)?.Name;
+            }
 
             NotVoted = clanMembers;
             YesVotes = new List<PollVoteData>();
@@ -152,7 +157,7 @@ namespace Altzone.Scripts.Voting
     {
         public FurniturePollType FurniturePollType;
         public GameFurniture Furniture;
-        
+
         public FurniturePollData(string id, List<string> clanMembers, FurniturePollType furniturePollType, GameFurniture furniture, long endTime = 1)
         : base(id, furniture.FurnitureInfo.Image, clanMembers, endTime)
         {
@@ -161,7 +166,7 @@ namespace Altzone.Scripts.Voting
         }
 
         public FurniturePollData(ServerPoll poll ,ClanData clanData)
-        : base(poll)
+        :base(poll)
         {
             GameFurniture gameFurniture = null;
             if (poll.type == "flea_market_sell_item")
