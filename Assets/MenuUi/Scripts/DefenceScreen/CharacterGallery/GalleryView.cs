@@ -166,7 +166,7 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        private CharacterSlot InstantiateCharacterSlot(CharacterID charID, bool isLocked, Transform parent)
+        private CharacterSlot InstantiateCharacterSlot(CharacterID charID, bool isLocked, Transform parent, bool gradientOverride = false)
         {
             PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)charID).ToString());
             if (info == null) return null;
@@ -175,31 +175,34 @@ namespace MenuUi.Scripts.CharacterGallery
 
             CharacterClassType classType = CustomCharacter.GetClass(charID);
             string classNameIcon = _classReference.GetName(classType);
-            
+            Color bgColor = _classReference.GetColor(classType);
+            Color bgDeepColor = _classReference.GetDeepColor(classType);
+
             Sprite classIcon = _classReference.GetCornerIcon(classType);
 
             Sprite bgImage;
 
-            // If there already is a sprite generated for this classtype, use the existing one
-            if (_classBgSprites.TryGetValue(classType, out var sprite))
+            CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
+            charSlot.SetInfo(info.GalleryImage, bgColor, bgDeepColor, info.Name, classNameIcon, classIcon, charID);
+
+            if (gradientOverride)
             {
-                bgImage = sprite;
+                // If there already is a sprite generated for this classtype, use the existing one
+                if (_classBgSprites.TryGetValue(classType, out var sprite))
+                {
+                    bgImage = sprite;
+                }
+                // If there is no sprite for this classtype, create a new one
+                else
+                {
+                    Color bgAltColor = _classReference.GetAlternativeColor(classType);
+                    bgImage = ThreeColorGradient.GenerateGradient(bgColor, bgAltColor, bgDeepColor);
+
+                    // Store the sprite to the dictionary
+                    _classBgSprites.Add(classType, bgImage);
+                }
+                charSlot.GradientOverride(bgImage);
             }
-            // If there is no sprite for this classtype, create a new one
-            else
-            {
-                Color bgColor = _classReference.GetColor(classType);
-                Color bgAltColor = _classReference.GetAlternativeColor(classType);
-                Color bgDeepColor = _classReference.GetDeepColor(classType);
-                bgImage = ThreeColorGradient.GenerateGradient(bgColor, bgAltColor, bgDeepColor);
-
-                // Store the sprite to the dictionary
-                _classBgSprites.Add(classType, bgImage);
-            }
-
-
-                CharacterSlot charSlot = slot.GetComponent<CharacterSlot>();
-            charSlot.SetInfo(info.GalleryImage, bgImage, info.Name, classNameIcon, classIcon, charID);
 
             _characterSlots.Add(charSlot);
 

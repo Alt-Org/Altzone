@@ -23,6 +23,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Image _backgroundBorderImage;
         [SerializeField] private Image _backgroundLowerImage;
         [SerializeField] private Image _backgroundUpperImage;
+        [SerializeField] private Image _backgroundOverride;
         [SerializeField] private TextMeshProUGUI _characterNameText;
         [SerializeField] private TextMeshProUGUI _classNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
@@ -122,7 +123,7 @@ namespace MenuUi.Scripts.CharacterGallery
         /// <param name="name">Character's name which to display.</param>
         /// <param name="id">Character's ID.</param>
         /// <param name="originalSlot">The original inventory slot for the GalleryCharacter prefab.</param>
-        public void SetInfo(Sprite sprite, Sprite bgImage, string name, string className, CharacterID id, CharacterSlot originalSlot)
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, CharacterID id, CharacterSlot originalSlot)
         {
             _spriteImage.sprite = sprite;
             _characterNameText.text = name;
@@ -135,7 +136,8 @@ namespace MenuUi.Scripts.CharacterGallery
             }
             _id = id;
 
-            _backgroundUpperImage.sprite = bgImage;
+            _backgroundLowerImage.color = bgAltColor;
+            _backgroundUpperImage.color = bgColor;
             _originalSlot = originalSlot;
 
             if (_classIcon && _classReference)
@@ -143,6 +145,18 @@ namespace MenuUi.Scripts.CharacterGallery
                 _classIcon.sprite = _classReference.GetCornerIcon(CustomCharacter.GetClass(id));
                 _classIcon.enabled = _classIcon.sprite != null;
             }
+        }
+
+        public void GradientOverride(Sprite bgImage)
+        {
+            if(bgImage == null)
+            {
+                _backgroundOverride.sprite = null;
+                _backgroundOverride.gameObject.SetActive(false);
+                return;
+            }
+            _backgroundOverride.sprite = bgImage;
+            _backgroundOverride.gameObject.SetActive(true);
         }
 
 
