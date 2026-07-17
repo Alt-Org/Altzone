@@ -39,11 +39,21 @@ public class ChooseTask : MonoBehaviour
     private RectTransform _randomQuestionWindow;
 
     [SerializeField]
+    [Tooltip("The background image to scale")]
+    private RectTransform _randomQuestionBackground;
+
+    [SerializeField]
     [Tooltip("The question")]
     private TextMeshProUGUI _randomQuestionTitle;
 
     [SerializeField]
     [Tooltip("The object that's children are going to the Random Question answers")]
+
+    private RectTransform _multipleAnswerHolder;
+    [SerializeField]
+    [Tooltip("The object that's children are going to the Random Question answers")]
+    private RectTransform _doubleAnswerHolder;
+
     private RectTransform _randomQuestionAnswerHolder;
 
     [SerializeField]
@@ -66,6 +76,9 @@ public class ChooseTask : MonoBehaviour
     public static event ChooseTaskHidden OnChooseTaskHidden;
 
     private static bool _shouldShowPopup = false;
+
+    private float _bgStepHeight = 0.06f;
+    private float _initialBgSize = 0.55f;
 
     IEnumerator Initialize()
     {
@@ -176,26 +189,57 @@ public class ChooseTask : MonoBehaviour
         // Show the question title for the player
         _randomQuestionTitle.text = question.Question;
 
+        // Select the proper answer holder
+        if (question.answers.Count > 2)
+        {
+            _randomQuestionAnswerHolder = _multipleAnswerHolder;
+            _doubleAnswerHolder.gameObject.SetActive(false);
+            _multipleAnswerHolder.gameObject.SetActive(true);
+
+            // Scale background accordingly
+            float yPos = _initialBgSize - (_bgStepHeight * question.answers.Count);
+
+            _randomQuestionBackground.anchorMin = new Vector2(
+                _randomQuestionBackground.anchorMin.x,
+                yPos);
+        }
+        else
+        {
+            _randomQuestionAnswerHolder = _doubleAnswerHolder;
+            _doubleAnswerHolder.gameObject.SetActive(true);
+            _multipleAnswerHolder.gameObject.SetActive(false);
+
+            // Scale background accordingly
+            _randomQuestionBackground.anchorMin = new Vector2(
+                _randomQuestionBackground.anchorMin.x,
+                _initialBgSize);
+
+        }
+
         // Create answers for the player to select from
         foreach (RandomQuestionAnswer questionAnswer in question.answers)
         {
             GameObject answerObj = Instantiate(_randomQuestionAnswerPrefab, _randomQuestionAnswerHolder);
             answerObj.GetComponentInChildren<TextMeshProUGUI>().text = questionAnswer.Answer;
-            answerObj.GetComponentInChildren<Image>().color = questionAnswer.color;
             answerObj.GetComponentInChildren<Button>().onClick.AddListener(() => { HideSelectionWindow(); });
 
         }
-
     }
 
     /// <summary>
-    /// Destroys the current random question answers that are parented by _randomQuestionAnswerHolder
+    /// Destroys the current random question answers that are parented by _doubleAnswerHolder and _multipleAnswerHolder
     /// </summary>
     private void DeleteRandomQuestionAnswers()
     {
-        for (int i = 0; i < _randomQuestionAnswerHolder.childCount; i++)
+
+        for (int i = 0; i < _doubleAnswerHolder.childCount; i++)
         {
-            Destroy(_randomQuestionAnswerHolder.GetChild(i).gameObject);
+            Destroy(_doubleAnswerHolder.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < _multipleAnswerHolder.childCount; i++)
+        {
+            Destroy(_multipleAnswerHolder.GetChild(i).gameObject);
         }
     }
 

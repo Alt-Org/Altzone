@@ -4,58 +4,39 @@ using UnityEngine;
 [System.Serializable]
 public class RandomQuestionData
 {
-
-    [HideInInspector]
     public string Question
     {
         get
         {
-            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
-            {
-                return englishQuestion;
-            }
-            else
-            {
-                return question;
-            }
-                
+            return SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+                ? _englishQuestion : _question;      
         }
     }
 
-    [SerializeField] private string question;
-    [SerializeField] private string englishQuestion;
+    [SerializeField] private string _question;
+    [SerializeField] private string _englishQuestion;
     public List<RandomQuestionAnswer> answers;
-
 }
 
 [System.Serializable]
 public class RandomQuestionAnswer
 {
-    [HideInInspector]
     public string Answer
     {
         get
         {
-            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
-            {
-                return englishAnswer;
-            }
-            else
-            {
-                return answer;
-            }
+            return SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+                ? _englishAnswer : _answer;
         }
     }
 
-    [SerializeField]private string answer;
-    [SerializeField]private string englishAnswer;
-    public Color color;
+    [SerializeField]private string _answer;
+    [SerializeField]private string _englishAnswer;
 }
 
 [CreateAssetMenu(fileName = "NewRandomQuestionConfig", menuName = "ALT-Zone/DailyTask/RandomQuestionConfig")]
 public class RandomQuestionConfig : ScriptableObject
 {
-
     private static RandomQuestionConfig _instance;
 
     public static RandomQuestionConfig Instance
@@ -74,7 +55,4 @@ public class RandomQuestionConfig : ScriptableObject
     [SerializeField] private List<RandomQuestionData> _questions;
 
     public List<RandomQuestionData> GetRandomQuestions() => _questions;
-
-
-
 }
