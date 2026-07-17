@@ -40,5 +40,8 @@ namespace Battle.QSimulation.Player
         [Tooltip("Maximum distance from joystick center for a press to register as pressing the middle")]
         /// <summary>Maximum distance from joystick center for a press to register as pressing the middle</summary>
         public FP JoystickTapDistanceMax;
+        [Tooltip("Time in seconds before character stops moving completely.")]
+        /// <summary>Time in seconds before character stops moving completely.</summary>
+        public FP PlacementTimeDurationSec;
     }
 }

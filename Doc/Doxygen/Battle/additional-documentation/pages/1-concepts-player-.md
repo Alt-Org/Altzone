@@ -429,6 +429,20 @@ This is managed by the [{PlayerManager}](#page-concepts-player-simulation-manage
 
 <br/>
 
+### Player Character Spawn Behaviour {#page-concepts-player-character-entity-spawn-behaviour}
+
+Each **Player Character** has 3 ways to spawn, defined by @cref{Quantum,BattlePlayerSpawnBehaviour}.
+
+| Enumerator                                                                                             ||
+| :------------------------- | :------------------------------------------------------------------------- |
+| DefaultPosition            | @copybrief Quantum::BattlePlayerSpawnBehaviour::DefaultPosition            |
+| CharactersPreviousPosition | @copybrief Quantum::BattlePlayerSpawnBehaviour::CharactersPreviousPosition |
+| PreviousCharactersPosition | @copybrief Quantum::BattlePlayerSpawnBehaviour::PreviousCharactersPosition |
+
+The [{PlayerManager}](#page-concepts-player-simulation-management-playermanager) handles spawning based on the **Player Character's** chosen **Spawn Behaviour**.
+
+<br/>
+
 ### Shield Number {#page-concepts-player-character-entity-shield-number}
 
 Each **Shield %Quantum Entity** is internally assigned a **Shield Number**, each corresponding to one of the **Shields** a **Character** controls.
@@ -621,6 +635,7 @@ and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate) o
 
 A **Character** can be **Spawned** using @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int)}.
 ([{InPlay}](#page-concepts-entity-management-registered-entities-playstate))  
+The **Character** is spawned based on it's chosen [{Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour).  
 If a **Character** is [{Dead}](#page-concepts-player-character-entity-character-state), it cannot be **Spawned**.
 
 A **Character** can be **Despawned** using @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, bool)}.

@@ -154,6 +154,9 @@ namespace Altzone.Scripts.ReferenceSheets
         public string EnglishName;
         public string SetName;
         public string SetNameEnglish;
+        public Sprite SetRibbonBackground;
+        public Sprite SetPosterBackground;
+        public Sprite SetFontName;
         public string ArtistName;
         public string ArtisticDescription;
         public string EnglishArtisticDescription;
@@ -163,6 +166,9 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             Image = data.Image;
             PosterImage = data.PosterImage;
+            SetRibbonBackground = setData.SetRibbonBackground;
+            SetPosterBackground = setData.SetPosterBackground;
+            SetFontName = setData.SetFontName;
             RibbonImage = data.RibbonImage;
             VisibleName = data.VisibleName;
             EnglishName = data.EnglishName;
@@ -177,7 +183,7 @@ namespace Altzone.Scripts.ReferenceSheets
 
     [Serializable]
     public class FurnitureInfoObject
-    {        
+    {
         public string Name;
         public string EnglishName;
         public Sprite Image;
@@ -195,8 +201,11 @@ namespace Altzone.Scripts.ReferenceSheets
     {
         public string SetName;
         public string SetNameEnglish;
+        public Sprite SetRibbonBackground;
+        public Sprite SetPosterBackground;
+        public Sprite SetFontName;
         public string ArtistName;
-        
+
         public List<FurnitureInfoObject> list;
     }
 }

@@ -33,11 +33,6 @@ namespace Battle.View.Player
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <summary>Reference to the shield GameObject.</summary>
-        /// Part of @ref BattlePlayerShieldClass400ViewController-SerializeFields "SerializeFields"
-        [Tooltip("Reference to the shield GameObject.")]
-        [SerializeField] private GameObject _shieldSpriteGameObject;
-
         /// <summary>Indicates if the moving shield should be flipped.</summary>
         /// Part of @ref BattlePlayerShieldClass400ViewController-SerializeFields "SerializeFields"
         [Tooltip("Indicates if the moving shield should be flipped.")]
@@ -63,11 +58,11 @@ namespace Battle.View.Player
 
             Vector3 toProjectileVec3 = projectileRef.transform.position - transform.position;
             Vector2 toProjectileVec2 = new(toProjectileVec3.x, toProjectileVec3.z);
-            Vector3 currentAngles    = _shieldSpriteGameObject.transform.rotation.eulerAngles;
+            Vector3 currentAngles    = _parent.ShieldGameObject.transform.rotation.eulerAngles;
 
             if (toProjectileVec2.sqrMagnitude > _maxShieldRotateDistanceSqr)
             {
-                _shieldSpriteGameObject.transform.SetLocalPositionAndRotation(
+                _parent.ShieldGameObject.transform.SetLocalPositionAndRotation(
                     _shieldDefaultPosition,
                     _shieldDefaultRotation
                 );
@@ -76,12 +71,12 @@ namespace Battle.View.Player
 
             float angle = -Vector2.SignedAngle(Vector2.up, toProjectileVec2);
 
-            if (_movingShieldFlipped)
+            if (_movingShieldFlipped ^ !_parent.OnLocalTeam)
             {
                 angle += 180f;
             }
 
-            _shieldSpriteGameObject.transform.SetPositionAndRotation(
+            _parent.ShieldGameObject.transform.SetPositionAndRotation(
                 transform.position + toProjectileVec3.normalized * _shieldOffset,
                 Quaternion.Euler(currentAngles.x, angle, currentAngles.z)
             );
@@ -98,9 +93,9 @@ namespace Battle.View.Player
         {
             _maxShieldRotateDistanceSqr = 20f * (float)BattleGridManager.GridScaleFactor;
             _maxShieldRotateDistanceSqr *= _maxShieldRotateDistanceSqr;
-            _shieldOffset = Vector3.Distance(_shieldSpriteGameObject.transform.position, transform.position);
+            _shieldOffset = Vector3.Distance(_parent.ShieldGameObject.transform.position, transform.position);
 
-            _shieldSpriteGameObject.transform.GetLocalPositionAndRotation(out _shieldDefaultPosition, out _shieldDefaultRotation);
+            _parent.ShieldGameObject.transform.GetLocalPositionAndRotation(out _shieldDefaultPosition, out _shieldDefaultRotation);
         }
 
         /// <summary>

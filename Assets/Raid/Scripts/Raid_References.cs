@@ -1,30 +1,75 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class Raid_References : MonoBehaviour
 {
     [SerializeField, Header("Reference GameObjects")]
-    public GameObject RedScreen;
+ 
     public GameObject EndMenu;
     public GameObject HeartHalves;
     public GameObject Heart;
 
     [SerializeField, Header("Reference game components")]
-    public TextMeshProUGUI OutOfTime;
-    public TextMeshProUGUI OutOfSpace;
-    public TextMeshProUGUI RaidEndedText;
     public Raid_InventoryHandler inventoryHandler;
     public Raid_LootTracking raid_LootTracking;
+    [SerializeField] private Raid_EndMenu endMenuController;
+
+    public Raid_EndMenu EndMenuController
+    {
+        get
+        {
+            ResolveEndMenuController();
+            return endMenuController;
+        }
+    }
 
     private void Start()
     {
         inventoryHandler = GameObject.Find("ScriptHolder").GetComponent<Raid_InventoryHandler>();
-        RedScreen.SetActive(false);
-        EndMenu.SetActive(false);
-        OutOfTime.enabled = false;
-        OutOfSpace.enabled = false;
-        RaidEndedText.enabled = false;
+
+        HideEndMenu();
+    }
+
+    public void ShowEndMenu()
+    {
+        if (EndMenuController != null)
+        {
+            EndMenuController.Show();
+        }
+        else if (EndMenu != null)
+        {
+            EndMenu.SetActive(true);
+        }
+    }
+
+    public void HideEndMenu()
+    {
+        if (EndMenuController != null)
+        {
+            EndMenuController.Hide();
+        }
+        else if (EndMenu != null)
+        {
+            EndMenu.SetActive(false);
+        }
+    }
+
+    private void ResolveEndMenuController()
+    {
+        if (endMenuController == null)
+        {
+            endMenuController = Raid_EndMenu.Instance;
+        }
+
+        if (endMenuController == null && EndMenu != null)
+        {
+            endMenuController = EndMenu.GetComponent<Raid_EndMenu>();
+        }
+
+        if (EndMenu == null && endMenuController != null)
+        {
+            EndMenu = endMenuController.MenuRoot;
+        }
     }
 }

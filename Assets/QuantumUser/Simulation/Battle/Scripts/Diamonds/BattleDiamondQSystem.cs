@@ -49,7 +49,7 @@ namespace Battle.QSimulation.Diamond
             if (projectileCollisionData->Projectile->IsHeld) return;
             BattleDiamondQSpec diamondSpec = BattleQConfig.GetDiamondSpec(f);
 
-            CreateDiamonds(f, f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->OtherEntity)->Position, soulWallCollisionData->SoulWall->Normal, diamondSpec);
+            CreateDiamonds(f, f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->OtherEntityRef)->Position, soulWallCollisionData->SoulWall->Normal, diamondSpec);
         }
 
         /// <summary>

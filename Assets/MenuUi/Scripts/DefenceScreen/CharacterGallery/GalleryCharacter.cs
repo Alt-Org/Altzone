@@ -23,6 +23,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private Image _backgroundBorderImage;
         [SerializeField] private Image _backgroundLowerImage;
         [SerializeField] private Image _backgroundUpperImage;
+        [SerializeField] private Image _backgroundOverride;
         [SerializeField] private TextMeshProUGUI _characterNameText;
         [SerializeField] private TextMeshProUGUI _classNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
@@ -134,6 +135,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 _classNameText.text = className;
             }
             _id = id;
+
             _backgroundLowerImage.color = bgAltColor;
             _backgroundUpperImage.color = bgColor;
             _originalSlot = originalSlot;
@@ -143,6 +145,18 @@ namespace MenuUi.Scripts.CharacterGallery
                 _classIcon.sprite = _classReference.GetCornerIcon(CustomCharacter.GetClass(id));
                 _classIcon.enabled = _classIcon.sprite != null;
             }
+        }
+
+        public void GradientOverride(Sprite bgImage)
+        {
+            if(bgImage == null)
+            {
+                _backgroundOverride.sprite = null;
+                _backgroundOverride.gameObject.SetActive(false);
+                return;
+            }
+            _backgroundOverride.sprite = bgImage;
+            _backgroundOverride.gameObject.SetActive(true);
         }
 
 
