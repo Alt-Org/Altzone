@@ -582,7 +582,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
         if (playerData.Task == null || !MultipleChoiceOptions.Instance.IsMultipleChoice(playerData.Task)) return;
         PopupData data = new(playerData.Task);
-        ShowPopupAndHandleResponse(playerData.Task.Content, data);
+        ShowPopupAndHandleResponse(playerData.Task.Description, data);
     }
 
     /// <summary>

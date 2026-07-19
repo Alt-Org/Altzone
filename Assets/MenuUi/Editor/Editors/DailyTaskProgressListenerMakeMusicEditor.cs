@@ -12,8 +12,11 @@ public class DailyTaskProgressListenerMakeMusicEditor : DailyTaskProgressListene
 
         serializedObject.Update();
 
-        SerializedProperty buttons = serializedObject.FindProperty("_buttons");
-        EditorGUILayout.PropertyField(buttons);
+        SerializedProperty buttonsToClick = serializedObject.FindProperty("_buttonsToClick");
+        EditorGUILayout.PropertyField(buttonsToClick);
+
+        SerializedProperty naviButtonsToDisable = serializedObject.FindProperty("_naviButtonsToDisable");
+        EditorGUILayout.PropertyField(naviButtonsToDisable);
 
         serializedObject.ApplyModifiedProperties();
     }

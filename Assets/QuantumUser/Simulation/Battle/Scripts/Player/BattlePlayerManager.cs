@@ -389,11 +389,12 @@ namespace Battle.QSimulation.Player
                         // player's attributes
                         GridExtendTop          = playerGridExtendTop,
                         GridExtendBottom       = playerGridExtendBottom,
+                        DisableMovement        = playerCharacterDataTemplate->DisableMovement,
                         DisableRotation        = playerCharacterDataTemplate->DisableRotation,
                         SpawnBehaviour         = playerCharacterDataTemplate->SpawnBehaviour,
 
                         // player's current state related data
-                        MovementEnabled        = true,
+                        MovementEnabled        = !playerCharacterDataTemplate->DisableMovement,
                         RotationEnabled        = !playerCharacterDataTemplate->DisableRotation,
                         CurrentDefence         = FP._0,
 
