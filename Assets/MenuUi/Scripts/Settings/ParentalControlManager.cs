@@ -10,7 +10,7 @@ using WebSocketSharp;
 
 public class ParentalControlManager : MonoBehaviour
 {
-    private SettingsCarrier _carrier = SettingsCarrier.Instance;
+    private SettingsCarrier _carrier = SettingsCarrier.Instance; //SettingsCarrier carries all the settings between scenes etc. 
 
 
 
@@ -30,7 +30,6 @@ public class ParentalControlManager : MonoBehaviour
     public TMP_Text messageTextPopUpLength; //Message text when trying to set a password that is too short in the pop up
     public TMP_Text messageTextPopUpWrongPassword; //Message text when trying to set a password that doesn't match the confirmation
     //public Toggle controlToggle; //Toggle to enable or disable Parental Control, currently not in use
-    
 
 
     //the password will be set in the pop up
@@ -61,33 +60,23 @@ public class ParentalControlManager : MonoBehaviour
     //SocialControls
     
     public Toggle internetLinksToggle; 
-    
     public Toggle chatMessagesToggle;
-    
     public Toggle emojiCommentsToggle;
-    
     public Toggle treasureHuntToggle;
 
     //MoneyControls
     
     public TMP_InputField monthlyLimitInput;
-    
     public Toggle independentSpendingActivationToggle;
 
     //TimeControls
-    //public int dailyLimit; 
+     
     public TMP_InputField timeLimitInput;
-    //public int timeLimitAccuracy; //currently not in use?
-    public TMP_InputField timeLimitAccuracyInput;
-    
+    //public TMP_InputField timeLimitAccuracyInput; //currently not in use, was in previous plans
     public Toggle midMatchToggle;
-    
     public Toggle endMatchToggle;
 
     public GameObject settingsSavedPopUp; //The pop up that is shown shortly when settings are saved
-
-
-
 
 
     void Start()
@@ -96,9 +85,7 @@ public class ParentalControlManager : MonoBehaviour
         CheckControl(); //checks if Parental Control is on
         GetPassword(); //gets the password that is already set in PlayerPrefs
         LoadSettings(); //currently not in use, but could be used to load all the settings from PlayerPrefs at the same time, now they are loaded one by one
-        //Debug.Log("got the password " + presetPassword);
-        //Debug.Log("control status " + parentalControl);
-
+        
         parentalControlPanel.SetActive(true);
         //passwordPanel.SetActive(true);
         messageText.enabled = false;
@@ -107,8 +94,6 @@ public class ParentalControlManager : MonoBehaviour
         messageTextPopUpLength.enabled = false;
 
         //controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1; //The checkmark that is currently not in use
-        
-
         
         internetLinksToggle.onValueChanged.AddListener(_ => SetInternetLinks()); //Listeners are added for all the settings
         chatMessagesToggle.onValueChanged.AddListener(_ => SetChatMessages());
@@ -119,9 +104,7 @@ public class ParentalControlManager : MonoBehaviour
         timeLimitInput.onValueChanged.AddListener(_ => SetTimeLimit());
         midMatchToggle.onValueChanged.AddListener(_ => SetEndMidMatch());
         endMatchToggle.onValueChanged.AddListener(_ => SetEndAfterMatch());
-
-        
-
+                
     }
 
     
@@ -142,51 +125,6 @@ public class ParentalControlManager : MonoBehaviour
     }
     
 
-
-
-    /*
-
-    public void OpenPasswordPanel() //Currently not in use?
-    {
-        passwordPanel.SetActive(true);
-        messageText.text = "";
-    }
-    */ 
-
-    /*
-    public void CheckPassword() //this function is not in use currently
-    {
-        if (sessionPassword == "")
-        {
-            if (passwordInput.text.Length < 4-8)            // < -4 ??
-            {
-                messageText.text = "Password must be at least 4-8 characters";
-                return;
-            }
-
-            if (passwordInput.text != confirmPasswordInput.text)
-            {
-                messageText.text = "Passwords do not match";
-                return;
-            }
-
-            sessionPassword = passwordInput.text;
-            messageText.text = "Password set!";
-            Invoke("ShowSettings", 1.0f);
-        }
-        else if (passwordInput.text == sessionPassword)
-        {
-            messageText.text = "Access granted!";
-            Invoke("ShowSettings", 0.5f);
-        }
-        else
-        {
-            messageText.text = "Incorrect password!";
-        }
-    }
-
-    */ 
-
     public void GetPassword() {
 
         presetPassword = PlayerPrefs.GetString("password");
@@ -194,18 +132,7 @@ public class ParentalControlManager : MonoBehaviour
 
              }
 
-
-    /*
-    public void SetPasswordVisibilityState(TMP_InputField passwordInputField, bool value) //is this currently in use?
-    {
-        if (value)
-            passwordInputField.contentType = TMP_InputField.ContentType.Standard;
-        else
-            passwordInputField.contentType = TMP_InputField.ContentType.Password;
-
-        passwordInputField.ForceLabelUpdate();
-    }
-    */
+        
 
     public void LogIn()
     {
@@ -215,13 +142,12 @@ public class ParentalControlManager : MonoBehaviour
         {
             if (passwordInput.text == presetPassword)
             {
-                //Debug.Log("correct password, login allowed");
+       
                 messageText.enabled = false;
                 parentalControlSettings.SetActive(true);
                 passwordInput.text = "";
                 passwordPanel.SetActive(false);
                 activateLogInPanel.SetActive(false);
-
 
             }
 
@@ -262,9 +188,7 @@ public class ParentalControlManager : MonoBehaviour
     {
         
         setPasswordInput = popupPasswordInput.text;
-        //Debug.Log("to password input " + setPasswordInput);
-
-
+       
     }
 
 
@@ -272,18 +196,14 @@ public class ParentalControlManager : MonoBehaviour
     {
         
         setConfirmPasswordInput = confirmPasswordInput.text;
-        //Debug.Log("to confirm password input " + confirmPasswordInput.text);
-
-
+        
     }
 
 
 
     public void SetPassword() {
         //this is done in the pop-up
-
-
-        //Debug.Log(setPasswordInput);
+                     
 
         if (setPasswordInput.Length < 8)            
         {
@@ -293,9 +213,7 @@ public class ParentalControlManager : MonoBehaviour
         }
 
         if (setPasswordInput.Equals(setConfirmPasswordInput)) {
-
-
-            //Debug.Log("password is set to PlayerPrefs " + setPasswordInput);
+                        
             PlayerPrefs.SetString("password", setPasswordInput);
 
             //the int will indicate if Parental Control is on, 1 means that it is set
@@ -303,10 +221,6 @@ public class ParentalControlManager : MonoBehaviour
             PlayerPrefs.SetInt("parentalcontrol", 1);
             parentalControlPopupButton.SetActive(false);
             controlEnabledButton.SetActive(true); //just a visual indicator that Parental Control is on, no functionality
-
-            //Debug.Log(PlayerPrefs.GetString("password"));
-            //Debug.Log(PlayerPrefs.GetInt("parentalcontrol"));
-
 
             ClearPasswordFields();
             parentalControlPopup.SetActive(false);
@@ -318,7 +232,7 @@ public class ParentalControlManager : MonoBehaviour
 
         } else
         {
-            // messageTextPopUpWrongPassword will show the message that the password and confirmation do not match
+            //messageTextPopUpWrongPassword will show the message that the password and confirmation do not match
             messageTextPopUpWrongPassword.enabled = true;
             messageTextPopUpLength.enabled = false;
         }
@@ -329,7 +243,6 @@ public class ParentalControlManager : MonoBehaviour
     public void ClearPasswordFields()
     {
         //all the three password input fields will be cleared
-
         popupPasswordInput.text = "";
         confirmPasswordInput.text = "";
         passwordInput.text = "";
@@ -357,34 +270,7 @@ public class ParentalControlManager : MonoBehaviour
         }
 
     }
-
-    /*
-    private void ShowSettings() //is this currently in use?
-    {
-        passwordInput.text = "";
-        confirmPasswordInput.text = "";
-        messageText.text = "";
-        passwordPanel.SetActive(false);
-        parentalControlPanel.SetActive(true);
-    }
-    */
-
-    /*
-    public void CloseParentalControl() //currently not in use?
-    {
-        parentalControlPanel.SetActive(false);
-        sessionPassword = "";
-    }
-    */
-
-    /*
-    public void ToggleParentalControl(bool isEnabled) //currently not in use
-    {
-        PlayerPrefs.SetInt("ParentalControl", isEnabled ? 1 : 0);
-        PlayerPrefs.Save();
-    }
-    */
-
+        
     public void DisableParentalControl()
     {
         //ParentalControl is active only if PlayerPrefs "parentalcontrol" equals 1
@@ -395,7 +281,6 @@ public class ParentalControlManager : MonoBehaviour
         _carrier.AllowLinks = false;
         PlayerPrefs.SetInt("AllowChat", 0);
         _carrier.ChatMessages = false;
-        //Debug.Log("Carrier's chat messages is set to" + carrier.ChatMessages);
         PlayerPrefs.SetInt("AllowEmojis", 0);
         _carrier.AllowEmojis = false;
         PlayerPrefs.SetInt("AllowTreasureHunt", 0);
@@ -426,10 +311,7 @@ public class ParentalControlManager : MonoBehaviour
         parentalControlPopupButton.SetActive(true);
         controlEnabledButton.SetActive(false);
         activateLogInPanel.SetActive(true);
-        
-     
-
-
+          
     }
 
 
@@ -448,21 +330,13 @@ public class ParentalControlManager : MonoBehaviour
         }
 
         _carrier.AllowLinks = internetLinksToggle.isOn;
-        //Debug.Log("Carrier got the value " + carrier.AllowLinks + " for AllowLinks");
-        //Debug.Log("internetLinks, set PlayerPrefs to " + PlayerPrefs.GetInt("AllowLinks"));
-
+        
     }
 
     public void SetInternetLinksToggle() {
-        //internetLinksToggle.isOn = (PlayerPrefs.GetInt("AllowLinks", 0) != 0);
-
-        //get function has been moved to SettingsCarrier
-        internetLinksToggle.isOn = _carrier.AllowLinks;
-
         
-        //Debug.Log("internetLinksToggle is set");
-
-       
+        internetLinksToggle.isOn = _carrier.AllowLinks;
+               
     }
 
     public void SetChatMessages()
@@ -476,17 +350,15 @@ public class ParentalControlManager : MonoBehaviour
             PlayerPrefs.SetInt("AllowChat", 0);
         }
         _carrier.ChatMessages = chatMessagesToggle.isOn;
-        //Debug.Log("Carrier got the value " + carrier.ChatMessages + " for ChatMessages");
+        
     }
 
 
     public void SetChatMessagesToggle()
     {
-        //chatMessagesToggle.isOn = (PlayerPrefs.GetInt("AllowChat", 0) != 0);
+        
         chatMessagesToggle.isOn = _carrier.ChatMessages;
-        //Debug.Log("chat, got value" + PlayerPrefs.GetInt("AllowChat"));
-        Debug.Log("chatMessagesToggle is set");
-
+        
     }
 
 
@@ -506,10 +378,8 @@ public class ParentalControlManager : MonoBehaviour
     }
     public void SetEmojisToggle()
     {
-        //emojiCommentsToggle.isOn = (PlayerPrefs.GetInt("AllowEmojis", 0) != 0);
+        
         emojiCommentsToggle.isOn = _carrier.AllowEmojis;
-
-
 
     }
 
@@ -529,7 +399,7 @@ public class ParentalControlManager : MonoBehaviour
     }
     public void SetTreasureHuntToggle()
     {
-        //treasureHuntToggle.isOn = (PlayerPrefs.GetInt("AllowTreasureHunt", 0) != 0);
+        
         treasureHuntToggle.isOn = _carrier.AllowTreasureHunt;
 
     }
@@ -557,37 +427,9 @@ public class ParentalControlManager : MonoBehaviour
     public void SetMonthlyLimit()
     {
         //money control: monthly spending limit
-        //Debug.Log(monthlyLimitInput.GetType() + " type of monthly limit input field");
         string money = monthlyLimitInput.text;
-        //Debug.Log(money.GetType() + "type of money string");
         float moneyFloat = float.Parse(monthlyLimitInput.text); //maybe not needed, because the field is set to accept only floats in Unity's side
-        //Debug.Log("Got money limit " + moneyFloat);
-
-        /*
-        if (float.TryParse(monthlyLimitInput.text, out float limit))
-        {
-            moneyFloat = limit;
-            Debug.Log("Tried float.TryParse for monthly limit got value " + limit);
-        }
-        else {
-            moneyFloat = 0;
-        }
-        */
-        /*
-        if (Single.TryParse(monthlyLimitInput.text, out float limit2))
-        {
-            moneyFloat = limit2;
-            Debug.Log("Tried Single.TryParse for monthly limit");
-        }
-        else
-        {
-            moneyFloat = 0;
-        }
-        */
-
-         
-
-
+              
 
         if (money.IsNullOrEmpty())
         {
@@ -599,11 +441,10 @@ public class ParentalControlManager : MonoBehaviour
 
 
         }
-        else if (moneyFloat < 0)
+        else if (moneyFloat < 0) //you can't set a negative value for the money limit
         {
             PlayerPrefs.SetFloat("MonthlyLimit", 0);
             PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
-            Debug.Log("Negative money amount, value thus set to 0");
             _carrier.MonthlyLimit = 0;
             //TODO some kind of message, please input a positive value?
             PlayerPrefs.Save();
@@ -615,29 +456,19 @@ public class ParentalControlManager : MonoBehaviour
             PlayerPrefs.SetFloat("MonthlyLimit", float.Parse(money));
             PlayerPrefs.SetFloat("MonthlySpendingLimit", float.Parse(money));
             _carrier.MonthlyLimit = float.Parse(money);
-            Debug.Log("Carrier got the monthly limit " + _carrier.MonthlyLimit);
-            Debug.Log("Set money limit to" + float.Parse(money));
             PlayerPrefs.Save();
             GetMonthlyLimit();
 
 
         }
-        
-        
-
+           
     }
 
     public void GetMonthlyLimit()
     {
-        //float getInput = PlayerPrefs.GetFloat("MonthlyLimit");
-        //monthlyLimitInput.text = getInput.ToString();
-        //Debug.Log("Got monthly limit" + getInput);
+        
         monthlyLimitInput.text = _carrier.MonthlyLimit.ToString();
-        //Debug.Log("Got from the carrier monthly limit " + carrier.MonthlyLimit);
-        //float getInput2 = PlayerPrefs.GetFloat("MonthlySpendingLimit");
-        // monthlyLimitInput.text = getInput2.ToString();
-
-
+        
     }
 
 
@@ -656,9 +487,8 @@ public class ParentalControlManager : MonoBehaviour
     }
     public void SetIndependentSpendingActivationToggle()
     {
-        //independentSpendingActivationToggle.isOn = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 0) != 0);
+        
         independentSpendingActivationToggle.isOn = _carrier.ActivatePurchasesSeparately;
-
 
     }
 
@@ -668,31 +498,14 @@ public class ParentalControlManager : MonoBehaviour
 
         string timeInput = timeLimitInput.text;
         float timeFloat = float.Parse(timeLimitInput.text);
-        /*
-        if (timeFloat > 1)
-        {
-            PlayerPrefs.SetFloat("DailyTimeLimit", float.Parse(timeInput));
-            PlayerPrefs.Save();
-        }
-        else
-        {
-            PlayerPrefs.SetFloat("DailyTimeLimit", 1);
-            PlayerPrefs.Save();
-
-        }
-
-        */
-
+        
         if (float.TryParse(timeLimitInput.text, out float time))
         {
 
 
-
-
-            if (time > 1 && time <= 24) //The time limit is daily, so it can't go below one or above 24 hours. If the user inputs a value below 1, it will be set to 1, if above 24, it will be set to 24
+            if (time > 1 && time <= 24) //The time limit is daily, so it can't go below 1 or above 24 hours. If the user inputs a value below 1, it will be set to 1, if above 24, it will be set to 24
             {
                 PlayerPrefs.SetFloat("MaxPlayTime", time);
-                Debug.Log("Set time limit to " + time);
                 PlayerPrefs.SetFloat("DailyTimeLimit", time);
                 _carrier.MaxPlayTime = time;
                 PlayerPrefs.Save();
@@ -701,7 +514,6 @@ public class ParentalControlManager : MonoBehaviour
             }
             else if (time > 24) {
                 PlayerPrefs.SetFloat("MaxPlayTime", 24);
-                Debug.Log("Set time limit to " + 24);
                 PlayerPrefs.SetFloat("DailyTimeLimit", 24);
                 _carrier.MaxPlayTime = 24;
                 PlayerPrefs.Save();
@@ -718,25 +530,16 @@ public class ParentalControlManager : MonoBehaviour
                 GetTimeLimit();
             }
             
-
             
         }
         
-        /*
-        else {
-            PlayerPrefs.SetFloat("MaxPlayTime", 0);
-            PlayerPrefs.Save();
-        }
-        */
     }
 
     public void GetTimeLimit()
     {
-        //float getTime = PlayerPrefs.GetFloat("MaxPlayTime");
+        
         timeLimitInput.text = _carrier.MaxPlayTime.ToString();
-        //timeLimitInput.text = getTime.ToString();
-        //Debug.Log("Got time limit " + getTime);
-
+        
     }
 
 
@@ -754,9 +557,7 @@ public class ParentalControlManager : MonoBehaviour
     }
     public void SetEndMidMatchToggle()
     {
-        //midMatchToggle.isOn = (PlayerPrefs.GetInt("EndMidMatch", 0) != 0);
         midMatchToggle.isOn = _carrier.EndMidMatch;
-
 
     }
 
@@ -774,9 +575,7 @@ public class ParentalControlManager : MonoBehaviour
     }
     public void SetEndAfterMatchToggle()
     {
-        //endMatchToggle.isOn = (PlayerPrefs.GetInt("EndAfterMatch", 0) != 0);
         endMatchToggle.isOn = _carrier.EndAfterMatch;
-
 
     }
 
@@ -846,8 +645,6 @@ public class ParentalControlManager : MonoBehaviour
         yield return new WaitForSeconds(seconds);
         settingsSavedPopUp.SetActive(false);
     }
-
-
 
 
 }

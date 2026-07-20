@@ -436,7 +436,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         //ParentalControl settings
         _allowLinks = (PlayerPrefs.GetInt("AllowLinks", 1) ==1);
-        Debug.Log("AllowLinks value is fetched from PlayerPrefs to SettingsCarrier");
         _chatMessages = (PlayerPrefs.GetInt("AllowChat", 1) ==1);
         _allowEmojis = (PlayerPrefs.GetInt("AllowEmojis", 1) == 1);
         _allowTreasureHunt = (PlayerPrefs.GetInt("AllowTreasureHunt", 1) ==1);
