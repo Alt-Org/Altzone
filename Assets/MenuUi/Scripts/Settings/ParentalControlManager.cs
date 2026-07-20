@@ -25,11 +25,11 @@ public class ParentalControlManager : MonoBehaviour
 
     public TMP_InputField popupPasswordInput; //The field for setting the password in the pop up
     public TMP_InputField confirmPasswordInput;
-    //public Text messageText;
+    
     public TMP_Text messageText; //Message text when trying to input a wrong password
     public TMP_Text messageTextPopUpLength; //Message text when trying to set a password that is too short in the pop up
     public TMP_Text messageTextPopUpWrongPassword; //Message text when trying to set a password that doesn't match the confirmation
-    public Toggle controlToggle; //Toggle to enable or disable Parental Control, currently not in use
+    //public Toggle controlToggle; //Toggle to enable or disable Parental Control, currently not in use
     
 
 
@@ -45,7 +45,7 @@ public class ParentalControlManager : MonoBehaviour
     //boolean to check if the ParentalControl is on
     public bool parentalControl;
 
-    private string sessionPassword = ""; //currently not in use
+    //private string sessionPassword = ""; //currently not in use
 
     public string presetPassword; //the password already set in PlayerPrefs
     public string setPasswordInput; //the password input in the pop up
@@ -59,29 +59,29 @@ public class ParentalControlManager : MonoBehaviour
 
     //the ParentalControl settings
     //SocialControls
-    //public bool allowLinks;
+    
     public Toggle internetLinksToggle; 
-    //public bool chatMessages;
+    
     public Toggle chatMessagesToggle;
-    //public bool allowEmojis;
+    
     public Toggle emojiCommentsToggle;
-    //public bool allowTreasureHunt;
+    
     public Toggle treasureHuntToggle;
 
     //MoneyControls
-    //public float monthlyLimit;
+    
     public TMP_InputField monthlyLimitInput;
-    //public bool activatePurchasesSeparately;
+    
     public Toggle independentSpendingActivationToggle;
 
     //TimeControls
-    public int dailyLimit;
+    //public int dailyLimit; 
     public TMP_InputField timeLimitInput;
-    public int timeLimitAccuracy;
+    //public int timeLimitAccuracy; //currently not in use?
     public TMP_InputField timeLimitAccuracyInput;
-    //public bool EndMidMatch;
+    
     public Toggle midMatchToggle;
-    //public bool EndAfterMatch;
+    
     public Toggle endMatchToggle;
 
     public GameObject settingsSavedPopUp; //The pop up that is shown shortly when settings are saved
@@ -106,8 +106,8 @@ public class ParentalControlManager : MonoBehaviour
         messageTextPopUpWrongPassword.enabled = false;
         messageTextPopUpLength.enabled = false;
 
-        controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1; //The checkmark that is currently not in use
-        //timeLimitInput.text = 10f.ToString(); //PlayerPrefs.GetFloat("MaxPlayTime", 2f).ToString();
+        //controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1; //The checkmark that is currently not in use
+        
 
         
         internetLinksToggle.onValueChanged.AddListener(_ => SetInternetLinks()); //Listeners are added for all the settings
