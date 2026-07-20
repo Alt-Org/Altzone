@@ -144,12 +144,17 @@ public class ParentalControlManager : MonoBehaviour
     
 
 
+
+    /*
+
     public void OpenPasswordPanel() //Currently not in use?
     {
         passwordPanel.SetActive(true);
         messageText.text = "";
     }
+    */ 
 
+    /*
     public void CheckPassword() //this function is not in use currently
     {
         if (sessionPassword == "")
@@ -181,6 +186,8 @@ public class ParentalControlManager : MonoBehaviour
         }
     }
 
+    */ 
+
     public void GetPassword() {
 
         presetPassword = PlayerPrefs.GetString("password");
@@ -189,6 +196,7 @@ public class ParentalControlManager : MonoBehaviour
              }
 
 
+    /*
     public void SetPasswordVisibilityState(TMP_InputField passwordInputField, bool value) //is this currently in use?
     {
         if (value)
@@ -198,6 +206,7 @@ public class ParentalControlManager : MonoBehaviour
 
         passwordInputField.ForceLabelUpdate();
     }
+    */
 
     public void LogIn()
     {
@@ -254,7 +263,7 @@ public class ParentalControlManager : MonoBehaviour
     {
         
         setPasswordInput = popupPasswordInput.text;
-        Debug.Log("to password input " + setPasswordInput);
+        //Debug.Log("to password input " + setPasswordInput);
 
 
     }
@@ -350,7 +359,7 @@ public class ParentalControlManager : MonoBehaviour
 
     }
 
-
+    /*
     private void ShowSettings() //is this currently in use?
     {
         passwordInput.text = "";
@@ -359,19 +368,23 @@ public class ParentalControlManager : MonoBehaviour
         passwordPanel.SetActive(false);
         parentalControlPanel.SetActive(true);
     }
+    */
 
+    /*
     public void CloseParentalControl() //currently not in use?
     {
         parentalControlPanel.SetActive(false);
         sessionPassword = "";
     }
+    */
 
-
+    /*
     public void ToggleParentalControl(bool isEnabled) //currently not in use
     {
         PlayerPrefs.SetInt("ParentalControl", isEnabled ? 1 : 0);
         PlayerPrefs.Save();
     }
+    */
 
     public void DisableParentalControl()
     {
