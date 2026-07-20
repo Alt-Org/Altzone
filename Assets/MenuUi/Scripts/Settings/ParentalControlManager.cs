@@ -595,6 +595,7 @@ public class ParentalControlManager : MonoBehaviour
             PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
             carrier.MonthlyLimit = 0;
             PlayerPrefs.Save();
+            GetMonthlyLimit();
 
 
         }
@@ -606,6 +607,7 @@ public class ParentalControlManager : MonoBehaviour
             carrier.MonthlyLimit = 0;
             //TODO some kind of message, please input a positive value?
             PlayerPrefs.Save();
+            GetMonthlyLimit();
 
         }
         else //if (moneyFloat >= 0) 
@@ -616,10 +618,11 @@ public class ParentalControlManager : MonoBehaviour
             Debug.Log("Carrier got the monthly limit " + carrier.MonthlyLimit);
             Debug.Log("Set money limit to" + float.Parse(money));
             PlayerPrefs.Save();
+            GetMonthlyLimit();
 
 
         }
-        //monthlyLimitInput.Select();
+        
         
 
     }
@@ -693,6 +696,7 @@ public class ParentalControlManager : MonoBehaviour
                 PlayerPrefs.SetFloat("DailyTimeLimit", time);
                 carrier.MaxPlayTime = time;
                 PlayerPrefs.Save();
+                GetTimeLimit();
 
             }
             else if (time > 24) {
@@ -701,6 +705,7 @@ public class ParentalControlManager : MonoBehaviour
                 PlayerPrefs.SetFloat("DailyTimeLimit", 24);
                 carrier.MaxPlayTime = 24;
                 PlayerPrefs.Save();
+                GetTimeLimit();
 
             }
             else
@@ -710,6 +715,7 @@ public class ParentalControlManager : MonoBehaviour
                 PlayerPrefs.SetFloat("DailyTimeLimit", time);
                 carrier.MaxPlayTime = 1;
                 PlayerPrefs.Save();
+                GetTimeLimit();
             }
             
 
