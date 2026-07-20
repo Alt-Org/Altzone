@@ -30,7 +30,7 @@ public class ParentalControlManager : MonoBehaviour
     public TMP_Text messageTextPopUpLength; //Message text when trying to set a password that is too short in the pop up
     public TMP_Text messageTextPopUpWrongPassword; //Message text when trying to set a password that doesn't match the confirmation
     public Toggle controlToggle; //Toggle to enable or disable Parental Control, currently not in use
-    //public Toggle testToggle;
+    
 
 
     //the password will be set in the pop up
@@ -109,7 +109,7 @@ public class ParentalControlManager : MonoBehaviour
         controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1; //The checkmark that is currently not in use
         //timeLimitInput.text = 10f.ToString(); //PlayerPrefs.GetFloat("MaxPlayTime", 2f).ToString();
 
-        //testToggle.onValueChanged.AddListener(_ => SetTestToggle()); currently not in use
+        
         internetLinksToggle.onValueChanged.AddListener(_ => SetInternetLinks()); //Listeners are added for all the settings
         chatMessagesToggle.onValueChanged.AddListener(_ => SetChatMessages());
         emojiCommentsToggle.onValueChanged.AddListener(_ => SetEmojis());
@@ -129,7 +129,6 @@ public class ParentalControlManager : MonoBehaviour
     {
         SetInternetLinksToggle(); //Sets all the settings
         SetChatMessagesToggle();
-        //SetTestToggleToggle(); currently not in use
         SetEmojisToggle();
         SetTreasureHuntToggle();
         GetMonthlyLimit();
@@ -434,28 +433,7 @@ public class ParentalControlManager : MonoBehaviour
     }
 
 
-    /*public void SetTestToggle()
-    {
-        if (testToggle.isOn)
-        {
-            PlayerPrefs.SetInt("testToggle", 1);
-
-
-        }
-        else
-        {
-            PlayerPrefs.SetInt("testToggle", 0);
-        }
-
-    }
-
-    public void SetTestToggleToggle() {
-        testToggle.isOn = (PlayerPrefs.GetInt("testToggle", 0) !=0);
-
-    }
-
-    */
-
+    
     //Example, how to set values / toggles, is taken from SettingEditor, ShowButtonLabels
 
     public void SetInternetLinks ()
