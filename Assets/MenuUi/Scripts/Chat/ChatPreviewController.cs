@@ -69,6 +69,11 @@ public class ChatPreviewController : MonoBehaviour
         _chatButtonDefaultAnchors = new Vector2[2];
         _chatButtonShrinkAnchors = new Vector2[2];
 
+        _onlinePlayersButtonRect = _toggleOnlinePlayersButton.GetComponent<RectTransform>();
+
+        _onlinePlayersButtonDefaultAnchors = new Vector2[2];
+        _onlinePlayersButtonShrinkAnchors = new Vector2[2];
+
         // These anchors are the positions of the image that shrinks and expands the chat when pressed. Default is default pos & Shrink is the shrunken pos.
 
         _chatButtonDefaultAnchors[0] = _chatButtonRect.anchorMin;
@@ -127,11 +132,11 @@ public class ChatPreviewController : MonoBehaviour
     /// <param name="playAnimation">Determines if we play the animation or not</param>
     internal void ToggleChatMessages(bool value, bool playAnimation)
     {
-        _backgroundImage.enabled = value;
+        //_backgroundImage.enabled = value;
         _chatMessagesContainer.SetActive(value);
         _isEnabled = value;
         ChatListener.Instance.ChatPreviewIsEnabled = value;
-        /*
+        
         if (value)
             _chatButtonAnim.clip = _chatButtonExpandAnim;
         else
@@ -153,7 +158,7 @@ public class ChatPreviewController : MonoBehaviour
                 _chatButtonRect.anchorMin = _chatButtonShrinkAnchors[0];
                 _chatButtonRect.anchorMax = _chatButtonShrinkAnchors[1];
             }
-        }*/
+        }
 
         // online players button animation
         if (value)
