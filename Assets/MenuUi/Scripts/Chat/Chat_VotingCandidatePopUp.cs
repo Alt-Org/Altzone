@@ -14,7 +14,7 @@ public class Chat_VotingCandidatePopUp : AltMonoBehaviour
     private PlayerData _playerData; //Place holder for avatar and ID
 
     [SerializeField] private List<CandidatesData> _candidatesData;
-    [SerializeField] private List<PlaceHolderCandidates> _placeholdercandidates; //place holder
+    [SerializeField] private List<PlaceHolderCandidates> _candidatesTest; //place holder
     [SerializeField] private List<string> _votedUsers; //Used to check who has voted already
 
     [Header("Voting Systems")]
@@ -40,7 +40,7 @@ public class Chat_VotingCandidatePopUp : AltMonoBehaviour
         }));
 
 
-        foreach(var i in _placeholdercandidates)
+        foreach(var i in _candidatesTest)
         {
             AddCandidates(i._userID, i._userName);
         }
@@ -148,6 +148,6 @@ public class CandidatesData
 [Serializable]
 public class PlaceHolderCandidates
 {
-    public string _userID;
     public string _userName;
+    public string _userID;
 }

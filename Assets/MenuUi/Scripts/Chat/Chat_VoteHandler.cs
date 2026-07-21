@@ -21,7 +21,6 @@ public class ChatVoteHandler : AltMonoBehaviour
     [SerializeField] private TextMeshProUGUI _date;
 
     [Header("Select removal")]
-    [SerializeField] private TextMeshProUGUI _voteRole;
     [SerializeField] private GameObject _voteRegime;
     [SerializeField] private GameObject _voteUserPrefab;
     [SerializeField] private Transform _candidateBoard;
@@ -29,7 +28,7 @@ public class ChatVoteHandler : AltMonoBehaviour
     [SerializeField] private VotersData _selectedCandidate; 
     //Voting List
     [SerializeField] private List<VotersData> _candidatesList;
-    [SerializeField] private List<SavedVotersData> _savedData; //Mainly just a place holder for data testing
+    [SerializeField] private List<SavedVotersData> _candidatesTest; //Mainly just a place holder for data testing
     [SerializeField] private List<string> _votedUsers; //Used to check who has voted already
 
 
@@ -53,7 +52,7 @@ public class ChatVoteHandler : AltMonoBehaviour
     [SerializeField] private GameObject _voteEndCover;
 
 
-    [SerializeField] private Button _changeOptionVote; //Place holder for moving the other voting system
+    [SerializeField] private Button _revertButton;
     [SerializeField] private string _playerID;
 
 
@@ -65,14 +64,9 @@ public class ChatVoteHandler : AltMonoBehaviour
             _playerID = player.Id;
         }));
 
+        SetMessageVoteInfo();
 
-            _voteRegime.SetActive(true);
-        _voteRemove.SetActive(true);
-
-
-        SetMessageInfo();
-
-        foreach (var i in _savedData)
+        foreach (var i in _candidatesTest)
         {
         CandidateData(i.Name, i.Id);
         }
@@ -83,9 +77,7 @@ public class ChatVoteHandler : AltMonoBehaviour
 
         _voteButton.onClick.AddListener(() => ChangeToRemoveSection());
 
-        _changeOptionVote.onClick.AddListener(() => change());
-
-        _voteRemove.SetActive(false);
+        _revertButton.onClick.AddListener(() => Revert());
     }
 
 
@@ -140,16 +132,16 @@ public class ChatVoteHandler : AltMonoBehaviour
     }
 
 
-    ///Testing system 
-    void change()
+    ///Goes back to voting selection
+    void Revert()
     {
-        _voteRegime.SetActive(!_voteRegime.activeSelf);
-        _voteRemove.SetActive(!_voteRemove.activeSelf);
+        _voteRemove.SetActive(false);
+        _voteRegime.SetActive(true);
     }
 
 
     //Sets the users who put up the vote up data (it only uses the current users data right now as a place holder)
-    public void SetMessageInfo()
+    public void SetMessageVoteInfo()
     {
         StartCoroutine(GetPlayerData(player =>
         {
@@ -157,8 +149,11 @@ public class ChatVoteHandler : AltMonoBehaviour
         _id = player.Id;
         _name.text = player.Name;
 
-            //_time.text = $"{message.Timestamp.Hour}:{message.Timestamp.Minute:D2}";
-            //_date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
+
+            DateTime now = DateTime.Now;
+
+            _time.text = $"{now.Hour:D2}:{now.Minute:D2}";
+            _date.text = $"{now.Day}/{now.Month}/{now.Year}";
         }));
 
     }
@@ -190,16 +185,7 @@ public class ChatVoteHandler : AltMonoBehaviour
             return;
 
 
-        foreach (var i in _votedUsers)
-        {
-
-            if (i == _playerID)
-            {
-                Debug.LogWarning("FIND ME: Sorry but u have already voted");
-                return;
-            }
-
-        }
+        _voteButton.interactable = false;
 
         _selectedCandidate = null;
 
@@ -213,6 +199,7 @@ public class ChatVoteHandler : AltMonoBehaviour
 
                 if(i.IsSelected)
                 {
+                    _voteButton.interactable = true;
                     _selectedCandidate = i;
                     userData.ButtonColor.color = Color.blue;
                 }
@@ -277,6 +264,8 @@ public class ChatVoteHandler : AltMonoBehaviour
 
         _removeid = userData.Id;
         _removeName.text = userData.Name;
+
+        DateTime now = DateTime.Now;
 
         //_date.text = $"{message.Timestamp.Day}/{message.Timestamp.Month}/{message.Timestamp.Year}";
 
