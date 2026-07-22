@@ -1,0 +1,378 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using Altzone.PhotonSerializer;
+using Altzone.Scripts.Model.Poco.Player;
+using Photon.Realtime;
+
+public static class RaidPhotonRoom
+{
+    private const char EntrySeparator = '|';
+    private const char FieldSeparator = ':';
+
+    public const int RoomCapacity = 8;
+    public const int RequiredPlayers = 4;
+    public const int MaxPlayersPerClan = 2;
+
+    public const string RaidMatchmakingKey = "raid_mm";
+    public const string RaidClanCountsKey = "raid_clans";
+    public const string RaidStateKey = "raid_state";
+    public const string RaidSetupReadyKey = "raid_ready";
+    public const string RaidStartTimeKey = "raid_start";
+    public const string RaidInventorySizeKey = "raid_inv_size";
+    public const string RaidInventorySeedKey = "raid_seed";
+    public const string RaidTrapSlotsKey = "raid_traps";
+
+    public const string PlayerIdKey = "raid_player_id";
+    public const string PlayerClanIdKey = "raid_clan_id";
+    public const string PlayerClanNameKey = "raid_clan_name";
+    public const string PlayerCharacterIdKey = "raid_char_id";
+    public const string PlayerAvatarDataKey = "raid_avatar";
+
+    public const byte LootRequestEvent = 80;
+    public const byte LootAcceptedEvent = 81;
+
+    public enum RaidState
+    {
+        Error = -1,
+        Matchmaking = 0,
+        Lobby = 1,
+        Started = 2
+    }
+
+    public struct TrapData
+    {
+        public int Index;
+        public int Type;
+
+        public TrapData(int index, int type)
+        {
+            Index = index;
+            Type = type;
+        }
+    }
+
+    public struct ClanEntry
+    {
+        public string ClanId;
+        public string ClanName;
+        public int Count;
+
+        public ClanEntry(string clanId, string clanName, int count)
+        {
+            ClanId = clanId ?? string.Empty;
+            ClanName = clanName ?? string.Empty;
+            Count = count;
+        }
+    }
+
+    public readonly struct LootAcceptedData
+    {
+        public int SlotIndex { get; }
+        public int ActorNumber { get; }
+        public float WeightMultiplier { get; }
+        public int CharacterId { get; }
+        public string AvatarPayload { get; }
+
+        public LootAcceptedData(int slotIndex, int actorNumber, float weightMultiplier, int characterId, string avatarPayload)
+        {
+            SlotIndex = slotIndex;
+            ActorNumber = actorNumber;
+            WeightMultiplier = weightMultiplier;
+            CharacterId = characterId;
+            AvatarPayload = avatarPayload ?? string.Empty;
+        }
+    }
+
+    public static byte[] EncodeLootRequest(int slotIndex)
+    {
+        byte[] bytes = Array.Empty<byte>();
+        Serializer.Serialize(slotIndex, ref bytes);
+        return bytes;
+    }
+
+    public static bool TryDecodeLootRequest(byte[] bytes, out int slotIndex)
+    {
+        slotIndex = default;
+        if (bytes == null || bytes.Length != sizeof(int))
+        {
+            return false;
+        }
+
+        int offset = 0;
+        slotIndex = Serializer.DeserializeInt(bytes, ref offset);
+        return true;
+    }
+
+    public static byte[] EncodeLootAccepted(LootAcceptedData data)
+    {
+        byte[] bytes = Array.Empty<byte>();
+        Serializer.Serialize(data.SlotIndex, ref bytes);
+        Serializer.Serialize(data.ActorNumber, ref bytes);
+        Serializer.Serialize(data.WeightMultiplier, ref bytes);
+        Serializer.Serialize(data.CharacterId, ref bytes);
+        Serializer.Serialize(data.AvatarPayload, ref bytes);
+        return bytes;
+    }
+
+    public static bool TryDecodeLootAccepted(byte[] bytes, out LootAcceptedData data)
+    {
+        data = default;
+        if (bytes == null || bytes.Length < sizeof(int) * 5)
+        {
+            return false;
+        }
+
+        try
+        {
+            int offset = 0;
+            int slotIndex = Serializer.DeserializeInt(bytes, ref offset);
+            int actorNumber = Serializer.DeserializeInt(bytes, ref offset);
+            float weightMultiplier = Serializer.DeserializeFloat(bytes, ref offset);
+            int characterId = Serializer.DeserializeInt(bytes, ref offset);
+            string avatarPayload = Serializer.DeserializeString(bytes, ref offset);
+            if (offset != bytes.Length)
+            {
+                return false;
+            }
+
+            data = new LootAcceptedData(slotIndex, actorNumber, weightMultiplier, characterId, avatarPayload);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+    }
+
+    public static byte[] EncodeTraps(IEnumerable<TrapData> traps)
+    {
+        TrapData[] trapArray = traps?.ToArray() ?? Array.Empty<TrapData>();
+        byte[] bytes = Array.Empty<byte>();
+
+        Serializer.Serialize(trapArray.Length, ref bytes);
+        foreach (TrapData trap in trapArray)
+        {
+            Serializer.Serialize(trap.Index, ref bytes);
+            Serializer.Serialize(trap.Type, ref bytes);
+        }
+
+        return bytes;
+    }
+
+    public static TrapData[] DecodeTraps(byte[] value)
+    {
+        if (value == null || value.Length == 0)
+        {
+            return Array.Empty<TrapData>();
+        }
+
+        try
+        {
+            int offset = 0;
+            int trapCount = Serializer.DeserializeInt(value, ref offset);
+            if (trapCount <= 0)
+            {
+                return Array.Empty<TrapData>();
+            }
+
+            List<TrapData> traps = new(trapCount);
+            for (int i = 0; i < trapCount; i++)
+            {
+                int index = Serializer.DeserializeInt(value, ref offset);
+                int type = Serializer.DeserializeInt(value, ref offset);
+                traps.Add(new TrapData(index, type));
+            }
+
+            return traps.ToArray();
+        }
+        catch
+        {
+            return Array.Empty<TrapData>();
+        }
+    }
+
+    public static string EncodeClanCounts(IEnumerable<ClanEntry> clans)
+    {
+        if (clans == null)
+        {
+            return string.Empty;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        foreach (ClanEntry clan in clans)
+        {
+            if (string.IsNullOrWhiteSpace(clan.ClanId))
+            {
+                continue;
+            }
+
+            AppendSeparator(builder);
+            builder.Append(Escape(clan.ClanId));
+            builder.Append(FieldSeparator);
+            builder.Append(clan.Count.ToString(CultureInfo.InvariantCulture));
+            builder.Append(FieldSeparator);
+            builder.Append(Escape(clan.ClanName));
+        }
+
+        return builder.ToString();
+    }
+
+    public static ClanEntry[] DecodeClanCounts(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return Array.Empty<ClanEntry>();
+        }
+
+        List<ClanEntry> clans = new();
+        string[] entries = SplitEntries(value);
+        foreach (string entry in entries)
+        {
+            string[] parts = SplitFields(entry);
+            if (parts.Length < 2)
+            {
+                continue;
+            }
+
+            if (!int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int count))
+            {
+                continue;
+            }
+
+            string clanName = parts.Length >= 3 ? Unescape(parts[2]) : string.Empty;
+            clans.Add(new ClanEntry(Unescape(parts[0]), clanName, count));
+        }
+
+        return clans.ToArray();
+    }
+
+    public static ClanEntry[] GetClanCounts(RoomInfo room)
+    {
+        if (room?.CustomProperties == null
+            || !room.CustomProperties.TryGetValue(RaidClanCountsKey, out object value)
+            || value is not string encodedClanCounts)
+        {
+            return Array.Empty<ClanEntry>();
+        }
+
+        return DecodeClanCounts(encodedClanCounts);
+    }
+
+    public static string EncodeAvatarData(AvatarData avatarData)
+    {
+        if (avatarData == null)
+        {
+            return string.Empty;
+        }
+
+        string[] values =
+        {
+            avatarData.Name,
+            avatarData.Hair.ToString(CultureInfo.InvariantCulture),
+            avatarData.Eyes.ToString(CultureInfo.InvariantCulture),
+            avatarData.Nose.ToString(CultureInfo.InvariantCulture),
+            avatarData.Mouth.ToString(CultureInfo.InvariantCulture),
+            avatarData.Clothes.ToString(CultureInfo.InvariantCulture),
+            avatarData.Feet.ToString(CultureInfo.InvariantCulture),
+            avatarData.Hands.ToString(CultureInfo.InvariantCulture),
+            avatarData.Color,
+            avatarData.HairColor,
+            avatarData.EyesColor,
+            avatarData.NoseColor,
+            avatarData.MouthColor,
+            avatarData.ClothesColor,
+            avatarData.FeetColor,
+            avatarData.HandsColor
+        };
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < values.Length; i++)
+        {
+            AppendSeparator(builder);
+            builder.Append(Escape(values[i]));
+        }
+
+        return builder.ToString();
+    }
+
+    public static AvatarData DecodeAvatarData(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        string[] parts = SplitEntries(value);
+        if (parts.Length < 16)
+        {
+            return null;
+        }
+
+        return new AvatarData
+        {
+            Name = DecodeString(parts, 0),
+            Hair = DecodeInt(parts, 1),
+            Eyes = DecodeInt(parts, 2),
+            Nose = DecodeInt(parts, 3),
+            Mouth = DecodeInt(parts, 4),
+            Clothes = DecodeInt(parts, 5),
+            Feet = DecodeInt(parts, 6),
+            Hands = DecodeInt(parts, 7),
+            Color = DecodeString(parts, 8),
+            HairColor = DecodeString(parts, 9),
+            EyesColor = DecodeString(parts, 10),
+            NoseColor = DecodeString(parts, 11),
+            MouthColor = DecodeString(parts, 12),
+            ClothesColor = DecodeString(parts, 13),
+            FeetColor = DecodeString(parts, 14),
+            HandsColor = DecodeString(parts, 15)
+        };
+    }
+
+    private static int DecodeInt(string[] parts, int index)
+    {
+        return index >= 0
+            && index < parts.Length
+            && int.TryParse(Unescape(parts[index]), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value)
+            ? value
+            : 0;
+    }
+
+    private static string DecodeString(string[] parts, int index)
+    {
+        return index >= 0 && index < parts.Length
+            ? Unescape(parts[index])
+            : string.Empty;
+    }
+
+    private static string Escape(string value)
+    {
+        return Uri.EscapeDataString(value ?? string.Empty);
+    }
+
+    private static string Unescape(string value)
+    {
+        return Uri.UnescapeDataString(value ?? string.Empty);
+    }
+
+    private static string[] SplitEntries(string value)
+    {
+        return value.Split(EntrySeparator);
+    }
+
+    private static string[] SplitFields(string value)
+    {
+        return value.Split(FieldSeparator);
+    }
+
+    private static void AppendSeparator(StringBuilder builder)
+    {
+        if (builder.Length > 0)
+        {
+            builder.Append(EntrySeparator);
+        }
+    }
+}

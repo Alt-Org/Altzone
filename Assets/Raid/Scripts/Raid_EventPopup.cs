@@ -15,7 +15,8 @@ public class Raid_EventPopup : MonoBehaviour
         DoubleWeight,
         OutOfTime,
         OutOfSpace,
-        PlayerExit
+        PlayerExit,
+        StartCountdown
     }
 
     [Serializable]
@@ -48,6 +49,8 @@ public class Raid_EventPopup : MonoBehaviour
 
     private const string PopupResourcePath = "Prefabs/RaidEventPopup";
     private const float DefaultShowTime = 1.75f;
+    private const float DefaultStartCountdownStepTime = 1f;
+    private const int DefaultStartCountdownSeconds = 3;
 
     private static Raid_EventPopup instance;
 
@@ -59,36 +62,52 @@ public class Raid_EventPopup : MonoBehaviour
     [SerializeField] private TextMeshProUGUI messageText;
     [SerializeField] private TextMeshProUGUI MultText;
     [SerializeField] private float showTime = DefaultShowTime;
+    [SerializeField, Min(1)] private int startCountdownSeconds = DefaultStartCountdownSeconds;
     [SerializeField] private ScenarioVisual[] scenarioVisuals;
 
-    public static void Show(MonoBehaviour owner, Scenario scenario)
+    private void Awake()
+    {
+        if (instance == null || instance == this)
+        {
+            instance = this;
+            return;
+        }
+
+        if (instance.gameObject == gameObject)
+        {
+            Destroy(this);
+            return;
+        }
+
+        Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (instance == this)
+        {
+            instance = null;
+        }
+    }
+
+    public static void Show(MonoBehaviour owner, Scenario scenario, float duration = -1f, Canvas parentCanvas = null)
     {
         if (owner == null)
         {
             return;
         }
 
-        owner.StartCoroutine(ShowAndWait(owner, scenario));
+        owner.StartCoroutine(ShowAndWait(owner, scenario, duration, null, parentCanvas));
     }
 
-    public static void Show(MonoBehaviour owner, Scenario scenario, float duration)
+    public static IEnumerator ShowAndWait(
+        MonoBehaviour owner,
+        Scenario scenario,
+        float duration = -1f,
+        Action onComplete = null,
+        Canvas parentCanvas = null)
     {
-        if (owner == null)
-        {
-            return;
-        }
-
-        owner.StartCoroutine(ShowAndWait(owner, scenario, duration));
-    }
-
-    public static IEnumerator ShowAndWait(MonoBehaviour owner, Scenario scenario, Action onComplete = null)
-    {
-        yield return ShowAndWait(owner, scenario, -1f, onComplete);
-    }
-
-    public static IEnumerator ShowAndWait(MonoBehaviour owner, Scenario scenario, float duration, Action onComplete = null)
-    {
-        Raid_EventPopup popup = GetOrCreate();
+        Raid_EventPopup popup = GetOrCreate(owner, parentCanvas);
         if (popup == null)
         {
             onComplete?.Invoke();
@@ -99,8 +118,45 @@ public class Raid_EventPopup : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    private static Raid_EventPopup GetOrCreate()
+    public static IEnumerator ShowStartCountdownAndWait(
+        MonoBehaviour owner,
+        float stepTime = DefaultStartCountdownStepTime,
+        Action onComplete = null,
+        Canvas parentCanvas = null)
     {
+        if (owner == null)
+        {
+            onComplete?.Invoke();
+            yield break;
+        }
+
+        Raid_EventPopup popup = GetOrCreate(owner, parentCanvas);
+        if (popup == null)
+        {
+            onComplete?.Invoke();
+            yield break;
+        }
+
+        yield return popup.ShowStartCountdownRoutine(Mathf.Max(0.01f, stepTime));
+        onComplete?.Invoke();
+    }
+
+    public static void HideActive()
+    {
+        if (instance != null)
+        {
+            instance.gameObject.SetActive(false);
+        }
+    }
+
+    private static Raid_EventPopup GetOrCreate(MonoBehaviour owner, Canvas parentCanvas = null)
+    {
+        if (instance != null)
+        {
+            return instance;
+        }
+
+        instance = FindExistingInstance();
         if (instance != null)
         {
             return instance;
@@ -113,11 +169,41 @@ public class Raid_EventPopup : MonoBehaviour
             return null;
         }
 
-        instance = Instantiate(prefab);
+        parentCanvas ??= owner != null ? owner.GetComponentInParent<Canvas>() : null;
+
+        instance = parentCanvas != null
+            ? Instantiate(prefab, parentCanvas.transform, false)
+            : Instantiate(prefab);
         instance.name = "Raid Event Popup";
-        DontDestroyOnLoad(instance.gameObject);
         instance.gameObject.SetActive(false);
         return instance;
+    }
+
+    private static Raid_EventPopup FindExistingInstance()
+    {
+        Raid_EventPopup[] popups = FindObjectsOfType<Raid_EventPopup>(true);
+        if (popups == null || popups.Length == 0)
+        {
+            return null;
+        }
+
+        Raid_EventPopup selectedPopup = popups[0];
+        for (int i = 1; i < popups.Length; i++)
+        {
+            if (popups[i] != null)
+            {
+                if (popups[i].gameObject == selectedPopup.gameObject)
+                {
+                    Destroy(popups[i]);
+                }
+                else
+                {
+                    Destroy(popups[i].gameObject);
+                }
+            }
+        }
+
+        return selectedPopup;
     }
 
     private IEnumerator ShowRoutine(Scenario scenario, float duration)
@@ -161,6 +247,45 @@ public class Raid_EventPopup : MonoBehaviour
             yield return null;
             remainingTime -= Time.deltaTime;
         }
+    }
+
+    private IEnumerator ShowStartCountdownRoutine(float stepTime)
+    {
+        ScenarioVisual visual = GetScenarioVisual(Scenario.StartCountdown);
+        ApplyScenarioVisual(visual);
+
+        gameObject.SetActive(true);
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 1f;
+        }
+
+        string startText = string.IsNullOrWhiteSpace(visual.Message)
+            ? GetLocalizedText("Aloita", "Start")
+            : visual.Message;
+        int secondsUntilStart = Mathf.Max(1, startCountdownSeconds);
+        while (secondsUntilStart > 0)
+        {
+            SetLocalizedText(messageText, secondsUntilStart.ToString(), visual.TextColor);
+            SetLocalizedText(MultText, string.Empty, visual.TextColor);
+            if (MultText != null)
+            {
+                MultText.gameObject.SetActive(false);
+            }
+
+            yield return new WaitForSeconds(stepTime);
+            secondsUntilStart--;
+        }
+
+        SetLocalizedText(messageText, startText, visual.TextColor);
+        SetLocalizedText(MultText, string.Empty, visual.TextColor);
+        if (MultText != null)
+        {
+            MultText.gameObject.SetActive(false);
+        }
+
+        yield return new WaitForSeconds(stepTime);
+        gameObject.SetActive(false);
     }
 
     private string FormatCountdownMessage(string messageTemplate, int secondsRemaining)
@@ -226,18 +351,57 @@ public class Raid_EventPopup : MonoBehaviour
             }
         }
 
-        scenarioVisual ??= new ScenarioVisual
-        {
-            Scenario = scenario,
-            FinnishMessage = "Ry\u00f6st\u00f6 p\u00e4\u00e4ttyy.",
-            EnglishMessage = "The raid is ending."
-        };
+        scenarioVisual ??= CreateFallbackScenarioVisual(scenario);
 
         scenarioVisual.SetLocalizedTexts(
             GetLocalizedText(scenarioVisual.FinnishMessage, scenarioVisual.EnglishMessage),
             GetLocalizedText(scenarioVisual.FinnishMultText, scenarioVisual.EnglishMultText));
 
         return scenarioVisual;
+    }
+
+    private ScenarioVisual CreateFallbackScenarioVisual(Scenario scenario)
+    {
+        if (scenario == Scenario.StartCountdown)
+        {
+            ScenarioVisual baseVisual = GetFirstConfiguredVisual();
+            return new ScenarioVisual
+            {
+                Scenario = scenario,
+                FinnishMessage = "Aloita",
+                EnglishMessage = "Start",
+                BackgroundSprite = baseVisual?.BackgroundSprite,
+                BackgroundColor = baseVisual != null ? baseVisual.BackgroundColor : new Color(0f, 0f, 0f, 0.55f),
+                Effect = baseVisual?.Effect,
+                EffectColor = baseVisual != null ? baseVisual.EffectColor : Color.white,
+                TextColor = baseVisual != null ? baseVisual.TextColor : Color.white
+            };
+        }
+
+        return new ScenarioVisual
+        {
+            Scenario = scenario,
+            FinnishMessage = "Ry\u00f6st\u00f6 p\u00e4\u00e4ttyy.",
+            EnglishMessage = "The raid is ending."
+        };
+    }
+
+    private ScenarioVisual GetFirstConfiguredVisual()
+    {
+        if (scenarioVisuals == null)
+        {
+            return null;
+        }
+
+        foreach (ScenarioVisual visual in scenarioVisuals)
+        {
+            if (visual != null)
+            {
+                return visual;
+            }
+        }
+
+        return null;
     }
 
     private string GetLocalizedText(string finnishText, string englishText)
