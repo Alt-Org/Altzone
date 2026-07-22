@@ -15,53 +15,11 @@ public class PollInfoPopup : MonoBehaviour
 {
     public static PollInfoPopup Instance { get; private set; }
 
-    [Header("UI Elements")]
-    [SerializeField] private TMP_Text weightText;
-    [SerializeField] private TMP_Text valueText;
-    [SerializeField] private TMP_Text authorName;
-    [SerializeField] private TMP_Text descriptionText;
-    [SerializeField] private TMP_Text artistNameText;
-    [SerializeField] private Image rarityImage;
-    [SerializeField] private Image frontRarityImage;
-    [SerializeField] private TMP_Text rarityText;
-    [SerializeField] private Image greenFill;
-    [SerializeField] private TMP_Text timer;
-
-    [Header("Furniture")]
-    [SerializeField] private TMP_Text tradeTag;
-    [SerializeField] private TMP_Text nameText;
-    [SerializeField] private TMP_Text setNameText;
-    [SerializeField] private Image iconImage;
-    [SerializeField] private Image setPosterBackground;
-    [SerializeField] private Image setFontName;
-
-    [Header("Expired Polls")]
-    [SerializeField] private TMP_Text resultText;
-    [SerializeField] private GameObject resultObject;
-    [SerializeField] private TMP_Text resultYes;
-    [SerializeField] private TMP_Text resultNo;
-
-    [Header("Votes")]
-    [SerializeField] private Button yesButton;
-    [SerializeField] private Button noButton;
-    [SerializeField] private GameObject voteButtons;
-    [SerializeField] private GameObject voteBar;
-    [SerializeField] private TMP_Text yesVotes;
-    [SerializeField] private TMP_Text noVotes;
-    [SerializeField] private TMP_Text yesVotesButton;
-    [SerializeField] private TMP_Text noVotesButton;
-    [SerializeField] private AddPlayerHeads playerHeads;
-
-    [Header("Rarity Color Reference")]
-    [SerializeField] private RarityColourReference rarityColourReference;
-
-    [Header("Buttons")]
-    [SerializeField] private Button closeFurnitureInfoButton;
-    [SerializeField] private Button closeClanInfoButton;
-
-    [Header("Panels")]
-    [SerializeField] private GameObject furniturePollInfoObject;
+    [Header("Core UI")]
     [SerializeField] private GameObject infoBox;
+    [SerializeField] private GameObject furniturePollInfoObject;
+    [SerializeField] private TMP_Text timer;
+    [SerializeField] private TMP_Text descriptionText;
 
     [Header("Clan Role Poll UI Elements")]
     [SerializeField] private GameObject clanRolePollInfoObject;
@@ -69,11 +27,56 @@ public class PollInfoPopup : MonoBehaviour
     [SerializeField] private TMP_Text clanCurrentRoleText;
     [SerializeField] private TMP_Text clanTargetRoleText;
 
+    [Header("Common Furniture")]
+    [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text tradeTag;
+    [SerializeField] private TMP_Text valueText;
+    [SerializeField] private TMP_Text authorName;
+    [SerializeField] private TMP_Text weightText;
+    [SerializeField] private TMP_Text artistNameText;
+    [SerializeField] private Image iconImage;
+
+    [Header("Set information")]
+    [SerializeField] private TMP_Text setNameText;
+    [SerializeField] private Image setFontName;
+    [SerializeField] private Image setPosterBackground;
+
+    [Header("Rarity display")]
+    [SerializeField] private RarityColourReference rarityColourReference;
+    [SerializeField] private TMP_Text rarityText;
+    [SerializeField] private Image rarityImage;
+    [SerializeField] private Image frontRarityImage;
+
+    [Header("Voting system")]
+    [SerializeField] private GameObject voteButtons;
+    [SerializeField] private Button noButton;
+    [SerializeField] private Button yesButton;
+
+    [Header("Poll Results")]
+    [SerializeField] private AddPlayerHeads playerHeads;
+    [SerializeField] private GameObject voteBar;
+    [SerializeField] private GameObject resultObject;
+    [SerializeField] private TMP_Text resultBarNoVotes;
+    [SerializeField] private TMP_Text resultBarYesVotes;
+    [SerializeField] private TMP_Text resultNo;
+    [SerializeField] private TMP_Text resultYes;
+    [SerializeField] private TMP_Text resultText;
+    [SerializeField] private Image greenFill;
+
+    [Header("Navigation")]
+    [SerializeField] private Button closeClanInfoButton;
+    [SerializeField] private Button closeFurnitureInfoButton;
+
+
     private PollData _currentPollData;
     private Coroutine _timerCoroutine;
 
+    private TMP_Text _yesVotes;
+    private TMP_Text _noVotes;
+
     private static SettingsCarrier.LanguageType Language => SettingsCarrier.Instance.Language;
 
+    private WaitForSeconds _oneSecondWait = new WaitForSeconds(1f);
     private readonly Color _green = HexToColor("#2FA36B");
     private readonly Color _red = HexToColor("#C83A2D");
 
@@ -137,7 +140,7 @@ public class PollInfoPopup : MonoBehaviour
         while (!_currentPollData.IsExpired)
         {
             UpdateTimerDisplay();
-            yield return new WaitForSeconds(1);
+            yield return _oneSecondWait;
         }
         UpdateTimerDisplay();
     }
@@ -175,6 +178,9 @@ public class PollInfoPopup : MonoBehaviour
     // Opens the popup and fills it with the data from the furniture in question
     public void OpenPopup(PollData pollData)
     {
+        _yesVotes = yesButton.GetComponentInChildren<TMP_Text>();
+        _noVotes = noButton.GetComponentInChildren<TMP_Text>();
+
         Debug.Log($"PollData in OpenPopup {pollData}");
         if (pollData == null)
         {
@@ -351,8 +357,10 @@ public class PollInfoPopup : MonoBehaviour
     private void ShowPollPanel()
     {
         gameObject.SetActive(true);
-        furniturePollInfoObject.SetActive(true);
-        if (clanRolePollInfoObject != null) clanRolePollInfoObject.SetActive(false);
+
+        furniturePollInfoObject?.SetActive(true);
+
+        clanRolePollInfoObject?.SetActive(false);
     }
 
     private void SetGreenFill(int yesCount, int noCount)
@@ -376,8 +384,9 @@ public class PollInfoPopup : MonoBehaviour
         }
 
         greenFill.fillAmount = fillValue;
-        yesVotes.text = yesVotesButton.text = yesPercent;
-        noVotes.text = noVotesButton.text = noPercent;
+
+        resultBarYesVotes.text = _yesVotes.text = yesPercent;
+        resultBarNoVotes.text = _noVotes.text = noPercent;
     }
 
     public void OnVoteButtonClicked(bool answer)
@@ -443,10 +452,6 @@ public class PollInfoPopup : MonoBehaviour
 
     private static Color HexToColor(string hex)
     {
-        if (ColorUtility.TryParseHtmlString(hex, out Color color))
-        {
-            return color;
-        }
-        return Color.white;
+        return ColorUtility.TryParseHtmlString(hex, out Color color) ? color : Color.white;
     }
 }
