@@ -11359,7 +11359,7 @@ GameObject:
   - component: {fileID: 1257987621153928373}
   - component: {fileID: 1066519970306347132}
   m_Layer: 5
-  m_Name: MessageText
+  m_Name: MessageTextWrongPassword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36376,44 +36376,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cd80e4a869739044a2dd5db12a2b23e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentalControlPanel: {fileID: 6113803806275135908}
-  activateLogInPanel: {fileID: 4744022871960785237}
-  passwordPanel: {fileID: 229516808582982380}
-  parentalControlSettings: {fileID: 452585707855141714}
-  description: {fileID: 5084102148467423767}
-  passwordInput: {fileID: 8585413266285674770}
-  logInPasswordVisibilityToggle: {fileID: 0}
-  popupPasswordInput: {fileID: 8660987843109483617}
-  confirmPasswordInput: {fileID: 795573207046045005}
-  messageText: {fileID: 1257987621153928373}
-  messageTextPopUpLength: {fileID: 1049828673667462044}
-  messageTextPopUpWrongPassword: {fileID: 1486694808149164301}
-  controlToggle: {fileID: 8248150989251993551}
-  parentalControlPopup: {fileID: 3892752234984768531}
-  parentalControlPopupButton: {fileID: 3400817983522851621}
-  popupEye: {fileID: 4534854726119327889}
-  confirmEye: {fileID: 1833065638661918325}
-  controlEnabledButton: {fileID: 5053521642008325645}
-  parentalControl: 0
-  presetPassword: 
-  setPasswordInput: 
-  setConfirmPasswordInput: 
-  eyeButton: {fileID: 1889923278314039601}
-  eyeOpen: {fileID: 21300000, guid: 7f0ebb93368114842ac38fb720fdea9b, type: 3}
-  eyeClosed: {fileID: 21300000, guid: 385a62550b603af4bac5bd5428e752cb, type: 3}
+  _parentalControlPanel: {fileID: 6113803806275135908}
+  _activateLogInPanel: {fileID: 4744022871960785237}
+  _passwordPanel: {fileID: 229516808582982380}
+  _parentalControlSettings: {fileID: 452585707855141714}
+  _description: {fileID: 5084102148467423767}
+  _passwordInput: {fileID: 8585413266285674770}
+  _popupPasswordInput: {fileID: 8660987843109483617}
+  _confirmPasswordInput: {fileID: 795573207046045005}
+  _messageText: {fileID: 1257987621153928373}
+  _messageTextPopUpLength: {fileID: 1049828673667462044}
+  _messageTextPopUpWrongPassword: {fileID: 1486694808149164301}
+  _parentalControlPopup: {fileID: 3892752234984768531}
+  _parentalControlPopupButton: {fileID: 3400817983522851621}
+  _popupEye: {fileID: 4534854726119327889}
+  _confirmEye: {fileID: 1833065638661918325}
+  _controlEnabledButton: {fileID: 5053521642008325645}
+  _parentalControl: 0
+  _presetPassword: 
+  _setPasswordInput: 
+  _setConfirmPasswordInput: 
+  _eyeButton: {fileID: 1889923278314039601}
+  _eyeOpen: {fileID: 21300000, guid: 7f0ebb93368114842ac38fb720fdea9b, type: 3}
+  _eyeClosed: {fileID: 21300000, guid: 385a62550b603af4bac5bd5428e752cb, type: 3}
   internetLinksToggle: {fileID: 6381842256211950198}
   chatMessagesToggle: {fileID: 498833182516144307}
   emojiCommentsToggle: {fileID: 7937554757651341597}
   treasureHuntToggle: {fileID: 4094960920037499312}
   monthlyLimitInput: {fileID: 8632815167457096543}
   independentSpendingActivationToggle: {fileID: 7178881712211367189}
-  dailyLimit: 0
   timeLimitInput: {fileID: 806506189106899026}
-  timeLimitAccuracy: 0
-  timeLimitAccuracyInput: {fileID: 687704650681888110}
   midMatchToggle: {fileID: 7785137556795840039}
   endMatchToggle: {fileID: 6243620621092229614}
-  settingsSavedPopUp: {fileID: 6681713661463810954}
+  _settingsSavedPopUp: {fileID: 6681713661463810954}
 --- !u!1 &8884749935273971245
 GameObject:
   m_ObjectHideFlags: 0

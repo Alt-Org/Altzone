@@ -10,55 +10,57 @@ using WebSocketSharp;
 
 public class ParentalControlManager : MonoBehaviour
 {
-    private SettingsCarrier _carrier = SettingsCarrier.Instance; //SettingsCarrier carries all the settings between scenes etc. 
+    private SettingsCarrier _carrier = SettingsCarrier.Instance; //SettingsCarrier carries all the settings between scenes etc.
 
 
 
-    public GameObject parentalControlPanel;
-    public GameObject activateLogInPanel; //The panel when you can activate Parental Control or log in if Parental Control is already activated
-    public GameObject passwordPanel;
-    public GameObject parentalControlSettings; //The panel that contains all the settings for Parental Control
-    public TMP_Text description; //The text that describes what Parental Control does
+    [SerializeField] private GameObject _parentalControlPanel;
+    [SerializeField] private GameObject _activateLogInPanel; //The panel when you can activate Parental Control or log in if Parental Control is already activated
+    [SerializeField] private GameObject _passwordPanel;
+    [SerializeField] private GameObject _parentalControlSettings; //The panel that contains all the settings for Parental Control
+    [SerializeField] private TMP_Text _description; //The text that describes what Parental Control does
 
-    public TMP_InputField passwordInput; //The password input field in the log in panel 
-    public Toggle logInPasswordVisibilityToggle; //The "eye" to show or hide the password input
-
-    public TMP_InputField popupPasswordInput; //The field for setting the password in the pop up
-    public TMP_InputField confirmPasswordInput;
+    [SerializeField] private TMP_InputField _passwordInput; //The password input field in the log in panel 
     
-    public TMP_Text messageText; //Message text when trying to input a wrong password
-    public TMP_Text messageTextPopUpLength; //Message text when trying to set a password that is too short in the pop up
-    public TMP_Text messageTextPopUpWrongPassword; //Message text when trying to set a password that doesn't match the confirmation
-    //public Toggle controlToggle; //Toggle to enable or disable Parental Control, currently not in use
+    [SerializeField] private TMP_InputField _popupPasswordInput; //The field for setting the password in the pop up
+    [SerializeField] private TMP_InputField _confirmPasswordInput;
+
+    [SerializeField] private TMP_Text _messageText; //Message text when trying to input a wrong password 
+    [SerializeField] private TMP_Text _messageTextPopUpLength; //Message text when trying to set a password that is too short in the pop up
+    [SerializeField] private TMP_Text _messageTextPopUpWrongPassword; //Message text when trying to set a password that doesn't match the confirmation
+    //public Toggle controlToggle; //Toggle to enable or disable Parental Control, currently not in use 
 
 
     //the password will be set in the pop up
-    public GameObject parentalControlPopup; //The actual pop up for setting the password
-    public GameObject parentalControlPopupButton; //The button that opens the pop up for setting the password
-    public Button popupEye; //The "eye" for the popupPasswordInput field 
+    [SerializeField] private GameObject _parentalControlPopup; //The actual pop up for setting the password
+    [SerializeField] private GameObject _parentalControlPopupButton; //The button that opens the pop up for setting the password
+    [SerializeField] private Button _popupEye; //The "eye" for the popupPasswordInput field 
 
-    public Button confirmEye; //The "eye" for the confirmPasswordInput field
+    [SerializeField] private Button _confirmEye; //The "eye" for the confirmPasswordInput field
 
-    public GameObject controlEnabledButton; //No current functionality, just a visual indicator that Parental Control is enabled
+    [SerializeField] private GameObject _controlEnabledButton; //No current functionality, just a visual indicator that Parental Control is enabled
 
     //boolean to check if the ParentalControl is on
-    public bool parentalControl;
+    [SerializeField] private bool _parentalControl;
 
-    //private string sessionPassword = ""; //currently not in use
+    //private string sessionPassword = ""; //currently not in use 
 
-    public string presetPassword; //the password already set in PlayerPrefs
-    public string setPasswordInput; //the password input in the pop up
-    public string setConfirmPasswordInput;
+    [SerializeField] private string _presetPassword; //the password already set in PlayerPrefs
+    [SerializeField] private string _setPasswordInput; //the password input in the pop up
+    [SerializeField] private string _setConfirmPasswordInput;
 
-    public Button eyeButton; //The "eye" for the password fields
-    public Sprite eyeOpen;
-    public Sprite eyeClosed;
+    [SerializeField] private Button _eyeButton; //The "eye" for the password fields
+    [SerializeField] private Sprite _eyeOpen;
+    [SerializeField] private Sprite _eyeClosed;
 
 
 
     //the ParentalControl settings
+    //the toggles have to be seen by ToggleSetting.cs, so they are public and not private
+    //the input fields may refer to TextFieldSetting.cs, so they are also public
+
     //SocialControls
-    
+
     public Toggle internetLinksToggle; 
     public Toggle chatMessagesToggle;
     public Toggle emojiCommentsToggle;
@@ -76,22 +78,22 @@ public class ParentalControlManager : MonoBehaviour
     public Toggle midMatchToggle;
     public Toggle endMatchToggle;
 
-    public GameObject settingsSavedPopUp; //The pop up that is shown shortly when settings are saved
+    [SerializeField] private GameObject _settingsSavedPopUp; //The pop up that is shown shortly when settings are saved
 
 
     void Start()
     {
-        parentalControlSettings.SetActive(false);
+        _parentalControlSettings.SetActive(false);
         CheckControl(); //checks if Parental Control is on
         GetPassword(); //gets the password that is already set in PlayerPrefs
         LoadSettings(); //currently not in use, but could be used to load all the settings from PlayerPrefs at the same time, now they are loaded one by one
         
-        parentalControlPanel.SetActive(true);
+        _parentalControlPanel.SetActive(true);
         //passwordPanel.SetActive(true);
-        messageText.enabled = false;
+        _messageText.enabled = false;
 
-        messageTextPopUpWrongPassword.enabled = false;
-        messageTextPopUpLength.enabled = false;
+        _messageTextPopUpWrongPassword.enabled = false;
+        _messageTextPopUpLength.enabled = false;
 
         //controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1; //The checkmark that is currently not in use
         
@@ -127,7 +129,7 @@ public class ParentalControlManager : MonoBehaviour
 
     public void GetPassword() {
 
-        presetPassword = PlayerPrefs.GetString("password");
+        _presetPassword = PlayerPrefs.GetString("password");
 
 
              }
@@ -138,24 +140,24 @@ public class ParentalControlManager : MonoBehaviour
     {
 
 
-        if (parentalControl == true)
+        if (_parentalControl == true)
         {
-            if (passwordInput.text == presetPassword)
+            if (_passwordInput.text == _presetPassword)
             {
        
-                messageText.enabled = false;
-                parentalControlSettings.SetActive(true);
-                passwordInput.text = "";
-                passwordPanel.SetActive(false);
-                activateLogInPanel.SetActive(false);
+                _messageText.enabled = false;
+                _parentalControlSettings.SetActive(true);
+                _passwordInput.text = "";
+                _passwordPanel.SetActive(false);
+                _activateLogInPanel.SetActive(false);
 
             }
 
-            else if (passwordInput.text != presetPassword)
+            else if (_passwordInput.text != _presetPassword)
             {
 
                 //messageText will show the message that the password is wrong
-                messageText.enabled = true;
+                _messageText.enabled = true;
             }
 
         }
@@ -176,9 +178,9 @@ public class ParentalControlManager : MonoBehaviour
 
     public void LogOut()
     {
-        parentalControlSettings.SetActive(false);
-        passwordPanel.SetActive(true);
-        activateLogInPanel.SetActive(true);
+        _parentalControlSettings.SetActive(false);
+        _passwordPanel.SetActive(true);
+        _activateLogInPanel.SetActive(true);
         
 
 
@@ -187,7 +189,7 @@ public class ParentalControlManager : MonoBehaviour
     public void SetPasswordInput()
     {
         
-        setPasswordInput = popupPasswordInput.text;
+        _setPasswordInput = _popupPasswordInput.text;
        
     }
 
@@ -195,7 +197,7 @@ public class ParentalControlManager : MonoBehaviour
     public void SetConfirmPasswordInput()
     {
         
-        setConfirmPasswordInput = confirmPasswordInput.text;
+        _setConfirmPasswordInput = _confirmPasswordInput.text;
         
     }
 
@@ -205,36 +207,36 @@ public class ParentalControlManager : MonoBehaviour
         //this is done in the pop-up
                      
 
-        if (setPasswordInput.Length < 8)            
+        if (_setPasswordInput.Length < 8)            
         {
-            messageTextPopUpLength.enabled = true; //messageTextPopUpLength will show the message that the password is too short
-            messageTextPopUpWrongPassword.enabled = false;
+            _messageTextPopUpLength.enabled = true; //messageTextPopUpLength will show the message that the password is too short
+            _messageTextPopUpWrongPassword.enabled = false;
             return;
         }
 
-        if (setPasswordInput.Equals(setConfirmPasswordInput)) {
+        if (_setPasswordInput.Equals(_setConfirmPasswordInput)) {
                         
-            PlayerPrefs.SetString("password", setPasswordInput);
+            PlayerPrefs.SetString("password", _setPasswordInput);
 
             //the int will indicate if Parental Control is on, 1 means that it is set
             //boolean is not allowed in PlayerPrefs, otherwise it would be that
             PlayerPrefs.SetInt("parentalcontrol", 1);
-            parentalControlPopupButton.SetActive(false);
-            controlEnabledButton.SetActive(true); //just a visual indicator that Parental Control is on, no functionality
+            _parentalControlPopupButton.SetActive(false);
+            _controlEnabledButton.SetActive(true); //just a visual indicator that Parental Control is on, no functionality
 
             ClearPasswordFields();
-            parentalControlPopup.SetActive(false);
+            _parentalControlPopup.SetActive(false);
             CheckControl();
             GetPassword();
-            parentalControlSettings.SetActive(true);
-            passwordPanel.SetActive(false);
-            activateLogInPanel.SetActive(false);
+            _parentalControlSettings.SetActive(true);
+            _passwordPanel.SetActive(false);
+            _activateLogInPanel.SetActive(false);
 
         } else
         {
             //messageTextPopUpWrongPassword will show the message that the password and confirmation do not match
-            messageTextPopUpWrongPassword.enabled = true;
-            messageTextPopUpLength.enabled = false;
+            _messageTextPopUpWrongPassword.enabled = true;
+            _messageTextPopUpLength.enabled = false;
         }
 
         
@@ -243,9 +245,9 @@ public class ParentalControlManager : MonoBehaviour
     public void ClearPasswordFields()
     {
         //all the three password input fields will be cleared
-        popupPasswordInput.text = "";
-        confirmPasswordInput.text = "";
-        passwordInput.text = "";
+        _popupPasswordInput.text = "";
+        _confirmPasswordInput.text = "";
+        _passwordInput.text = "";
 
 
     }
@@ -256,16 +258,16 @@ public class ParentalControlManager : MonoBehaviour
         int checkControl = PlayerPrefs.GetInt("parentalcontrol");
 
         if (checkControl == 1) {
-            parentalControl = true;
-            parentalControlPopupButton.SetActive(false);
-            passwordPanel.SetActive(true);
-            controlEnabledButton.SetActive(true);
+            _parentalControl = true;
+            _parentalControlPopupButton.SetActive(false);
+            _passwordPanel.SetActive(true);
+            _controlEnabledButton.SetActive(true);
 
         } else
         {
-            parentalControl = false;
-            passwordPanel.SetActive(false);
-            controlEnabledButton.SetActive(false);
+            _parentalControl = false;
+            _passwordPanel.SetActive(false);
+            _controlEnabledButton.SetActive(false);
 
         }
 
@@ -308,9 +310,9 @@ public class ParentalControlManager : MonoBehaviour
         SetEndMidMatchToggle();
         SetEndAfterMatchToggle();
 
-        parentalControlPopupButton.SetActive(true);
-        controlEnabledButton.SetActive(false);
-        activateLogInPanel.SetActive(true);
+        _parentalControlPopupButton.SetActive(true);
+        _controlEnabledButton.SetActive(false);
+        _activateLogInPanel.SetActive(true);
           
     }
 
@@ -412,7 +414,7 @@ public class ParentalControlManager : MonoBehaviour
     {
         PlayerPrefs.Save();
         //A pop up will be shown for a short time to indicate that the settings have been saved
-        settingsSavedPopUp.SetActive(true);
+        _settingsSavedPopUp.SetActive(true);
         CloseSettingsPopUp();
 
     }
@@ -582,17 +584,17 @@ public class ParentalControlManager : MonoBehaviour
     public void ChangePasswordVisibility()
     {
         //changes the eye icon to open eye and password to visible text
-        if (passwordInput.contentType == TMP_InputField.ContentType.Password)
+        if (_passwordInput.contentType == TMP_InputField.ContentType.Password)
         {
-            eyeButton.image.sprite = eyeOpen;
-            passwordInput.contentType = TMP_InputField.ContentType.Standard;
+            _eyeButton.image.sprite = _eyeOpen;
+            _passwordInput.contentType = TMP_InputField.ContentType.Standard;
         } else
         {
-            passwordInput.contentType = TMP_InputField.ContentType.Password;
-            eyeButton.image.sprite = eyeClosed;
+            _passwordInput.contentType = TMP_InputField.ContentType.Password;
+            _eyeButton.image.sprite = _eyeClosed;
         }
 
-        passwordInput.Select();
+        _passwordInput.Select();
 
     }
 
@@ -601,36 +603,36 @@ public class ParentalControlManager : MonoBehaviour
     public void ChangePopUpPasswordVisibility()
     {
         //changes the eye icon to open eye and password to visible text
-        if (popupPasswordInput.contentType == TMP_InputField.ContentType.Password)
+        if (_popupPasswordInput.contentType == TMP_InputField.ContentType.Password)
         {
-            popupEye.image.sprite = eyeOpen;
-            popupPasswordInput.contentType = TMP_InputField.ContentType.Standard;
+            _popupEye.image.sprite = _eyeOpen;
+            _popupPasswordInput.contentType = TMP_InputField.ContentType.Standard;
         }
         else
         {
-            popupPasswordInput.contentType = TMP_InputField.ContentType.Password;
-            popupEye.image.sprite = eyeClosed;
+            _popupPasswordInput.contentType = TMP_InputField.ContentType.Password;
+            _popupEye.image.sprite = _eyeClosed;
         }
 
-        popupPasswordInput.Select();
+        _popupPasswordInput.Select();
 
     }
 
     public void ChangePopUpConfirmPasswordVisibility()
     {
         //changes the eye icon to open eye and password to visible text
-        if (confirmPasswordInput.contentType == TMP_InputField.ContentType.Password)
+        if (_confirmPasswordInput.contentType == TMP_InputField.ContentType.Password)
         {
-            confirmEye.image.sprite = eyeOpen;
-            confirmPasswordInput.contentType = TMP_InputField.ContentType.Standard;
+            _confirmEye.image.sprite = _eyeOpen;
+            _confirmPasswordInput.contentType = TMP_InputField.ContentType.Standard;
         }
         else
         {
-            confirmPasswordInput.contentType = TMP_InputField.ContentType.Password;
-            confirmEye.image.sprite = eyeClosed;
+            _confirmPasswordInput.contentType = TMP_InputField.ContentType.Password;
+            _confirmEye.image.sprite = _eyeClosed;
         }
 
-        confirmPasswordInput.Select();
+        _confirmPasswordInput.Select();
 
     }
 
@@ -643,7 +645,7 @@ public class ParentalControlManager : MonoBehaviour
     IEnumerator RemoveAfterSeconds(int seconds)
     {
         yield return new WaitForSeconds(seconds);
-        settingsSavedPopUp.SetActive(false);
+        _settingsSavedPopUp.SetActive(false);
     }
 
 
