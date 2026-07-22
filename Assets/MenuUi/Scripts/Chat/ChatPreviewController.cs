@@ -16,7 +16,8 @@ public class ChatPreviewController : MonoBehaviour
     [Header("GameObjects")]
     [SerializeField] private GameObject chatPreviewMessagePrefab;
     [SerializeField] private GameObject noMessagesTextGameobject;
-    [SerializeField] private GameObject _chatMessagesContainer;
+    [SerializeField] private GameObject _chatMessagesArea;
+    [SerializeField] private GameObject _chatMessagesContent;
     [SerializeField] private Button _toggleChatButton;
     [SerializeField] private Button _toggleOnlinePlayersButton;
     //[SerializeField] private TextMeshProUGUI _activeChatChannelText;
@@ -29,7 +30,7 @@ public class ChatPreviewController : MonoBehaviour
     //chat button
     public AnimationClip _chatButtonShrinkAnim;
     public AnimationClip _chatButtonExpandAnim;
-    private Animation _chatButtonAnim;
+    [SerializeField] private Animation _chatButtonAnim;
 
     private RectTransform _chatButtonRect;
     private Vector2[] _chatButtonDefaultAnchors;
@@ -49,17 +50,16 @@ public class ChatPreviewController : MonoBehaviour
 
     private void Awake()
     {
-        _isEnabled = _chatMessagesContainer.activeInHierarchy;
+        _isEnabled = _chatMessagesArea.activeInHierarchy;
         _backgroundImage = GetComponent<Image>();
         _toggleChatButton.onClick.AddListener(() => ToggleChatMessages(!_isEnabled, true));
 
-        _chatButtonAnim = _toggleChatButton.GetComponent<Animation>();
         _onlinePlayersButtonAnim = _toggleOnlinePlayersButton.GetComponent<Animation>();
         _chatMessageGameobjects = new GameObject[chatMessageAmount];
 
         for (int i = 0; i < chatMessageAmount; i++)
         {
-            GameObject chatMessage = Instantiate(chatPreviewMessagePrefab, _chatMessagesContainer.transform);
+            GameObject chatMessage = Instantiate(chatPreviewMessagePrefab, _chatMessagesContent.transform);
             _chatMessageGameobjects[i] = chatMessage;
             chatMessage.GetComponent<ChatMessagePrefab>().SetInfo(null);
         }
@@ -133,7 +133,7 @@ public class ChatPreviewController : MonoBehaviour
     internal void ToggleChatMessages(bool value, bool playAnimation)
     {
         //_backgroundImage.enabled = value;
-        _chatMessagesContainer.SetActive(value);
+        //_chatMessagesArea.SetActive(value);
         _isEnabled = value;
         ChatListener.Instance.ChatPreviewIsEnabled = value;
         
@@ -161,7 +161,7 @@ public class ChatPreviewController : MonoBehaviour
         }
 
         // online players button animation
-        if (value)
+        /*if (value)
             _onlinePlayersButtonAnim.clip = _onlinePlayersButtonExpandAnim;
         else
             _onlinePlayersButtonAnim.clip = _onlinePlayersButtonShrinkAnim;
@@ -182,7 +182,7 @@ public class ChatPreviewController : MonoBehaviour
                 _onlinePlayersButtonRect.anchorMin = _onlinePlayersButtonShrinkAnchors[0];
                 _onlinePlayersButtonRect.anchorMax = _onlinePlayersButtonShrinkAnchors[1];
             }
-        }
+        }*/
 
         // Refresh the chat messages to see if we have received new messages while the chat was hidden.
         if (value)
