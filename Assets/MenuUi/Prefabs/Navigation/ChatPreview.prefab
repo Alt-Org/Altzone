@@ -194,9 +194,9 @@ RectTransform:
   - {fileID: 1508917069068076090}
   m_Father: {fileID: 5061774202043869504}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.85, y: 0.6}
-  m_AnchorMax: {x: 1, y: 1.2}
-  m_AnchoredPosition: {x: -10, y: 10}
+  m_AnchorMin: {x: 0.85, y: 0.8}
+  m_AnchorMax: {x: 1, y: 1.4}
+  m_AnchoredPosition: {x: -10, y: 20}
   m_SizeDelta: {x: -20, y: -30}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &5280738351685750621
@@ -401,7 +401,7 @@ Animation:
   - {fileID: 7400000, guid: fa3d40614f59dd94bac6bb64f66f2b45, type: 2}
   - {fileID: 7400000, guid: 3ebbf791150c5bd459145cb6d4b8ea50, type: 2}
   m_WrapMode: 0
-  m_PlayAutomatically: 1
+  m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
 --- !u!1 &4770266382601843513
@@ -891,12 +891,12 @@ PrefabInstance:
     - target: {fileID: 5463045129984391252, guid: 016249dce62f29548884212ae48a0049,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.6
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 5463045129984391252, guid: 016249dce62f29548884212ae48a0049,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.84
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 5463045129984391252, guid: 016249dce62f29548884212ae48a0049,
         type: 3}
