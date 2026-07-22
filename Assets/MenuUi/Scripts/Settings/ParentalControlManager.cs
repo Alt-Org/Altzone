@@ -127,7 +127,7 @@ public class ParentalControlManager : MonoBehaviour
     }
     
 
-    public void GetPassword() {
+    private void GetPassword() {
 
         _presetPassword = PlayerPrefs.GetString("password");
 
@@ -136,7 +136,7 @@ public class ParentalControlManager : MonoBehaviour
 
         
 
-    public void LogIn()
+    private void LogIn()
     {
 
 
@@ -176,7 +176,7 @@ public class ParentalControlManager : MonoBehaviour
 
     }
 
-    public void LogOut()
+    private void LogOut()
     {
         _parentalControlSettings.SetActive(false);
         _passwordPanel.SetActive(true);
@@ -186,7 +186,7 @@ public class ParentalControlManager : MonoBehaviour
 
     }
 
-    public void SetPasswordInput()
+    private void SetPasswordInput()
     {
         
         _setPasswordInput = _popupPasswordInput.text;
@@ -194,7 +194,7 @@ public class ParentalControlManager : MonoBehaviour
     }
 
 
-    public void SetConfirmPasswordInput()
+    private void SetConfirmPasswordInput()
     {
         
         _setConfirmPasswordInput = _confirmPasswordInput.text;
@@ -203,7 +203,7 @@ public class ParentalControlManager : MonoBehaviour
 
 
 
-    public void SetPassword() {
+    private void SetPassword() {
         //this is done in the pop-up
                      
 
@@ -242,7 +242,7 @@ public class ParentalControlManager : MonoBehaviour
         
     }
 
-    public void ClearPasswordFields()
+    private void ClearPasswordFields()
     {
         //all the three password input fields will be cleared
         _popupPasswordInput.text = "";
@@ -252,7 +252,7 @@ public class ParentalControlManager : MonoBehaviour
 
     }
 
-    public void CheckControl()
+    private void CheckControl()
     {
         //at start is used to check if Parental Control is on
         int checkControl = PlayerPrefs.GetInt("parentalcontrol");
@@ -272,8 +272,8 @@ public class ParentalControlManager : MonoBehaviour
         }
 
     }
-        
-    public void DisableParentalControl()
+
+    private void DisableParentalControl()
     {
         //ParentalControl is active only if PlayerPrefs "parentalcontrol" equals 1
         PlayerPrefs.SetInt("parentalcontrol", 0);
@@ -317,10 +317,10 @@ public class ParentalControlManager : MonoBehaviour
     }
 
 
-    
+
     //Example, how to set values / toggles, is taken from SettingEditor, ShowButtonLabels
 
-    public void SetInternetLinks ()
+    private void SetInternetLinks ()
     {
         if (internetLinksToggle.isOn) {
             PlayerPrefs.SetInt("AllowLinks", 1);
@@ -335,13 +335,13 @@ public class ParentalControlManager : MonoBehaviour
         
     }
 
-    public void SetInternetLinksToggle() {
+    private void SetInternetLinksToggle() {
         
         internetLinksToggle.isOn = _carrier.AllowLinks;
                
     }
 
-    public void SetChatMessages()
+    private void SetChatMessages()
     {
         if (chatMessagesToggle.isOn)
         {
@@ -356,7 +356,7 @@ public class ParentalControlManager : MonoBehaviour
     }
 
 
-    public void SetChatMessagesToggle()
+    private void SetChatMessagesToggle()
     {
         
         chatMessagesToggle.isOn = _carrier.ChatMessages;
@@ -364,7 +364,7 @@ public class ParentalControlManager : MonoBehaviour
     }
 
 
-    public void SetEmojis()
+    private void SetEmojis()
     {
         if (emojiCommentsToggle.isOn)
         {
@@ -378,7 +378,7 @@ public class ParentalControlManager : MonoBehaviour
 
 
     }
-    public void SetEmojisToggle()
+    private void SetEmojisToggle()
     {
         
         emojiCommentsToggle.isOn = _carrier.AllowEmojis;
@@ -386,7 +386,7 @@ public class ParentalControlManager : MonoBehaviour
     }
 
 
-    public void SetTreasureHunt()
+    private void SetTreasureHunt()
     {
         if (treasureHuntToggle.isOn)
         {
@@ -399,7 +399,7 @@ public class ParentalControlManager : MonoBehaviour
 
         _carrier.AllowTreasureHunt = treasureHuntToggle.isOn;
     }
-    public void SetTreasureHuntToggle()
+    private void SetTreasureHuntToggle()
     {
         
         treasureHuntToggle.isOn = _carrier.AllowTreasureHunt;
@@ -410,7 +410,7 @@ public class ParentalControlManager : MonoBehaviour
 
 
 
-    public void SaveSettings()
+    private void SaveSettings()
     {
         PlayerPrefs.Save();
         //A pop up will be shown for a short time to indicate that the settings have been saved
@@ -419,14 +419,14 @@ public class ParentalControlManager : MonoBehaviour
 
     }
 
-    public void LoadSettings()
+    private void LoadSettings()
     {
         //TODO how to load all settings from PlayerPrefs? Currently they are loaded one by one
         //maybe it would be practical to load them all in the same method, maybe not
 
     }
 
-    public void SetMonthlyLimit()
+    private void SetMonthlyLimit()
     {
         //money control: monthly spending limit
         string money = monthlyLimitInput.text;
@@ -466,7 +466,7 @@ public class ParentalControlManager : MonoBehaviour
            
     }
 
-    public void GetMonthlyLimit()
+    private void GetMonthlyLimit()
     {
         
         monthlyLimitInput.text = _carrier.MonthlyLimit.ToString();
@@ -474,7 +474,7 @@ public class ParentalControlManager : MonoBehaviour
     }
 
 
-    public void SetIndependentSpendingActivation()
+    private void SetIndependentSpendingActivation()
     {
         if (independentSpendingActivationToggle.isOn)
         {
@@ -487,7 +487,7 @@ public class ParentalControlManager : MonoBehaviour
 
         _carrier.ActivatePurchasesSeparately = independentSpendingActivationToggle.isOn;
     }
-    public void SetIndependentSpendingActivationToggle()
+    private void SetIndependentSpendingActivationToggle()
     {
         
         independentSpendingActivationToggle.isOn = _carrier.ActivatePurchasesSeparately;
@@ -495,7 +495,7 @@ public class ParentalControlManager : MonoBehaviour
     }
 
 
-    public void SetTimeLimit()
+    private void SetTimeLimit()
     {
 
         string timeInput = timeLimitInput.text;
@@ -537,7 +537,7 @@ public class ParentalControlManager : MonoBehaviour
         
     }
 
-    public void GetTimeLimit()
+    private void GetTimeLimit()
     {
         
         timeLimitInput.text = _carrier.MaxPlayTime.ToString();
@@ -545,7 +545,7 @@ public class ParentalControlManager : MonoBehaviour
     }
 
 
-    public void SetEndMidMatch()
+    private void SetEndMidMatch()
     {
         if (midMatchToggle.isOn)
         {
@@ -557,13 +557,13 @@ public class ParentalControlManager : MonoBehaviour
         }
         _carrier.EndMidMatch = midMatchToggle.isOn;
     }
-    public void SetEndMidMatchToggle()
+    private void SetEndMidMatchToggle()
     {
         midMatchToggle.isOn = _carrier.EndMidMatch;
 
     }
 
-    public void SetEndAfterMatch()
+    private void SetEndAfterMatch()
     {
         if (endMatchToggle.isOn)
         {
@@ -575,13 +575,13 @@ public class ParentalControlManager : MonoBehaviour
         }
         _carrier.EndAfterMatch = endMatchToggle.isOn;
     }
-    public void SetEndAfterMatchToggle()
+    private void SetEndAfterMatchToggle()
     {
         endMatchToggle.isOn = _carrier.EndAfterMatch;
 
     }
 
-    public void ChangePasswordVisibility()
+    private void ChangePasswordVisibility()
     {
         //changes the eye icon to open eye and password to visible text
         if (_passwordInput.contentType == TMP_InputField.ContentType.Password)
@@ -600,7 +600,7 @@ public class ParentalControlManager : MonoBehaviour
 
 
 
-    public void ChangePopUpPasswordVisibility()
+    private void ChangePopUpPasswordVisibility()
     {
         //changes the eye icon to open eye and password to visible text
         if (_popupPasswordInput.contentType == TMP_InputField.ContentType.Password)
@@ -618,7 +618,7 @@ public class ParentalControlManager : MonoBehaviour
 
     }
 
-    public void ChangePopUpConfirmPasswordVisibility()
+    private void ChangePopUpConfirmPasswordVisibility()
     {
         //changes the eye icon to open eye and password to visible text
         if (_confirmPasswordInput.contentType == TMP_InputField.ContentType.Password)
@@ -637,12 +637,12 @@ public class ParentalControlManager : MonoBehaviour
     }
 
 
-    public void CloseSettingsPopUp() //The settingsSavedPopUp will be closed after 2 seconds
+    private void CloseSettingsPopUp() //The settingsSavedPopUp will be closed after 2 seconds
     {
         StartCoroutine(RemoveAfterSeconds(2));
     }
 
-    IEnumerator RemoveAfterSeconds(int seconds)
+    private IEnumerator RemoveAfterSeconds(int seconds)
     {
         yield return new WaitForSeconds(seconds);
         _settingsSavedPopUp.SetActive(false);
