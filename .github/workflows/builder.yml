@@ -10,7 +10,7 @@ on:
 jobs:
   buildWebGL:
     name: Build WebGL
-    runs-on: [self-hosted, unity]
+    runs-on: [self-hosted, gh-runner-common]
 
     steps:
       - name: Set current date as build version
