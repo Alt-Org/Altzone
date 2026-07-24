@@ -9,6 +9,7 @@ using Altzone.Scripts.GA;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Language;
+using MenuUI.Scripts.Jukebox;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -65,12 +66,13 @@ namespace MenuUI.Scripts.SoulHome
         {
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
-            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong += SetSongName;
+            JukeBoxSoulhomeHandler.OnChangeJukeboxSong += SetSongName;
         }
 
         public void OnDisable()
         {
-            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
+            JukeBoxSoulhomeHandler.OnChangeJukeboxSong -= SetSongName;
+            AudioManager.Instance.PlayMusic(AudioCategoryType.MainMenu);
         }
 
         public void AddFurniture(Furniture furniture)

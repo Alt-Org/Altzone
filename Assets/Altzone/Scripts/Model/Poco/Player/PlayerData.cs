@@ -69,11 +69,24 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
-        public string emotionSelectorDate = null;
+        private DateTime _emotionSelectorDate = DateTime.MinValue;
+
+        public DateTime EmotionSelectionDate => _emotionSelectorDate;
 
         public string daysBetweenInput = "0";
 
-        public List<string> _playerDataEmotionList = new List<string> { Emotion.Blank.ToString(), Emotion.Love.ToString(), Emotion.Playful.ToString(), Emotion.Joy.ToString(), Emotion.Sorrow.ToString(), Emotion.Anger.ToString(), Emotion.Blank.ToString() };
+        public List<string> _playerDataEmotionList = new List<string>
+        {
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString(),
+            Emotion.Blank.ToString()
+        };
+
+        public List<DailyEmotion> _playerDataEmotions = new();
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
@@ -126,19 +139,64 @@ namespace Altzone.Scripts.Model.Poco.Player
             get
             {
                 List<Emotion> list = new();
+
+                if (_playerDataEmotionList == null)
+                {
+                    return new List<Emotion>
+            {
+                Emotion.Blank, Emotion.Blank, Emotion.Blank,
+                Emotion.Blank, Emotion.Blank, Emotion.Blank, Emotion.Blank
+            };
+                }
+
                 foreach (string emotion in _playerDataEmotionList)
                 {
-                    list.Add((Emotion)Enum.Parse(typeof(Emotion), emotion));
+                    if (Enum.TryParse(emotion, out Emotion parsedEmotion))
+                    {
+                        list.Add(parsedEmotion);
+                    }
+                    else
+                    {
+                        list.Add(Emotion.Blank);
+                    }
                 }
+
+                if (list.Count > 7)
+                {
+                    list = list.GetRange(0, 7);
+                }
+
+                while (list.Count < 7)
+                {
+                    list.Add(Emotion.Blank);
+                }
+
                 return list;
             }
             set
             {
                 List<string> list = new();
+
+                if (value == null)
+                {
+                    value = new List<Emotion>();
+                }
+
+                if (value.Count > 7)
+                {
+                    value = value.GetRange(0, 7);
+                }
+
+                while (value.Count < 7)
+                {
+                    value.Add(Emotion.Blank);
+                }
+
                 foreach (Emotion emotion in value)
                 {
                     list.Add(emotion.ToString());
                 }
+
                 _playerDataEmotionList = list;
             }
         }
@@ -199,6 +257,9 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public void UpdatePlayerData(ServerPlayer player)
         {
+            Debug.Log("UpdatePlayerData raw emotion count: " + (_playerDataEmotionList == null ? -1 : _playerDataEmotionList.Count));
+            Debug.Log("UpdatePlayerData raw emotion date: " + _emotionSelectorDate);
+
             Assert.IsTrue(player._id.IsSet());
             Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
             //Assert.IsTrue(player.currentCustomCharacterId >= 0);
@@ -217,7 +278,13 @@ namespace Altzone.Scripts.Model.Poco.Player
             stats = player.gameStatistics;
             Task = player.DailyTask != null ? new(player.DailyTask) : Task;
             AvatarData = player.avatar != null ? new(player.name, player.avatar) : null;
-            if (_playerDataEmotionList == null || _playerDataEmotionList.Count == 0) playerDataEmotionList = new List<Emotion> { Emotion.Blank, Emotion.Love, Emotion.Playful, Emotion.Joy, Emotion.Sorrow, Emotion.Anger, Emotion.Blank };
+            if (_playerDataEmotionList == null || _playerDataEmotionList.Count != 7)
+                playerDataEmotionList = new List<Emotion>
+                {
+                    Emotion.Blank, Emotion.Blank, Emotion.Blank,
+                    Emotion.Blank, Emotion.Blank, Emotion.Blank, Emotion.Blank
+                };
+            _playerDataEmotions = FormatEmotions(player.emotions);
             if (daysBetweenInput == null) daysBetweenInput = "0";
 
             
@@ -435,6 +502,31 @@ namespace Altzone.Scripts.Model.Poco.Player
             return true;
         }
 
+        private List<DailyEmotion> FormatEmotions(List<ServerEmotions> serverEmotions)
+        {
+            List<DailyEmotion> emotions = new();
 
+            foreach(ServerEmotions emotion in serverEmotions)
+            {
+                emotions.Add(new(emotion));
+            }
+
+            emotions = emotions.OrderByDescending(o => o.DateTime).ToList();
+
+            if(emotions.Count > 0) _emotionSelectorDate = emotions[0].DateTime;
+
+            return emotions;
+        }
+
+        public void AddEmotion(Emotion emotion)
+        {
+            List<DailyEmotion> emotions = new();
+
+            _playerDataEmotions.Add(new(emotion));
+
+            _playerDataEmotions = _playerDataEmotions.OrderByDescending(o => o.DateTime).ToList();
+
+            _emotionSelectorDate = DateTime.UtcNow.Date;
+        }
     }
 }

@@ -252,7 +252,7 @@ The format used for grouping **SerializeFields**. Example provided also has **Se
 /// @{ // Start of the grouped SerializeFields
 
 /// <summary>[SerializeField] Reference to BattleUiController.</summary> // SerializeField summary documentation
-/// @ref BattleUiMovableJoystickElement-SerializeFields // Anchor reference
+/// Part of @ref BattleUiMovableJoystickElement-SerializeFields "SerializeFields" // Anchor reference
 [SerializeField] private BattleUiController _uiController; // SerializeField variable
 
 /// @} // End of the grouped SerializeFields

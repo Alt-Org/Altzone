@@ -15,11 +15,18 @@ MonoBehaviour:
   _info:
   - SetName: Taakka
     SetNameEnglish: Burden
+    SetRibbonBackground: {fileID: 21300000, guid: df6bcf305c39a3d4b9cfbc3250d46543,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: af97c910806da994e8926cd52e3845ee,
+      type: 3}
+    SetFontName: {fileID: 21300000, guid: 9986d577a3b94d1488dae597f2ee6f42, type: 3}
     ArtistName: "Simo Ryh\xE4nen"
     list:
     - Name: Sofa
       EnglishName: Sofa
       Image: {fileID: -1978675626, guid: 7c2470a4a5672df4bb80e5250cf54825, type: 3}
+      SidewaysImage: {fileID: 1816257808, guid: 7c2470a4a5672df4bb80e5250cf54825,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 5c84e0586f7c09646b20a02f677a9086, type: 3}
       RibbonImage: {fileID: 21300000, guid: 5e01e1e6ecdaf5e49af97484ff47e2a4, type: 3}
       VisibleName: Sohva
@@ -42,6 +49,8 @@ MonoBehaviour:
     - Name: ArmChair
       EnglishName: Arm Chair
       Image: {fileID: -498378044, guid: 7767254924d389249bccb2b7a765a93a, type: 3}
+      SidewaysImage: {fileID: -1738918682, guid: 7767254924d389249bccb2b7a765a93a,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: d1e77299ee9678447bc2741a44c09b7e, type: 3}
       RibbonImage: {fileID: 21300000, guid: 942f4a9d92c17284cab228f4fd6405a3, type: 3}
       VisibleName: NojaTuoli
@@ -64,6 +73,8 @@ MonoBehaviour:
     - Name: Mirror
       EnglishName: Mirror
       Image: {fileID: -161112231, guid: ad3afe4e6fc144447a9680d150e6a742, type: 3}
+      SidewaysImage: {fileID: -490541359, guid: ad3afe4e6fc144447a9680d150e6a742,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: f2935bb9a0efcc84a97b1b9649237eff, type: 3}
       RibbonImage: {fileID: 21300000, guid: 9792b24c7bbdc5442b27635238353c5d, type: 3}
       VisibleName: Peili
@@ -86,6 +97,8 @@ MonoBehaviour:
     - Name: Floorlamp
       EnglishName: Floor Lamp
       Image: {fileID: 109053680, guid: d78e035099366ca4c8d375b0e53d2a42, type: 3}
+      SidewaysImage: {fileID: -597134077, guid: d78e035099366ca4c8d375b0e53d2a42,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 69e28c0e8765dcc4a8341520aa879c35, type: 3}
       RibbonImage: {fileID: 21300000, guid: a71f776230f991045ab3ff713f67cfff, type: 3}
       VisibleName: Lattialamppu
@@ -108,6 +121,7 @@ MonoBehaviour:
     - Name: CoffeeTable
       EnglishName: Coffee Table
       Image: {fileID: -1372830714, guid: b920dbb0579dea643b33800a975ffc99, type: 3}
+      SidewaysImage: {fileID: 115827972, guid: b920dbb0579dea643b33800a975ffc99, type: 3}
       PosterImage: {fileID: 21300000, guid: 39afa94c677560c4dbe0171e3abf1b53, type: 3}
       RibbonImage: {fileID: 21300000, guid: 5ce2cfc6c3b6a5a498c4dd5c0ffbed81, type: 3}
       VisibleName: "KahviP\xF6yt\xE4"
@@ -130,6 +144,7 @@ MonoBehaviour:
     - Name: SideTable
       EnglishName: Side Table
       Image: {fileID: 399228340, guid: 09f23977174f0dd4896fcfe3edc5555b, type: 3}
+      SidewaysImage: {fileID: 547424961, guid: 09f23977174f0dd4896fcfe3edc5555b, type: 3}
       PosterImage: {fileID: 21300000, guid: 4cc423dfc62939a45a0eacb28a702629, type: 3}
       RibbonImage: {fileID: 21300000, guid: c234be026dc8fb643b56c2ced6520f5f, type: 3}
       VisibleName: "SivuP\xF6yt\xE4"
@@ -152,6 +167,8 @@ MonoBehaviour:
     - Name: Closet
       EnglishName: Closet
       Image: {fileID: 2099301597, guid: 4b7d24540118a534993dcd36ff455c4e, type: 3}
+      SidewaysImage: {fileID: -320186863, guid: 4b7d24540118a534993dcd36ff455c4e,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 2fa21cf9213828d4fb3af06f3ac8c1ea, type: 3}
       RibbonImage: {fileID: 21300000, guid: 2f5d6dcc8ec2c5243b35566cce130cbb, type: 3}
       VisibleName: Kaappi
@@ -173,11 +190,17 @@ MonoBehaviour:
         Recycling: 
   - SetName: Schrodinger
     SetNameEnglish: Schrodinger
+    SetRibbonBackground: {fileID: 21300000, guid: 27597e8ec0e75f34c94640b894778d1b,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 44a2ac664637fda45b53d434f28d8ca8,
+      type: 3}
+    SetFontName: {fileID: 21300000, guid: b3aceba39a1e348498ded14e1ba01823, type: 3}
     ArtistName: SMKT
     list:
     - Name: Sink
       EnglishName: Sink
       Image: {fileID: 21300000, guid: a521397346aa25e4cab9e4a0252a080c, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
       VisibleName: Lavuaari
@@ -205,6 +228,7 @@ MonoBehaviour:
     - Name: Toilet
       EnglishName: Toilet
       Image: {fileID: 21300000, guid: 832ac9ead016f6744a986880d90f2239, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
       VisibleName: "Vessanp\xF6ntt\xF6"
@@ -232,6 +256,7 @@ MonoBehaviour:
     - Name: Mirror
       EnglishName: Mirror
       Image: {fileID: 21300000, guid: 1668e6a82af181649a95fd18184b69b4, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
       VisibleName: Peili
@@ -259,6 +284,7 @@ MonoBehaviour:
     - Name: Carpet
       EnglishName: Carpet
       Image: {fileID: -1025061042, guid: 46339bd67ae6f014f85f9a28b83074cf, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
       VisibleName: Matto
@@ -286,6 +312,7 @@ MonoBehaviour:
     - Name: Bathtub
       EnglishName: Bathtub
       Image: {fileID: 21300000, guid: e3b859c5b1a5e3744a94f2cc2cd31641, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
       VisibleName: Kylpyamme
@@ -312,11 +339,17 @@ MonoBehaviour:
         Recycling: 
   - SetName: Rakkaus
     SetNameEnglish: Love
+    SetRibbonBackground: {fileID: 21300000, guid: bb795787610ad1e48972767e69fbfc08,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 434bd80f735202e498eb4d3ac5c38cea,
+      type: 3}
+    SetFontName: {fileID: 21300000, guid: e67bebc61714b6047816c3dcdf21d8a2, type: 3}
     ArtistName: Ida Vesterinen
     list:
     - Name: Sofa
       EnglishName: Sofa
       Image: {fileID: 2111035950, guid: 1a72e77a6efdfd24db919d01d7a8dfb2, type: 3}
+      SidewaysImage: {fileID: 628286822, guid: 1a72e77a6efdfd24db919d01d7a8dfb2, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: a922bd01507eab14291920a8c3e90ba4, type: 3}
       VisibleName: Sohva
@@ -335,8 +368,9 @@ MonoBehaviour:
     - Name: ArmChair
       EnglishName: Armchair
       Image: {fileID: -1518666426, guid: 718483698bde05f4a9177b3766ec752c, type: 3}
+      SidewaysImage: {fileID: 381324894, guid: 718483698bde05f4a9177b3766ec752c, type: 3}
       PosterImage: {fileID: 0}
-      RibbonImage: {fileID: 21300000, guid: af4f523a0ea1e2945b78bc9fff9b5edc, type: 3}
+      RibbonImage: {fileID: 0}
       VisibleName: Nojatuoli
       ArtisticDescription: "Rakasta itse\xE4si sellaisena kuin olet."
       EnglishArtisticDescription: Love yourself just the way you are.
@@ -353,6 +387,8 @@ MonoBehaviour:
     - Name: Closet
       EnglishName: Closet
       Image: {fileID: -714799274, guid: a6f74e5435710c74da29a170bdf69a3b, type: 3}
+      SidewaysImage: {fileID: -204380305, guid: a6f74e5435710c74da29a170bdf69a3b,
+        type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 373abe5471349a442831803e0e53b3fc, type: 3}
       VisibleName: Kaappi
@@ -371,6 +407,8 @@ MonoBehaviour:
     - Name: Carpet
       EnglishName: Carpet
       Image: {fileID: -15601349, guid: baee2d721999a8f4990aea6c6b3536e4, type: 3}
+      SidewaysImage: {fileID: -261531734, guid: baee2d721999a8f4990aea6c6b3536e4,
+        type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 8aa2e2c54d93c6447a8371395594c284, type: 3}
       VisibleName: Matto
@@ -389,6 +427,7 @@ MonoBehaviour:
     - Name: Coffeetable
       EnglishName: Coffee Table
       Image: {fileID: 21300000, guid: ea79889aaa2005d43ba89abe29dd04e0, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 902bcb2e3f9b84c45b50b551b7a47f03, type: 3}
       VisibleName: "Kahvip\xF6yt\xE4"
@@ -407,6 +446,7 @@ MonoBehaviour:
     - Name: Diningtable
       EnglishName: Dining Table
       Image: {fileID: -821679160, guid: 94e11a3a27dffa84587d44509f722e7b, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 1171a4d76d96caa4f97a646e7957432b, type: 3}
       VisibleName: "Ruokap\xF6yt\xE4"
@@ -425,6 +465,8 @@ MonoBehaviour:
     - Name: Bed
       EnglishName: Bed
       Image: {fileID: 815919883, guid: dc6580df46820ee429b7e7b5fff9d53e, type: 3}
+      SidewaysImage: {fileID: 1322279754, guid: dc6580df46820ee429b7e7b5fff9d53e,
+        type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: d2a92867abab8b14481a685595f02da5, type: 3}
       VisibleName: "S\xE4nky"
@@ -443,6 +485,8 @@ MonoBehaviour:
     - Name: Mirror
       EnglishName: Mirror
       Image: {fileID: -863245616, guid: b521e14e44bb106429a8bf1160035e01, type: 3}
+      SidewaysImage: {fileID: 1295344004, guid: b521e14e44bb106429a8bf1160035e01,
+        type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 38d68c0ad163dfb49ba33644ae14bec2, type: 3}
       VisibleName: Peili
@@ -461,6 +505,7 @@ MonoBehaviour:
     - Name: CeilingLamp
       EnglishName: Ceiling Lamp
       Image: {fileID: -627347190, guid: 622f3fc6e612df2448b72d5a929b5de9, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 21300000, guid: 47efd40d5bdc9be4883e6d0ced005245, type: 3}
       VisibleName: Kattolamppu
@@ -478,11 +523,17 @@ MonoBehaviour:
         Recycling: 
   - SetName: Neuro
     SetNameEnglish: Neuro
+    SetRibbonBackground: {fileID: 21300000, guid: bd8b8d15b6744f74da183985a10eacbc,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 27be374351b41cc45a5e8e10c7fa9116,
+      type: 3}
+    SetFontName: {fileID: 0}
     ArtistName: "Simo Ryh\xE4nen"
     list:
     - Name: Chair
       EnglishName: Chair
       Image: {fileID: -542428133, guid: e04086fbcd7d07f4fab56452eafc9b8b, type: 3}
+      SidewaysImage: {fileID: 568879391, guid: e04086fbcd7d07f4fab56452eafc9b8b, type: 3}
       PosterImage: {fileID: 21300000, guid: 3a525ef8014e6d54fa755d1e3e0cd511, type: 3}
       RibbonImage: {fileID: 21300000, guid: 1c7a21751dfea0a49abd1496c39a796f, type: 3}
       VisibleName: Tuoli
@@ -503,6 +554,8 @@ MonoBehaviour:
     - Name: Dresser
       EnglishName: Dresser
       Image: {fileID: -989629432, guid: c13a038f10db45540a32ec27e8fd8eb0, type: 3}
+      SidewaysImage: {fileID: -181653738, guid: c13a038f10db45540a32ec27e8fd8eb0,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 7334ae911a843274992c572e916b384c, type: 3}
       RibbonImage: {fileID: 21300000, guid: b1035b40bc0a2c14495e29df62d1d4d5, type: 3}
       VisibleName: Lipasto
@@ -523,6 +576,7 @@ MonoBehaviour:
     - Name: Stool
       EnglishName: Stool
       Image: {fileID: 21300000, guid: 2211fd783ba19f949850336199db229d, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 21300000, guid: b47656ba61ae6a6499de74de2eb0526c, type: 3}
       RibbonImage: {fileID: 21300000, guid: 7bba17cb1aee52b40a41ca572b182658, type: 3}
       VisibleName: Penkki
@@ -544,6 +598,8 @@ MonoBehaviour:
     - Name: Clock
       EnglishName: Clock
       Image: {fileID: -191785817, guid: 7eb890d72e3cf3f4da3fd6d0580bb91d, type: 3}
+      SidewaysImage: {fileID: 1997205788, guid: 7eb890d72e3cf3f4da3fd6d0580bb91d,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 2697d9b2d47bb9d4698039ae0d8f997a, type: 3}
       RibbonImage: {fileID: 21300000, guid: b1819bb45acdbe742a752a32abe574f1, type: 3}
       VisibleName: Kello
@@ -563,11 +619,18 @@ MonoBehaviour:
         Recycling: 
   - SetName: Polarity
     SetNameEnglish: Polarity
+    SetRibbonBackground: {fileID: 21300000, guid: 9f3c019ae38c4c54b99f6bcfafbf9625,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 5665817466278b54696fbc102cd48f8e,
+      type: 3}
+    SetFontName: {fileID: 0}
     ArtistName: "Simo Ryh\xE4nen"
     list:
     - Name: Chair
       EnglishName: Chair
       Image: {fileID: -1910366402, guid: dec3d4f72adf8894bb90aa4167431d9e, type: 3}
+      SidewaysImage: {fileID: -921914103, guid: dec3d4f72adf8894bb90aa4167431d9e,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: a7e54c564c10cea4cb7dbf1a49610d9a, type: 3}
       RibbonImage: {fileID: 21300000, guid: d60ecf7423391294abee5cc0a2841879, type: 3}
       VisibleName: Tuoli
@@ -586,6 +649,8 @@ MonoBehaviour:
     - Name: Bookshelf
       EnglishName: Bookshelf
       Image: {fileID: 294977418, guid: a92cdd07072e60447a205559f0008b4a, type: 3}
+      SidewaysImage: {fileID: 1703094059, guid: a92cdd07072e60447a205559f0008b4a,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 05bac8b45c7b40d468ab1f7ed732661e, type: 3}
       RibbonImage: {fileID: 21300000, guid: f6c85fb4cd7fa28438fbc1ad29a9e640, type: 3}
       VisibleName: Kirjahylly
@@ -604,6 +669,8 @@ MonoBehaviour:
     - Name: Table
       EnglishName: Table
       Image: {fileID: -1827521093, guid: 1e251cd786a3aec478063211540f7507, type: 3}
+      SidewaysImage: {fileID: -1495259765, guid: 1e251cd786a3aec478063211540f7507,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: f81722a441607b54d9598b460d0615c6, type: 3}
       RibbonImage: {fileID: 21300000, guid: e7baf1d6d426d8e4596f582425602e09, type: 3}
       VisibleName: "P\xF6yt\xE4"
@@ -621,11 +688,18 @@ MonoBehaviour:
         Recycling: 
   - SetName: Muistoja
     SetNameEnglish: Memories
+    SetRibbonBackground: {fileID: 21300000, guid: 6c0e2cd21c0452f429b43b45fa881c49,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 41990b3d58795464d91306a2d16e7b5c,
+      type: 3}
+    SetFontName: {fileID: 0}
     ArtistName: "T\xE4hti"
     list:
     - Name: Commode
       EnglishName: Commode
       Image: {fileID: 903108585, guid: 9a35b534c9b0d1d438d97580b7dd3460, type: 3}
+      SidewaysImage: {fileID: 1226245749, guid: 9a35b534c9b0d1d438d97580b7dd3460,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 8a7795a4b3a7e8f43bd24e9690398b8e, type: 3}
       RibbonImage: {fileID: 0}
       VisibleName: Lipasto
@@ -648,6 +722,8 @@ MonoBehaviour:
     - Name: Pictures
       EnglishName: Pictures
       Image: {fileID: -653159985, guid: 143d30fa3c208b74097e2a07f1de135b, type: 3}
+      SidewaysImage: {fileID: 1458909605, guid: 143d30fa3c208b74097e2a07f1de135b,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: b0464945903090047974ef801f436999, type: 3}
       RibbonImage: {fileID: 21300000, guid: e982f47f2cfd76448a71eb7ff35f7042, type: 3}
       VisibleName: Kuvat
@@ -670,6 +746,8 @@ MonoBehaviour:
     - Name: Sofa
       EnglishName: Sofa
       Image: {fileID: -276021852, guid: 2a4e7a07747a4e64ab3e048b6f2362a3, type: 3}
+      SidewaysImage: {fileID: 2042160898, guid: 2a4e7a07747a4e64ab3e048b6f2362a3,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 31d6bdd810e87ca458c23bc55631209c, type: 3}
       RibbonImage: {fileID: 21300000, guid: 88c0dffa01d38d943b3c734396cb28f9, type: 3}
       VisibleName: Sohva
@@ -692,6 +770,7 @@ MonoBehaviour:
     - Name: Armchair
       EnglishName: Armchair
       Image: {fileID: 1667950117, guid: 8dff8e402cc540d4a8d6a6ecd0dbe66e, type: 3}
+      SidewaysImage: {fileID: 534638176, guid: 8dff8e402cc540d4a8d6a6ecd0dbe66e, type: 3}
       PosterImage: {fileID: 21300000, guid: 4fd6b70f7af4f4547806cdc708169b13, type: 3}
       RibbonImage: {fileID: 21300000, guid: e6ebfa53c02e89746b7833e10ac9f247, type: 3}
       VisibleName: Nojatuoli
@@ -714,6 +793,7 @@ MonoBehaviour:
     - Name: Coffeetable
       EnglishName: Coffee Table
       Image: {fileID: -1670388164, guid: 2d7f413229d595b49a0aa29529a9c790, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 21300000, guid: 62dd4c550edb7ca4c97387d8202d9ad3, type: 3}
       RibbonImage: {fileID: 0}
       VisibleName: "Kahvip\xF6yt\xE4"
@@ -736,6 +816,7 @@ MonoBehaviour:
     - Name: Drawings
       EnglishName: Drawings
       Image: {fileID: -645727606, guid: c59a44a4e514d7341bb8e32e38e39f16, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 21300000, guid: 3caf553ddf78b2b429dad50c4b0f75ac, type: 3}
       RibbonImage: {fileID: 21300000, guid: 0ab557a5620cd4a45a35afbf4fab9378, type: 3}
       VisibleName: Piirustukset
@@ -758,6 +839,7 @@ MonoBehaviour:
     - Name: Ficus
       EnglishName: Ficus
       Image: {fileID: 143282350, guid: 823e03013bcaf664da5b956b2c9817e1, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 21300000, guid: ff89c78c47b2a164dbf142713c7487ee, type: 3}
       RibbonImage: {fileID: 21300000, guid: 9c76bf4751932874d863e1f851f8f45f, type: 3}
       VisibleName: Fiikus
@@ -780,6 +862,8 @@ MonoBehaviour:
     - Name: Flowers
       EnglishName: Flowers
       Image: {fileID: -539711076, guid: cec279d7fdd77e34d9ccc2086662ec7a, type: 3}
+      SidewaysImage: {fileID: 1220110200, guid: cec279d7fdd77e34d9ccc2086662ec7a,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 7e2f8d67b7095d54784e5258405cd14b, type: 3}
       RibbonImage: {fileID: 21300000, guid: 00543587ab4e8d84bbe09a0ffe5369d9, type: 3}
       VisibleName: Kukat
@@ -802,6 +886,7 @@ MonoBehaviour:
     - Name: NewCarpet
       EnglishName: Carpet (New)
       Image: {fileID: 2146123883, guid: c7e943059c6673a4c90f8b308c2a870c, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 21300000, guid: b285b9202522c03458d8d638a45bacc7, type: 3}
       RibbonImage: {fileID: 21300000, guid: 2ee37c9bcf82c95449cb9fca5c6b71a2, type: 3}
       VisibleName: Matto (Uusi)
@@ -824,6 +909,7 @@ MonoBehaviour:
     - Name: OldCarpet
       EnglishName: Carpet (Old)
       Image: {fileID: -1723923400, guid: 93d41fca7875d9947b1777eb9acb7d16, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
       VisibleName: Matto (Kulunut)
@@ -846,6 +932,7 @@ MonoBehaviour:
     - Name: NewWindow
       EnglishName: Window (New)
       Image: {fileID: -1699903621, guid: 182e1f74b558be745a91b6375d757700, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 21300000, guid: 05fda73e3249a694f869561d491873db, type: 3}
       RibbonImage: {fileID: 21300000, guid: b33f15a432b9d434eb2667e643835bd0, type: 3}
       VisibleName: Ikkuna (Uusi)
@@ -868,6 +955,7 @@ MonoBehaviour:
     - Name: OldWindow
       EnglishName: Window (Old)
       Image: {fileID: 751341215, guid: 9c11f8100be92dd4e8e3f7e6341b8ecb, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 21300000, guid: b3480b44fb959a24da99a55e72a714b4, type: 3}
       RibbonImage: {fileID: 21300000, guid: 9d3e5aee57efa61489030dfa6b40b9ec, type: 3}
       VisibleName: Ikkuna (Kulunut)
@@ -890,6 +978,8 @@ MonoBehaviour:
     - Name: Painting
       EnglishName: Painting
       Image: {fileID: -648787027, guid: ba10ac9f2291fd040b2081b285ef8298, type: 3}
+      SidewaysImage: {fileID: -127419167, guid: ba10ac9f2291fd040b2081b285ef8298,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: d3ea5e12da949e9409de5904ed9cffc6, type: 3}
       RibbonImage: {fileID: 21300000, guid: 8ee3b35388de26744a124ce82914021a, type: 3}
       VisibleName: Taulu
@@ -912,6 +1002,8 @@ MonoBehaviour:
     - Name: ToyFox
       EnglishName: Toy Fox
       Image: {fileID: 1177845131, guid: 094f936181037244c8d1d29b484c90e0, type: 3}
+      SidewaysImage: {fileID: -2091725040, guid: 094f936181037244c8d1d29b484c90e0,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 0697b80b65f9e0e4d9cae0fd2400bb18, type: 3}
       RibbonImage: {fileID: 21300000, guid: 316e964d0f1d6a5459c0e98487a205b8, type: 3}
       VisibleName: Lelukettu
@@ -933,11 +1025,18 @@ MonoBehaviour:
         Recycling: 
   - SetName: Uni
     SetNameEnglish: Sleep
+    SetRibbonBackground: {fileID: 21300000, guid: 7271aff2c9ea2cd438a1e6c36aa32908,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: e69558bbe13dfc748971fbafbdc684b9,
+      type: 3}
+    SetFontName: {fileID: 21300000, guid: a21fc92fc6174f54ba8af9203a14c4e7, type: 3}
     ArtistName: Vanelei
     list:
     - Name: Sofa
       EnglishName: Sofa
       Image: {fileID: -395311538, guid: 27a27d546070c1e408175b1f15171428, type: 3}
+      SidewaysImage: {fileID: -1225274647, guid: 27a27d546070c1e408175b1f15171428,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 759a1e42241a9fd4a803d45888fd9c06, type: 3}
       RibbonImage: {fileID: 21300000, guid: 6132e6b37b55cea4d8b8529e51da5500, type: 3}
       VisibleName: Sohva
@@ -956,6 +1055,8 @@ MonoBehaviour:
     - Name: Bed
       EnglishName: Bed
       Image: {fileID: -864293954, guid: b27973bcd7dd95e47954ab222c12fbe2, type: 3}
+      SidewaysImage: {fileID: -1386676651, guid: b27973bcd7dd95e47954ab222c12fbe2,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 88fc050c13abd014083f0129f5810a4c, type: 3}
       RibbonImage: {fileID: 21300000, guid: 6cf10eae28c7fb24b89b3131e24726cc, type: 3}
       VisibleName: "S\xE4nky"
@@ -974,6 +1075,8 @@ MonoBehaviour:
     - Name: Closet
       EnglishName: Closet
       Image: {fileID: 250947397, guid: 89024992418f5c4499ae70952c6efed7, type: 3}
+      SidewaysImage: {fileID: -1094298050, guid: 89024992418f5c4499ae70952c6efed7,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: d361326ab4de58740a6cd149ddb4ff97, type: 3}
       RibbonImage: {fileID: 21300000, guid: 5df9f9af95eb2a24898d0426d6113194, type: 3}
       VisibleName: Kaappi
@@ -991,11 +1094,15 @@ MonoBehaviour:
         Recycling: 
   - SetName: KylmaTulevaisuus
     SetNameEnglish: ColdFuture
+    SetRibbonBackground: {fileID: 0}
+    SetPosterBackground: {fileID: 0}
+    SetFontName: {fileID: 0}
     ArtistName: Ida Vesterinen
     list:
     - Name: Hologram
       EnglishName: Hologram
       Image: {fileID: 719040038, guid: b4831fd18e8e2e948a034f02bbcd3a13, type: 3}
+      SidewaysImage: {fileID: 998714542, guid: b4831fd18e8e2e948a034f02bbcd3a13, type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
       VisibleName: Hologrammi
@@ -1016,6 +1123,8 @@ MonoBehaviour:
     - Name: Sofa
       EnglishName: Sofa
       Image: {fileID: -1180185098, guid: 0d86948a83d08c94083b1234ee903d16, type: 3}
+      SidewaysImage: {fileID: -1912415989, guid: 0d86948a83d08c94083b1234ee903d16,
+        type: 3}
       PosterImage: {fileID: 0}
       RibbonImage: {fileID: 0}
       VisibleName: Sohva
@@ -1033,13 +1142,41 @@ MonoBehaviour:
         Value: 150
         Material: 
         Recycling: 
+    - Name: Table
+      EnglishName: Table
+      Image: {fileID: 1298015614, guid: f623c2c8ed61f574eb003b687379c6e4, type: 3}
+      SidewaysImage: {fileID: -48036675, guid: f623c2c8ed61f574eb003b687379c6e4, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "P\xF6yt\xE4"
+      ArtisticDescription: "Milt\xE4 maailma n\xE4ytt\xE4\xE4, kun teknologia ja
+        ilmastonmuutos kehittyy."
+      EnglishArtisticDescription: What will the world of tomorrow look like when
+        the technology advances, and the climate change progresses
+      DiagnoseNumber: F0
+      BaseFurniture:
+        Name: Table_KylmaTulevaisuus
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 1, z: 2}
+        Placement: 0
+        Weight: 10
+        Value: 30
+        Material: 
+        Recycling: 
   - SetName: Kipu
     SetNameEnglish: Pain
+    SetRibbonBackground: {fileID: 21300000, guid: 62b18061a30e2b8439b3dc2aff415747,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 696a224e64c8b3546a97c47e902585de,
+      type: 3}
+    SetFontName: {fileID: 21300000, guid: 27f0d11b5282bd648bc266b437e54c00, type: 3}
     ArtistName: Ville Julius
     list:
     - Name: Closet
       EnglishName: Closet
       Image: {fileID: 2005414215, guid: 8bb44278ea388cb4e85d871ee055263b, type: 3}
+      SidewaysImage: {fileID: 1144160726, guid: 8bb44278ea388cb4e85d871ee055263b,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: bb9a8c0ec135e064cbe1196ba81e3e48, type: 3}
       RibbonImage: {fileID: 21300000, guid: 2925a14797543004db3c304b005738f8, type: 3}
       VisibleName: Kaappi
@@ -1062,6 +1199,8 @@ MonoBehaviour:
     - Name: Sofa
       EnglishName: Sofa
       Image: {fileID: -1010160331, guid: ea747327d8c0a1841b8299133bdcb93e, type: 3}
+      SidewaysImage: {fileID: -700878655, guid: ea747327d8c0a1841b8299133bdcb93e,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 09b35a23552772b469bd847c275729c5, type: 3}
       RibbonImage: {fileID: 21300000, guid: 9f32b2e05450c1e4f85f48cec4b96521, type: 3}
       VisibleName: Sohva
@@ -1084,6 +1223,8 @@ MonoBehaviour:
     - Name: Chair
       EnglishName: Chair
       Image: {fileID: 96773911, guid: 3b68f427ae685a944b8327899a3727f2, type: 3}
+      SidewaysImage: {fileID: 1588476471, guid: 3b68f427ae685a944b8327899a3727f2,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 1ca1430b75f5413438dcc388a7e7d056, type: 3}
       RibbonImage: {fileID: 21300000, guid: 3e7024cc1c20a5744850d34399abe47e, type: 3}
       VisibleName: Tuoli
@@ -1106,6 +1247,8 @@ MonoBehaviour:
     - Name: Table
       EnglishName: Table
       Image: {fileID: 459369904, guid: e2dc0b56be754c8468fb61653e8be6b6, type: 3}
+      SidewaysImage: {fileID: 1411959896, guid: e2dc0b56be754c8468fb61653e8be6b6,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: fc5d8c27472607744a3a139e0fded250, type: 3}
       RibbonImage: {fileID: 21300000, guid: b9d892a6620a8e646ae8db670390d6bb, type: 3}
       VisibleName: "P\xF6yt\xE4"
@@ -1128,6 +1271,7 @@ MonoBehaviour:
     - Name: Plant
       EnglishName: Plant
       Image: {fileID: 21300000, guid: ce8ccd95426cdc54b926069b66b83da5, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 21300000, guid: 96301b22b64b228408e330654d8200c9, type: 3}
       RibbonImage: {fileID: 21300000, guid: a6b74a4c88311664c8a1847839358132, type: 3}
       VisibleName: Piikkikasvi
@@ -1149,11 +1293,18 @@ MonoBehaviour:
         Recycling: 
   - SetName: Kiusaaminen
     SetNameEnglish: Bullying
+    SetRibbonBackground: {fileID: 21300000, guid: ccd936b5c008f0241bbc707d4fa85311,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 319a9e64d9d889241aae21f2199ee0f7,
+      type: 3}
+    SetFontName: {fileID: 0}
     ArtistName: Mavlu
     list:
     - Name: Sofa
       EnglishName: Sofa
       Image: {fileID: 1626912963, guid: e4432fcfe063ad044bc201396b243caa, type: 3}
+      SidewaysImage: {fileID: -1153646444, guid: e4432fcfe063ad044bc201396b243caa,
+        type: 3}
       PosterImage: {fileID: 21300000, guid: 887f85d33f4a40c449d15732b622452d, type: 3}
       RibbonImage: {fileID: 21300000, guid: c007ef680897316448fbae559470bca2, type: 3}
       VisibleName: Sohva
@@ -1172,6 +1323,7 @@ MonoBehaviour:
     - Name: Window
       EnglishName: Window
       Image: {fileID: 21300000, guid: 5dce39d4408956e408711902774c1170, type: 3}
+      SidewaysImage: {fileID: 0}
       PosterImage: {fileID: 21300000, guid: 1b4557461b968a543b339959fb3454ef, type: 3}
       RibbonImage: {fileID: 21300000, guid: 2b818da57e7a8b64bbe4465a43a6acf6, type: 3}
       VisibleName: Ikkuna
@@ -1185,5 +1337,949 @@ MonoBehaviour:
         Placement: 4
         Weight: 50
         Value: 288
+        Material: 
+        Recycling: 
+  - SetName: Stress
+    SetNameEnglish: 
+    SetRibbonBackground: {fileID: 21300000, guid: cf04aa59fe68e42408c45c507e3a9d17,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 22fbaa53f22d3b646ae362bd59047d26,
+      type: 3}
+    SetFontName: {fileID: 21300000, guid: 5e1fb6782d7df514eaa4258dd25d7df7, type: 3}
+    ArtistName: "Ida K\xE4ns\xE4koski"
+    list:
+    - Name: Sofa
+      EnglishName: Sofa
+      Image: {fileID: -108677667, guid: c69efc0390ed6f8479df0c55705846e0, type: 3}
+      SidewaysImage: {fileID: 0}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Sohva
+      ArtisticDescription: "Stressi vaikuttaa kaikkiin. Vaikka kaikki stressi\xE4
+        eri tavalla kokevat ja lievent\xE4v\xE4t, se on yhteinen kokemus"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43
+      BaseFurniture:
+        Name: Sofa_Stress
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 3, z: 3}
+        Placement: 0
+        Weight: 25
+        Value: 130
+        Material: 
+        Recycling: 
+    - Name: Chair
+      EnglishName: 
+      Image: {fileID: -1477198751, guid: d1543addf4c690e4f85036b57ea4b9c3, type: 3}
+      SidewaysImage: {fileID: 0}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Tuoli
+      ArtisticDescription: "Stressi vaikuttaa kaikkiin. Vaikka kaikki stressi\xE4
+        eri tavalla kokevat ja lievent\xE4v\xE4t, se on yhteinen kokemus"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43
+      BaseFurniture:
+        Name: Chair_Stress
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 2, z: 2}
+        Placement: 0
+        Weight: 5
+        Value: 50
+        Material: 
+        Recycling: 
+    - Name: Bed
+      EnglishName: 
+      Image: {fileID: -339745879, guid: 434729a0069abb2489c54d717b12eb61, type: 3}
+      SidewaysImage: {fileID: 0}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "S\xE4nky"
+      ArtisticDescription: "Stressi vaikuttaa kaikkiin. Vaikka kaikki stressi\xE4
+        eri tavalla kokevat ja lievent\xE4v\xE4t, se on yhteinen kokemus"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43
+      BaseFurniture:
+        Name: Bed_Stress
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 2, z: 3}
+        Placement: 0
+        Weight: 25
+        Value: 180
+        Material: 
+        Recycling: 
+    - Name: FloorLamp
+      EnglishName: 
+      Image: {fileID: -463010711, guid: 00b1f371ae43e774897839fd1924de41, type: 3}
+      SidewaysImage: {fileID: 0}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Lattialamppu
+      ArtisticDescription: "Stressi vaikuttaa kaikkiin. Vaikka kaikki stressi\xE4
+        eri tavalla kokevat ja lievent\xE4v\xE4t, se on yhteinen kokemus"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43
+      BaseFurniture:
+        Name: FloorLamp_Stress
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 2, z: 2}
+        Placement: 0
+        Weight: 4
+        Value: 60
+        Material: 
+        Recycling: 
+    - Name: Floorshelf
+      EnglishName: 
+      Image: {fileID: 1866351247, guid: e52e07432c01ddd44be4d8d376b2510d, type: 3}
+      SidewaysImage: {fileID: 0}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Lattiahylly
+      ArtisticDescription: "Stressi vaikuttaa kaikkiin. Vaikka kaikki stressi\xE4
+        eri tavalla kokevat ja lievent\xE4v\xE4t, se on yhteinen kokemus"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43
+      BaseFurniture:
+        Name: Floorshelf_Stress
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 2, z: 1}
+        Placement: 0
+        Weight: 3
+        Value: 75
+        Material: 
+        Recycling: 
+    - Name: Garbagebin
+      EnglishName: 
+      Image: {fileID: 462982830, guid: bddd2bb60fd5fcb4cbfcdbdd14584011, type: 3}
+      SidewaysImage: {fileID: 0}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Roskakori
+      ArtisticDescription: "Stressi vaikuttaa kaikkiin. Vaikka kaikki stressi\xE4
+        eri tavalla kokevat ja lievent\xE4v\xE4t, se on yhteinen kokemus"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43
+      BaseFurniture:
+        Name: Garbagebin_Stress
+        Rarity: 0
+        FurnitureSize: {x: 1, y: 1, z: 1}
+        Placement: 0
+        Weight: 1
+        Value: 30
+        Material: 
+        Recycling: 
+    - Name: Table
+      EnglishName: 
+      Image: {fileID: 1058336014, guid: 2b10bccbd3428e54490ca2430b093ac9, type: 3}
+      SidewaysImage: {fileID: 0}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "P\xF6yt\xE4"
+      ArtisticDescription: "Stressi vaikuttaa kaikkiin. Vaikka kaikki stressi\xE4
+        eri tavalla kokevat ja lievent\xE4v\xE4t, se on yhteinen kokemus"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43
+      BaseFurniture:
+        Name: Table_Stress
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 1, z: 3}
+        Placement: 0
+        Weight: 5
+        Value: 100
+        Material: 
+        Recycling: 
+  - SetName: Ocd
+    SetNameEnglish: 
+    SetRibbonBackground: {fileID: 0}
+    SetPosterBackground: {fileID: 0}
+    SetFontName: {fileID: 0}
+    ArtistName: Mea Lahtinen
+    list:
+    - Name: Coffeetable
+      EnglishName: 
+      Image: {fileID: -520003675, guid: 1a88ec643572e1d4c9e26ede0dd66d81, type: 3}
+      SidewaysImage: {fileID: -1548538365, guid: 1a88ec643572e1d4c9e26ede0dd66d81,
+        type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Kahvip\xF6yt\xE4"
+      ArtisticDescription: "Ulkoisesti siisti ja hallittu ymp\xE4rist\xF6 voi k\xE4tke\xE4
+        n\xE4kym\xE4tt\xF6m\xE4n kamppailun, jossa mieli tasapainoilee j\xE4rjestyksen
+        tarpeen ja sis\xE4isen ahdistuksen v\xE4lill\xE4."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F42
+      BaseFurniture:
+        Name: Coffeetable_Ocd
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 2, z: 3}
+        Placement: 0
+        Weight: 20
+        Value: 75
+        Material: 
+        Recycling: 
+    - Name: Oven
+      EnglishName: 
+      Image: {fileID: -606628435, guid: 9204754ff9bff1f4eae401b9c1cb1a06, type: 3}
+      SidewaysImage: {fileID: 2062720461, guid: 9204754ff9bff1f4eae401b9c1cb1a06,
+        type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Uuni
+      ArtisticDescription: "Ulkoisesti siisti ja hallittu ymp\xE4rist\xF6 voi k\xE4tke\xE4
+        n\xE4kym\xE4tt\xF6m\xE4n kamppailun, jossa mieli tasapainoilee j\xE4rjestyksen
+        tarpeen ja sis\xE4isen ahdistuksen v\xE4lill\xE4."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F42
+      BaseFurniture:
+        Name: Oven_Ocd
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 2, z: 2}
+        Placement: 0
+        Weight: 50
+        Value: 150
+        Material: 
+        Recycling: 
+    - Name: Sink
+      EnglishName: 
+      Image: {fileID: -957048159, guid: f68900245dde76d41b8388d6765913a2, type: 3}
+      SidewaysImage: {fileID: 1075809825, guid: f68900245dde76d41b8388d6765913a2,
+        type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Lavuaari
+      ArtisticDescription: "Ulkoisesti siisti ja hallittu ymp\xE4rist\xF6 voi k\xE4tke\xE4
+        n\xE4kym\xE4tt\xF6m\xE4n kamppailun, jossa mieli tasapainoilee j\xE4rjestyksen
+        tarpeen ja sis\xE4isen ahdistuksen v\xE4lill\xE4."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F42
+      BaseFurniture:
+        Name: Sink_Ocd
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 2, z: 2}
+        Placement: 1
+        Weight: 2
+        Value: 20
+        Material: 
+        Recycling: 
+    - Name: Sofa
+      EnglishName: 
+      Image: {fileID: -170372294, guid: 3e7f094a673789b4ca3418b87dd09ac2, type: 3}
+      SidewaysImage: {fileID: 1893420840, guid: 3e7f094a673789b4ca3418b87dd09ac2,
+        type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Sohva
+      ArtisticDescription: "Ulkoisesti siisti ja hallittu ymp\xE4rist\xF6 voi k\xE4tke\xE4
+        n\xE4kym\xE4tt\xF6m\xE4n kamppailun, jossa mieli tasapainoilee j\xE4rjestyksen
+        tarpeen ja sis\xE4isen ahdistuksen v\xE4lill\xE4."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F42
+      BaseFurniture:
+        Name: Sofa_Ocd
+        Rarity: 0
+        FurnitureSize: {x: 8, y: 2, z: 3}
+        Placement: 0
+        Weight: 30
+        Value: 120
+        Material: 
+        Recycling: 
+    - Name: Desk
+      EnglishName: 
+      Image: {fileID: -1603503904, guid: b5b2a73f8512d164b92ee478cf57299d, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Ty\xF6p\xF6yt\xE4"
+      ArtisticDescription: "Ulkoisesti siisti ja hallittu ymp\xE4rist\xF6 voi k\xE4tke\xE4
+        n\xE4kym\xE4tt\xF6m\xE4n kamppailun, jossa mieli tasapainoilee j\xE4rjestyksen
+        tarpeen ja sis\xE4isen ahdistuksen v\xE4lill\xE4."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F42
+      BaseFurniture:
+        Name: Desk_Ocd
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 4, z: 2}
+        Placement: 0
+        Weight: 40
+        Value: 75
+        Material: 
+        Recycling: 
+    - Name: Floorlamp
+      EnglishName: 
+      Image: {fileID: -312511941, guid: c42e38874f65ebf4a9e525b31f2833e8, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Lattiavalaisin
+      ArtisticDescription: "Ulkoisesti siisti ja hallittu ymp\xE4rist\xF6 voi k\xE4tke\xE4
+        n\xE4kym\xE4tt\xF6m\xE4n kamppailun, jossa mieli tasapainoilee j\xE4rjestyksen
+        tarpeen ja sis\xE4isen ahdistuksen v\xE4lill\xE4."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F42
+      BaseFurniture:
+        Name: Floorlamp_Ocd
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 5, z: 1}
+        Placement: 0
+        Weight: 8
+        Value: 75
+        Material: 
+        Recycling: 
+    - Name: Toilet
+      EnglishName: 
+      Image: {fileID: 386586125, guid: 3dcd173abc6db1f4c9c56f674f3872ef, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Vessanp\xF6ntt\xF6"
+      ArtisticDescription: "Ulkoisesti siisti ja hallittu ymp\xE4rist\xF6 voi k\xE4tke\xE4
+        n\xE4kym\xE4tt\xF6m\xE4n kamppailun, jossa mieli tasapainoilee j\xE4rjestyksen
+        tarpeen ja sis\xE4isen ahdistuksen v\xE4lill\xE4."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F42
+      BaseFurniture:
+        Name: Toilet_Ocd
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 3, z: 2}
+        Placement: 1
+        Weight: 25
+        Value: 95
+        Material: 
+        Recycling: 
+  - SetName: GuiltyPleasure
+    SetNameEnglish: 
+    SetRibbonBackground: {fileID: 21300000, guid: 5b5a2a1cae55fa14b978ecd33d502481,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 7a5cf60a1d1e5d149b9f0e9618aea9d2,
+      type: 3}
+    SetFontName: {fileID: 0}
+    ArtistName: "Maija L\xE4hde"
+    list:
+    - Name: Flower
+      EnglishName: 
+      Image: {fileID: 485455348, guid: f861e9b339d74bd41bc9b4f14b6f9bd3, type: 3}
+      SidewaysImage: {fileID: 1220824236, guid: f861e9b339d74bd41bc9b4f14b6f9bd3,
+        type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Kukka
+      ArtisticDescription: "F99 on ICD:ss\xE4 \u201Cm\xE4\xE4rittelem\xE4t\xF6n mielenterveyden
+        h\xE4iri\xF6\u201D. T\xE4ss\xE4 kontekstissa se toimii metakommenttina: nautinto,
+        jolle ei pit\xE4isi olla diagnoosia, mutta jolle sellainen silti annetaan."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F99
+      BaseFurniture:
+        Name: Flower_GuiltyPleasure
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 3, z: 2}
+        Placement: 0
+        Weight: 3
+        Value: 100
+        Material: 
+        Recycling: 
+    - Name: Carpet
+      EnglishName: 
+      Image: {fileID: -1561329312, guid: 7ee06bc7cc95f7c4ebd5cc4a7c0d0224, type: 3}
+      SidewaysImage: {fileID: -1918206890, guid: 7ee06bc7cc95f7c4ebd5cc4a7c0d0224,
+        type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Matto
+      ArtisticDescription: "F99 on ICD:ss\xE4 \u201Cm\xE4\xE4rittelem\xE4t\xF6n mielenterveyden
+        h\xE4iri\xF6\u201D. T\xE4ss\xE4 kontekstissa se toimii metakommenttina: nautinto,
+        jolle ei pit\xE4isi olla diagnoosia, mutta jolle sellainen silti annetaan."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F99
+      BaseFurniture:
+        Name: Carpet_GuiltyPleasure
+        Rarity: 1
+        FurnitureSize: {x: 4, y: 0, z: 3}
+        Placement: 2
+        Weight: 11
+        Value: 500
+        Material: 
+        Recycling: 
+    - Name: Lamp
+      EnglishName: 
+      Image: {fileID: 803922936, guid: b884fbf0c1f5b0f4ca083c552c3660fc, type: 3}
+      SidewaysImage: {fileID: 578407620, guid: b884fbf0c1f5b0f4ca083c552c3660fc, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Lamppu
+      ArtisticDescription: "F99 on ICD:ss\xE4 \u201Cm\xE4\xE4rittelem\xE4t\xF6n mielenterveyden
+        h\xE4iri\xF6\u201D. T\xE4ss\xE4 kontekstissa se toimii metakommenttina: nautinto,
+        jolle ei pit\xE4isi olla diagnoosia, mutta jolle sellainen silti annetaan."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F99
+      BaseFurniture:
+        Name: Lamp_GuiltyPleasure
+        Rarity: 1
+        FurnitureSize: {x: 2, y: 0, z: 1}
+        Placement: 0
+        Weight: 3
+        Value: 150
+        Material: 
+        Recycling: 
+  - SetName: Delirium
+    SetNameEnglish: 
+    SetRibbonBackground: {fileID: 21300000, guid: 9a823e4fea05a00489bad05b5c8b979c,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 2bd5885d20ae79f4c95e221b9c96cc90,
+      type: 3}
+    SetFontName: {fileID: 21300000, guid: c182c53bd58c4dd4e80291f3e22b1a07, type: 3}
+    ArtistName: "Emma Yrj\xF6vuori"
+    list:
+    - Name: Bed
+      EnglishName: 
+      Image: {fileID: -493892650, guid: 78e61e95da2bf5f4fb0eab08ba916de9, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "S\xE4nky"
+      ArtisticDescription: "On mahdollista, ett\xE4 olet nukkunut t\xE4ss\xE4 s\xE4ngyss\xE4
+        ennenkin. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Bed_Delirium
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 2, z: 6}
+        Placement: 0
+        Weight: 40
+        Value: 170
+        Material: 
+        Recycling: 
+    - Name: Carpet
+      EnglishName: 
+      Image: {fileID: -37425486, guid: 829b546986f6fff4fb616e7bfe11eb4d, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Matto
+      ArtisticDescription: Joskus kaikki on sekavaa.
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F05
+      BaseFurniture:
+        Name: Carpet_Delirium
+        Rarity: 0
+        FurnitureSize: {x: 8, y: 0, z: 7}
+        Placement: 2
+        Weight: 6
+        Value: 90
+        Material: 
+        Recycling: 
+    - Name: Rocking Chair
+      EnglishName: 
+      Image: {fileID: 1324721431, guid: aa34e79cab1c714469f92ded4ff05b79, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Keinutuoli
+      ArtisticDescription: Joskus kaikki on sekavaa.
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F05
+      BaseFurniture:
+        Name: Rocking Chair_Delirium
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 2, z: 2}
+        Placement: 0
+        Weight: 15
+        Value: 75
+        Material: 
+        Recycling: 
+    - Name: Wallclock
+      EnglishName: 
+      Image: {fileID: 477404953, guid: 81bc9c8d80d161b49988d7e5df361a4f, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Sein\xE4kello"
+      ArtisticDescription: Joskus kaikki on sekavaa.
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F05
+      BaseFurniture:
+        Name: Wallclock_Delirium
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 2, z: 1}
+        Placement: 4
+        Weight: 1
+        Value: 10
+        Material: 
+        Recycling: 
+    - Name: Window
+      EnglishName: 
+      Image: {fileID: -1210668811, guid: 31025c329cc8e1e4ab148885580e3af1, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Ikkuna
+      ArtisticDescription: Joskus kaikki on sekavaa.
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F05
+      BaseFurniture:
+        Name: Window_Delirium
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 3, z: 1}
+        Placement: 4
+        Weight: 10
+        Value: 40
+        Material: 
+        Recycling: 
+    - Name: Sofa
+      EnglishName: 
+      Image: {fileID: 1664575665, guid: 8169c8aaa78ccb040a9c8cef1d12ec09, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Sohva
+      ArtisticDescription: Joskus kaikki on sekavaa.
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F05
+      BaseFurniture:
+        Name: Sofa_Delirium
+        Rarity: 0
+        FurnitureSize: {x: 7, y: 3, z: 3}
+        Placement: 0
+        Weight: 120
+        Value: 120
+        Material: 
+        Recycling: 
+    - Name: Wardrobe
+      EnglishName: 
+      Image: {fileID: -456159389, guid: 4b6d937fb13dd7849b9bde9000099ea9, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: VaateKaappi
+      ArtisticDescription: Joskus kaikki on sekavaa.
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F05
+      BaseFurniture:
+        Name: Wardrobe_Delirium
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 6, z: 2}
+        Placement: 0
+        Weight: 50
+        Value: 80
+        Material: 
+        Recycling: 
+  - SetName: FearOfDeath
+    SetNameEnglish: 
+    SetRibbonBackground: {fileID: 21300000, guid: 229c8e75bc0c3204b91cc419504c5979,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 911bd113d23990d4aa978438fe9d3d16,
+      type: 3}
+    SetFontName: {fileID: 21300000, guid: feaac16ff75646d47ae4d47a7dd99d07, type: 3}
+    ArtistName: "Emma Yrj\xF6vuori"
+    list:
+    - Name: RockingChair
+      EnglishName: 
+      Image: {fileID: 1317728673, guid: 2839e1bce34e4d347948bcf1529fe1c7, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Keinutuoli
+      ArtisticDescription: "El\xE4\xE4 t\xE4ysill\xE4"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: MG23
+      BaseFurniture:
+        Name: RockingChair_FearOfDeath
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 2, z: 3}
+        Placement: 0
+        Weight: 15
+        Value: 80
+        Material: 
+        Recycling: 
+    - Name: Bed
+      EnglishName: 
+      Image: {fileID: 658970822, guid: 51baea21fe9878c4bb86a18bc7177e47, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "S\xE4nky"
+      ArtisticDescription: "El\xE4\xE4 t\xE4ysill\xE4"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: MG23
+      BaseFurniture:
+        Name: Bed_FearOfDeath
+        Rarity: 0
+        FurnitureSize: {x: 5, y: 2, z: 6}
+        Placement: 0
+        Weight: 60
+        Value: 100
+        Material: 
+        Recycling: 
+    - Name: Candelabra
+      EnglishName: 
+      Image: {fileID: 1328686363, guid: bac86ee267af9b749b26aeca9b1b34f3, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Kynttelikk\xF6"
+      ArtisticDescription: "El\xE4\xE4 t\xE4ysill\xE4"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: MG23
+      BaseFurniture:
+        Name: Candelabra_FearOfDeath
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 4, z: 2}
+        Placement: 0
+        Weight: 10
+        Value: 40
+        Material: 
+        Recycling: 
+    - Name: Wallclock
+      EnglishName: 
+      Image: {fileID: 132064377, guid: b9d4a0753630a4145a71dbefa279ed9c, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Sein\xE4kello"
+      ArtisticDescription: "El\xE4\xE4 t\xE4ysill\xE4"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: MG23
+      BaseFurniture:
+        Name: Wallclock_FearOfDeath
+        Rarity: 0
+        FurnitureSize: {x: 1, y: 2, z: 1}
+        Placement: 4
+        Weight: 2
+        Value: 40
+        Material: 
+        Recycling: 
+    - Name: Makeup-table
+      EnglishName: 
+      Image: {fileID: -1021570152, guid: 8994e502776be70408090d970ca62989, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Meikkipy\xF6t\xE4"
+      ArtisticDescription: "El\xE4\xE4 t\xE4ysill\xE4"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: MG23
+      BaseFurniture:
+        Name: Makeup-table_FearOfDeath
+        Rarity: 0
+        FurnitureSize: {x: 5, y: 4, z: 4}
+        Placement: 0
+        Weight: 60
+        Value: 80
+        Material: 
+        Recycling: 
+    - Name: Drawer
+      EnglishName: 
+      Image: {fileID: -1711102373, guid: 31c26fbb2425e844ead49254e6df73ba, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Lipasto
+      ArtisticDescription: "El\xE4\xE4 t\xE4ysill\xE4"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: MG23
+      BaseFurniture:
+        Name: Drawer_FearOfDeath
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 4, z: 2}
+        Placement: 0
+        Weight: 60
+        Value: 70
+        Material: 
+        Recycling: 
+    - Name: Wardrobe
+      EnglishName: 
+      Image: {fileID: -286375992, guid: 7559ba23ba028a24bb754f42eb0bbe3b, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Vaatekaappi
+      ArtisticDescription: "El\xE4\xE4 t\xE4ysill\xE4"
+      EnglishArtisticDescription: 
+      DiagnoseNumber: MG23
+      BaseFurniture:
+        Name: Wardrobe_FearOfDeath
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 7, z: 2}
+        Placement: 0
+        Weight: 90
+        Value: 50
+        Material: 
+        Recycling: 
+  - SetName: Nostalgia
+    SetNameEnglish: 
+    SetRibbonBackground: {fileID: 0}
+    SetPosterBackground: {fileID: 0}
+    SetFontName: {fileID: 0}
+    ArtistName: "Emma Yrj\xF6vuori"
+    list:
+    - Name: Bed
+      EnglishName: 
+      Image: {fileID: -1474810086, guid: e69817062e0497d478a9a739bb25ba83, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "S\xE4nky"
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Bed_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 6, z: 5}
+        Placement: 0
+        Weight: 70
+        Value: 100
+        Material: 
+        Recycling: 
+    - Name: Shelving
+      EnglishName: 
+      Image: {fileID: 305347972, guid: 0f9e2b40c39ed5847850f1a8e211a574, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Hyllyst\xF6"
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Shelving_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 5, y: 5, z: 2}
+        Placement: 0
+        Weight: 30
+        Value: 70
+        Material: 
+        Recycling: 
+    - Name: ToyCars
+      EnglishName: 
+      Image: {fileID: 1664425949, guid: 859af315114e5564daa0f11f126e1238, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Leluautot
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: ToyCars_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 1, z: 2}
+        Placement: 0
+        Weight: 1
+        Value: 20
+        Material: 
+        Recycling: 
+    - Name: Carpet
+      EnglishName: 
+      Image: {fileID: 1585950306, guid: 07dc9693ba5e9884e8aa522ea8439749, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Matto
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Carpet_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 5, y: 0, z: 2}
+        Placement: 2
+        Weight: 5
+        Value: 50
+        Material: 
+        Recycling: 
+    - Name: Dollhouse
+      EnglishName: 
+      Image: {fileID: -1135692847, guid: 3eb77cf346d410749acadf8b38ad5c98, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Nukkekoti
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Dollhouse_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 2, z: 1}
+        Placement: 0
+        Weight: 1
+        Value: 30
+        Material: 
+        Recycling: 
+    - Name: Drawings
+      EnglishName: 
+      Image: {fileID: -1624178130, guid: c8fc9d8850a234e4fa18b39dd7852248, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Piirustukset
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Drawings_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 3, z: 0}
+        Placement: 4
+        Weight: 0.1
+        Value: 10
+        Material: 
+        Recycling: 
+    - Name: Stickers
+      EnglishName: 
+      Image: {fileID: -1528095977, guid: dccd3c5b76e8c014c8c5b01ce7e01af6, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Sein\xE4tarrat"
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Stickers_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 3, z: 0}
+        Placement: 4
+        Weight: 0.1
+        Value: 20
+        Material: 
+        Recycling: 
+    - Name: Table
+      EnglishName: 
+      Image: {fileID: 949945687, guid: 570e0d9cdccebca4b9e00485895822bf, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Ty\xF6p\xF6yt\xE4"
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Table_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 4, y: 3, z: 4}
+        Placement: 0
+        Weight: 60
+        Value: 70
+        Material: 
+        Recycling: 
+    - Name: Window
+      EnglishName: 
+      Image: {fileID: 1529691592, guid: c1c664887d8ac714eaf9d92dd9875ef3, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Ikkuna
+      ArtisticDescription: "Ihminen rakentaa turvan siit\xE4, mit\xE4 olemme kuvitelleet
+        olemassa. "
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F43.20
+      BaseFurniture:
+        Name: Window_Nostalgia
+        Rarity: 0
+        FurnitureSize: {x: 5, y: 3, z: 0}
+        Placement: 4
+        Weight: 10
+        Value: 30
+        Material: 
+        Recycling: 
+  - SetName: Nyktophobia
+    SetNameEnglish: 
+    SetRibbonBackground: {fileID: 21300000, guid: 2e2482b48c45b8547b17c73740caef83,
+      type: 3}
+    SetPosterBackground: {fileID: 21300000, guid: 0dff43ced2a6cc34bb9890baaea53c8c,
+      type: 3}
+    SetFontName: {fileID: 21300000, guid: a9afbf7135f959448b65da93a066bcdc, type: 3}
+    ArtistName: "Emma Yrj\xF6vuori"
+    list:
+    - Name: Bed
+      EnglishName: 
+      Image: {fileID: -1328932098, guid: bd316e79a5bff2449b775bb4d3120b64, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "S\xE4nky"
+      ArtisticDescription: "Ei ole mit\xE4\xE4n pelottavaa."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F40.2
+      BaseFurniture:
+        Name: Bed_Nyktophobia
+        Rarity: 0
+        FurnitureSize: {x: 5, y: 3, z: 6}
+        Placement: 0
+        Weight: 50
+        Value: 70
+        Material: 
+        Recycling: 
+    - Name: Clothesrack
+      EnglishName: 
+      Image: {fileID: 386780777, guid: 6f85e5186285a484e836da78f026dab9, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Kuivausteline
+      ArtisticDescription: "Ei ole mit\xE4\xE4n pelottavaa."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F40.2
+      BaseFurniture:
+        Name: Clothesrack_Nyktophobia
+        Rarity: 0
+        FurnitureSize: {x: 5, y: 4, z: 1}
+        Placement: 0
+        Weight: 7
+        Value: 20
+        Material: 
+        Recycling: 
+    - Name: Worktable
+      EnglishName: 
+      Image: {fileID: -205882430, guid: 52ace98b14436f1448b78d759f44f292, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: "Ty\xF6p\xF6yt\xE4"
+      ArtisticDescription: "Ei ole mit\xE4\xE4n pelottavaa."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F40.2
+      BaseFurniture:
+        Name: Worktable_Nyktophobia
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 3, z: 3}
+        Placement: 0
+        Weight: 50
+        Value: 80
+        Material: 
+        Recycling: 
+    - Name: Door
+      EnglishName: 
+      Image: {fileID: 1339001165, guid: 2e81b819e2845444db06da8a8da5a175, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Ovi
+      ArtisticDescription: "Ei ole mit\xE4\xE4n pelottavaa."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F40.2
+      BaseFurniture:
+        Name: Door_Nyktophobia
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 5, z: 0}
+        Placement: 4
+        Weight: 3
+        Value: 5
+        Material: 
+        Recycling: 
+    - Name: Lamp
+      EnglishName: 
+      Image: {fileID: -1251797541, guid: 77272e77181553946adf45cabc5cd5c6, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Jalkalamppu
+      ArtisticDescription: "Ei ole mit\xE4\xE4n pelottavaa."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F40.2
+      BaseFurniture:
+        Name: Lamp_Nyktophobia
+        Rarity: 0
+        FurnitureSize: {x: 2, y: 5, z: 2}
+        Placement: 0
+        Weight: 6
+        Value: 50
+        Material: 
+        Recycling: 
+    - Name: Window
+      EnglishName: 
+      Image: {fileID: -593567508, guid: 1a47664b8823c624abac86a82bb218aa, type: 3}
+      PosterImage: {fileID: 0}
+      RibbonImage: {fileID: 0}
+      VisibleName: Ikkuna
+      ArtisticDescription: "Ei ole mit\xE4\xE4n pelottavaa."
+      EnglishArtisticDescription: 
+      DiagnoseNumber: F40.2
+      BaseFurniture:
+        Name: Window_Nyktophobia
+        Rarity: 0
+        FurnitureSize: {x: 3, y: 3, z: 0}
+        Placement: 4
+        Weight: 5
+        Value: 5
         Material: 
         Recycling: 

@@ -7,7 +7,7 @@ using static ServerChatMessage;
 
 public class ChatReactionHandler : MonoBehaviour
 {
-    [SerializeField] private GameObject _messageReaction;
+    public GameObject _messageReaction;
     [SerializeField] private TextMeshProUGUI _counter;
     [SerializeField] private Image _reactionImage;
     [SerializeField] private Button _button;
@@ -22,7 +22,7 @@ public class ChatReactionHandler : MonoBehaviour
     public int Count => _count;
     public bool Selected => _selected;
 
-    private Mood _mood;
+    [SerializeField] private Mood _mood;
     private string _messageID;
     private int _count = 0;
     private bool _selected;
@@ -50,8 +50,8 @@ public class ChatReactionHandler : MonoBehaviour
     {
         Image reactionBackground = _messageReaction.GetComponentInChildren<Image>();
         Color selectedColor;
-        selectedColor = Color.cyan;
-        selectedColor.a = 0.3f;
+        selectedColor = new Color(0.2f,0.5f,0.5f);
+        selectedColor.a = 0.5f;
         reactionBackground.color = selectedColor;
 
         _selected = true;
@@ -70,8 +70,8 @@ public class ChatReactionHandler : MonoBehaviour
     {
         Image reactionBackground = _messageReaction.GetComponentInChildren<Image>();
         Color deselectedColor;
-        deselectedColor = Color.gray;
-        deselectedColor.a = 0f;
+        deselectedColor = Color.white;
+        deselectedColor.a = 0.5f;
         reactionBackground.color = deselectedColor;
 
         _selected = false;

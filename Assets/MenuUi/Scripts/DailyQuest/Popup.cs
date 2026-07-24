@@ -5,8 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUI.Scripts;
-using System.ComponentModel;
 
 public class Popup : MonoBehaviour
 {
@@ -18,6 +16,7 @@ public class Popup : MonoBehaviour
         Cancel,         //Cancel task window
         ClanMilestone,  //Clan milestone reward info window
         MultipleChoice, //Multiple choice task window
+        Info,           //Accept task window without accept button
     }
 
     /// <summary>
@@ -51,9 +50,6 @@ public class Popup : MonoBehaviour
     [SerializeField] private RectTransform _taskAcceptMovable;
     [SerializeField] private Image _taskAcceptImage;
     [Space]
-    [SerializeField] private Image _taskAcceptColorImage;
-    [SerializeField] private Image _taskCancelColorImage;
-    [Space]
     [SerializeField] private GameObject _taskCancelPopup;
     [Space]
     [Tooltip("Set every TMP text element here that is supposed to show a message from code.")]
@@ -65,6 +61,8 @@ public class Popup : MonoBehaviour
     [SerializeField] private TMP_Text _acceptConfirmButtonText;
     [Space]
     [SerializeField] private TextMeshProUGUI _taskDescription;
+    [SerializeField] private TextMeshProUGUI _taskExecution;
+    [SerializeField] private TextMeshProUGUI _taskGameLiteracy;
     [SerializeField] private TextMeshProUGUI _taskPointsText;
     [SerializeField] private TextMeshProUGUI _taskCoinsText;
 
@@ -143,18 +141,22 @@ public class Popup : MonoBehaviour
         {
             if (data.Value.Type == PopupData.PopupDataType.OwnTask)
             {
+
+                // If PopupWindowType.Info -> Hide acceptConfirmButton
+                Instance._acceptConfirmButtonText.transform.parent.gameObject.SetActive(type != PopupWindowType.Info);
+
                 // If this is a new task
                 if (currentTaskId == null)
                 {
-                    Instance._acceptConfirmButtonText.text = "Valitse";
+                    Instance._acceptConfirmButtonText.text = "Aloita tehtävä";
                     Instance.ResetOptionButtons();
                 }
                 // If there is already a task running
                 else
                 {
-                    Instance._acceptConfirmButtonText.text = "Vaihda Tehtävä";
-                }
+                    Instance._acceptConfirmButtonText.text = "Vaihda tehtävä";
                     
+                }
             }
             if (data.Value.Location != null)
                 Instance.MoveMovableWindow(data.Value.Location.Value, type);
@@ -166,8 +168,8 @@ public class Popup : MonoBehaviour
             {
                 Instance.SetTaskImage(data.Value.OwnPage, type);
                 Instance.SetTaskDescription(data.Value.OwnPage);
+                Instance.SetTaskGameLiteracy(data.Value.OwnPage);
                 Instance.SetTaskRewardTexts(data.Value.OwnPage);
-                Instance.SetPopupTaskColor(data.Value.OwnPage, data.Value.Type);
             }
 
             if (data.Value.Type == PopupData.PopupDataType.MultipleChoice)
@@ -223,6 +225,7 @@ public class Popup : MonoBehaviour
         switch (type)
         {
             case PopupWindowType.Accept:
+            case PopupWindowType.Info:
                 {
                     _taskAcceptImage.sprite = _cardImageReference.GetTaskImage(data);
                     return;
@@ -238,23 +241,29 @@ public class Popup : MonoBehaviour
 
     private void SetTaskDescription(PlayerTask data)
     {
-        _taskDescription.text = data.Content;
+        _taskDescription.text = data.Description;
+        _taskExecution.text = data.Execution;
+    }
+
+    private void SetTaskGameLiteracy(PlayerTask data)
+    {
+        _taskGameLiteracy.text = data.Literacy;
+        _taskGameLiteracy.color = GetTaskColor(data);
     }
 
     private void SetTaskRewardTexts(PlayerTask data)
     {
-        _taskPointsText.text = data.Points.ToString();
-        _taskCoinsText.text = data.Coins.ToString();
+        _taskPointsText.text = "+" + data.Points.ToString();
+        _taskCoinsText.text = "+" + data.Coins.ToString();
     }
 
-    private void SetPopupTaskColor(PlayerTask data, PopupData.PopupDataType type)
+    /// <summary>
+    /// Gets a color based on the task education category
+    /// </summary>
+    /// <param name="data">The task to get the color for</param>
+    /// <returns>The color</returns>
+    private Color GetTaskColor(PlayerTask data)
     {
-        Image targetImage = _taskAcceptColorImage;
-
-        if (type == PopupData.PopupDataType.CancelTask) targetImage = _taskCancelColorImage;
-
-        if (type == PopupData.PopupDataType.MultipleChoice) targetImage = _taskMultipleChoiceColorImage;
-
         Color taskColor = _defaultColor;
 
         switch (data.EducationCategory)
@@ -267,13 +276,14 @@ public class Popup : MonoBehaviour
             default: break;
         }
 
-        targetImage.color = taskColor;
+        return taskColor;
     }
 
     private void SwitchWindow(PopupWindowType type)
     {
         Debug.Log("WindowType: " + type.ToString());
-        _taskAcceptPopup.SetActive(type == PopupWindowType.Accept);
+        // Using the same popup for accepting task and showing task info (hiding accept button for info popup on RequestPopup)
+        _taskAcceptPopup.SetActive(type == PopupWindowType.Accept || type == PopupWindowType.Info);
         _taskCancelPopup.SetActive(type == PopupWindowType.Cancel);
         _clanMilestonePopup.SetActive(type == PopupWindowType.ClanMilestone);
         _multipleChoicePopup.SetActive(type == PopupWindowType.MultipleChoice);
@@ -282,7 +292,7 @@ public class Popup : MonoBehaviour
     private void MoveMovableWindow(Vector3 location, PopupWindowType type)
     {
         //Accept window.
-        if (type == PopupWindowType.Accept)
+        if (type == PopupWindowType.Accept || type == PopupWindowType.Info)
             _taskAcceptMovable.position = location;
 
         //Clan milestone info window.
@@ -301,8 +311,11 @@ public class Popup : MonoBehaviour
         {
             _popupCanvasGroup.alpha = Mathf.Lerp(0f, 1f, (_fadeTimer / _fadeTime));
             _fadeTimer += Time.deltaTime;
-            yield return null;
+            yield return null; // Wait for one frame
         }
+        // Just a backup to make sure the popup is not transparent
+        _popupCanvasGroup.alpha = 1f;
+        _fadeTimer = _fadeTime;
     }
 
     private IEnumerator FadeOut()
@@ -311,10 +324,13 @@ public class Popup : MonoBehaviour
         {
             _popupCanvasGroup.alpha = Mathf.Lerp(0f, 1f, (_fadeTimer / _fadeTime));
             _fadeTimer -= Time.deltaTime;
-            yield return null;
+            yield return null; // Wait for one frame
         }
-
+        // Just a backup to make sure the popup is fully transparent
+        _popupCanvasGroup.alpha = 0f;
+        _fadeTimer = 0f;
         popupGameObject.SetActive(false);
+        
     }
 
     private void SetMessage(PlayerTask task)
@@ -325,15 +341,13 @@ public class Popup : MonoBehaviour
         {
             if (!_messageTexts[i].IsActive()) continue;
 
-            if (i == 0) // First element should be the task title (for some reason)
+            if (i == 0 || i == 2) // 0 = Task Accept window, 2 = MultipleChoicewindow, set message as the task title for these
             {
-                _messageTexts[i].text = SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English // Simply, if english language is selected, show it in english
-                    ? task.EnglishTitle
-                    : task.Title;
+                _messageTexts[i].text = task.Title;
             }
             else
             {
-                _messageTexts[i].text = task.Content; // For others, just keep the original
+                _messageTexts[i].text = task.Description; // For others, just keep the original
             }
         }
     }

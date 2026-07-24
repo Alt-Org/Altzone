@@ -13,6 +13,9 @@ GameObject:
   - component: {fileID: 6941196017106160998}
   - component: {fileID: 6318226639611977352}
   - component: {fileID: 3130567833437425977}
+  - component: {fileID: 7150023071694282106}
+  - component: {fileID: 1459027085368994728}
+  - component: {fileID: 145251870599043325}
   m_Layer: 0
   m_Name: BattleSimulationData
   m_TagString: Untagged
@@ -226,35 +229,80 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     PlayerCount: 0
-    PlayStates:
-    - Value: 0
-    - Value: 0
-    - Value: 0
-    - Value: 0
     PlayerRefs:
     - _index: 0
     - _index: 0
     - _index: 0
     - _index: 0
-    SelectedCharacters:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    AllCharacters:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    SelectedCharacterNumbers: 00000000000000000000000000000000
+    PlayStates:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    IsBotStates:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    IsAbandonedStates:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    AllowCharacterSwappingStates:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    PlayerGiveUpStates:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    RespawnTimers:
+    - Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    - Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    - Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    - Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    CharacterSelectedNumbers: 00000000000000000000000000000000
+    CharacterAllEntityGroupIDs:
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    CharactersAllStates:
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
+    - Value: 0
 --- !u!114 &3130567833437425977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,3 +318,87 @@ MonoBehaviour:
   Prototype:
     AlphaDiamonds: 0
     BetaDiamonds: 0
+--- !u!114 &7150023071694282106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403119264126220646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ab1d496529555a488469eea10e67a01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    RegisteredEntities: []
+    EntityOffscreenPositionOffset:
+      Row: 0
+      Col: 0
+    EntitySpacing: 0
+--- !u!114 &1459027085368994728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403119264126220646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76ba1ebe560844840bc0cbe9343482a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    PlayerShieldCounts: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    PlayerShieldEntityGroupIDs:
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+    - Int: 0
+      IsCompound:
+        Value: 0
+--- !u!114 &145251870599043325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5403119264126220646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d98bd39514fede4fa756fe9babcb9eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    HasSpawned:
+      Value: 0

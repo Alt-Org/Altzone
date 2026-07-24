@@ -1,0 +1,13 @@
+component BattlePlayerClass100DataQComponent
+{
+    [HideInInspector]
+    FPVector2 JoystickValuePrevious;
+    [HideInInspector]
+    bool JoystickDownPrevious;
+    [HideInInspector]
+    FrameTimer JoystickTimer;
+    [HideInInspector]
+    FrameTimer CooldownTimer;
+    [HideInInspector]
+    FrameTimer PlacementTimer;
+}

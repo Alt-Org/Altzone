@@ -17,7 +17,15 @@ public class LanguageFlagMap : ScriptableObject
 
     public Sprite GetFlag(Language language)
     {
-        return _languageFlags.Find(langFlag => language == langFlag.language).flag;
+        LanguageFlag match = _languageFlags.Find(langFlag => language == langFlag.language);
+
+        if (match != null)
+        {
+            return match.flag;
+        }
+
+        LanguageFlag fallback = _languageFlags.Find(langFlag => langFlag.language == Language.None);
+        return fallback != null ? fallback.flag : null;
     }
 
     private Language ConvertLanguage(LanguageType language)
@@ -26,7 +34,6 @@ public class LanguageFlagMap : ScriptableObject
         {
             LanguageType.English => Language.English,
             LanguageType.Finnish => Language.Finnish,
-            LanguageType.Swedish => Language.Swedish,
             _ => Language.None,
         };
     }

@@ -49,6 +49,8 @@ public class ServerManager : MonoBehaviour
     private static string LATESTDEVBUILDADDRESS = "https://devapi.altzone.fi/latest-release/";
     private static string DEVADDRESS = "https://devapi.altzone.fi/";
 
+    private Coroutine _heartbeatCoroutine;
+
     public static string SERVERADDRESS { get
         {
             if(AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild) return DEVADDRESS;
@@ -130,7 +132,13 @@ public class ServerManager : MonoBehaviour
 
     private void Start()
     {
+        ApplicationController.OnAppResume += ResetHeartBeat;
         if (_automaticallyLogIn) StartCoroutine(LogIn());
+    }
+
+    private void OnDestroy()
+    {
+        ApplicationController.OnAppResume -= ResetHeartBeat;
     }
 
     public void Reset()
@@ -308,7 +316,7 @@ public class ServerManager : MonoBehaviour
             SetPlayerValues(Player, characters, friends, friendRequests);
 
             OnLogInStatusChanged?.Invoke(true);
-            StartCoroutine(ServiceHeartBeat());
+            _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
 
             if (Clan == null)
             {
@@ -356,7 +364,7 @@ public class ServerManager : MonoBehaviour
     /// Profile and Player (<c>ServerPlayer</c>) are not the same as Profile might hold personal information!<br />
     /// Player contains exclusively data related to in game Player.
     /// </remarks>
-    public void SetProfileValues(JObject profileJSON)
+    public void SetProfileValues(JObject profileJSON, string username)
     {
         JToken accessToken = profileJSON["accessToken"];
         Assert.IsNotNull(accessToken);
@@ -370,6 +378,8 @@ public class ServerManager : MonoBehaviour
         Assert.IsNotNull(player);
         PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
 
+        Assert.IsNotNull(username);
+        PlayerPrefs.SetString("userName", username ?? string.Empty);
         //StartCoroutine(LogIn());
     }
 
@@ -728,13 +738,19 @@ public class ServerManager : MonoBehaviour
                     }
                 });
             }
-            yield return new WaitUntil(() => list != null);
+            yield return new WaitUntil(() => list != null || heartBeat == false);
             while (timeCurrent < timeToNext)
             {
                 yield return null;
                 timeCurrent += Time.deltaTime;
             }
         }
+    }
+
+    private void ResetHeartBeat()
+    {
+        if (_heartbeatCoroutine != null) StopCoroutine(_heartbeatCoroutine);
+        _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
     }
 
     #region Server
@@ -860,6 +876,60 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator CheckEmotionInServer(Action<bool> callback)
+    {
+        if (Player == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "player/emotioncheck", AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator UpdateEmotionToServer(string emotion, Action<bool> callback)
+    {
+        if (Player == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        string body = JObject.FromObject(
+            new
+            {
+                emotion = emotion,
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "player/emotion", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
     #endregion
 
     #region Clan
@@ -894,6 +964,31 @@ public class ServerManager : MonoBehaviour
             {
                 if (callback != null)
                     callback(null);
+            }
+        }));
+    }
+
+    public IEnumerator GetClanFromServer(string clanId, Action<ServerClan> callback)
+    {
+        if (string.IsNullOrEmpty(clanId))
+        {
+            Debug.LogWarning("GetClanFromServer called with empty clanId.");
+            callback?.Invoke(null);
+            yield break;
+        }
+
+        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "clan/" + clanId, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+                ServerClan clan = result["data"]["Clan"].ToObject<ServerClan>();
+
+                callback?.Invoke(clan);
+            }
+            else
+            {
+                callback?.Invoke(null);
             }
         }));
     }
@@ -1084,8 +1179,9 @@ public class ServerManager : MonoBehaviour
 
                 if (playerData != null)
                 {
-                    playerData.ClanId = "12345";                    //Demo-clan for not logged in players
+                    playerData.ClanId = string.Empty;
                     storefront.SavePlayerData(playerData, null);
+                    OnClanChanged?.Invoke(null);
                 }
                 else
                 {
@@ -1174,7 +1270,7 @@ public class ServerManager : MonoBehaviour
                 _id = data.Id,
                 name = data.Name,
                 tag = data.Tag,
-                isOpen = Clan.isOpen,
+                isOpen = data.IsOpen,
                 labels = serverValues,
                 ageRange = data.ClanAge,
                 goal = data.Goals,
@@ -1195,7 +1291,7 @@ public class ServerManager : MonoBehaviour
                 {
                     Clan.name = data.Name;
                     Clan.tag = data.Tag;
-                    Clan.isOpen = Clan.isOpen;
+                    Clan.isOpen = data.IsOpen;
                     Clan.ageRange = data.ClanAge;
                     Clan.goal = data.Goals;
                     Clan.phrase = data.Phrase;
@@ -1363,7 +1459,14 @@ public class ServerManager : MonoBehaviour
             yield break;
         }
 
-        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "online-players/ping", "", AccessToken, request =>
+        string body = JObject.FromObject(
+            new
+            {
+                client_version = ApplicationController.VersionNumber.ToString(),
+            }
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "online-players/ping", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
@@ -1704,7 +1807,7 @@ public class ServerManager : MonoBehaviour
                 List<ServerItem> requestItems = new();
                 JObject jObject = JObject.Parse(request.downloadHandler.text);
                 //Debug.LogWarning(jObject);
-                JArray array = (JArray)jObject["data"]["Stock"]["Item"];
+                JArray array = (JArray)jObject["data"]["Item"];
                 requestItems = array.ToObject<List<ServerItem>>();
 
                 foreach (ServerItem item in requestItems)
@@ -1792,6 +1895,12 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
+                JArray token = (JArray)result["data"]["Friendship"];
+                foreach (JToken token2 in token)
+                {
+                    if (token2["avatar"].ToString() == string.Empty) continue;
+                    if (int.TryParse(token2["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
+                }
                 List<ServerFriendPlayer> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendPlayer>>();
 
 
@@ -1814,6 +1923,12 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
+                JArray token = (JArray)result["data"]["Friendship"];
+                foreach (JToken token2 in token)
+                {
+                    if (token2["friend"]["avatar"].ToString() == string.Empty) continue;
+                    if (int.TryParse(token2["friend"]["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
+                }
                 List<ServerFriendRequest> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendRequest>>();
 
 
@@ -2183,6 +2298,7 @@ public class ServerManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
                 ServerStall stall = result["data"]["Stall"].ToObject<ServerStall>();
 
                 AdStoreObject adObject = new AdStoreObject(stall.adPoster.border, stall.adPoster.colour);
