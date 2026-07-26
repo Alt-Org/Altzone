@@ -3629,6 +3629,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &409136129 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2751479064776078462, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+    type: 3}
+  m_PrefabInstance: {fileID: 977609552}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca35565c8cd02e24b89e036fdddf26c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &442329875
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5421,18 +5433,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &640144075 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5188521600885788127, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
-    type: 3}
-  m_PrefabInstance: {fileID: 977609552}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &667346629
@@ -8661,6 +8661,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1347536248065985691, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
+    - target: {fileID: 1347536248065985691, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
       propertyPath: _imageToCutOut.Array.data[0]
       value: 
       objectReference: {fileID: 1510990563}
@@ -8686,6 +8691,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: -0.000005008
       objectReference: {fileID: 0}
+    - target: {fileID: 1659039544649130420, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
     - target: {fileID: 1659039544649130420, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _imageToCutOut.Array.size
@@ -9575,6 +9585,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2009239564235501926, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
+    - target: {fileID: 2009239564235501926, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
       propertyPath: _imageToCutOut.Array.size
       value: 18
       objectReference: {fileID: 0}
@@ -9959,14 +9974,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3326675623709691336, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
+    - target: {fileID: 3326675623709691336, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
       propertyPath: _imageToCutOut.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3326675623709691336, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _imageToCutOut.Array.data[0]
       value: 
-      objectReference: {fileID: 640144075}
+      objectReference: {fileID: 690820929}
     - target: {fileID: 3326675623709691336, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _imageToCutOut.Array.data[1]
@@ -9982,6 +10002,11 @@ PrefabInstance:
       propertyPath: _imageToCutOut
       value: 
       objectReference: {fileID: 685578996}
+    - target: {fileID: 3572817344817729107, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
     - target: {fileID: 3572817344817729107, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _imageToCutOut.Array.data[0]
@@ -10131,6 +10156,11 @@ PrefabInstance:
       objectReference: {fileID: 1524151127}
     - target: {fileID: 4279905226506345490, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
+    - target: {fileID: 4279905226506345490, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
       propertyPath: _imageToCutOut.Array.data[0]
       value: 
       objectReference: {fileID: 1524151127}
@@ -10205,6 +10235,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4799131027930125393, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
+    - target: {fileID: 4799131027930125393, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
       propertyPath: _imageToCutOut.Array.data[0]
       value: 
       objectReference: {fileID: 1051589481}
@@ -10235,6 +10270,11 @@ PrefabInstance:
       value: "Chat n\xE4kym\xE4ss\xE4 voit keskustella omien klaanilaistesi kanssa
         tai vaikkapa muiden klaanien kesken."
       objectReference: {fileID: 0}
+    - target: {fileID: 5127990363695325377, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
     - target: {fileID: 5127990363695325377, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _imageToCutOut.Array.size
@@ -10349,6 +10389,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6077793306907460089, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
+    - target: {fileID: 6077793306907460089, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
       propertyPath: _imageToCutOut.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -10414,6 +10459,11 @@ PrefabInstance:
       objectReference: {fileID: 2026273047}
     - target: {fileID: 6281217402218159835, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
+    - target: {fileID: 6281217402218159835, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
       propertyPath: _imageToCutOut.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -10471,6 +10521,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6454862185546650461, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
+    - target: {fileID: 6454862185546650461, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
       propertyPath: _imageToCutOut.Array.size
       value: 3
       objectReference: {fileID: 0}
@@ -10494,6 +10549,11 @@ PrefabInstance:
       propertyPath: _imageToCutOut
       value: 
       objectReference: {fileID: 1077504401}
+    - target: {fileID: 6530163509340750081, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
     - target: {fileID: 6530163509340750081, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _imageToCutOut.Array.size
@@ -10637,11 +10697,21 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: -0.0000002396282
       objectReference: {fileID: 0}
+    - target: {fileID: 7688643135691246216, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
     - target: {fileID: 7704555701138372309, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _imageToCutOut
       value: 
       objectReference: {fileID: 1355211319}
+    - target: {fileID: 7704555701138372309, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
     - target: {fileID: 7704555701138372309, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _imageToCutOut.Array.data[0]
@@ -10692,6 +10762,11 @@ PrefabInstance:
       propertyPath: _imageToCutOut
       value: 
       objectReference: {fileID: 1179279238}
+    - target: {fileID: 8253615499629634132, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
+      propertyPath: _tutorialController
+      value: 
+      objectReference: {fileID: 409136129}
     - target: {fileID: 8253615499629634132, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _imageToCutOut.Array.data[0]

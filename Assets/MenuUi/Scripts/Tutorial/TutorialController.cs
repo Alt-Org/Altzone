@@ -40,7 +40,7 @@ public class TutorialController : AltMonoBehaviour
         _inProgress = true;
     }
 
-    private void SkipTutorial()
+    public void SkipTutorial()
     {
         if(_currentPage < 0)_tutorialStart.gameObject.SetActive(false);
         else _tutorialPanelList[_currentPage].gameObject.SetActive(false);
