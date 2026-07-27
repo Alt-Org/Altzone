@@ -129,7 +129,7 @@ public class ParentalControlManager : MonoBehaviour
 
     private void GetPassword() {
 
-        _presetPassword = PlayerPrefs.GetString("password");
+        _presetPassword = PlayerPrefs.GetString("ParentalControlPassword");
 
 
     }
@@ -221,11 +221,11 @@ public class ParentalControlManager : MonoBehaviour
         } else if (_setPasswordInput.Equals(_setConfirmPasswordInput))
         {
 
-            PlayerPrefs.SetString("password", _setPasswordInput);
+            PlayerPrefs.SetString("ParentalControlPassword", _setPasswordInput);
 
             //the int will indicate if Parental Control is on, 1 means that it is set
             //boolean is not allowed in PlayerPrefs, otherwise it would be that
-            PlayerPrefs.SetInt("parentalcontrol", 1);
+            PlayerPrefs.SetInt("ParentalControl", 1);
             _parentalControlPopupButton.SetActive(false);
             _controlEnabledButton.SetActive(true); //just a visual indicator that Parental Control is on, no functionality
 
@@ -257,7 +257,7 @@ public class ParentalControlManager : MonoBehaviour
     private void CheckControl()
     {
         //at start is used to check if Parental Control is on
-        int checkControl = PlayerPrefs.GetInt("parentalcontrol");
+        int checkControl = PlayerPrefs.GetInt("ParentalControl");
 
         if (checkControl == 1) {
             _parentalControl = true;
@@ -277,9 +277,9 @@ public class ParentalControlManager : MonoBehaviour
 
     private void DisableParentalControl()
     {
-        //ParentalControl is active only if PlayerPrefs "parentalcontrol" equals 1
-        PlayerPrefs.SetInt("parentalcontrol", 0);
-        PlayerPrefs.SetString("password", "");
+        //ParentalControl is active only if PlayerPrefs "ParentalControl" equals 1
+        PlayerPrefs.SetInt("ParentalControl", 0);
+        PlayerPrefs.SetString("ParentalControlPassword", "");
 
         PlayerPrefs.SetInt("AllowLinks", 0);
         _carrier.AllowLinks = false;
