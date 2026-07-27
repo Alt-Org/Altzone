@@ -28,8 +28,7 @@ public class ParentalControlManager : MonoBehaviour
     [SerializeField] private TMP_Text _messageText; //Message text when trying to input a wrong password 
     [SerializeField] private TMP_Text _messageTextPopUpLength; //Message text when trying to set a password that is too short in the pop up
     [SerializeField] private TMP_Text _messageTextPopUpWrongPassword; //Message text when trying to set a password that doesn't match the confirmation
-    //public Toggle controlToggle; //Toggle to enable or disable Parental Control, currently not in use 
-
+     
 
     //the password will be set in the pop up
     [SerializeField] private GameObject _parentalControlPopup; //The actual pop up for setting the password
@@ -43,7 +42,6 @@ public class ParentalControlManager : MonoBehaviour
     //boolean to check if the ParentalControl is on
     [SerializeField] private bool _parentalControl;
 
-    //private string sessionPassword = ""; //currently not in use 
 
     [SerializeField] private string _presetPassword; //the password already set in PlayerPrefs
     [SerializeField] private string _setPasswordInput; //the password input in the pop up
@@ -74,7 +72,6 @@ public class ParentalControlManager : MonoBehaviour
     //TimeControls
 
     public TMP_InputField timeLimitInput;
-    //public TMP_InputField timeLimitAccuracyInput; //currently not in use, was in previous plans
     public Toggle midMatchToggle;
     public Toggle endMatchToggle;
 
@@ -86,16 +83,13 @@ public class ParentalControlManager : MonoBehaviour
         _parentalControlSettings.SetActive(false);
         CheckControl(); //checks if Parental Control is on
         GetPassword(); //gets the password that is already set in PlayerPrefs
-        LoadSettings(); //currently not in use, but could be used to load all the settings from PlayerPrefs at the same time, now they are loaded one by one
-
+        
         _parentalControlPanel.SetActive(true);
-        //passwordPanel.SetActive(true);
         _messageText.enabled = false;
 
         _messageTextPopUpWrongPassword.enabled = false;
         _messageTextPopUpLength.enabled = false;
 
-        //controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1; //The checkmark that is currently not in use
 
         internetLinksToggle.onValueChanged.AddListener(_ => SetInternetLinks()); //Listeners are added for all the settings
         chatMessagesToggle.onValueChanged.AddListener(_ => SetChatMessages());
@@ -430,12 +424,7 @@ public class ParentalControlManager : MonoBehaviour
 
     }
 
-    private void LoadSettings()
-    {
-        //TODO how to load all settings from PlayerPrefs? Currently they are loaded one by one
-        //maybe it would be practical to load them all in the same method, maybe not
-
-    }
+    
 
     private void SetMonthlyLimit()
     {
@@ -459,7 +448,7 @@ public class ParentalControlManager : MonoBehaviour
             PlayerPrefs.SetFloat("MonthlyLimit", 0);
             PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
             _carrier.MonthlyLimit = 0;
-            //TODO some kind of message, please input a positive value?
+            //There could be some kind of message, "please input a positive value". On the other hand value is set to 0 automatically, if user tries to input <0
             PlayerPrefs.Save();
             GetMonthlyLimit();
 
