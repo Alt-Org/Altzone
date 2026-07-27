@@ -1,5 +1,3 @@
-
-
 // Quantum usings
 using Quantum;
 using Photon.Deterministic;
@@ -7,7 +5,6 @@ using Photon.Deterministic;
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
-using UnityEngine;
 
 namespace Battle.QSimulation.Player
 {
@@ -25,8 +22,6 @@ namespace Battle.QSimulation.Player
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
         {
-            Debug.Log("works");
-
             BattleArenaQSpec spec = BattleQConfig.GetArenaSpec(f);
 
             EntityRef                   projectileRef   = projectileCollisionData->ProjectileEntityRef;
@@ -40,13 +35,20 @@ namespace Battle.QSimulation.Player
 
             int row = 0;
 
-            switch(teamNumber)
+            FPVector2 direction = FPVector2.Zero;
+
+            FPVector2 offset = new() { Y = radius + BattleGridManager.GridScaleFactor };
+
+            switch (teamNumber)
             {
                 case BattleTeamNumber.TeamAlpha:
                     row = 0 + spec.SoulWallHeight;
+                    direction = FPVector2.Up;
                     break;
                 case BattleTeamNumber.TeamBeta:
                     row = spec.GridHeight - spec.SoulWallHeight;
+                    direction = FPVector2.Down;
+                    offset = -offset;
                     break;
             };
 
@@ -56,12 +58,13 @@ namespace Battle.QSimulation.Player
                 Row = row
             };
 
-            FPVector2 offset   = new() { X = radius * FP._2 * BattleGridManager.GridScaleFactor };
             FPVector2 position = BattleGridManager.GridPositionToWorldPosition(gridPosition) + offset;
+
+            direction.X = f.RNG->NextInclusive(-FP._0_50, FP._0_50);
 
             BattleEntityManager.TeleportCompound(f, projectileRef, position, FP._0);
 
-            BattleProjectileQSystem.UpdateVelocity(f, projectile, projectile->Direction, BattleProjectileQSystem.SpeedChange.Increment);
+            BattleProjectileQSystem.UpdateVelocity(f, projectile, direction, BattleProjectileQSystem.SpeedChange.Increment);
         }
     }
 }
