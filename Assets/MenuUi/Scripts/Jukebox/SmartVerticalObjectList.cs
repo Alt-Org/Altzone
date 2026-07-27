@@ -386,7 +386,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
     /// <returns>VerticalDirectionType in which there was no more content to be displayed.</returns>
     private VerticalDirectionType ScrollLimiter(float worldDistance, float anchoredDistance)
     {
-        if (_smartListTopIndex * -1 - _uniqueGameObjectsAtTop.Count <= 0 && _velocity < 0) //Over top check.
+        if ((_smartListTopIndex * -1 - _uniqueGameObjectsAtTop.Count <= 0 && _uniqueGameObjectsAtTop.Count != 0 ||
+             _uniqueGameObjectsAtTop.Count == 0 && _smartListTopIndex < 0) && _velocity < 0) //Over top check.
         {
             float topItemTopEdge = GetTopItemEdgeLocalPositionY() + anchoredDistance;
 
@@ -399,7 +400,8 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
             return VerticalDirectionType.Up;
         }
 
-        if (_smartListBottomIndex >= (_contentListLenght + _uniqueGameObjectsAtBottom.Count) && _velocity > 0) //Over bottom check.
+        if ((_smartListBottomIndex >= _contentListLenght + _uniqueGameObjectsAtBottom.Count && _uniqueGameObjectsAtBottom.Count != 0 ||
+             _uniqueGameObjectsAtTop.Count == 0 && _smartListBottomIndex >= _contentListLenght) && _velocity > 0) //Over bottom check.
         {
             float bottomItemTopEdge = GetBottomItemEdgeLocalPositionY() + anchoredDistance - _content.rect.height / 2f;
 
@@ -584,7 +586,7 @@ public class SmartVerticalObjectList : MonoBehaviour, IBeginDragHandler, IEndDra
         //Update SmartListItem & data.
         UpdateEdgeIndexes(outOfBoundsDirection);
 
-        int targetIndex = overTop ? _smartListBottomIndex /*- _uniqueGameObjectsAtTop.Count*/ : _smartListTopIndex;
+        int targetIndex = overTop ? _smartListBottomIndex : _smartListTopIndex;
 
         //Set or clear smart list item.
         if (targetIndex >= 0 && targetIndex < _contentListLenght)

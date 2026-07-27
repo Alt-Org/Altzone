@@ -1,3 +1,4 @@
+using System.Collections;
 using MenuUi.Scripts.Window;
 using UnityEngine;
 
@@ -28,17 +29,26 @@ namespace MenuUi.Scripts.UIScaling
 
         private void Awake()
         {
-            SetPanelAnchors();
+            StartCoroutine(SetPanelAnchors());
         }
 
         private void OnEnable()
         {
-            OverlayPanelCheck.OnChatBarToggled += UpdateBottomLine;
-            if(OverlayPanelCheck.Instance) UpdateBottomLine(OverlayPanelCheck.Instance.ChatActive);
+            OverlayPanelCheck.OnChatBarToggled += UpdateBottomLineChat;
+            OverlayPanelCheck.OnBottomBarToggled += UpdateBottomLine;
+            OverlayPanelCheck.OnTopBarToggled += UpdateTopLine;
+            if (OverlayPanelCheck.Instance)
+            {
+                UpdateBottomLineChat(OverlayPanelCheck.Instance.ChatActive);
+                UpdateBottomLine(OverlayPanelCheck.Instance.BottomBarActive);
+                UpdateTopLine(OverlayPanelCheck.Instance.TopBarActive);
+            }
         }
         private void OnDisable()
         {
-            OverlayPanelCheck.OnChatBarToggled -= UpdateBottomLine;
+            OverlayPanelCheck.OnChatBarToggled -= UpdateBottomLineChat;
+            OverlayPanelCheck.OnBottomBarToggled -= UpdateBottomLine;
+            OverlayPanelCheck.OnTopBarToggled -= UpdateTopLine;
         }
 
 #if (UNITY_EDITOR)
@@ -48,13 +58,14 @@ namespace MenuUi.Scripts.UIScaling
             {
                 _lastScreenWidth = Screen.currentResolution.width;
                 _lastScreenHeight = Screen.currentResolution.height;
-                SetPanelAnchors();
+                StartCoroutine(SetPanelAnchors());
             }
         }
 #endif
 
-        protected virtual void SetPanelAnchors()
+        protected virtual IEnumerator SetPanelAnchors()
         {
+            yield return new WaitForEndOfFrame();
             float bottomLine = CalculateBottomPanelHeight();
             if (OverlayPanelCheck.Instance && !OverlayPanelCheck.Instance.ChatActive) bottomLine /= 2f;
             _bottomPanelRectTransfrom.anchorMax = new Vector2(1, bottomLine);
@@ -127,11 +138,26 @@ namespace MenuUi.Scripts.UIScaling
             }
         }
 
-        protected virtual void UpdateBottomLine(bool value)
+        protected virtual void UpdateBottomLineChat(bool value)
         {
+            if (!OverlayPanelCheck.Instance.BottomBarActive) return;
             float bottomLine = CalculateBottomPanelHeight();
             if (!value) bottomLine /= 2f;
             _bottomPanelRectTransfrom.anchorMax = new(1, bottomLine);
+        }
+
+        protected virtual void UpdateBottomLine(bool value)
+        {
+            float bottomLine = CalculateBottomPanelHeight();
+            if (!value) bottomLine = 0;
+            _bottomPanelRectTransfrom.anchorMax = new(1, bottomLine);
+        }
+
+        protected virtual void UpdateTopLine(bool value)
+        {
+            float topLine = 1 - (CalculateTopPanelHeight() + CalculateUnsafeAreaHeight());
+            if (!value) topLine = 1- CalculateUnsafeAreaHeight();
+            _topPanelRectTransfrom.anchorMin = new(0, topLine);
         }
     }
 }

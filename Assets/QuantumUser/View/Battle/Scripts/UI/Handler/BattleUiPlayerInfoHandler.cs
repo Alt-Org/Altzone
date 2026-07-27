@@ -212,6 +212,22 @@ namespace Battle.View.UI
         }
 
         /// <summary>
+        /// Calls SetDeathImage and SetDamageFill on the character button of the correct players correct character.
+        /// </summary>
+        ///
+        /// <param name="slot">The slot of the player in question.</param>
+        /// <param name="characterNumber">The character number of the character in question.</param>
+        public void MarkCharacterDead(BattlePlayerSlot slot, int characterNumber)
+        {
+            BattleUiPlayerInfoComponent playerInfoComponent = GetPlayerInfoComponent(slot);
+
+            if (playerInfoComponent == null) return;
+
+            playerInfoComponent.CharacterButtons[characterNumber].SetDeathImage();
+            playerInfoComponent.CharacterButtons[characterNumber].SetDamageFill(0.0f);
+        }
+
+        /// <summary>
         /// Retrieves the BattleUiPlayerInfoComponent for either the local player or their teammate.
         /// </summary>
         ///

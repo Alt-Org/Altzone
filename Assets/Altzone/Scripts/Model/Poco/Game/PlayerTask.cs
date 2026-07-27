@@ -141,7 +141,9 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         private string _id;
         private TaskTitle _title;
-        private TaskContent _content;
+        private TaskDescription _description;
+        private TaskExecution _execution;
+        //private TaskContent _content;
         private TaskInstruction _instruction;
         private GameLiteracyType _gameLiteracy;
         private int _amount;
@@ -176,7 +178,29 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
         }
 
-        public string Content
+        public string Description
+        {
+            get
+            {
+                if (_description == null) return string.Empty;
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _description.En;
+                return _description.Fi; // default Finnish
+            }
+        }
+
+        public string Execution
+        {
+            get
+            {
+                if (_execution == null) return string.Empty;
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _execution.En;
+                return _execution.Fi; // default Finnish
+            }
+        }
+
+        /*public string Content
         {
             get
             {
@@ -185,7 +209,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                     return _content.En;
                 return _content.Fi; // default Finnish
             }
-        }
+        }*/
 
         public string Instruction
         {
@@ -226,7 +250,9 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             _id = task._id;
             _title = new(task.title);
-            _content = new(task.description, task.execution);
+            _description = new(task.description);
+            _execution = new(task.execution);
+            //_content = new(task.description, task.execution);
             _instruction = new(task.instruction);
             _gameLiteracy = task.gameLiteracy;
             _amount = task.amount;
@@ -623,6 +649,36 @@ namespace Altzone.Scripts.Model.Poco.Game
             {
                 _fi = title.fi;
                 _en = title.en;
+            }
+        }
+
+        public class TaskDescription
+        {
+            private string _fi;
+            private string _en;
+
+            public string Fi { get => _fi; }
+            public string En { get => _en; }
+
+            public TaskDescription(ServerPlayerTask.TaskDescription description)
+            {
+                _fi = description?.fi ?? "";
+                _en = description?.en ?? "";
+            }
+        }
+
+        public class TaskExecution
+        {
+            private string _fi;
+            private string _en;
+
+            public string Fi { get => _fi; }
+            public string En { get => _en; }
+
+            public TaskExecution(ServerPlayerTask.TaskExecution execution)
+            {
+                _fi = execution?.fi ?? "";
+                _en = execution?.en ?? "";
             }
         }
 

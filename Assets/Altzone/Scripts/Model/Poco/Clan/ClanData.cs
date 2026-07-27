@@ -131,7 +131,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Values = new();
             foreach (string point in clan.labels)
             {
-                Values.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString()).Replace("ä", "a").Replace("ö", "o").Replace("+", "").Replace(" ", "")));
+                Values.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString()).Replace("ä", "a").Replace("ö", "o").Replace("+", "").Replace("-", "").Replace(" ", "")));
             }
             ClanAge = clan.ageRange;
             Language = clan.language;

@@ -485,24 +485,27 @@ namespace MenuUI.Scripts.SoulHome {
 
             for (int i = 0; i < _roomAmount; i++)
             {
-                GameObject avatarParent = Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
-                GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
-                AvatarRig rig = avatar.GetComponent<AvatarRig>();
-
-                PlayerData playerData = _clanPlayerFetcher.Players[i];
-
-                avatarParent.GetComponent<SoulHomeAvatarController>().InitializeAvatar(playerData);
-
-                if (playerData?.Id == _localPlayerId)
+                for (int j = 0; j < 3; j++)
                 {
-                    _localPlayerRig = rig;
-                }
+                    GameObject avatarParent = Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
+                    GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
+                    AvatarRig rig = avatar.GetComponent<AvatarRig>();
 
-                rig.ApplyAvatarToRig(playerData);
-                if (FrameCheck())
-                {
-                    yield return null;
-                    _frameTimeStart = DateTime.Now.Ticks;
+                    PlayerData playerData = _clanPlayerFetcher.Players[i];
+
+                    avatarParent.GetComponent<SoulHomeAvatarController>().InitializeAvatar(playerData);
+
+                    if (playerData?.Id == _localPlayerId)
+                    {
+                        _localPlayerRig = rig;
+                    }
+
+                    rig.ApplyAvatarToRig(playerData);
+                    if (FrameCheck())
+                    {
+                        yield return null;
+                        _frameTimeStart = DateTime.Now.Ticks;
+                    }
                 }
                 
             }

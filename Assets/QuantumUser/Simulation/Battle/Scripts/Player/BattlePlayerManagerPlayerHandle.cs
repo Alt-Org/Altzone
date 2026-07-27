@@ -687,6 +687,24 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
+            /// Sets all character's previous positions to a given <paramref name="position"/>
+            /// </summary>
+            ///
+            /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
+            /// <param name="position">The position that all previous character positions will be set to.</param>
+            public static void SetAllPreviousCharacterPosition(BattlePlayerManagerDataQSingleton* playerManagerData, FPVector2 position)
+            {
+                for(int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_TOTAL_COUNT; i++)
+                {
+                    playerManagerData->CharacterAllPreviousPositions[i] = position;
+                }
+            }
+
+            /// <summary>
             /// Checks if a given <paramref name="characterNumber"/> is valid.
             /// </summary>
             ///
@@ -840,7 +858,7 @@ namespace Battle.QSimulation.Player
             public readonly BattleEntityID CharacterEntityGroupID
             {
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                get => _playerManagerData->CharacterAllEntityGroupIDs[Index];
+                get => _playerManagerData->CharacterEntityGroupIDs[Index];
             }
 
             /// <summary>
@@ -896,11 +914,14 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets player's <em>SpawnPosition</em>.
+            /// Gets player's <em>SpawnPosition</em>. Used for default position spawn behaviour.
             /// </summary>
             ///
+            /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
+            ///
             /// Internal only
-            public readonly FPVector2 SpawnPosition
+
+            public readonly FPVector2 DefaultSpawnPosition
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_spawnPoints[Index]; }
 
             /// @}
@@ -1004,7 +1025,7 @@ namespace Battle.QSimulation.Player
             ///
             /// <param name="entityGroupID">Group ID of the player's characters.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public readonly void SetCharacterEntityGroupID(BattleEntityID entityGroupID) => _playerManagerData->CharacterAllEntityGroupIDs[Index] = entityGroupID;
+            public readonly void SetCharacterEntityGroupID(BattleEntityID entityGroupID) => _playerManagerData->CharacterEntityGroupIDs[Index] = entityGroupID;
 
             /// <summary>
             /// Retrieves the selected character's EntityRef.
@@ -1045,7 +1066,7 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly BattlePlayerEntityRef GetCharacterEntityRef(Frame f, int characterNumber, bool updateViewPlayState = false)
             {
-                return (BattlePlayerEntityRef)BattleEntityManager.Get(f, _playerManagerData->CharacterAllEntityGroupIDs[Index], characterNumber, updateViewPlayState);
+                return (BattlePlayerEntityRef)BattleEntityManager.Get(f, _playerManagerData->CharacterEntityGroupIDs[Index], characterNumber, updateViewPlayState);
             }
 
             #endregion Public Methods - Player Character - Character Entity
@@ -1089,6 +1110,37 @@ namespace Battle.QSimulation.Player
             /// <param name="state">New state of the character.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly void SetCharacterState(int characterNumber, BattlePlayerCharacterState state) => _playerManagerData->CharactersAllStates[GetCharacterIndex(characterNumber)] = state;
+
+            /// <summary>
+            /// Retrieves a player's character's previous position based on <paramref name="characterNumber"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState "Player Character State Methods"
+            ///
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
+            ///
+            /// <returns>The previous position of the given player's character.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly FPVector2 GetPreviousCharacterPosition(int characterNumber) => _playerManagerData->CharacterAllPreviousPositions[GetCharacterIndex(characterNumber)];
+
+            /// <summary>
+            /// Sets a player's character's previous position to given <paramref name="position"/> based on <paramref name="characterNumber"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState "Player Character State Methods"
+            ///
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
+            ///
+            /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
+            /// <param name="position">New previous position of the character.</param>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly void SetPreviousCharacterPosition(int characterNumber, FPVector2 position) => _playerManagerData->CharacterAllPreviousPositions[GetCharacterIndex(characterNumber)] = position;
 
             #endregion Public Methods - Player Character - Character State
             /// @}

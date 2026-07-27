@@ -45,7 +45,6 @@ In **%Battle** [Quantum Systems🡵] have **"QSystem"** suffix. [[Naming]](#inde
 |                                                                                                                                                                                                                 ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,SoulWall}   | @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSystem}            | @copybrief Battle.QSimulation.SoulWall.BattleSoulWallQSystem            |
 |                                                                                                                                                                                                                 ||||
-| @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Projectile} | @cref{Battle.QSimulation.Projectile,BattleProjectileSpawnerQSystem} | @copybrief Battle.QSimulation.Projectile.BattleProjectileSpawnerQSystem |
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Projectile} | @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem}        | @copybrief Battle.QSimulation.Projectile.BattleProjectileQSystem        |
 |                                                                                                                                                                                                                 ||||
 | @crefd{Battle.QSimulation} | @crefd{Battle.QSimulation,Goal}       | @cref{Battle.QSimulation.Goal,BattleGoalQSystem}                    | @copybrief Battle.QSimulation.Goal.BattleGoalQSystem                    |
@@ -94,7 +93,6 @@ In %Battle [Quantum Components🡵] have **"QComponent"** suffix. [[Naming]](#in
 | @crefd{Quantum}   | @cref{Quantum,BattlePlayerShieldDataTemplateQComponent}   | @copybrief Quantum.BattlePlayerShieldDataTemplateQComponent |
 |                                                                                                                                           |||
 | @crefd{Quantum}   | @cref{Quantum,BattleProjectileQComponent}                 | @copybrief Quantum.BattleProjectileQComponent               |
-| @crefd{Quantum}   | @cref{Quantum,BattleProjectileSpawnerQComponent}          | @copybrief Quantum.BattleProjectileSpawnerQComponent        |
 |                                                                                                                                           |||
 | @crefd{Quantum}   | @cref{Quantum,BattleSoulWallQComponent}                   | @copybrief Quantum.BattleSoulWallQComponent                 |
 

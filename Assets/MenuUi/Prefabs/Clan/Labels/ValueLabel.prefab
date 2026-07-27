@@ -199,8 +199,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 5, y: 0}
-  m_SizeDelta: {x: -10, y: 0}
+  m_AnchoredPosition: {x: -9.0806, y: 0}
+  m_SizeDelta: {x: -38.1611, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6145922829517567813
 CanvasRenderer:
@@ -232,8 +232,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Musadiggarit
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 35c39ce28c397b848b84f7de2f26c5ac, type: 2}
-  m_sharedMaterial: {fileID: 2109022488393823743, guid: 35c39ce28c397b848b84f7de2f26c5ac,
+  m_fontAsset: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e, type: 2}
+  m_sharedMaterial: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -258,8 +258,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 34
+  m_fontSizeBase: 34
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -704,9 +704,12 @@ MonoBehaviour:
   _reference: {fileID: 11400000, guid: 6973cc6a8f1533546aaf3230189c85c3, type: 2}
   _textLabel: {fileID: 7811374029473084168}
   _labelImage: {fileID: 5702229936024869723}
+  _highlightBackground: {fileID: 0}
+  _normalFont: {fileID: 0}
+  _selectedFont: {fileID: 0}
+  _checkedObject: {fileID: 0}
+  _uncheckedObject: {fileID: 0}
   <_selectButton>k__BackingField: {fileID: 0}
-  _selectedColorHex: '#0dd236'
-  _unselectedColorHex: '#a0a0a0'
 --- !u!114 &8887506312465974195
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -70,15 +70,34 @@ namespace Battle.QSimulation.Player
         /// <param name="isInPlay">Bool to check if bot is in play.</param>
         /// <param name="playerData">Pointer to player's BattlePlayerDataQComponent.</param>
         /// <param name="outBotInput">Pointer to where bot's %Quantum Input will be written.</param>
-        public static void GetBotInput(Frame f, bool isInPlay, BattlePlayerDataQComponent* playerData, Input* outBotInput)
+        public static void GetBotInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, Input* outBotInput, BattleCommand.Type* commandType, BattleCommand commandData)
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
 
-            BattleMovementInputType movementInput         = BattleMovementInputType.None;
-            BattleGridPosition      predictedGridPosition = new() { Col = 0, Row = 0 };
+            BattleMovementInputType movementInput = BattleMovementInputType.None;
+            BattleGridPosition predictedGridPosition = new() { Col = 0, Row = 0 };
 
-            if (isInPlay)
+            //{ non-character logic
+
+            if (BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerHandle.Slot).GiveUpState && !playerHandle.GiveUpState)
             {
+                *commandType = BattleCommand.Type.GiveUp;
+                commandData = new BattleGiveUpQCommand();
+                return;
+            }
+
+            //} non-character logic
+
+            //{ character logic
+
+            BattlePlayerEntityRef playerEntity;
+            BattlePlayerDataQComponent* playerData = null;
+
+            if (playerHandle.PlayState.IsInPlay())
+            {
+                playerEntity = playerHandle.GetSelectedCharacterEntityRef(f);
+                playerData = playerEntity.GetDataQComponent(f);
+
                 if (playerData->BotMovementCooldownSec > FP._0)
                 {
                     playerData->BotMovementCooldownSec -= f.DeltaTime;
@@ -167,15 +186,13 @@ namespace Battle.QSimulation.Player
                 IsValid                       = true,
                 MovementInput                 = movementInput,
                 MovementDirectionIsNormalized = false,
-                MovementPositionTarget        = predictedGridPosition,
-                MovementPositionMove          = FPVector2.Zero,
-                MovementDirection             = FPVector2.Zero,
+                MovementGridPosition          = predictedGridPosition,
+                MovementVector                = FPVector2.Zero,
                 RotationInput                 = false,
-                RotationValue                 = FP._0,
-                PlayerCharacterNumber         = -1,
-                GiveUpInput                   = false,
-                AbilityActivate               = false
+                RotationValue                 = FP._0
             };
+
+            //} character logic
         }
     }
 }

@@ -106,7 +106,7 @@ namespace Altzone.Scripts.Audio
         public delegate void FavoriteButtonChange(string musicTrackId, MusicTrackFavoriteType favoriteType);
         public event FavoriteButtonChange OnFavoriteButtonChange;
 
-        public delegate void PreviewStart();
+        public delegate bool PreviewStart();
         public event PreviewStart OnPreviewStart;
 
         public delegate void PreviewEnd();

@@ -9,6 +9,7 @@ using Altzone.Scripts.GA;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Language;
+using MenuUI.Scripts.Jukebox;
 
 namespace MenuUI.Scripts.SoulHome
 {

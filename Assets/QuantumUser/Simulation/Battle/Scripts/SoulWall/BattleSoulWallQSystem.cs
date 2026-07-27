@@ -126,7 +126,7 @@ namespace Battle.QSimulation.SoulWall
                         break;
                 }
 
-                Transform2D* soulWallTransform = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->OtherEntity);
+                Transform2D* soulWallTransform = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->OtherEntityRef);
 
                 f.Events.BattleLastRowWallDestroyed(soulWallCollisionData->SoulWall->WallNumber, soulWallCollisionData->SoulWall->Team, battleLightrayRotation, battleLightrayColor, battleLightraySize);
             }
@@ -136,7 +136,7 @@ namespace Battle.QSimulation.SoulWall
 
             // Destroy the SoulWall entity
             f.Events.BattlePlaySoundFxForAll(BattleSoundFX.SoulWallBroken);
-            f.Destroy(projectileCollisionData->OtherEntity);
+            f.Destroy(projectileCollisionData->OtherEntityRef);
 
             BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.SoulWall);
         }

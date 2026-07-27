@@ -14,20 +14,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _classType: 200
   _list:
-  - 'Onko joku vahingossa eksynyt paikalle ja haluaa pelata? '
-  - "Viel\xE4 yksi... tai ehk\xE4 kymmenen. Kattoo ny. "
-  - "Voin tulla, mutta en sitten ole vastuussa mist\xE4\xE4n!"
-  - 'Count me in! Mahtuuko pierutyyny mukaan? '
-  - "Kyll\xE4! ...t\xE4t\xE4 p\xE4\xE4t\xF6st\xE4 tulen viel\xE4 katumaan. "
-  - 'Ei, mutta ensi kerralla varmasti. '
-  - "Legenda on palannut, valmistautukaa h\xE4mm\xE4stym\xE4\xE4n! "
-  - "En l\xE4hde mihink\xE4\xE4n, muutun vain n\xE4kym\xE4tt\xF6m\xE4ksi! "
-  - 'Oho, mun talo palaa! Tuun kohta takaisin. '
-  - "On kyll\xE4 ollu hyv\xE4 tuuri t\xE4n\xE4\xE4n pelien kanssa. "
-  - "H\xE4vi\xE4n strategisesti, ja lopuksi yll\xE4t\xE4n kaikki!"
-  - "Jos etsit kivaa peliyhteis\xF6\xE4, ja ehk\xE4 hitusen kaaosta, niin liity ALT
-    Zone -yhteis\xF6\xF6n Discordissa! Linkki l\xF6ytyy nettisivuilta. "
-  - "En tiennytk\xE4\xE4n, ett\xE4 t\xE4\xE4 on yksinpeli"
-  - "T\xE4\xE4 peli on aika hauska! Tai ainakin parempi kuin oikee el\xE4m\xE4. "
-  - "En ole vihainen, se puhelin vain hajosi itsest\xE4\xE4n! "
-  - 'En osaa, mutta onneksi voin olla paras huonoimmista! '
+  - ResponseId: 0
+    Response: Tulkaa nyt joku pelaamaan, saakeli!
+  - ResponseId: 1
+    Response: "Anti menn\xE4 toinen peli, vai mit\xE4 t\xE4ss\xE4 odotellaan?"
+  - ResponseId: 2
+    Response: "Min\xE4h\xE4n sitten tulen pelaamaan kanssasi, okei?"
+  - ResponseId: 3
+    Response: "Min\xE4 haluan mukaan, piste."
+  - ResponseId: 4
+    Response: Joo, joo!
+  - ResponseId: 5
+    Response: ' Ei tarkoittaa ei!'
+  - ResponseId: 6
+    Response: Tulin paikalle, huomatkaa se!
+  - ResponseId: 7
+    Response: "Riitt\xE4\xE4 t\xE4lt\xE4 p\xE4iv\xE4lt\xE4, m\xE4 poistun."
+  - ResponseId: 8
+    Response: "T\xE4ytyy menn\xE4. Palaan sitten kun huvittaa"
+  - ResponseId: 9
+    Response: "T\xE4n\xE4\xE4n on voittoputki p\xE4\xE4ll\xE4, \xE4lk\xE4\xE4 sotkeko
+      sit\xE4!"
+  - ResponseId: 10
+    Response: "Jumankauta, voitetaan nyt edes yksi peli, h\xE4h!?"
+  - ResponseId: 11
+    Response: "Jos haluut pelata tosissaan, tuu Discordiin. Siell\xE4 homma hoituu!
+      Linkki on nettisivuilla!"
+  - ResponseId: 12
+    Response: "Miten m\xE4 oon vittu ihan yksin kokoaika?!"
+  - ResponseId: 13
+    Response: "Uskokaa tai \xE4lk\xE4\xE4, mutta tykk\xE4\xE4n t\xE4st\xE4 pelist\xE4."
+  - ResponseId: 14
+    Response: "T\xE4\xE4 peli on niin paska ja raivostuttava, mutta silti pelaan
+      sit\xE4!"
+  - ResponseId: 15
+    Response: En osaa pelata, mutta olen silti parempi kuin te!

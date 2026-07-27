@@ -38,7 +38,7 @@ namespace Altzone.Scripts.Model.Poco.Player
                 Debug.LogError(e);
             }
 
-            _dateTime = DateTime.Parse(serverEmotion.date);
+            _dateTime = DateTime.ParseExact(serverEmotion.date, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
     }
 }

@@ -129,7 +129,9 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
+    public QBoolean DisableMovement;
     public QBoolean DisableRotation;
+    public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
     public QBoolean MovementEnabled;
     public QBoolean RotationEnabled;
     public FP CurrentDefence;
@@ -158,7 +160,9 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Stats, out result.Stats);
       converter.Convert(this.GridExtendTop, out result.GridExtendTop);
       converter.Convert(this.GridExtendBottom, out result.GridExtendBottom);
+      converter.Convert(this.DisableMovement, out result.DisableMovement);
       converter.Convert(this.DisableRotation, out result.DisableRotation);
+      converter.Convert(this.SpawnBehaviour, out result.SpawnBehaviour);
       converter.Convert(this.MovementEnabled, out result.MovementEnabled);
       converter.Convert(this.RotationEnabled, out result.RotationEnabled);
       converter.Convert(this.CurrentDefence, out result.CurrentDefence);
@@ -234,48 +238,6 @@ namespace Quantum.Prototypes.Unity {
     public override Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype();
       converter.Convert(this.ERef, out result.ERef);
-      ConvertUser(converter, ref result);
-      return result;
-    }
-  }
-  [System.SerializableAttribute()]
-  public unsafe partial class BattleProjectileQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattleProjectileQComponentPrototype> {
-    public QBoolean IsLaunched;
-    public QBoolean IsHeld;
-    public QBoolean IsPassed;
-    public Quantum.QEnum32<BattleEmotionState> EmotionBase;
-    public Quantum.QEnum32<BattleEmotionState> EmotionCurrent;
-    [ArrayLengthAttribute(2)]
-    public Quantum.QEnum8<BattleProjectileCollisionFlags>[] CollisionFlags = new Quantum.QEnum8<BattleProjectileCollisionFlags>[2];
-    public Quantum.QuantumEntityPrototype TriggerEntityRef;
-    public FP Speed;
-    public FPVector2 Position;
-    public FPVector2 Direction;
-    public FP Attack;
-    public FP Radius;
-    public FP SpeedBase;
-    public FP SpeedIncrement;
-    public FP SpeedMax;
-    public FP AttackMax;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleProjectileQComponentPrototype prototype);
-    public override Quantum.Prototypes.BattleProjectileQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.BattleProjectileQComponentPrototype();
-      converter.Convert(this.IsLaunched, out result.IsLaunched);
-      converter.Convert(this.IsHeld, out result.IsHeld);
-      converter.Convert(this.IsPassed, out result.IsPassed);
-      converter.Convert(this.EmotionBase, out result.EmotionBase);
-      converter.Convert(this.EmotionCurrent, out result.EmotionCurrent);
-      converter.Convert(this.CollisionFlags, out result.CollisionFlags);
-      converter.Convert(this.TriggerEntityRef, out result.TriggerEntityRef);
-      converter.Convert(this.Speed, out result.Speed);
-      converter.Convert(this.Position, out result.Position);
-      converter.Convert(this.Direction, out result.Direction);
-      converter.Convert(this.Attack, out result.Attack);
-      converter.Convert(this.Radius, out result.Radius);
-      converter.Convert(this.SpeedBase, out result.SpeedBase);
-      converter.Convert(this.SpeedIncrement, out result.SpeedIncrement);
-      converter.Convert(this.SpeedMax, out result.SpeedMax);
-      converter.Convert(this.AttackMax, out result.AttackMax);
       ConvertUser(converter, ref result);
       return result;
     }

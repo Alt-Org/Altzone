@@ -53,7 +53,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 32;
+        eventCount = 33;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -92,6 +92,7 @@ namespace Quantum {
           case EventBattleSpecialJoystickVisibilityChange.ID: result = typeof(EventBattleSpecialJoystickVisibilityChange); return;
           case EventBattlePlayerClass100AimIndicatorUpdate.ID: result = typeof(EventBattlePlayerClass100AimIndicatorUpdate); return;
           case EventBattleShieldChangeState.ID: result = typeof(EventBattleShieldChangeState); return;
+          case EventBattleCharacterDeath.ID: result = typeof(EventBattleCharacterDeath); return;
           case EventBattleDebugOnScreenMessage.ID: result = typeof(EventBattleDebugOnScreenMessage); return;
           default: break;
         }
@@ -266,29 +267,28 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattleCharacterHit BattleCharacterHit(EntityRef ERef, BattleTeamNumber Team, BattlePlayerSlot Slot, Int32 CharacterNumber, QBoolean ShieldAttached, Int32 ShieldNumber, FP StunDurationSec, BattleEmotionState ProjectileEmotion) {
+      public EventBattleCharacterHit BattleCharacterHit(EntityRef ERef, BattleTeamNumber Team, BattlePlayerSlot Slot, Int32 CharacterNumber, Int32 ShieldNumber, FP StunDurationSec, BattleEmotionState ProjectileEmotion) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleCharacterHit>(EventBattleCharacterHit.ID);
         ev.ERef = ERef;
         ev.Team = Team;
         ev.Slot = Slot;
         ev.CharacterNumber = CharacterNumber;
-        ev.ShieldAttached = ShieldAttached;
         ev.ShieldNumber = ShieldNumber;
         ev.StunDurationSec = StunDurationSec;
         ev.ProjectileEmotion = ProjectileEmotion;
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattleShieldHit BattleShieldHit(EntityRef ERef, BattleTeamNumber Team, BattlePlayerSlot Slot, Int32 CharacterNumber, QBoolean ShieldAttached, Int32 ShieldNumber, FP DefencePercentage) {
+      public EventBattleShieldHit BattleShieldHit(EntityRef ERef, BattleTeamNumber Team, BattlePlayerSlot Slot, Int32 CharacterNumber, Int32 ShieldNumber, QBoolean DefenceUpdateVisual, FP DefencePercentage) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleShieldHit>(EventBattleShieldHit.ID);
         ev.ERef = ERef;
         ev.Team = Team;
         ev.Slot = Slot;
         ev.CharacterNumber = CharacterNumber;
-        ev.ShieldAttached = ShieldAttached;
         ev.ShieldNumber = ShieldNumber;
+        ev.DefenceUpdateVisual = DefenceUpdateVisual;
         ev.DefencePercentage = DefencePercentage;
         _f.AddEvent(ev);
         return ev;
@@ -343,6 +343,14 @@ namespace Quantum {
         ev.Team = Team;
         ev.ShieldAttached = ShieldAttached;
         ev.ShieldNumber = ShieldNumber;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventBattleCharacterDeath BattleCharacterDeath(BattlePlayerSlot Slot, Int32 CharacterNumber) {
+        if (_f.IsPredicted) return null;
+        var ev = _f.Context.AcquireEvent<EventBattleCharacterDeath>(EventBattleCharacterDeath.ID);
+        ev.Slot = Slot;
+        ev.CharacterNumber = CharacterNumber;
         _f.AddEvent(ev);
         return ev;
       }
@@ -949,7 +957,6 @@ namespace Quantum {
     public BattleTeamNumber Team;
     public BattlePlayerSlot Slot;
     public Int32 CharacterNumber;
-    public QBoolean ShieldAttached;
     public Int32 ShieldNumber;
     public FP StunDurationSec;
     public BattleEmotionState ProjectileEmotion;
@@ -974,7 +981,6 @@ namespace Quantum {
         hash = hash * 31 + Team.GetHashCode();
         hash = hash * 31 + Slot.GetHashCode();
         hash = hash * 31 + CharacterNumber.GetHashCode();
-        hash = hash * 31 + ShieldAttached.GetHashCode();
         hash = hash * 31 + ShieldNumber.GetHashCode();
         hash = hash * 31 + StunDurationSec.GetHashCode();
         hash = hash * 31 + ProjectileEmotion.GetHashCode();
@@ -988,8 +994,8 @@ namespace Quantum {
     public BattleTeamNumber Team;
     public BattlePlayerSlot Slot;
     public Int32 CharacterNumber;
-    public QBoolean ShieldAttached;
     public Int32 ShieldNumber;
+    public QBoolean DefenceUpdateVisual;
     public FP DefencePercentage;
     protected EventBattleShieldHit(Int32 id, EventFlags flags) : 
         base(id, flags) {
@@ -1012,8 +1018,8 @@ namespace Quantum {
         hash = hash * 31 + Team.GetHashCode();
         hash = hash * 31 + Slot.GetHashCode();
         hash = hash * 31 + CharacterNumber.GetHashCode();
-        hash = hash * 31 + ShieldAttached.GetHashCode();
         hash = hash * 31 + ShieldNumber.GetHashCode();
+        hash = hash * 31 + DefenceUpdateVisual.GetHashCode();
         hash = hash * 31 + DefencePercentage.GetHashCode();
         return hash;
       }
@@ -1191,13 +1197,14 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventBattleDebugOnScreenMessage : EventBase {
+  public unsafe partial class EventBattleCharacterDeath : EventBase {
     public new const Int32 ID = 31;
-    public QString512 Message;
-    protected EventBattleDebugOnScreenMessage(Int32 id, EventFlags flags) : 
+    public BattlePlayerSlot Slot;
+    public Int32 CharacterNumber;
+    protected EventBattleCharacterDeath(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventBattleDebugOnScreenMessage() : 
+    public EventBattleCharacterDeath() : 
         base(31, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
@@ -1211,6 +1218,32 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 191;
+        hash = hash * 31 + Slot.GetHashCode();
+        hash = hash * 31 + CharacterNumber.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventBattleDebugOnScreenMessage : EventBase {
+    public new const Int32 ID = 32;
+    public QString512 Message;
+    protected EventBattleDebugOnScreenMessage(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventBattleDebugOnScreenMessage() : 
+        base(32, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 193;
         hash = hash * 31 + Message.GetHashCode();
         return hash;
       }

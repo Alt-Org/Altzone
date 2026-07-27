@@ -51,19 +51,19 @@ public class ChatMessagePrefab : MonoBehaviour
         switch (mood)
         {
             case Mood.Sad:
-                _messageContentText.color = Color.blue;
+                _messageContentText.color = new Color32(81, 155, 255, 255);
                 return;
             case Mood.Angry:
-                _messageContentText.color = Color.red;
+                _messageContentText.color = new Color32(255, 50, 50, 255);
                 return;
             case Mood.Happy:
-                _messageContentText.color = Color.yellow;
+                _messageContentText.color = new Color32(255, 208, 72, 255);
                 return;
             case Mood.Wink:
-                _messageContentText.color = new(1, 0.4156f, 0);
+                _messageContentText.color = new Color32(255, 106, 0, 255);
                 return;
             case Mood.Love:
-                _messageContentText.color = new(0.929f,0.462f,0.6627f);
+                _messageContentText.color = new Color32(255, 127, 182, 255);
                 return;
             default:
                 return;

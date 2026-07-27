@@ -738,7 +738,7 @@ public class ServerManager : MonoBehaviour
                     }
                 });
             }
-            yield return new WaitUntil(() => list != null);
+            yield return new WaitUntil(() => list != null || heartBeat == false);
             while (timeCurrent < timeToNext)
             {
                 yield return null;
@@ -1459,7 +1459,14 @@ public class ServerManager : MonoBehaviour
             yield break;
         }
 
-        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "online-players/ping", "", AccessToken, request =>
+        string body = JObject.FromObject(
+            new
+            {
+                client_version = ApplicationController.VersionNumber.ToString(),
+            }
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "online-players/ping", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
@@ -1800,7 +1807,7 @@ public class ServerManager : MonoBehaviour
                 List<ServerItem> requestItems = new();
                 JObject jObject = JObject.Parse(request.downloadHandler.text);
                 //Debug.LogWarning(jObject);
-                JArray array = (JArray)jObject["data"]["Stock"]["Item"];
+                JArray array = (JArray)jObject["data"]["Item"];
                 requestItems = array.ToObject<List<ServerItem>>();
 
                 foreach (ServerItem item in requestItems)

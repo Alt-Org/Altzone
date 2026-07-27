@@ -25,9 +25,17 @@ namespace MenuUi.Scripts.Window
 
         public static OverlayPanelCheck Instance { get; private set; }
         public bool ChatActive => _chatActive;
+        public bool TopBarActive => _topBar.activeSelf;
+        public bool BottomBarActive => _bottomBar.activeSelf;
 
         public delegate void ChatBarToggled(bool active);
         public static event ChatBarToggled OnChatBarToggled;
+
+        public delegate void TopBarToggled(bool active);
+        public static event TopBarToggled OnTopBarToggled;
+
+        public delegate void BottomBarToggled(bool active);
+        public static event BottomBarToggled OnBottomBarToggled;
 
         public delegate void ToggleOnlinePlayerList(bool? active = null);
         public static event ToggleOnlinePlayerList OnToggleOnlinePlayerList;
@@ -78,7 +86,7 @@ namespace MenuUi.Scripts.Window
             if(Instance == this) Instance = null;
         }
 
-        public void UpdateButtonContent()
+        public void UpdateButtonContent() //Makes buttons bigger and glow when selected
         {
             if (buttons == null || buttons.Length == 0) return;
 
@@ -119,8 +127,9 @@ namespace MenuUi.Scripts.Window
                 {
                     glow.gameObject.SetActive(isCurrentWindow);
                 }
-            }//for loop
-        }
+            }//for
+        }//updatebuttoncontent
+
         public void ToggleOverlay(bool value)
         {
             ToggleBottomBar(value);
@@ -130,11 +139,13 @@ namespace MenuUi.Scripts.Window
         public void ToggleBottomBar(bool value)
         {
             _bottomBar.SetActive(value);
+            OnBottomBarToggled?.Invoke(value);
         }
 
         public void ToggleTopBar(bool value)
         {
             _topBar.SetActive(value);
+            OnTopBarToggled?.Invoke(value);
         }
 
         public void ToggleChat(bool value)
