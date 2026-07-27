@@ -21,7 +21,7 @@ public class ParentalControlManager : MonoBehaviour
     [SerializeField] private TMP_Text _description; //The text that describes what Parental Control does
 
     [SerializeField] private TMP_InputField _passwordInput; //The password input field in the log in panel 
-    
+
     [SerializeField] private TMP_InputField _popupPasswordInput; //The field for setting the password in the pop up
     [SerializeField] private TMP_InputField _confirmPasswordInput;
 
@@ -61,18 +61,18 @@ public class ParentalControlManager : MonoBehaviour
 
     //SocialControls
 
-    public Toggle internetLinksToggle; 
+    public Toggle internetLinksToggle;
     public Toggle chatMessagesToggle;
     public Toggle emojiCommentsToggle;
     public Toggle treasureHuntToggle;
 
     //MoneyControls
-    
+
     public TMP_InputField monthlyLimitInput;
     public Toggle independentSpendingActivationToggle;
 
     //TimeControls
-     
+
     public TMP_InputField timeLimitInput;
     //public TMP_InputField timeLimitAccuracyInput; //currently not in use, was in previous plans
     public Toggle midMatchToggle;
@@ -87,7 +87,7 @@ public class ParentalControlManager : MonoBehaviour
         CheckControl(); //checks if Parental Control is on
         GetPassword(); //gets the password that is already set in PlayerPrefs
         LoadSettings(); //currently not in use, but could be used to load all the settings from PlayerPrefs at the same time, now they are loaded one by one
-        
+
         _parentalControlPanel.SetActive(true);
         //passwordPanel.SetActive(true);
         _messageText.enabled = false;
@@ -96,7 +96,7 @@ public class ParentalControlManager : MonoBehaviour
         _messageTextPopUpLength.enabled = false;
 
         //controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1; //The checkmark that is currently not in use
-        
+
         internetLinksToggle.onValueChanged.AddListener(_ => SetInternetLinks()); //Listeners are added for all the settings
         chatMessagesToggle.onValueChanged.AddListener(_ => SetChatMessages());
         emojiCommentsToggle.onValueChanged.AddListener(_ => SetEmojis());
@@ -106,10 +106,10 @@ public class ParentalControlManager : MonoBehaviour
         timeLimitInput.onValueChanged.AddListener(_ => SetTimeLimit());
         midMatchToggle.onValueChanged.AddListener(_ => SetEndMidMatch());
         endMatchToggle.onValueChanged.AddListener(_ => SetEndAfterMatch());
-                
+
     }
 
-    
+
     private void OnEnable()
     {
         SetInternetLinksToggle(); //Sets all the settings
@@ -123,18 +123,18 @@ public class ParentalControlManager : MonoBehaviour
         SetEndAfterMatchToggle();
         CheckControl();
         GetPassword();
-        
+
     }
-    
+
 
     private void GetPassword() {
 
         _presetPassword = PlayerPrefs.GetString("password");
 
 
-             }
+    }
 
-        
+
 
     private void LogIn()
     {
@@ -144,7 +144,7 @@ public class ParentalControlManager : MonoBehaviour
         {
             if (_passwordInput.text == _presetPassword)
             {
-       
+
                 _messageText.enabled = false;
                 _parentalControlSettings.SetActive(true);
                 _passwordInput.text = "";
@@ -181,33 +181,33 @@ public class ParentalControlManager : MonoBehaviour
         _parentalControlSettings.SetActive(false);
         _passwordPanel.SetActive(true);
         _activateLogInPanel.SetActive(true);
-        
+
 
 
     }
 
     private void SetPasswordInput()
     {
-        
+
         _setPasswordInput = _popupPasswordInput.text;
-       
+
     }
 
 
     private void SetConfirmPasswordInput()
     {
-        
+
         _setConfirmPasswordInput = _confirmPasswordInput.text;
-        
+
     }
 
 
 
     private void SetPassword() {
         //this is done in the pop-up
-                     
 
-        if (_setPasswordInput.Length < 8)            
+
+        if (_setPasswordInput.Length < 8)
         {
             _messageTextPopUpLength.enabled = true; //messageTextPopUpLength will show the message that the password is too short
             _messageTextPopUpWrongPassword.enabled = false;
@@ -215,7 +215,7 @@ public class ParentalControlManager : MonoBehaviour
         }
 
         if (_setPasswordInput.Equals(_setConfirmPasswordInput)) {
-                        
+
             PlayerPrefs.SetString("password", _setPasswordInput);
 
             //the int will indicate if Parental Control is on, 1 means that it is set
@@ -239,7 +239,7 @@ public class ParentalControlManager : MonoBehaviour
             _messageTextPopUpLength.enabled = false;
         }
 
-        
+
     }
 
     private void ClearPasswordFields()
@@ -248,6 +248,7 @@ public class ParentalControlManager : MonoBehaviour
         _popupPasswordInput.text = "";
         _confirmPasswordInput.text = "";
         _passwordInput.text = "";
+        HideMessageTexts();
 
 
     }
@@ -277,8 +278,8 @@ public class ParentalControlManager : MonoBehaviour
     {
         //ParentalControl is active only if PlayerPrefs "parentalcontrol" equals 1
         PlayerPrefs.SetInt("parentalcontrol", 0);
-        PlayerPrefs.SetString("password","");
-        
+        PlayerPrefs.SetString("password", "");
+
         PlayerPrefs.SetInt("AllowLinks", 0);
         _carrier.AllowLinks = false;
         PlayerPrefs.SetInt("AllowChat", 0);
@@ -294,7 +295,7 @@ public class ParentalControlManager : MonoBehaviour
         _carrier.ActivatePurchasesSeparately = false;
         PlayerPrefs.SetFloat("MaxPlayTime", 1); //There will always be a minimum time limit of 1 hour. In case the user forgets the password, they can still play a bit
         PlayerPrefs.SetFloat("DailyTimeLimit", 1); //for some reason there has also been a setting that is called DailyTimeLimit, current use unknown
-        _carrier.MaxPlayTime = 1;  
+        _carrier.MaxPlayTime = 1;
         PlayerPrefs.SetInt("EndMidMatch", 0);
         _carrier.EndMidMatch = false;
         PlayerPrefs.SetInt("EndAfterMatch", 1);
@@ -313,9 +314,18 @@ public class ParentalControlManager : MonoBehaviour
         _parentalControlPopupButton.SetActive(true);
         _controlEnabledButton.SetActive(false);
         _activateLogInPanel.SetActive(true);
-          
-    }
 
+    }
+    
+    private void HideMessageTexts()
+    {
+        //Hides all the message texts
+        _messageText.enabled = false;
+        _messageTextPopUpLength.enabled = false;
+        _messageTextPopUpWrongPassword.enabled = false;
+
+
+    }
 
 
     //Example, how to set values / toggles, is taken from SettingEditor, ShowButtonLabels
