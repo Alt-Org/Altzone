@@ -211,10 +211,15 @@ public class ParentalControlManager : MonoBehaviour
         {
             _messageTextPopUpLength.enabled = true; //messageTextPopUpLength will show the message that the password is too short
             _messageTextPopUpWrongPassword.enabled = false;
-            return;
-        }
+            
+        } else if (_setPasswordInput != _setConfirmPasswordInput)
+        {
+            //messageTextPopUpWrongPassword will show the message that the password and confirmation do not match
+            _messageTextPopUpWrongPassword.enabled = true;
+            _messageTextPopUpLength.enabled = false;
 
-        if (_setPasswordInput.Equals(_setConfirmPasswordInput)) {
+        } else if (_setPasswordInput.Equals(_setConfirmPasswordInput))
+        {
 
             PlayerPrefs.SetString("password", _setPasswordInput);
 
@@ -232,12 +237,8 @@ public class ParentalControlManager : MonoBehaviour
             _passwordPanel.SetActive(false);
             _activateLogInPanel.SetActive(false);
 
-        } else
-        {
-            //messageTextPopUpWrongPassword will show the message that the password and confirmation do not match
-            _messageTextPopUpWrongPassword.enabled = true;
-            _messageTextPopUpLength.enabled = false;
         }
+       
 
 
     }
