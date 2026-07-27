@@ -120,6 +120,33 @@ namespace Quantum.Prototypes.Unity {
     }
   }
   [System.SerializableAttribute()]
+  public unsafe partial class BattlePlayerClass600DataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerClass600DataQComponentPrototype> {
+    [HideInInspector()]
+    public QBoolean IsHoldingProjectile;
+    [HideInInspector()]
+    public Quantum.QuantumEntityPrototype HeldProjectileEntity;
+    [HideInInspector()]
+    public FPVector2 HeldProjectileOffset;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype HoldMinTimer;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype HoldMaxTimer;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype ReleaseBufferTimer;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerClass600DataQComponentPrototype prototype);
+    public override Quantum.Prototypes.BattlePlayerClass600DataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattlePlayerClass600DataQComponentPrototype();
+      converter.Convert(this.IsHoldingProjectile, out result.IsHoldingProjectile);
+      converter.Convert(this.HeldProjectileEntity, out result.HeldProjectileEntity);
+      converter.Convert(this.HeldProjectileOffset, out result.HeldProjectileOffset);
+      converter.Convert(this.HoldMinTimer, out result.HoldMinTimer);
+      converter.Convert(this.HoldMaxTimer, out result.HoldMaxTimer);
+      converter.Convert(this.ReleaseBufferTimer, out result.ReleaseBufferTimer);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerDataQComponentPrototype> {
     public PlayerRef PlayerRef;
     public Quantum.QEnum32<BattlePlayerSlot> Slot;

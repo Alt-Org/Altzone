@@ -344,6 +344,35 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass600DataQComponent))]
+  public unsafe class BattlePlayerClass600DataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass600DataQComponent> {
+    [HideInInspector()]
+    public QBoolean IsHoldingProjectile;
+    [HideInInspector()]
+    public MapEntityId HeldProjectileEntity;
+    [HideInInspector()]
+    public FPVector2 HeldProjectileOffset;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype HoldMinTimer;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype HoldMaxTimer;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype ReleaseBufferTimer;
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattlePlayerClass600DataQComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerClass600DataQComponent result, in PrototypeMaterializationContext context = default) {
+        result.IsHoldingProjectile = this.IsHoldingProjectile;
+        PrototypeValidator.FindMapEntity(this.HeldProjectileEntity, in context, out result.HeldProjectileEntity);
+        result.HeldProjectileOffset = this.HeldProjectileOffset;
+        this.HoldMinTimer.Materialize(frame, ref result.HoldMinTimer, in context);
+        this.HoldMaxTimer.Materialize(frame, ref result.HoldMaxTimer, in context);
+        this.ReleaseBufferTimer.Materialize(frame, ref result.ReleaseBufferTimer, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerDataQComponent))]
   public unsafe class BattlePlayerDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerDataQComponent> {
     public PlayerRef PlayerRef;
