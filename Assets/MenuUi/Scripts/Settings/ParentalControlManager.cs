@@ -509,14 +509,12 @@ public class ParentalControlManager : MonoBehaviour
     private void SetTimeLimit()
     {
 
-        string timeInput = timeLimitInput.text;
-        float timeFloat = float.Parse(timeLimitInput.text);
         
         if (float.TryParse(timeLimitInput.text, out float time))
         {
 
 
-            if (time > 1 && time <= 24) //The time limit is daily, so it can't go below 1 or above 24 hours. If the user inputs a value below 1, it will be set to 1, if above 24, it will be set to 24
+            if (time > 1 && time <= 24) //The time limit is daily, so it can't go below 0 or above 24 hours. If the user inputs a value below 1, it will be set to 1, if above 24, it will be set to 24
             {
                 PlayerPrefs.SetFloat("MaxPlayTime", time);
                 PlayerPrefs.SetFloat("DailyTimeLimit", time);
@@ -537,7 +535,7 @@ public class ParentalControlManager : MonoBehaviour
             { //There is a minimum time limit of 1 hour per day
 
                 PlayerPrefs.SetFloat("MaxPlayTime", 1);
-                PlayerPrefs.SetFloat("DailyTimeLimit", time);
+                PlayerPrefs.SetFloat("DailyTimeLimit", 1);
                 _carrier.MaxPlayTime = 1;
                 PlayerPrefs.Save();
                 GetTimeLimit();
