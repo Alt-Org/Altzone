@@ -320,6 +320,8 @@ namespace Battle.View.Player
         [Tooltip("Array of character GameObjects")]
         [SerializeField] private GameObject[] _characterGameObjects;
 
+        [SerializeField] private ParticleSystem _particleSystem;
+
         //} references
 
         //{ settings
@@ -532,6 +534,8 @@ namespace Battle.View.Player
             }
 
             SetDefaultBodyPartSprites();
+
+            _particleSystem.gameObject.transform.localScale *= scale;
 
             //} initialize visuals
 
@@ -860,6 +864,8 @@ namespace Battle.View.Player
 
                 _ => throw new NotImplementedException()
             };
+
+            _particleSystem.Play();
 
             SetHeadSprite(sprite);
 
