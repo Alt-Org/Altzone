@@ -1,0 +1,20 @@
+/// @file BattleProjectileSystemData.qtn
+/// <summary>
+/// Contains projectile system data singleton component that is used internally by @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem} to manage projectiles.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleProjectileSystemDataQSingleton}  
+///   @copybrief Quantum.BattleProjectileSystemDataQSingleton
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleProjectileSystemDataQSingleton
+/// <summary>
+/// Singleton component that is used internally by @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem} to manage projectiles.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleProjectileSystemData.qtn}
+
+/// @var BattleEntityID Quantum.BattleProjectileSystemDataQSingleton::ProjectileEntityID
+/// <summary>EntityGroupID for the projectile.</summary>

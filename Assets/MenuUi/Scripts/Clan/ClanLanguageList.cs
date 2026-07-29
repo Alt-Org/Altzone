@@ -10,22 +10,57 @@ public class ClanLanguageList : MonoBehaviour
     [SerializeField] private ToggleGroup _toggleGroup;
     [SerializeField] private Transform _listParent;
     public Language SelectedLanguage { get; private set; }
+    private Language _tempLanguage;
 
-    public void Initialize(Language firstSelected)
+    public void Initialize(Language firstSelected, bool includeNoneOption = false)
     {
         SelectedLanguage = firstSelected;
-        foreach (Transform child in _listParent) Destroy(child.gameObject);
+        _tempLanguage = SelectedLanguage;
 
-        foreach (Language language in Enum.GetValues(typeof(Language)))
+        foreach (Transform child in _listParent)
         {
-            if (language == Language.None) continue;
-            Sprite flag = _languageFlagMap.GetFlag(language);
-            GameObject listItem = Instantiate(_languageListItemPrefab, _listParent);
-            listItem.GetComponent<Toggle>().group = _toggleGroup;
-            listItem.GetComponent<ClanLanguageListItem>().Initialize(language, flag, language == SelectedLanguage, (bool isOn) =>
-            {
-                SelectedLanguage = language;
-            });
+            Destroy(child.gameObject);
         }
+
+        Language[] allowedLanguages = includeNoneOption
+            ? new[]
+            {
+            Language.None,
+            Language.Finnish,
+            Language.English
+            }
+            : new[]
+            {
+            Language.Finnish,
+            Language.English
+            };
+
+        foreach (Language language in allowedLanguages)
+        {
+            Sprite flag = _languageFlagMap.GetFlag(language);
+
+            GameObject listItem = Instantiate(_languageListItemPrefab, _listParent);
+
+            Toggle toggle = listItem.GetComponent<Toggle>();
+            toggle.group = _toggleGroup;
+
+            listItem.GetComponent<ClanLanguageListItem>().Initialize(
+                language,
+                flag,
+                language == SelectedLanguage,
+                (bool isOn) =>
+                {
+                    if (isOn)
+                    {
+                        _tempLanguage = language;
+                    }
+                });
+        }
+    }
+
+    public Language SaveLanguage()
+    {
+        SelectedLanguage = _tempLanguage;
+        return SelectedLanguage;
     }
 }

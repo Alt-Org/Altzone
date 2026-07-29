@@ -55,7 +55,7 @@ namespace MenuUI.Scripts.SoulHome
             foreach (FurnitureListObject listObject in list.Get())
             {
                 GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(listObject.Name);
-                if (furnitureObject == null) return;
+                if (furnitureObject == null) continue;
 
                 if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
                 GameObject furnitureSlot = Instantiate(_traySlotObject, _trayContent.transform);
@@ -256,6 +256,14 @@ namespace MenuUI.Scripts.SoulHome
                 _changedTrayItemList[i].GetComponent<FurnitureTraySlotHandler>().SaveCount();
             }
             _changedTrayItemList.Clear();
+
+            int itemsLeft = 0;
+            foreach (Transform furnitureSlot in _trayContent.transform)
+            {
+                if (furnitureSlot.gameObject.activeSelf) itemsLeft++;
+            }
+
+            if (itemsLeft == 0) gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
         }
 
         private void SetEditInfo()

@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
 
 
-        public override CharacterClassID ClassID => CharacterClassID.Projector;
+        public override CharacterClassType ClassType => CharacterClassType.Projector;
 
 
         protected ProjectorClassCharacter()
@@ -17,7 +17,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _characterSizeStrength = ValueStrength.Weak;
             _hpStrength = ValueStrength.SemiWeak;
             _defenceStrength = ValueStrength.Medium;
-            _speedStrength = ValueStrength.Medium;
+            _speedStrength = ValueStrength.None;
             InitializeValues();
         }
     }

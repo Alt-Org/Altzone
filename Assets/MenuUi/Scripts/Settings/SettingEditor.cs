@@ -1,6 +1,13 @@
+using System;
+using System.Linq;
 using MenuUi.Scripts.MainMenu;
+using MenuUi.Scripts.Settings.BattleUiEditor;
+using Altzone.Scripts.Window;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Altzone.Scripts.Audio;
+using Altzone.Scripts.Language;
 
 public class SettingEditor : MonoBehaviour
 {
@@ -11,6 +18,17 @@ public class SettingEditor : MonoBehaviour
     [SerializeField] private Slider[] volumeSliders;
     [SerializeField] private Toggle _introSkipToggle;
     [SerializeField] private Toggle _showButtonLabelsToggle;
+    [SerializeField] private Button _battleSettingsButton;
+    [SerializeField] private BattleUiEditor _battleEditor;
+    [SerializeField] private GameObject[] _settingsPopups;
+    [SerializeField] private Button _topBarStyleButtonRight;
+    [SerializeField] private Button _topBarStyleButtonLeft;
+    [SerializeField] private TextLanguageSelectorCaller _topBarStyleText;
+
+    [SerializeField] private Image _languageImage;
+    [SerializeField] private Sprite _finnishSprite;
+    [SerializeField] private Sprite _englishSprite;
+    [SerializeField] private TextLanguageSelectorCaller _languageCaller;
 
     private void OnEnable()
     {
@@ -22,9 +40,55 @@ public class SettingEditor : MonoBehaviour
             SetToSlider(slider);
         }
 
-        SetFPSButtons();
+        //SetFPSButtons();
         SetIntroSkipToggle();
+        
+        
         SetShowButtonLabelsToggle();
+
+        // Opening Battle Ui Editor if DataCarrier has a bool BattleUiEditorRequested and it's true
+        if (DataCarrier.GetData<bool>(DataCarrier.BattleUiEditorRequested, suppressWarning: true))
+        {
+            DataCarrier.AddData(DataCarrier.RequestedWindow, 1);
+            _battleEditor.OpenEditor();
+        }
+
+        foreach(GameObject popup in _settingsPopups)
+        {
+            popup.SetActive(false);
+        }
+
+        SettingsCarrier.OnLanguageChanged += ChangeLanguage;
+        ChangeLanguage(SettingsCarrier.Instance.Language);
+    }
+
+    private void Start()
+    {
+        _battleSettingsButton.onClick.AddListener(() => _battleEditor.OpenEditor());
+
+        PlayerPrefs.SetFloat("MasterVolume", 1f);
+
+        _topBarStyleButtonRight.onClick.AddListener(() => ChangeTopbarStyle(1));
+        _topBarStyleButtonLeft.onClick.AddListener(() => ChangeTopbarStyle(-1));
+        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
+
+        _introSkipToggle.onValueChanged.AddListener(_ => SetIntroSkip());
+    }
+
+    private void OnDisable()
+    {
+        SettingsCarrier.OnLanguageChanged -= ChangeLanguage;
+
+
+
+        foreach(GameObject popup in _settingsPopups)
+            {
+            if (popup.activeSelf)
+            {
+                SettingsPopup PopScript = popup.GetComponent<SettingsPopup>();
+                PopScript.ClosePopup();
+            }
+        }
     }
 
     public void SetFromSlider(Slider usedSlider)
@@ -35,10 +99,13 @@ public class SettingEditor : MonoBehaviour
             case "MasterVolume": carrier.masterVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MasterVolume", carrier.masterVolume); break;
             case "MenuSFXVolume": carrier.menuVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MenuVolume", carrier.menuVolume); break;
             case "MusicVolume": carrier.musicVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MusicVolume", carrier.musicVolume); break;
-            case "GameSFXVolume": carrier.soundVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("SoundVolume", carrier.soundVolume); break;
+            case "GameSFXVolume":
+                carrier.soundVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("SoundVolume", carrier.soundVolume);
+                carrier.menuVolume = RoundToTwoDecimals(usedSlider.value); PlayerPrefs.SetFloat("MenuVolume", carrier.menuVolume);
+                break;
         }
 
-        mainMenuController.SetAudioVolumeLevels();
+        AudioManager.Instance.UpdateMaxVolume();
     }
 
     public void SetToSlider(Slider usedSlider)
@@ -55,7 +122,7 @@ public class SettingEditor : MonoBehaviour
 
     public void SetFPSButtons()
     {
-        if (Application.targetFrameRate == Screen.currentResolution.refreshRate)
+        if (Application.targetFrameRate == (int)Screen.currentResolution.refreshRateRatio.value)
             fpsButtons[0].isOn = true;
         else if (Application.targetFrameRate == 60)
             fpsButtons[1].isOn = true;
@@ -71,13 +138,13 @@ public class SettingEditor : MonoBehaviour
 
     public void SetIntroSkipToggle()
     {
-        _introSkipToggle.isOn = (PlayerPrefs.GetInt("skipIntroVideo", 0) != 0);
+        _introSkipToggle.isOn = (PlayerPrefs.GetInt("SkipIntroVideo", 0) != 0);
     }
 
     public void SetIntroSkip()
     {
-        if(_introSkipToggle.isOn) PlayerPrefs.SetInt("skipIntroVideo", 1);
-        else PlayerPrefs.SetInt("skipIntroVideo", 0);
+        if(_introSkipToggle.isOn) PlayerPrefs.SetInt("SkipIntroVideo", 1);
+        else PlayerPrefs.SetInt("SkipIntroVideo", 0);
     }
 
     public void SetShowButtonLabelsToggle()
@@ -89,5 +156,47 @@ public class SettingEditor : MonoBehaviour
     {
         PlayerPrefs.SetInt("showButtonLabels", _showButtonLabelsToggle.isOn ? 1 : 0);
         carrier.ShowButtonLabels = _showButtonLabelsToggle.isOn;
+    }
+
+    public void ChangeTopbarStyle(int value)
+    {
+
+
+        /// Uses the <see cref="TopBarStyle"/>  to get data we need
+        int index = (int)carrier.TopBarStyleSetting;
+        int max = (int)(SettingsCarrier.TopBarStyle)Enum.GetValues(typeof(SettingsCarrier.TopBarStyle)).Length - 1;
+
+        index += value;
+
+        if (index > max)
+        {
+            index = 0;
+        } else if(index < 0)
+        {
+            index = max;
+        }
+
+        carrier.TopBarStyleSetting = (SettingsCarrier.TopBarStyle)index;
+
+
+        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
+
+    }
+
+    public void PlayMainMenuMusic() { AudioManager.Instance.PlayMusic("MainMenu"); }
+
+    private void ChangeLanguage(SettingsCarrier.LanguageType language)
+    {
+        switch (language)
+        {
+            case SettingsCarrier.LanguageType.Finnish:
+                _languageImage.sprite = _finnishSprite;
+                break;
+            case SettingsCarrier.LanguageType.English:
+                _languageImage.sprite = _englishSprite;
+                break;
+        }
+        if(_languageCaller != null) _languageCaller.SetText(language, new string[0]);
+        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
     }
 }

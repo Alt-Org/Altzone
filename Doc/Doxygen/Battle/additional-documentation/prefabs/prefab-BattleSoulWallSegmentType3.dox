@@ -1,0 +1,35 @@
+/// @file BattleSoulWallSegmentType3.prefab
+/// <summary>
+/// Prefab for the wide 8x2 grid sized double tile SoulWall segment.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleSoulWallSegmentType3**
+///     - *Components:*
+///         - Transform
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattleSoulWallQComponent}
+///             - @cref{Quantum,BattleCollisionTriggerQComponent}
+///         - %Quantum Entity View
+///     - *Children:*
+///         - **SoulWallType3ViewModel**
+///             - *Components:*
+///                 - Transform
+///                 - @cref{Battle.View.SoulWall,BattleSoulWallViewController}
+///             - *Children:*
+///                 - **Sprite**
+///                 - **CementSprite**
+///                 - **DebugSprite**
+///                 - **Sprite (1)**
+///                 - **OriginReference**
+///                 - *Shared components:*
+///                     - Transform
+///                     - SpriteRenderer
+///                     - Sprites-Default (Material)
+
+/// @file BattleSoulWallSegmentType3EntityPrototype.qprototype
+/// <summary>
+/// EntityPrototype counterpart of @ref BattleSoulWallSegmentType3.prefab
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).

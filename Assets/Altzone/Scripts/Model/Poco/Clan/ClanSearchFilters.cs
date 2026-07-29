@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 namespace Altzone.Scripts.Model.Poco.Clan
 {
     public struct ClanSearchFilters
@@ -7,12 +9,17 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public ClanAge age;
         public Language language;
         public Goals goal;
-        public bool removeLocked;
-
+        public bool isOpen;
+        public ClanRanking ranking;        // Muutettu RankingOption → ClanRanking
+        public ClanMembers memberCount;    // Muutettu MemberCountOption → ClanMembers
+        public List<ClanValues> values;
+        
         public override string ToString()
         {
             return $"{nameof(clanName)}: {clanName}, {nameof(activity)}: {activity}, {nameof(age)}: {age}, {nameof(language)}: {language}" +
-                   $", {nameof(goal)}: {goal}, {nameof(removeLocked)}: {removeLocked}";
+                   $", {nameof(goal)}: {goal}, {nameof(isOpen)}: {isOpen}, {nameof(ranking)}: {ranking}, {nameof(memberCount)}: {memberCount}";
         }
     }
 }
+
+

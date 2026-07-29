@@ -8,19 +8,21 @@ namespace Prg.Scripts.Common.Unity
     public class ToggleSwitchHandler : MonoBehaviour
     {
         [SerializeField] Toggle _toggle;
-        [SerializeField] Slider _sliderSwitch;
+        [SerializeField] Image _toggleImage;
 
         public delegate void ToggleStateChanged(bool isOn);
         public event ToggleStateChanged OnToggleStateChanged;
+
+        public bool IsOn { get => _toggle.isOn; }
 
         private void Start()
         {
             if(_toggle != null)
             {
-                if(_sliderSwitch != null)
+                if(_toggleImage != null)
                 {
-                    if (_toggle.isOn) _sliderSwitch.value = _sliderSwitch.maxValue;
-                    else _sliderSwitch.value = _sliderSwitch.minValue;
+                    if (_toggle.isOn) _toggleImage.gameObject.SetActive(true);
+                    else _toggleImage.gameObject.SetActive(false);
                 }
 
                 _toggle.onValueChanged.AddListener(ChangeState);
@@ -33,10 +35,10 @@ namespace Prg.Scripts.Common.Unity
 
         private void ChangeState(bool value)
         {
-            if (_sliderSwitch != null)
+            if (_toggleImage != null)
             {
-                if (value) _sliderSwitch.value = _sliderSwitch.maxValue;
-                else _sliderSwitch.value = _sliderSwitch.minValue;
+                if (value) _toggleImage.gameObject.SetActive(true);
+                else _toggleImage.gameObject.SetActive(false);
             }
 
             OnToggleStateChanged?.Invoke(value);

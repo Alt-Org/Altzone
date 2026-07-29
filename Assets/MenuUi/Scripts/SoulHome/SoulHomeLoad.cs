@@ -15,6 +15,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Game;
 using System.Collections.ObjectModel;
+using UnityEngine.U2D.Animation;
 
 namespace MenuUI.Scripts.SoulHome {
 
@@ -34,10 +35,10 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private TowerController _towerController;
         [SerializeField] private GameObject _avatarPlaceholder;
         [SerializeField] private Camera _towerCamera;
-
+        [SerializeField] private ClanPlayerFetcher _clanPlayerFetcher;
+        [SerializeField] private SpriteLibraryAsset _avatarSpriteLibrary;
 
         private List<Furniture> _furnitureList = null;
-
 
         private const string SERVER_ADDRESS = "https://altzone.fi/api/soulhome";
 
@@ -45,30 +46,141 @@ namespace MenuUI.Scripts.SoulHome {
         private bool _roomsReady = false;
         private bool _furnituresSet = false;
         private bool _loadFinished = false;
+        private bool _loginStatusChanged = false;
+        private bool _refreshInProgress = false;
+
+        private int _runningCoroutines = 0;
+
+        private string _localPlayerId;
+
+        private AvatarRig _localPlayerRig;
+
+        private long _frameTimeStart;
 
         public bool LoadFinished { get => _loadFinished;}
 
         // Start is called before the first frame update
         void Start()
         {
-            _roomAmount = ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount: 1;
-            StartCoroutine(HomeLoad());
-            //TestCode();
-            StartCoroutine(LoadRooms());
-            StartCoroutine(LoadFurniture());
-            StartCoroutine(SpawnAvatar());
+            RefreshSoulHome();
+            _localPlayerId = ServerManager.Instance.Player._id;
+            ServerManager.OnLogInStatusChanged += UpdateOnLoginStatusChanged;
         }
 
-        private void TestCode() //This is test code block that may or may not be unrelated to SoulHome. I just use the opening of the SoulHome to trigger things I need to test and don't have dedicated way of doing so.
+        private void OnDestroy()
         {
-            List<IMultipartFormSection> body = new();
+            ServerManager.OnLogInStatusChanged -= UpdateOnLoginStatusChanged;
+        }
 
-            body.Add(new MultipartFormFileSection("logFile","test", null,"test.log"));
+        private void OnEnable()
+        {
+            _clanPlayerFetcher.OnLocalAvatarUpdated += OnLocalAvatarUpdated;
+            if (_loginStatusChanged)
+            {
+                _loginStatusChanged = false;
+                _localPlayerId = ServerManager.Instance.Player._id;
+                RefreshSoulHome();
+            }
+            else if (_refreshInProgress)
+            {
+                StopCoroutine(RefreshCoroutine());
+                _refreshInProgress = false;
+                StopCoroutine(HomeLoad());
+                StopCoroutine(LoadRooms());
+                StopCoroutine(LoadFurniture());
+                StopCoroutine(SpawnAvatar());
+                _runningCoroutines = 0;
+                RefreshSoulHome();
+            }
+        }
 
-            ServerManager.Instance.SendDebugLogFile(body, "my_secret", "UploadTestNiko", callback =>
-             {
-                 Debug.LogWarning(callback.error+ "  :"+callback.downloadHandler.text);
-             });
+        private void OnDisable()
+        {
+            _clanPlayerFetcher.OnLocalAvatarUpdated -= OnLocalAvatarUpdated;
+        }
+
+        private void UpdateOnLoginStatusChanged(bool isLoggedIn)
+        {
+            _loginStatusChanged = isLoggedIn;
+        }
+
+        private void RefreshSoulHome()
+        {
+            if (!_refreshInProgress)
+            {
+                StartCoroutine(RefreshCoroutine());
+            }
+        }
+
+        private IEnumerator RefreshCoroutine()
+        {
+            _refreshInProgress = true;
+
+            ClearSoulHome();
+
+            _clanPlayerFetcher.RefreshClanMembersPlayerData();
+
+            _roomAmount = ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount : 1;
+            if (_roomAmount > 30)
+            {
+                Debug.LogError($"Clan has more players ({_roomAmount}) than allowed, setting room count to 30.");
+                _roomAmount = 30;
+            }
+
+            RunTracked(HomeLoad());
+            //TestCode();
+            RunTracked(LoadRooms());
+            RunTracked(LoadFurniture());
+            RunTracked(SpawnAvatar());
+
+            // wait until the above Coroutines have finished
+            // to make sure this doesn't run again until it is finished
+            yield return WaitForLoadFinish();
+
+            _refreshInProgress = false;
+        }
+
+        private void ClearSoulHome()
+        {
+            foreach (Transform child in _roomPositions.transform)
+            {
+                foreach (Transform grandChild in child.transform)
+                {
+                    Destroy(grandChild.gameObject);
+                }
+            }
+            _soulHomeRooms = null;
+            _furnitureFetchFinished = false;
+            _roomsReady = false;
+            _furnituresSet = false;
+            _loadFinished = false;
+            _furnitureList = null;
+            _localPlayerId = null;
+            _localPlayerRig = null;
+        }
+
+        private IEnumerator TrackedCoroutine(IEnumerator coroutine)
+        {
+            _frameTimeStart = DateTime.Now.Ticks;
+            _runningCoroutines++;
+            try
+            {
+                yield return coroutine;
+            }
+            finally
+            {
+                _runningCoroutines--;
+            }
+        }
+
+        private void RunTracked(IEnumerator coroutine)
+        {
+            StartCoroutine(TrackedCoroutine(coroutine));
+        }
+
+        private IEnumerator WaitForLoadFinish()
+        {
+            yield return new WaitUntil(() => _runningCoroutines == 0);
         }
 
         public IEnumerator HomeLoad()
@@ -136,13 +248,18 @@ namespace MenuUI.Scripts.SoulHome {
 
                     soulHome.Room.Add(room);
                 }
+                if (FrameCheck())
+                {
+                    yield return null;
+                    _frameTimeStart = DateTime.Now.Ticks;
+                }
                 StartCoroutine(GetFurniture());
                 yield return new WaitUntil(()=> _furnitureFetchFinished == true);
                 //Debug.LogWarning("Test");
                 if(_furnitureList != null)
                 foreach (Furniture furniture in _furnitureList)
                 {
-                    if(furniture.Room >= 0 && furniture.Position.x >= 0 && furniture.Position.y >= 0)
+                    if(furniture.Room >= 0 && furniture.Room < _roomAmount && furniture.Position.x >= 0 && furniture.Position.y >= 0)
                     {
                         soulHome.Room[furniture.Room].Furnitures.Add(furniture);
                     }
@@ -199,9 +316,15 @@ namespace MenuUI.Scripts.SoulHome {
                 roomObject.GetComponent<RoomData>().InitializeSoulHomeRoom(room,_soulHomeController, _towerCamera, (_soulHomeRooms.Room.Count <= i+1));
                 if (i == 0)
                 {
-                    _towerController.RoomBounds = roomObject.GetComponent<BoxCollider2D>();
+                    BoxCollider2D collider = roomObject.GetComponent<BoxCollider2D>();
+                    _towerController.RoomBounds = collider.bounds;
                 }
                 i++;
+                if (FrameCheck())
+                {
+                    yield return null;
+                    _frameTimeStart = DateTime.Now.Ticks;
+                }
             }
             SetSoulhomeHeight();
             _roomsReady = true;
@@ -300,6 +423,11 @@ namespace MenuUI.Scripts.SoulHome {
                 }
                 Furniture storageFurniture = new(clanFurniture, furniture/*, _furnitureReference.GetFurnitureInfo(clanFurniture.GameFurnitureName)*/);
                 items.Add(storageFurniture);
+                if (FrameCheck())
+                {
+                    yield return null;
+                    _frameTimeStart = DateTime.Now.Ticks;
+                }
             }
             _furnitureList = items;
             _furnitureFetchFinished = true;
@@ -310,28 +438,32 @@ namespace MenuUI.Scripts.SoulHome {
             yield return new WaitUntil(() => _roomsReady);
             if (_ignoreFurniture)
             {
+                var store = Storefront.Get();
+                ReadOnlyCollection<GameFurniture> allItems = null;
+                yield return store.GetAllGameFurnitureYield(result => allItems = result);
+
                 int i = 0;
+                int j;
                 while (i < 2)
                 {
-                    var test4 = new Furniture(i * 1000 + 3, "Sofa_Taakka", new Vector2Int(-1, -1), FurnitureSize.ThreeXEight, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test4);
-                    var test5 = new Furniture(i * 1000 + 4, "Mirror_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test5);
-                    var test6 = new Furniture(i * 1000 + 5, "Floorlamp_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test6);
-                    var test7 = new Furniture(i * 1000 + 6, "Toilet_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test7);
-                    var test8 = new Furniture(i * 1000 + 7, "Sink_Schrodinger", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.TwoXOne, FurniturePlacement.FloorByWall, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test8);
-                    var test9 = new Furniture(i * 1000 + 8, "Closet_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXFour, FurnitureSize.TwoXThree, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test9);
-                    var test10 = new Furniture(i * 1000 + 9, "CoffeeTable_Taakka", new Vector2Int(-1, -1), FurnitureSize.TwoXTwo, FurnitureSize.TwoXTwo, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test10);
-                    var test11 = new Furniture(i * 1000 + 10, "ArmChair_Taakka", new Vector2Int(-1, -1), FurnitureSize.ThreeXThree, FurnitureSize.ThreeXThree, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test11);
-                    var test12 = new Furniture(i * 1000 + 11, "Sofa_Rakkaus", new Vector2Int(-1, -1), FurnitureSize.ThreeXSeven, FurnitureSize.SevenXThree, FurniturePlacement.Floor, 10f, 15f, false);
-                    _soulHomeController.AddFurniture(test12);
+                    j = 1;
+                    foreach(GameFurniture furniture in allItems)
+                    {
+                        Furniture storageFurniture = new(new(i*1000+j.ToString(), furniture.Name), furniture);
+                        _soulHomeController.AddFurniture(storageFurniture);
+                        j++;
+                        if (FrameCheck())
+                        {
+                            yield return null;
+                            _frameTimeStart = DateTime.Now.Ticks;
+                        }
+                    }
                     i++;
+                    if (FrameCheck())
+                    {
+                        yield return null;
+                        _frameTimeStart = DateTime.Now.Ticks;
+                    }
                 }
             }
             else
@@ -349,13 +481,55 @@ namespace MenuUI.Scripts.SoulHome {
         public IEnumerator SpawnAvatar()
         {
             yield return new WaitUntil(() => _furnituresSet);
+            yield return new WaitUntil(() => _clanPlayerFetcher.PlayersLoaded);
+
             for (int i = 0; i < _roomAmount; i++)
             {
-                Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
+                for (int j = 0; j < 3; j++)
+                {
+                    GameObject avatarParent = Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
+                    GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
+                    AvatarRig rig = avatar.GetComponent<AvatarRig>();
+
+                    PlayerData playerData = _clanPlayerFetcher.Players[i];
+
+                    avatarParent.GetComponent<SoulHomeAvatarController>().InitializeAvatar(playerData);
+
+                    if (playerData?.Id == _localPlayerId)
+                    {
+                        _localPlayerRig = rig;
+                    }
+
+                    rig.ApplyAvatarToRig(playerData);
+                    if (FrameCheck())
+                    {
+                        yield return null;
+                        _frameTimeStart = DateTime.Now.Ticks;
+                    }
+                }
+                
             }
             _loadFinished = true;
         }
 
-        
+
+        private void OnLocalAvatarUpdated(PlayerData playerData)
+        {
+            if (_localPlayerRig == null)
+            {
+                return;
+            }
+
+            _localPlayerRig.ApplyAvatarToRig(playerData);
+        }
+
+        private bool FrameCheck()
+        {
+            if ((new TimeSpan(DateTime.Now.Ticks - _frameTimeStart)).TotalSeconds > 1f/60f)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

@@ -45,26 +45,34 @@ MonoBehaviour:
   - Components:
     - rid: 9189874137361809408
     - rid: 9189874137361809409
+    - rid: 9189874137361809410
+    - rid: 9189874137361809411
+    - rid: 9189874137361809412
+    - rid: 9189874137361809413
   - Components:
     - rid: 3915831314950914048
     - rid: 3915831314950914049
     - rid: 3915831314950914050
     - rid: 3915831314950914051
+    - rid: 3915831314950914052
   - Components:
     - rid: 4158493136064086016
     - rid: 4158493136064086017
     - rid: 4158493136064086018
     - rid: 4158493136064086019
-  - Components:
-    - rid: 8446298868303265792
-    - rid: 8446298868303265793
-    - rid: 8446298868303265794
-    - rid: 8446298868303265795
+    - rid: 4158493136064086020
   - Components:
     - rid: 924740730520338432
     - rid: 924740730520338433
     - rid: 924740730520338434
     - rid: 924740730520338435
+    - rid: 924740730520338436
+  - Components:
+    - rid: 8446298868303265792
+    - rid: 8446298868303265793
+    - rid: 8446298868303265794
+    - rid: 8446298868303265795
+    - rid: 8446298868303265796
   SerializedTriangleDataUncompressedSize: 8
   references:
     version: 2
@@ -132,6 +140,12 @@ MonoBehaviour:
             RawValue: 0
         CollisionMinOffset:
           RawValue: 294912
+    - rid: 924740730520338436
+      type: {class: BattleCollisionTriggerQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        Type:
+          Value: 0
     - rid: 3915831314950914048
       type: {class: Transform2DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
       data:
@@ -139,7 +153,7 @@ MonoBehaviour:
           X:
             RawValue: 0
           Y:
-            RawValue: 851968
+            RawValue: 819200
         Rotation:
           RawValue: 0
     - rid: 3915831314950914049
@@ -163,7 +177,7 @@ MonoBehaviour:
             X:
               RawValue: 294912
             Y:
-              RawValue: 196608
+              RawValue: 229376
           PositionOffset:
             X:
               RawValue: 0
@@ -185,6 +199,12 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 3915831314950914051
+      type: {class: BattleCollisionTriggerQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        Type:
+          Value: 4
+    - rid: 3915831314950914052
       type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         TeamNumber:
@@ -198,7 +218,7 @@ MonoBehaviour:
           X:
             RawValue: 0
           Y:
-            RawValue: -851968
+            RawValue: -819200
         Rotation:
           RawValue: 0
     - rid: 4158493136064086017
@@ -222,7 +242,7 @@ MonoBehaviour:
             X:
               RawValue: 294912
             Y:
-              RawValue: 196608
+              RawValue: 229376
           PositionOffset:
             X:
               RawValue: 0
@@ -244,6 +264,12 @@ MonoBehaviour:
         CallbackFlags:
           Value: 0
     - rid: 4158493136064086019
+      type: {class: BattleCollisionTriggerQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        Type:
+          Value: 4
+    - rid: 4158493136064086020
       type: {class: BattleGoalQComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
         TeamNumber:
@@ -313,7 +339,28 @@ MonoBehaviour:
             RawValue: 0
         CollisionMinOffset:
           RawValue: 294912
+    - rid: 8446298868303265796
+      type: {class: BattleCollisionTriggerQComponentPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        Type:
+          Value: 0
     - rid: 9189874137361809408
+      type: {class: BattleDiamondCounterQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        AlphaDiamonds: 0
+        BetaDiamonds: 0
+    - rid: 9189874137361809409
+      type: {class: BattleEntityManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        RegisteredEntities: []
+        EntityOffscreenPositionOffset:
+          Row: 0
+          Col: 0
+        EntitySpacing: 0
+    - rid: 9189874137361809410
       type: {class: BattleGameSessionQSingletonPrototype, ns: Quantum.Prototypes,
         asm: Quantum.Simulation}
       data:
@@ -321,38 +368,138 @@ MonoBehaviour:
           Value: 0
         State:
           Value: 0
-        TimeUntilStart:
+        LoadDelaySec:
+          RawValue: 98304
+        TimeUntilStartSec:
           RawValue: 262144
-    - rid: 9189874137361809409
+        GameTimeSec:
+          RawValue: 0
+    - rid: 9189874137361809411
       type: {class: BattlePlayerManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
         asm: Quantum.Simulation}
       data:
-        PlayStates:
-        - Value: 0
-        - Value: 0
-        - Value: 0
-        - Value: 0
+        PlayerCount: 0
         PlayerRefs:
         - _index: 0
         - _index: 0
         - _index: 0
         - _index: 0
-        SelectedCharacters:
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        AllCharacters:
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        - SceneIndexPlusOne: 0
-        SelectedCharacterNumbers: 00000000000000000000000000000000
+        PlayStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        IsBotStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        IsAbandonedStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        AllowCharacterSwappingStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        PlayerGiveUpStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        RespawnTimers:
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        - Mode: 0
+          Frames: 0
+          Seconds:
+            RawValue: 0
+        CharacterSelectedNumbers: 00000000000000000000000000000000
+        CharacterAllEntityGroupIDs:
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        CharactersAllStates:
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+        - Value: 0
+    - rid: 9189874137361809412
+      type: {class: BattlePlayerShieldManagerDataQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        PlayerShieldCounts: 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+        PlayerShieldEntityGroupIDs:
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+        - Int: 0
+          IsCompound:
+            Value: 0
+    - rid: 9189874137361809413
+      type: {class: BattleProjectileSystemDataQSingletonPrototype, ns: Quantum.Prototypes,
+        asm: Quantum.Simulation}
+      data:
+        ProjectileEntityID:
+          Int: 0
+          IsCompound:
+            Value: 0

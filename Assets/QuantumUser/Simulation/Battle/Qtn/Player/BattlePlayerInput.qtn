@@ -1,7 +1,33 @@
 input
 {
-    button MouseClick;
-    BattleGridPosition MovementPosition;
-    button RotateMotion;
-    FP RotationDirection;
+    bool                    IsValid;
+    int                     DebugNumber;
+    BattleMovementInputType MovementInput;
+    bool                    MovementDirectionIsNormalized;
+    BattleGridPosition      MovementGridPosition;
+    FPVector2               MovementVector;
+    bool                    RotationInput;
+    FP                      RotationValue;
+    BattleSpecialInput      Special;
+}
+
+enum BattleMovementInputType
+{
+    None,
+    PositionTarget,
+    PositionMove,
+    Direction
+}
+
+enum BattleJoystickState
+{
+    Up,
+    Down,
+    Drag
+}
+
+struct BattleSpecialInput
+{
+    BattleJoystickState JoystickState;
+    FPVector2 JoystickValue;
 }

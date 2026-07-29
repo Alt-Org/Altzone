@@ -1,3 +1,5 @@
+using System.Collections;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 
 namespace MenuUi.Scripts.UIScaling
@@ -7,6 +9,8 @@ namespace MenuUi.Scripts.UIScaling
         [SerializeField] protected RectTransform _bottomPanelRectTransfrom;
         [SerializeField] protected RectTransform _topPanelRectTransfrom;
         [SerializeField] protected RectTransform _unsafeAreaRectTransfrom;
+        [SerializeField] protected RectTransform _fullPanelPopupsTransform;
+        [SerializeField] protected RectTransform _infoPopupsTransform;
 
         // IPad aspect ratio and a tall and slim phone aspect ratio, used in math calculations.
         const double LowestAspectRatio = 4.0 / 3.0;
@@ -17,15 +21,34 @@ namespace MenuUi.Scripts.UIScaling
         const double HighestBottomPanelHeight = 0.25;
 
         // Percentage values for the top panel, lowest is for slim and tall phones and highest is for IPad aspect ratio.
-        const double LowestTopPanelHeight = 0.07;
-        const double HighestTopPanelHeight = 0.09;
+        const double LowestTopPanelHeight = 0.09;
+        const double HighestTopPanelHeight = 0.11;
 
         int _lastScreenWidth = 0;
         int _lastScreenHeight = 0;
 
         private void Awake()
         {
-            SetPanelAnchors();
+            StartCoroutine(SetPanelAnchors());
+        }
+
+        private void OnEnable()
+        {
+            OverlayPanelCheck.OnChatBarToggled += UpdateBottomLineChat;
+            OverlayPanelCheck.OnBottomBarToggled += UpdateBottomLine;
+            OverlayPanelCheck.OnTopBarToggled += UpdateTopLine;
+            if (OverlayPanelCheck.Instance)
+            {
+                UpdateBottomLineChat(OverlayPanelCheck.Instance.ChatActive);
+                UpdateBottomLine(OverlayPanelCheck.Instance.BottomBarActive);
+                UpdateTopLine(OverlayPanelCheck.Instance.TopBarActive);
+            }
+        }
+        private void OnDisable()
+        {
+            OverlayPanelCheck.OnChatBarToggled -= UpdateBottomLineChat;
+            OverlayPanelCheck.OnBottomBarToggled -= UpdateBottomLine;
+            OverlayPanelCheck.OnTopBarToggled -= UpdateTopLine;
         }
 
 #if (UNITY_EDITOR)
@@ -35,19 +58,25 @@ namespace MenuUi.Scripts.UIScaling
             {
                 _lastScreenWidth = Screen.currentResolution.width;
                 _lastScreenHeight = Screen.currentResolution.height;
-                SetPanelAnchors();
+                StartCoroutine(SetPanelAnchors());
             }
         }
 #endif
 
-        protected virtual void SetPanelAnchors()
+        protected virtual IEnumerator SetPanelAnchors()
         {
-            _bottomPanelRectTransfrom.anchorMax = new Vector2(1, CalculateBottomPanelHeight());
+            yield return new WaitForEndOfFrame();
+            float bottomLine = CalculateBottomPanelHeight();
+            if (OverlayPanelCheck.Instance && !OverlayPanelCheck.Instance.ChatActive) bottomLine /= 2f;
+            _bottomPanelRectTransfrom.anchorMax = new Vector2(1, bottomLine);
 
             _topPanelRectTransfrom.anchorMin = new Vector2(0, 1 - (CalculateTopPanelHeight() + CalculateUnsafeAreaHeight()));
             _topPanelRectTransfrom.anchorMax = new Vector2(1, 1 - CalculateUnsafeAreaHeight());
 
             _unsafeAreaRectTransfrom.anchorMin = new Vector2(0, 1 - CalculateUnsafeAreaHeight());
+
+            _fullPanelPopupsTransform.anchorMax = new Vector2(1, 1 - CalculateUnsafeAreaHeight());
+            _infoPopupsTransform.anchorMax = new Vector2(1, 1 - CalculateUnsafeAreaHeight());
         }
 
         private static double CalculateAspectRatioPercentage()
@@ -107,6 +136,28 @@ namespace MenuUi.Scripts.UIScaling
             {
                 return (float)((Screen.currentResolution.height - Screen.safeArea.height) / Screen.currentResolution.height);
             }
+        }
+
+        protected virtual void UpdateBottomLineChat(bool value)
+        {
+            if (!OverlayPanelCheck.Instance.BottomBarActive) return;
+            float bottomLine = CalculateBottomPanelHeight();
+            if (!value) bottomLine /= 2f;
+            _bottomPanelRectTransfrom.anchorMax = new(1, bottomLine);
+        }
+
+        protected virtual void UpdateBottomLine(bool value)
+        {
+            float bottomLine = CalculateBottomPanelHeight();
+            if (!value) bottomLine = 0;
+            _bottomPanelRectTransfrom.anchorMax = new(1, bottomLine);
+        }
+
+        protected virtual void UpdateTopLine(bool value)
+        {
+            float topLine = 1 - (CalculateTopPanelHeight() + CalculateUnsafeAreaHeight());
+            if (!value) topLine = 1- CalculateUnsafeAreaHeight();
+            _topPanelRectTransfrom.anchorMin = new(0, topLine);
         }
     }
 }

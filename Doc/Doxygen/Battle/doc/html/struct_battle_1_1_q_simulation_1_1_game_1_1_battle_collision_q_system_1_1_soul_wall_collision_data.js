@@ -1,0 +1,4 @@
+var struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_soul_wall_collision_data =
+[
+    [ "SoulWall", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_soul_wall_collision_data.html#a623a56c497ba3fad7a9fe7ca20c70da7", null ]
+];

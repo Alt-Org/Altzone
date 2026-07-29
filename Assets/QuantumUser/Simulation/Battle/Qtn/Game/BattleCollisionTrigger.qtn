@@ -1,0 +1,15 @@
+enum BattleCollisionTriggerType
+{
+    ArenaBorder  = 0,
+    SoulWall     = 1,
+    Player       = 2,
+    Shield       = 3,
+    Goal         = 4,
+    Projectile   = 5
+}
+
+
+component BattleCollisionTriggerQComponent
+{
+    BattleCollisionTriggerType Type;
+}

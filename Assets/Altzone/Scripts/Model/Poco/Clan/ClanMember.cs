@@ -1,18 +1,21 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Altzone.Scripts.Model.Poco.Attributes;
 using Altzone.Scripts.Model.Poco.Player;
+using Newtonsoft.Json;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
-    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class ClanMember
     {
-        [PrimaryKey] public string _id;
+        public string _id;
         private string _name;
-        [ForeignKey(nameof(PlayerData)), Mandatory] public string PlayerDataId;
-        [ForeignKey(nameof(RaidRoom)), Optional] public string RaidRoomId;
-        public ClanMemberRole Role;
+        public string PlayerDataId;
+        public string RaidRoomId;
+        public ClanRoles Role;
+        private ServerPlayer _player;
+
+        public string ClanRoleId;
 
         private int _leaderBoardWins = 0;
         private int _leaderBoardCoins = 0;
@@ -21,11 +24,27 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public string Name { get => _name; }
         public int LeaderBoardWins { get => _leaderBoardWins;}
         public int LeaderBoardCoins { get => _leaderBoardCoins;}
+        public ServerPlayer Player { get => _player; }
+        public string CreatedAt => _player?.createdAt;
+
+        [JsonConstructor]
+        private ClanMember() { }
 
         public ClanMember(ServerPlayer player)
         {
             _id = player._id;
             _name = player.name;
+            _player = player;
+
+            ClanRoleId = player.clanRole_id;
+        }
+
+        public AvatarData AvatarData =>
+            _player.avatar != null ? new AvatarData(Name, _player.avatar) : null;
+
+        public PlayerData GetPlayerData()
+        {
+            return new(_player, true);
         }
 
         public void Update(int wins, int coins)

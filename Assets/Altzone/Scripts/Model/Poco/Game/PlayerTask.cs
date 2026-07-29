@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
+    
     public enum TaskNormalType
     {
         Undefined,
@@ -32,6 +34,18 @@ namespace Altzone.Scripts.Model.Poco.Game
         EditCharacterStats,
         BlowUpYourCharacter,
         SwitchSoulhomeMusic,
+        MakeMusicWithButtons,
+        MakeCharacterFast,
+        MakeCharacterDurable,
+        MakeCharacterStrong,
+        MakeCharacterBig,
+        ChangeAvatarClothes,
+        ChangeItemsPosition,
+        UseAllItemsSoulhome,
+        FindVariableValueInGame,
+        Find3ImportantButtons,
+        FindBug,
+        CreateClanPlaylist,
     }
 
     public enum TaskEducationSocialType
@@ -42,15 +56,28 @@ namespace Altzone.Scripts.Model.Poco.Game
         EditCharacterAvatar,
         ShareBattleReplay,
         WriteChatMessageClan,
+        ChatAddReaction,
+        FindAllChatOptions,
+        UseAllChatFeelings,
+        DefinePlayerStyle,
+        WriteChatMessageGlobal,
+        ClanVote,
+        SuggestItemFleaMarket,
+        AddItemFleaMarket,
+        ChangeClanMotto,
     }
 
     public enum TaskEducationStoryType
     {
         FindSymbolicalGraphics,
         ContinueClanStory,
-        FindSybolicalFurniture,
+        Press3SymbolFurniture,
         ClickCharacterDescription,
         RecognizeSoundClue,
+        CreateUnifiedInterior,
+        RecognizeCharacterMechanic,
+        WhereGameHappens,
+        ChooseMostTouchingIntro,
     }
 
     public enum TaskEducationCultureType
@@ -60,6 +87,8 @@ namespace Altzone.Scripts.Model.Poco.Game
         ClickKnownCharacter,
         SimiliarToAGame,
         SetProfilePlayerType,
+        FindPowerOrEqualityWindow,
+        ClanCulturalGuideline,
     }
 
     public enum TaskEducationEthicalType
@@ -69,6 +98,11 @@ namespace Altzone.Scripts.Model.Poco.Game
         UseOnlyNegativeEmotes,
         ClickQuestionable,
         ClickEthical,
+        PressSustainableConsumptionObjects,
+        PressValuesObjects,
+        ChangeLanguage,
+        PressPrizeItems,
+        ChooseEthicallyBetterCharacter,
     }
 
     #endregion
@@ -107,7 +141,11 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         private string _id;
         private TaskTitle _title;
+        private TaskDescription _description;
+        private TaskExecution _execution;
         //private TaskContent _content;
+        private TaskInstruction _instruction;
+        private GameLiteracyType _gameLiteracy;
         private int _amount;
         private int _amountLeft;
         private TaskNormalType _normalTaskType;
@@ -122,19 +160,76 @@ namespace Altzone.Scripts.Model.Poco.Game
         private TaskEducationStoryType _educationStoryType;
         private TaskEducationCultureType _educationCultureType;
         private TaskEducationEthicalType _educationEthicalType;
+        private bool _offline;
 
         public string Id { get => _id;}
         public int Amount { get => _amount;}
         public TaskNormalType Type { get => _normalTaskType;}
         public int Coins { get => _coins;}
         public int Points { get => _points;}
+
         public string Title {
             get
             {
-                return _title.Fi;
+                if (_title == null) return string.Empty;
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _title.En;
+                return _title.Fi; // default Finnish
             }
         }
-        //public string Content { get => _content.Fi;}
+
+        public string Description
+        {
+            get
+            {
+                if (_description == null) return string.Empty;
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _description.En;
+                return _description.Fi; // default Finnish
+            }
+        }
+
+        public string Execution
+        {
+            get
+            {
+                if (_execution == null) return string.Empty;
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _execution.En;
+                return _execution.Fi; // default Finnish
+            }
+        }
+
+        /*public string Content
+        {
+            get
+            {
+                if (_content == null) return string.Empty;
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _content.En;
+                return _content.Fi; // default Finnish
+            }
+        }*/
+
+        public string Instruction
+        {
+            get
+            {
+                if (_instruction == null) return string.Empty;
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return _instruction.En;
+                return _instruction.Fi; // default Finnish
+            }
+        }
+
+        public string Literacy
+        {
+            get
+            {
+                return GameLiteracy.Get(_gameLiteracy, SettingsCarrier.Instance.Language);
+            }
+        }
+
         public int TaskProgress { get => _taskProgress;}
         public string PlayerId { get => _playerId; }
         public int AmountLeft { get => _amountLeft; }
@@ -145,12 +240,21 @@ namespace Altzone.Scripts.Model.Poco.Game
         public TaskEducationStoryType EducationStoryType { get => _educationStoryType;}
         public TaskEducationCultureType EducationCultureType { get => _educationCultureType;}
         public TaskEducationEthicalType EducationEthicalType {  get => _educationEthicalType;}
+        public bool Offline { get => _offline; }
+
+        [JsonConstructor]
+        private PlayerTask()
+        { }
 
         public PlayerTask(ServerPlayerTask task)
         {
             _id = task._id;
             _title = new(task.title);
-            //_content = new(task.content);
+            _description = new(task.description);
+            _execution = new(task.execution);
+            //_content = new(task.description, task.execution);
+            _instruction = new(task.instruction);
+            _gameLiteracy = task.gameLiteracy;
             _amount = task.amount;
             _amountLeft = task.amountLeft;
             _coins = task.coins;
@@ -159,6 +263,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _playerId = string.IsNullOrWhiteSpace(task.player_id) ? "" : task.player_id;
             _startedAt = task.startedAt;
             _educationCategory = GetEducationTypeEnum(task.educationCategoryType);
+            _offline =  task.isPlaceHolder;
 
             switch (task.educationCategoryType)
             {
@@ -199,7 +304,7 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskNormalType.StartBattleDifferentCharacter;
                     }
-                case "vote":
+                case "participate_clan_voting":
                     {
                         return TaskNormalType.Vote;
                     }
@@ -255,17 +360,65 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationActionType.WinBattle;
                     }
-                case "switch_soulhome_music":
+                case "change_song_soulhome":
                     {
                         return TaskEducationActionType.SwitchSoulhomeMusic;
                     }
-                case "edit_character_stats":
+                case "change_character_stats":
                     {
                         return TaskEducationActionType.EditCharacterStats;
                     }
-                case "blow_up_your_character":
+                case "explode_character_battle":
                     {
                         return TaskEducationActionType.BlowUpYourCharacter;
+                    }
+                case "make_music_with_buttons":
+                    {
+                        return TaskEducationActionType.MakeMusicWithButtons;
+                    }
+                case "change_character_be_fast":
+                    {
+                        return TaskEducationActionType.MakeCharacterFast;
+                    }
+                case "change_character_be_resistant":
+                    {
+                        return TaskEducationActionType.MakeCharacterDurable;
+                    }
+                case "change_character_be_strong":
+                    {
+                        return TaskEducationActionType.MakeCharacterStrong;
+                    }
+                case "change_character_be_large":
+                    {
+                        return TaskEducationActionType.MakeCharacterBig;
+                    }
+                case "change_avatar_clothes":
+                    {
+                        return TaskEducationActionType.ChangeAvatarClothes;
+                    }
+                case "change_items_position":
+                    {
+                        return TaskEducationActionType.ChangeItemsPosition;
+                    }
+                case "use_all_items_soulhome":
+                    {
+                        return TaskEducationActionType.UseAllItemsSoulhome;
+                    }
+                case "find_variable_value_in_game":
+                    {
+                        return TaskEducationActionType.FindVariableValueInGame;
+                    }
+                case "find_3_important_buttons":
+                    {
+                        return TaskEducationActionType.Find3ImportantButtons;
+                    }
+                case "find_bug":
+                    {
+                        return TaskEducationActionType.FindBug;
+                    }
+                case "create_clan_playlist":
+                    {
+                        return TaskEducationActionType.CreateClanPlaylist;
                     }
                 default:
                     {
@@ -278,7 +431,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             switch (type)
             {
-                case "emote_during_battle":
+                case "react_emoji_battle":
                     {
                         return TaskEducationSocialType.EmoteDuringBattle;
                     }
@@ -286,21 +439,57 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationSocialType.WriteChatMessageClan;
                     }
-                case "edit_character_avatar":
+                case "change_avatar_outlook":
                     {
                         return TaskEducationSocialType.EditCharacterAvatar;
                     }
-                case "share_battle_replay":
+                case "share_battle_replay_clan_chat":
                     {
                         return TaskEducationSocialType.ShareBattleReplay;
                     }
-                case "add_new_friend":
+                case "add_friend":
                     {
                         return TaskEducationSocialType.AddNewFriend;
                     }
-                case "create_new_vote":
+                case "create_clan_voting":
                     {
                         return TaskEducationSocialType.CreateNewVote;
+                    }
+                case "react_emoji_chat":
+                    {
+                        return TaskEducationSocialType.ChatAddReaction;
+                    }
+                case "find_all_chat_options":
+                    {
+                        return TaskEducationSocialType.FindAllChatOptions;
+                    }
+                case "use_all_chat_feelings":
+                    {
+                        return TaskEducationSocialType.UseAllChatFeelings;
+                    }
+                case "define_player_style":
+                    {
+                        return TaskEducationSocialType.DefinePlayerStyle;
+                    }
+                case "write_chat_message_global":
+                    {
+                        return TaskEducationSocialType.WriteChatMessageGlobal;
+                    }
+                case "participate_clan_voting":
+                    {
+                        return TaskEducationSocialType.ClanVote;
+                    }
+                case "suggest_item_to_flea_market":
+                    {
+                        return TaskEducationSocialType.SuggestItemFleaMarket;
+                    }
+                case "add_item_to_flea_market":
+                    {
+                        return TaskEducationSocialType.AddItemFleaMarket;
+                    }
+                case "change_clan_motto":
+                    {
+                        return TaskEducationSocialType.ChangeClanMotto;
                     }
                 default:
                     {
@@ -313,7 +502,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             switch (type)
             {
-                case "click_character_description":
+                case "press_character_description":
                     {
                         return TaskEducationStoryType.ClickCharacterDescription;
                     }
@@ -321,17 +510,33 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationStoryType.ContinueClanStory;
                     }
-                case "recognize_sound_clue":
+                case "recognize_audio_hints":
                     {
                         return TaskEducationStoryType.RecognizeSoundClue;
                     }
-                case "find_symbolical_furniture":
+                case "press_3_symbol_furniture":
                     {
-                        return TaskEducationStoryType.FindSybolicalFurniture;
+                        return TaskEducationStoryType.Press3SymbolFurniture;
                     }
-                case "find_symbolic_graphics":
+                case "find_ui_symbolics":
                     {
                         return TaskEducationStoryType.FindSymbolicalGraphics;
+                    }
+                case "create_unified_interior":
+                    {
+                        return TaskEducationStoryType.CreateUnifiedInterior;
+                    }
+                case "recognize_character_mechanic":
+                    {
+                        return TaskEducationStoryType.RecognizeCharacterMechanic;
+                    }
+                case "where_game_happens":
+                    {
+                        return TaskEducationStoryType.WhereGameHappens;
+                    }
+                case "choose_most_touching_intro":
+                    {
+                        return TaskEducationStoryType.ChooseMostTouchingIntro;
                     }
                 default:
                     {
@@ -344,25 +549,33 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             switch (type)
             {
-                case "click_known_art_idea_person":
+                case "press_famous_thing_referring_objects":
                     {
                         return TaskEducationCultureType.ClickKnownArtIdeaPerson;
                     }
-                case "click_known_character":
+                case "press_famous_character":
                     {
                         return TaskEducationCultureType.ClickKnownCharacter;
                     }
-                case "games_genre_types":
+                case "what_style_types_game_has":
                     {
                         return TaskEducationCultureType.GamesGenreTypes;
                     }
-                case "set_profile_player_type":
+                case "define_player_type":
                     {
                         return TaskEducationCultureType.SetProfilePlayerType;
                     }
-                case "similiar_to_a_game":
+                case "what_famous_game_reminding":
                     {
                         return TaskEducationCultureType.SimiliarToAGame;
+                    }
+                case "find_power_or_equality_referring_window":
+                    {
+                        return TaskEducationCultureType.FindPowerOrEqualityWindow;
+                    }
+                case "choose_cultural_guideline_cultural_description":
+                    {
+                        return TaskEducationCultureType.ClanCulturalGuideline;
                     }
                 default:
                     {
@@ -375,7 +588,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             switch (type)
             {
-                case "click_buyable":
+                case "press_money_stuff":
                     {
                         return TaskEducationEthicalType.ClickBuyable;
                     }
@@ -383,17 +596,37 @@ namespace Altzone.Scripts.Model.Poco.Game
                     {
                         return TaskEducationEthicalType.ClickEthical;
                     }
-                case "click_questionable":
+                case "press_ethic_questionable_objects":
                     {
                         return TaskEducationEthicalType.ClickQuestionable;
                     }
-                case "use_only_negative_emotes":
+                case "use_only_negative_gestures_in_battle":
                     {
                         return TaskEducationEthicalType.UseOnlyNegativeEmotes;
                     }
-                case "use_only_positive_emotes":
+                case "use_only_positive_gestures_in_battle":
                     {
                         return TaskEducationEthicalType.UseOnlyPositiveEmotes;
+                    }
+                case "press_sustainable_consumption_objects":
+                    {
+                        return TaskEducationEthicalType.PressSustainableConsumptionObjects;
+                    }
+                case "press_values_objects":
+                    {
+                        return TaskEducationEthicalType.PressValuesObjects;
+                    }
+                case "change_language":
+                    {
+                        return TaskEducationEthicalType.ChangeLanguage;
+                    }
+                case "press_prize_giving_items":
+                    {
+                        return TaskEducationEthicalType.PressPrizeItems;
+                    }
+                case "choose_ethically_better_character":
+                    {
+                        return TaskEducationEthicalType.ChooseEthicallyBetterCharacter;
                     }
                 default:
                     {
@@ -406,24 +639,75 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public class TaskTitle
         {
-            private readonly string _fi;
+            private string _fi;
+            private string _en;
 
             public string Fi { get => _fi;}
+            public string En { get => _en; }
 
             public TaskTitle(ServerPlayerTask.TaskTitle title)
             {
                 _fi = title.fi;
+                _en = title.en;
+            }
+        }
+
+        public class TaskDescription
+        {
+            private string _fi;
+            private string _en;
+
+            public string Fi { get => _fi; }
+            public string En { get => _en; }
+
+            public TaskDescription(ServerPlayerTask.TaskDescription description)
+            {
+                _fi = description?.fi ?? "";
+                _en = description?.en ?? "";
+            }
+        }
+
+        public class TaskExecution
+        {
+            private string _fi;
+            private string _en;
+
+            public string Fi { get => _fi; }
+            public string En { get => _en; }
+
+            public TaskExecution(ServerPlayerTask.TaskExecution execution)
+            {
+                _fi = execution?.fi ?? "";
+                _en = execution?.en ?? "";
             }
         }
 
         public class TaskContent
         {
             private readonly string _fi;
+            private readonly string _en;
 
             public string Fi { get => _fi;}
-            public TaskContent(ServerPlayerTask.TaskContent content)
+            public string En { get => _en;}
+            public TaskContent(ServerPlayerTask.TaskDescription description, ServerPlayerTask.TaskExecution execution)
             {
-                _fi = content.fi;
+                _fi = (description?.fi ?? "") + "\n\n" + (execution?.fi ?? "");
+                _en = (description?.en ?? "") + "\n\n" + (execution?.en ?? ""); ;
+            }
+        }
+
+        public class TaskInstruction
+        {
+            private string _fi;
+            private string _en;
+
+            public string Fi { get => _fi; }
+            public string En { get => _en; }
+
+            public TaskInstruction(ServerPlayerTask.TaskInstruction instruction)
+            {
+                _fi = instruction?.fi ?? "";
+                _en = instruction?.en ?? "";
             }
         }
 
@@ -477,6 +761,27 @@ namespace Altzone.Scripts.Model.Poco.Game
         #endregion
     }
 
+    public enum TaskVersionType
+    {
+        Normal,
+        Education
+    }
+
+    public class ClanTasks
+    {
+        private TaskVersionType _taskVersionType;
+        private List<PlayerTask> _tasks;
+
+        public TaskVersionType TaskVersionType { get => _taskVersionType;}
+        public List<PlayerTask> Tasks { get => _tasks;}
+
+        public ClanTasks(TaskVersionType versionType, List<PlayerTask> tasks)
+        {
+            _taskVersionType = versionType;
+            _tasks = tasks;
+        }
+    }
+
     public class ServerPlayerTasks
     {
         public List<ServerPlayerTask> daily;
@@ -488,7 +793,10 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public string _id;
         public TaskTitle title;
-        //public TaskContent content;
+        public TaskDescription description;
+        public TaskExecution execution;
+        public TaskInstruction instruction;
+        public GameLiteracyType gameLiteracy;
         public int amount;
         public int amountLeft;
         public string type;
@@ -498,14 +806,27 @@ namespace Altzone.Scripts.Model.Poco.Game
         public string startedAt;
         public string educationCategoryType;
         public string educationCategoryTaskType;
+        public bool isPlaceHolder;
 
         public class TaskTitle
         {
             public string fi;
+            public string en;
         }
-        public class TaskContent
+        public class TaskDescription
         {
             public string fi;
+            public string en;
+        }
+        public class TaskExecution
+        {
+            public string fi;
+            public string en;
+        }
+        public class TaskInstruction
+        {
+            public string fi;
+            public string en;
         }
     }
 }

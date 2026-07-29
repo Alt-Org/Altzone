@@ -1,0 +1,255 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Altzone.Scripts;
+using Altzone.Scripts.Model.Poco.Clan;
+using MenuUi.Scripts.Storage;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class ClanStallPopupHandler : MonoBehaviour
+{
+
+    [SerializeField] private GameObject _kojuSlot;
+    [SerializeField] private GameObject _kojuCard;
+    [SerializeField] private Transform _content;
+    private DataStore _store;
+
+    [Header("Information GameObject")]
+    [SerializeField] private Image _icon;
+    [SerializeField] private TMP_Text _name;
+    [SerializeField] private TMP_Text _price;
+    [SerializeField] private TMP_Text _weight;
+    [SerializeField] private TMP_Text _diagnoseNumber;
+    [SerializeField] private TMP_Text _artist;
+    [SerializeField] private TMP_Text _artisticDescription;
+    private List<StorageFurniture> _items;
+
+    [SerializeField] private Button _suggestVotingButton;
+    [SerializeField ]private ConfirmationPopupHandler _confirmPopup;
+
+    [SerializeField] private TMP_Text _clanName;
+    private string _randomClanName;
+
+    [Header("Navigation Arrows")]
+    [SerializeField] private GameObject _arrowPrevious;
+    [SerializeField] private GameObject _arrowNext;
+    private List<GameObject> _ads;
+    private int _adsIndex = 0;
+
+
+
+    //TO DO: kirpputori äänestys
+    void Start()
+    {
+        //_suggestVotingButton.onClick.AddListener(() => { _confirmPopup.SetPopupActiveClanStall();  });
+
+           
+        //showClanName(null);
+        
+    }
+
+    private void OnEnable()
+    {
+        // Populate tray and initialize StoreFront
+        _store = Storefront.Get();
+    }
+
+    public void ClosePopup()
+    {
+        gameObject.SetActive(false);
+    }
+    
+    private void OnDisable()
+    {
+        for (int i = _content.transform.childCount; i > 0; i--)
+        {
+            Destroy(_content.transform.GetChild(i - 1).gameObject);
+        }
+    }
+    
+    public void CreateStalls(List<StorageFurniture> storageFurniture)
+    {
+       
+        _items = storageFurniture;
+
+        for (int i = 0; i < _items.Count; i++)
+        {
+            
+            GameObject slot = Instantiate(_kojuSlot, _content);
+            GameObject card = Instantiate(_kojuCard, slot.transform);
+
+         
+            card.GetComponent<FurnitureCardUI>().PopulateCard(_items[i]);
+
+            showClanName(null);
+
+            //1. Store the current index so each button remembers its own item
+            int itemIndex = i;
+
+            //2. Set up the button to display information of specific item
+            Button button = card.GetComponent<Button>();
+            if (button != null)
+            {
+                
+                button.onClick.AddListener(() => {
+                    showInfo(itemIndex);
+                });
+            }
+        }
+
+        if (_items.Count > 0 && _items != null)
+        {
+            showInfo(0);
+        }
+
+        
+
+    }
+
+    //Populates furniture info in clan stall popup
+    void showInfo(int slotVal)
+    {
+        StorageFurniture _furn = _items[slotVal];
+
+        _suggestVotingButton.onClick.RemoveAllListeners();
+        _suggestVotingButton.onClick.AddListener( () => { _confirmPopup.SetPopupActiveClanStall(_furn); });
+
+        //Furniture image
+        _icon.sprite = _furn.Sprite;
+
+        //Furniture name
+        _name.text = _furn.Info.SetName + " " + _furn.Info.VisibleName;
+
+        //Furniture price
+        _price.text = _furn.Value.ToString();
+
+        //Furniture weight
+        _weight.text = "• Paino " + _furn.Weight + " KG";
+
+        //Furniture diagnostic number
+        _diagnoseNumber.text = "• " + _furn.Info.DiagnoseNumber;
+
+        //Furniture designer/artist
+        _artist.text = "• Suunnittelu: " + _furn.Info.ArtistName;
+
+        //Furniture description
+        _artisticDescription.text = "• " + _furn.Info.ArtisticDescription;
+    }
+
+  
+    void randomizeName()
+    {
+        List<string> clanNames = new List<string> {"Klaani A", "Klaani B", "Klaani C", "Klaani D" };
+
+        System.Random r = new System.Random();
+
+        if (clanNames.Count > 0)
+        {
+            int randomIndex = r.Next(0, clanNames.Count);
+            _randomClanName = clanNames[randomIndex];
+
+        } else
+        {
+            _randomClanName = "Klaani X";
+        }
+    }
+
+    void showClanName(ClanData clanData)
+    {
+
+        if (clanData == null)
+        {
+            randomizeName();
+            _clanName.text = _randomClanName;
+        }
+        else
+        {
+            _clanName.text = clanData.Name;
+        }
+
+    }
+
+    // Initializes navigation for Clan Stall pop up arrows. 
+    public void navigateClanStalls(List<GameObject> adPosters, GameObject clickedAd)
+    {
+        _ads = adPosters;
+
+        // Finds the position of clicked ad from the list of ads
+        _adsIndex = _ads.IndexOf(clickedAd);
+
+        if (_adsIndex == -1)
+        {
+            _adsIndex = 0;
+        }
+
+
+        Button nextBtn = _arrowNext.GetComponent<Button>();
+        Button prevBtn = _arrowPrevious.GetComponent<Button>();
+
+        nextBtn.onClick.RemoveAllListeners();
+        nextBtn.onClick.AddListener(nextStall);
+
+        prevBtn.onClick.RemoveAllListeners();
+        prevBtn.onClick.AddListener(prevStall);
+
+
+    }
+
+
+    // Moves to next Clan Stall
+    private void nextStall()
+    {
+        _adsIndex++;
+
+        if (_adsIndex >= _ads.Count)
+        {
+            _adsIndex = 0;
+        }
+
+        updateStallAds();
+    }
+
+    // Moves to previous Clan Stall
+    private void prevStall()
+    {
+        _adsIndex--;
+
+        if (_adsIndex < 0)
+        {
+            _adsIndex = _ads.Count -1;
+        }
+
+        updateStallAds();
+    }
+
+    // Clears the Clan Stall pop up from old advertisement, and creates a new advertisement from the list of Clan Stall ads in Flea Market.
+    private void updateStallAds()
+    {
+        if (_ads == null)
+        {
+            return;
+        }
+
+        // Gets current index from list
+        GameObject currentAd = _ads[_adsIndex];
+
+        // Gets furnitures for the advertisement
+        EsineDisplay esineDisplay = currentAd.GetComponent<EsineDisplay>();
+
+        // Clears the pop up from content
+        for (int i = _content.transform.childCount; i > 0; i--)
+        {
+            Destroy(_content.transform.GetChild(i - 1).gameObject);
+        }
+
+        // Creates furnitures for pop up
+        if (esineDisplay != null) {
+            CreateStalls(esineDisplay.Furnitures);
+        }
+
+        
+    }
+
+}

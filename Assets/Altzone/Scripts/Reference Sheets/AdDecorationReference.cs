@@ -22,11 +22,18 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Color _redColor;
         private List<Color> _colourList;
 
-
+        private List<AdBorderFrameObject> _validatedFrameList = null;
         private static AdDecorationReference _instance = null;
         private static bool _hasInstance = false;
 
-        public List<AdBorderFrameObject> FrameList => _frameList; // Public accessor for _info
+        public List<AdBorderFrameObject> FrameList {
+            get
+            {
+                if (_validatedFrameList == null) ValidateFrames();
+                ValidateFrames();
+                return _validatedFrameList;
+            }
+        } // Public accessor for _info
 
         public List<Color> ColourList
         {
@@ -62,6 +69,31 @@ namespace Altzone.Scripts.ReferenceSheets
             }
         }
 
+        private void ValidateFrames()
+        {
+            HashSet<string> uniqueNames = new();
+            HashSet<Sprite> uniqueMap = new();
+
+            if (_validatedFrameList != null && _validatedFrameList.Count > 0) return;
+            List<AdBorderFrameObject> frames = new();
+            foreach (AdBorderFrameObject frame in _frameList)
+            {
+                if (!frame.IsValid()) continue;
+
+                if (!uniqueNames.Add(frame.Name))
+                {
+                    Debug.LogError($"duplicate frame Name {frame.Name}");
+                }
+                if (!uniqueMap.Add(frame.Image))
+                {
+                    Debug.LogError($"duplicate frame Image {frame.Image}");
+                    continue;
+                }
+                frames.Add(frame);
+            }
+            _validatedFrameList = frames;
+        }
+
         public Sprite GetBorderFrameSprite(string name)
         {
             AdBorderFrameObject data = GetBorderFrame(name);
@@ -81,7 +113,8 @@ namespace Altzone.Scripts.ReferenceSheets
             {
                 if (info.Name == name)
                 {
-                    return info;
+                    if(info.IsValid()) return info;
+                    else return null;
                 }
             }
             return null;
@@ -93,5 +126,12 @@ namespace Altzone.Scripts.ReferenceSheets
     {
         public string Name;
         public Sprite Image;
+
+        public bool IsValid()
+        {
+            if (string.IsNullOrWhiteSpace(Name)) return false;
+            if (Image == null) return false;
+            return true;
+        }
     }
 }

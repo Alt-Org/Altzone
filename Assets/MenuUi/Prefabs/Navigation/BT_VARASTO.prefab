@@ -136,6 +136,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _naviTarget: {fileID: 11400000, guid: 5b9ac9c743eac7e4cb9f989e3031a596, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
   _isCurrentPopOutWindow: 0
 --- !u!114 &-1980493818626353095
 MonoBehaviour:
@@ -149,10 +151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 997f89749284c6d4cb248d8de4abdcd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioSelection: 1
-  _audioType: 0
+  _audioCategory: 
   _audioName: ButtonNote4
-  _audioId: 0
+  _audioPlayType: 0
   _playType: 1
 --- !u!1 &8256799676658941481
 GameObject:
@@ -166,6 +167,7 @@ GameObject:
   - component: {fileID: 6808735770228603517}
   - component: {fileID: 3416605275109616329}
   - component: {fileID: 2394596093630038979}
+  - component: {fileID: 809425496296281990}
   m_Layer: 5
   m_Name: T_VARASTO
   m_TagString: Untagged
@@ -304,3 +306,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c4d91f56dd35e04e9011fe041609ac8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &809425496296281990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8256799676658941481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Varasto
+  _englishText: Storage

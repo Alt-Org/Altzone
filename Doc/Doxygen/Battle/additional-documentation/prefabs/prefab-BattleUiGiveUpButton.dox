@@ -1,0 +1,26 @@
+/// @file BattleUiGiveUpButton.prefab
+/// <summary>
+/// Prefab for %Battle's GiveUp-button.
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi. A button the local player can press to give up the current match.  
+/// Has a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script since this BattleUi element doesn't need additional functionality.
+///
+/// ### Structure
+/// - **BattleUiGiveUpButton**  
+///   Parent GameObject with a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script. Also holds the button component and its background image.
+///     - *Components:*
+///         - RectTransform
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
+///         - CanvasRenderer
+///         - Image
+///         - Button
+///         - Default UI Material (Material)
+///     - *Children:*
+///         - **GiveUpText**  
+///           Displays button text.
+///             - *Components:*
+///                 - RectTransform
+///                 - CanvasRenderer
+///                 - TextMeshPro - Text (UI)
+///                 - WorkSans-SemiBold SDF Material (Material)

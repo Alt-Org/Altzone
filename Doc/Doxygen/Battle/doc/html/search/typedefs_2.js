@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['int16_0',['Int16',['../namespace_quantum.html#a8bbe19199ab32e6350688789fb344e95',1,'Quantum.Int16'],['../namespace_quantum_1_1_prototypes.html#a1b3873119cf77047d5a19beeb78e91f9',1,'Quantum.Prototypes.Int16']]],
-  ['int32_1',['Int32',['../namespace_quantum.html#a02297773038fabb8054e24707a5af116',1,'Quantum.Int32'],['../namespace_quantum_1_1_prototypes.html#a7c06e25e28e38caadddd8f9dcc51e85c',1,'Quantum.Prototypes.Int32']]],
-  ['int64_2',['Int64',['../namespace_quantum.html#a34c110522f0fa8d37f9e9e955b2d5b12',1,'Quantum.Int64'],['../namespace_quantum_1_1_prototypes.html#a98385a3050549e742040074405a44a78',1,'Quantum.Prototypes.Int64']]]
+  ['fieldoffsetattribute_0',['FieldOffsetAttribute',['../namespace_quantum.html#a784e5310eec8d8e89ad3d88e531f402a',1,'Quantum.FieldOffsetAttribute'],['../namespace_quantum_1_1_prototypes.html#abd9e87e63d3b0580c43e58ce7dd37b7b',1,'Quantum.Prototypes.FieldOffsetAttribute'],['../namespace_quantum_1_1_prototypes_1_1_unity.html#ac71d063123c34749a709d54fcdfc9bc8',1,'Quantum.Prototypes.Unity.FieldOffsetAttribute']]],
+  ['flagsattribute_1',['FlagsAttribute',['../namespace_quantum.html#a2b5529d87bfde5a24fa7077ca78bd55c',1,'Quantum.FlagsAttribute'],['../namespace_quantum_1_1_prototypes.html#a04e04267f36dc13dd0f808ce44456bf3',1,'Quantum.Prototypes.FlagsAttribute'],['../namespace_quantum_1_1_prototypes_1_1_unity.html#abd05dd68d4f88803d9510db91fc99a29',1,'Quantum.Prototypes.Unity.FlagsAttribute']]]
 ];

@@ -1,0 +1,26 @@
+var struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle =
+[
+    [ "PlayerHandle", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#ad7b63adfce175b715245e9d1b31a595f", null ],
+    [ "GetCharacterState", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a1e1a027239f627a134fbb096d96843b3", null ],
+    [ "GetPlayerHandle", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a5519ec5441510b6a7d9ba31b76249b2b", null ],
+    [ "GetPlayerHandleArray", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a6f57ce95a46bcab88da463f172381de3", null ],
+    [ "GetPlayerHandleFromInternal", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a51d537fe63fa43a5935e5f665bc83478", null ],
+    [ "GetSlot", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a16ca38b17c6a36f527d69cda9581191d", null ],
+    [ "GetTeammateHandle", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#ad3a33cbca221e93bbd4807b86a032a47", null ],
+    [ "GetTeamNumber", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a03700760e98869117c18e8b9e0d5526c", null ],
+    [ "IsValidCharacterNumber", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#ab5b101bfcd9e3d1979531f639b9e385d", null ],
+    [ "SetOutOfPlayFinal", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a102bd4b454399fad64ad715bf88de21b", null ],
+    [ "SetOutOfPlayRespawning", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a675fd79baa887b1df2468be7499baff9", null ],
+    [ "_internalHandle", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#aa345f63df331d6585eee4d11200f5031", null ],
+    [ "AllowCharacterSwapping", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a24a9b13abc937f5ac616c8ad7157c831", null ],
+    [ "IsAbandoned", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#af23bbb8d84fad54ef949da6daf14d1b5", null ],
+    [ "IsBot", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a9ee11aacd9f7a2dcb4d7546bf097b3ca", null ],
+    [ "PlayerGiveUpState", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#ae025635cd6455ce83fdf07e267d12f63", null ],
+    [ "PlayerRef", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a9014fa34c29fc8f403c3a8c83096c08c", null ],
+    [ "PlayState", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a6b0780de9f30a8943fce74ec66d0a202", null ],
+    [ "RespawnTimer", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a9902c3dd4706e6ed335bada58f318af9", null ],
+    [ "SelectedCharacterEntity", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a6db3d1639e332859f3c4062366768357", null ],
+    [ "SelectedCharacterNumber", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a19302bb56833b645d2b7e3dbe3e70275", null ],
+    [ "SelectedCharacterState", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#aa8ecbfac9f47c2c17c30e427445868ed", null ],
+    [ "Slot", "struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a58013ca1ca063ef48954df851bdb9d1b", null ]
+];

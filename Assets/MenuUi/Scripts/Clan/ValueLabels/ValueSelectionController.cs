@@ -32,9 +32,13 @@ public class ValueSelectionController : MonoBehaviour
 
     public void SetSelected(List<ClanValues> selected)
     {
-        SelectedValues = new(selected);
+        SelectedValues = selected != null
+            ? new List<ClanValues>(selected)
+            : new List<ClanValues>();
+
         CreateLabels();
         UpdateSelectedDisplay();
+        StartCoroutine(ResetScrollPosition());
     }
 
     private IEnumerator ResetScrollPosition()
@@ -51,23 +55,44 @@ public class ValueSelectionController : MonoBehaviour
     {
         _labelHandlers.Clear();
 
-        foreach (Transform child in _valueListParent) Destroy(child.gameObject);
+        foreach (Transform child in _valueListParent)
+        {
+            Destroy(child.gameObject);
+        }
 
         foreach (ClanValues value in Enum.GetValues(typeof(ClanValues)))
         {
             GameObject labelPanel = Instantiate(_labelTogglePrefab, _valueListParent);
+
             ValueLabelHandler labelHandler = labelPanel.GetComponent<ValueLabelHandler>();
             labelHandler.SetLabelInfo(value, true);
+
             _labelHandlers.Add(labelHandler);
 
-            if (SelectedValues.Contains(value)) labelHandler.Select();
+            if (SelectedValues.Contains(value))
+            {
+                labelHandler.Select();
+            }
+            else
+            {
+                labelHandler.Unselect();
+            }
 
-            labelHandler._selectButton.onClick.AddListener(() => ToggleValue(labelHandler));
+            if (labelHandler._selectButton != null)
+            {
+                labelHandler._selectButton.onClick.AddListener(() => ToggleValue(labelHandler));
+            }
         }
     }
 
     public void ToggleValue(ValueLabelHandler toggledHandler)
     {
+        /*if(SelectedValues.Contains(toggledHandler.labelInfo.values) && SelectedValues.Count == 1)
+        {
+            return;
+        }*/
+
+
         if (SelectedValues.Contains(toggledHandler.labelInfo.values))
         {
             ValueLabelHandler handlerOfRemoved = _labelHandlers.Find(handler => handler.labelInfo.values == toggledHandler.labelInfo.values);
@@ -76,9 +101,10 @@ public class ValueSelectionController : MonoBehaviour
         }
         else
         {
-            if (SelectedValues.Count < 5)
+            if (SelectedValues.Count < 3)
             {
                 SelectedValues.Add(toggledHandler.labelInfo.values);
+
                 ValueLabelHandler handlerOfSelected = _labelHandlers.Find(handler => handler.labelInfo.values == toggledHandler.labelInfo.values);
                 handlerOfSelected.Select();
             }
@@ -88,7 +114,7 @@ public class ValueSelectionController : MonoBehaviour
     }
 
     public void RemoveSelectedValue(ValueLabelHandler removedHandler)
-    {
+    {     
         if (_valueSelectorObject.activeSelf)
         {
             ValueLabelHandler handlerOfRemoved = _labelHandlers.Find(handler => handler.labelInfo.values == removedHandler.labelInfo.values);
@@ -106,16 +132,29 @@ public class ValueSelectionController : MonoBehaviour
 
     private void UpdateSelectedDisplay()
     {
-        foreach (Transform child in _selectedValuesParent) Destroy(child.gameObject);
+        foreach (Transform child in _selectedValuesParent)
+        {
+            Destroy(child.gameObject);
+        }
 
         foreach (ClanValues value in SelectedValues)
         {
-            GameObject selectedPanel = Instantiate(_labelTogglePrefab, _selectedValuesParent);
-            ValueLabelHandler labelHandlerSelected = selectedPanel.GetComponent<ValueLabelHandler>();
-            labelHandlerSelected.SetLabelInfo(value, false);
-            _labelHandlers.Add(labelHandlerSelected);
+            GameObject selectedPanel = Instantiate(_labelImagePrefab, _selectedValuesParent);
 
-            labelHandlerSelected._selectButton.onClick.AddListener(() => RemoveSelectedValue(labelHandlerSelected));
+            ValueImageHandle imageHandle = selectedPanel.GetComponent<ValueImageHandle>();
+
+            if (imageHandle != null)
+            {
+                imageHandle.SetLabelInfo(value);
+            }
         }
+    }
+
+    public void ResetSelection()
+    {
+        SelectedValues.Clear();
+        CreateLabels();
+        UpdateSelectedDisplay();
+        StartCoroutine(ResetScrollPosition());
     }
 }

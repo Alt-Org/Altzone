@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.Rendering;
-using Debug = Prg.Debug;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -82,6 +81,7 @@ namespace MenuUI.Scripts.SoulHome
         public Sprite FurnitureSpriteRight { get => _furnitureSpriteRight; set { if (!Application.isPlaying) _furnitureSpriteRight = value; } }
         public Sprite FurnitureSpriteLeft { get => _furnitureSpriteLeft; set { if (!Application.isPlaying) _furnitureSpriteLeft = value; } }
         public Sprite FurnitureSpriteBack { get => _furnitureSpriteBack; set { if (!Application.isPlaying) _furnitureSpriteBack = value; } }
+        public bool SpriteCanBeFlipped { get => _spriteCanBeFlipped;}
 
         // Start is called before the first frame update
         void Start()
@@ -123,12 +123,14 @@ namespace MenuUI.Scripts.SoulHome
             _bounds = _collider.bounds;
         }
 
-        public Vector2Int GetFurnitureSize()
+        public Vector3Int GetFurnitureSize()
         {
-            return Furniture.GetFurnitureSize();
+            if (Furniture.IsRotated) return Furniture.GetFurnitureSizeRotated();
+            return Furniture.GetFurnitureNormalSize();
         }
-        public Vector2Int GetFurnitureSizeRotated()
+        public Vector3Int GetFurnitureSizeRotated()
         {
+            if (Furniture.IsRotated) return Furniture.GetFurnitureNormalSize();
             return Furniture.GetFurnitureSizeRotated();
         }
 
@@ -146,69 +148,9 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 position = Vector2.zero;
             //transform.localPosition = Vector2.zero;
 
-            FurnitureSize furnitureSize;
-            if (Furniture.IsRotated) furnitureSize = Furniture.RotatedSize;
-            else furnitureSize = Furniture.Size;
+            float width = transform.parent.GetComponent<FurnitureSlot>().width * Furniture.GetFurnitureSize().x;
 
-            float width;
-            if (furnitureSize is FurnitureSize.OneXOne or FurnitureSize.TwoXOne)
-            {
-                //if(_tempSlot != null)width = _tempSlot.width;
-                /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width;
-            }
-            else if (furnitureSize is FurnitureSize.OneXTwo or FurnitureSize.TwoXTwo or FurnitureSize.ThreeXTwo or FurnitureSize.FourXTwo or FurnitureSize.FiveXTwo)
-            {
-                //if (_tempSlot != null) width = _tempSlot.width * 2;
-                /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 2;
-            }
-            else if (furnitureSize is FurnitureSize.OneXThree or FurnitureSize.TwoXThree or FurnitureSize.ThreeXThree or FurnitureSize.FourXThree or FurnitureSize.FiveXThree or FurnitureSize.SevenXThree)
-            {
-                //if (_tempSlot != null) width = _tempSlot.width * 3;
-                /*else*/
-                width = transform.parent.GetComponent<FurnitureSlot>().width * 3;
-            }
-            else if (furnitureSize is FurnitureSize.OneXFour or FurnitureSize.TwoXFour or FurnitureSize.ThreeXFour or FurnitureSize.FourXFour)
-            {
-                //if (_tempSlot != null) width = _tempSlot.width * 4;
-                /*else*/ width = transform.parent.GetComponent<FurnitureSlot>().width * 4;
-            }
-            else if (furnitureSize is FurnitureSize.TwoXFive or FurnitureSize.FiveXFive)
-            {
-                //if (_tempSlot != null) width = _tempSlot.width * 4;
-                /*else*/
-                width = transform.parent.GetComponent<FurnitureSlot>().width * 5;
-            }
-            else if (furnitureSize is FurnitureSize.OneXSix or FurnitureSize.TwoXSix or FurnitureSize.ThreeXSix)
-            {
-                //if (_tempSlot != null) width = _tempSlot.width * 4;
-                /*else*/
-                width = transform.parent.GetComponent<FurnitureSlot>().width * 6;
-            }
-            else if (furnitureSize is FurnitureSize.TwoXSeven or FurnitureSize.ThreeXSeven)
-            {
-                //if (_tempSlot != null) width = _tempSlot.width * 4;
-                /*else*/
-                width = transform.parent.GetComponent<FurnitureSlot>().width * 7;
-            }
-            else if (furnitureSize is FurnitureSize.TwoXEight or FurnitureSize.ThreeXEight or FurnitureSize.FiveXEight)
-            {
-                //if (_tempSlot != null) width = _tempSlot.width * 4;
-                /*else*/
-                width = transform.parent.GetComponent<FurnitureSlot>().width * 8;
-            }
-            else
-            {
-                Debug.LogError("Invalid furniture size.");
-                return;
-            }
-            /*if (_tempSlot != null)
-            {
-                position.x = (width / 2) - _tempSlot.width / 2;
-                position.y = -1 * (_tempSlot.height / 2);
-            }
-            else
-            {*/
-            if(!reverse)
+            if (!reverse)
                 position.x = (width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2;
             else
                 position.x = ((width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2)*-1;
@@ -254,6 +196,12 @@ namespace MenuUI.Scripts.SoulHome
                     _sortingGroup.sortingOrder = 10 - (row+1);
                 if (grid is FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
                     _sortingGroup.sortingOrder = 1 + (row + 2) * 10;
+                transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
+            }
+            else if (Furniture.Place is FurniturePlacement.Ceiling)
+            {
+                transform.localScale /= 1.0f + (slot.maxDepthScale / 100f) * ((_sortingGroup.sortingOrder < 101 ? 1 : (_sortingGroup.sortingOrder - 4) / 100 - 1) / (slot.maxRow - 1f));
+                _sortingGroup.sortingOrder = 4 + (row + 1) * 100;
                 transform.localScale *= (1.0f + (slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));
             }
             //Debug.Log("Scale 2: " +(slot.maxDepthScale / 100f) * (((float)row) / (slot.maxRow - 1f)));

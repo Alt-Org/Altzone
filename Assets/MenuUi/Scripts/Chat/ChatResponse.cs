@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
@@ -9,12 +10,43 @@ namespace Altzone.Scripts.ReferenceSheets
     public class ChatResponse : ScriptableObject
     {
         [SerializeField]
-        private CharacterClassID _classId;
+        private CharacterClassType _classType;
         [SerializeField]
-        private List<string> _list;
+        private List<ChatResponseObject> _list;
 
-        public CharacterClassID ClassId { get => _classId; }
+        public CharacterClassType ClassType { get => _classType; }
 
-        public List<string> List { get => _list; }
+        public List<ChatResponseObject> List { get => _list; }
     }
+
+    public enum ResponseType
+    {
+        NeedCompany,
+        NewGame,
+        ComingToPlay,
+        WantToPlay,
+        Yes,
+        No,
+        Online,
+        Leaving,
+        Busy,
+        WinningStreak,
+        LosingStreak,
+        Discord,
+        Lonely,
+        GoodGame,
+        BadGame,
+        SkillIssue,
+        SkillIssue2,
+        Funny
+    }
+
+    [Serializable]
+    public class ChatResponseObject
+    {
+        public ResponseType ResponseId;
+        public string Response;
+    }
+
+
 }

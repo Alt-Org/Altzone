@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
@@ -20,18 +22,22 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private DailyTaskCardImageReference _cardImageReference;
 
     [Header("Current task")]
-    [SerializeField] private TextMeshProUGUI _taskDescription;
+    [SerializeField] private TextMeshProUGUI _taskTitle;
+    [SerializeField] private TextMeshProUGUI _taskCategory;
+    [SerializeField] private GameObject _taskRewardsField;
     [SerializeField] private TextMeshProUGUI _taskPointsReward;
     [SerializeField] private TextMeshProUGUI _taskCoinsReward;
     [SerializeField] private Image _taskTypeImage;
+    [SerializeField] private Image _taskBackground;
     [Space]
     [SerializeField] private Image _taskProgressFillImage;
     [SerializeField] private RectTransform _taskProgressLayoutGroup;
     [SerializeField] private GameObject _taskProgressMarkerPrefab;
     [SerializeField] private int _progressMarkersMaxAmount = 8;
-    [Range(0f, 1f)]
+    [Range(0f, 2f)]
     [SerializeField] private float _progressMarkerXScale = 0.05f;
-    [SerializeField] private TMP_Text _testTaskProgressValue; //TODO: Remove when testing done.
+
+    private PlayerTask _currentTask;
 
     private List<GameObject> _taskProgressMarkers = new List<GameObject>();
 
@@ -60,20 +66,95 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     private MoodType _moodType = MoodType.Ok;
 
+    [Header("Education Category Colors")]
+    [SerializeField] private Color _actionCategoryColor;
+    [SerializeField] private Color _socialCategoryColor;
+    [SerializeField] private Color _storyCategoryColor;
+    [SerializeField] private Color _cultureCategoryColor;
+    [SerializeField] private Color _ethicalCategoryColor;
+    [SerializeField] private Color _defaultColor;
+
+    [Header("Daily Stats")]
+    [SerializeField]
+    private TextMeshProUGUI _dailyStatsTitle;
+
+    [SerializeField]
+    private TextLanguageSelectorCaller _battlesPlayedText;
+
+    [SerializeField]
+    private TextLanguageSelectorCaller _tasksDoneText;
+
+    [Header("Cancel button")]
+    [SerializeField] private Button _cancelTaskButton;
+
+    public delegate void CurrentTaskInfoNeeded();
+    public static event CurrentTaskInfoNeeded OnCurrentTaskInfoNeeded;
+
+    public delegate void TaskHintNeeded(PlayerTask task);
+    public static event TaskHintNeeded OnTaskHintNeeded;
+
     private void Start()
     {
         CreateProgressBarMarkers(_progressMarkersMaxAmount);
         SetMood(MoodType.Ok);
+        SettingsCarrier.OnLanguageChanged += UpdateLanguage;
+
+        // Make cancel task button to actually do something
+        _cancelTaskButton.onClick.AddListener(() => DailyTaskManager.Instance.StartCancelTask());
+    }
+
+    private void OnDestroy()
+    {
+        SettingsCarrier.OnLanguageChanged -= UpdateLanguage;
+    }
+
+    private void OnEnable()
+    {
+        UpdateOwnTaskPage();
+        
     }
 
     #region Task
 
+
+    public void UpdateOwnTaskPage()
+    {
+        // Clear the page
+        ClearCurrentTask();
+
+        // Then update new task data
+        PlayerTask taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
+
+        if (taskData == null) return;
+
+        float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
+        StartCoroutine(SetDailyTask(taskData));
+        SetTaskProgress(progress);
+
+        UpdateDailyStatsUI();
+
+        // Don't allow canceling task on turboeducation if the task is forced
+        if (GameConfig.Get().GameVersionType == VersionType.TurboEducation && DailyTaskManager.Instance.CurrentTaskForced)
+        {
+            _cancelTaskButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            _cancelTaskButton.gameObject.SetActive(true);
+        }
+    }
+
+
     public IEnumerator SetDailyTask(PlayerTask data)
     {
-        _taskDescription.text = data.Title;
-        _taskPointsReward.text = "" + data.Points;
-        _taskCoinsReward.text = "" + data.Coins;
+        _currentTask = data;
+        SetTaskTitle(data);
+        SetTaskCategory(data, SettingsCarrier.Instance.Language);
+        _taskPointsReward.text = "+" + data.Points;
+        _taskCoinsReward.text = "+" + data.Coins;
+        _taskRewardsField.SetActive(true);
         _taskTypeImage.sprite = _cardImageReference.GetTaskImage(data);
+        _taskTypeImage.gameObject.SetActive(true);
 
         yield return new WaitUntil(() => (_taskProgressMarkers.Count != 0));
 
@@ -85,8 +166,6 @@ public class DailyTaskOwnTask : MonoBehaviour
     /// </summary>
     private void SetProgressBarMarkers(int amount)
     {
-        DeactivateAllProgressBarMarkers();
-
         if (amount > _taskProgressMarkers.Count)
             amount = _taskProgressMarkers.Count + 1;
 
@@ -95,7 +174,7 @@ public class DailyTaskOwnTask : MonoBehaviour
         {
             _taskProgressMarkers[i].SetActive(true);
             _taskProgressMarkers[i].GetComponent<RectTransform>().anchorMin = new(((float)(i + 1) / (float)amount), 0f);
-            _taskProgressMarkers[i].GetComponent<RectTransform>().anchorMax = new(((float)(i + 1) / (float)amount) + _progressMarkerXScale, 1f);
+            _taskProgressMarkers[i].GetComponent<RectTransform>().anchorMax = new(((float)(i + 1) / (float)amount), 1f);
         }
     }
 
@@ -112,8 +191,11 @@ public class DailyTaskOwnTask : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             GameObject marker = Instantiate(_taskProgressMarkerPrefab, _taskProgressLayoutGroup);
+            marker.GetComponent<RectTransform>().sizeDelta = new Vector2(_progressMarkerXScale, 1f);
             _taskProgressMarkers.Add(marker);
         }
+
+        DeactivateAllProgressBarMarkers();
     }
 
     /// <summary>
@@ -124,21 +206,83 @@ public class DailyTaskOwnTask : MonoBehaviour
         _taskProgressFillImage.fillAmount = progress;
     }
 
-    public void TESTSetTaskValue(int progress) //TODO: Remove when testing done.
-    {
-        _testTaskProgressValue.text = "" + progress;
-    }
-
     public void ClearCurrentTask()
     {
-        _taskDescription.text = "";
-        _taskPointsReward.text = "";
-        _taskCoinsReward.text = "";
+        _currentTask = null;
+        _taskTitle.gameObject.SetActive(false);
+        _taskCategory.text = "";
+        _taskRewardsField.SetActive(false);
+        _taskTypeImage.gameObject.SetActive(false);
+        _taskBackground.color = _defaultColor;
 
         SetProgressBarMarkers(0);
     }
 
+    private void SetTaskTitle(PlayerTask task)
+    {
+        _taskTitle.text = task.Title;
+        _taskTitle.gameObject.SetActive(true);
+    }
+
+    private void SetTaskCategory(PlayerTask task, SettingsCarrier.LanguageType language)
+    {
+        if (task.Type != TaskNormalType.Undefined)
+        {
+            _taskCategory.text = "";
+        }
+        else
+        {
+            switch (task.EducationCategory)
+            {
+                case EducationCategoryType.Action:
+                    {
+                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Toiminnallinen pelilukutaito" : "Functional game literacy";
+                        //_taskBackground.color = _actionCategoryColor;
+                        break;
+                    }
+                case EducationCategoryType.Social:
+                    {
+                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Sosiaalinen pelilukutaito" : "Social game literacy";
+                        //_taskBackground.color = _socialCategoryColor;
+                        break;
+                    }
+                case EducationCategoryType.Story:
+                    {
+                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Tarinallinen pelilukutaito" : "Story-based game literacy";
+                        //_taskBackground.color = _storyCategoryColor;
+                        break;
+                    }
+                case EducationCategoryType.Culture:
+                    {
+                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Kulttuurinen pelilukutaito" : "Cultural game literacy";
+                        //_taskBackground.color = _cultureCategoryColor;
+                        break;
+                    }
+                case EducationCategoryType.Ethical:
+                    {
+                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Eettinen pelilukutaito" : "Ethical game literacy";
+                        //_taskBackground.color = _ethicalCategoryColor;
+                        break;
+                    }
+                default:
+                    {
+                        _taskCategory.text = "";
+                        _taskBackground.color = _defaultColor;
+                        break;
+                    }
+            }
+        }
+    }
     #endregion
+
+    private void UpdateLanguage(SettingsCarrier.LanguageType language)
+    {
+        if (_currentTask != null)
+        {
+            SetTaskTitle(_currentTask);
+            SetTaskCategory(_currentTask, language);
+        }
+    }
 
     public void SetMood(MoodType type)
     {
@@ -182,5 +326,24 @@ public class DailyTaskOwnTask : MonoBehaviour
     {
 
 
+    }
+
+    private void UpdateDailyStatsUI()
+    {
+        _battlesPlayedText.SetText(SettingsCarrier.Instance.Language, new[] { DailyStats.Instance.GetBattlesPlayed().ToString() });
+        _tasksDoneText.SetText(SettingsCarrier.Instance.Language, new[] { DailyStats.Instance.GetTasksDone().ToString() });
+    }
+
+    // Currently used on DailyTask OwnTask page on ShowCurrentTaskInfoButton
+    public void ShowCurrentTaskInfo()
+    {
+        OnCurrentTaskInfoNeeded.Invoke();
+    }
+
+    // Currently used on DailyTask OwnTask page on TaskHintButton
+    public void ShowCurrentTaskHint()
+    {
+        if (_currentTask == null) return;
+        OnTaskHintNeeded.Invoke(_currentTask);
     }
 }

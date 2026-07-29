@@ -12,17 +12,22 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
         private Image _image;
         private StatsWindowController _controller;
 
-        private void Awake()
-        {
-            _image = GetComponent<Image>();
-            _controller = FindObjectOfType<StatsWindowController>();
-        }
+        [SerializeField]private bool _setAlternativeColor = true;
+
 
         private void OnEnable()
         {
+            
+            if(_image==null)_image= GetComponent<Image>();
+            if(_controller==null)_controller = FindObjectOfType<StatsWindowController>();
+
             if (_controller != null)
             {
-                Color classColor = _controller.GetCurrentCharacterClassAlternativeColor();
+                Color classColor = _setAlternativeColor
+                    ?_controller.GetCurrentCharacterClassAlternativeColor()
+                :_controller.GetCurrentCharacterClassColor();
+
+
                 _image.color = new Color(classColor.r, classColor.g, classColor.b, _image.color.a);
             }
         }

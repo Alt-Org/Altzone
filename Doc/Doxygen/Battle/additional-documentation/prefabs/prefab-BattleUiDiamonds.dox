@@ -1,0 +1,29 @@
+/// @file BattleUiDiamonds.prefab
+/// <summary>
+/// Prefab for %Battle's DiamondCounter UI element.
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi. Displays the diamonds the local player has collected during the match.  
+/// Has a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script since this BattleUi element doesn't need additional functionality.
+///
+/// ### Structure
+/// - **BattleUiDiamonds**  
+///   Parent GameObject with a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script.
+///     - *Components:*
+///         - RectTransform
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
+///         - CanvasRenderer
+///     - *Children:*
+///         - **DiamondIcon**  
+///           Displays the diamond icon sprite.
+///             - *Components:*
+///                 - Image
+///                 - Default UI Material (Material)
+///         - **DiamondCount**  
+///           Displays the diamond count text.
+///             - *Components:*
+///                 - TextMeshPro - Text (UI)
+///                 - WorkSans-SemiBold SDF Material (Material)
+///         - *Shared components:*
+///             - RectTransform
+///             - CanvasRenderer

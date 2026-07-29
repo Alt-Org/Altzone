@@ -4,6 +4,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ClanSearchView : MonoBehaviour
 {
@@ -11,15 +12,87 @@ public class ClanSearchView : MonoBehaviour
     [SerializeField] private GameObject _clanPrefab;
     [SerializeField] private Transform _clanListParent;
     [SerializeField] private GameObject _loadMoreButton;
+    [SerializeField] private GameObject _clanPopup;
+    [SerializeField] private Button _returnToMainClanViewButton;
+    [SerializeField] private Button _returnToMainMenuButton;
+
+    [SerializeField] private ClanConfirmPopup _confirmPopup;
+    [SerializeField] private GameObject _blocker;
+
+    [Header("Popup Buttons")]
+    [SerializeField] private Button _openFiltersButton;
+    [SerializeField] private Button _filtersConfirmButton;
+    [SerializeField] private Button _filtersCancelButton;
+    [SerializeField] private Button _filtersCloseButton;
+
+    [SerializeField] private Button _clanPopupCancelButton;
+    [SerializeField] private Button _clanPopupCloseButton;
+
+    [Header("Search")]
+    [SerializeField] private TMP_InputField _searchInputField;
 
     private int _currentPage;    // Current page found in pagination data
     private int _totalPages;     // Total pages in pagination data
     private List<ClanListing> _listedClans = new();
-    private ClanSearchFilters _filters = new ClanSearchFilters() { clanName = "" };
+    private ClanSearchFilters _filters;
+
+    private bool _isJoining;
 
     private void Awake()
     {
-        _loadMoreButton.GetComponent<Button>().onClick.AddListener(() => { LoadMoreClans(); });
+        _filters = GetDefaultFilters();
+
+        if (_loadMoreButton != null)
+        {
+            Button loadMoreButton = _loadMoreButton.GetComponent<Button>();
+            if (loadMoreButton != null)
+                loadMoreButton.onClick.AddListener(LoadMoreClans);
+        }
+
+        if (_openFiltersButton != null)
+            _openFiltersButton.onClick.AddListener(OpenFiltersPopup);
+
+        if (_filtersConfirmButton != null)
+            _filtersConfirmButton.onClick.AddListener(ConfirmFiltersPopup);
+
+        if (_filtersCancelButton != null)
+            _filtersCancelButton.onClick.AddListener(CloseFiltersPopup);
+
+        if (_filtersCloseButton != null)
+            _filtersCloseButton.onClick.AddListener(CloseFiltersPopup);
+
+        if (_clanPopupCancelButton != null)
+            _clanPopupCancelButton.onClick.AddListener(CloseClanPopup);
+
+        if (_clanPopupCloseButton != null)
+            _clanPopupCloseButton.onClick.AddListener(CloseClanPopup);
+
+        if (_searchInputField != null)
+            _searchInputField.onValueChanged.AddListener(UpdateClanNameSearch);
+    }
+
+    private void OnDestroy()
+    {
+        if (_openFiltersButton != null)
+            _openFiltersButton.onClick.RemoveListener(OpenFiltersPopup);
+
+        if (_filtersConfirmButton != null)
+            _filtersConfirmButton.onClick.RemoveListener(ConfirmFiltersPopup);
+
+        if (_filtersCancelButton != null)
+            _filtersCancelButton.onClick.RemoveListener(CloseFiltersPopup);
+
+        if (_filtersCloseButton != null)
+            _filtersCloseButton.onClick.RemoveListener(CloseFiltersPopup);
+
+        if (_clanPopupCancelButton != null)
+            _clanPopupCancelButton.onClick.RemoveListener(CloseClanPopup);
+
+        if (_clanPopupCloseButton != null)
+            _clanPopupCloseButton.onClick.RemoveListener(CloseClanPopup);
+
+        if (_searchInputField != null)
+            _searchInputField.onValueChanged.RemoveListener(UpdateClanNameSearch);
     }
 
     private void OnEnable()
@@ -32,7 +105,10 @@ public class ClanSearchView : MonoBehaviour
 
     private void OnDisable()
     {
-        _filtersPanel.OnFiltersChanged -= UpdateFilters;
+        if (_filtersPanel != null)
+            _filtersPanel.OnFiltersChanged -= UpdateFilters;
+
+        CloseClanPopup();
     }
 
     private void Reset()
@@ -46,6 +122,14 @@ public class ClanSearchView : MonoBehaviour
         _currentPage = 0;
         _loadMoreButton.SetActive(false);
         _listedClans.Clear();
+
+        if (_searchInputField != null)
+            _searchInputField.SetTextWithoutNotify("");
+
+        _filters = GetDefaultFilters();
+
+        CloseClanPopup();
+        CloseFiltersPopup();
     }
 
     private void LoadMoreClans()
@@ -70,10 +154,26 @@ public class ClanSearchView : MonoBehaviour
             clanListing.Clan = clan;
             _listedClans.Add(clanListing);
 
+            /*clanListing.OpenProfileButton.onClick.RemoveAllListeners();
+            clanListing.OpenProfileButton.onClick.AddListener(() =>
+            {
+                _clanPopup.SetActive(true);
+                _clanPopup.GetComponent<ClanSearchPopup>().SetClanInfo(clan, clanListing);
+            });*/
+
             clanListing.OpenProfileButton.onClick.RemoveAllListeners();
             clanListing.OpenProfileButton.onClick.AddListener(() =>
             {
-                DataCarrier.AddData(DataCarrier.ClanListing, clan);
+                ToggleBlocker(true);
+
+                if (_clanPopup != null)
+                    _clanPopup.SetActive(true);
+
+                var popup = _clanPopup.GetComponent<ClanSearchPopup>();
+                popup.Show(clan, onJoin: () =>
+                {
+                    ShowJoinFlow(clan);
+                });
             });
 
             if (ServerManager.Instance.Clan != null && clanListing.Clan._id == ServerManager.Instance.Clan._id)
@@ -94,6 +194,7 @@ public class ClanSearchView : MonoBehaviour
         FilterListings();
     }
 
+
     private void UpdateFilters(ClanSearchFilters newFilters)
     {
         _filters = newFilters;
@@ -104,12 +205,274 @@ public class ClanSearchView : MonoBehaviour
     {
         foreach (ClanListing clanListing in _listedClans)
         {
-            bool hidelisting = (_filters.removeLocked && !clanListing.Clan.isOpen)
-                || (_filters.clanName != "" && !clanListing.Clan.name.ToLower().Contains(_filters.clanName.ToLower()))
+            bool hidelisting = (_filters.isOpen != clanListing.Clan.isOpen)
+                || (!string.IsNullOrWhiteSpace(_filters.clanName)
+                    && !clanListing.Clan.name.Contains(_filters.clanName, StringComparison.OrdinalIgnoreCase))
                 || (_filters.language != Language.None && _filters.language != clanListing.Clan.language)
                 || (_filters.age != ClanAge.None && _filters.age != clanListing.Clan.ageRange)
-                || (_filters.goal != Goals.None && _filters.goal != clanListing.Clan.goal);
+                || (_filters.goal != Goals.None && _filters.goal != clanListing.Clan.goal)
+                || !CheckMemberCount(clanListing.Clan.playerCount, _filters.memberCount)
+                || !CheckValues(clanListing.Clan.labels, _filters.values);
             clanListing.gameObject.SetActive(!hidelisting);
         }
+    }
+
+    private bool CheckMemberCount(int memberCount, ClanMembers filterMemberCount)
+    {
+        if (filterMemberCount == ClanMembers.None)
+            return true;
+
+        return filterMemberCount switch
+        {
+            ClanMembers.Small => memberCount >= 1 && memberCount <= 5,
+            ClanMembers.Medium => memberCount >= 6 && memberCount <= 10,
+            ClanMembers.Large => memberCount >= 11 && memberCount <= 20,
+            ClanMembers.VeryLarge => memberCount >= 21 && memberCount <= 28,
+            ClanMembers.Huge => memberCount >= 29,
+            _ => true
+        };
+    }
+
+    private bool CheckValues(List<string> labels, List<ClanValues> filterValues)
+    {
+        if (filterValues == null || filterValues.Count == 0)
+            return true;
+
+        if (labels == null || labels.Count == 0)
+            return false;
+
+        List<ClanValues> valuesFromServer = new();
+
+        foreach (string label in labels)
+        {
+            if (string.IsNullOrWhiteSpace(label))
+                continue;
+
+            string normalizedLabel = label
+                .Trim()
+                .ToLower()
+                .Replace("ä", "a")
+                .Replace("ö", "o")
+                .Replace("+", "")
+                .Replace(" ", "")
+                .Replace("-", "");
+
+            foreach (ClanValues clanValue in Enum.GetValues(typeof(ClanValues)))
+            {
+                string normalizedEnumValue = clanValue.ToString()
+                    .ToLower()
+                    .Replace("ä", "a")
+                    .Replace("ö", "o")
+                    .Replace("+", "")
+                    .Replace(" ", "")
+                    .Replace("-", "");
+
+                if (normalizedLabel == normalizedEnumValue)
+                {
+                    valuesFromServer.Add(clanValue);
+                    break;
+                }
+            }
+        }
+
+        foreach (ClanValues value in filterValues)
+        {
+            if (!valuesFromServer.Contains(value))
+                return false;
+        }
+
+        return true;
+    }
+
+    private void ToggleBlocker(bool on)
+    {
+        if (_blocker != null)
+            _blocker.SetActive(on);
+    }
+
+    private void ShowOverlay(bool on)
+    {
+        if (OverlayPanelCheck.Instance) OverlayPanelCheck.Instance.ToggleOverlay(on);
+    }
+
+    public void CloseClanPopup()
+    {
+        if (_clanPopup != null)
+            _clanPopup.SetActive(false);
+
+        if (_confirmPopup != null)
+            _confirmPopup.gameObject.SetActive(false);
+
+        ToggleBlocker(false);
+    }
+
+    private void OpenFiltersPopup()
+    {
+        if (_filtersPanel != null)
+            _filtersPanel.gameObject.SetActive(true);
+
+        ToggleBlocker(true);
+    }
+
+    private void ConfirmFiltersPopup()
+    {
+        if (_filtersPanel != null)
+            _filtersPanel.ApplyFilters();
+
+        CloseFiltersPopup();
+    }
+
+    private void CloseFiltersPopup()
+    {
+        if (_filtersPanel != null)
+            _filtersPanel.gameObject.SetActive(false);
+
+        ToggleBlocker(false);
+    }
+
+    private string GetCurrentClanName()
+    {
+        var clanName = ServerManager.Instance.Clan;
+        if (clanName != null)
+        {
+            return new ClanData(clanName).Name;
+        }
+
+        return "nykyisestä klaanista";
+    }
+
+    // Opens the join flow pop ups depending on whether the player is already in a clan or not
+    private void ShowJoinFlow(ServerClan clan)
+    {
+        bool isInSomeClan = ServerManager.Instance.Clan != null;
+        bool isDifferent = isInSomeClan && ServerManager.Instance.Clan._id != clan._id;
+
+        if (isDifferent)
+        {
+            ShowLeaveAndJoinPopup(clan);
+        }
+        else
+        {
+            ShowJoinClanPopUp(clan);
+        }
+    }
+
+    private void ShowJoinClanPopUp(ServerClan clan)
+    {
+        string targetName = new ClanData(clan).Name;
+
+        ToggleBlocker(true);
+
+        _confirmPopup.Show(
+            bodyText: "Haluatko liittyä klaaniin " + targetName + "?",
+            onConfirm: () =>
+            {
+                if (_isJoining) return;
+                _isJoining = true;
+
+                StartCoroutine(ServerManager.Instance.JoinClan(clan, newClan =>
+                {
+                    _isJoining = false;
+
+                    if (newClan != null)
+                    {
+                        ServerManager.Instance.RaiseClanChangedEvent();
+                        ShowOverlay(true);
+                        CloseClanPopup();
+
+                        if (ServerManager.Instance.FirstJoin)
+                            _returnToMainMenuButton.onClick.Invoke();
+                        else
+                            _returnToMainClanViewButton.onClick.Invoke();
+                    }
+                }));
+            },
+            onCancel: () =>
+            {
+                
+            },
+            confirmText: "Liity",
+            cancelText: "Peruuta",
+            style: "join"
+            );
+    }
+
+    private void ShowLeaveAndJoinPopup(ServerClan clan)
+    {
+        var currentClanName = GetCurrentClanName();
+        var targetClanName = new ClanData(clan).Name;
+
+        string warningText = "Olet jo jäsen klaanissa " + currentClanName + "." +
+            " Haluatko varmasti poistua nykyisestä klaanista ja liittyä klaaniin " + targetClanName + "?";
+
+        ToggleBlocker(true);
+
+        _confirmPopup.Show(
+            bodyText: warningText,
+
+            onConfirm: () =>
+            {
+                if (_isJoining) return;
+                _isJoining = true;
+
+                StartCoroutine(ServerManager.Instance.LeaveClan(success =>
+                {
+                    if (!success)
+                    {
+                        _isJoining = false;
+                        ToggleBlocker(false);
+                        return;
+                    }
+
+                    StartCoroutine(ServerManager.Instance.JoinClan(clan, newClan =>
+                    {
+                        _isJoining = false;   
+
+                        if (newClan == null)
+                        {
+                            ToggleBlocker(false);
+                            return;
+                        }
+
+                        if (newClan != null)
+                        {
+                            ServerManager.Instance.RaiseClanChangedEvent();
+                            ShowOverlay(true);
+                            CloseClanPopup();
+
+                            if (ServerManager.Instance.FirstJoin)
+                                _returnToMainMenuButton.onClick.Invoke();
+                            else
+                                _returnToMainClanViewButton.onClick.Invoke();
+                        }
+                    }));
+                }));
+            },
+            onCancel: () => { },
+                confirmText: "Liity",
+                cancelText: "Peruuta",
+                style: "leave"
+            );
+    }
+
+    private void UpdateClanNameSearch(string searchText)
+    {
+        _filters.clanName = searchText.Trim();
+        FilterListings();
+    }
+
+    private ClanSearchFilters GetDefaultFilters()
+    {
+        return new ClanSearchFilters()
+        {
+            clanName = "",
+            isOpen = true,
+            language = Language.None,
+            age = ClanAge.None,
+            goal = Goals.None,
+            ranking = ClanRanking.None,
+            memberCount = ClanMembers.None,
+            values = new List<ClanValues>()
+        };
     }
 }

@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['sbyte_0',['SByte',['../namespace_quantum.html#af52ebc31e44ba139a82bd0d9fc084c5b',1,'Quantum.SByte'],['../namespace_quantum_1_1_prototypes.html#a55604e335b30b1a494481710624e47bc',1,'Quantum.Prototypes.SByte']]],
-  ['serializableattribute_1',['SerializableAttribute',['../namespace_quantum.html#aa6f07065d3931a1227a30587e7f37d22',1,'Quantum.SerializableAttribute'],['../namespace_quantum_1_1_prototypes.html#a9c1286c670086667e2bbd2be99de79ee',1,'Quantum.Prototypes.SerializableAttribute']]],
-  ['string_2',['String',['../namespace_quantum.html#adf30128c27a913c856c2b09db8de5b19',1,'Quantum.String'],['../namespace_quantum_1_1_prototypes.html#a3b19daea1f981629df10f36ed78e4306',1,'Quantum.Prototypes.String']]],
-  ['structlayoutattribute_3',['StructLayoutAttribute',['../namespace_quantum.html#a7b8337ba30e642f38b50868a61f0e64e',1,'Quantum.StructLayoutAttribute'],['../namespace_quantum_1_1_prototypes.html#a4e4bdcd7318fc23484f1d80cecb7d0f7',1,'Quantum.Prototypes.StructLayoutAttribute']]]
+  ['object_0',['Object',['../namespace_quantum.html#ac7cdbebaff15618f8935dca9cacf441b',1,'Quantum.Object'],['../namespace_quantum_1_1_prototypes.html#a48351564c1dad12e6f389f69384af891',1,'Quantum.Prototypes.Object'],['../namespace_quantum_1_1_prototypes_1_1_unity.html#a8dcbef8996a229e5ecd6e959dc112407',1,'Quantum.Prototypes.Unity.Object']]],
+  ['orientationtype_1',['OrientationType',['../_battle_ui_movable_element_data_8cs.html#a719270c760d72a0c63356903a8cd2cd8',1,'BattleUiMovableElementData.cs']]]
 ];

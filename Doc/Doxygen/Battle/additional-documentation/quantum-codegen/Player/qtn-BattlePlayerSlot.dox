@@ -1,0 +1,40 @@
+/// @file BattlePlayerSlot.qtn
+/// <summary>
+/// Contains enum of available PlayerSlots.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattlePlayerSlot}  
+///   @copybrief Quantum.BattlePlayerSlot
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattlePlayerSlot
+/// <summary>
+/// Which PlayerSlot the [{Player}](#page-concepts-player) is on.
+/// </summary>
+///
+/// Each [{Player}](#page-concepts-player) is assigned to a slot.  
+/// See [{Player slots and teams}](#page-concepts-player-slots-teams) for more information.
+///
+/// @bigtext{Generated from @ref BattlePlayerSlot.qtn}
+
+/// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Guest
+/// Player in Guest slot.  
+/// Currently unused.
+///
+/// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Slot1
+/// Player in Slot1.
+///
+/// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Slot2
+/// Player in Slot2.
+///
+/// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Slot3
+/// Player in Slot3.
+///
+/// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Slot4
+/// Player in Slot4.
+///
+/// @var Quantum::BattlePlayerSlot Quantum::BattlePlayerSlot::Spectator
+/// Player in spectator slot.  
+/// Currently unused.

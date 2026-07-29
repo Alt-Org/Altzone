@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Altzone.Scripts.Model.Poco.Attributes;
+using Prg.Scripts.Common.Extensions;
 using UnityEngine.Assertions;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
-    [MongoDbEntity, Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
+    [Serializable, SuppressMessage("ReSharper", "InconsistentNaming")]
     public class RaidRoom
     {
-        [PrimaryKey] public string Id;
-        [ForeignKey(nameof(ClanMember)), Mandatory] public string ClanMemberId;
+        public string Id;
+        public string ClanMemberId;
         public RaidRoomType Type;
         public int RowCount;
         public int ColCount;
@@ -18,8 +18,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public RaidRoom(string id, string clanMemberId, RaidRoomType type, int rowCount, int colCount)
         {
-            Assert.IsTrue(id.IsPrimaryKey());
-            Assert.IsTrue(clanMemberId.IsMandatory());
+            Assert.IsTrue(id.IsSet());
+            Assert.IsTrue(clanMemberId.IsSet());
             Assert.AreNotEqual(RaidRoomType.None, type);
             Assert.IsTrue(rowCount >= 0);
             Assert.IsTrue(colCount >= 0);

@@ -11,14 +11,16 @@ public class PlayStyle : MonoBehaviour
     public TextMeshProUGUI styleText; // TMP text field
     public Button leftButton; // Left button
     public Button rightButton; // Right button
-    public string[] styles; // Style selection
+
+    [Header("Styles per Language")]
+    public List<StyleText> styles;  
 
     private int currentIndex = 0; // Tracks the selected style
 
-    public int CurrentIndex
+    public PlayStyles CurrentStyle
     {
-        get => currentIndex;
-        set => currentIndex = value;
+        get => styles[currentIndex].style;
+        set => currentIndex = styles.FindIndex(style => style.style == value);
     }
 
     void Start()
@@ -40,38 +42,61 @@ public class PlayStyle : MonoBehaviour
     // Updates the style text
     private void UpdateStyleText()
     {
-        if (Enum.GetNames(typeof(PlayStyles)).Length > 0)
-        {
-            if (styles.Length > currentIndex)
-            {
-                styleText.text = styles[currentIndex];
-            }
-            else
-            {
-                styleText.text = ((PlayStyles)currentIndex).ToString();
-            }
-        }
+        if (styles.Count <= 0 || styles.Count <= currentIndex) return;
+
+        styleText.text = styles[currentIndex].Text;
+
     }
 
     private void SelectPreviousStyle()
     {
-        currentIndex = (currentIndex - 1 + Enum.GetNames(typeof(PlayStyles)).Length) % Enum.GetNames(typeof(PlayStyles)).Length;
+        int count = Enum.GetNames(typeof(PlayStyles)).Length;
+        currentIndex = (currentIndex - 1 + count) % count;
         UpdateStyleText();
         SaveCurrentIndex();
     }
-
 
     private void SelectNextStyle()
     {
-        currentIndex = (currentIndex + 1) % Enum.GetNames(typeof(PlayStyles)).Length;
+        int count = Enum.GetNames(typeof(PlayStyles)).Length;
+        currentIndex = (currentIndex + 1) % count;
         UpdateStyleText();
         SaveCurrentIndex();
     }
 
-    // Saves the currentindex as a playerpref.
+    // Saves the current index as a playerpref.
     private void SaveCurrentIndex()
     {
         PlayerPrefs.SetInt("CurrentPlayStyleIndex", currentIndex);
         PlayerPrefs.Save();
+
+        DailyTaskProgressListener progressListener = GetComponent<DailyTaskProgressListener>();
+        if (progressListener != null)
+        {
+            progressListener.UpdateProgress("1");
+        }
+    }
+
+    public void RefreshUI()
+    {
+        UpdateStyleText();
+    }
+
+    [Serializable]
+    public class StyleText
+    {
+        public PlayStyles style;
+        public string finnishText;
+        public string englishText;
+
+        public string Text
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return englishText;
+                return finnishText;
+            }
+        }
     }
 }

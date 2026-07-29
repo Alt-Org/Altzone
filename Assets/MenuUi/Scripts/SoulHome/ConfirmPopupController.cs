@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Language;
 using MenuUI.Scripts.SoulHome;
 using TMPro;
 using UnityEngine;
@@ -11,11 +12,11 @@ namespace MenuUI.Scripts
 {
     public class ConfirmPopupController : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI _infoText;
+        [SerializeField] private TextLanguageSelectorCaller _infoText;
         [SerializeField] private Button _acceptButton;
-        [SerializeField] private TextMeshProUGUI _acceptButtonText;
+        [SerializeField] private TextLanguageSelectorCaller _acceptButtonText;
         [SerializeField] private Button _secondaryAcceptButton;
-        [SerializeField] private TextMeshProUGUI _secondaryAcceptButtonText;
+        [SerializeField] private TextLanguageSelectorCaller _secondaryAcceptButtonText;
         [SerializeField] private Button _cancelButton;
         [SerializeField] private TextMeshProUGUI _cancelButtonText;
 
@@ -41,27 +42,55 @@ namespace MenuUI.Scripts
 
             gameObject.SetActive(true);
 
-            if (type is PopupType.Exit)
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
             {
-                _infoText.text = "Sielunkodissa on tallentamattomia muutoksia. \n\n"
-                + "Poistuaksesi muutokset pitää tallentaa tai hylätä. \n\n"
-                + "Haluatko silti poistua? ";
-                _cancelButton.onClick.AddListener(cancelAction);
-                _acceptButton.onClick.AddListener(acceptAction);
-                _acceptButtonText.text = "Tallenna Muutokset";
-                _secondaryAcceptButton.onClick.AddListener(secondaryAcceptAction);
-                _secondaryAcceptButtonText.text = "Palauta Muutokset";
+                if (type is PopupType.Exit)
+                {
+                    _infoText.SetText("Sielunkodissa on tallentamattomia muutoksia. \n\n"
+                    + "Poistuaksesi muutokset pitää tallentaa tai hylätä. \n\n"
+                    + "Haluatko silti poistua? ");
+                    _cancelButton.onClick.AddListener(cancelAction);
+                    _acceptButton.onClick.AddListener(acceptAction);
+                    _acceptButtonText.SetText("Tallenna Muutokset");
+                    _secondaryAcceptButton.onClick.AddListener(secondaryAcceptAction);
+                    _secondaryAcceptButtonText.SetText("Palauta Muutokset");
+                }
+                else if (type is PopupType.EditClose)
+                {
+                    _infoText.SetText("Sielunkodissa on tallentamattomia muutoksia. \n\n"
+                     + "Sulkeaksesi muokkaustilan tallentamattomat muutokset pitää tallentaa tai hylätä. \n\n"
+                     + "Mitä haluat tehdä? ");
+                    _cancelButton.onClick.AddListener(cancelAction);
+                    _acceptButton.onClick.AddListener(acceptAction);
+                    _acceptButtonText.SetText("Tallenna Muutokset");
+                    _secondaryAcceptButton.onClick.AddListener(secondaryAcceptAction);
+                    _secondaryAcceptButtonText.SetText("Palauta Muutokset");
+                }
             }
-            else if (type is PopupType.EditClose)
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
             {
-                _infoText.text = "Sielunkodissa on tallentamattomia muutoksia. \n\n"
-                 + "Sulkeaksesi muokkaustilan tallentamattomat muutokset pitää tallentaa tai hylätä. \n\n"
-                 + "Mitä haluat tehdä? ";
-                _cancelButton.onClick.AddListener(cancelAction);
-                _acceptButton.onClick.AddListener(acceptAction);
-                _acceptButtonText.text = "Tallenna Muutokset";
-                _secondaryAcceptButton.onClick.AddListener(secondaryAcceptAction);
-                _secondaryAcceptButtonText.text = "Palauta Muutokset";
+                if (type is PopupType.Exit)
+                {
+                    _infoText.SetText("Castle has some unsaved changes. \n\n"
+                    + "These changes must be saved or discarded. \n\n"
+                    + "Do you still want to leave? ");
+                    _cancelButton.onClick.AddListener(cancelAction);
+                    _acceptButton.onClick.AddListener(acceptAction);
+                    _acceptButtonText.SetText("Save Changes");
+                    _secondaryAcceptButton.onClick.AddListener(secondaryAcceptAction);
+                    _secondaryAcceptButtonText.SetText("Revert Changes");
+                }
+                else if (type is PopupType.EditClose)
+                {
+                    _infoText.SetText("Castle has some unsaved changes. \n\n"
+                     + "To close the modification mode you need to save or discarned. \n\n"
+                     + "What do you want to do. ");
+                    _cancelButton.onClick.AddListener(cancelAction);
+                    _acceptButton.onClick.AddListener(acceptAction);
+                    _acceptButtonText.SetText("Save Changes");
+                    _secondaryAcceptButton.onClick.AddListener(secondaryAcceptAction);
+                    _secondaryAcceptButtonText.SetText("Revert Changes");
+                }
             }
         }
 

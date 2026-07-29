@@ -1,0 +1,26 @@
+var class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler =
+[
+    [ "UnityReferences", "struct_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler_1_1_unity_references.html", "struct_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler_1_1_unity_references" ],
+    [ "Entry", "struct_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler_1_1_entry.html", "struct_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler_1_1_entry" ],
+    [ "AddLog", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#af2455f625cd64ba55f2e9be567b908f6", null ],
+    [ "Awake", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a6eab92de5966684835babdb1d1aedf47", null ],
+    [ "SetShow", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a4d71294d49e90bb1f5fde9da0d0ef98c", null ],
+    [ "Update", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#abd3884bafe6d6701e4989e37fc17230b", null ],
+    [ "UpdateUI", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#aa813b951ba015732b7c4f57272525afe", null ],
+    [ "_entries", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a7b1f2676b99bae4f1e48267ac5a16194", null ],
+    [ "_entriesCount", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a099f8a27d37628f43e4e608302a0e3cb", null ],
+    [ "_entriesMax", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a326c202bb7a37e75d833e57605349be8", null ],
+    [ "_entriesStartingIndex", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a0b43e005167644a26372b755f198f1b8", null ],
+    [ "_entryCharacterSize", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a5af7227451d2595191e1c2a879974e98", null ],
+    [ "_entryFontSize", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a07e63beaf99319e07e80618cb19fca9f", null ],
+    [ "_entryLifetimeSec", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a2ceab3fc62dd1e6a739dba60592374a9", null ],
+    [ "_entryMessageLengthMax", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a4836b88b09ddfb108e83b0349f0ab20e", null ],
+    [ "_isVisible", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#aae792b5568e5f3e20aa12262b6fe6fc9", null ],
+    [ "_unity", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#aa61122c8aad681ff92e759ca4f7b4849", null ],
+    [ "_updateUI", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a981f33e75828b1f7ee8e12808501f5ed", null ],
+    [ "PrefixEmpty", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a0606f9ab6b631bf6b8eee68155aa7dc0", null ],
+    [ "PrefixLength", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a1970e981475433a60c932ae21787351d", null ],
+    [ "PrefixTypeError", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a07a96b37f398c3214da6c169e637945a", null ],
+    [ "PrefixTypeLog", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a6c3fc34e3a95ad0be2bdf9f73ba5fee7", null ],
+    [ "PrefixTypeWarning", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a4845ba62e0e23f6984b0f8ea8f65f0bc", null ]
+];

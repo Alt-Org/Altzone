@@ -5,15 +5,20 @@ using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
+using Altzone.Scripts.AvatarPartsInfo;
 
 public class AvatarShopStorage : ShopPanelStorage
 {
     [SerializeField] private RectTransform _Content;
+    [SerializeField] private BaseScrollRect _scrollRect;
     private bool _isInitiallyRebuild = false;
+
+    public BaseScrollRect ScrollRect => _scrollRect;
 
     [Space(5f)]
 
     [Header("Parents")]
+    [SerializeField] private List<RectTransform> _group;
     [SerializeField] private RectTransform _commonGroup;
     [SerializeField] private RectTransform _rareGroup;
     [SerializeField] private RectTransform _epicGroup;
@@ -22,10 +27,7 @@ public class AvatarShopStorage : ShopPanelStorage
     [Space(5f)]
 
     [Header("Prefabs")]
-    [SerializeField] private GameFurnitureVisualizer _commonPrefab;
-    [SerializeField] private GameFurnitureVisualizer _rarePrefab;
-    [SerializeField] private GameFurnitureVisualizer _epicPrefab;
-    [SerializeField] private GameFurnitureVisualizer _antiquePrefab;
+    [SerializeField] private GameFurnitureVisualizer _avatarShopItemPrefab;
 
     [Header("PopUp")]
     [SerializeField] private GameObject _popUp;
@@ -33,28 +35,39 @@ public class AvatarShopStorage : ShopPanelStorage
     [Header("Avatar Parts Reference")]
     [SerializeField] private AvatarPartsReference _avatarPartsReference;
 
-    private Dictionary<FurnitureRarity, Transform> _rarityToParent;
-    private Dictionary<FurnitureRarity, GameFurnitureVisualizer> _rarityToPrefab;
+    private Dictionary<string, Transform> _rarityToParent;
 
     private List<GameFurniture> gameFurnitures;
     private List<GameFurnitureVisualizer> gameFurnituresOnScene;
 
     private void Awake()
     {
-        _rarityToParent = new Dictionary<FurnitureRarity, Transform>{
-            {FurnitureRarity.Common, _commonGroup},
-            {FurnitureRarity.Rare, _rareGroup},
-            {FurnitureRarity.Epic, _epicGroup},
-            {FurnitureRarity.Antique, _antiqueGroup}
-        };
 
-        _rarityToPrefab = new Dictionary<FurnitureRarity, GameFurnitureVisualizer>
+        // Summary: Assigns avatar parts (hair, eyes...) to the specific slots in the Unity Inspector, e.g. Element 0 is tied to hair.
+        //1. Get a list of all avatar parts (hair, eyes etc.) and store them in avatarPartsData
+        var avatarPartsData = _avatarPartsReference.AvatarPartData;
+        
+        //2. Create a new dictionary, store the category name as text (string) and location in the Unity hierarchy (transform), so we can start storing information
+        _rarityToParent = new Dictionary<string, Transform>();
+
+        //3. Go through each category found in the avatarPartsData list
+        int i = 0;
+            foreach ( var part in avatarPartsData)
         {
-            {FurnitureRarity.Common, _commonPrefab},
-            {FurnitureRarity.Rare, _rarePrefab},
-            {FurnitureRarity.Epic, _epicPrefab},
-            {FurnitureRarity.Antique, _antiquePrefab}
-        };
+
+            //3.1. Create a new pair to the dictionary: category name (e.g. part.setName > "Hair")
+            // and its location (_group[i] > _group[0], _group[1], etc.)
+            _rarityToParent.Add(part.SetName, _group[i]);
+
+            //3.2. Move to the next group by incrementing the i-counter so the next category gets its own location
+            // If there are more categories than there are groups, rest of the categories will be listed under the last group
+            // i+1 is used to account for zero-based indexing. (e.g. if _group.Count is 7, 'i' will never exceed 6)
+            if (i+1 < _group.Count)
+            {
+                i++;
+            } 
+
+        }
         gameFurnitures = new();
         gameFurnituresOnScene = new();
     }
@@ -69,46 +82,40 @@ public class AvatarShopStorage : ShopPanelStorage
 
         foreach(AvatarPartsReference.AvatarPartCategoryInfo avatarSectiondata in avatarPartsData)
         {
-            if (avatarSectiondata == null || avatarSectiondata.AvatarCategories.Count <= 0)
+            if (avatarSectiondata == null || avatarSectiondata.AvatarParts.Count <= 0)
             {
                 Debug.LogWarning($"Cannot find avatar parts from section {avatarSectiondata.SetName}.");
                 continue;
             }
 
-            foreach(AvatarPartsReference.AvatarClassCategoryInfo avatarsubData in avatarSectiondata.AvatarCategories)
+           
+            foreach (AvatarPartInfo avatarpartData in avatarSectiondata.AvatarParts)
             {
-                if (avatarsubData == null || avatarsubData.Parts.Count <= 0)
+                if (avatarpartData == null)
                 {
                     continue;
                 }
-
-                foreach (AvatarPartsReference.AvatarPartInfo avatarpartData in avatarsubData.Parts)
+                
+                if (_rarityToParent.TryGetValue(avatarSectiondata.SetName, out Transform _parent))
                 {
-                    if (avatarpartData == null)
+                    if (_avatarShopItemPrefab != null)
                     {
-                        continue;
-                    }
-
-                    if (_rarityToParent.TryGetValue(FurnitureRarity.Rare, out Transform _parent))
-                    {
-                        if (_rarityToPrefab.TryGetValue(FurnitureRarity.Rare, out GameFurnitureVisualizer _prefab))
-                        {
-                            Debug.Log("Furniture of " + avatarpartData.Id + "" + avatarpartData.Name + " is created");
-                            var newItem = Instantiate(_prefab, _parent);
-                            newItem.Initialize(avatarpartData, _popUp);
-                            gameFurnituresOnScene.Add(newItem);
-                        }
-                        else
-                        {
-                            //Debug.LogWarning($"Prefab for Rarity {avatarpartData.Rarity} is not defined!");
-                        }
+                        Debug.Log("Avatar shop item of " + avatarpartData.Id + "" + avatarpartData.Name + " is created");
+                        var newItem = Instantiate(_avatarShopItemPrefab, _parent);
+                        newItem.Initialize(avatarpartData, _popUp);
+                        gameFurnituresOnScene.Add(newItem);
                     }
                     else
                     {
-                        //Debug.LogWarning($"Parent for Rarity {avatarpartData.Rarity} is not defined!");
+                        Debug.LogWarning("Avatar shop item prefab is not defined!");
                     }
                 }
+                else
+                {
+                    //Debug.LogWarning($"Parent for Rarity {avatarpartData.Rarity} is not defined!");
+                }
             }
+           
         }
 
         //Randomize
@@ -123,8 +130,7 @@ public class AvatarShopStorage : ShopPanelStorage
         if(_isInitiallyRebuild)
             return;
 
-        _isInitiallyRebuild = false;
         LayoutRebuilder.ForceRebuildLayoutImmediate(_Content);
-        return;
+        _isInitiallyRebuild = true;
     }
 }

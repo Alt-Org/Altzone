@@ -1,0 +1,26 @@
+/// @file BattleScreenEffectViewController.prefab
+/// <summary>
+/// Prefab for the ScreenEffects.
+/// </summary>
+///
+/// ### Structure
+/// - **BattleScreenEffectViewController**
+///     - *Components:*
+///         - Transform
+///         - @cref{Battle.View.Effect,BattleScreenEffectViewController}
+///     - *Children:*
+///         - **Overlay**
+///             - *Components:*
+///                 - Transform
+///                 - SpriteRenderer
+///                 - Sprites-Default (Material)
+///         - **ParticleSourceLeft**
+///             - *Components:*
+///                 - Transform
+///                 - ParticleSystem
+///                 - BattleScreenEffectSparkleMaterial (Material)
+///         - **ParticleSourceRight**
+///             - *Components:*
+///                 - Transform
+///                 - ParticleSystem
+///                 - BattleScreenEffectSparkleMaterial (Material)

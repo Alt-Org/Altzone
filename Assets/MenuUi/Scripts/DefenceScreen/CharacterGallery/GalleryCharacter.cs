@@ -1,10 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
+
 using TMPro;
+
 using Altzone.Scripts.Model.Poco.Game;
+
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
 using MenuUi.Scripts.Signals;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -16,18 +20,25 @@ namespace MenuUi.Scripts.CharacterGallery
     public class GalleryCharacter : MonoBehaviour, IGalleryCharacterData
     {
         [SerializeField] private Image _spriteImage;
-        [SerializeField] private Image _backgroundImage;
-        [SerializeField] private Image _contentsImage;
-        [SerializeField] private Image _contentsDetailsImage;
+        [SerializeField] private Image _backgroundBorderImage;
+        [SerializeField] private Image _backgroundLowerImage;
+        [SerializeField] private Image _backgroundUpperImage;
+        [SerializeField] private Image _backgroundOverride;
         [SerializeField] private TextMeshProUGUI _characterNameText;
+        [SerializeField] private TextMeshProUGUI _classNameText;
         [SerializeField] private AspectRatioFitter _aspectRatioFitter;
         [SerializeField] private PieChartPreview _piechartPreview;
         [SerializeField] private Material _grayScaleMaterial;
         [SerializeField] private Button _addCharacterButton;
+        [SerializeField] private Image _classIcon;
+        [SerializeField] private ClassReference _classReference;
 
-        private CharacterSlot _originalSlot;
+        [SerializeField] private CanvasGroup _canvasGroup;
 
         private static Material _grayscaleMaterialInstance;
+
+        private CharacterSlot _originalSlot;
+        public CharacterSlot OriginalSlot => _originalSlot;
 
         private CharacterID _id;
         public CharacterID Id { get => _id; }
@@ -35,16 +46,21 @@ namespace MenuUi.Scripts.CharacterGallery
 
         private void Awake()
         {
-            _piechartPreview.gameObject.SetActive(false);
-            if (_grayscaleMaterialInstance == null )
-            {
-                _grayscaleMaterialInstance = Instantiate(_grayScaleMaterial);
-            }
+            if (_grayscaleMaterialInstance == null) InstantiateGrayscaleMaterial();
 
-            if (_addCharacterButton != null )
+            if (_canvasGroup == null)
+                _canvasGroup = GetComponent<CanvasGroup>();
+
+            if (_addCharacterButton != null)
             {
-                _addCharacterButton.onClick.AddListener( OnAddCharacterButtonClicked );
+                _addCharacterButton.onClick.AddListener(OnAddCharacterButtonClicked);
             }
+        }
+
+
+        private void InstantiateGrayscaleMaterial()
+        {
+            _grayscaleMaterialInstance = Instantiate(_grayScaleMaterial);
         }
 
 
@@ -79,7 +95,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 if (success)
                 {
-                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters(result =>
+                    StartCoroutine(ServerManager.Instance.UpdateCustomCharacters((result, chaList) =>
                     {
                         if (result)
                         {
@@ -90,7 +106,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
                 else
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal("T‰t‰ hahmoa ei ole viel‰ lis‰tty pelipalvelimelle.");
+                    PopupSignalBus.OnChangePopupInfoSignal("T√§t√§ hahmoa ei ole viel√§ lis√§tty pelipalvelimelle.");
+                    _addCharacterButton.gameObject.SetActive(false);
                 }
 
             }));
@@ -106,19 +123,45 @@ namespace MenuUi.Scripts.CharacterGallery
         /// <param name="name">Character's name which to display.</param>
         /// <param name="id">Character's ID.</param>
         /// <param name="originalSlot">The original inventory slot for the GalleryCharacter prefab.</param>
-        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, CharacterID id, CharacterSlot originalSlot)
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, CharacterID id, CharacterSlot originalSlot)
         {
             _spriteImage.sprite = sprite;
             _characterNameText.text = name;
+            if (string.IsNullOrEmpty(className))
+                _classNameText.gameObject.SetActive(false);
+            else
+            {
+                _classNameText.gameObject.SetActive(true);
+                _classNameText.text = className;
+            }
             _id = id;
-            _backgroundImage.color = bgColor;
-            _contentsImage.color = bgAltColor;
+
+            _backgroundLowerImage.color = bgAltColor;
+            _backgroundUpperImage.color = bgColor;
             _originalSlot = originalSlot;
+
+            if (_classIcon && _classReference)
+            {
+                _classIcon.sprite = _classReference.GetCornerIcon(CustomCharacter.GetClass(id));
+                _classIcon.enabled = _classIcon.sprite != null;
+            }
+        }
+
+        public void GradientOverride(Sprite bgImage)
+        {
+            if(bgImage == null)
+            {
+                _backgroundOverride.sprite = null;
+                _backgroundOverride.gameObject.SetActive(false);
+                return;
+            }
+            _backgroundOverride.sprite = bgImage;
+            _backgroundOverride.gameObject.SetActive(true);
         }
 
 
         /// <summary>
-        /// Set visual information and anchoring for when character is selected. (Placed to one of the top slots.)
+        /// Set visual information and anchoring for when character is selected.
         /// </summary>
         public void SetSelectedVisuals()
         {
@@ -131,21 +174,19 @@ namespace MenuUi.Scripts.CharacterGallery
             _piechartPreview.gameObject.SetActive(true);
             _piechartPreview.UpdateChart(Id);
 
-            _contentsImage.gameObject.SetActive(false);
-            _contentsDetailsImage.gameObject.SetActive(false);
-
             _spriteImage.material = null;
-            _contentsImage.material = null;
-            _backgroundImage.material = null;
+            _backgroundLowerImage.material = null;
+            _backgroundUpperImage.material = null;
+            _backgroundBorderImage.material = null;
 
             if (_addCharacterButton.gameObject.activeSelf) _addCharacterButton.gameObject.SetActive(false);
         }
 
 
         /// <summary>
-        /// Set visual information and anchoring for when character is unselected. (Not in one of the top slots.)
+        /// Set default visual information and anchoring for when character is unlocked and displayed in the gallery grid.
         /// </summary>
-        public void SetUnselectedVisuals()
+        public void SetDefaultVisuals()
         {
             _aspectRatioFitter.aspectRatio = 0.6f;
             _characterNameText.gameObject.SetActive(true);
@@ -155,29 +196,32 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _piechartPreview.gameObject.SetActive(false);
 
-            _contentsImage.gameObject.SetActive(true);
-            _contentsDetailsImage.gameObject.SetActive(true);
-
             _spriteImage.material = null;
-            _contentsImage.material = null;
-            _backgroundImage.material = null;
+            _backgroundLowerImage.material = null;
+            _backgroundUpperImage.material = null;
+            _backgroundBorderImage.material = null;
 
             if (_addCharacterButton.gameObject.activeSelf) _addCharacterButton.gameObject.SetActive(false);
         }
 
 
         /// <summary>
-        /// Set visual information for when character is locked. (Not owned.)
+        /// Set visual information for when character is locked.
         /// </summary>
         public void SetLockedVisuals()
         {
-            SetUnselectedVisuals();
-            _spriteImage.material = _grayscaleMaterialInstance;
-            _contentsImage.material = _grayscaleMaterialInstance;
-            _contentsImage.material.SetColor("_Color", _contentsImage.color);
-            _backgroundImage.material = _grayscaleMaterialInstance;
-            _backgroundImage.material.SetColor("_Color", _backgroundImage.color);
+            SetDefaultVisuals();
             _addCharacterButton.gameObject.SetActive(true);
+
+            if (_grayscaleMaterialInstance == null) InstantiateGrayscaleMaterial();
+
+            _spriteImage.material = _grayscaleMaterialInstance;
+            _backgroundLowerImage.material = _grayscaleMaterialInstance;
+            _backgroundUpperImage.material = _grayscaleMaterialInstance;
+            _backgroundBorderImage.material = _grayscaleMaterialInstance;
+
+            _backgroundLowerImage.material.SetColor("_Color", _backgroundLowerImage.color);
+            _backgroundUpperImage.material.SetColor("_Color", _backgroundUpperImage.color);
         }
 
 
@@ -186,26 +230,28 @@ namespace MenuUi.Scripts.CharacterGallery
         /// </summary>
         public void ReturnToOriginalSlot()
         {
+            _originalSlot.gameObject.SetActive(true);
             transform.SetParent(_originalSlot.transform, false);
-            SetUnselectedVisuals();
+            SetDefaultVisuals();
         }
 
-
         /// <summary>
-        /// Enable being able to press the navi button which can open character stats edit window.
+        /// Updates gallery character visuals when the character is already selected,
+        /// dimms the card and disables interaction to prevent re-selection
         /// </summary>
-        public void EnableNaviButton()
+        public void SetUsedVisuals(bool used)
         {
-            _backgroundImage.raycastTarget = true; // the button depends on background image being raycast target.
-        }
 
+            if (_canvasGroup != null)
+            {
+                if (used)
+                    _canvasGroup.alpha = 0.45f;
+                else
+                    _canvasGroup.alpha = 1f;
 
-        /// <summary>
-        /// Disable being able to press the navi button which can open character stats edit window.
-        /// </summary>
-        public void DisableNaviButton()
-        {
-            _backgroundImage.raycastTarget = false;
+                _canvasGroup.interactable = true;
+                _canvasGroup.blocksRaycasts = true;
+            }
         }
     }
 }

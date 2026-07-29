@@ -161,7 +161,7 @@ public class ClanModifyInventoryView : MonoBehaviour
                                 ""material"":""{furniture.Material}"",""recycling"":""{furniture.Recycling}"", ""unityKey"":""{furniture.UnityKey}"",
                                 ""filename"":""{furniture.Filename}"",""rowNumber"":0,""columnNumber"":0,""isInStock"":true,""isFurniture"":true,""stock_id"":""{stock._id}""}}";
 
-        StartCoroutine(WebRequests.Post(ServerManager.ADDRESS + "item", body, ServerManager.Instance.AccessToken, request =>
+        StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "item", body, ServerManager.Instance.AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
@@ -187,7 +187,7 @@ public class ClanModifyInventoryView : MonoBehaviour
     /// <param name="callback">Callback</param>
     public void RemoveItemFromServer(ServerItem itemToRemove, Action<bool> callback)
     {
-        StartCoroutine(WebRequests.Delete(ServerManager.ADDRESS + "item/" + itemToRemove._id, ServerManager.Instance.AccessToken, request =>
+        StartCoroutine(WebRequests.Delete(ServerManager.SERVERADDRESS + "item/" + itemToRemove._id, ServerManager.Instance.AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {

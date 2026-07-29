@@ -9,6 +9,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 namespace Prg.Scripts.Common.Unity.Localization
 {

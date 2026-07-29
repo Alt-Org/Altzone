@@ -12,7 +12,9 @@ namespace Altzone.Scripts.ModelV2
         [SerializeField]
         private string _mapId;
         [SerializeField]
-        private string _mapName;
+        private string _mapNameFinnish;
+        [SerializeField]
+        private string _mapNameEnglish;
         [SerializeField]
         private Map _map = null;
         [SerializeField]
@@ -23,8 +25,18 @@ namespace Altzone.Scripts.ModelV2
         {
             get
             {
-                if (string.IsNullOrEmpty(_mapName)) return _mapId;
-                return _mapName;
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        if (string.IsNullOrEmpty(_mapNameFinnish)) return _mapId;
+                        return _mapNameFinnish;
+                    case SettingsCarrier.LanguageType.English:
+                        if (string.IsNullOrEmpty(_mapNameEnglish)) return _mapId;
+                        return _mapNameEnglish;
+                    default:
+                        if (string.IsNullOrEmpty(_mapNameFinnish)) return _mapId;
+                        return _mapNameFinnish;
+                }
             }
         }
         public Map Map { get => _map; }
@@ -51,6 +63,22 @@ namespace Altzone.Scripts.ModelV2
     public class MapEmotionalSituation
     {
         [SerializeField] public Emotion SituationEmotion;
-        [SerializeField] public string SituationName;
+        [SerializeField] public string FinnishSituationName;
+        [SerializeField] public string EnglishSituationName;
+
+        public string SituationName {
+            get
+            {
+                switch (SettingsCarrier.Instance.Language)
+                {
+                    case SettingsCarrier.LanguageType.Finnish:
+                        return FinnishSituationName;
+                    case SettingsCarrier.LanguageType.English:
+                        return EnglishSituationName;
+                    default:
+                        return FinnishSituationName;
+                }
+            }
+        }
     }
 }

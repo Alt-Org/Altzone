@@ -1,11 +1,8 @@
 var searchData=
 [
-  ['screeneffectviewcontroller_0',['ScreenEffectViewController',['../class_quantum_1_1_screen_effect_view_controller.html',1,'Quantum']]],
-  ['simulationconfig_1',['SimulationConfig',['../class_quantum_1_1_simulation_config.html',1,'Quantum']]],
-  ['soulwall_2',['SoulWall',['../struct_quantum_1_1_soul_wall.html',1,'Quantum']]],
-  ['soulwallprototype_3',['SoulWallPrototype',['../class_quantum_1_1_prototypes_1_1_soul_wall_prototype.html',1,'Quantum::Prototypes']]],
-  ['soulwallsystem_4',['SoulWallSystem',['../class_quantum_1_1_quantum_user_1_1_simulation_1_1_soul_wall_1_1_soul_wall_system.html',1,'Quantum::QuantumUser::Simulation::SoulWall']]],
-  ['soundfxmanager_5',['SoundFXManager',['../class_quantum_user_1_1_scripts_1_1_sound_f_x_manager.html',1,'QuantumUser::Scripts']]],
-  ['statics_6',['Statics',['../class_quantum_1_1_statics.html',1,'Quantum']]],
-  ['stattext_7',['StatText',['../struct_quantum_user_1_1_scripts_1_1_u_i_1_1_views_1_1_game_ui_debug_stats_overlay_1_1_stat_text.html',1,'QuantumUser::Scripts::UI::Views::GameUiDebugStatsOverlay']]]
+  ['playercharactercollisiondata_0',['PlayerCharacterCollisionData',['../struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_character_collision_data.html',1,'Battle::QSimulation::Game::BattleCollisionQSystem']]],
+  ['playerhandle_1',['PlayerHandle',['../struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html',1,'Battle::QSimulation::Player::BattlePlayerManager']]],
+  ['playerhandleinternal_2',['PlayerHandleInternal',['../struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle_internal.html',1,'Battle::QSimulation::Player::BattlePlayerManager']]],
+  ['playershieldcollisiondata_3',['PlayerShieldCollisionData',['../struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_shield_collision_data.html',1,'Battle::QSimulation::Game::BattleCollisionQSystem']]],
+  ['projectilecollisiondata_4',['ProjectileCollisionData',['../struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_projectile_collision_data.html',1,'Battle::QSimulation::Game::BattleCollisionQSystem']]]
 ];

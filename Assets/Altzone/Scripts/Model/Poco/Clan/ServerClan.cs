@@ -28,6 +28,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public int? raidRoomCount { get; set; }
         public List<PollData> polls { get; set; }
         public ClanLogo clanLogo { get; set; }
+        public List<ClanRoles> roles { get; set; }
     }
 
     public enum ClanLogoType
@@ -40,5 +41,31 @@ namespace Altzone.Scripts.Model.Poco.Clan
     {
         public ClanLogoType logoType { get; set; }
         public List<string> pieceColors { get; set; }
+    }
+
+    public enum ClanRoleType
+    {
+        None,
+        Default,
+        Named
+    }
+
+    [Serializable]
+    public class ClanRoles
+    {
+        public string _id { get; set; }
+        public string name { get; set; }
+        public string clanRoleType { get; set; }
+        public ClanRights rights { get; set; }
+
+        [Serializable]
+        public class ClanRights
+        {
+            public bool edit_soulhome { get; set; }
+            public bool edit_clan_data { get; set; }
+            public bool edit_member_rights { get; set; }
+            public bool manage_role { get; set; }
+            public bool shop { get; set; }
+        }
     }
 }

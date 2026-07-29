@@ -1,19 +1,4 @@
 var searchData=
 [
-  ['gamecontrolsystem_0',['GameControlSystem',['../class_quantum_1_1_game_control_system.html',1,'Quantum']]],
-  ['gamesession_1',['GameSession',['../struct_quantum_1_1_game_session.html',1,'Quantum']]],
-  ['gamesessionprototype_2',['GameSessionPrototype',['../class_quantum_1_1_prototypes_1_1_game_session_prototype.html',1,'Quantum::Prototypes']]],
-  ['gameuiannouncementhandler_3',['GameUiAnnouncementHandler',['../class_quantum_user_1_1_scripts_1_1_u_i_1_1_views_1_1_game_ui_announcement_handler.html',1,'QuantumUser::Scripts::UI::Views']]],
-  ['gameuicontroller_4',['GameUiController',['../class_quantum_user_1_1_scripts_1_1_u_i_1_1_game_ui_controller.html',1,'QuantumUser::Scripts::UI']]],
-  ['gameuidebugstatsoverlay_5',['GameUiDebugStatsOverlay',['../class_quantum_user_1_1_scripts_1_1_u_i_1_1_views_1_1_game_ui_debug_stats_overlay.html',1,'QuantumUser::Scripts::UI::Views']]],
-  ['gameuigameoverhandler_6',['GameUiGameOverHandler',['../class_quantum_user_1_1_scripts_1_1_u_i_1_1_views_1_1_game_ui_game_over_handler.html',1,'QuantumUser::Scripts::UI::Views']]],
-  ['gameviewcontroller_7',['GameViewController',['../class_quantum_user_1_1_scripts_1_1_game_view_controller.html',1,'QuantumUser::Scripts']]],
-  ['goal_8',['Goal',['../struct_quantum_1_1_goal.html',1,'Quantum']]],
-  ['goalconfig_9',['GoalConfig',['../class_quantum_1_1_goal_config.html',1,'Quantum']]],
-  ['goalprototype_10',['GoalPrototype',['../class_quantum_1_1_prototypes_1_1_goal_prototype.html',1,'Quantum::Prototypes']]],
-  ['goalsystem_11',['GoalSystem',['../class_quantum_1_1_quantum_user_1_1_simulation_1_1_goal_1_1_goal_system.html',1,'Quantum::QuantumUser::Simulation::Goal']]],
-  ['gridmanager_12',['GridManager',['../class_quantum_1_1_grid_manager.html',1,'Quantum']]],
-  ['gridposition_13',['GridPosition',['../struct_quantum_1_1_grid_position.html',1,'Quantum']]],
-  ['gridpositionprototype_14',['GridPositionPrototype',['../class_quantum_1_1_prototypes_1_1_grid_position_prototype.html',1,'Quantum::Prototypes']]],
-  ['gridviewcontroller_15',['GridViewController',['../class_quantum_1_1_grid_view_controller.html',1,'Quantum']]]
+  ['goalcollisiondata_0',['GoalCollisionData',['../struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_goal_collision_data.html',1,'Battle::QSimulation::Game::BattleCollisionQSystem']]]
 ];

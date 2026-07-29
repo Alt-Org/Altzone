@@ -4,27 +4,52 @@ using UnityEngine;
 public class DailyTaskProgressListener : MonoBehaviour
 {
     [Header("Normal task")]
-    [SerializeField] private TaskNormalType _normalTaskType = TaskNormalType.Undefined;
+    [SerializeField] protected TaskNormalType _normalTaskType = TaskNormalType.Undefined;
 
     [Header("Education task main category")]
-    [SerializeField] private EducationCategoryType _educationCategoryType = EducationCategoryType.None;
+    [SerializeField] protected EducationCategoryType _educationCategoryType = EducationCategoryType.None;
 
-    [Header("Education task sub categories\n (Only one of these will be used!)")]
-    [SerializeField] private TaskEducationActionType _educationCategoryActionType = TaskEducationActionType.BlowUpYourCharacter;
-    [SerializeField] private TaskEducationSocialType _educationCategorySocialType = TaskEducationSocialType.AddNewFriend;
-    [SerializeField] private TaskEducationStoryType _educationCategoryStoryType = TaskEducationStoryType.ClickCharacterDescription;
-    [SerializeField] private TaskEducationCultureType _educationCategoryCultureType = TaskEducationCultureType.ClickKnownArtIdeaPerson;
-    [SerializeField] private TaskEducationEthicalType _educationCategoryEthicalType = TaskEducationEthicalType.ClickBuyable;
+    // [Header("Education task sub categories\n (Only one of these will be used!)")]
+    [SerializeField] protected TaskEducationActionType _educationCategoryActionType = TaskEducationActionType.BlowUpYourCharacter;
+    [SerializeField] protected TaskEducationSocialType _educationCategorySocialType = TaskEducationSocialType.AddNewFriend;
+    [SerializeField] protected TaskEducationStoryType _educationCategoryStoryType = TaskEducationStoryType.ClickCharacterDescription;
+    [SerializeField] protected TaskEducationCultureType _educationCategoryCultureType = TaskEducationCultureType.ClickKnownArtIdeaPerson;
+    [SerializeField] protected TaskEducationEthicalType _educationCategoryEthicalType = TaskEducationEthicalType.ClickBuyable;
 
     private bool _on = false;
     [HideInInspector] public bool On { get => _on; }
 
-    private void Start()
+
+    protected virtual void Start()
     {
         try
         {
             DailyTaskProgressManager.OnTaskChange += SetState;
-            _on = DailyTaskProgressManager.Instance.SameTask(_normalTaskType);
+            PlayerTask task = DailyTaskProgressManager.Instance.CurrentPlayerTask;
+            if (task == null)
+            {
+                _on = false;
+                return;
+            }
+
+            if (_normalTaskType != TaskNormalType.Undefined)
+            {
+                _on = (_normalTaskType == task.Type);
+                return;
+            }
+
+            if (_educationCategoryType != EducationCategoryType.None)
+            {
+                switch (task.EducationCategory)
+                {
+                    case EducationCategoryType.Action: _on = (_educationCategoryActionType == task.EducationActionType); break;
+                    case EducationCategoryType.Social: _on = (_educationCategorySocialType == task.EducationSocialType); break;
+                    case EducationCategoryType.Story: _on = (_educationCategoryStoryType == task.EducationStoryType); break;
+                    case EducationCategoryType.Culture: _on = (_educationCategoryCultureType == task.EducationCultureType); break;
+                    case EducationCategoryType.Ethical: _on = (_educationCategoryEthicalType == task.EducationEthicalType); break;
+                    default: _on = false; break;
+                }
+            }
         }
         catch
         {
@@ -57,7 +82,7 @@ public class DailyTaskProgressListener : MonoBehaviour
         {
             if (!_on)
                 return;
-
+            
             if (_normalTaskType != TaskNormalType.Undefined)
             {
                 DailyTaskProgressManager.Instance.UpdateTaskProgress(_normalTaskType, value);
@@ -102,8 +127,9 @@ public class DailyTaskProgressListener : MonoBehaviour
         }
     }
 
-    public void SetState(PlayerTask task)
+    public virtual void SetState(PlayerTask task)
     {
+
         //-----TEST CODE-----
         if (_normalTaskType == TaskNormalType.Test)
         {
@@ -126,13 +152,15 @@ public class DailyTaskProgressListener : MonoBehaviour
 
         if (_educationCategoryType != EducationCategoryType.None)
         {
-            switch (task.EducationCategory)
+            if (_educationCategoryType != task.EducationCategory) return;
+           
+            switch (_educationCategoryType)
             {
-                case EducationCategoryType.Action: _on = (_educationCategoryActionType == task.EducationActionType); break;
-                case EducationCategoryType.Social: _on = (_educationCategorySocialType == task.EducationSocialType); break;
-                case EducationCategoryType.Story: _on = (_educationCategoryStoryType == task.EducationStoryType); break;
-                case EducationCategoryType.Culture: _on = (_educationCategoryCultureType == task.EducationCultureType); break;
-                case EducationCategoryType.Ethical: _on = (_educationCategoryEthicalType == task.EducationEthicalType); break;
+                case EducationCategoryType.Action: if (_educationCategoryActionType == task.EducationActionType) { _on = true;} break;
+                case EducationCategoryType.Social: if(_educationCategorySocialType == task.EducationSocialType){ _on = true; } break;
+                case EducationCategoryType.Story: if(_educationCategoryStoryType == task.EducationStoryType){ _on = true;} break;
+                case EducationCategoryType.Culture: if(_educationCategoryCultureType == task.EducationCultureType){ _on = true;} break;
+                case EducationCategoryType.Ethical: if(_educationCategoryEthicalType == task.EducationEthicalType){ _on = true;} break;
                 default: _on = false; break;
             }
         }

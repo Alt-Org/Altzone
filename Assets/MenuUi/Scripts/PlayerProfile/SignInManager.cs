@@ -1,11 +1,14 @@
-using UnityEngine;
-using TMPro;
-using UnityEngine.Networking;
-using Newtonsoft.Json.Linq;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using Prg.Scripts.Common.Unity;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Language;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
+using Newtonsoft.Json.Linq;
+using Prg.Scripts.Common.Unity;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Login
 {
@@ -15,48 +18,59 @@ namespace MenuUi.Scripts.Login
         [Header("Settings")]
         [SerializeField] private int _userNameMinLength;
         [SerializeField] private int _passwordMinLength;
-        [SerializeField] private int backpackCapacity;
 
         [Header("Windows")]
-        [SerializeField] private GameObject signInWindow;
-        [SerializeField] private GameObject registerWindow;
+        [SerializeField] private GameObject _signInWindow;
+        [SerializeField] private GameObject _registerWindow;
+        [SerializeField] private GameObject _passwordHintWindow;
 
 
         [Header("Input Fields")]
-        [SerializeField] private TMP_InputField logInUsernameInputField;
-        [SerializeField] private TMP_InputField logInPasswordInputField;
-        [SerializeField] private TMP_InputField registerUsernameInputField;
-        [SerializeField] private TMP_InputField registerPasswordInputField;
-        [SerializeField] private TMP_InputField registerPassword2InputField;
+        [SerializeField] private TMP_InputField _logInUsernameInputField;
+        [SerializeField] private TMP_InputField _logInPasswordInputField;
+        [SerializeField] private Toggle _logInPasswordVisibilityToggle;
+        [SerializeField] private TMP_InputField _registerUsernameInputField;
+        [SerializeField] private TMP_InputField _registerPasswordInputField;
+        [SerializeField] private Toggle _registerPasswordVisibilityToggle;
+        [SerializeField] private TMP_InputField _registerPassword2InputField;
+        [SerializeField] private Toggle _registerPassword2VisibilityToggle;
+        [SerializeField] private Toggle _privacyPolicyAuthToggle;
         [SerializeField] private Toggle _registerAgeVerificationCheckToggle;
         [SerializeField] private Toggle _registerAgeVerificationToggle;
         [SerializeField] private Toggle _registerParentalAuthToggle;
+        [SerializeField] private Toggle _informationPolicyAuthToggle;
         [SerializeField] private ToggleGroup _ageAuthToggleGroup;
+        [SerializeField] private TMP_InputField _registerPasswordHintInputField;
+        [SerializeField] private TMP_InputField _registerPasswordHintAnswerInputField;
 
 
         [Header("Input Fields Errors")]
-        [SerializeField] private Image logInUsernameInputFieldError;
-        [SerializeField] private Image logInPasswordInputFieldError;
-        [SerializeField] private Image registerUsernameInputFieldError;
-        [SerializeField] private Image registerPasswordInputFieldError;
-        [SerializeField] private Image registerPassword2InputFieldError;
+        [SerializeField] private Image _logInUsernameInputFieldError;
+        [SerializeField] private Image _logInPasswordInputFieldError;
+        [SerializeField] private Image _registerUsernameInputFieldError;
+        [SerializeField] private Image _registerPasswordInputFieldError;
+        [SerializeField] private Image _registerPassword2InputFieldError;
+        [SerializeField] private Image _privacyPolicyToggleError;
         [SerializeField] private Image _registerAgeVerificationToggleError;
+        [SerializeField] private Image _informationPolicyToggleError;
 
         [Header("Buttons")]
-        [SerializeField] private Button logInButton;
-        [SerializeField] private Button registerButton;
-        [SerializeField] private Button backButton;
-        [SerializeField] private Button backButton2;
-        [SerializeField] private Button ageAuthButton;
+        [SerializeField] private Button _logInButton;
+        [SerializeField] private Button _registerButton;
+        [SerializeField] private Button _backButton;
+        [SerializeField] private Button _backButton2;
+        [SerializeField] private Button _ageAuthButton;
+        [SerializeField] private Button _skipHintButton;
+        [SerializeField] private Button _setHintButton;
 
         [Header("Version Toggle")]
-        [SerializeField] private ToggleSwitchHandler _versionToggle;
-        [SerializeField] private TextMeshProUGUI _versionText;
+        [SerializeField] private ToggleSwitchHandler _turboEducationToggle;
+        [SerializeField] private ToggleSwitchHandler _autoLoginToggle;
 
         [Header("Navigation Buttons")]
-        [SerializeField] private Button returnToLogIn;
-        [SerializeField] private Button returnToMainMenuButton;
-        [SerializeField] private Button returnToSignInScreenButton;
+        [SerializeField] private Button _returnToLogIn;
+        [SerializeField] private Button _returnToMainMenuButton;
+        [SerializeField] private Button _returnToSignInScreenButton;
 
         private VersionType _versionType = VersionType.None;
 
@@ -66,7 +80,9 @@ namespace MenuUi.Scripts.Login
         private const string ERROR_PASSWORD_MISMATCH = "Salasananat eivät täsmää!";
         private const string ERROR_USERNAME_TOO_SHORT = "Käyttäjänimen täytyy olla vähintään 3 merkkiä pitkä!";
         private const string ERROR_PASSWORD_TOO_SHORT = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
+        private const string ERROR_PRIVACY_CONCENT_NOT_GRANTED = "Et ole hyväksynyt tietosuojaselostetta.";
         private const string ERROR_AGE_CONSENT_NOT_GRANTED = "Et ole vahvistanut olevasi yli 13-vuotias tai että sinulla on huoltajan lupa pelata peliä";
+        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED = "Et ole antanut lupaa tietojen käyttää pelin hallinnoinnnissa.";
         private const string ERROR400 = "Validointivirhe!";
         private const string ERROR401 = "Virheellinen käyttäjänimi tai salasana!";
         private const string ERROR409 = "Käyttäjätili on jo olemassa!";
@@ -75,32 +91,45 @@ namespace MenuUi.Scripts.Login
         private void OnEnable()
         {
             Reset();
-            signInWindow.SetActive(true);
-            registerWindow.SetActive(false);
+            _signInWindow.SetActive(true);
+            _registerWindow.SetActive(false);
+            OverlayPanelCheck.Instance?.ToggleOverlay(false);
             if (ServerManager.Instance.Player == null)
             {
-                backButton.gameObject.SetActive(false);
-                backButton2.gameObject.SetActive(false);
+                _backButton.gameObject.SetActive(false);
             }
             else
             {
-                backButton.gameObject.SetActive(true);
-                backButton2.gameObject.SetActive(true);
+                _backButton.gameObject.SetActive(true);
             }
+            _backButton2.gameObject.SetActive(true);
             if (SceneManager.GetActiveScene().buildIndex == 0)
             {
-                backButton.onClick.RemoveAllListeners();
-                backButton.onClick.AddListener(ReturnToLogIn);
+                _backButton.onClick.RemoveAllListeners();
+                _backButton.onClick.AddListener(ReturnToLogIn);
             }
-            if(GameConfig.Get().GameVersionType is VersionType.Standard or VersionType.None)
+            _autoLoginToggle.SetState(PlayerPrefs.GetInt("AutomaticLogin", 0) != 0);
+            _turboEducationToggle.SetState(GameConfig.Get().GameVersionType is VersionType.TurboEducation);
+
+            /*if (GameConfig.Get().GameVersionType is VersionType.Standard or VersionType.None)
             {
                 SetVersionState(false);
             }
             else if(GameConfig.Get().GameVersionType is VersionType.Education)
             {
                 SetVersionState(true);
-            }
-            _versionToggle.OnToggleStateChanged += SetVersionState;
+            }*/
+            _logInPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_logInPasswordInputField, value));
+            _registerPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPasswordInputField, value));
+            _registerPassword2VisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPassword2InputField, value));
+            _registerButton.onClick.AddListener(OpenPasswordHintPanel);
+            _setHintButton.onClick.AddListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
+            _skipHintButton.onClick.AddListener(() => Register());
+            _registerPasswordHintAnswerInputField.onValueChanged.AddListener((value) => CheckHintValidity());
+            _registerPasswordHintInputField.onValueChanged.AddListener((value) => CheckHintValidity());
+            _autoLoginToggle.OnToggleStateChanged += SetVersionState;
+            _turboEducationToggle.OnToggleStateChanged += SetTurboState;
+            _logInUsernameInputField.text = PlayerPrefs.GetString("userName", string.Empty);
         }
 
         public void Reset()
@@ -109,16 +138,28 @@ namespace MenuUi.Scripts.Login
 
             ClearMessage();
 
-            logInUsernameInputField.text = "";
-            logInPasswordInputField.text = "";
-            registerUsernameInputField.text = "";
-            registerPasswordInputField.text = "";
-            registerPassword2InputField.text = "";
+            _logInUsernameInputField.text = "";
+            _logInPasswordInputField.text = "";
+            _logInPasswordVisibilityToggle.isOn = false;
+            _registerUsernameInputField.text = "";
+            _registerPasswordInputField.text = "";
+            _registerPasswordVisibilityToggle.isOn = false;
+            _registerPassword2InputField.text = "";
+            _registerPassword2VisibilityToggle.isOn = false;
         }
 
         private void OnDisable()
         {
-            _versionToggle.OnToggleStateChanged -= SetVersionState;
+            _autoLoginToggle.OnToggleStateChanged -= SetVersionState;
+            _turboEducationToggle.OnToggleStateChanged -= SetTurboState;
+            _logInPasswordVisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_logInPasswordInputField, value));
+            _registerPasswordVisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_registerPasswordInputField, value));
+            _registerPassword2VisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_registerPassword2InputField, value));
+            _registerButton.onClick.RemoveListener(OpenPasswordHintPanel);
+            _setHintButton.onClick.RemoveListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
+            _skipHintButton.onClick.RemoveListener(() => Register());
+            _registerPasswordHintAnswerInputField.onValueChanged.RemoveListener((value) => CheckHintValidity());
+            _registerPasswordHintInputField.onValueChanged.RemoveListener((value) => CheckHintValidity());
         }
 
         /// <summary>
@@ -126,26 +167,21 @@ namespace MenuUi.Scripts.Login
         /// </summary>
         public void LogIn(bool guest)
         {
-            string body = "";
-            if (guest)
-            {
-                body = "{\"username\":\"Angel42\",\"password\":\"PRIbXCI9d)Z0UoHP\"}";
-            }
-            else
-            {
-                ClearMessage();
+            ClearMessage();
 
-                if (logInUsernameInputField.text == string.Empty || logInPasswordInputField.text == string.Empty)
-                {
-                    ShowMessage(ERROR_EMPTY_FIELD, Color.red);
-                    if(logInUsernameInputField.text == string.Empty) logInUsernameInputFieldError.gameObject.SetActive(true);
-                    else logInPasswordInputFieldError.gameObject.SetActive(true);
-                    return;
-                }
-
-                body = "{\"username\":\"" + logInUsernameInputField.text + "\",\"password\":\"" + logInPasswordInputField.text + "\"}";
+            if (_logInUsernameInputField.text == string.Empty || _logInPasswordInputField.text == string.Empty)
+            {
+                ShowMessage(ERROR_EMPTY_FIELD, Color.red);
+                if (_logInUsernameInputField.text == string.Empty) _logInUsernameInputFieldError.gameObject.SetActive(true);
+                else _logInPasswordInputFieldError.gameObject.SetActive(true);
+                return;
             }
-            StartCoroutine(WebRequests.Post(ServerManager.ADDRESS + "auth/signIn", body, null, request =>
+            ServerLogIn(_logInUsernameInputField.text, _logInPasswordInputField.text);
+        }
+        private void ServerLogIn(string username, string password) {
+            string body = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
+
+            StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "auth/signIn", body, null, request =>
             {
                 if (request.result != UnityWebRequest.Result.Success)
                 {
@@ -158,8 +194,8 @@ namespace MenuUi.Scripts.Login
                             break;
                         case 400:
                             errorString = ERROR400;
-                            logInUsernameInputFieldError.gameObject.SetActive(true);
-                            logInPasswordInputFieldError.gameObject.SetActive(true);
+                            _logInUsernameInputFieldError.gameObject.SetActive(true);
+                            _logInPasswordInputFieldError.gameObject.SetActive(true);
                             break;
                         case 401:
                             errorString = ERROR401;
@@ -169,7 +205,7 @@ namespace MenuUi.Scripts.Login
                             break;
                     }
 
-                    ShowMessage(errorString + "\n" + request.error, Color.red);
+                    ShowMessage(errorString, Color.red);
 
                 }
                 else
@@ -179,48 +215,59 @@ namespace MenuUi.Scripts.Login
                     JObject result = JObject.Parse(request.downloadHandler.text);
                     Debug.Log(request.downloadHandler.text);
                     if(ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
-                    ServerManager.Instance.SetProfileValues(result);
-                    GameConfig.Get().GameVersionType = _versionType;
-                    returnToMainMenuButton.onClick.Invoke();
+                    ServerManager.Instance.SetProfileValues(result, username);
+                    if(GameConfig.Get().GameVersionType is VersionType.Standard or VersionType.None) GameConfig.Get().GameVersionType = VersionType.Education;
+                    if (_autoLoginToggle.IsOn)
+                    {
+                        PlayerPrefs.SetInt("AutomaticLogin", 1);
+                    }
+                    else
+                    {
+                        PlayerPrefs.SetInt("AutomaticLogin", 0);
+                    }
+                    _returnToMainMenuButton.onClick.Invoke();
                 }
 
-                logInButton.interactable = true;
+                _logInButton.interactable = true;
             }));
         }
-        public void Register()
+        public void Register(string passwordHint = null, string answer = null)
         {
+            _passwordHintWindow.SetActive(false);
             ClearMessage();
 
-            string username = registerUsernameInputField.text;
-            string password1 = registerPasswordInputField.text;
-            string password2 = registerPassword2InputField.text;
+            string username = _registerUsernameInputField.text;
+            string password1 = _registerPasswordInputField.text;
+            string password2 = _registerPassword2InputField.text;
 
             // Checks empty fields and password requirements
-            if (registerUsernameInputField.text == string.Empty || registerPasswordInputField.text == string.Empty || registerPassword2InputField.text == string.Empty)
+            if (_registerUsernameInputField.text == string.Empty || _registerPasswordInputField.text == string.Empty || _registerPassword2InputField.text == string.Empty)
             {
                 ShowMessage(ERROR_EMPTY_FIELD, Color.red);
-                registerUsernameInputFieldError.gameObject.SetActive(true);
+                if (_registerUsernameInputField.text == string.Empty) _registerUsernameInputFieldError.gameObject.SetActive(true);
+                else if(_registerPasswordInputField.text == string.Empty) _registerPasswordInputFieldError.gameObject.SetActive(true);
+                else if(_registerPassword2InputField.text == string.Empty) _registerPassword2InputFieldError.gameObject.SetActive(true);
                 return;
             }
 
             if (password1 != password2)
             {
                 ShowMessage(ERROR_PASSWORD_MISMATCH, Color.red);
-                registerPassword2InputFieldError.gameObject.SetActive(true);
+                _registerPassword2InputFieldError.gameObject.SetActive(true);
                 return;
             }
 
             if (password1.Length < _passwordMinLength)
             {
                 ShowMessage(ERROR_PASSWORD_TOO_SHORT, Color.red);
-                registerPasswordInputFieldError.gameObject.SetActive(true);
+                _registerPasswordInputFieldError.gameObject.SetActive(true);
                 return;
             }
 
             if (username.Length < _userNameMinLength)
             {
                 ShowMessage(ERROR_USERNAME_TOO_SHORT, Color.red);
-                registerUsernameInputFieldError.gameObject.SetActive(true);
+                _registerUsernameInputFieldError.gameObject.SetActive(true);
                 return;
             }
 
@@ -231,11 +278,52 @@ namespace MenuUi.Scripts.Login
                 return;
             }
 
+            if (!_privacyPolicyAuthToggle.isOn)
+            {
+                ShowMessage(ERROR_PRIVACY_CONCENT_NOT_GRANTED, Color.red);
+                _privacyPolicyToggleError.gameObject.SetActive(true);
+                return;
+            }
 
-            string body = @$"{{""username"":""{registerUsernameInputField.text}"",""password"":""{registerPasswordInputField.text}"",
-                ""Player"":{{""name"":""{username}"",""backpackCapacity"":{backpackCapacity},""uniqueIdentifier"":""{username}"",
-                    ""above13"":{_registerAgeVerificationToggle.isOn.ToString().ToLower()},""parentalAuth"":{_registerParentalAuthToggle.isOn.ToString().ToLower()}}}}}";
-            StartCoroutine(WebRequests.Post(ServerManager.ADDRESS + "profile", body, null, request =>
+            if (!_informationPolicyAuthToggle.isOn)
+            {
+                ShowMessage(ERROR_INFORMATION_CONCENT_NOT_GRANTED, Color.red);
+                _informationPolicyToggleError.gameObject.SetActive(true);
+                return;
+            }
+
+            string body;
+
+            if (passwordHint != null || answer != null)
+            {
+                body = @$"{{""username"":""{_registerUsernameInputField.text}"",
+                            ""password"":""{_registerPasswordInputField.text}"",
+                            ""securityQuestion"":""{passwordHint}"",
+                            ""securityAnswer"":""{answer}"",
+                            ""environment"": 0,
+                            ""Player"":{{""name"":""{username}"",
+                            ""backpackCapacity"":{255},
+                            ""uniqueIdentifier"":""{username}"",
+                            ""environment"": 0,
+                            ""above13"":{_registerAgeVerificationToggle.isOn.ToString().ToLower()},
+                            ""parentalAuth"":{_registerParentalAuthToggle.isOn.ToString().ToLower()}}}}}";
+            }
+            else
+            {
+                body = @$"{{""username"":""{_registerUsernameInputField.text}"",
+                            ""password"":""{_registerPasswordInputField.text}"",
+                            ""environment"": 0,
+                            ""Player"":{{""name"":""{username}"",
+                            ""backpackCapacity"":{255},
+                            ""uniqueIdentifier"":""{username}"",
+                            ""environment"": 0,
+                            ""above13"":{_registerAgeVerificationToggle.isOn.ToString().ToLower()},
+                            ""parentalAuth"":{_registerParentalAuthToggle.isOn.ToString().ToLower()}}}}}";
+            }
+
+            Debug.LogWarning(body);
+
+            StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "profile", body, null, request =>
             {
                 if (request.result != UnityWebRequest.Result.Success)
                 {
@@ -248,41 +336,90 @@ namespace MenuUi.Scripts.Login
                             break;
                         case 409:
                             errorString = ERROR409;
-                            registerUsernameInputFieldError.gameObject.SetActive(true);
+                            _registerUsernameInputFieldError.gameObject.SetActive(true);
                             break;
                         case 500:
                             errorString = ERROR500;
                             break;
                     }
 
-                    ShowMessage(errorString + "\n" + request.error, Color.red);
+                    ShowMessage(errorString, Color.red);
                 }
                 else
                 {
                     Debug.Log("Registering successful!");
-                    returnToSignInScreenButton.onClick.Invoke();
+                    string username = _registerUsernameInputField.text;
+                    string password = _registerPasswordInputField.text;
+                    _returnToSignInScreenButton.onClick.Invoke();
                     ShowMessage(REGISTERING_SUCCESS, Color.green);
+                    JObject result = JObject.Parse(request.downloadHandler.text);
+                    //Debug.Log(request.downloadHandler.text);
+                    if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
+                    ServerLogIn(username, password);
                 }
 
-                registerButton.interactable = true;
+                _registerButton.interactable = true;
+            }));
+        }
+
+        private void OpenPasswordHintPanel()
+        {
+            _passwordHintWindow.SetActive(true);
+            _registerPasswordHintAnswerInputField.text = string.Empty;
+            _registerPasswordHintInputField.text = string.Empty;
+        }
+
+        public void GuestLogin()
+        {
+            string body = "";
+
+            StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "profile/guest", body, null, request =>
+            {
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    string errorString = string.Empty;
+
+                    switch (request.responseCode)
+                    {
+                        default:
+                            errorString = ERROR_DEFAULT;
+                            break;
+                        case 409:
+                            errorString = ERROR409;
+                            _registerUsernameInputFieldError.gameObject.SetActive(true);
+                            break;
+                        case 500:
+                            errorString = ERROR500;
+                            break;
+                    }
+
+                    ShowMessage(errorString, Color.red);
+                }
+                else
+                {
+                    Debug.Log("Registering successful!");
+                    JObject result = JObject.Parse(request.downloadHandler.text);;
+                    if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
+                    ServerManager.Instance.SetProfileValues(result, string.Empty);
+                    GameConfig.Get().GameVersionType = VersionType.Education;
+                    PlayerPrefs.SetInt("AutomaticLogin", 1);
+                    _returnToMainMenuButton.onClick.Invoke();
+                }
             }));
         }
 
         private void ShowMessage(string message, Color textColor)
         {
-            TextMeshProUGUI text = GameObject.Find("ErrorText").GetComponent<TextMeshProUGUI>();
-            text.text = message;
-            text.color = textColor;
+            SignalBus.OnChangePopupInfoSignal(message);
         }
 
         private void ClearMessage()
         {
-            GameObject.Find("ErrorText").GetComponent<TextMeshProUGUI>().text = "";
-            logInUsernameInputFieldError.gameObject.SetActive(false);
-            logInPasswordInputFieldError.gameObject.SetActive(false);
-            registerUsernameInputFieldError.gameObject.SetActive(false);
-            registerPasswordInputFieldError.gameObject.SetActive(false);
-            registerPassword2InputFieldError.gameObject.SetActive(false);
+            _logInUsernameInputFieldError.gameObject.SetActive(false);
+            _logInPasswordInputFieldError.gameObject.SetActive(false);
+            _registerUsernameInputFieldError.gameObject.SetActive(false);
+            _registerPasswordInputFieldError.gameObject.SetActive(false);
+            _registerPassword2InputFieldError.gameObject.SetActive(false);
             _registerAgeVerificationToggleError.gameObject.SetActive(false);
         }
 
@@ -290,33 +427,70 @@ namespace MenuUi.Scripts.Login
         {
             if (_ageAuthToggleGroup.AnyTogglesOn())
             {
-                ageAuthButton.interactable = true;
+                _ageAuthButton.interactable = true;
                 _registerAgeVerificationCheckToggle.isOn = true;
 
             }
             else
             {
-                ageAuthButton.interactable = false;
+                _ageAuthButton.interactable = false;
                 _registerAgeVerificationCheckToggle.isOn = false;
             }
         }
         private void ReturnToLogIn()
         {
-            returnToLogIn.onClick?.Invoke();
+            _returnToLogIn.onClick?.Invoke();
         }
         private void SetVersionState(bool value)
         {
             if (value)
             {
-                _versionType = VersionType.Education;
-                _versionText.text = "Opetusversio";
-                _versionToggle.SetState(value);
+                //PlayerPrefs.SetInt("AutomaticLogin", 1);
+                _autoLoginToggle.SetState(value);
             }
             else
             {
-                _versionType = VersionType.Standard;
-                _versionText.text = "Perusversio";
-                _versionToggle.SetState(value);
+                //PlayerPrefs.SetInt("AutomaticLogin", 0);
+                _autoLoginToggle.SetState(value);
+            }
+        }
+
+        private void CheckHintValidity()
+        {
+            if (!string.IsNullOrWhiteSpace(_registerPasswordHintAnswerInputField.text) && !string.IsNullOrWhiteSpace(_registerPasswordHintInputField.text))
+            {
+                _setHintButton.interactable = true;
+            }
+            else
+            {
+                _setHintButton.interactable = false;
+            }
+        }
+
+        private void SetPasswordVisibilityState(TMP_InputField passwordInputField, bool value)
+        {
+            if(value)
+                passwordInputField.contentType = TMP_InputField.ContentType.Standard;
+            else
+                passwordInputField.contentType = TMP_InputField.ContentType.Password;
+
+            passwordInputField.ForceLabelUpdate();
+        }
+
+        private void SetTurboState(bool value)
+        {
+            if (value)
+            {
+                //PlayerPrefs.SetInt("AutomaticLogin", 1);
+                _turboEducationToggle.SetState(value);
+                GameConfig.Get().GameVersionType = VersionType.TurboEducation;
+            }
+            else
+            {
+                //PlayerPrefs.SetInt("AutomaticLogin", 0);
+                _turboEducationToggle.SetState(value);
+                GameConfig.Get().GameVersionType = VersionType.Education;
+
             }
         }
     }

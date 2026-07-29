@@ -8,7 +8,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
 
 
-        public override CharacterClassID ClassID => CharacterClassID.Retroflector;
+        public override CharacterClassType ClassType => CharacterClassType.Retroflector;
 
 
         protected RetroflectorClassCharacter()
@@ -17,7 +17,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             _characterSizeStrength = ValueStrength.VeryStrong;
             _hpStrength = ValueStrength.SemiStrong;
             _defenceStrength = ValueStrength.Strong;
-            _speedStrength = ValueStrength.Weak;
+            _speedStrength = ValueStrength.None;
             InitializeValues();
         }
     }

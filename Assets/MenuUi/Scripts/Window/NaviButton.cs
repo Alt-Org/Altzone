@@ -1,4 +1,4 @@
-﻿using MenuUi.Scripts.Window.ScriptableObjects;
+﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +13,9 @@ namespace MenuUi.Scripts.Window
     [RequireComponent(typeof(Button))]
     public class NaviButton : WindowNavigation
     {
+
+        public bool Interactable = true;
+
         private void Start()
         {
             Debug.Log($"{name}", gameObject);
@@ -24,17 +27,28 @@ namespace MenuUi.Scripts.Window
             }
             var windowManager = WindowManager.Get();
             var isCurrentWindow = windowManager.FindIndex(_naviTarget) == 0;
+            button.onClick.AddListener(OnNaviButtonClick);
             if (isCurrentWindow)
             {
                 button.interactable = false;
                 return;
             }
-            button.onClick.AddListener(OnNaviButtonClick);
         }
 
         protected virtual void OnNaviButtonClick()
         {
+            if (!Interactable) return;
             StartCoroutine(Navigate());
         }
+#if UNITY_EDITOR
+        [CustomEditor(typeof(NaviButton))]
+        public class NaviButtonEditor : WindowNavigationEditor
+        {
+            public override void OnInspectorGUI()
+            {
+                base.OnInspectorGUI();
+            }
+        }
+#endif
     }
 }

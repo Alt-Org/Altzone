@@ -7,11 +7,23 @@ using Debug = UnityEngine.Debug;
 
 using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.AzDebug;
+using Altzone.Scripts.GA;
+using System.Linq;
+using Prg.Scripts.Common;
 
 namespace Altzone.Scripts
 {
     public class ApplicationController : MonoBehaviour
     {
+        public static readonly int VersionNumber = 243;
+
+        public delegate void ApplicationResume();
+        public static event ApplicationResume OnAppResume;
+
+        public delegate void ApplicationPause();
+        public static event ApplicationPause OnAppPause;
+
+
         /// <summary>
         /// Starts the game when (before) first scene is loaded.
         /// </summary>
@@ -38,11 +50,19 @@ namespace Altzone.Scripts
                 .Append(" Screen ").Append(Screen.currentResolution)
                 .ToString();
             Debug.Log(startupMessage);
+
+            AltzoneBattleLink.Init();
+
+            ClickStateHandler.Init();
+
+            InstantiateGlobalGameObjects();
         }
 
         private void OnApplicationPause(bool pause)
         {
             Debug.LogFormat("[ApplicationController] OnApplicationPause ({0})", pause);
+            if (pause) OnAppPause?.Invoke();
+            else OnAppResume?.Invoke();
         }
 
         private void OnApplicationQuit()
@@ -50,6 +70,15 @@ namespace Altzone.Scripts
             Debug.Log("[ApplicationController] OnApplicationQuit");
 
             LoggingEnd();
+        }
+
+        private static void InstantiateGlobalGameObjects()
+        {
+            //Instantiating object from AltZoneResources/Prefabs/GlobalObjects folder. This folder should only contain global prefabs that are instantiated on startup.
+            foreach(Object prefab in Resources.LoadAll("Prefabs/GlobalPrefabs").ToList())
+            {
+                Instantiate(prefab);
+            }
         }
 
         private static void LoggingSetup()

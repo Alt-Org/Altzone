@@ -1,0 +1,52 @@
+/// @file BattleUiPlayerInfo.prefab
+/// <summary>
+/// Prefab for %Battle's PlayerInfo elements (PlayerName and CharacterButtons).
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi. Displays player's characters, their health, and shield health.  
+/// Has a @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement} script which adds multi orientation functionality for the movable element.
+///
+/// ### Structure
+/// - **BattleUiPlayerInfo**  
+///   Parent GameObject with a @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement} script.
+///     - *Components:*
+///         - RectTransform
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMultiOrientationElement}
+///         - CanvasRenderer
+///     - *Children:*
+///         - **HorizontalConfiguration**  
+///           Horizontal orientation's parent GameObject.
+///         - **VerticalConfiguration**  
+///           Vertical orientation's parent GameObject.
+///         - *Shared components:*
+///             - RectTransform
+///         - *Shared children:*
+///             - **PlayerName**  
+///               Displays the player name text.
+///                 - *Components:*
+///                     - RectTransform
+///                     - CanvasRenderer
+///                     - TextMeshPro - Text (UI)
+///                     - WorkSans-SemiBold SDF Material (Material)
+///             - **PlayerCharacterButton** { **1** - **3** }  
+///               Player character button for selecting the player character.
+///                 - *Shared components:*
+///                     - RectTransform
+///                     - CanvasRenderer
+///                     - Image
+///                     - Button
+///                     - Default UI Material (Material)
+///                 - *Shared children:*
+///                     - **CharacterSprite**  
+///                       Player character head sprite.
+///                     - **DamageFill**  
+///                       Fill image for indicating damage taken.
+///                     - **ShieldBackground**  
+///                       Shield background image for shield health.
+///                     - **ShieldFill**  
+///                       Shield fill image for shield health.
+///                     - *Shared components:*
+///                         - RectTransform
+///                         - CanvasRenderer
+///                         - Image
+///                         - Default UI Material (Material)

@@ -8,6 +8,7 @@ public struct PopupData
         OwnTask,
         CancelTask,
         ClanMilestone,
+        MultipleChoice,
     }
     private PopupDataType _type;
     public PopupDataType Type { get { return _type; } }
@@ -19,6 +20,7 @@ public struct PopupData
             case "own_task": return PopupDataType.OwnTask;
             case "cancel_task": return PopupDataType.CancelTask;
             case "clan_milestone": return PopupDataType.ClanMilestone;
+            case "multiple_choice": return PopupDataType.MultipleChoice;
             default: return PopupDataType.OwnTask;
         }
     }
@@ -29,8 +31,8 @@ public struct PopupData
     private PlayerTask _ownPage;
     public PlayerTask OwnPage { get { return _ownPage; } }
 
-    private int? _dailyTaskCardIndex;
-    public int? DailyTaskCardIndex { get { return _dailyTaskCardIndex; } }
+    private DailyQuest _dailyQuest;
+    public DailyQuest DailyQuest { get { return _dailyQuest; } }
 
     private DailyTaskClanReward.ClanRewardData? _clanRewardData;
     public DailyTaskClanReward.ClanRewardData? ClanRewardData { get { return _clanRewardData; } }
@@ -45,7 +47,7 @@ public struct PopupData
         _clanRewardData = null;
         _type = type;
         _location = null;
-        _dailyTaskCardIndex = null;
+        _dailyQuest = null;
     }
 
     /// <summary>
@@ -53,13 +55,27 @@ public struct PopupData
     /// </summary>
     /// <param name="task"></param>
     /// <param name="location"></param>
-    public PopupData(PlayerTask task, Vector3 location, int index)
+    public PopupData(PlayerTask task, Vector3 location, DailyQuest dailyQuest)
     {
         _ownPage = task;
         _clanRewardData = null;
         _type = PopupDataType.OwnTask;
         _location = location;
-        _dailyTaskCardIndex = index;
+        _dailyQuest = dailyQuest;
+    }
+
+    /// <summary>
+    /// Used for showing task info window.
+    /// </summary>
+    /// <param name="task"></param>
+    /// <param name="location"></param>
+    public PopupData(PlayerTask task, Vector3 location)
+    {
+        _ownPage = task;
+        _clanRewardData = null;
+        _type = PopupDataType.OwnTask;
+        _location = location;
+        _dailyQuest = null;
     }
 
     /// <summary>
@@ -73,7 +89,7 @@ public struct PopupData
         _clanRewardData = clanRewardData;
         _type = PopupDataType.ClanMilestone;
         _location = location;
-        _dailyTaskCardIndex = null;
+        _dailyQuest = null;
     }
 
     //public void SetOwnPageData(PlayerTask task)
@@ -81,4 +97,13 @@ public struct PopupData
     //    _ownPage = task;
     //    _type = PopupDataType.OwnTask;
     //}
+
+    public PopupData(PlayerTask task)
+    {
+        _ownPage = task;
+        _clanRewardData = null;
+        _type = PopupDataType.MultipleChoice;
+        _location = null;
+        _dailyQuest = null;
+    }
 }

@@ -12,8 +12,6 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _furnitureObject;
         private Furniture _furniture;
         private FurnitureListObject _furnitureList;
-        [SerializeField]
-        private  int debugValue = 0;
 
         public GameObject FurnitureObject { get => _furnitureObject; set {if (!Application.isPlaying) _furnitureObject = value; } }
         public Furniture Furniture { get => _furniture; set => _furniture = value; }
@@ -24,11 +22,6 @@ namespace MenuUI.Scripts.SoulHome
         void Start()
         {
             ScaleSprite(GetComponent<Image>().sprite, GetComponent<RectTransform>());
-
-            if (debugValue == 1)
-                Furniture = new Furniture(1, "Standard", new Vector2Int(-1, -1), FurnitureSize.OneXTwo, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f, false);
-            else if(debugValue == 2)
-                Furniture = new Furniture(2, "ShortWide", new Vector2Int(-1, -1), FurnitureSize.OneXFour, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f, false);
         }
 
         private void ScaleSprite(Sprite sprite, RectTransform rTransform)

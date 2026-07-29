@@ -1,0 +1,18 @@
+/// @file BattleUiTimer.prefab
+/// <summary>
+/// Prefab for %Battle's timer.
+/// </summary>
+///
+/// Used in both %Battle's UI and BattleUiEditor in MenuUi. Displays the game timer.  
+/// Has a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script since this BattleUi element doesn't need additional functionality.
+///
+/// ### Structure
+/// - **BattleUiTimer**  
+///   Parent GameObject with a @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement} script. Also displays the timer text and @cref{Altzone.Scripts.BattleUiShared,TextScaler} is used to scale it.
+///     - *Components:*
+///         - RectTransform
+///         - @cref{Altzone.Scripts.BattleUiShared,BattleUiMovableElement}
+///         - @cref{Altzone.Scripts.BattleUiShared,TextScaler}
+///         - CanvasRenderer
+///         - TextMeshPro - Text (UI)
+///         - WorkSans-SemiBold SDF Material (Material)

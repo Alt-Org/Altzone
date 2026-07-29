@@ -30,30 +30,43 @@ public class AdEditor : AltMonoBehaviour
     [Header("Frame Selectors")]
     [SerializeField] private Transform _borderSelectionContent;
     [SerializeField] private GameObject _borderFramePrefab;
+    [SerializeField] private DailyTaskSelectButtons _dtSelectButtons;
     [Header("Colour Selectors")]
     [SerializeField] private Transform _backgroundColourSelectorContent;
     [SerializeField] private GameObject _backgroundColourSelectorPrefab;
 
     private AdStoreObject _adData;
     private string _posterName = null;
+    private List<HeartPieceData> _heartPieceData = new();
 
 
     void Start()    
     {
-        StartCoroutine(GetClanData(data=>
+        InitializeAd();
+    }
+
+    private void OnDisable()
+    {
+       CloseEditor();
+    }
+
+    private void InitializeAd()
+    {
+        StartCoroutine(GetClanData(data =>
         {
             if (data != null)
             {
-                if(data.AdData != null) _adData = data.AdData;
+                if (data.AdData != null) _adData = data.AdData;
                 else _adData = new(null, null);
                 _posterName = data.Name;
+                _heartPieceData = data.ClanHeartPieces;
             }
             else
             {
                 _adData = new(null, null);
                 _posterName = "Et ole klaanissa";
             }
-            _adGraphicHandler.SetAdPoster(_adData, _posterName);
+            _adGraphicHandler.SetAdPoster(_adData, _posterName, _heartPieceData);
         }));
 
 
@@ -63,10 +76,12 @@ public class AdEditor : AltMonoBehaviour
         {
             GameObject frameObject = Instantiate(_borderFramePrefab, _borderSelectionContent);
             frameObject.GetComponent<Image>().sprite = frame.Image;
-            float objectHeight= _borderSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            float objectHeight = _borderSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
             frameObject.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
             frameObject.GetComponent<Button>().onClick.AddListener(() => ChangeBorder(frame));
+            if(_dtSelectButtons)_dtSelectButtons.AddButton(new(frameObject.GetComponent<Button>(), frameObject.GetComponent<Image>()));
         }
+        if (_dtSelectButtons) _dtSelectButtons.RefreshListeners();
 
         List<Color> colorList = _borderReference.ColourList;
 
@@ -75,10 +90,10 @@ public class AdEditor : AltMonoBehaviour
             GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
             colourObject.GetComponent<Image>().color = colour;
             float objectWidth = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width;
-            colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth*0.4f);
+            colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
             colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeColor(colour));
         }
-        _backgroundColourSelectorContent.GetComponent<VerticalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width*0.1f;
+        _backgroundColourSelectorContent.GetComponent<VerticalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width * 0.1f;
 
         StartCoroutine(SetFrameSelectionSize());
     }
@@ -98,7 +113,13 @@ public class AdEditor : AltMonoBehaviour
         StartCoroutine(GetClanData(data =>
         {
             data.AdData = _adData;
-            StartCoroutine(SaveClanData(clanData => data = clanData, data));
+            StartCoroutine(ServerManager.Instance.UpdateClanAdPoster(_adData, success =>
+            {
+                if (success)
+                {
+                    StartCoroutine(SaveClanData(clanData => data = clanData, data));
+                }
+            }));
         }));
     }
 
@@ -123,6 +144,6 @@ public class AdEditor : AltMonoBehaviour
 
     public void CloseEditor()
     {
-        gameObject.SetActive(false);
+        if(gameObject.activeSelf) gameObject.SetActive(false);
     }
 }

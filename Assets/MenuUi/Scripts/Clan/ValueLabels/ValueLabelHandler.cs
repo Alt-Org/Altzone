@@ -9,44 +9,76 @@ public class ValueLabelHandler : MonoBehaviour
     [SerializeField] private LabelReference _reference;
     [SerializeField] private TextMeshProUGUI _textLabel;
     [SerializeField] private Image _labelImage;
+
+    [Header("Selection visuals")]
+    [SerializeField] private GameObject _highlightBackground;
+    [SerializeField] private TMP_FontAsset _normalFont;
+    [SerializeField] private TMP_FontAsset _selectedFont;
+
+    [Header("Checkbox")]
+    [SerializeField] private GameObject _checkedObject;
+    [SerializeField] private GameObject _uncheckedObject;
+
     [field: SerializeField] public Button _selectButton { get; private set; }
 
     public LabelInfoObject labelInfo { get; private set; }
 
-    void Start()
-    {
-        CheckLabelSize();
-    }
-
     public void SetLabelInfo(ClanValues value, bool showName)
     {
         labelInfo = _reference.GetLabelInfo(value);
-        _labelImage.sprite = labelInfo.Image;
 
-        if (showName)
+        if (_labelImage != null)
         {
-            _textLabel.enabled = true;
-            _textLabel.text = labelInfo.Name;   
+            _labelImage.sprite = labelInfo.Image;
+            _labelImage.preserveAspect = true;
         }
-        else
-        {
-            _textLabel.enabled = false;
-        } 
-    }
 
-    public void CheckLabelSize()
-    {
-        float imagewidth = _labelImage.GetComponent<RectTransform>().sizeDelta.x;
-        float imageleftpos = _labelImage.GetComponent<RectTransform>().localPosition.x;
-        _textLabel.GetComponent<RectTransform>().offsetMin = new(imagewidth + imageleftpos + 10, _textLabel.GetComponent<RectTransform>().offsetMin.y);
+        if (_textLabel != null)
+        {
+            _textLabel.enabled = showName;
+            _textLabel.text = showName ? labelInfo.Name : string.Empty;
+        }
+
+        SetUnselectedVisuals();
     }
 
     public void Select()
     {
-        _textLabel.text = labelInfo.Name + " (Valittu)";
+        SetSelectedVisuals();
     }
+
     public void Unselect()
     {
-        _textLabel.text = labelInfo.Name;
+        SetUnselectedVisuals();
+    }
+
+    private void SetSelectedVisuals()
+    {
+        if (_highlightBackground != null)
+            _highlightBackground.SetActive(true);
+
+        if (_textLabel != null && _selectedFont != null)
+            _textLabel.font = _selectedFont;
+
+        if (_checkedObject != null)
+            _checkedObject.SetActive(true);
+
+        if (_uncheckedObject != null)
+            _uncheckedObject.SetActive(false);
+    }
+
+    private void SetUnselectedVisuals()
+    {
+        if (_highlightBackground != null)
+            _highlightBackground.SetActive(false);
+
+        if (_textLabel != null && _normalFont != null)
+            _textLabel.font = _normalFont;
+
+        if (_checkedObject != null)
+            _checkedObject.SetActive(false);
+
+        if (_uncheckedObject != null)
+            _uncheckedObject.SetActive(true);
     }
 }

@@ -14,7 +14,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public GalleryCharacterInfo GetCharacterPrefabInfoFast(int prefabId)
         {
-            CharacterClassID characterClass = CustomCharacter.GetClassID((CharacterID)prefabId);
+            CharacterClassType characterClass = CustomCharacter.GetClass((CharacterID)prefabId);
 
             int classValue = (int)characterClass >> 8;
             classValue--;
@@ -39,12 +39,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public GalleryCharacterInfo GetCharacterPrefabInfoSafe(int prefabId)
         {
-            CharacterClassID characterClass = CustomCharacter.GetClassID((CharacterID)prefabId);
+            CharacterClassType characterClass = CustomCharacter.GetClass((CharacterID)prefabId);
 
             GalleryCharacterClassInfo classObject = null;
             foreach (GalleryCharacterClassInfo classInfo in _info)
             {
-                if (classInfo.id == characterClass)
+                if (classInfo.Type == characterClass)
                 {
                     classObject = classInfo;
                     break;
@@ -81,7 +81,7 @@ namespace MenuUi.Scripts.CharacterGallery
     public class GalleryCharacterClassInfo
     {
         public string Name;
-        public CharacterClassID id;
+        public CharacterClassType Type;
         public List<GalleryCharacterInfo> list;
     }
 }

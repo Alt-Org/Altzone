@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Login;
@@ -31,6 +32,8 @@ namespace MenuUi.Scripts.Loader
         private WindowNavigation _mainMenuNavigation;
         [SerializeField]
         private WindowNavigation _introStoryNavigation;
+        [SerializeField]
+        private WindowNavigation _languageNavigation;
 
         private string _currentAccessToken = null;
 
@@ -43,7 +46,7 @@ namespace MenuUi.Scripts.Loader
             _loginSuccess.OnLogInPanelReturn += CloseLogInScreen;
             _changeAccountHandler.OnChangeAccountEvent += ChangeAccount;
             _loadInfoController.OnMoveToMain += MoveToMain;
-            CheckPrivacy();
+            StartCoroutine(WaitVersionCheck());
         }
 
         private void OnDisable()
@@ -55,6 +58,23 @@ namespace MenuUi.Scripts.Loader
             _loginSuccess.OnLogInPanelReturn -= CloseLogInScreen;
             _changeAccountHandler.OnChangeAccountEvent -= ChangeAccount;
             _loadInfoController.OnMoveToMain -= MoveToMain;
+        }
+
+        private IEnumerator WaitVersionCheck()
+        {
+            _loadInfoController.Status = LogInStatus.VersionCheck;
+            yield return new WaitUntil(() => GameLoader.Instance.VersionCheckFinished);
+            CheckLanguage();
+        }
+
+        private void CheckLanguage()
+        {
+            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.None)
+                StartCoroutine(_languageNavigation.Navigate());
+            else
+            {
+                CheckPrivacy();
+            }
         }
 
         private void CheckPrivacy()
@@ -70,6 +90,7 @@ namespace MenuUi.Scripts.Loader
         private void AttemptLogIn()
         {
             _loadInfoController.LogIn();
+            if (!AppPlatform.IsEditor || !AppPlatform.IsSimulator) GameConfig.Get().GameVersionType = VersionType.TurboEducation;
             StartCoroutine(ServerManager.Instance.LogIn());
         }
 
