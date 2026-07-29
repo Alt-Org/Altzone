@@ -451,8 +451,20 @@ namespace Battle.QSimulation.Player
 
                     // save entity
                     playerCharacterEntityArray[playerCharacterNumber] = playerCharacterEntityTemplate;
+                }
 
-                    BattlePlayerClassManager.CreationParameters creationParameters = BattlePlayerClassManager.OnCreate(f, playerHandle.ConvertToPublic(), playerDataPtr, playerCharacterEntity);
+                //} create playerEntity for each character
+
+                BattleEntityID characterEntityGroupID = BattleEntityManager.RegisterCompound(f, playerCharacterEntityArray);
+
+                //{ post registration initialization
+
+                for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
+                {
+                    BattlePlayerEntityRef       playerCharacterEntity = (BattlePlayerEntityRef)playerCharacterEntityArray[playerCharacterNumber].ParentEntityRef;
+                    BattlePlayerDataQComponent* playerData            = playerCharacterEntity.GetDataQComponent(f);
+
+                    BattlePlayerClassManager.CreationParameters creationParameters = BattlePlayerClassManager.OnCreate(f, playerHandle.ConvertToPublic(), playerData, playerCharacterEntity);
 
                     // attach shield
                     if (creationParameters.AttachedShieldNumber >= 0)
@@ -461,16 +473,14 @@ namespace Battle.QSimulation.Player
                     }
 
                     // initialize view
-                    f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerCharacterId, playerCharacterClass, playerCharacterShieldCount, BattleGridManager.GridScaleFactor);
+                    f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerData->CharacterId, playerData->CharacterClass, playerData->ShieldCount, BattleGridManager.GridScaleFactor);
 
                     // set playerManagerData for player character
-                    BattlePlayerCharacterState playerCharacterState = playerDataPtr->Stats.Defence > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead;
+                    BattlePlayerCharacterState playerCharacterState = playerData->Stats.Defence > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead;
                     playerHandle.SetCharacterState(playerCharacterNumber, playerCharacterState);
                 }
 
-                //} create playerEntity for each character
-
-                BattleEntityID characterEntityGroupID = BattleEntityManager.RegisterCompound(f, playerCharacterEntityArray);
+                //} post registration initialization
 
                 // set playerManagerData for player
                 playerHandle.PlayState              = BattlePlayerPlayState.OutOfPlay;

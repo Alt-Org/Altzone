@@ -8,6 +8,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5413487031723598356, guid: 7b944e8185c6ffd4e9cd7846fa9940e2,
+        type: 3}
+      propertyPath: Prototype.HitboxList.Array.data[0].CollisionType.Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5521468026819928245, guid: 7b944e8185c6ffd4e9cd7846fa9940e2,
         type: 3}
       propertyPath: m_Name
