@@ -461,9 +461,8 @@ namespace Battle.QSimulation.Player
 
                 for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
                 {
-                    BattlePlayerEntityRef playerCharacterEntity = (BattlePlayerEntityRef)playerCharacterEntityArray[playerCharacterNumber].ParentEntityRef;
-
-                    BattlePlayerDataQComponent* playerData = playerCharacterEntity.GetDataQComponent(f);
+                    BattlePlayerEntityRef       playerCharacterEntity = (BattlePlayerEntityRef)playerCharacterEntityArray[playerCharacterNumber].ParentEntityRef;
+                    BattlePlayerDataQComponent* playerData            = playerCharacterEntity.GetDataQComponent(f);
 
                     BattlePlayerClassManager.CreationParameters creationParameters = BattlePlayerClassManager.OnCreate(f, playerHandle.ConvertToPublic(), playerData, playerCharacterEntity);
 
