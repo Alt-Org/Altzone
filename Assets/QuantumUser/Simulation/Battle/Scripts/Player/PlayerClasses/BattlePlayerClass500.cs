@@ -1,3 +1,8 @@
+/// @file BattlePlayerClass500.cs
+/// <summary>
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClass500} class which handles player character class logic for the 500 class.
+/// </summary>
+
 // Quantum usings
 using Quantum;
 using Photon.Deterministic;
@@ -8,13 +13,19 @@ using Battle.QSimulation.Projectile;
 
 namespace Battle.QSimulation.Player
 {
+    /// <summary>
+    /// %Player character class logic for the 500 class.
+    /// </summary>
+    ///
+    /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.}<br/>
+    /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
     public class BattlePlayerClass500 : BattlePlayerClassBase
     {
         /// <summary>The BattlePlayerCharacterClass this class is for.</summary>
         public override BattlePlayerCharacterClass Class { get; } = BattlePlayerCharacterClass.Class500;
 
         /// <summary>
-        /// Called by BattlePlayerClassManager.
+        /// Called by BattlePlayerClassManager. Teleports projectile to the soulwall
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
