@@ -154,6 +154,42 @@ public class AvatarDesignLoader : AltMonoBehaviour
         return avatarVisualData;
     }
 
+    public static AvatarVisualData CreateAvatarVisualDataFallback(AvatarData avatarData, CharacterID characterId)
+    {
+        if (avatarData == null)
+        {
+            Debug.LogError("AvatarData is null.");
+            return null;
+        }
+
+        AvatarPartsReference avatarPartsReference = AvatarPartsReference.Instance;
+        if (avatarPartsReference == null)
+        {
+            Debug.LogWarning("Cannot create avatar visual data: AvatarPartsReference is missing.");
+            return null;
+        }
+
+        var avatarVisualData = new AvatarVisualData();
+        foreach (var pieceId in AllAvatarPieces)
+        {
+            var pieceIdValue = avatarData.GetPieceID(pieceId);
+            if (pieceIdValue == 0)
+            {
+                continue;
+            }
+
+            var partInfo = avatarPartsReference.GetAvatarPartById(pieceIdValue.ToString());
+            avatarVisualData.SetAvatarPiece(pieceId, partInfo);
+            ColorUtility.TryParseHtmlString(avatarData.GetPieceColor(pieceId), out Color color);
+            avatarVisualData.SetColor(pieceId, color);
+        }
+
+        SetAvatarColor(avatarVisualData, avatarData, null);
+        avatarVisualData.ClassColor = ResolveClassColor(characterId);
+
+        return avatarVisualData;
+    }
+
     private void EnsureValidAvatarData(PlayerData playerData)
     {
         AvatarData avatarData = playerData?.AvatarData;
@@ -318,7 +354,17 @@ public class AvatarDesignLoader : AltMonoBehaviour
         {
             avatarVisualData.ClassColor = Color.white;
         }
-}
+    }
+
+    private static Color ResolveClassColor(CharacterID characterId)
+    {
+        if (characterId == CharacterID.None || ClassReference.Instance == null)
+        {
+            return Color.white;
+        }
+
+        return ClassReference.Instance.GetColor(BaseCharacter.GetClass(characterId));
+    }
 
     #endregion
 

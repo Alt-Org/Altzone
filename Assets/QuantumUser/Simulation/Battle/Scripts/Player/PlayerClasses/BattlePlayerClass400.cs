@@ -53,13 +53,13 @@ namespace Battle.QSimulation.Player
             if (grab)
             {
                 Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
-                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntity);
+                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntityRef);
 
                 FPVector2 toProjectile = transformProjectile->Position - transformPlayer->Position;
 
                 BattleProjectileQSystem.SetHeld(projectileCollisionData->Projectile, true);
                 data->IsHoldingProjectile = true;
-                data->HeldProjectileEntity = projectileCollisionData->ProjectileEntity;
+                data->HeldProjectileEntity = projectileCollisionData->ProjectileEntityRef;
                 data->HeldProjectileAngleRadians = FPVector2.RadiansSigned(FPVector2.Up, toProjectile);
                 data->HeldProjectileDistance = shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset + projectileCollisionData->Projectile->Radius;
                 data->HoldStartFrame = f.Number;
@@ -68,8 +68,8 @@ namespace Battle.QSimulation.Player
             {
                 BattleProjectileQSystem.HandleIntersection(f,
                     projectileCollisionData->Projectile,
-                    projectileCollisionData->ProjectileEntity,
-                    projectileCollisionData->OtherEntity,
+                    projectileCollisionData->ProjectileEntityRef,
+                    projectileCollisionData->OtherEntityRef,
                     shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f),
                     shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset
                 );

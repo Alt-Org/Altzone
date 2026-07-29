@@ -137,6 +137,19 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
         public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput) { }
+
+        /// <summary>
+        /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
+        /// <see cref="BattlePlayerClassManager.OnGameStart(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnGameStart</see> method
+        /// when the game starts.<br/>
+        /// Provides a hook for derived classes to implement character class specific simulation logic.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
+        /// <param name="playerEntity">Reference to the player entity.</param>
+        public virtual unsafe void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity) { }
     }
 
     /// <summary>
@@ -387,6 +400,23 @@ namespace Battle.QSimulation.Player
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
             playerClass.OnUpdate(f, playerHandle, playerData, playerEntity, specialInput);
+        }
+
+        /// <summary>
+        /// Calls the OnGameStart method of the class of the given player character, if it is implemented.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Reference to the player handle.</param>
+        /// <param name="playerData">Pointer to the player data.</param>
+        /// <param name="playerEntity">Reference to the player entity.</param>
+        public static void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        {
+            ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
+
+            if (returnCode != ReturnCode.ClassRetrieved) return;
+
+            playerClass.OnGameStart(f, playerHandle, playerData, playerEntity);
         }
 
         /// <value>Constant for a class index error.</value>

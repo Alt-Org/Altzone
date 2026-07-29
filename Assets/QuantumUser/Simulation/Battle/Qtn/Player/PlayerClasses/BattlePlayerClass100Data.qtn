@@ -8,4 +8,6 @@ component BattlePlayerClass100DataQComponent
     FrameTimer JoystickTimer;
     [HideInInspector]
     FrameTimer CooldownTimer;
+    [HideInInspector]
+    FrameTimer PlacementTimer;
 }

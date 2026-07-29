@@ -1,117 +1,153 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 using Altzone.Scripts.Model.Poco.Game;
-//using Photon.Pun;
+using System;
 
-public class Raid_LootTracking : MonoBehaviour//PunCallbacks
+public class Raid_LootTracking : MonoBehaviour
 {
     [SerializeField, Header("Reference scripts")] private Raid_References raid_References;
     [SerializeField] private ExitRaid exitRaid;
 
-    [SerializeField, Header("Reference game components")] private TMP_Text CurrentLootText;
-    [SerializeField] private TMP_Text OutOfText;
-    [SerializeField] private TMP_Text MaxLootText;
-    [SerializeField] private TMP_Text HeartLootText;
+    [SerializeField, Header("Reference game components")] private TMP_Text HeartLootText;
+    [SerializeField] private Sprite BrokenHeartSprite;
     
     [SerializeField, Header("Variables")] public float CurrentLootWeight;
     [SerializeField] public float MaxLootWeight;
 
-    //public PhotonView _photonView { get; private set; }
     public List<GameFurniture> ListOfCollectedLoot = new List<GameFurniture>();
+    public event Action CollectedLootChanged;
+
+    private readonly List<float> _collectedLootWeights = new();
 
     public void Awake()
     {
+        if (raid_References == null)
+        {
+            raid_References = Raid_References.Instance;
+        }
+
         if (exitRaid == null)
         {
             exitRaid = ExitRaid.Instance;
         }
-
-/*        _photonView = gameObject.AddComponent<PhotonView>();
-        _photonView.ViewID = 3;
-        if (PhotonNetwork.IsMasterClient)
-        {
-            float randomlootWeight = Random.Range(140, 241);
-            _photonView.RPC(nameof(SetRandomMaxLootWeightRPC), RpcTarget.AllBuffered, randomlootWeight);
-        }
-
-        ResetLootCount();*/
     }
 
-    /*[PunRPC]*/
     public void SetRandomMaxLootWeightRPC(float maxLootWeight)
     {
         MaxLootWeight = maxLootWeight;
-        //Debug.Log("maxLootWeight has been set");
-        this.MaxLootText.text = MaxLootWeight.ToString() + " kg";
         UpdateHeartLootText();
     }
 
     public void ResetLootCount()
     {
-        ListOfCollectedLoot = new List<GameFurniture>();
+        ListOfCollectedLoot.Clear();
+        _collectedLootWeights.Clear();
         CurrentLootWeight = 0;
-        CurrentLootText.text = CurrentLootWeight.ToString() + " kg";
-        OutOfText.text = "Out of";
-        MaxLootText.text =  MaxLootWeight.ToString() + " kg";
         UpdateHeartLootText();
+        CollectedLootChanged?.Invoke();
     }
 
-    public void SetLootCount(GameFurniture furniture, float MaxLootWeight, float lootWeightMultiplier = 1f)
+    public void SetLootCount(GameFurniture furniture, float lootWeightMultiplier = 1f)
     {
-        float AddedLootWeight = (float)furniture.Weight * lootWeightMultiplier;
+        if (furniture == null)
+        {
+            return;
+        }
+
+        float addedLootWeight = (float)furniture.Weight * lootWeightMultiplier;
         ListOfCollectedLoot.Add(furniture);
+        _collectedLootWeights.Add(addedLootWeight);
 
-        float NewLootWeight = CurrentLootWeight + AddedLootWeight;
-        CurrentLootWeight = NewLootWeight;
+        CurrentLootWeight += addedLootWeight;
 
-        CurrentLootText.text = NewLootWeight.ToString() + " kg";
-        MaxLootText.text = MaxLootWeight.ToString() + " kg";
         UpdateHeartLootText();
+        CollectedLootChanged?.Invoke();
         if (CurrentLootWeight > MaxLootWeight)
         {
-            //EndScreen
-
-            //HeartBreak animation
-            Color tmp = raid_References.Heart.GetComponent<Image>().color;
-            Image[] children = raid_References.HeartHalves.GetComponentsInChildren<Image>();
-            foreach (Image image in children)
-            {
-                image.color = tmp;
-            }
-            raid_References.HeartHalves.SetActive(true);
-            raid_References.Heart.GetComponent<Image>().enabled = false;
-
-            if (exitRaid == null)
-            {
-                exitRaid = ExitRaid.Instance;
-            }
-
-            if (exitRaid != null)
-            {
-                exitRaid.EndRaid(ExitRaid.RaidEndReason.OutOfSpace);
-            }
-            else
-            {
-                Raid_EndMenu endMenu = raid_References.EndMenuController;
-                if (endMenu != null)
-                {
-                    endMenu.SetEndReasonText(ExitRaid.RaidEndReason.OutOfSpace);
-                    endMenu.SetOverWeightLimitBackground(true);
-                    endMenu.SetSpaceRemainingText(CurrentLootWeight, MaxLootWeight);
-                }
-
-                raid_References.ShowEndMenu();
-            }
+            TriggerOverWeightEnd(MaxLootWeight);
         }
+    }
+
+    public bool RemoveCollectedLootAt(int lootIndex)
+    {
+        if (lootIndex < 0 || lootIndex >= ListOfCollectedLoot.Count)
+        {
+            return false;
+        }
+
+        GameFurniture removedFurniture = ListOfCollectedLoot[lootIndex];
+        float removedWeight = GetCollectedLootWeight(lootIndex, removedFurniture);
+        ListOfCollectedLoot.RemoveAt(lootIndex);
+        if (lootIndex < _collectedLootWeights.Count)
+        {
+            _collectedLootWeights.RemoveAt(lootIndex);
+        }
+
+        CurrentLootWeight = Mathf.Max(0f, CurrentLootWeight - removedWeight);
+        UpdateHeartLootText();
+        CollectedLootChanged?.Invoke();
+        return true;
     }
 
     private void UpdateHeartLootText()
     {
-        HeartLootText.text = $"{CurrentLootWeight:F0}kg\n/{MaxLootWeight:F0}kg";
+        if (HeartLootText != null)
+        {
+            HeartLootText.text = $"{CurrentLootWeight:F0}kg\n/{MaxLootWeight:F0}kg";
+        }
+    }
+
+    private float GetCollectedLootWeight(int lootIndex, GameFurniture fallbackFurniture)
+    {
+        return lootIndex >= 0 && lootIndex < _collectedLootWeights.Count
+            ? _collectedLootWeights[lootIndex]
+            : GetFurnitureWeight(fallbackFurniture);
+    }
+
+    private static float GetFurnitureWeight(GameFurniture furniture)
+    {
+        return furniture != null ? (float)furniture.Weight : 0f;
+    }
+
+    private void TriggerOverWeightEnd(float maxLootWeight)
+    {
+        Image heartImage = raid_References != null
+            && raid_References.Heart != null
+            && raid_References.Heart.TryGetComponent(out Image image)
+            ? image
+            : null;
+
+        if (heartImage != null)
+        {
+            if (BrokenHeartSprite != null)
+            {
+                heartImage.sprite = BrokenHeartSprite;
+            }
+
+            heartImage.enabled = true;
+        }
+
+        if (exitRaid != null)
+        {
+            exitRaid.EndRaid(ExitRaid.RaidEndReason.OutOfSpace);
+        }
+        else
+        {
+            Raid_EndMenu endMenu = raid_References != null
+                ? raid_References.EndMenuController
+                : null;
+            if (endMenu != null)
+            {
+                endMenu.SetEndReasonText(ExitRaid.RaidEndReason.OutOfSpace);
+                endMenu.SetLossHaloVisible(true);
+                endMenu.SetOverWeightLimitBackground(true);
+                endMenu.SetSpaceRemainingText(CurrentLootWeight, maxLootWeight);
+            }
+
+            raid_References?.ShowEndMenu();
+        }
     }
     
 }

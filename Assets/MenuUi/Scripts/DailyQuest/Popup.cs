@@ -61,6 +61,7 @@ public class Popup : MonoBehaviour
     [SerializeField] private TMP_Text _acceptConfirmButtonText;
     [Space]
     [SerializeField] private TextMeshProUGUI _taskDescription;
+    [SerializeField] private TextMeshProUGUI _taskExecution;
     [SerializeField] private TextMeshProUGUI _taskGameLiteracy;
     [SerializeField] private TextMeshProUGUI _taskPointsText;
     [SerializeField] private TextMeshProUGUI _taskCoinsText;
@@ -240,7 +241,8 @@ public class Popup : MonoBehaviour
 
     private void SetTaskDescription(PlayerTask data)
     {
-        _taskDescription.text = data.Content;
+        _taskDescription.text = data.Description;
+        _taskExecution.text = data.Execution;
     }
 
     private void SetTaskGameLiteracy(PlayerTask data)
@@ -345,7 +347,7 @@ public class Popup : MonoBehaviour
             }
             else
             {
-                _messageTexts[i].text = task.Content; // For others, just keep the original
+                _messageTexts[i].text = task.Description; // For others, just keep the original
             }
         }
     }

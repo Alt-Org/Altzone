@@ -300,9 +300,11 @@ namespace MenuUi.Scripts.Login
                             ""password"":""{_registerPasswordInputField.text}"",
                             ""securityQuestion"":""{passwordHint}"",
                             ""securityAnswer"":""{answer}"",
+                            ""environment"": 0,
                             ""Player"":{{""name"":""{username}"",
                             ""backpackCapacity"":{255},
                             ""uniqueIdentifier"":""{username}"",
+                            ""environment"": 0,
                             ""above13"":{_registerAgeVerificationToggle.isOn.ToString().ToLower()},
                             ""parentalAuth"":{_registerParentalAuthToggle.isOn.ToString().ToLower()}}}}}";
             }
@@ -310,12 +312,16 @@ namespace MenuUi.Scripts.Login
             {
                 body = @$"{{""username"":""{_registerUsernameInputField.text}"",
                             ""password"":""{_registerPasswordInputField.text}"",
+                            ""environment"": 0,
                             ""Player"":{{""name"":""{username}"",
                             ""backpackCapacity"":{255},
                             ""uniqueIdentifier"":""{username}"",
+                            ""environment"": 0,
                             ""above13"":{_registerAgeVerificationToggle.isOn.ToString().ToLower()},
                             ""parentalAuth"":{_registerParentalAuthToggle.isOn.ToString().ToLower()}}}}}";
             }
+
+            Debug.LogWarning(body);
 
             StartCoroutine(WebRequests.Post(ServerManager.SERVERADDRESS + "profile", body, null, request =>
             {
