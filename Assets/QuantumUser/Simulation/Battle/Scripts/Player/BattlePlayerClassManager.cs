@@ -241,7 +241,7 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerCharacterClass.Class500:
                     if (s_classArray[ClassIndex500].State != ClassState.NotLoaded) break;
-                    LoadClass(characterClass, ClassIndex500, new BattlePlayerClass500(), null, isTestMode);
+                    LoadClass(characterClass, ClassIndex500, null, new BattlePlayerClass500Test(), isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Class600:
