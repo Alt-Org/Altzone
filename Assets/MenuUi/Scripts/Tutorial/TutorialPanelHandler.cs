@@ -49,7 +49,11 @@ public class TutorialPanelHandler : MonoBehaviour
                 cutout.preserveAspect = imageToCutOut.preserveAspect;
                 cutout.transform.localScale = imageToCutOut.transform.localScale;
                 cutout.color = imageToCutOut.color;
-                if (cutout.sprite == null || _useCutOut) _fadeLayer.transform.SetAsLastSibling();
+                if (cutout.sprite == null || _useCutOut)
+                {
+                    _fadeLayer.transform.SetAsLastSibling();
+                    _tutorialStopButton.transform.SetAsLastSibling();
+                }
                 else cutout.material = null;
             }
             j++;
