@@ -320,8 +320,19 @@ public class ServerManager : MonoBehaviour
             OnLogInStatusChanged?.Invoke(true);
             _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
 
-            MqttClient client = new(DEVADDRESS);
-            client.Connect(Player._id);
+            MqttClient client = new("devapi.altzone.fi");
+            try
+            {
+                client.Connect(Player._id);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+            finally
+            {
+                Debug.LogWarning(client.IsConnected);
+            }
 
             if (Clan == null)
             {
