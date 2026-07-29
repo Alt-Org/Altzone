@@ -22,16 +22,16 @@ namespace Battle.QSimulation.Player
     /// @bigtext{Filled with data from @ref BattlePlayerClass600QSpec.asset "BattlePlayerClass600QSpec" data asset.}
     public class BattlePlayerClass600QSpec : AssetObject
     {
-        [Tooltip("")]
-        /// <summary></summary>
+        [Tooltip("Time in seconds before projectile is released if not moving.")]
+        /// <summary>Time in seconds before projectile is released if not moving.</summary>
         public FP HoldMinDurationSec;
 
-        [Tooltip("")]
-        /// <summary></summary>
+        [Tooltip("Time in seconds before projectile is released if moving.")]
+        /// <summary>Time in seconds before projectile is released if moving.</summary>
         public FP HoldMaxDurationSec;
 
-        [Tooltip("")]
-        /// <summary></summary>
+        [Tooltip("Time in seconds before projectile is released after stopping.")]
+        /// <summary>Time in seconds before projectile is released after stopping.</summary>
         public FP ReleaseBufferSec;
     }
 }

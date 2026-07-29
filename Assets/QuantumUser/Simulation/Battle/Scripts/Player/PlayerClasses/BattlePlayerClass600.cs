@@ -26,7 +26,7 @@ namespace Battle.QSimulation.Player
         public override BattlePlayerCharacterClass Class { get; } = BattlePlayerCharacterClass.Class600;
 
         /// <summary>
-        /// Called by BattlePlayerClassManager.
+        /// Called by BattlePlayerClassManager. Holds the projectile where it hits.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -68,7 +68,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Called every frame to update the player.
+        /// Called every frame to update the player. Moves the projectile when it is held, and releases it based on timers.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
