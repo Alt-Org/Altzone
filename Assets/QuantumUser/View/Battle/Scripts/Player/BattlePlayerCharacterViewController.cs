@@ -320,6 +320,11 @@ namespace Battle.View.Player
         [Tooltip("Array of character GameObjects")]
         [SerializeField] private GameObject[] _characterGameObjects;
 
+        /// <summary>[SerializeField] Reference to the particle system that plays when character gets hit.</summary>
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        [Tooltip("Reference to the particle system that plays when character gets hit")]
+        [SerializeField] private ParticleSystem _particleSystem;
+
         //} references
 
         //{ settings
@@ -532,6 +537,8 @@ namespace Battle.View.Player
             }
 
             SetDefaultBodyPartSprites();
+
+            _particleSystem.gameObject.transform.localScale *= scale;
 
             //} initialize visuals
 
@@ -860,6 +867,8 @@ namespace Battle.View.Player
 
                 _ => throw new NotImplementedException()
             };
+
+            _particleSystem.Play();
 
             SetHeadSprite(sprite);
 
