@@ -295,25 +295,15 @@ public class ParentalControlManager : MonoBehaviour
         PlayerPrefs.SetInt("ParentalControl", 0);
         PlayerPrefs.SetString("ParentalControlPassword", "");
 
-        PlayerPrefs.SetInt("AllowLinks", 0);
         _carrier.AllowLinks = false;
-        PlayerPrefs.SetInt("AllowChat", 0);
         _carrier.ChatMessages = false;
-        PlayerPrefs.SetInt("AllowEmojis", 0);
         _carrier.AllowEmojis = false;
-        PlayerPrefs.SetInt("AllowTreasureHunt", 0);
         _carrier.AllowTreasureHunt = false;
-        PlayerPrefs.SetFloat("MonthlyLimit", 0);
         _carrier.MonthlyLimit = 0;
-        PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
-        PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
         _carrier.ActivatePurchasesSeparately = false;
-        PlayerPrefs.SetFloat("MaxPlayTime", 1); //There will always be a minimum time limit of 1 hour. In case the user forgets the password, they can still play a bit
         PlayerPrefs.SetFloat("DailyTimeLimit", 1); //for some reason there has also been a setting that is called DailyTimeLimit, current use unknown
         _carrier.MaxPlayTime = 1;
-        PlayerPrefs.SetInt("EndMidMatch", 0);
         _carrier.EndMidMatch = false;
-        PlayerPrefs.SetInt("EndAfterMatch", 1);
         _carrier.EndAfterMatch = true;
         PlayerPrefs.Save();
         SetInternetLinksToggle();
@@ -348,15 +338,6 @@ public class ParentalControlManager : MonoBehaviour
 
     private void SetInternetLinks ()
     {
-        if (internetLinksToggle.isOn) {
-            PlayerPrefs.SetInt("AllowLinks", 1);
-            
-
-        } else
-        {
-            PlayerPrefs.SetInt("AllowLinks", 0);
-        }
-
         _carrier.AllowLinks = internetLinksToggle.isOn;
         
     }
@@ -369,14 +350,6 @@ public class ParentalControlManager : MonoBehaviour
 
     private void SetChatMessages()
     {
-        if (chatMessagesToggle.isOn)
-        {
-            PlayerPrefs.SetInt("AllowChat", 1);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("AllowChat", 0);
-        }
         _carrier.ChatMessages = chatMessagesToggle.isOn;
         
     }
@@ -392,14 +365,6 @@ public class ParentalControlManager : MonoBehaviour
 
     private void SetEmojis()
     {
-        if (emojiCommentsToggle.isOn)
-        {
-            PlayerPrefs.SetInt("AllowEmojis", 1);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("AllowEmojis", 0);
-        }
         _carrier.AllowEmojis = emojiCommentsToggle.isOn;
 
 
@@ -414,15 +379,6 @@ public class ParentalControlManager : MonoBehaviour
 
     private void SetTreasureHunt()
     {
-        if (treasureHuntToggle.isOn)
-        {
-            PlayerPrefs.SetInt("AllowTreasureHunt", 1);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("AllowTreasureHunt", 0);
-        }
-
         _carrier.AllowTreasureHunt = treasureHuntToggle.isOn;
     }
     private void SetTreasureHuntToggle()
@@ -456,7 +412,6 @@ public class ParentalControlManager : MonoBehaviour
 
         if (string.IsNullOrEmpty(money))
         {
-            PlayerPrefs.SetFloat("MonthlyLimit", 0);
             PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
             _carrier.MonthlyLimit = 0;
             PlayerPrefs.Save();
@@ -466,7 +421,6 @@ public class ParentalControlManager : MonoBehaviour
         }
         else if (moneyFloat < 0) //you can't set a negative value for the money limit
         {
-            PlayerPrefs.SetFloat("MonthlyLimit", 0);
             PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
             _carrier.MonthlyLimit = 0;
             //There could be some kind of message, "please input a positive value". On the other hand value is set to 0 automatically, if user tries to input <0
@@ -476,7 +430,6 @@ public class ParentalControlManager : MonoBehaviour
         }
         else //if (moneyFloat >= 0) 
         {
-            PlayerPrefs.SetFloat("MonthlyLimit", float.Parse(money));
             PlayerPrefs.SetFloat("MonthlySpendingLimit", float.Parse(money));
             _carrier.MonthlyLimit = float.Parse(money);
             PlayerPrefs.Save();
@@ -497,17 +450,9 @@ public class ParentalControlManager : MonoBehaviour
 
     private void SetIndependentSpendingActivation()
     {
-        if (independentSpendingActivationToggle.isOn)
-        {
-            PlayerPrefs.SetInt("ActivatePurchasesSeparately", 1);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
-        }
-
         _carrier.ActivatePurchasesSeparately = independentSpendingActivationToggle.isOn;
     }
+
     private void SetIndependentSpendingActivationToggle()
     {
         
@@ -526,15 +471,14 @@ public class ParentalControlManager : MonoBehaviour
 
             if (time > 1 && time <= 24) //The time limit is daily, so it can't go below 0 or above 24 hours. If the user inputs a value below 1, it will be set to 1, if above 24, it will be set to 24
             {
-                PlayerPrefs.SetFloat("MaxPlayTime", time);
                 PlayerPrefs.SetFloat("DailyTimeLimit", time);
                 _carrier.MaxPlayTime = time;
                 PlayerPrefs.Save();
                 GetTimeLimit();
 
             }
-            else if (time > 24) {
-                PlayerPrefs.SetFloat("MaxPlayTime", 24);
+            else if (time > 24)
+            {
                 PlayerPrefs.SetFloat("DailyTimeLimit", 24);
                 _carrier.MaxPlayTime = 24;
                 PlayerPrefs.Save();
@@ -543,8 +487,6 @@ public class ParentalControlManager : MonoBehaviour
             }
             else
             { //There is a minimum time limit of 1 hour per day
-
-                PlayerPrefs.SetFloat("MaxPlayTime", 1);
                 PlayerPrefs.SetFloat("DailyTimeLimit", 1);
                 _carrier.MaxPlayTime = 1;
                 PlayerPrefs.Save();
@@ -566,14 +508,6 @@ public class ParentalControlManager : MonoBehaviour
 
     private void SetEndMidMatch()
     {
-        if (midMatchToggle.isOn)
-        {
-            PlayerPrefs.SetInt("EndMidMatch", 1);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("EndMidMatch", 0);
-        }
         _carrier.EndMidMatch = midMatchToggle.isOn;
     }
     private void SetEndMidMatchToggle()
@@ -584,14 +518,6 @@ public class ParentalControlManager : MonoBehaviour
 
     private void SetEndAfterMatch()
     {
-        if (endMatchToggle.isOn)
-        {
-            PlayerPrefs.SetInt("EndAfterMatch", 1);
-        }
-        else
-        {
-            PlayerPrefs.SetInt("EndAfterMatch", 0);
-        }
         _carrier.EndAfterMatch = endMatchToggle.isOn;
     }
     private void SetEndAfterMatchToggle()
