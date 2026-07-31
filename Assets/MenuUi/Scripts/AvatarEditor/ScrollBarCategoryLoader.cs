@@ -1,131 +1,99 @@
+using System;
 using System.Collections.Generic;
+using Altzone.Scripts.AvatarPartsInfo;
+using Altzone.Scripts.Model.Poco.Player;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.AvatarPartsInfo;
-using System;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
     public class ScrollBarCategoryLoader : MonoBehaviour
     {
-        [SerializeField] private AvatarPartsReference _avatarPartsReference;
-        [SerializeField] private RectTransform _categoryGridContent;
-        [SerializeField] private GameObject _avatarPartCategoryGridCellPrefab;
-        [SerializeField] private RectTransform _categoryGrid;
-        [SerializeField] private VerticalLayoutGroup _verticalLayoutGroup;
-        [SerializeField] private ScrollRect _categoryGridScrollRect;
-        [SerializeField, Range(0f, 0.3f)] private float _horizontalPadding = 0.1f;
-        [SerializeField, Range(0f, 0.3f)] private float _spacing = 0.05f;
-        [SerializeField, Range(0f, 0.2f)] private float _verticalPadding = 0.05f;
-        [SerializeField] private Color _backgroundColor = new(0.5f, 0.5f, 0.5f, 0.5f);
-        [SerializeField] private Sprite _skinColorSelectionCategoryImage;
+        [SerializeField] private AvatarEditorController _controller;
+        [SerializeField] private ColorGridLoader _colorLoader;
 
-        private List<AvatarPartInfo> _avatarPartInfo;
-        private List<string> _allCategoryIds;
-        private float _cellHeight;
-        private float _actualSpacing;
-        private float _actualVerticalPadding;
-        private float _viewPortHeight;
-        private int _uniqueCellAmount;
-        private readonly int _cellsShownAtATime = 3;
-        public float cellHeight => _cellHeight;
-        public float spacing => _actualSpacing;
-        public int uniqueCellAmount => _uniqueCellAmount;
+        [SerializeField] private TextMeshProUGUI _categoryText;
+        [SerializeField] private Sprite _selectedSlotSprite;
+        [SerializeField] private Sprite _slotsprite;
+        [SerializeField] private Image _lastSelectedSlotImage;
+        [SerializeField] private GameObject _introText;
+        [SerializeField] private GameObject _bottomMenu;
+
+        [SerializeField] private Image _bodyImage;
+        [SerializeField] private Image _bodyBackgroundImage;
+        [SerializeField] private TextMeshProUGUI _bodyTMP;
+        [SerializeField] private Button _bodyButton;
+
+        [SerializeField] private List<CategoryButton> _categoryButtons;
+        [SerializeField] private Dictionary<AvatarPiece, CategoryButton> _slotToCategoryButton = new();
+
         private string _currentlySelectedCategory = "10";
         public string CurrentlySelectedCategory => _currentlySelectedCategory;
 
-        public void UpdateCellSize()
+        public void UpdateSlotImage(AvatarPiece slot, AvatarPartInfo partInfo)
         {
-            _viewPortHeight = _categoryGrid.rect.height;
-            _actualSpacing = _spacing * _viewPortHeight;
-            _actualVerticalPadding = _verticalPadding * _categoryGrid.rect.height;
-            _verticalLayoutGroup.spacing = _actualSpacing;
-            _verticalLayoutGroup.padding.left = Mathf.CeilToInt(_horizontalPadding * _categoryGrid.rect.width);
-            _verticalLayoutGroup.padding.right = Mathf.CeilToInt(_horizontalPadding * _categoryGrid.rect.width);
-            _verticalLayoutGroup.padding.top = Mathf.CeilToInt(_actualVerticalPadding);
-            _verticalLayoutGroup.padding.bottom = Mathf.CeilToInt(_actualVerticalPadding);
-
-            _cellHeight = (_viewPortHeight - _actualSpacing * (_cellsShownAtATime -1) - _verticalLayoutGroup.padding.top - _verticalLayoutGroup.padding.bottom) / _cellsShownAtATime;
-            foreach (RectTransform child in _categoryGridContent)
+            if (_slotToCategoryButton.TryGetValue(slot, out CategoryButton button))
             {
-                LayoutElement le = child.GetComponent<LayoutElement>();
-                if (le != null)
-                {
-                    le.preferredHeight = _cellHeight;
-                }
-                else
-                {
-                    Debug.LogError("layoutelement is null");
-                }
-            }
-
-            _uniqueCellAmount = _categoryGridContent.transform.childCount / 3;
-
-            // Grid position starts in the middle
-            SetGridPosition();
-        }
-
-        private void SetGridPosition()
-        {
-            _categoryGridContent.anchoredPosition = new Vector2(_categoryGrid.anchoredPosition.x,
-                _categoryGrid.anchoredPosition.y
-                + (_cellHeight + _actualSpacing)
-                * _uniqueCellAmount);
-        }
-
-        public void ClickMiddleCategoryCell()
-        {
-            float CellHeightWithSpacing = _cellHeight + _actualSpacing;
-            int topCellIndex = Mathf.RoundToInt(_categoryGridContent.anchoredPosition.y / CellHeightWithSpacing);
-            int middleCellIndex = topCellIndex + _cellsShownAtATime / 2;
-
-            Transform middleCell = _categoryGridContent.GetChild(middleCellIndex);
-            Button button = middleCell.GetComponent<Button>();
-            button.onClick.Invoke();
-        }
-
-        //Planning to add better way to add the category images later
-        public void SetCategoryCells(Action<string> buttonFunction)
-        {
-            DestroyCategoryCells();
-            _allCategoryIds = _avatarPartsReference.GetAllCategoryIds();
-
-            //make 3 sets of the available features for InfiniteScroll to work
-            for (int i = 0; i < 3; i++)
-            {
-                foreach (string categoryId in _allCategoryIds)
-                {
-                    _avatarPartInfo = _avatarPartsReference.GetAvatarPartsByCategory(categoryId);
-                    AddCategoryCell(categoryId, _avatarPartInfo[0].IconImage, buttonFunction);
-                }
-
-                // For skin color selection
-                AddCategoryCell("", _skinColorSelectionCategoryImage, buttonFunction);
+                button.FeatureImage.preserveAspect = true;
+                button.FeatureImage.sprite = partInfo.IconImage;
             }
         }
 
-        private void AddCategoryCell(string FeatureCategoryId, Sprite CellImage, Action<string> buttonFunction)
+        public void UpdateSlotImages()
         {
-            GameObject gridCell = Instantiate(_avatarPartCategoryGridCellPrefab, _categoryGridContent);
-            CategoryCellHandler handler = gridCell.GetComponent<CategoryCellHandler>();
+            _slotToCategoryButton?.Clear();
 
-            handler.SetValues(CellImage, _backgroundColor);
-
-            handler.SetOnClick(() =>
+            foreach (CategoryButton button in _categoryButtons)
             {
-                buttonFunction.Invoke(FeatureCategoryId);
-                _currentlySelectedCategory = FeatureCategoryId;
+                _slotToCategoryButton.Add(button.Slot, button);
+
+                AvatarPartInfo partInfo = AvatarPartsReference.Instance.GetAvatarPartById(_controller.PlayerAvatar.GetPartId(button.Slot));
+                UpdateSlotImage(button.Slot, partInfo);
+            }
+
+            ColorUtility.TryParseHtmlString(_controller.PlayerAvatar.SkinColor, out Color skinColor);
+
+            if (skinColor != null)
+            {
+                _bodyImage.color = skinColor;
+            }
+        }
+
+        public void SetCategoryButtons(Action<string> buttonFunction)
+        {
+            foreach (CategoryButton buttonRef in _categoryButtons)
+            {
+                buttonRef.Button.onClick.RemoveAllListeners();
+                buttonRef.Button.onClick.AddListener(() =>
+                {
+                    _introText.SetActive(false);
+                    _bottomMenu.SetActive(true);
+                    _lastSelectedSlotImage.sprite = _slotsprite;
+                    _currentlySelectedCategory = buttonRef.CategoryId;
+                    _categoryText.text = buttonRef.TMP.text;
+                    buttonRef.BackgroundImage.sprite = _selectedSlotSprite;
+                    _lastSelectedSlotImage = buttonRef.BackgroundImage;
+                    buttonFunction.Invoke(buttonRef.CategoryId);
+
+                    _colorLoader.UpdateHighlight(_controller.PlayerAvatar.GetPartColor(buttonRef.Slot));
+                });
+            }
+
+            _bodyButton.onClick.RemoveAllListeners();
+            _bodyButton.onClick.AddListener(() =>
+            {
+                _introText.SetActive(false);
+                _bottomMenu.SetActive(true);
+                _lastSelectedSlotImage.sprite = _slotsprite;
+                _currentlySelectedCategory = "";
+                _categoryText.text = _bodyTMP.text;
+                _bodyBackgroundImage.sprite = _selectedSlotSprite;
+                _lastSelectedSlotImage = _bodyBackgroundImage;
+                buttonFunction.Invoke("");
+
+                _colorLoader.UpdateHighlight(_controller.PlayerAvatar.SkinColor);
             });
-
-            handler.ButtonIsInteractable(false);
-        }
-
-        private void DestroyCategoryCells()
-        {
-            foreach (Transform child in _categoryGridContent.transform)
-            {
-                Destroy(child.gameObject);
-            }
         }
     }
 }

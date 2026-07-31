@@ -17,8 +17,7 @@ namespace MenuUi.Scripts.Storage
         private Vector2Int _position = new(-1, -1);
         private int _room = -1;
         private bool _isRotated;
-        private FurnitureSize _size;
-        private FurnitureSize _rotatedSize;
+        private Vector3Int _furnitureSize;
         private FurniturePlacement _placement;
         private double _weight;
         private float _value;
@@ -36,8 +35,7 @@ namespace MenuUi.Scripts.Storage
             _rarity = gameFurniture.Rarity;
             _position = clanFurniture.Position;
             _room = clanFurniture.Room;
-            _size = gameFurniture.Size;
-            _rotatedSize = gameFurniture.RotatedSize;
+            _furnitureSize = gameFurniture.FurnitureSize;
             _placement = gameFurniture.Placement;
             _value = gameFurniture.Value;
             _weight = gameFurniture.Weight;
@@ -58,8 +56,7 @@ namespace MenuUi.Scripts.Storage
         public Vector2Int Position { get => _position; set => _position = value; }
         public int Room { get => _room; set => _room = value; }
         public bool IsRotated { get => _isRotated; set => _isRotated = value; }
-        public FurnitureSize Size { get => _size;}
-        public FurnitureSize RotatedSize { get => _rotatedSize;}
+        public Vector3Int FurnitureSize { get => _furnitureSize; set => _furnitureSize = value; }
         public FurniturePlacement Placement { get => _placement;}
         public double Weight { get => _weight;}
         public float Value { get => _value;}

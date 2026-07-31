@@ -29,7 +29,7 @@ namespace Battle.View.Audio
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void PlayMusic()
         {
-            AudioManager.Instance.PlayMusic("Battle", MusicHandler.MusicSwitchType.Immediate);
+            AudioManager.Instance.PlayMusic(AudioCategoryType.Battle, MusicHandler.MusicSwitchType.Immediate, forcePlay: true);
         }
 
         /// <summary>

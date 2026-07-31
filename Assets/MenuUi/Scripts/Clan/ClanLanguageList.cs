@@ -12,22 +12,49 @@ public class ClanLanguageList : MonoBehaviour
     public Language SelectedLanguage { get; private set; }
     private Language _tempLanguage;
 
-    public void Initialize(Language firstSelected)
+    public void Initialize(Language firstSelected, bool includeNoneOption = false)
     {
         SelectedLanguage = firstSelected;
         _tempLanguage = SelectedLanguage;
-        foreach (Transform child in _listParent) Destroy(child.gameObject);
 
-        foreach (Language language in Enum.GetValues(typeof(Language)))
+        foreach (Transform child in _listParent)
         {
-            if (language == Language.None) continue;
-            Sprite flag = _languageFlagMap.GetFlag(language);
-            GameObject listItem = Instantiate(_languageListItemPrefab, _listParent);
-            listItem.GetComponent<Toggle>().group = _toggleGroup;
-            listItem.GetComponent<ClanLanguageListItem>().Initialize(language, flag, language == SelectedLanguage, (bool isOn) =>
+            Destroy(child.gameObject);
+        }
+
+        Language[] allowedLanguages = includeNoneOption
+            ? new[]
             {
-                _tempLanguage = language;
-            });
+            Language.None,
+            Language.Finnish,
+            Language.English
+            }
+            : new[]
+            {
+            Language.Finnish,
+            Language.English
+            };
+
+        foreach (Language language in allowedLanguages)
+        {
+            Sprite flag = _languageFlagMap.GetFlag(language);
+
+            GameObject listItem = Instantiate(_languageListItemPrefab, _listParent);
+
+            Toggle toggle = listItem.GetComponent<Toggle>();
+            toggle.group = _toggleGroup;
+
+            listItem.GetComponent<ClanLanguageListItem>().Initialize(
+                language,
+                flag,
+                language == SelectedLanguage,
+                (bool isOn) =>
+                {
+                    if (isOn)
+                    {
+                        _tempLanguage = language;
+                    }
+                });
         }
     }
 

@@ -3,45 +3,10 @@ using System.Diagnostics.CodeAnalysis;
 using Prg.Scripts.Common.Extensions;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine.Assertions;
+using UnityEngine;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
-    public enum FurnitureSize
-    {
-        OneXOne,
-        OneXTwo,
-        OneXThree,
-        OneXFour,
-        OneXSix,
-        TwoXOne,
-        TwoXTwo,
-        TwoXThree,
-        TwoXFour,
-        TwoXFive,
-        TwoXSix,
-        TwoXSeven,
-        TwoXEight,
-        ThreeXOne,
-        ThreeXTwo,
-        ThreeXThree,
-        ThreeXFour,
-        ThreeXFive,
-        ThreeXSix,
-        ThreeXSeven,
-        ThreeXEight,
-        FourXOne,
-        FourXTwo,
-        FourXThree,
-        FourXFour,
-        FiveXTwo,
-        FiveXThree,
-        FiveXFive,
-        FiveXSix,
-        FiveXEight,
-        SixXFive,
-        SevenXThree
-    }
-
     public enum FurniturePlacement
     {
         Floor,
@@ -74,8 +39,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         public string Name;
         public string Shape;
         public FurnitureRarity Rarity;
-        public FurnitureSize Size;
-        public FurnitureSize RotatedSize;
+        public Vector3Int FurnitureSize;
         public FurniturePlacement Placement;
         public double Weight;
         public float Value;
@@ -90,7 +54,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public string Filename;
 
-        public GameFurniture(string id, string name, FurnitureRarity rarity, FurnitureSize size, FurnitureSize rotatedSize, FurniturePlacement placementType, double weight, float value, string shape = "", string material = "", string recycling = "", string unityKey = "", string filename = "")
+        public GameFurniture(string id, string name, FurnitureRarity rarity, FurniturePlacement placementType, double weight, float value, string shape = "", string material = "", string recycling = "", string unityKey = "", string filename = "")
         {
             Assert.IsTrue(id.IsSet());
             Assert.IsTrue(name.IsSet());
@@ -104,8 +68,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Name = name;
             Shape = shape;
             Rarity = rarity;
-            Size = size;
-            RotatedSize = rotatedSize;
+            FurnitureSize = Vector3Int.one;
             Placement = placementType;
             Weight = weight;
             Value = value;
@@ -129,8 +92,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             Name = baseFurniture.Name;
             Shape = string.Empty;
             Rarity = baseFurniture.Rarity;
-            Size = baseFurniture.Size;
-            RotatedSize = baseFurniture.RotatedSize;
+            FurnitureSize = baseFurniture.FurnitureSize;
             Placement = baseFurniture.Placement;
             Weight = baseFurniture.Weight;
             Value = baseFurniture.Value;
@@ -154,8 +116,7 @@ namespace Altzone.Scripts.Model.Poco.Game
     {
         public string Name;
         public FurnitureRarity Rarity;
-        public FurnitureSize Size;
-        public FurnitureSize RotatedSize;
+        public Vector3Int FurnitureSize;
         public FurniturePlacement Placement;
         public double Weight;
         public float Value;

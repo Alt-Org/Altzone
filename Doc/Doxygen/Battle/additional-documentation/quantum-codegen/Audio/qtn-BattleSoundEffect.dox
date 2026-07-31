@@ -49,6 +49,27 @@
 /// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterCommonHitShield
 /// SoundFX Played when any PlayerCharacter's shield is hit by a projectile
 ///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNoneCatchphrase
+/// SoundFX Played when PlayerCharacterNone enters the Battle
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNoneHitCharacterAggression
+/// SoundFX Played when PlayerCharacterNone is hit by a projectile which has @cref{BattleEmotionState.Aggression}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNoneHitCharacterJoy
+/// SoundFX Played when PlayerCharacterNone is hit by a projectile which has @cref{BattleEmotionState.Joy}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNoneHitCharacterLove
+/// SoundFX Played when PlayerCharacterNone is hit by a projectile which has @cref{BattleEmotionState.Love}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNoneHitCharacterPlayful
+/// SoundFX Played when PlayerCharacterNone is hit by a projectile which has @cref{BattleEmotionState.Playful}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNoneHitCharacterSadness
+/// SoundFX Played when PlayerCharacterNone is hit by a projectile which has @cref{BattleEmotionState.Sadness}
+///
+/// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterNoneDeath
+/// SoundFX Played when PlayerCharacterNone dies
+///
 /// @var Quantum::BattleSoundFX Quantum::BattleSoundFX::PlayerCharacterRacistCatchphrase
 /// SoundFX Played when PlayerCharacterRacist enters the Battle
 ///

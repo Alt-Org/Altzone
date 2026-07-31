@@ -39,9 +39,11 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: Tunteensa toisille heijastava, omaa peilikuvaansa
     karttava peilaaja.
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 6b7ac866905eded4aa7979294c2e13af, type: 2}
   Hp:
-    Level: 0
+    Level: 6
     Coefficient: 5
   Speed:
     Level: 5
@@ -58,7 +60,12 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: 2ca1e227698614648a591da5ac1ec55c, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 30598a04f7d857f4b92aeb3d92854b0c, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1373315289179166438
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1407381619467727721
+  - Id:
+      Value: 1516577145717524237
   BattleUiSprite: {fileID: 0}

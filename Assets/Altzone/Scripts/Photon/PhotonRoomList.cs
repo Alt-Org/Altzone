@@ -35,6 +35,10 @@ namespace Altzone.Scripts.Common.Photon
         {
             if (PhotonRealtimeClient.InLobby)
             {
+                if (LobbyManager.Instance != null && LobbyManager.Instance.CurrentRooms != null)
+                {
+                    return LobbyManager.Instance.CurrentRooms;
+                }
                 return _currentRoomList.AsReadOnly();
             }
             if (PhotonRealtimeClient.NetworkClientState == ClientState.Joining)

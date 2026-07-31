@@ -482,7 +482,7 @@ namespace Battle.QSimulation
         public static void Error(string source, string message, LogTarget logTarget = LogTarget.UnityConsole | LogTarget.OnScreenConsole)
         {
             if (logTarget.HasFlag(LogTarget.UnityConsole)) Debug.LogErrorFormat(StaticFormatUnityNoFrame, source, message);
-            if (logTarget.HasFlag(LogTarget.OnScreenConsole)) s_addLogToOnScreenConsoleFnRef(LogType.Error, string.Format(StaticSourceFormatOnScreenNoFrame, source), message);
+            if (logTarget.HasFlag(LogTarget.OnScreenConsole) && s_addLogToOnScreenConsoleFnRef != null) s_addLogToOnScreenConsoleFnRef(LogType.Error, string.Format(StaticSourceFormatOnScreenNoFrame, source), message);
         }
 
         /// <summary>
@@ -602,7 +602,7 @@ namespace Battle.QSimulation
         /// </summary>
         /// @ref BattleDebugLogger-StaticAssertMethods "Static Assert Methods"
         ///
-        /// When assertion fails, logs an error using <see cref="Error(string, string, LogTarget)"/> method.
+        /// When assertion fails, logs an error using @cref{BattleDebugLogger.Error(string\, string\, LogTarget)}.
         ///
         /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert Methods Overview" for more info.
         ///

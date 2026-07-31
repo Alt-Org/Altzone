@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.Rendering;
-using Debug = Prg.Debug;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -294,7 +293,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _ladder.gameObject.SetActive(true);
                 _ladder.GetComponent<SortingGroup>().sortingOrder = 20;
-                
+
                 foreach(Transform rowTransform in _wallBackFurniturePoints)
                 {
                     rowTransform.GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
@@ -341,7 +340,7 @@ namespace MenuUI.Scripts.SoulHome
                     }
                 }
             }
-            
+
             _walkableSlots.Clear();
 
             foreach (GridNode node in _grid)
@@ -381,7 +380,7 @@ namespace MenuUI.Scripts.SoulHome
         }
 
         // Add a penalty to tiles to the right or left of furniture, and double penalty if there is furniture to the left and the right,
-        // and also add a penalty to the bottom-right corner + 1 node to the left, and bottom-left corner and 1 node from that to the right, 
+        // and also add a penalty to the bottom-right corner + 1 node to the left, and bottom-left corner and 1 node from that to the right,
         // so the avatar only goes there if there is no other way (makes clipping with furniture less likely, and avatar only chooses to "slip"
         // through the corner of the furniture if there is absolutely no other way to the end position)
         private void CalculatePenalties()
@@ -484,7 +483,7 @@ namespace MenuUI.Scripts.SoulHome
         }
         private bool CheckFurniturePosition(int row, int column, FurnitureGrid gridtoCheck, Furniture furniture)
         {
-            Vector2Int furnitureSize = furniture.GetFurnitureSize();
+            Vector3Int furnitureSize = furniture.GetFurnitureSize();
 
             int startRow;
             int endColumn;
@@ -587,8 +586,8 @@ namespace MenuUI.Scripts.SoulHome
             bool? check = null;
             if (furniture.Furniture.Place is FurniturePlacement.FloorByWall)
             {
-                Vector2Int furnitureSize = furniture.GetFurnitureSizeRotated();
-                Vector2Int furnitureSizeCurrent = furniture.GetFurnitureSize();
+                Vector3Int furnitureSize = furniture.GetFurnitureSizeRotated();
+                Vector3Int furnitureSizeCurrent = furniture.GetFurnitureSize();
 
                 Vector2 checkPoint = backupHit + new Vector2((furniture.transform.localScale.x / 2) + ((furniture.transform.localScale.x * furnitureSize.x) / 2) * -1, 0);
                 Ray ray2 = new(_towerCamera.position, (Vector3)checkPoint - _towerCamera.position);
@@ -676,7 +675,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private void SetFurniture(int row, int column, FurnitureGrid grid, Furniture furniture)
         {
-            Vector2Int furnitureSize = furniture.GetFurnitureSize();
+            Vector3Int furnitureSize = furniture.GetFurnitureSize();
             if (_controller != null)
             {
                 FurnitureList list = _controller.FurnitureList;
@@ -759,7 +758,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (!hover) {
                 Debug.Log("Set:"+row + ":" + column);
-                Vector2Int furnitureSize = furniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
+                Vector3Int furnitureSize = furniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
                 Debug.Log("Set:" + furnitureSize.x + ":" + furnitureSize.y);
                 int startRow;
                 int endColumn;
@@ -969,9 +968,9 @@ namespace MenuUI.Scripts.SoulHome
         public void FreeFurnitureSlots(FurnitureHandling furniture, FurnitureSlot slot)
         {
             Debug.Log("Free:"+slot.row+":"+slot.column);
-            Vector2Int furnitureSize;
+            Vector3Int furnitureSize;
 
-            if (furniture.Furniture.IsRotated != slot.Rotated || furniture.Furniture.IsRotated != slot.RotatedNonBlock)
+            if (furniture.Furniture.IsRotated)
                 furnitureSize = furniture.GetFurnitureSizeRotated();
             else
                 furnitureSize = furniture.GetFurnitureSize();
@@ -1022,7 +1021,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private void SetSlotValidity(int row, int column, FurnitureGrid grid, Furniture furniture, bool check)
         {
-            Vector2Int furnitureSize = furniture.GetFurnitureSize();
+            Vector3Int furnitureSize = furniture.GetFurnitureSize();
 
             int startRow;
             int endColumn;
@@ -1112,7 +1111,7 @@ namespace MenuUI.Scripts.SoulHome
             FurnitureSlot slot = furniture.Slot;
             Furniture furnitureObject = furniture.Furniture;
 
-            Vector2Int furnitureSize = furniture.GetFurnitureSize();
+            Vector3Int furnitureSize = furniture.GetFurnitureSize();
 
             if (furnitureSize.x == 0) return;
 

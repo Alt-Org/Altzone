@@ -75,12 +75,6 @@ MonoBehaviour:
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Battle.QSimulation.Projectile.BattleProjectileSpawnerQSystem,
-        Quantum.Simulation
-    SystemName: 
-    StartDisabled: 0
-    Children: []
-  - SystemType:
       AssemblyQualifiedName: Battle.QSimulation.Projectile.BattleProjectileQSystem,
         Quantum.Simulation
     SystemName: 
@@ -98,6 +92,12 @@ MonoBehaviour:
     Children: []
   - SystemType:
       AssemblyQualifiedName: Battle.QSimulation.Diamond.BattleDiamondQSystem, Quantum.Simulation
+    SystemName: 
+    StartDisabled: 0
+    Children: []
+  - SystemType:
+      AssemblyQualifiedName: Battle.QSimulation.Player.BattlePlayerClass100ProjectileQSystem,
+        Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []

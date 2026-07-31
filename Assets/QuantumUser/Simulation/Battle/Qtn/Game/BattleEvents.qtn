@@ -31,18 +31,30 @@ synced event BattleViewGameOver
 
 //{ ViewInit events
 
-synced event BattlePlayerViewInit
+synced event BattlePlayerCharacterViewInit
 {
-    EntityRef Entity;
+    EntityRef ERef;
     BattlePlayerSlot Slot;
-    int CharacterId;
-    BattlePlayerCharacterClass Class;
+    BattlePlayerCharacterID CharacterId;
+    BattlePlayerCharacterClass CharacterClass;
+    int ShieldCount;
+    FP ModelScale;
+}
+
+synced event BattlePlayerShieldViewInit
+{
+    EntityRef ERef;
+    EntityRef CharacterRef;
+    BattlePlayerSlot Slot;
+    BattlePlayerCharacterID CharacterId;
+    BattlePlayerCharacterClass CharacterClass;
+    int ShieldNumber;
     FP ModelScale;
 }
 
 synced event BattleSoulWallViewInit
 {
-    EntityRef Entity;
+    EntityRef ERef;
     FP ModelScale;
     int EmotionIndicatorColorIndex;
     int DebugColorIndex;
@@ -84,8 +96,20 @@ synced event BattleProjectileChangeGlowStrength
     FP Strength;
 }
 
-event BattlePlaySoundFX
+event BattlePlaySoundFxForAll
 {
+    BattleSoundFX Effect;
+}
+
+event BattlePlaySoundFxForTeam
+{
+    BattleTeamNumber Team;
+    BattleSoundFX Effect;
+}
+
+event BattlePlaySoundFxForPlayer
+{
+    BattlePlayerSlot Slot;
     BattleSoundFX Effect;
 }
 
@@ -100,7 +124,7 @@ synced event BattleLastRowWallDestroyed
 
 synced event BattleDiamondLanded
 {
-    EntityRef Entity;
+    EntityRef ERef;
 }
 
 synced event BattleCharacterSelected
@@ -109,21 +133,25 @@ synced event BattleCharacterSelected
     int CharacterNumber;
 }
 
-synced event BattleCharacterTakeDamage
+synced event BattleCharacterHit
 {
-    EntityRef Entity;
+    EntityRef ERef;
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
-    FP HealthPercentage;
+    int ShieldNumber;
+    FP StunDurationSec;
+    BattleEmotionState ProjectileEmotion;
 }
 
-synced event BattleShieldTakeDamage
+synced event BattleShieldHit
 {
-    EntityRef Entity;
+    EntityRef ERef;
     BattleTeamNumber Team;
     BattlePlayerSlot Slot;
     int CharacterNumber;
+    int ShieldNumber;
+    bool DefenceUpdateVisual;
     FP DefencePercentage;
 }
 
@@ -134,10 +162,44 @@ synced event BattleGiveUpStateChange
     BattleGiveUpStateUpdate StateUpdate;
 }
 
+synced event BattlePlayStateUpdate
+{
+    EntityRef ERef;
+    bool IsInPlay;
+}
+
 synced event BattleStoneCharacterPlayHitAnimation
 {
     BattleTeamNumber Team;
     BattleEmotionState Emotion;
+}
+
+synced event BattleSpecialJoystickVisibilityChange
+{
+    BattlePlayerSlot Slot;
+    bool Show;
+}
+
+synced event BattlePlayerClass100AimIndicatorUpdate
+{
+    EntityRef ERef;
+    BattlePlayerSlot Slot;
+    bool Show;
+    FPVector2 Direction;
+}
+
+synced event BattleShieldChangeState
+{
+    EntityRef ERef;
+    BattleTeamNumber Team;
+    bool ShieldAttached;
+    int ShieldNumber;
+}
+
+synced event BattleCharacterDeath
+{
+    BattlePlayerSlot Slot;
+    int CharacterNumber;
 }
 
 //} Gameplay events

@@ -873,7 +873,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2192335415255639714}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: 0.9873152, z: -0, w: -0.1587729}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -882,7 +882,7 @@ RectTransform:
   - {fileID: 8669243106540151062}
   - {fileID: 1952454987350958525}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -1241.729, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -938,16 +938,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4604ccb508146849a3c9da9490d99b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UpperText: {fileID: 6671194374896914503}
-  LowerText: {fileID: 14364198974629554}
   YesVotesText: {fileID: 6848801732074547758}
   NoVotesText: {fileID: 3004782517219346992}
   TimeLeftText: {fileID: 2082031185777528353}
+  PollTypeText: {fileID: 0}
+  PollDescriptionText: {fileID: 0}
   Clock: {fileID: 6883120840852000802}
   Image: {fileID: 5824099601761419564}
   GreenFill: {fileID: 9084112698209673939}
   Background: {fileID: 7423496084020446322}
+  InfoBackground: {fileID: 0}
   ClockButton: {fileID: 7724199414099451521}
+  VoteYes: {fileID: 0}
+  VoteNo: {fileID: 0}
+  YesVoters: {fileID: 0}
+  NoVoters: {fileID: 0}
   playerHeads: {fileID: 6064110939339283093}
   avatarHandleGameObject: {fileID: 955700708935324998}
   avatarFaceLoader: {fileID: 8783331744570090509}

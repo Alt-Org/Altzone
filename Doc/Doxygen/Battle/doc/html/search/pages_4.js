@@ -11,8 +11,8 @@ var searchData=
   ['class_20400_20projector_8',['Player Character Class 400 - Projector',['../page-concepts-player-class-400-projector.html',1,'page-concepts-player']]],
   ['class_20600_20confluent_9',['Player Character Class 600 - Confluent',['../page-concepts-player-class-600-confluent.html',1,'page-concepts-player']]],
   ['class_20list_10',['Player Character Class List',['../page-concepts-player.html#page-concepts-player-characters-class-list',1,'']]],
-  ['class_20method_20page_20documentation_20doxygen_20terminology_20brief_20summary_20brief_20summary_20format_11',['UI Handler class method &lt;a class=&quot;el&quot; href=&quot;page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary&quot;&gt;{brief/summary}&lt;/a&gt; format',['../page-documentation-documenting-source-code.html#page-documentation-source-code-unity-view-ui-handlers',1,'']]],
-  ['class_20page_20documentation_20doxygen_20terminology_20brief_20summary_20brief_20summary_20format_12',['Quantum System Class &lt;a class=&quot;el&quot; href=&quot;page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary&quot;&gt;{brief/summary}&lt;/a&gt; format',['../page-documentation-documenting-source-code.html#page-documentation-source-code-quantum-systems-system-classes',1,'']]],
+  ['class_20method_20page_20documentation_20doxygen_20terminology_20brief_20summary_20brief_20summary_20format_11',['UI Handler class method &lt;a class=&quot;el&quot; href=&quot;page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary&quot; title=&quot;Brief / Summary&quot;&gt;{brief/summary}&lt;/a&gt; format',['../page-documentation-documenting-source-code.html#page-documentation-source-code-unity-view-ui-handlers',1,'']]],
+  ['class_20page_20documentation_20doxygen_20terminology_20brief_20summary_20brief_20summary_20format_12',['Quantum System Class &lt;a class=&quot;el&quot; href=&quot;page-documentation-doxygen.html#page-documentation-doxygen-terminology-brief-summary&quot; title=&quot;Brief / Summary&quot;&gt;{brief/summary}&lt;/a&gt; format',['../page-documentation-documenting-source-code.html#page-documentation-source-code-quantum-systems-system-classes',1,'']]],
   ['classes_13',['Classes',['../page-documentation-documenting-source-code.html#page-documentation-source-code-base-guidelines-classes',1,'Documenting Classes'],['../page-view.html#page-view-other',1,'Other Classes'],['../page-concepts-player.html#page-concepts-player-characters-classes',1,'Player Character Classes']]],
   ['code_14',['code',['../page-documentation-codegen.html',1,'Documenting Quantum generated code'],['../page-documentation-documenting-source-code.html',1,'Documenting Source code']]],
   ['code_20overview_15',['Code Overview',['../page-concepts-player.html#page-concepts-player-simulation-overview',1,'Simulation Code Overview'],['../page-concepts-player.html#page-concepts-player-view-overview',1,'View Code Overview']]],
@@ -28,8 +28,8 @@ var searchData=
   ['contents_25',['File contents',['../page-documentation-additional.html#page-documentation-additional-directories-file-contents',1,'']]],
   ['control_20events_26',['UI control events',['../_battle_events_8qtn.html#autotoc_md64',1,'']]],
   ['controllers_27',['Controllers',['../page-simulation.html#page-simulation-managers',1,'Managers &amp;amp; Controllers'],['../page-view.html#page-view-controllers',1,'View Controllers']]],
-  ['created_20as_20needed_3a_28',['GameObjects created as needed:',['../31-_quantum_battle_8unity.html#autotoc_md155',1,'']]],
-  ['created_20at_20the_20beginning_20of_20battle_3a_29',['GameObjects created at the beginning of Battle:',['../31-_quantum_battle_8unity.html#autotoc_md154',1,'']]],
+  ['created_20as_20needed_3a_28',['GameObjects created as needed:',['../31-_quantum_battle_8unity.html#autotoc_md157',1,'']]],
+  ['created_20at_20the_20beginning_20of_20battle_3a_29',['GameObjects created at the beginning of Battle:',['../31-_quantum_battle_8unity.html#autotoc_md156',1,'']]],
   ['custom_20commands_30',['Doxygen custom commands',['../page-documentation-doxygen.html#page-documentation-doxygen-custom-commands',1,'']]],
   ['custom_20link_20formats_31',['Doxygen and custom link formats',['../page-documentation-doxygen.html#page-documentation-doxygen-styles-formats-doxygen-and-custom',1,'']]]
 ];

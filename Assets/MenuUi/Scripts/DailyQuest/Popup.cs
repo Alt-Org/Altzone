@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
-using MenuUI.Scripts;
 
 public class Popup : MonoBehaviour
 {
@@ -17,6 +16,28 @@ public class Popup : MonoBehaviour
         Cancel,         //Cancel task window
         ClanMilestone,  //Clan milestone reward info window
         MultipleChoice, //Multiple choice task window
+        Info,           //Accept task window without accept button
+    }
+
+    /// <summary>
+    /// Enum used for popup results
+    /// </summary>
+    public enum ResultType
+    {
+        Null = 0,
+        /// <summary>
+        /// (e.g. confirm or a correct answer)
+        /// </summary>
+        Accept = 1,
+        /// <summary>
+        /// (e.g. close)
+        /// </summary>
+        Cancel = 2,
+        /// <summary>
+        /// If the popup got a result, but shouldn't close the window
+        /// </summary>
+        Normal,
+        
     }
 
     [SerializeField] private DailyTaskCardImageReference _cardImageReference;
@@ -29,9 +50,6 @@ public class Popup : MonoBehaviour
     [SerializeField] private RectTransform _taskAcceptMovable;
     [SerializeField] private Image _taskAcceptImage;
     [Space]
-    [SerializeField] private Image _taskAcceptColorImage;
-    [SerializeField] private Image _taskCancelColorImage;
-    [Space]
     [SerializeField] private GameObject _taskCancelPopup;
     [Space]
     [Tooltip("Set every TMP text element here that is supposed to show a message from code.")]
@@ -43,6 +61,8 @@ public class Popup : MonoBehaviour
     [SerializeField] private TMP_Text _acceptConfirmButtonText;
     [Space]
     [SerializeField] private TextMeshProUGUI _taskDescription;
+    [SerializeField] private TextMeshProUGUI _taskExecution;
+    [SerializeField] private TextMeshProUGUI _taskGameLiteracy;
     [SerializeField] private TextMeshProUGUI _taskPointsText;
     [SerializeField] private TextMeshProUGUI _taskCoinsText;
 
@@ -78,7 +98,7 @@ public class Popup : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _cooldownText;
     private bool _isOnCooldown = false;
 
-    private bool? _result;
+    private ResultType _result;
 
     private void Awake()
     {
@@ -100,13 +120,13 @@ public class Popup : MonoBehaviour
     {
         //Set buttons
         foreach (var acceptButton in _acceptButtons)
-            acceptButton.onClick.AddListener(() => _result = true);
+            acceptButton.onClick.AddListener(() => _result = ResultType.Accept);
 
         foreach (var cancelButton in _cancelButtons)
-            cancelButton.onClick.AddListener(() => _result = false);
+            cancelButton.onClick.AddListener(() => _result = ResultType.Cancel);
     }
 
-    public static IEnumerator RequestPopup(string message, PopupData? data, string currentTaskId, PopupWindowType type, System.Action<bool> callback)
+    public static IEnumerator RequestPopup(string message, PopupData? data, string currentTaskId, PopupWindowType type, System.Action<ResultType> callback)
     {
         if (Instance == null)
         {
@@ -114,19 +134,30 @@ public class Popup : MonoBehaviour
             yield break;
         }
 
-        Instance._result = null;
+        Instance._result = ResultType.Null;
         Instance.SwitchWindow(type);
 
         if (data != null)
         {
             if (data.Value.Type == PopupData.PopupDataType.OwnTask)
             {
-                if (currentTaskId == null)
-                    Instance._acceptConfirmButtonText.text = "Valitse";
-                else
-                    Instance._acceptConfirmButtonText.text = "Vaihda Tehtävä";
-            }
 
+                // If PopupWindowType.Info -> Hide acceptConfirmButton
+                Instance._acceptConfirmButtonText.transform.parent.gameObject.SetActive(type != PopupWindowType.Info);
+
+                // If this is a new task
+                if (currentTaskId == null)
+                {
+                    Instance._acceptConfirmButtonText.text = "Aloita tehtävä";
+                    Instance.ResetOptionButtons();
+                }
+                // If there is already a task running
+                else
+                {
+                    Instance._acceptConfirmButtonText.text = "Vaihda tehtävä";
+                    
+                }
+            }
             if (data.Value.Location != null)
                 Instance.MoveMovableWindow(data.Value.Location.Value, type);
 
@@ -137,12 +168,13 @@ public class Popup : MonoBehaviour
             {
                 Instance.SetTaskImage(data.Value.OwnPage, type);
                 Instance.SetTaskDescription(data.Value.OwnPage);
+                Instance.SetTaskGameLiteracy(data.Value.OwnPage);
                 Instance.SetTaskRewardTexts(data.Value.OwnPage);
-                Instance.SetPopupTaskColor(data.Value.OwnPage, data.Value.Type);
             }
 
             if (data.Value.Type == PopupData.PopupDataType.MultipleChoice)
             {
+                // SetOptionButtons no matter if the task is a  new one or already on
                 Instance.SetOptionButtons(data.Value.OwnPage);
             }
 
@@ -154,10 +186,15 @@ public class Popup : MonoBehaviour
 
         // Show the popup and get the result
         yield return Instance.StartCoroutine(Instance.ShowPopup(data.Value.OwnPage));
-        callback(Instance._result.Value);
+        callback(Instance._result);
 
     }
 
+    /// <summary>
+    /// Show the popup and close it after getting ResultType.Cancel or ResultType.Accept
+    /// </summary>
+    /// <param name="task">The player task</param>
+    /// <returns></returns>
     private IEnumerator ShowPopup(PlayerTask task)
     {
         // Start fade in
@@ -169,8 +206,9 @@ public class Popup : MonoBehaviour
         // Set the message text
         SetMessage(task);
 
-        // Wait until one of the buttons is pressed
-        yield return new WaitUntil(() => _result.HasValue);
+        // Wait until a the _result is ResultType.Cancel or ResultType.Accept
+        // (so wait until the player has either selected the correct answer or want's to close the window)
+        yield return new WaitUntil(() => _result == ResultType.Cancel || _result == ResultType.Accept);
 
         // Start fade out
         if (_fadeInCoroutine != null)
@@ -187,6 +225,7 @@ public class Popup : MonoBehaviour
         switch (type)
         {
             case PopupWindowType.Accept:
+            case PopupWindowType.Info:
                 {
                     _taskAcceptImage.sprite = _cardImageReference.GetTaskImage(data);
                     return;
@@ -202,23 +241,29 @@ public class Popup : MonoBehaviour
 
     private void SetTaskDescription(PlayerTask data)
     {
-        _taskDescription.text = data.Content;
+        _taskDescription.text = data.Description;
+        _taskExecution.text = data.Execution;
+    }
+
+    private void SetTaskGameLiteracy(PlayerTask data)
+    {
+        _taskGameLiteracy.text = data.Literacy;
+        _taskGameLiteracy.color = GetTaskColor(data);
     }
 
     private void SetTaskRewardTexts(PlayerTask data)
     {
-        _taskPointsText.text = data.Points.ToString();
-        _taskCoinsText.text = data.Coins.ToString();
+        _taskPointsText.text = "+" + data.Points.ToString();
+        _taskCoinsText.text = "+" + data.Coins.ToString();
     }
 
-    private void SetPopupTaskColor(PlayerTask data, PopupData.PopupDataType type)
+    /// <summary>
+    /// Gets a color based on the task education category
+    /// </summary>
+    /// <param name="data">The task to get the color for</param>
+    /// <returns>The color</returns>
+    private Color GetTaskColor(PlayerTask data)
     {
-        Image targetImage = _taskAcceptColorImage;
-
-        if (type == PopupData.PopupDataType.CancelTask) targetImage = _taskCancelColorImage;
-
-        if (type == PopupData.PopupDataType.MultipleChoice) targetImage = _taskMultipleChoiceColorImage;
-
         Color taskColor = _defaultColor;
 
         switch (data.EducationCategory)
@@ -231,12 +276,14 @@ public class Popup : MonoBehaviour
             default: break;
         }
 
-        targetImage.color = taskColor;
+        return taskColor;
     }
 
     private void SwitchWindow(PopupWindowType type)
     {
-        _taskAcceptPopup.SetActive(type == PopupWindowType.Accept);
+        Debug.Log("WindowType: " + type.ToString());
+        // Using the same popup for accepting task and showing task info (hiding accept button for info popup on RequestPopup)
+        _taskAcceptPopup.SetActive(type == PopupWindowType.Accept || type == PopupWindowType.Info);
         _taskCancelPopup.SetActive(type == PopupWindowType.Cancel);
         _clanMilestonePopup.SetActive(type == PopupWindowType.ClanMilestone);
         _multipleChoicePopup.SetActive(type == PopupWindowType.MultipleChoice);
@@ -245,7 +292,7 @@ public class Popup : MonoBehaviour
     private void MoveMovableWindow(Vector3 location, PopupWindowType type)
     {
         //Accept window.
-        if (type == PopupWindowType.Accept)
+        if (type == PopupWindowType.Accept || type == PopupWindowType.Info)
             _taskAcceptMovable.position = location;
 
         //Clan milestone info window.
@@ -264,8 +311,11 @@ public class Popup : MonoBehaviour
         {
             _popupCanvasGroup.alpha = Mathf.Lerp(0f, 1f, (_fadeTimer / _fadeTime));
             _fadeTimer += Time.deltaTime;
-            yield return null;
+            yield return null; // Wait for one frame
         }
+        // Just a backup to make sure the popup is not transparent
+        _popupCanvasGroup.alpha = 1f;
+        _fadeTimer = _fadeTime;
     }
 
     private IEnumerator FadeOut()
@@ -274,10 +324,13 @@ public class Popup : MonoBehaviour
         {
             _popupCanvasGroup.alpha = Mathf.Lerp(0f, 1f, (_fadeTimer / _fadeTime));
             _fadeTimer -= Time.deltaTime;
-            yield return null;
+            yield return null; // Wait for one frame
         }
-
+        // Just a backup to make sure the popup is fully transparent
+        _popupCanvasGroup.alpha = 0f;
+        _fadeTimer = 0f;
         popupGameObject.SetActive(false);
+        
     }
 
     private void SetMessage(PlayerTask task)
@@ -288,15 +341,13 @@ public class Popup : MonoBehaviour
         {
             if (!_messageTexts[i].IsActive()) continue;
 
-            if (i == 0) // First element should be the task title (for some reason)
+            if (i == 0 || i == 2) // 0 = Task Accept window, 2 = MultipleChoicewindow, set message as the task title for these
             {
-                _messageTexts[i].text = SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English // Simply, if english language is selected, show it in english
-                    ? task.EnglishTitle
-                    : task.Title;
+                _messageTexts[i].text = task.Title;
             }
             else
             {
-                _messageTexts[i].text = task.Content; // For others, just keep the original
+                _messageTexts[i].text = task.Description; // For others, just keep the original
             }
         }
     }
@@ -307,15 +358,40 @@ public class Popup : MonoBehaviour
         _clanMilestoneRewardAmountText.text = $"{rewardAmount}x";
     }
 
-    private void SetOptionButtons(PlayerTask data)
+
+    /// <summary>
+    /// Set's the option buttons back to interactable and disables the gameobject
+    /// </summary>
+    private void ResetOptionButtons()
     {
         foreach (var button in _optionButtons)
+        {
+            button.interactable = true;
+            button.gameObject.SetActive(false);
+        }
+    }
+    /// <summary>
+    /// Initializes the multiple choice option buttons
+    /// </summary>
+    /// <param name="data">The player task</param>
+    private void SetOptionButtons(PlayerTask data)
+    {
+
+        // Remove the listeners from the buttons, to avoid bugs
+        foreach (var button in _optionButtons)
+        {
             button.onClick.RemoveAllListeners();
-        
+        }
+            
+
+        // Get the multiple choice options
         List<string> options = MultipleChoiceOptions.Instance.GetTaskOptions(data);
 
+        // Commented this out, because it seems unnecessary and was causing bugs
+        // (e.g. when the window was reopened after player selected a wrong answer,
+        // the order of the buttons was shuffled and the wrong button was grayed out)
         //Shuffle the list
-        int n = options.Count;
+        /*int n = options.Count;
         while (n > 1)
         {
             n--;
@@ -323,26 +399,38 @@ public class Popup : MonoBehaviour
             string option = options[k];
             options[k] = options[n];
             options[n] = option;
-        }
+        }*/
 
+        // Loop through the option buttons
         for (int i = 0; i < _optionButtons.Count; i++)
         {
+            // Make sure the loop does not go over the amount of options (if there are more buttons than options)
             if (i < options.Count)
             {
                 string option = options[i];
-                _optionButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = option;
-                _optionButtons[i].onClick.AddListener(() =>
+                Button button = _optionButtons[i];
+                button.GetComponentInChildren<TextMeshProUGUI>().text = option;
+
+                // Add a listener for the OnClick event on the button
+                button.onClick.AddListener(() =>
                 {
+                    // If on cooldown, don't allow the use
                     if (_isOnCooldown) return;
 
+
+                    // Get the result for the option specified in the MultipleChoiceOptions asset
                     _result = MultipleChoiceOptions.Instance.GetResult(data, option);
 
-                    if (_result.HasValue && _result.Value == false)
+                    // If the option was wrong 
+                    if (_result == ResultType.Normal)
                     {
-                        StartCoroutine(Cooldown(10f));
-                        SignalBus.OnChangePopupInfoSignal("Väärä vastaus, yritä uudestaan.");
+                        // Disable the button and inform player that it was the wrong answer
+                        button.interactable = false;
+                        StartCoroutine(Cooldown(5f));
+                        //SignalBus.OnChangePopupInfoSignal("Väärä vastaus, yritä uudestaan.");
                     }
-                    else if(_result.HasValue && _result.Value == true)
+                    // If the option was correct
+                    else if(_result == ResultType.Accept)
                     {
                         if (TaskEducationStoryType.WhereGameHappens == DailyTaskProgressManager.Instance.CurrentPlayerTask?.EducationStoryType
                         && data.EducationStoryType == TaskEducationStoryType.WhereGameHappens)
@@ -356,6 +444,7 @@ public class Popup : MonoBehaviour
             }
             else
             {
+                // Disable unnecessary buttons if there are any (buttons with no option)
                 _optionButtons[i].gameObject.SetActive(false);
             }
         }
@@ -366,18 +455,40 @@ public class Popup : MonoBehaviour
         _isOnCooldown = true;
         _cooldownText.gameObject.SetActive(true);
 
-        foreach (var button in _optionButtons)
-            button.interactable = false;
+        List<Button> interactableButtons = new List<Button>();
 
+        // Loop through every button
+        foreach (var button in _optionButtons)
+        {
+            // If an option button is interactable, add it to the list
+            if (button.IsInteractable())
+            {
+                interactableButtons.Add(button);
+                // Disable option selection for every button
+                button.interactable = false;
+            }
+        }
+            
+        // Cooldown
         float timeLeft = seconds;
         while (timeLeft > 0)
         {
-            _cooldownText.text = $"{Mathf.CeilToInt(timeLeft)}s";
+            //_cooldownText.text = $"{Mathf.CeilToInt(timeLeft)}s";
+            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+            {
+                _cooldownText.text = "Wrong answer, try again.";
+            }
+            else
+            {
+                _cooldownText.text = "Väärä vastaus, yritä uudestaan.";
+            }
+                
             yield return new WaitForSeconds(1f);
             timeLeft--;
         }
 
-        foreach (var button in _optionButtons)
+        // Enable option selection back for the interactaple option buttons
+        foreach (var button in interactableButtons)
             button.interactable = true;
 
         _cooldownText.gameObject.SetActive(false);

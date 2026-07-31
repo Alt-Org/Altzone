@@ -24,29 +24,43 @@ public class BattleStartHandler : MonoBehaviour
     private float _animationFrameTime = 0.5f;
     [SerializeField]
     private Sprite _tableAboveSprite;
+    private Coroutine _timerCoroutine = null;
 
     // Start is called before the first frame update
     void Start()
     {
-        LobbyManager.OnStartTimeSet += StartTimer;
+        // Subscriptions moved to OnEnable to avoid receiving events while this GameObject is inactive.
     }
 
     private void OnEnable()
     {
         AudioManager.Instance.StopMusic(); //This should have a short sfx clip playing while the battle starts.
-        OverlayPanelCheck.Instance.gameObject.SetActive(false);
+        OverlayPanelCheck.Instance.ToggleOverlay(false);
+        LobbyManager.OnStartTimeSet += StartTimer;
+        LobbyManager.OnGameStartCancelled += OnGameStartCancelled;
+        LobbyManager.NotifyBattleStartUiReady();
     }
+
     private void OnDisable()
     {
         AudioManager.Instance.StopMusic();
+        if (_timerCoroutine != null)
+        {
+            StopCoroutine(_timerCoroutine);
+            _timerCoroutine = null;
+        }
+        LobbyManager.OnStartTimeSet -= StartTimer;
+        LobbyManager.OnGameStartCancelled -= OnGameStartCancelled;
     }
     private void StartTimer(long startTime)
     {
-        StartCoroutine(TimerStart(startTime));
+        if (_timerCoroutine != null) StopCoroutine(_timerCoroutine);
+        _timerCoroutine = StartCoroutine(TimerStart(startTime));
     }
     void OnDestroy()
     {
         LobbyManager.OnStartTimeSet -= StartTimer;
+        LobbyManager.OnGameStartCancelled -= OnGameStartCancelled;
     }
 
     private IEnumerator TimerStart(long startTime)
@@ -81,6 +95,7 @@ public class BattleStartHandler : MonoBehaviour
         }
         yield return new WaitForSeconds(3);
         LobbyManager.Instance.IsStartFinished = true;
+        _timerCoroutine = null;
 
         //_timerText.gameObject.SetActive(true);
         /*do
@@ -98,5 +113,28 @@ public class BattleStartHandler : MonoBehaviour
             yield return null;
             timeleft -= Time.deltaTime;
         } while (timeleft > 0f);*/
+    }
+
+    private void OnGameStartCancelled()
+    {
+        // Stop any running start animation and move back to main menu for matchmaking
+        if (_timerCoroutine != null)
+        {
+            StopCoroutine(_timerCoroutine);
+            _timerCoroutine = null;
+        }
+
+        try
+        {
+            AudioManager.Instance.StopMusic();
+        }
+        catch { }
+
+        if (LobbyManager.Instance != null)
+        {
+            LobbyManager.Instance.IsStartFinished = true; // unblock lobby waiting coroutines
+        }
+
+        LobbyManager.RequestLobbyWindowChange(LobbyWindowTarget.MainMenu);
     }
 }

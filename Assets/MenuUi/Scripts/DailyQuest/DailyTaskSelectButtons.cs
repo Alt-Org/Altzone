@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DailyTaskSelectButtons : DailyTaskProgressListener
+public class DailyTaskSelectButtons : DailyTaskProgressListenerHighlighter
 {
     [SerializeField] private bool _limitToThis = false;
     [SerializeField] private List<SelectButtonObject> _limitedButtons;
@@ -17,6 +17,8 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
     private HashSet<EventTrigger> _addedTriggers = new();
 
     public static event Action<SelectButtonObject> OnButtonSelected;
+
+    public static event Action<bool> OnStateChange;
 
     // Adds listeners if the task is active at startup
     protected override void Start()
@@ -44,14 +46,17 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
     {
         base.SetState(task);
 
-        if (On)
+
+        RefreshListeners();
+
+        if (task == null)
         {
-            AddListeners();
+            OnStateChange?.Invoke(false);
+            return;
         }
-        else
-        {
-            RemoveListeners();
-        }
+        // Send OnStateChange with true only if the task matches (player doing the correct task)
+        //OnStateChange?.Invoke(task.EducationCultureType == _educationCategoryCultureType);
+        OnStateChange?.Invoke(On);
     }
 
     public void AddButton(SelectButtonObject button)
@@ -80,9 +85,12 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
         {
             RemoveListeners();
         }
+        
     }
 
-    // Adds EventTrigger listeners to every button in the scene
+    /// <summary>
+    /// Adds EventTrigger listeners to every button in the scene
+    /// </summary>
     private void AddListeners()
     {
         SelectButtonObject[] allButtonObjects;
@@ -97,6 +105,7 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
             allButtonObjects = allButtonObjectsList.ToArray();
         }
         else allButtonObjects = _limitedButtons.ToArray();
+
         foreach (SelectButtonObject buttonObject in allButtonObjects)
         {
             if (_addedEntries.ContainsKey(buttonObject)) continue;
@@ -112,7 +121,11 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
 
             // Starts the hold coroutine when the button is pressed down
             var downEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerDown };
-            downEntry.callback.AddListener((eventData) => StartCoroutine(ButtonHold(buttonObject)));
+            downEntry.callback.AddListener((eventData) =>
+            {
+                StartCoroutine(ButtonHold(buttonObject));
+            });
+
             trigger.triggers.Add(downEntry);
             entries.Add(downEntry);
 
@@ -120,6 +133,9 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
             var upEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerUp };
             upEntry.callback.AddListener((eventData) =>
             {
+                // This is the indicator that shows if the player is holding down the button
+                ProgressWheelHandler.Instance.DeactivateProgressWheel();
+
                 StopAllCoroutines();
                 if (buttonObject?.Button != null)
                 {
@@ -133,15 +149,18 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
         }
     }
 
-    // Removes all the added EventTrigger listeners from buttons
+    /// <summary>
+    /// Removes all the added EventTrigger listeners from buttons
+    /// </summary>
     private void RemoveListeners()
     {
+
         foreach (var addedEntry in _addedEntries)
         {
             SelectButtonObject button = addedEntry.Key;
             List<EventTrigger.Entry> entries = addedEntry.Value;
 
-            if (button != null)
+            if (button != null && button.Button != null)
             {
                 EventTrigger trigger = button.Button.GetComponent<EventTrigger>();
                 if (trigger != null)
@@ -171,10 +190,18 @@ public class DailyTaskSelectButtons : DailyTaskProgressListener
         {
             timer += Time.deltaTime;
 
+            if (timer >= _coolDownTime)
+            {
+                // This is the indicator that shows if the player is holding down the button
+                ProgressWheelHandler.Instance.StartProgressWheelAtPosition(button.Button.transform.position, _coolDownTime, _requiredHoldTime);
+            }
+
             if (timer >= _requiredHoldTime)
             {
+                ProgressWheelHandler.Instance.DeactivateProgressWheel();
                 button.Button.interactable = false;
                 OnButtonSelected?.Invoke(button);
+                
                 yield break;
             }
 

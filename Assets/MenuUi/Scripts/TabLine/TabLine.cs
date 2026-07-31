@@ -13,12 +13,17 @@ namespace MenuUi.Scripts.TabLine
         [SerializeField] private bool _getActiveButtonFromSwipe = false;
         [SerializeField] private TabLineButton[] _tabLineButtons;
         [SerializeField] private Image _tabLineRibbon;
+        [SerializeField] private Image _tabLineStripe;
         [SerializeField] private Image _tabLineImage;
-        [SerializeField] private Color _tabColor;
+        [SerializeField] private Color _tabColorActive;
+        [SerializeField] private Color _tabColorInactive;
 
         private bool _lockActiveFromSwipe = false;
 
         private SwipeUI _swipe;
+
+        public delegate void TabChanged(int newTab);
+        public static event TabChanged OnTabChanged;
 
         public SwipeUI Swipe { get => _swipe;}
 
@@ -26,7 +31,7 @@ namespace MenuUi.Scripts.TabLine
         {
             if (_swipe != null && _getActiveButtonFromSwipe)
             {
-                ActivateTabButton(_swipe.CurrentPage);
+                UpdateTabVisuals(_swipe.CurrentPage);
             }
         }
 
@@ -35,19 +40,19 @@ namespace MenuUi.Scripts.TabLine
         {
             foreach (TabLineButton button in _tabLineButtons)
             {
-                if (_tabColor != Color.white) button.SetColour(_tabColor);
-                else button.SetColour(_tabLineRibbon != null ? _tabLineRibbon.color : Color.white);
+                if (_tabColorActive != Color.white || _tabColorInactive != Color.white) button.SetColour(_tabColorActive, _tabColorInactive);
+                else button.SetColour(Color.white, Color.gray);
             }
 
             if (_getActiveButtonFromSwipe)
             {
                 _swipe = FindObjectOfType<SwipeUI>();
                 _swipe.OnCurrentPageChanged += OnSwipeCurrentPageChanged;
-                ActivateTabButton(_swipe.CurrentPage);
+                UpdateTabVisuals(_swipe.CurrentPage);
             }
             else
             {
-                ActivateTabButton(0);
+                //UpdateTabVisuals(0);
             }
         }
 
@@ -64,15 +69,20 @@ namespace MenuUi.Scripts.TabLine
         private void OnSwipeCurrentPageChanged()
         {
             if (_lockActiveFromSwipe) return;
-            ActivateTabButton(_swipe.CurrentPage);
+            UpdateTabVisuals(_swipe.CurrentPage);
         }
 
+
+        public void ActivateTabButton(int index)
+        {
+            OnTabChanged?.Invoke(index);
+        }
 
         /// <summary>
         /// Sets the tab button at the index active and others inactive.
         /// </summary>
         /// <param name="index">The index in tab line buttons array.</param>
-        public void ActivateTabButton(int index)
+        public void UpdateTabVisuals(int index)
         {
             // Check if enough tab button entries in array.
             if (index >= _tabLineButtons.Length || index < 0)
@@ -80,7 +90,7 @@ namespace MenuUi.Scripts.TabLine
                 return;
             }
 
-            Sprite image = _tabLineButtons[index].SetActiveVisuals();
+            (Sprite image, Color stripeColour) = _tabLineButtons[index].SetActiveVisuals();
             if (_tabLineImage != null)
             {
                 if (image != null)
@@ -90,6 +100,11 @@ namespace MenuUi.Scripts.TabLine
                 }
                 else if (_tabLineImage.sprite == null) _tabLineImage.enabled = false;
             }
+            if(_tabLineStripe != null)
+            {
+                if (stripeColour != Color.white)
+                    _tabLineStripe.color = stripeColour;
+            }
 
             for (int i = 0; i < _tabLineButtons.Length; i++)
             {
@@ -97,6 +112,8 @@ namespace MenuUi.Scripts.TabLine
 
                 _tabLineButtons[i].SetInactiveVisuals();
             }
+
+            SetTabOnTop(index);
         }
 
 
@@ -112,6 +129,15 @@ namespace MenuUi.Scripts.TabLine
             }
         }
 
+        protected virtual void SetTabOnTop(int index)
+        {
+            foreach (TabLineButton tabline in _tabLineButtons)
+            {
+                tabline.TabObjectHandler.transform.SetAsLastSibling();
+            }
+            _tabLineButtons[index].TabObjectHandler.transform.SetAsLastSibling();
+        }
+
 
         [Serializable]
         private class TabLineButton
@@ -119,10 +145,13 @@ namespace MenuUi.Scripts.TabLine
             [Header("References to components")]
             [SerializeField] private TabObjectHandler _tabObjectHandler;
             [SerializeField] private Sprite _tablineImage;
+            [SerializeField] private Color _stripeColour;
 
-            public Sprite SetActiveVisuals() => _tabObjectHandler.SetActiveVisuals(_tablineImage);
+            public TabObjectHandler TabObjectHandler { get => _tabObjectHandler;}
+
+            public (Sprite, Color) SetActiveVisuals() => _tabObjectHandler.SetActiveVisuals(_tablineImage, _stripeColour);
             public void SetInactiveVisuals() => _tabObjectHandler.SetInactiveVisuals();
-            public void SetColour(Color colour) => _tabObjectHandler.SetColour(colour);
+            public void SetColour(Color activeColour, Color inactiveColour) => _tabObjectHandler.SetColour(activeColour, inactiveColour);
         }
 
 

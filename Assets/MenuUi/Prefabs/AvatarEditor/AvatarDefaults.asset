@@ -14,57 +14,67 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _avatarDefaults:
   - CharacterName: Meatwall
-    CharacterId: 1102
+    CharacterId: 102
     HairId: 1010101
     EyesId: 2110101
     NoseId: 2210101
     MouthId: 2310101
     BodyId: 3110101
     HandsId: 3210101
-    FeetId: 
+    FeetId: 3310101
     AlternativeVariations: []
   - CharacterName: Jokester
-    CharacterId: 2201
-    HairId: 
-    EyesId: 
+    CharacterId: 201
+    HairId: 1020101
+    EyesId: 2120101
     NoseId: 2220101
     MouthId: 2320101
-    BodyId: 
-    HandsId: 
-    FeetId: 
+    BodyId: 3120101
+    HandsId: 3220101
+    FeetId: 3320101
     AlternativeVariations: []
   - CharacterName: Believer
-    CharacterId: 3301
+    CharacterId: 301
     HairId: 1030101
     EyesId: 2130101
     NoseId: 2230101
     MouthId: 2330101
     BodyId: 3130101
-    HandsId: 
+    HandsId: 3230101
     FeetId: 3330101
     AlternativeVariations: []
   - CharacterName: Provocateur
-    CharacterId: 4401
+    CharacterId: 401
     HairId: 1040101
     EyesId: 2140101
     NoseId: 2240101
     MouthId: 2340101
     BodyId: 3140101
-    HandsId: 
+    HandsId: 3240101
     FeetId: 3340101
     AlternativeVariations: []
   - CharacterName: Overeater
-    CharacterId: 5501
+    CharacterId: 501
     HairId: 1050101
     EyesId: 2150101
     NoseId: 2250101
     MouthId: 2350101
-    BodyId: 
-    HandsId: 
-    FeetId: 
+    BodyId: 3150101
+    HandsId: 3250101
+    FeetId: 3350101
+    AlternativeVariations: []
+  - CharacterName: Sleepy Sleeper
+    CharacterId: 603
+    HairId: 1060201
+    EyesId: 2160201
+    NoseId: 2260201
+    MouthId: 2360201
+    BodyId: 3160101
+    HandsId: 3260101
+    FeetId: 3360101
     AlternativeVariations: []
   - CharacterName: Soulsisters
-    CharacterId: 6601
+    CharacterId: 601
     HairId: 1060101
     EyesId: 2160101
     NoseId: 2260101
@@ -81,15 +91,15 @@ MonoBehaviour:
       BodyId: 
       HandsId: 
       FeetId: 
-  - CharacterName: Sleepy Sleeper
-    CharacterId: 6603
-    HairId: 1060201
-    EyesId: 2160201
-    NoseId: 2260201
-    MouthId: 2360201
-    BodyId: 3160101
-    HandsId: 3260101
-    FeetId: 
+  - CharacterName: Booksmart
+    CharacterId: 701
+    HairId: 1070101
+    EyesId: 2170101
+    NoseId: 2270101
+    MouthId: 2370101
+    BodyId: 3170101
+    HandsId: 3270101
+    FeetId: 3370101
     AlternativeVariations: []
   _info:
   - Name: Desentisizer

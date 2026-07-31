@@ -8,7 +8,7 @@ var searchData=
   ['naming_5',['Naming',['../index.html#index-naming',1,'']]],
   ['narrow_6',['Narrow',['../namespace_quantum.html#af98806bb54cd1a2aa63291a1e96991aba4a7ab319be06025840ef3389301424b9',1,'Quantum']]],
   ['navmeshregions_7',['NavMeshRegions',['../struct_quantum_1_1__globals__.html#a588f2c75c52368acd50f4d899be618bc',1,'Quantum::_globals_']]],
-  ['needed_3a_8',['GameObjects created as needed:',['../31-_quantum_battle_8unity.html#autotoc_md155',1,'']]],
+  ['needed_3a_8',['GameObjects created as needed:',['../31-_quantum_battle_8unity.html#autotoc_md157',1,'']]],
   ['newspeed_9',['NewSpeed',['../class_quantum_1_1_event_battle_projectile_change_speed.html#ac847a245f10f41d668d5c7b124e2b5d0',1,'Quantum::EventBattleProjectileChangeSpeed']]],
   ['noclass_10',['NoClass',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#adb8dd94eac5b823ce4a850e1083928afaed544e165d08264f0f78543c596e1f6d',1,'Battle::QSimulation::Player::BattlePlayerClassManager']]],
   ['non_20doxygen_20specific_11',['Doxygen specific and non-Doxygen specific',['../page-documentation-documenting-source-code.html#page-documentation-source-code-base-guidelines-doxygen-specific',1,'']]],

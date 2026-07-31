@@ -33,6 +33,5 @@ var searchData=
   ['onviewinit_30',['OnViewInit',['../class_battle_1_1_view_1_1_player_1_1_battle_player_class_base_view_controller.html#ab56ad1eaa55f211474935f6e906fcb38',1,'Battle::View::Player::BattlePlayerClassBaseViewController']]],
   ['onviewinitoverride_31',['OnViewInitOverride',['../class_battle_1_1_view_1_1_player_1_1_battle_player_class_base_view_controller.html#a98f19efcdc0408466f41885090f3de13',1,'Battle::View::Player::BattlePlayerClassBaseViewController']]],
   ['operator_20qstring512_32',['operator QString512',['../struct_quantum_1_1_q_string512.html#a03016cc2dc4082b3cf4365d322664d3b',1,'Quantum::QString512']]],
-  ['operator_20qstring64_33',['operator QString64',['../struct_quantum_1_1_q_string64.html#ae08f5e71a2b7af78c1460fc0955eff71',1,'Quantum::QString64']]],
-  ['operator_20string_34',['operator String',['../struct_quantum_1_1_q_string512.html#a730b65b779756de18b2ba682a17146f8',1,'Quantum.QString512.operator String()'],['../struct_quantum_1_1_q_string64.html#ad3bd652426b28bef7fc3410af4763894',1,'Quantum.QString64.operator String()']]]
+  ['operator_20string_33',['operator String',['../struct_quantum_1_1_q_string512.html#a730b65b779756de18b2ba682a17146f8',1,'Quantum::QString512']]]
 ];

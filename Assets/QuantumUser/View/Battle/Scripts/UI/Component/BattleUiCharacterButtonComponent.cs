@@ -9,7 +9,10 @@
 // Unity usings
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using Button = UnityEngine.UI.Button;
+
+// Quantum usings
+using Quantum;
 
 // Altzone usings
 using Altzone.Scripts.ModelV2;
@@ -48,6 +51,10 @@ namespace Battle.View.UI
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private Image _damageFill;
 
+        /// <summary>[SerializeField] Reference to the dead character image of the character button. It is used to display an image on top of the character button to indicate the character is dead.</summary>
+        /// @ref BattleUiCharacterButtonComponent-SerializeFields
+        [SerializeField] private GameObject _deathImage;
+
         /// <summary>[SerializeField] The duration for damage fill animation.</summary>
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private float _damageFillAnimationDuration = 0.5f;
@@ -65,9 +72,9 @@ namespace Battle.View.UI
         /// </summary>
         ///
         /// <param name="characterId">The CharacterId of the character as a int.</param>
-        public void SetCharacterIcon(int characterId)
+        public void SetCharacterIcon(BattlePlayerCharacterID characterId)
         {
-            PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(characterId.ToString());
+            PlayerCharacterPrototype info = PlayerCharacterPrototypes.GetCharacter(((int)characterId).ToString());
 
             if (info == null) return;
 
@@ -101,6 +108,14 @@ namespace Battle.View.UI
             _t = 0f;
             _startDamageFillAmount = _damageFill.fillAmount;
             _targetDamageFillAmount = 1 - percentage;
+        }
+
+        /// <summary>
+        /// Sets the death image gameobject to active.
+        /// </summary>
+        public void SetDeathImage()
+        {
+            _deathImage.SetActive(true);
         }
 
         /// <value>The starting damage fill amount for the fill animation.</value>

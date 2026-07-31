@@ -6,7 +6,7 @@ namespace Altzone.Scripts.Audio
     {
         public string Name = "";
         public int AmountInUse = 0;
-        public List<T> Pool = new List<T>();
+        public List<T> Pool {get; private set;}
 
         public Chunk() { }
 
@@ -15,7 +15,7 @@ namespace Altzone.Scripts.Audio
         /// <summary>
         /// Adds given item to the pool.
         /// </summary>
-        public void Add(T item) { Pool.Add(item); }
+        public void Add(T item) { Pool ??= new List<T>(); Pool.Add(item); }
 
         /// <summary>
         /// Inserts given item into the pool to the given index.
@@ -23,6 +23,8 @@ namespace Altzone.Scripts.Audio
         /// <returns>Default or Item that was pushed out of the pool.</returns>
         public T Insert(T item, int index)
         {
+            Pool ??= new List<T>();
+
             Pool.Insert(index, item);
 
             int lastIndex = Pool.Count - 1;
@@ -46,6 +48,8 @@ namespace Altzone.Scripts.Audio
         /// </summary>
         public void Clear()
         {
+            Pool ??= new List<T>();
+
             AmountInUse = 0;
             Pool.Clear();
         }

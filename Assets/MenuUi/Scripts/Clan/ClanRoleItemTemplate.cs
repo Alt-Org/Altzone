@@ -11,51 +11,59 @@ public class ClanRoleItemTemplate : MonoBehaviour
     [Header("Optional visuals")]
     [SerializeField] private TextMeshProUGUI _label;
     [SerializeField] private Image _icon;
-    [SerializeField] private GameObject _selectedHighlight;
+
+    [Header("Checkbox visuals")]
+    [SerializeField] private GameObject _checked;
+    [SerializeField] private GameObject _unchecked;
 
     private string _roleName;
     private Action<string, bool> _onChanged;
 
     public string RoleName => _roleName;
 
-    public void Init(
-        string roleName,
-        string displayName,
-        Sprite icon,
-        bool isOn,
-        Action<string, bool> onChanged,
-        ToggleGroup toggleGroup = null)
+    public void Init(string roleName, string displayName, Sprite icon, bool isOn, Action<string, bool> onToggled)
     {
         _roleName = roleName;
-        _onChanged = onChanged;
+        _onChanged = onToggled;
 
-        if (_label != null) _label.text = displayName;
-        if (_icon != null) _icon.sprite = icon;
+        if (_label != null)
+            _label.text = displayName;
 
-        if (_toggle == null)
+        if (_icon != null)
+            _icon.sprite = icon;
+
+        if (_toggle != null)
         {
-            Debug.LogError($"{nameof(ClanRoleItemTemplate)}: Toggle reference missing on {gameObject.name}");
-            return;
+            _toggle.onValueChanged.RemoveAllListeners();
+            SetSelectedWithoutNotify(isOn);
+
+            _toggle.onValueChanged.AddListener(value =>
+            {
+                SetSelectedWithoutNotify(value);
+                _onChanged?.Invoke(_roleName, value);
+            });
         }
-
-        _toggle.group = toggleGroup;
-
-        _toggle.onValueChanged.RemoveAllListeners();
-        _toggle.isOn = isOn;
-
-        SetHighlight(isOn);
-
-        _toggle.onValueChanged.AddListener(v =>
-        {
-            SetHighlight(v);
-            _onChanged?.Invoke(_roleName, v);
-        });
     }
 
-    private void SetHighlight(bool on)
+    private void UpdateVisuals(bool isOn)
     {
-        if (_selectedHighlight != null)
-            _selectedHighlight.SetActive(on);
+        if (_checked != null)
+            _checked.SetActive(isOn);
+
+        if (_unchecked != null)
+            _unchecked.SetActive(!isOn);
+    }
+
+    public void SetSelectedWithoutNotify(bool isOn)
+    {
+        if (_toggle != null)
+            _toggle.SetIsOnWithoutNotify(isOn);
+
+        if (_checked != null)
+            _checked.SetActive(isOn);
+
+        if (_unchecked != null)
+            _unchecked.SetActive(!isOn);
     }
 }
 

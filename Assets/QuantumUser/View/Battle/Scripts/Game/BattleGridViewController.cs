@@ -27,18 +27,22 @@ namespace Battle.View.Game
 
         /// <summary>[SerializeField] Reference to grid's parent <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Transform.html">Transform@u-exlink</a>.</summary>
         /// @ref BattleGridViewController-SerializeFields
+        [Tooltip("Reference to grid's parent Transform")]
         [SerializeField] private Transform _gridParent;
 
         /// <summary>[SerializeField] Reference to the grid cell template <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a>.</summary>
         /// @ref BattleGridViewController-SerializeFields
+        [Tooltip("Reference to the grid cell template GameObject")]
         [SerializeField] private GameObject _gridCellTemplate;
 
         /// <summary>[SerializeField] Grid cell color A.</summary>
         /// @ref BattleGridViewController-SerializeFields
+        [Tooltip("Grid cell color A")]
         [SerializeField] private Color _colorA;
 
         /// <summary>[SerializeField] Grid cell color B.</summary>
         /// @ref BattleGridViewController-SerializeFields
+        [Tooltip("Grid cell color B")]
         [SerializeField] private Color _colorB;
 
         /// @}

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using MenuUi.Scripts.AvatarEditor;
-using Assets.Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Model.Poco.Player;
 using TMPro;
 
 public class ColorPicker : MonoBehaviour

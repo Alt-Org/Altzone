@@ -6,16 +6,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
+using TMPro;
 
 public class ClanMembersPageController : MonoBehaviour
 {
     [SerializeField] private Transform _membersContent;
     [SerializeField] private ClanMemberPlaque _memberPlaquePrefab;
     [SerializeField] private ClanMemberPopupController _memberPopup;
+    [SerializeField] private TMP_InputField _memberSearchInput;
+    //[SerializeField] private ClanAddFriendPopupController _addFriendPopup;
 
     [SerializeField] private ClanRoleSelectPopupController _roleSelectPopup;
     [SerializeField] private Canvas _canvas;
 
+    [SerializeField] private ClanMainView _clanMainView;
+
+    private string _memberSearchText = string.Empty;
     private string _viewedClanId;
     private HashSet<string> _viewAdminSet;
 
@@ -23,22 +29,47 @@ public class ClanMembersPageController : MonoBehaviour
 
     private HashSet<string> _roleFilterSet;
 
-    private ClanMembersFiltersPopup.NameSort _nameSort = ClanMembersFiltersPopup.NameSort.None;
+    private ClanMembersFiltersPopup.MemberSort _memberSort = ClanMembersFiltersPopup.MemberSort.MostWins;
 
     private List<ClanMember> _cachedMembers;
     private string _cachedClanId;
 
     private void OnEnable()
     {
-        if(!string.IsNullOrEmpty(_viewedClanId))
+        _memberSearchText = string.Empty;
+
+        if (_memberSearchInput != null)
+        {
+            _memberSearchInput.SetTextWithoutNotify(string.Empty);
+        }
+
+        if (_memberSearchInput != null)
+        {
+            _memberSearchInput.onValueChanged.RemoveListener(OnMemberSearchChanged);
+            _memberSearchInput.onValueChanged.AddListener(OnMemberSearchChanged);
+        }
+
+        if (!string.IsNullOrEmpty(_viewedClanId))
         {
             Rebuild();
-        }     
+        }
+    }
+
+    private void OnDisable()
+    {
+        CloseMemberDetailsPopup();
+
+        if (_memberSearchInput != null)
+        {
+            _memberSearchInput.onValueChanged.RemoveListener(OnMemberSearchChanged);
+        }
     }
 
     private void Rebuild(bool forceFetch = false)
     {
         if (!isActiveAndEnabled) return;
+
+        CloseMemberDetailsPopup();
 
         if (_rebuildRoutine != null)
         {
@@ -96,7 +127,10 @@ public class ClanMembersPageController : MonoBehaviour
                 int rightsCount = CountRights(m.Role);
                 string roleName = GetRoleLabel(m, adminSet);
                 string playerName = m.Name ?? string.Empty;
-                return new MemberRow(m, rightsCount, roleName, playerName);
+                int wins = GetMemberWins(m);
+                DateTime joinedAt = GetMemberJoinedAt(m);
+
+                return new MemberRow(m, rightsCount, roleName, playerName, wins, joinedAt);
             });
 
         // Role filter: if user chooses roles, show only those roles in the list ---
@@ -105,29 +139,61 @@ public class ClanMembersPageController : MonoBehaviour
             rowsQuery = rowsQuery.Where(r => _roleFilterSet.Contains(r.RoleLabel));
         }
 
-        List<MemberRow> rows;
-        switch (_nameSort)
+        if (!string.IsNullOrWhiteSpace(_memberSearchText))
         {
-            case ClanMembersFiltersPopup.NameSort.Asc:
+            string search = _memberSearchText.Trim();
+
+            rowsQuery = rowsQuery.Where(r =>
+                !string.IsNullOrEmpty(r.PlayerName) &&
+                r.PlayerName.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
+        List<MemberRow> rows;
+        switch (_memberSort)
+        {
+            case ClanMembersFiltersPopup.MemberSort.MostWins:
+                rows = rowsQuery
+                    .OrderByDescending(r => r.Wins)
+                    .ThenBy(r => r.PlayerName, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                break;
+
+            case ClanMembersFiltersPopup.MemberSort.LeastWins:
+                rows = rowsQuery
+                    .OrderBy(r => r.Wins)
+                    .ThenBy(r => r.PlayerName, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                break;
+
+            case ClanMembersFiltersPopup.MemberSort.OldestMemberFirst:
+                rows = rowsQuery
+                    .OrderBy(r => r.JoinedAt)
+                    .ThenBy(r => r.PlayerName, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                break;
+
+            case ClanMembersFiltersPopup.MemberSort.NewestMemberFirst:
+                rows = rowsQuery
+                    .OrderByDescending(r => r.JoinedAt)
+                    .ThenBy(r => r.PlayerName, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+                break;
+
+            case ClanMembersFiltersPopup.MemberSort.NameAscending:
                 rows = rowsQuery
                     .OrderBy(r => r.PlayerName, StringComparer.OrdinalIgnoreCase)
-                    .ThenByDescending(r => r.RightsCount)
-                    .ThenBy(r => r.RoleLabel, StringComparer.OrdinalIgnoreCase)
                     .ToList();
                 break;
 
-            case ClanMembersFiltersPopup.NameSort.Desc:
+            case ClanMembersFiltersPopup.MemberSort.NameDescending:
                 rows = rowsQuery
                     .OrderByDescending(r => r.PlayerName, StringComparer.OrdinalIgnoreCase)
-                    .ThenByDescending(r => r.RightsCount)
-                    .ThenBy(r => r.RoleLabel, StringComparer.OrdinalIgnoreCase)
                     .ToList();
                 break;
 
-            default: // Default = member list sorted by role 
+            default:
                 rows = rowsQuery
-                    .OrderByDescending(r => r.RightsCount)
-                    .ThenBy(r => r.RoleLabel, StringComparer.OrdinalIgnoreCase)
+                    .OrderByDescending(r => r.Wins)
                     .ThenBy(r => r.PlayerName, StringComparer.OrdinalIgnoreCase)
                     .ToList();
                 break;
@@ -143,6 +209,10 @@ public class ClanMembersPageController : MonoBehaviour
             bool isOwnClan = string.IsNullOrEmpty(_viewedClanId)
              || (ServerManager.Instance.Clan != null && _viewedClanId == ServerManager.Instance.Clan._id);
 
+            bool isCurrentPlayer = IsCurrentPlayerMember(member);
+
+            plaque.SetAddFriendButtonVisible(!isCurrentPlayer);
+
             plaque.SetVoteInteractable(isOwnClan);
 
             plaque.BindVote(() =>
@@ -157,6 +227,17 @@ public class ClanMembersPageController : MonoBehaviour
                 _roleSelectPopup.ShowAnchored(member, roles, anchor, _canvas);
             });
 
+            if (!isCurrentPlayer)
+            {
+                var capturedMemberForFriend = member;
+
+                plaque.BindAddFriend(() =>
+                {
+                    if (_clanMainView == null) return;
+
+                    _clanMainView.OpenAddFriendPopup(capturedMemberForFriend);
+                });
+            }
 
             plaque.gameObject.SetActive(true);
 
@@ -190,7 +271,15 @@ public class ClanMembersPageController : MonoBehaviour
                 button.onClick.RemoveAllListeners();
                 button.onClick.AddListener(() =>
                 {
-                    _memberPopup.Show(capturedMember, capturedRoleLabel, allowVotes: isOwnClan);
+                    bool isCurrentPlayer = IsCurrentPlayerMember(capturedMember);
+
+                    if (_clanMainView == null) return;
+
+                    _clanMainView.OpenMemberDetailsPopup(
+                        capturedMember,
+                        capturedRoleLabel,
+                        allowVotes: isOwnClan,
+                        allowAddFriend: !isCurrentPlayer);
                 });
             }
         }
@@ -198,9 +287,37 @@ public class ClanMembersPageController : MonoBehaviour
         _rebuildRoutine = null;
     }
 
-    public void SetNameSort(ClanMembersFiltersPopup.NameSort sort)
+    private void OnMemberSearchChanged(string searchText)
     {
-        _nameSort = sort;
+        _memberSearchText = searchText ?? string.Empty;
+        Rebuild(forceFetch: false);
+    }
+
+    private static int GetMemberWins(ClanMember member)
+    {
+        if (member == null) return 0;
+
+        return member.LeaderBoardWins;
+    }
+
+    private static DateTime GetMemberJoinedAt(ClanMember member)
+    {
+        if (member == null || string.IsNullOrWhiteSpace(member.CreatedAt))
+        {
+            return DateTime.MaxValue;
+        }
+
+        if (DateTimeOffset.TryParse(member.CreatedAt, out DateTimeOffset parsedDate))
+        {
+            return parsedDate.ToLocalTime().DateTime;
+        }
+
+        return DateTime.MaxValue;
+    }
+
+    public void SetMemberSort(ClanMembersFiltersPopup.MemberSort sort)
+    {
+        _memberSort = sort;
         Rebuild(forceFetch: false);
     }
 
@@ -213,9 +330,9 @@ public class ClanMembersPageController : MonoBehaviour
         Rebuild(forceFetch: true);
     }
 
-    public void ApplyFilters(ClanMembersFiltersPopup.NameSort sort, List<string> selectedRoles)
+    public void ApplyFilters(ClanMembersFiltersPopup.MemberSort sort, List<string> selectedRoles)
     {
-        _nameSort = sort;
+        _memberSort = sort;
 
         if (selectedRoles != null && selectedRoles.Count > 0)
             _roleFilterSet = new HashSet<string>(selectedRoles, StringComparer.OrdinalIgnoreCase);
@@ -259,12 +376,53 @@ public class ClanMembersPageController : MonoBehaviour
         public string RoleLabel { get; }
         public string PlayerName { get; }
 
-        public MemberRow(ClanMember member, int rightsCount, string roleLabel, string playerName)
+        public int Wins { get; }
+        public DateTime JoinedAt { get; }
+
+        public MemberRow(
+            ClanMember member,
+            int rightsCount,
+            string roleLabel,
+            string playerName,
+            int wins,
+            DateTime joinedAt)
         {
             Member = member;
             RightsCount = rightsCount;
             RoleLabel = roleLabel ?? string.Empty;
             PlayerName = playerName ?? string.Empty;
+            Wins = wins;
+            JoinedAt = joinedAt;
+        }
+    }
+
+    private static bool IsCurrentPlayerMember(ClanMember member)
+    {
+        if (member == null || ServerManager.Instance == null || ServerManager.Instance.Player == null)
+            return false;
+
+        var currentPlayer = ServerManager.Instance.Player;
+
+        if (!string.IsNullOrEmpty(member.Id) && !string.IsNullOrEmpty(currentPlayer._id))
+            return member.Id == currentPlayer._id;
+
+        if (!string.IsNullOrEmpty(member.Name) && !string.IsNullOrEmpty(currentPlayer.name))
+            return string.Equals(member.Name, currentPlayer.name, StringComparison.OrdinalIgnoreCase);
+
+        return false;
+    }
+
+    private void CloseMemberDetailsPopup()
+    {
+        if (_clanMainView != null)
+        {
+            _clanMainView.CloseMemberDetailsPopup();
+            return;
+        }
+
+        if (_memberPopup != null)
+        {
+            _memberPopup.Hide();
         }
     }
 }

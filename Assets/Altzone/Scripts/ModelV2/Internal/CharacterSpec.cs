@@ -112,7 +112,8 @@ namespace Altzone.Scripts.ModelV2.Internal
         /// TODO: add relevant doc comment here!
         /// </summary>
         [Header("Battle Asset References")]
-        public AssetRef<EntityPrototype> BattleEntityPrototype;
+        public AssetRef<EntityPrototype> BattleCharacterEntityPrototype;
+        public AssetRef<EntityPrototype>[] BattleShieldEntityPrototypes;
         public Sprite BattleUiSprite;
 
         #endregion
@@ -197,7 +198,7 @@ namespace Altzone.Scripts.ModelV2.Internal
         {
             return $"{Id}:{ClassType}:{Name}" +
                    $", {UResName(GalleryImage)}" +
-                   $", {QResName(BattleEntityPrototype)}" +
+                   $", {QResName(BattleCharacterEntityPrototype)}" +
                    $", {UResName(BattleUiSprite)}";
 
             string UResName(Object instance) => $"{(instance == null ? "null" : instance.name)}";
