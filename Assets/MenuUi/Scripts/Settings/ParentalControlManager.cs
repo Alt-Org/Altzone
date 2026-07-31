@@ -101,6 +101,10 @@ public class ParentalControlManager : MonoBehaviour
         midMatchToggle.onValueChanged.AddListener(_ => SetEndMidMatch());
         endMatchToggle.onValueChanged.AddListener(_ => SetEndAfterMatch());
 
+        _eyeButton.onClick.AddListener(ChangePasswordVisibility);
+        _popupEye.onClick.AddListener(ChangePopUpPasswordVisibility);
+        _confirmEye.onClick.AddListener(ChangePopUpConfirmPasswordVisibility);
+
     }
 
 
