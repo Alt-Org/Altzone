@@ -1,12 +1,8 @@
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
-using Altzone.Scripts.AzDebug;
-using Newtonsoft.Json.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using WebSocketSharp;
 
 public class ParentalControlManager : MonoBehaviour
 {
@@ -458,7 +454,7 @@ public class ParentalControlManager : MonoBehaviour
         float moneyFloat = float.Parse(monthlyLimitInput.text); //maybe not needed, because the field is set to accept only floats in Unity's side
               
 
-        if (money.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(money))
         {
             PlayerPrefs.SetFloat("MonthlyLimit", 0);
             PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
