@@ -113,7 +113,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public event Action OnEndMidMatchChange;
     public event Action OnEndAfterMatchChange;
 
-
     // Constants
     public const string BattleShowDebugStatsOverlayKey = "BattleStatsOverlay";
     public const string BattleArenaScaleKey = "BattleUiArenaScale";
@@ -476,10 +475,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _maxPlayTime = (PlayerPrefs.GetFloat("MaxPlayTime"));
         _endMidMatch = (PlayerPrefs.GetInt("EndMidMatch", 1) == 1);
         _endAfterMatch = (PlayerPrefs.GetInt("EndAfterMatch", 1) == 1);
-
-
-
-
     }
 
     private void OnDestroy()
@@ -716,14 +711,11 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public bool AllowLinks
     {
-        get {
-            return _allowLinks;
-
-        }
-
+        get => _allowLinks;
         set
         {
             _allowLinks = value;
+
             if (_allowLinks)
             {
                 PlayerPrefs.SetInt("AllowLinks", 1);
@@ -733,18 +725,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             {
                 PlayerPrefs.SetInt("AllowLinks", 0);
             }
+
             OnAllowLinksChange?.Invoke();
         }
-
     }
 
-
     private bool _chatMessages;
-    public bool ChatMessages {
-        get { return _chatMessages;
-        }
 
-        set {
+    public bool ChatMessages
+    {
+        get => _chatMessages;
+        set
+        {
             _chatMessages = value;
 
             if (_chatMessages)
@@ -756,22 +748,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 PlayerPrefs.SetInt("AllowChat", 0);
             }
 
-
             OnChatMessagesChange?.Invoke();
         }
-
-
     }
 
     private bool _allowEmojis;
 
     public bool AllowEmojis
     {
-        get
-        {
-            return _allowEmojis;
-        }
-
+        get => _allowEmojis;
         set
         {
             _allowEmojis = value;
@@ -785,22 +770,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 PlayerPrefs.SetInt("AllowEmojis", 0);
             }
 
-
             OnAllowEmojisChange?.Invoke();
         }
-
-
     }
 
     private bool _allowTreasureHunt;
 
     public bool AllowTreasureHunt
     {
-        get
-        {
-            return _allowTreasureHunt;
-        }
-
+        get => _allowTreasureHunt;
         set
         {
             _allowTreasureHunt = value;
@@ -814,19 +792,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 PlayerPrefs.SetInt("AllowTreasureHunt", 0);
             }
 
-
             OnAllowTreasureHuntChange?.Invoke();
         }
-
-
     }
 
     //Money controls
     private float _monthlyLimit;
-    public float MonthlyLimit {
+
+    public float MonthlyLimit
+    {
         get => _monthlyLimit;
-        
-        set {
+        set
+        {
             if (_monthlyLimit == value) return;
             _monthlyLimit = value;
             if (_monthlyLimit > 0) {
@@ -835,26 +812,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             {
                 PlayerPrefs.SetFloat("MonthlyLimit", 0);
             }
-
-
-                OnMonthlyLimitChange?.Invoke();
-
-            }
-
-        
-
+            OnMonthlyLimitChange?.Invoke();
+        }
     }
-
 
     private bool _activatePurchasesSeparately;
 
     public bool ActivatePurchasesSeparately
     {
-        get
-        {
-            return _activatePurchasesSeparately;
-        }
-
+        get => _activatePurchasesSeparately;
         set
         {
             _activatePurchasesSeparately = value;
@@ -868,15 +834,9 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
             }
 
-
             OnActivatePurchasesSeparatelyChange?.Invoke();
         }
-
-
     }
-
-
-
 
 
     //Time controls
@@ -885,7 +845,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public float MaxPlayTime
     {
         get => _maxPlayTime;
-
         set
         {
             if (_maxPlayTime == value) return;
@@ -903,24 +862,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 PlayerPrefs.SetFloat("MaxPlayTime", 1);
             }
 
-
             OnMaxPlayTimeChange?.Invoke();
-
         }
-
-
-
     }
 
     private bool _endMidMatch;
 
     public bool EndMidMatch
     {
-        get
-        {
-            return _endMidMatch;
-        }
-
+        get => _endMidMatch;
         set
         {
             _endMidMatch = value;
@@ -934,22 +884,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 PlayerPrefs.SetInt("EndMidMatch", 0);
             }
 
-
             OnEndMidMatchChange?.Invoke();
         }
-
-
     }
 
     private bool _endAfterMatch;
 
     public bool EndAfterMatch
     {
-        get
-        {
-            return _endAfterMatch;
-        }
-
+        get => _endAfterMatch;
         set
         {
             _endAfterMatch = value;
@@ -963,13 +906,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 PlayerPrefs.SetInt("EndAfterMatch", 0);
             }
 
-
             OnEndAfterMatchChange?.Invoke();
         }
-
-
     }
-
-
-
 }
