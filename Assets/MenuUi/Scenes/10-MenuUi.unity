@@ -8226,6 +8226,11 @@ PrefabInstance:
       propertyPath: _imageToCutOut.Array.data[7]
       value: 
       objectReference: {fileID: 1682905505}
+    - target: {fileID: 1659039544649130420, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+        type: 3}
+      propertyPath: _imageToCutOut.Array.data[8]
+      value: 
+      objectReference: {fileID: 1682905505}
     - target: {fileID: 1700249277024366784, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -8244,14 +8249,14 @@ PrefabInstance:
     - target: {fileID: 1746119495601121979, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _englishText
-      value: "Here you can see your clan's \ninformation such as name, available
-        \nmoney and current ranking. "
+      value: "Here you can see your \nclan's information such \nas name, available
+        money \nand current ranking. "
       objectReference: {fileID: 0}
     - target: {fileID: 1746119495601121979, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _finnishText
-      value: "T\xE4st\xE4 n\xE4et klaanisi tiedot \nkuten nimen, k\xE4ytett\xE4viss\xE4
-        \nolevan rahan sek\xE4 klaanin \nt\xE4m\xE4n hetkisen sijoituksen."
+      value: "T\xE4st\xE4 n\xE4et klaanisi \ntiedot kuten nimen, \nk\xE4ytett\xE4viss\xE4
+        olevan \nrahan sek\xE4 klaanin \nt\xE4m\xE4n hetkisen sijoituksen."
       objectReference: {fileID: 0}
     - target: {fileID: 1883665940102341433, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
@@ -8647,12 +8652,12 @@ PrefabInstance:
     - target: {fileID: 3771807447068235549, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _englishText
-      value: "This is the \nHome screen button \n(The screen we \ncurrently are in)."
+      value: "This is the Home \nscreen button \n(The screen we \ncurrently are in)."
       objectReference: {fileID: 0}
     - target: {fileID: 3771807447068235549, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _finnishText
-      value: "T\xE4m\xE4n painikkeen kautta \np\xE4\xE4set takaisin pelin kotin\xE4kym\xE4\xE4n\n
+      value: "T\xE4m\xE4n painikkeen \nkautta p\xE4\xE4set takaisin \npelin kotin\xE4kym\xE4\xE4n\n
         (jossa nyt ollaan)."
       objectReference: {fileID: 0}
     - target: {fileID: 3792941154426209175, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
@@ -8942,15 +8947,15 @@ PrefabInstance:
     - target: {fileID: 6170684508982610446, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _englishText
-      value: "Here you can find clan's \npolls which are used to \nchoose what furniture
-        \nto buy and decide how \nthe clan is managed. \n(Not ready yet.)"
+      value: "Here you can find \nclan's polls which \nare used to choose \nwhat
+        furniture to \nbuy and decide how \nthe clan is managed. \n(Not ready yet.)"
       objectReference: {fileID: 0}
     - target: {fileID: 6170684508982610446, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: _finnishText
-      value: "T\xE4\xE4lt\xE4 l\xF6ytyv\xE4t klaanin \n\xE4\xE4nestykset, jossa \np\xE4\xE4tet\xE4\xE4n
-        mit\xE4 klaani \nostaa ja miten \nklaania hallinnoidaan. \n(Ei ihan valmis
-        viel\xE4)"
+      value: "T\xE4\xE4lt\xE4 l\xF6ytyv\xE4t \nklaanin \xE4\xE4nestykset, \njossa
+        p\xE4\xE4tet\xE4\xE4n \nmit\xE4 klaani ostaa \nja miten klaania \nhallinnoidaan.
+        (Ei \nihan valmis viel\xE4)"
       objectReference: {fileID: 0}
     - target: {fileID: 6209784561565615236, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
@@ -9007,7 +9012,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _imageToCutOut.Array.data[3]
       value: 
-      objectReference: {fileID: 2026273047}
+      objectReference: {fileID: 1618055529}
     - target: {fileID: 6281757911776659803, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -12578,6 +12583,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1618055529 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5933787445710113705, guid: 2bfbf2a643bbccb429fd4ab9b0a065f2,
+    type: 3}
+  m_PrefabInstance: {fileID: 977609552}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1641758019
 GameObject:
   m_ObjectHideFlags: 0
