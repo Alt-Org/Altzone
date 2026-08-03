@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class TutorialPanelHandler : MonoBehaviour
 {
     [SerializeField] private Button _tutorialAdvanceButton;
-    [SerializeField] private Button _tutorialStopButton;
     [SerializeField] private List<Image> _imageToCutOut;
     [SerializeField] private CutOutHandler _cutOut;
     [SerializeField] private GameObject _arrow;
@@ -19,15 +18,10 @@ public class TutorialPanelHandler : MonoBehaviour
 
     private List<CutOutHandler> _cutOuts = new();
 
-   [SerializeField] private TutorialController _tutorialController;
-
     public void SetData(Action advanceAction)
     {
         if(_tutorialAdvanceButton != null)
             _tutorialAdvanceButton.onClick.AddListener(advanceAction.Invoke);
-
-        if (_tutorialStopButton != null)
-            _tutorialStopButton.onClick.AddListener(() => _tutorialController.SkipTutorial());
 
         _cutOuts.Clear();
 
@@ -49,11 +43,7 @@ public class TutorialPanelHandler : MonoBehaviour
                 cutout.preserveAspect = imageToCutOut.preserveAspect;
                 cutout.transform.localScale = imageToCutOut.transform.localScale;
                 cutout.color = imageToCutOut.color;
-                if (cutout.sprite == null || _useCutOut)
-                {
-                    _fadeLayer.transform.SetAsLastSibling();
-                    _tutorialStopButton.transform.SetAsLastSibling();
-                }
+                if (cutout.sprite == null || _useCutOut) _fadeLayer.transform.SetAsLastSibling();
                 else cutout.material = null;
             }
             j++;
