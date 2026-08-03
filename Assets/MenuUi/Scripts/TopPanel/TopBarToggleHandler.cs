@@ -7,7 +7,7 @@ using System.Threading;
 public class TopBarToggleHandler : MonoBehaviour
 {
     public TopBarDefs.TopBarItem item;
-    private Toggle _toggle;
+    [SerializeField] private Toggle _toggle;
 
     private const bool DebugOn = true;
 
@@ -32,7 +32,6 @@ public class TopBarToggleHandler : MonoBehaviour
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleHandler : Start()");
 
-        _toggle = GetComponent<Toggle>();
 
         if (_toggle == null)
         {

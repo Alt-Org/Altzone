@@ -281,8 +281,6 @@ namespace MenuUI.Scripts.TopPanel
                           $"active={c.gameObject.activeSelf}, " +
                           $"parent={c.parent.name}");
             }
-
-            EnsureClanTileBackgroundPosition();
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
         }
 
@@ -404,7 +402,6 @@ namespace MenuUI.Scripts.TopPanel
                 MoveToTopBar(_textContainer, _topBarContent);
             }
 
-            EnsureClanTileBackgroundPosition();
         }
 
         private void MoveUnderClanPanel(Transform item)
@@ -483,16 +480,6 @@ namespace MenuUI.Scripts.TopPanel
                 rt.anchoredPosition = Vector2.zero;
                 rt.localScale = Vector3.one;
             }
-        }
-
-        private void EnsureClanTileBackgroundPosition()
-        {
-            if (_clanTileBackground == null) return;
-
-            if (_clanPanelRoot != null && _clanTileBackground.parent != _clanPanelRoot)
-                _clanTileBackground.SetParent(_clanPanelRoot, false);
-
-            _clanTileBackground.SetSiblingIndex(0);
         }
     }
 }
