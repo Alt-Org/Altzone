@@ -48,6 +48,7 @@ namespace Battle.QSimulation.Game
 
             BattleArenaQSpec battleArenaSpec = BattleQConfig.GetArenaSpec(f);
 
+            BattleEntityManager.Init(f, new BattleGridPosition() { Row = -48, Col = -32 }, 16);
             BattleGridManager.Init(battleArenaSpec);
             BattlePlayerManager.Init(f, battleArenaSpec);
 
@@ -55,6 +56,7 @@ namespace Battle.QSimulation.Game
             BattleCollisionQSystem.Init();
             BattleGoalQSystem.Init();
             BattlePlayerClassManager.Init();
+            BattlePlayerShieldManager.Init();
             BattlePlayerMovementController.Init();
             BattlePlayerQSystem.Init();
             BattleProjectileQSystem.Init();
@@ -177,6 +179,8 @@ namespace Battle.QSimulation.Game
                     // Transition from GetReadyToPlay to Playing
                     if (gameSession->TimeUntilStartSec <= FP._0)
                     {
+                        BattlePlayerQSystem.OnGameStart(f);
+                        BattleProjectileQSystem.Launch(f);
                         f.Events.BattleViewGameStart();
                         gameSession->State = BattleGameState.Playing;
                     }
@@ -203,8 +207,9 @@ namespace Battle.QSimulation.Game
             BattleSoulWallQSpec soulWallSpec = BattleQConfig.GetSoulWallSpec(f);
 
             BattleSoulWallQSystem.CreateSoulWalls(f, battleArenaSpec, soulWallSpec);
-
             BattlePlayerManager.CreatePlayers(f);
+            BattleProjectileQSystem.CreateProjectile(f);
+
             BattlePlayerQSystem.SpawnPlayers(f);
         }
     }

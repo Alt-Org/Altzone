@@ -970,7 +970,7 @@ namespace MenuUI.Scripts.SoulHome
             Debug.Log("Free:"+slot.row+":"+slot.column);
             Vector3Int furnitureSize;
 
-            if (furniture.Furniture.IsRotated != slot.Rotated || furniture.Furniture.IsRotated != slot.RotatedNonBlock)
+            if (furniture.Furniture.IsRotated)
                 furnitureSize = furniture.GetFurnitureSizeRotated();
             else
                 furnitureSize = furniture.GetFurnitureSize();

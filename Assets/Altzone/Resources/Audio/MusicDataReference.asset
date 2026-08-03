@@ -16,6 +16,14 @@ MonoBehaviour:
   - Name: MainMenu
     Type: 1
     MusicTracks:
+    - Name: Default
+      Id: 0
+      Music: {fileID: 8300000, guid: b9203b5398cba4a4bacceff318722fa0, type: 3}
+      JukeboxInfo:
+        Disk: {fileID: 0}
+        Genre: 0
+        Mood: 0
+        Artists: []
     - Name: SlowSteps
       Id: 0
       Music: {fileID: 8300000, guid: 6e18d076df649554985ce212cbdcf42b, type: 3}
@@ -344,6 +352,61 @@ MonoBehaviour:
         Artists:
         - Name: Sebastian Backman
           Artist: {fileID: 11400000, guid: 31beccaba60579a4799a5ef961f497db, type: 2}
+          Roles: 
+    - Name: Crystal
+      Id: 25
+      Music: {fileID: 8300000, guid: 78ec6e0f78e92a7f39d4b880629b608a, type: 3}
+      JukeboxInfo:
+        Disk: {fileID: 21300000, guid: 6e7b666e7023e7f8db6039526ec66a0f, type: 3}
+        Genre: 0
+        Mood: 0
+        Artists:
+        - Name: Samu Meuronen
+          Artist: {fileID: 11400000, guid: 1d69719bd1e7c8808b6766d62b01b8f1, type: 2}
+          Roles: 
+    - Name: Jungle
+      Id: 26
+      Music: {fileID: 8300000, guid: 758c25e6cb537ed8684105fd34942024, type: 3}
+      JukeboxInfo:
+        Disk: {fileID: 21300000, guid: 39c2ca32beccc3d5f9b8320e12a01232, type: 3}
+        Genre: 0
+        Mood: 0
+        Artists:
+        - Name: Samu Meuronen
+          Artist: {fileID: 11400000, guid: 1d69719bd1e7c8808b6766d62b01b8f1, type: 2}
+          Roles: 
+    - Name: Long Walk Home
+      Id: 27
+      Music: {fileID: 8300000, guid: 4212aeab019a41e00bc7bb155df63a10, type: 3}
+      JukeboxInfo:
+        Disk: {fileID: 21300000, guid: 2627ba16821bb4add86a8c62770d39d0, type: 3}
+        Genre: 0
+        Mood: 0
+        Artists:
+        - Name: Samu Meuronen
+          Artist: {fileID: 11400000, guid: 1d69719bd1e7c8808b6766d62b01b8f1, type: 2}
+          Roles: 
+    - Name: Spirits
+      Id: 28
+      Music: {fileID: 8300000, guid: 4cd8baae8a5ec514f8d4a8bccee4d41d, type: 3}
+      JukeboxInfo:
+        Disk: {fileID: 21300000, guid: 5cb81973eeeb4d0b7ba9b43d1c8f8c04, type: 3}
+        Genre: 0
+        Mood: 0
+        Artists:
+        - Name: Samu Meuronen
+          Artist: {fileID: 11400000, guid: 1d69719bd1e7c8808b6766d62b01b8f1, type: 2}
+          Roles: 
+    - Name: Summer Nights
+      Id: 29
+      Music: {fileID: 8300000, guid: 06d3f4b75ebee2cd68ad95f77ab21067, type: 3}
+      JukeboxInfo:
+        Disk: {fileID: 21300000, guid: af4d501e16a32901bab8095d62349c02, type: 3}
+        Genre: 0
+        Mood: 0
+        Artists:
+        - Name: Samu Meuronen
+          Artist: {fileID: 11400000, guid: 1d69719bd1e7c8808b6766d62b01b8f1, type: 2}
           Roles: 
   - Name: Battle
     Type: 4

@@ -120,7 +120,7 @@ public class JukeboxTrackButtonHandler : SmartListItem, IBeginDragHandler, IEndD
         _favoriteButtonHandler?.Setup(personalizedData.FavoriteType, personalizedData.Track.Id);
     }
 
-    public override void ClearData() { _musicTrack = null; gameObject.SetActive(false); }
+    public override void ClearData() { _musicTrack = null; SetVisibility(false); }
 
     public void StartDiskSpin() { StopDiskSpin(); _diskSpinCoroutine = StartCoroutine(SpinDisk()); }
 

@@ -24,7 +24,6 @@ public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDr
     private Coroutine _buttonCancelCoroutine;
 
     private string _id; // Id that is used with JukeboxManager.
-    private int _linearIndex = -1; //Index of itself in the JukeboxManager's TrackQueue list.
     private bool _userOwned = false;
     private MusicTrack _musicTrack = null;
 
@@ -82,7 +81,6 @@ public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDr
 
         _id = queueData.ServerSongData.id;
         _musicTrack = queueData.MusicTrack;
-        _linearIndex = queueData.LinearIndex;
 
         _trackNameText.text = _musicTrack != null ? _musicTrack.Name : "";
 
@@ -99,21 +97,16 @@ public class JukeboxTrackQueueHandler : SmartListItem, IBeginDragHandler, IEndDr
         SetVisibility(true);
     }
 
-    public void SetLinearIndex(int index) { _linearIndex = index; }
-
     public override void ClearData()
     {
         _id = "";
         _musicTrack = null;
         _trackNameText.text = "";
-        _linearIndex = -1;
         SetVisibility(false);
     }
 
-
-
     private void Delete()
     {
-        if (!_buttonInputCanceled && _userOwned) JukeboxManager.Instance.DeleteFromQueue(_linearIndex, true);
+        if (!_buttonInputCanceled && _userOwned) JukeboxManager.Instance.DeleteFromQueue(_id, true);
     }
 }

@@ -29,6 +29,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: Rituaaleihin turvautuva, maagisen ajattelun taakse
     piiloutuja
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 43584ca03cb58054c87c7cd76e068b8c, type: 2}
   Hp:
     Level: 2
@@ -48,7 +50,10 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: 0309a57ee5c40964c93e0c994367fb83, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 2420857776de5c34fad57cceff5de5ce, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
-      Value: 1358745814927453837
+      Value: 1409364734611484973
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1417357348254517956
   BattleUiSprite: {fileID: 0}

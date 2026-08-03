@@ -37,9 +37,11 @@ public class ToggleImage : MonoBehaviour
             _toggle.onValueChanged.RemoveListener(OnToggleChanged);
     }
 
-    private void OnToggleChanged(bool isOn)
+    public void RefreshImage()
     {
-        ToggleImageOnAndOff(isOn);
+        if (_toggle == null) return;
+
+        ToggleImageOnAndOff(_toggle.isOn);
     }
 
     private void SetOriginalImage()
@@ -69,6 +71,11 @@ public class ToggleImage : MonoBehaviour
 
         _iconToToggle.enabled = true;
         _iconToToggle.sprite = isOn ? _toggleOnImage : _toggleOffImage;
+    }
+
+    private void OnToggleChanged(bool isOn)
+    {
+        ToggleImageOnAndOff(isOn);
     }
 
 }

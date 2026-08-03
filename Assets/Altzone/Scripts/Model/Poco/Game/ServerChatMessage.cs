@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Player;
@@ -22,6 +23,7 @@ public class ServerChatMessage
         public ServerAvatar avatar { get; set; }
     }
 
+    [Serializable]
     public class ServerReactions
     {
         public string sender_id { get; set; }

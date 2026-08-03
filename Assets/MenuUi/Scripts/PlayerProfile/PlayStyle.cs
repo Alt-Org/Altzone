@@ -13,25 +13,14 @@ public class PlayStyle : MonoBehaviour
     public Button rightButton; // Right button
 
     [Header("Styles per Language")]
-    public string[] finnishStyles; // Finnish 
-    public string[] englishStyles; // English 
+    public List<StyleText> styles;  
 
     private int currentIndex = 0; // Tracks the selected style
 
-    public int CurrentIndex
+    public PlayStyles CurrentStyle
     {
-        get => currentIndex;
-        set => currentIndex = value;
-    }
-
-    private string[] CurrentStyles
-    {
-        get
-        {
-            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
-                return englishStyles;
-            return finnishStyles; // Default to Finnish
-        }
+        get => styles[currentIndex].style;
+        set => currentIndex = styles.FindIndex(style => style.style == value);
     }
 
     void Start()
@@ -53,19 +42,10 @@ public class PlayStyle : MonoBehaviour
     // Updates the style text
     private void UpdateStyleText()
     {
-        var styles = CurrentStyles; // Pick the list based on language
+        if (styles.Count <= 0 || styles.Count <= currentIndex) return;
 
-        if (Enum.GetNames(typeof(PlayStyles)).Length > 0)
-        {
-            if (styles.Length > currentIndex)
-            {
-                styleText.text = styles[currentIndex];
-            }
-            else
-            {
-                styleText.text = ((PlayStyles)currentIndex).ToString();
-            }
-        }
+        styleText.text = styles[currentIndex].Text;
+
     }
 
     private void SelectPreviousStyle()
@@ -100,5 +80,23 @@ public class PlayStyle : MonoBehaviour
     public void RefreshUI()
     {
         UpdateStyleText();
+    }
+
+    [Serializable]
+    public class StyleText
+    {
+        public PlayStyles style;
+        public string finnishText;
+        public string englishText;
+
+        public string Text
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    return englishText;
+                return finnishText;
+            }
+        }
     }
 }

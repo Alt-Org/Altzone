@@ -35,6 +35,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Inspiraatioihin hukkuva, muiden ideoista identiteetti\xE4\xE4n
     kokoava seuraaja."
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 4eb023d1588c5f743954f3bd01670185, type: 2}
   Hp:
     Level: 3
@@ -54,7 +56,10 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: df7b30cddc4c5ba42a15e0d7dc95a7bb, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 3112e7614ff70b54c8587fbd6a8cb851, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1417332270692313974
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1457972147754439821
   BattleUiSprite: {fileID: 0}

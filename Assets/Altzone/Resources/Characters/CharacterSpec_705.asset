@@ -38,6 +38,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "T\xE4ydellisyytt\xE4 pakkomielteisesti hiova,
     virheiden mets\xE4st\xE4j\xE4. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: daf2606ad311ad647b46f0d944fcfa27, type: 2}
   Hp:
     Level: 3
@@ -57,7 +59,10 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: f84ede74ed20b8c4b93aca27ab20962d, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 60bd7ce36b1b3184d937b44b463c3eaf, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1399315932717162842
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1469299578724209302
   BattleUiSprite: {fileID: 0}

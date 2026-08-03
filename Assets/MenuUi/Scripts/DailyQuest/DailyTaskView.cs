@@ -61,7 +61,6 @@ public class DailyTaskView : AltMonoBehaviour
     [SerializeField] private Transform _taskListNormalRow3;
 
     [Header("OwnTaskPage")]
-    [SerializeField] private Button _cancelTaskButton;
     [SerializeField] private DailyTaskOwnTask _ownTaskPageHandler;
     [Space]
     [SerializeField] private List<MoodThreshold> _moodThresholds;
@@ -107,16 +106,6 @@ public class DailyTaskView : AltMonoBehaviour
         yield return new WaitUntil(() => DailyTaskManager.Instance.DataReady);
 
         StartCoroutine(ViewSetup());
-
-        // Don't allow canceling task on turboeducation
-        if (_gameVersion == VersionType.TurboEducation)
-        {
-            _cancelTaskButton.gameObject.SetActive(false);
-        }
-        else
-        {
-            _cancelTaskButton.onClick.AddListener(() => StartCancelTask());
-        }
         
 
         //Buttons
@@ -333,19 +322,11 @@ public class DailyTaskView : AltMonoBehaviour
         callback(true);
     }
 
-
-    public void StartCancelTask()
-    {
-        PopupData data = new(PopupData.PopupDataType.CancelTask);
-        DailyTaskManager.Instance.ShowPopupAndHandleResponse("Haluatko Peruuttaa Nykyisen Teht�v�n?", data);
-    }
-
     public void ClearCurrentTask()
     {
         UpdateAvatarMood();
         _ownTaskPageHandler.ClearCurrentTask();
         SwitchTab(SelectedTab.Tasks);
-        DailyTaskManager.Instance.ClearCurrentTask();
     }
 
     private void UpdateAvatarMood()

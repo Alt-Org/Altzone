@@ -32,82 +32,8 @@ namespace Altzone.Scripts.Model
 
         internal static ClanData CreateClanData(string clanId, List<GameFurniture> furniture)
         {
-            var fakeFurnitureCounter = 0;
-
-            string FakeFurnitureId(string furnitureText)
-            {
-                return $"{furnitureText[0]}-{++fakeFurnitureCounter}";
-            }
-
             var clanData = new ClanData(clanId, "DemoClan", "[D]", 0);
-            // Add every known furniture to clan inventory for testing.
-            /*foreach (var gameFurniture in furniture)
-            {
-                if (gameFurniture.Id.Contains("pommi"))
-                {
-                    continue;
-                }
-                clanData.Inventory.Furniture.Add(new ClanFurniture(FakeFurnitureId(gameFurniture.Id), gameFurniture.Id));
-            }*/
             clanData.Inventory.Furniture = furniture != null ? CreateDefaultDebugFurniture(new ReadOnlyCollection<GameFurniture>(furniture)) : new();
-            /*var chairs = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Chair")).ToList();
-            var tables = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.Contains("Table")).ToList();
-            var misc = clanData.Inventory.Furniture.Where(x => x.GameFurnitureName.EndsWith("r")).ToList();
-
-            // Note that bombs are not saved with other furniture because there is no specification how bombs are handled in game :-(
-            var bombs = furniture.Where(x => x.Id.Contains("pommi")).ToList();
-            var bomb1 = new ClanFurniture(FakeFurnitureId(bombs[0].Id), bombs[0].Id);
-            var bomb2 = new ClanFurniture(FakeFurnitureId(bombs[bombs.Count - 1].Id), bombs[bombs.Count - 1].Id);
-
-            // Create some Raid game rooms for testing.
-            const int rowCount = 9;
-            const int colCount = 9;
-            const int rowByMemberCount = 3;
-            const int colByMemberCount = 3;
-            {
-                var raidRoom = new RaidRoom(FakeMongoDbId(), "we_do_not_know", RaidRoomType.Public,
-                    rowCount + 1 * rowByMemberCount, colCount + 1 * colByMemberCount);
-                clanData.Rooms.Add(raidRoom);
-                var roomFurniture = raidRoom.Furniture;
-
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureName, 0, 0));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureName, raidRoom.RowCount - 1, raidRoom.ColCount - 1));
-
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), chairs[0].GameFurnitureName, 1, 1));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), tables[0].GameFurnitureName, 2, 2));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), misc[0].GameFurnitureName, 3, 3));
-            }
-            {
-                var raidRoom = new RaidRoom(FakeMongoDbId(), "we_do_not_know", RaidRoomType.Public,
-                    rowCount + 3 * rowByMemberCount, colCount + 3 * colByMemberCount);
-                clanData.Rooms.Add(raidRoom);
-                var roomFurniture = raidRoom.Furniture;
-
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb1.GameFurnitureName, 0, raidRoom.ColCount - 1));
-                roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), bomb2.GameFurnitureName, raidRoom.RowCount - 1, 0));
-
-                var row = 0;
-                var col = 0;
-                foreach (var item in chairs)
-                {
-                    col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureName, row, col));
-                }
-                row += 2;
-                col = 0;
-                foreach (var item in tables)
-                {
-                    col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureName, row, ++col));
-                }
-                row += 2;
-                col = 0;
-                foreach (var item in misc)
-                {
-                    col += 2;
-                    roomFurniture.Add(new RaidRoomFurniture(FakeMongoDbId(), item.GameFurnitureName, row, ++col));
-                }
-            }*/
             return clanData;
         }
 
@@ -207,8 +133,6 @@ namespace Altzone.Scripts.Model
         /// <returns></returns>
         internal static List<GameFurniture> CreateGameFurniture()
         {
-            const char separator = '\t';
-            const int columnCount = 8;
             var cultureInfo = CultureInfo.GetCultureInfo("en-US");
 
             var gameFurniture = new List<GameFurniture>();
@@ -255,98 +179,7 @@ namespace Altzone.Scripts.Model
             //gameFurniture.Add(new GameFurniture("heikko pommi", "Heikko pommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
             //gameFurniture.Add(new GameFurniture("tuplapommi", "Tuplapommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
             //gameFurniture.Add(new GameFurniture("superpommi", "Superpommi", FurnitureSize.OneXOne, FurnitureSize.OneXOne, FurniturePlacement.Floor, 10f, 15f));
-
-            /*using var reader = new StringReader(FurnitureTsvData);
-            // Skip header!
-            reader.ReadLine();
-            for (;;)
-            {
-                var line = reader.ReadLine();
-                if (line == null)
-                {
-                    break;
-                }
-                if (string.IsNullOrWhiteSpace(line))
-                {
-                    continue;
-                }
-                var tokens = line.Split(separator);
-                if (tokens.Length < columnCount)
-                {
-                    Debug.Log($"Line is too short: {line.Replace(separator, '|')}");
-                    continue;
-                }
-                var name = tokens[1];
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    // Create fake name.
-                    name = $"Furniture-{101 + gameFurniture.Count}";
-                }
-                var id = tokens[0];
-                if (string.IsNullOrWhiteSpace(id))
-                {
-                    // Create fake id from name.
-                    id = name;
-                    id = id.Trim().ToLower(cultureInfo).Replace(" ", ".");
-                }
-                var furniture = new GameFurniture
-                (
-                    id,
-                    name,
-                    tokens[2],
-                    ParseDouble(tokens[3]),
-                    tokens[4],
-                    tokens[5],
-                    tokens[6],
-                    tokens[7]
-                );
-                gameFurniture.Add(furniture);
-            }*/
             return gameFurniture;
-
-            double ParseDouble(string token)
-            {
-                if (token.Contains(','))
-                {
-                    token = token.Replace(',', '.');
-                }
-                if (double.TryParse(token, NumberStyles.AllowDecimalPoint, cultureInfo, out var number))
-                {
-                    return number;
-                }
-                return 0;
-            }
         }
-
-        private static string FurnitureTsvData = @"ID	huonekalun nimi	muoto	paino / kg	materiaali	kierrätys	prefabin nimi	tiedoston nimi	kuva					
-	HUONEKASVI	OneSquare	5,2	kasvi	biojäte		huonekasvi2_elias.png			muotovaihtoehdot:	muoto	koko	lkm
-	ROSKAKORI	OneSquare	2,3	kovamuovi	energiajäte					OneSquare	■	1	10
-	RUOKATUOLI	OneSquare	6,6	puu	puujäte					TwoSquare	■■	2	6
-	NOJATUOLI	OneSquare	35	verhoiltu	verhoillut huonekalut					StraightThreeSquares	■■■	3	5
-	KORISTEPATSAS	OneSquare	5,75	kipsi	kipsijäte					BendThreeSquares	■■ ■	3	3
-	NALLE	OneSquare	0,3	verhoiltu	energiajäte					FourSquares	■■ ■■	4	4
-	HEIKKO POMMI	OneSquare	10	sisältää ruutia	poliisi								
-	JÄÄKAAPPI	OneSquare	50	sähkölaite	sähkölaitteet					Yhteensä			28
-	HELLA	OneSquare	50	sähkölaite	sähkölaitteet								
-	PIENI PYÖREÄ SIVUPÖYTÄ	OneSquare	3,5	puu	puujäte					kierrätysohjeet:			
-	KAHDEN ISTUTTAVA SOHVA	TwoSquare	27,6	verhoiltu	verhoillut huonekalut					Jäteopas - HSY	Sekajäte - Salpakierto		
-	MATTO, OVAALI	TwoSquare	4	buklee	sekajäte								
-	TUPLAPOMMI	TwoSquare	20	sisältää ruutia	poliisi					kuvatiedostot: 			
-	ARKKUPAKASTIN	TwoSquare	45	sähkölaite	sähkölaitteet					HUONEKALUT			
-	SOUTULAITE	TwoSquare	37	metalli, ei sisällä elektroniikkaa	metalli								
-	SOHVAPÖYTÄ	TwoSquare	18,5	puu	puujäte								
-	KOLMEN ISTUTTAVA SOHVA	StraightThreeSquares	71	verhoiltu	verhoillut huonekalut								
-	PITKÄ RUOKAPÖYTÄ	StraightThreeSquares	61	puu	puujäte								
-	KÄYTÄVÄMATTO	StraightThreeSquares	1,9	räsymatto	energiajäte								
-	KEITTIÖSAAREKE	StraightThreeSquares	120	puu	puujäte								
-	KIRJAHYLLY	StraightThreeSquares	100	puu	puujäte								
-	TV TASO	BendThreeSquares	51	puu	puujäte								
-	KOLMEN ISTUTTAVA KULMASOHVA	BendThreeSquares	96	verhoiltu	verhoillut huonekalut								
-	KULMAHYLLY	BendThreeSquares	70	puu	puujäte								
-	RUOKAPÖYTÄ	FourSquares	61	puu	puujäte								
-	SUPERPOMMI	FourSquares	40	sisältää ruutia	poliisi								
-	ISO MATTO	FourSquares	10	villamatto	energiajäte								
-	PARISÄNKY	FourSquares	80	runkopatjasänky	sekajäte								
-";
     }
 }

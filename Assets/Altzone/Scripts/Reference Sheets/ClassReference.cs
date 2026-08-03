@@ -10,6 +10,7 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private string _desensitizerNameEnglish;
         [SerializeField] private Color _desensitizerColor;
         [SerializeField] private Color _desensitizerAlternativeColor;
+        [SerializeField] private Color _desensitizerDeepColor;
         [SerializeField] private Sprite _desensitizerFrame;
         [SerializeField] private Sprite _desensitizerCornerIcon;
         [SerializeField] private Sprite _desensitizerResistanceIcon;
@@ -23,6 +24,7 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private string _tricksterNameEnglish;
         [SerializeField] private Color _tricksterColor;
         [SerializeField] private Color _tricksterAlternativeColor;
+        [SerializeField] private Color _tricksterDeepColor;
         [SerializeField] private Sprite _tricksterFrame;
         [SerializeField] private Sprite _tricksterCornerIcon;
         [SerializeField] private Sprite _tricksterResistanceIcon;
@@ -36,6 +38,7 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private string _obedientNameEnglish;
         [SerializeField] private Color _obedientColor;
         [SerializeField] private Color _obedientAlternativeColor;
+        [SerializeField] private Color _obedientDeepColor;
         [SerializeField] private Sprite _obedientFrame;
         [SerializeField] private Sprite _obedientCornerIcon;
         [SerializeField] private Sprite _obedientResistanceIcon;
@@ -49,6 +52,7 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private string _projectorNameEnglish;
         [SerializeField] private Color _projectorColor;
         [SerializeField] private Color _projectorAlternativeColor;
+        [SerializeField] private Color _projectorDeepColor;
         [SerializeField] private Sprite _projectorFrame;
         [SerializeField] private Sprite _projectorCornerIcon;
         [SerializeField] private Sprite _projectorResistanceIcon;
@@ -62,6 +66,7 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private string _retroflectorNameEnglish;
         [SerializeField] private Color _retroflectorColor;
         [SerializeField] private Color _retroflectorAlternativeColor;
+        [SerializeField] private Color _retroflectorDeepColor;
         [SerializeField] private Sprite _retroflectorFrame;
         [SerializeField] private Sprite _retroflectorCornerIcon;
         [SerializeField] private Sprite _retroflectorResistanceIcon;
@@ -75,6 +80,7 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private string _confluentNameEnglish;
         [SerializeField] private Color _confluentColor;
         [SerializeField] private Color _confluentAlternativeColor;
+        [SerializeField] private Color _confluentDeepColor;
         [SerializeField] private Sprite _confluentFrame;
         [SerializeField] private Sprite _confluentCornerIcon;
         [SerializeField] private Sprite _confluentResistanceIcon;
@@ -88,6 +94,7 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private string _intellectualizerNameEnglish;
         [SerializeField] private Color _intellectualizerColor;
         [SerializeField] private Color _intellectualizerAlternativeColor;
+        [SerializeField] private Color _intellectualizerDeepColor;
         [SerializeField] private Sprite _intellectualizerFrame;
         [SerializeField] private Sprite _intellectualizerCornerIcon;
         [SerializeField] private Sprite _intellectualizerResistanceIcon;
@@ -200,6 +207,33 @@ namespace Altzone.Scripts.ReferenceSheets
                     return _confluentAlternativeColor;
                 case CharacterClassType.Intellectualizer:
                     return _intellectualizerAlternativeColor;
+            }
+            return Color.gray;
+        }
+
+        /// <summary>
+        /// Get character class deep (final) color.
+        /// </summary>
+        /// <param name="classType">The class id which deep color to get.</param>
+        /// <returns>Class deep color.</returns>
+        public Color GetDeepColor(CharacterClassType classType)
+        {
+            switch (classType)
+            {
+                case CharacterClassType.Desensitizer:
+                    return _desensitizerDeepColor;
+                case CharacterClassType.Trickster:
+                    return _tricksterDeepColor;
+                case CharacterClassType.Obedient:
+                    return _obedientDeepColor;
+                case CharacterClassType.Projector:
+                    return _projectorDeepColor;
+                case CharacterClassType.Retroflector:
+                    return _retroflectorDeepColor;
+                case CharacterClassType.Confluent:
+                    return _confluentDeepColor;
+                case CharacterClassType.Intellectualizer:
+                    return _intellectualizerDeepColor;
             }
             return Color.gray;
         }

@@ -23,7 +23,6 @@ namespace MenuUi.Scripts.MainMenu
         private int lastWidth;
         private int lastHeight;
 
-        private SetVolume[] audioSources;
         private SettingsCarrier carrier = SettingsCarrier.Instance;
 
         [Header("TurboEducation")]
@@ -42,25 +41,13 @@ namespace MenuUi.Scripts.MainMenu
 
         private void OnEnable()
         {
-            bool jukeboxMainMenu = carrier.CanPlayJukeboxInArea(SettingsCarrier.JukeboxPlayArea.MainMenu);
-
             _swipe = GetComponentInParent<SwipeUI>();
             StartCoroutine(CheckWindowSize());
 
             OverlayPanelCheck.Instance?.gameObject.SetActive(true);
             OverlayPanelCheck.Instance?.ToggleOverlay(true);
 
-            try
-            {
-                if (jukeboxMainMenu)
-                {
-                    if (JukeboxManager.Instance != null && string.IsNullOrEmpty(JukeboxManager.Instance.TryPlayTrack()))
-                        AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
-                }
-                else
-                    AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
-            }
-            catch (Exception e) { Debug.LogException(e); }
+            AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
 
             if(!LobbyManager.IsActive) LobbyManager.Instance.Activate();
             if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();
@@ -84,6 +71,7 @@ namespace MenuUi.Scripts.MainMenu
                 SetMainMenuLayoutDimensions();
             }
             AudioManager.Instance.UpdateMaxVolume();
+            OverlayPanelCheck.Instance?.UpdateButtonContent();
         }
 
         private void OnDestroy()
@@ -155,13 +143,20 @@ namespace MenuUi.Scripts.MainMenu
         }
 
         /// <summary>
-        /// This is to enable/disable specified objects and buttons on TurboEducation when a task is active
+        /// This is to enable/disable specified objects and buttons on TurboEducation when a forced task is active
         /// </summary>
         private void UpdateTurboEdObjectsState()
         {
             if (GameConfig.Get().GameVersionType == VersionType.TurboEducation)
             {
-                SetTurboEdObjectsState(!DailyTaskProgressManager.Instance.HasOnGoingTask());
+                if (DailyTaskProgressManager.Instance.HasOnGoingTask() && DailyTaskManager.Instance.CurrentTaskForced)
+                {
+                    SetTurboEdObjectsState(false);
+                }
+                else
+                {
+                    SetTurboEdObjectsState(true);
+                }
             }
         }
 

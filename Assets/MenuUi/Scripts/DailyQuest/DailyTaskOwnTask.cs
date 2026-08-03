@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static DailyTaskProgressManager;
 
 public class DailyTaskOwnTask : MonoBehaviour
 {
@@ -22,7 +22,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private DailyTaskCardImageReference _cardImageReference;
 
     [Header("Current task")]
-    [SerializeField] private TextMeshProUGUI _taskDescription;
+    [SerializeField] private TextMeshProUGUI _taskTitle;
     [SerializeField] private TextMeshProUGUI _taskCategory;
     [SerializeField] private GameObject _taskRewardsField;
     [SerializeField] private TextMeshProUGUI _taskPointsReward;
@@ -36,7 +36,6 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField] private int _progressMarkersMaxAmount = 8;
     [Range(0f, 2f)]
     [SerializeField] private float _progressMarkerXScale = 0.05f;
-    [SerializeField] private TMP_Text _testTaskProgressValue; //TODO: Remove when testing done.
 
     private PlayerTask _currentTask;
 
@@ -85,14 +84,23 @@ public class DailyTaskOwnTask : MonoBehaviour
     [SerializeField]
     private TextLanguageSelectorCaller _tasksDoneText;
 
+    [Header("Cancel button")]
+    [SerializeField] private Button _cancelTaskButton;
+
     public delegate void CurrentTaskInfoNeeded();
     public static event CurrentTaskInfoNeeded OnCurrentTaskInfoNeeded;
+
+    public delegate void TaskHintNeeded(PlayerTask task);
+    public static event TaskHintNeeded OnTaskHintNeeded;
 
     private void Start()
     {
         CreateProgressBarMarkers(_progressMarkersMaxAmount);
         SetMood(MoodType.Ok);
         SettingsCarrier.OnLanguageChanged += UpdateLanguage;
+
+        // Make cancel task button to actually do something
+        _cancelTaskButton.onClick.AddListener(() => DailyTaskManager.Instance.StartCancelTask());
     }
 
     private void OnDestroy()
@@ -111,6 +119,10 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     public void UpdateOwnTaskPage()
     {
+        // Clear the page
+        ClearCurrentTask();
+
+        // Then update new task data
         PlayerTask taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
 
         if (taskData == null) return;
@@ -118,22 +130,31 @@ public class DailyTaskOwnTask : MonoBehaviour
         float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
         StartCoroutine(SetDailyTask(taskData));
         SetTaskProgress(progress);
-        TESTSetTaskValue(taskData.TaskProgress);
 
         UpdateDailyStatsUI();
+
+        // Don't allow canceling task on turboeducation if the task is forced
+        if (GameConfig.Get().GameVersionType == VersionType.TurboEducation && DailyTaskManager.Instance.CurrentTaskForced)
+        {
+            _cancelTaskButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            _cancelTaskButton.gameObject.SetActive(true);
+        }
     }
 
 
     public IEnumerator SetDailyTask(PlayerTask data)
     {
         _currentTask = data;
-        SetTaskTitle(data, SettingsCarrier.Instance.Language);
+        SetTaskTitle(data);
         SetTaskCategory(data, SettingsCarrier.Instance.Language);
-        _taskPointsReward.text = "" + data.Points;
-        _taskCoinsReward.text = "" + data.Coins;
+        _taskPointsReward.text = "+" + data.Points;
+        _taskCoinsReward.text = "+" + data.Coins;
         _taskRewardsField.SetActive(true);
         _taskTypeImage.sprite = _cardImageReference.GetTaskImage(data);
-        _taskTypeImage.enabled = true;
+        _taskTypeImage.gameObject.SetActive(true);
 
         yield return new WaitUntil(() => (_taskProgressMarkers.Count != 0));
 
@@ -185,28 +206,22 @@ public class DailyTaskOwnTask : MonoBehaviour
         _taskProgressFillImage.fillAmount = progress;
     }
 
-    public void TESTSetTaskValue(int progress) //TODO: Remove when testing done.
-    {
-        _testTaskProgressValue.text = "" + progress;
-    }
-
     public void ClearCurrentTask()
     {
         _currentTask = null;
-        _taskDescription.text = "";
+        _taskTitle.gameObject.SetActive(false);
         _taskCategory.text = "";
-        _taskPointsReward.text = "";
-        _taskCoinsReward.text = "";
         _taskRewardsField.SetActive(false);
-        _taskTypeImage.enabled = false;
+        _taskTypeImage.gameObject.SetActive(false);
         _taskBackground.color = _defaultColor;
 
         SetProgressBarMarkers(0);
     }
 
-    private void SetTaskTitle(PlayerTask task, SettingsCarrier.LanguageType language)
+    private void SetTaskTitle(PlayerTask task)
     {
-        _taskDescription.text = language == SettingsCarrier.LanguageType.Finnish ? task.Title : task.EnglishTitle;
+        _taskTitle.text = task.Title;
+        _taskTitle.gameObject.SetActive(true);
     }
 
     private void SetTaskCategory(PlayerTask task, SettingsCarrier.LanguageType language)
@@ -264,7 +279,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     {
         if (_currentTask != null)
         {
-            SetTaskTitle(_currentTask, language);
+            SetTaskTitle(_currentTask);
             SetTaskCategory(_currentTask, language);
         }
     }
@@ -323,5 +338,12 @@ public class DailyTaskOwnTask : MonoBehaviour
     public void ShowCurrentTaskInfo()
     {
         OnCurrentTaskInfoNeeded.Invoke();
+    }
+
+    // Currently used on DailyTask OwnTask page on TaskHintButton
+    public void ShowCurrentTaskHint()
+    {
+        if (_currentTask == null) return;
+        OnTaskHintNeeded.Invoke(_currentTask);
     }
 }

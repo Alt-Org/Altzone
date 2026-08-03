@@ -484,6 +484,7 @@ GameObject:
   - component: {fileID: 8984853402700974463}
   - component: {fileID: 3087650494330575700}
   - component: {fileID: 955847119081450289}
+  - component: {fileID: 6086820554295320311}
   m_Layer: 0
   m_Name: BattleProjectile
   m_TagString: Untagged
@@ -742,3 +743,18 @@ MonoBehaviour:
       RawValue: 0
     AttackMax:
       RawValue: 0
+--- !u!114 &6086820554295320311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8614321444750374846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2c870b196309b47ade1f9b4b3e470d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Type:
+      Value: 0

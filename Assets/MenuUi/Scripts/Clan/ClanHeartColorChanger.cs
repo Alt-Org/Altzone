@@ -16,6 +16,7 @@ public class ClanHeartColorChanger : MonoBehaviour
     private EventSystem _eventSystem;
 
     [SerializeField] private Transform _heartContainer;
+    [SerializeField] private Toggle _individualToggle;
     [SerializeField] private ColorButton[] _colorButtons;
 
     private List<HeartPieceColorHandler> _heartPieceHandlers = new();
@@ -25,12 +26,23 @@ public class ClanHeartColorChanger : MonoBehaviour
     private void Awake()
     {
         EnhancedTouchSupport.Enable();
-        if (_raycaster == null) _raycaster = FindObjectOfType<GraphicRaycaster>();
+        if (_raycaster == null)
+        {
+            var canvases = FindObjectsOfType<Canvas>();
+            foreach (Canvas c in canvases)
+            {
+                if(c.sortingOrder == 0) _raycaster = c.GetComponent<GraphicRaycaster>();
+            }
+
+            //_raycaster = FindObjectOfType<GraphicRaycaster>();
+        }
         if (_eventSystem == null) _eventSystem = FindObjectOfType<EventSystem>();
+        //_individualToggle.onValueChanged.AddListener(SetFillWholeHeart);
     }
 
     public void SetFillWholeHeart(bool enable)
     {
+        if (enable != _individualToggle.isOn) _individualToggle.isOn = enable;
         _fillWholeHeart = enable;
     }
 
@@ -133,6 +145,18 @@ public class ClanHeartColorChanger : MonoBehaviour
             {
                 position = currentPosition
             };
+
+            Vector3 origin = new(currentPosition.x, currentPosition.y, -10);
+
+            Ray ray = new(origin, Vector3.forward);
+
+            RaycastHit2D[] hit;
+            hit = Physics2D.GetRayIntersectionAll(ray, 1000);
+            Debug.LogWarning(hit.Length);
+            foreach (RaycastHit2D hit1 in hit)
+            {
+                Debug.LogWarning(hit1.collider.gameObject.ToString());
+            }
 
             List<RaycastResult> results = new List<RaycastResult>();
             _raycaster.Raycast(pointerData, results);

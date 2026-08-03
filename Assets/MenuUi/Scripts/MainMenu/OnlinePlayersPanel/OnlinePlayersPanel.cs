@@ -26,7 +26,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     [Header("Main panel page")]
     [SerializeField] public GameObject _onlinePlayersPanel;
-    [SerializeField] private TextMeshProUGUI _onlineTitle;
+    //[SerializeField] private TextMeshProUGUI _onlineTitle;
     [Header("Global page")]
     [SerializeField] private GameObject _onlinePlayersPage;
     [SerializeField] private RectTransform _onlinePlayersPanelContent;
@@ -42,6 +42,8 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     [SerializeField] private Button _viewClanPlayersButton;
     [SerializeField] private Button _viewAllPlayersButton;
     [SerializeField] private Button _viewFriendListButton;
+    [Header("Popup Button")]
+    [SerializeField] private PopupButtonVisual _onlinePlayersPopupButton; //for visual selection effect
 
     private OnlinePlayersView _currentView = OnlinePlayersView.Clan;
 
@@ -52,6 +54,23 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private List<ServerOnlinePlayer> _allPlayers = new List<ServerOnlinePlayer>();
     private List<FriendPlayer> _friendlist = new List<FriendPlayer>();
     private List<FriendRequest> _friendRequests = new List<FriendRequest>();
+
+    public static OnlinePlayersPanel Instance { get; private set; }
+    public List<FriendPlayer> Friendlist { get => _friendlist; }
+    public List<FriendRequest> FriendRequests { get => _friendRequests; }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
 
     void Start()
 
@@ -187,7 +206,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private IEnumerator BuildOnlineList(List<ServerOnlinePlayer> onlinePlayers)
     {
         yield return StartCoroutine(FetchFriendData());
-        UpdateOnlineFriendsCount(onlinePlayers);
+        //UpdateOnlineFriendsCount(onlinePlayers);
 
         List<OnlinePlayersPanelItem> _onlinePlayersPanelsToCheck = new(_onlinePlayersPanelItems);
         List<OnlinePlayersPanelItem> _onlinePlayersPanelsChecked = new();
@@ -310,10 +329,10 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     {
         int onlinePlayerCount = onlinePlayers.Count;
 
-        _onlineTitle.text = $"Online-pelaajia {onlinePlayerCount}";
+        //_onlineTitle.text = $"Online-pelaajia {onlinePlayerCount}";
     }
 
-    private void CallUpdateFriendList()
+    public void CallUpdateFriendList()
     {
         StartCoroutine(UpdateFriendList());
     }
@@ -479,10 +498,12 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     public void OpenPanel()
     {
         _onlinePlayersPanel.SetActive(true);
+        _onlinePlayersPopupButton.ButtonSelected(true);
     }
 
     public void Hide()
     {
         _onlinePlayersPanel.SetActive(false);
+        _onlinePlayersPopupButton.ButtonSelected(false);
     }
 }

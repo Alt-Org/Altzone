@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 using static Altzone.Scripts.Chat.ChatListener;
+using Altzone.Scripts.Audio;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
 {
@@ -46,6 +47,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         GiveUpButton = 4,
         MoveJoystick = 5,
         RotateJoystick = 6,
+        SpecialJoystick = 7,
     }
 
     public enum BattleMovementInputType
@@ -72,12 +74,12 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         NewNiko
     }
 
-    public enum JukeboxPlayArea
-    {
-        MainMenu,
-        Soulhome,
-        Battle
-    }
+    // public enum JukeboxPlayArea
+    // {
+    //     MainMenu,
+    //     Soulhome,
+    //     Battle
+    // }
 
     public enum SettingsType
     {
@@ -99,6 +101,17 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public delegate void LanguageChanged(LanguageType language);
     public static event LanguageChanged OnLanguageChanged;
+
+    //Events for ParentalControl
+    public event Action OnAllowLinksChange;
+    public event Action OnChatMessagesChange;
+    public event Action OnAllowEmojisChange;
+    public event Action OnAllowTreasureHuntChange;
+    public event Action OnMonthlyLimitChange;
+    public event Action OnActivatePurchasesSeparatelyChange;
+    public event Action OnMaxPlayTimeChange;
+    public event Action OnEndMidMatchChange;
+    public event Action OnEndAfterMatchChange;
 
     // Constants
     public const string BattleShowDebugStatsOverlayKey = "BattleStatsOverlay";
@@ -352,6 +365,32 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    private bool _battleDebug;
+
+    public bool BattleDebug
+    {
+        get => _battleDebug;
+        set
+        {
+            if (_battleDebug == value) return;
+            _battleDebug = value;
+            PlayerPrefs.SetInt("BattleDebug", value ? 1 : 0);
+        }
+    }
+
+    private bool _showFps;
+
+    public bool ShowFps
+    {
+        get => _showFps;
+        set
+        {
+            if (_showFps == value) return;
+            _showFps = value;
+            PlayerPrefs.SetInt("ShowFps", value ? 1 : 0);
+        }
+    }
+
     private string _mainMenuMusicName;
     public string MainMenuMusicName { get { return _mainMenuMusicName; } }
 
@@ -418,9 +457,24 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
 
+        _battleDebug = PlayerPrefs.GetInt("BattleDebug", 0) == 1;
+
+        _showFps = PlayerPrefs.GetInt("ShowFps", 0) == 1;
+
         _mainMenuMusicName = PlayerPrefs.GetString("MainMenuMusic");
 
         ChatListener.OnActiveChannelChanged += SaveChatChannel;
+
+        //ParentalControl settings
+        _allowLinks = (PlayerPrefs.GetInt("AllowLinks", 1) ==1);
+        _chatMessages = (PlayerPrefs.GetInt("AllowChat", 1) ==1);
+        _allowEmojis = (PlayerPrefs.GetInt("AllowEmojis", 1) == 1);
+        _allowTreasureHunt = (PlayerPrefs.GetInt("AllowTreasureHunt", 1) ==1);
+        _monthlyLimit = (PlayerPrefs.GetFloat("MonthlyLimit"));
+        _activatePurchasesSeparately = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 1) ==1);
+        _maxPlayTime = (PlayerPrefs.GetFloat("MaxPlayTime"));
+        _endMidMatch = (PlayerPrefs.GetInt("EndMidMatch", 1) == 1);
+        _endAfterMatch = (PlayerPrefs.GetInt("EndAfterMatch", 1) == 1);
     }
 
     private void OnDestroy()
@@ -498,6 +552,24 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    public bool SetBoolValue(string type, bool? value = null)
+    {
+        switch (type)
+        {
+            case "BattleDebug":
+                if (value.HasValue) BattleDebug = value.Value;
+                else BattleDebug = !BattleDebug;
+                return true;
+            case "ShowFps":
+                if (value.HasValue) ShowFps = value.Value;
+                else ShowFps = !ShowFps;
+                return true;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return false;
+        }
+    }
+
     public bool? GetBoolValue(SettingsType type)
     {
         switch (type)
@@ -510,6 +582,20 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 return jukeboxUI;
             case SettingsType.JukeboxBattleToggle:
                 return jukeboxBattle;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return null;
+        }
+    }
+
+    public bool? GetBoolValue(string type)
+    {
+        switch (type)
+        {
+            case "BattleDebug":
+                return _battleDebug;
+            case "ShowFps":
+                return _showFps;
             default:
                 Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
                 return null;
@@ -537,19 +623,19 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         PlayerPrefs.SetString($"BattleUi{type}", json);
     }
 
-    public bool CanPlayJukeboxInArea(JukeboxPlayArea playArea)
+    public bool CanPlayJukeboxInArea(AudioCategoryType playArea)
     {
         switch (playArea)
         {
-            case JukeboxPlayArea.MainMenu:
+            case AudioCategoryType.MainMenu:
                 {
                     return jukeboxUI;
                 }
-            case JukeboxPlayArea.Soulhome:
+            case AudioCategoryType.SoulHome:
                 {
                     return jukeboxSoulhome;
                 }
-            case JukeboxPlayArea.Battle:
+            case AudioCategoryType.Battle:
                 {
                     return jukeboxBattle;
                 }
@@ -612,6 +698,215 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 return "en";
             default:
                 return "";
+        }
+    }
+
+
+    // ParentalControl functions
+    // Example for getting / setting toggles is taken mostly from ShowButtonLabels
+
+    // Social controls
+
+    private bool _allowLinks;
+
+    public bool AllowLinks
+    {
+        get => _allowLinks;
+        set
+        {
+            _allowLinks = value;
+
+            if (_allowLinks)
+            {
+                PlayerPrefs.SetInt("AllowLinks", 1);
+
+            }
+            else
+            {
+                PlayerPrefs.SetInt("AllowLinks", 0);
+            }
+
+            OnAllowLinksChange?.Invoke();
+        }
+    }
+
+    private bool _chatMessages;
+
+    public bool ChatMessages
+    {
+        get => _chatMessages;
+        set
+        {
+            _chatMessages = value;
+
+            if (_chatMessages)
+            {
+                PlayerPrefs.SetInt("AllowChat", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("AllowChat", 0);
+            }
+
+            OnChatMessagesChange?.Invoke();
+        }
+    }
+
+    private bool _allowEmojis;
+
+    public bool AllowEmojis
+    {
+        get => _allowEmojis;
+        set
+        {
+            _allowEmojis = value;
+
+            if (_allowEmojis)
+            {
+                PlayerPrefs.SetInt("AllowEmojis", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("AllowEmojis", 0);
+            }
+
+            OnAllowEmojisChange?.Invoke();
+        }
+    }
+
+    private bool _allowTreasureHunt;
+
+    public bool AllowTreasureHunt
+    {
+        get => _allowTreasureHunt;
+        set
+        {
+            _allowTreasureHunt = value;
+
+            if (_allowTreasureHunt)
+            {
+                PlayerPrefs.SetInt("AllowTreasureHunt", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("AllowTreasureHunt", 0);
+            }
+
+            OnAllowTreasureHuntChange?.Invoke();
+        }
+    }
+
+    //Money controls
+    private float _monthlyLimit;
+
+    public float MonthlyLimit
+    {
+        get => _monthlyLimit;
+        set
+        {
+            if (_monthlyLimit == value) return;
+            _monthlyLimit = value;
+            if (_monthlyLimit > 0) {
+                PlayerPrefs.SetFloat("MonthlyLimit", (float)value);
+            } else
+            {
+                PlayerPrefs.SetFloat("MonthlyLimit", 0);
+            }
+            OnMonthlyLimitChange?.Invoke();
+        }
+    }
+
+    private bool _activatePurchasesSeparately;
+
+    public bool ActivatePurchasesSeparately
+    {
+        get => _activatePurchasesSeparately;
+        set
+        {
+            _activatePurchasesSeparately = value;
+
+            if (_activatePurchasesSeparately)
+            {
+                PlayerPrefs.SetInt("ActivatePurchasesSeparately", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
+            }
+
+            OnActivatePurchasesSeparatelyChange?.Invoke();
+        }
+    }
+
+
+    //Time controls
+    private float _maxPlayTime;
+
+    public float MaxPlayTime
+    {
+        get => _maxPlayTime;
+        set
+        {
+            if (_maxPlayTime == value) return;
+            _maxPlayTime = value;
+            if (_maxPlayTime > 1 && _maxPlayTime <= 24)
+            {
+                PlayerPrefs.SetFloat("MaxPlayTime", (float)value);
+            }
+
+            else if (_maxPlayTime > 25) {
+                PlayerPrefs.SetFloat("MaxPlayTime", 24);
+            }
+            else
+            {
+                PlayerPrefs.SetFloat("MaxPlayTime", 1);
+            }
+
+            OnMaxPlayTimeChange?.Invoke();
+        }
+    }
+
+    private bool _endMidMatch;
+
+    public bool EndMidMatch
+    {
+        get => _endMidMatch;
+        set
+        {
+            _endMidMatch = value;
+
+            if (_endMidMatch)
+            {
+                PlayerPrefs.SetInt("EndMidMatch", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("EndMidMatch", 0);
+            }
+
+            OnEndMidMatchChange?.Invoke();
+        }
+    }
+
+    private bool _endAfterMatch;
+
+    public bool EndAfterMatch
+    {
+        get => _endAfterMatch;
+        set
+        {
+            _endAfterMatch = value;
+
+            if (_endAfterMatch)
+            {
+                PlayerPrefs.SetInt("EndAfterMatch", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("EndAfterMatch", 0);
+            }
+
+            OnEndAfterMatchChange?.Invoke();
         }
     }
 }

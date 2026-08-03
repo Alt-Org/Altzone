@@ -106,7 +106,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        ///
+        /// Tries to play music by given category type and music id.
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusicById(AudioCategoryType categoryType, string trackId, MusicSwitchType switchType, bool forcePlay = false)
@@ -126,7 +126,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        ///
+        /// Tries to play music by given category type and music name from a start location.
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
@@ -136,7 +136,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        ///
+        /// Tries to play music by given category type and music track from a start location.
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(AudioCategoryType categoryType, MusicTrack musicTrack, MusicSwitchType switchType, float startLocation, bool forcePlay = false)
@@ -146,7 +146,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        ///
+        /// Tries to play music by given category name and music name.
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         [Obsolete("Please use AudioCategoryType version instead of this string version.")]
@@ -174,7 +174,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        ///
+        /// Tries to play music by given category type and music name.
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(AudioCategoryType categoryType, string trackName, MusicSwitchType switchType, bool forcePlay = false)
@@ -201,7 +201,7 @@ namespace Altzone.Scripts.Audio
         }
 
         /// <summary>
-        ///
+        /// Tries to play music by given category type and music track.
         /// </summary>
         /// <returns>Track name if successfully started the track playback.</returns>
         public string PlayMusic(AudioCategoryType categoryType, MusicTrack musicTrack, MusicSwitchType switchType, bool forcePlay = false)
@@ -238,6 +238,13 @@ namespace Altzone.Scripts.Audio
 
         public List<MusicTrack> GetMusicList() { return _currentCategory?.MusicTracks; }
 
+        /// <summary>
+        /// Tries to switch to given music track.
+        /// </summary>
+        /// <param name="musicCategory"></param>
+        /// <param name="musicTrack"></param>
+        /// <param name="switchType"></param>
+        /// <param name="forcePlay"></param>
         public void SwitchMusic(MusicCategory musicCategory, MusicTrack musicTrack, MusicSwitchType switchType, bool forcePlay)
         {
             if (_currentTrack == musicTrack && !forcePlay) return;
@@ -268,6 +275,13 @@ namespace Altzone.Scripts.Audio
             _switchCoroutine = StartCoroutine(SwitchMusic(MusicListDirection.None, null, switchType, revertSwitch));
         }
 
+        /// <summary>
+        /// Tries to switch music forward or backwards in the current music category.
+        /// </summary>
+        /// <param name="direction"></param>
+        /// <param name="newTrackName"></param>
+        /// <param name="switchType"></param>
+        /// <param name="revertSwitch"></param>
         public IEnumerator SwitchMusic(MusicListDirection direction, System.Action<string> newTrackName, MusicSwitchType switchType, bool revertSwitch = false)
         {
             if (_currentCategory == null)
@@ -328,6 +342,10 @@ namespace Altzone.Scripts.Audio
                 _acceleratedCrossFadeOneShot = false;
         }
 
+        /// <summary>
+        /// Set music track to wait until other operations are done.
+        /// </summary>
+        /// <param name="musicTrack"></param>
         private void HandleNextTrack(MusicTrack musicTrack)
         {
             _nextUpCategory = _currentCategory;
@@ -340,6 +358,12 @@ namespace Altzone.Scripts.Audio
             }
         }
 
+        /// <summary>
+        /// Tries to get the wanted track by given direction on the current music category.
+        /// </summary>
+        /// <param name="newTrackName"></param>
+        /// <param name="direction"></param>
+        /// <returns>Wanted music track or the current music track if no <c>newTrackName</c> callback was given.</returns>
         private MusicTrack MusicDirectionControl(System.Action<string> newTrackName, MusicListDirection direction)
         {
             if (newTrackName == null || direction == MusicListDirection.None) return _currentTrack;
@@ -359,6 +383,11 @@ namespace Altzone.Scripts.Audio
             _crossFadeTimer = _acceleratedCrossFadeDuration * (_crossFadeTimer / _crossFadeDuration);
         }
 
+        /// <summary>
+        /// Plays the given <c>AudioClip</c> in the given <c>AudioSource</c>.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="audioClip"></param>
         private void StartMusicPlayback(AudioSource source, AudioClip audioClip)
         {
             if (_musicStartTime >= audioClip.length || _musicStartTime < 0)
@@ -373,6 +402,13 @@ namespace Altzone.Scripts.Audio
             source.Play();
         }
 
+        /// <summary>
+        /// Crossfades two audio sources.
+        /// </summary>
+        /// <param name="done"></param>
+        /// <param name="primaryChannel"></param>
+        /// <param name="revert"></param>
+        /// <returns></returns>
         private IEnumerator CrossFadeTracks(System.Action<bool> done, int primaryChannel, bool revert)
         {
             if (!revert) _crossFadeTimer = 0f;
@@ -401,6 +437,11 @@ namespace Altzone.Scripts.Audio
             done(true);
         }
 
+        /// <summary>
+        /// Hard switch two audio sources.
+        /// </summary>
+        /// <param name="done"></param>
+        /// <param name="primaryChannel"></param>
         private void SwitchTracksImmediately(System.Action<bool> done, int primaryChannel)
         {
             if (primaryChannel == 2)

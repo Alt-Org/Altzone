@@ -34,7 +34,7 @@ public class WeekEmotions : AltMonoBehaviour
     {
         _playerData = player;
 
-        if (_playerData == null || _playerData.playerDataEmotionList == null)
+        if (_playerData == null || _playerData._playerDataEmotions == null)
         {
             ShowOtherPlayerEmotions();
             return;
@@ -53,25 +53,25 @@ public class WeekEmotions : AltMonoBehaviour
         }
 
         // If no date is set, we can't determine the order of the emotions, so we just show them in the order they are in the list.
-        if (string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
+        /*if (string.IsNullOrWhiteSpace(_playerData.emotionSelectorDate))
         {
             return;
-        }
+        }*/
 
-        DateTime anchorDate;
-        if (!DateTime.TryParse(_playerData.emotionSelectorDate, out anchorDate))
+        DateTime anchorDate = _playerData.EmotionSelectionDate;
+        /*if (!DateTime.TryParse(_playerData.emotionSelectorDate, out anchorDate))
         {
             //Debug.LogError("Could not parse emotionSelectorDate: " + _playerData.emotionSelectorDate);
             return;
-        }
+        }*/
 
         // Changed to DayOfWeek form:
         // Ma=0, Ti=1, Ke=2, To=3, Pe=4, La=5, Su=6
         int anchorSlot = ((int)anchorDate.DayOfWeek + 6) % 7;
 
-        for (int i = 0; i < _playerData.playerDataEmotionList.Count && i < 7; i++)
+        for (int i = 0; i < _playerData._playerDataEmotions.Count && i < 7; i++)
         {
-            Emotion emotion = _playerData.playerDataEmotionList[i];
+            Emotion emotion = _playerData._playerDataEmotions[i].Emotion;
 
             // list[0] = anchorDate
             // list[1] = previous day
@@ -83,8 +83,9 @@ public class WeekEmotions : AltMonoBehaviour
                 //Debug.LogError($"Week emotion target slot {targetSlot} is null on {gameObject.name}");
                 continue;
             }
-
-            Image image = _weekEmotions[targetSlot].GetComponent<Image>();
+             int weekdayIndex = (int)_playerData._playerDataEmotions[i].DateTime.DayOfWeek - 1;
+            if(weekdayIndex < 0) weekdayIndex+=7;
+            Image image = _weekEmotions[weekdayIndex].GetComponent<Image>();
             if (image == null)
             {
                 //Debug.LogError($"No Image component found on week emotion slot {targetSlot}");
