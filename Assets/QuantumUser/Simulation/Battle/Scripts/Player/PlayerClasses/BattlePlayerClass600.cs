@@ -38,8 +38,6 @@ namespace Battle.QSimulation.Player
 
             if (!playerShieldData->IsAttached) return;
 
-            //if (playerShieldData->ShieldHitCooldown.IsRunning(f)) return;
-
             BattlePlayerClass600QSpec spec = BattleQConfig.GetBattlePlayerClass600Spec(f);
 
             BattlePlayerEntityRef               playerEntityRef  = playerShieldData->PlayerEntityRef;
@@ -121,9 +119,6 @@ namespace Battle.QSimulation.Player
             }
 
             BattleProjectileQSystem.UpdateVelocity(f, projectile, position, BattleProjectileQSystem.SpeedChange.None);
-
-            FP damageCooldownSec = BattleQConfig.GetPlayerSpec(f).DamageCooldownSec;
-            shieldData->ShieldHitCooldown = FrameTimer.FromSeconds(f, damageCooldownSec);
 
             BattleProjectileQSystem.SetHeld(projectile, false);
 
