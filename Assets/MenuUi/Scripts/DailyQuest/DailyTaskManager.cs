@@ -139,6 +139,13 @@ public class DailyTaskManager : AltMonoBehaviour
                     Storefront.Get().GetPlayerTasks(content => clanTasks = content);
 
                     //clanTasks = content; // Uncomment when it's possible to get proper info from the server
+                    if(clanTasks == null)
+                    {
+                        if (gameVersion is VersionType.Education or VersionType.TurboEducation)
+                            clanTasks = GenerateEducationTasks();
+                        else
+                            clanTasks = TESTGenerateNormalTasks();
+                    }
                 }
                 else
                 {
