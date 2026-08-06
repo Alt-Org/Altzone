@@ -4081,19 +4081,27 @@ MonoBehaviour:
   _clanTileBackground: {fileID: 0}
   _standaloneLeaderboard: {fileID: 0}
   _clanTileLeaderboard: {fileID: 0}
-  _clanItem: 0
+  _tileItem1st: 0
   _leaderboardItem: 1
+  _tileItem2nd: 9
   _topBarContent: {fileID: 8698528616629625520}
-  _clanPanelRoot: {fileID: 6149830515762959213}
-  _clanPanel: {fileID: 8744637797419791712}
   _clanLeaderboardButton: {fileID: 7504815644500887317}
   _clanHeart: {fileID: 7757244758250276161}
   _textContainer: {fileID: 6851226448621178634}
   _coinsRow: {fileID: 4438963529688278074}
-  _slotLeaderboard: {fileID: 1919495352340933612}
-  _slotCoins: {fileID: 8089712723454362646}
-  _slotClanLogo: {fileID: 2204920010328752272}
-  _slotTextContainer: {fileID: 3816327970030137213}
+  _tileManagement:
+  - Tile: 0
+    TilePanelRoot: {fileID: 6149830515762959213}
+    TilePanel: {fileID: 8744637797419791712}
+    TileObjects:
+    - Child: {fileID: 7504815644500887317}
+      SlotContainer: {fileID: 1919495352340933612}
+    - Child: {fileID: 4438963529688278074}
+      SlotContainer: {fileID: 8089712723454362646}
+    - Child: {fileID: 7757244758250276161}
+      SlotContainer: {fileID: 2204920010328752272}
+    - Child: {fileID: 6851226448621178634}
+      SlotContainer: {fileID: 3816327970030137213}
 --- !u!1 &6264391340277126322
 GameObject:
   m_ObjectHideFlags: 0
@@ -4931,10 +4939,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6851226448621178634}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 71.27163, y: -20}
-  m_SizeDelta: {x: 142.54326, y: 27}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7294539678256106362
 CanvasRenderer:

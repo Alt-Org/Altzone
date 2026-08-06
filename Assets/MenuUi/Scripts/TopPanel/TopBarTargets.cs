@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Settings;
+using System;
+using System.Linq;
 
 namespace MenuUI.Scripts.TopPanel
 {
@@ -28,23 +30,28 @@ namespace MenuUI.Scripts.TopPanel
         [SerializeField] private Transform _clanTileBackground;
         [SerializeField] private GameObject _standaloneLeaderboard;
         [SerializeField] private GameObject _clanTileLeaderboard;
-        [SerializeField] private TopBarDefs.TopBarItem _clanItem = TopBarDefs.TopBarItem.ClanTile;
+        [SerializeField] private TopBarDefs.TopBarItem _tileItem1st = TopBarDefs.TopBarItem.ClanTile;
         [SerializeField] private TopBarDefs.TopBarItem _leaderboardItem = TopBarDefs.TopBarItem.Leaderboard;
+        [SerializeField] private TopBarDefs.TopBarItem _tileItem2nd = TopBarDefs.TopBarItem.ClanTile2nd;
 
         [SerializeField] private Transform _topBarContent;
-        [SerializeField] private Transform _clanPanelRoot;
-        [SerializeField] private Transform _clanPanel;
-
         [SerializeField] private Transform _clanLeaderboardButton;
         [SerializeField] private Transform _clanHeart;
         [SerializeField] private Transform _textContainer;
         [SerializeField] private Transform _coinsRow;
 
-        //SerializeField for slots in ClanPanel
-        [SerializeField] private Transform _slotLeaderboard;
-        [SerializeField] private Transform _slotCoins;
-        [SerializeField] private Transform _slotClanLogo;
-        [SerializeField] private Transform _slotTextContainer;
+        //SerializeField for slots in tiles panels
+
+        [Serializable]
+        private class TileManagement
+        {
+            public TopBarDefs.TopBarItem Tile;
+            public Transform TilePanelRoot;
+            public Transform TilePanel;
+            public List<TileObjects> TileObjects;
+        }
+
+        [SerializeField] private List<TileManagement> _tileManagement;
 
         private const bool DebugOn = true;
 
@@ -88,13 +95,13 @@ namespace MenuUI.Scripts.TopPanel
             bool[] isVisible = ReadVisibility();
 
             bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.ClanTile);
-
+            TopBarDefs.TopBarItem topBarItem = (TopBarDefs.TopBarItem.ClanTile);
             Debug.Log($"[TB] BEFORE clanOn={clanPanelOn} " +
                       $"heartParent={_clanHeart.parent.name}, " +
                       $"textParent={_textContainer.parent.name}, " +
                       $"coinsParent={_coinsRow.parent.name}");
 
-            ApplyClanPanelMode(clanPanelOn);
+            ApplyClanPanelMode(clanPanelOn, topBarItem);
 
             Debug.Log($"[TB] AFTER clanOn={clanPanelOn} " +
                       $"heartParent={_clanHeart.parent.name}, " +
@@ -187,7 +194,7 @@ namespace MenuUI.Scripts.TopPanel
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyClanLeaderboardRule()");
 
-            int clanIdx = IndexOfItem(_clanItem);
+            int clanIdx = IndexOfItem(_tileItem1st);
             int lbIdx = IndexOfItem(_leaderboardItem);
 
             clanOn = clanIdx >= 0 && vis[clanIdx];
@@ -304,12 +311,7 @@ namespace MenuUI.Scripts.TopPanel
         public bool IsReady()
         {
             return _topBarContent != null &&
-                   _clanPanelRoot != null &&
-                   _clanPanel != null &&
-                   _clanLeaderboardButton != null &&
-                   _clanHeart != null &&
-                   _textContainer != null &&
-                   _coinsRow != null;
+                   _tileManagement.All(x => x != null);
         }
 
         public void ApplyOrderFromSettings()
@@ -376,30 +378,54 @@ namespace MenuUI.Scripts.TopPanel
             ApplyOrderWithSpacer(parentRT, ordered);
         }
 
-        private void ApplyClanPanelMode(bool clanPanelOn)
+        private void ApplyClanPanelMode(bool clanPanelOn, TopBarDefs.TopBarItem Tags)
         {
             if (DebugOn)
                 Debug.Log($"[TB] ApplyClanPanelMode clanPanelOn={clanPanelOn}");
 
+
             if (clanPanelOn)
             {
-                if (_clanPanelRoot != null)
-                    _clanPanelRoot.gameObject.SetActive(true);
 
-                MoveToSlot(_clanLeaderboardButton, _slotLeaderboard);
-                MoveToSlot(_coinsRow, _slotCoins);
-                MoveToSlot(_clanHeart, _slotClanLogo);
-                MoveToSlot(_textContainer, _slotTextContainer);
+                foreach (var x in _tileManagement)
+                {
+                    if (x.TilePanelRoot == null)
+                        return;
+
+                    if(x.Tile == Tags)
+                    {
+                    x.TilePanelRoot.gameObject.SetActive(true);
+                    
+                    
+                    foreach (var objects in x.TileObjects)
+                    {
+                        MoveToSlot(objects.Child, objects.SlotContainer);
+                    }
+
+                    }
+
+                }
+
             }
             else
             {
-                if (_clanPanelRoot != null)
-                    _clanPanelRoot.gameObject.SetActive(false);
 
-                MoveToTopBar(_clanLeaderboardButton, _topBarContent);
-                MoveToTopBar(_coinsRow, _topBarContent);
-                MoveToTopBar(_clanHeart, _topBarContent);
-                MoveToTopBar(_textContainer, _topBarContent);
+                foreach (var x in _tileManagement)
+                {
+                    if (x.TilePanelRoot == null)
+                        return;
+
+
+                    if (x.Tile == Tags)
+                    {
+                        x.TilePanelRoot.gameObject.SetActive(false);
+
+                        foreach (var objects in x.TileObjects)
+                        {
+                            MoveToTopBar(objects.Child, _topBarContent);
+                        }
+                    }
+                }
             }
 
         }
@@ -408,8 +434,8 @@ namespace MenuUI.Scripts.TopPanel
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : MoveUnderClanPanel()");
 
-            if (item == null || _clanPanel == null) return;
-            item.SetParent(_clanPanel, false);
+            //if (item == null || _clanPanel == null) return;
+            //item.SetParent(_clanPanel, false);
         }
 
         private void MoveToTopBar(Transform item, Transform parent)
@@ -480,6 +506,13 @@ namespace MenuUI.Scripts.TopPanel
                 rt.anchoredPosition = Vector2.zero;
                 rt.localScale = Vector3.one;
             }
+        }
+
+        [Serializable]
+        private class TileObjects
+        {
+            public Transform Child;
+            public Transform SlotContainer;
         }
     }
 }
