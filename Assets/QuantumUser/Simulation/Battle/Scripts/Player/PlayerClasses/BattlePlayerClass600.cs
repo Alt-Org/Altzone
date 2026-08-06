@@ -36,23 +36,39 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
 
-            if (!playerShieldData->IsAttached) return;
-
-            BattlePlayerClass600QSpec spec = BattleQConfig.GetBattlePlayerClass600Spec(f);
-
-            BattlePlayerEntityRef               playerEntityRef  = playerShieldData->PlayerEntityRef;
-            BattlePlayerClass600DataQComponent* classData        = GetClassData(f, playerEntityRef);
-
             if (projectileCollisionData->Projectile->IsHeld) return;
             if (projectileCollisionData->Projectile->EmotionCurrent == BattleEmotionState.Love) return;
             if (shieldCollisionData->IsLoveProjectileCollision) return;
 
             Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntityRef);
-            Transform2D* transformShield     = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetTransform(f);
+            Transform2D* transformShield = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetTransform(f);
 
-            FPVector2 normal = transformProjectile->Position - transformShield->Position;
+            FPVector2 normal = (transformProjectile->Position - transformShield->Position).Normalized;
 
-            BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntityRef, projectileCollisionData->OtherEntityRef, normal, shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);
+            BattleProjectileQSystem.HandleIntersection(f,
+                projectileCollisionData->Projectile,
+                projectileCollisionData->ProjectileEntityRef,
+                projectileCollisionData->OtherEntityRef,
+                normal,
+                shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset * FP._1_10
+            );
+
+            if (!playerShieldData->IsAttached)
+            {
+                FPVector2 direction = FPVector2.Reflect(projectileCollisionData->Projectile->Direction, normal).Normalized;
+
+                BattleProjectileQSystem.UpdateVelocity(f,
+                    projectileCollisionData->Projectile,
+                    direction,
+                    BattleProjectileQSystem.SpeedChange.Increment
+                );
+                return;
+            }
+
+            BattlePlayerClass600QSpec spec = BattleQConfig.GetBattlePlayerClass600Spec(f);
+
+            BattlePlayerEntityRef               playerEntityRef  = playerShieldData->PlayerEntityRef;
+            BattlePlayerClass600DataQComponent* classData        = GetClassData(f, playerEntityRef);
 
             classData->IsHoldingProjectile = true;
 
@@ -87,15 +103,16 @@ namespace Battle.QSimulation.Player
             Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(classData->HeldProjectileEntity);
             Transform2D* transformShield     = f.Unsafe.GetPointer<Transform2D>(playerData->AttachedShield);
 
-            FPVector2 position     = transformShield->Position + classData->HeldProjectileOffset;
-            FPVector2 prevPosition = transformProjectile->Position;
+            FPVector2 projectilePositionNext = transformShield->Position + classData->HeldProjectileOffset;
 
-            BattleEntityManager.MoveCompound(f, classData->HeldProjectileEntity, position, FP._0);
+            BattleEntityManager.MoveCompound(f, classData->HeldProjectileEntity, projectilePositionNext, FP._0);
 
-            if (transformProjectile->Position != prevPosition)
+            if (transformShield->Position != classData->PreviousPosition)
             {
                 classData->ReleaseBufferTimer = FrameTimer.FromSeconds(f, spec.ReleaseBufferSec);
             }
+
+            classData->PreviousPosition = transformShield->Position;
 
             if (classData->HoldMinTimer.IsRunning(f)) return;
 
@@ -111,14 +128,14 @@ namespace Battle.QSimulation.Player
             switch (teamNumber)
             {
                 case BattleTeamNumber.TeamAlpha:
-                    position = FPVector2.Up;
+                    direction = FPVector2.Up;
                     break;
                 case BattleTeamNumber.TeamBeta:
-                    position = FPVector2.Down;
+                    direction = FPVector2.Down;
                     break;
             }
 
-            BattleProjectileQSystem.UpdateVelocity(f, projectile, position, BattleProjectileQSystem.SpeedChange.None);
+            BattleProjectileQSystem.UpdateVelocity(f, projectile, direction, BattleProjectileQSystem.SpeedChange.Increment);
 
             BattleProjectileQSystem.SetHeld(projectile, false);
 
