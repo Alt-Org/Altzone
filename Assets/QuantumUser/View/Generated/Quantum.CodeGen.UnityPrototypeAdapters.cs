@@ -128,6 +128,8 @@ namespace Quantum.Prototypes.Unity {
     [HideInInspector()]
     public FPVector2 HeldProjectileOffset;
     [HideInInspector()]
+    public FPVector2 PreviousPosition;
+    [HideInInspector()]
     public Quantum.Prototypes.FrameTimerPrototype HoldMinTimer;
     [HideInInspector()]
     public Quantum.Prototypes.FrameTimerPrototype HoldMaxTimer;
@@ -139,6 +141,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.IsHoldingProjectile, out result.IsHoldingProjectile);
       converter.Convert(this.HeldProjectileEntity, out result.HeldProjectileEntity);
       converter.Convert(this.HeldProjectileOffset, out result.HeldProjectileOffset);
+      converter.Convert(this.PreviousPosition, out result.PreviousPosition);
       converter.Convert(this.HoldMinTimer, out result.HoldMinTimer);
       converter.Convert(this.HoldMaxTimer, out result.HoldMaxTimer);
       converter.Convert(this.ReleaseBufferTimer, out result.ReleaseBufferTimer);

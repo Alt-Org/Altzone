@@ -1625,7 +1625,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerClass600DataQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 56;
+    public const Int32 SIZE = 72;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     [HideInInspector()]
@@ -1636,6 +1636,9 @@ namespace Quantum {
     [FieldOffset(40)]
     [HideInInspector()]
     public FPVector2 HeldProjectileOffset;
+    [FieldOffset(56)]
+    [HideInInspector()]
+    public FPVector2 PreviousPosition;
     [FieldOffset(24)]
     [HideInInspector()]
     public FrameTimer HoldMinTimer;
@@ -1651,6 +1654,7 @@ namespace Quantum {
         hash = hash * 31 + IsHoldingProjectile.GetHashCode();
         hash = hash * 31 + HeldProjectileEntity.GetHashCode();
         hash = hash * 31 + HeldProjectileOffset.GetHashCode();
+        hash = hash * 31 + PreviousPosition.GetHashCode();
         hash = hash * 31 + HoldMinTimer.GetHashCode();
         hash = hash * 31 + HoldMaxTimer.GetHashCode();
         hash = hash * 31 + ReleaseBufferTimer.GetHashCode();
@@ -1665,6 +1669,7 @@ namespace Quantum {
         FrameTimer.Serialize(&p->HoldMinTimer, serializer);
         FrameTimer.Serialize(&p->ReleaseBufferTimer, serializer);
         FPVector2.Serialize(&p->HeldProjectileOffset, serializer);
+        FPVector2.Serialize(&p->PreviousPosition, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]

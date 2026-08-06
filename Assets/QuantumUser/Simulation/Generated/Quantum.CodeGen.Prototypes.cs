@@ -353,6 +353,8 @@ namespace Quantum.Prototypes {
     [HideInInspector()]
     public FPVector2 HeldProjectileOffset;
     [HideInInspector()]
+    public FPVector2 PreviousPosition;
+    [HideInInspector()]
     public Quantum.Prototypes.FrameTimerPrototype HoldMinTimer;
     [HideInInspector()]
     public Quantum.Prototypes.FrameTimerPrototype HoldMaxTimer;
@@ -367,6 +369,7 @@ namespace Quantum.Prototypes {
         result.IsHoldingProjectile = this.IsHoldingProjectile;
         PrototypeValidator.FindMapEntity(this.HeldProjectileEntity, in context, out result.HeldProjectileEntity);
         result.HeldProjectileOffset = this.HeldProjectileOffset;
+        result.PreviousPosition = this.PreviousPosition;
         this.HoldMinTimer.Materialize(frame, ref result.HoldMinTimer, in context);
         this.HoldMaxTimer.Materialize(frame, ref result.HoldMaxTimer, in context);
         this.ReleaseBufferTimer.Materialize(frame, ref result.ReleaseBufferTimer, in context);
