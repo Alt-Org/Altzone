@@ -1,32 +1,36 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using UnityEngine;
-using UnityEngine.Networking;
-using Altzone.Scripts.Model.Poco.Player;
-using System.Globalization;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.GA;
-using Altzone.Scripts.Model.Poco.Game;
-using UnityEngine.Assertions;
-using Altzone.Scripts.Model;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using Altzone.Scripts;
+using Altzone.Scripts.Audio;
+using Altzone.Scripts.Chat;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.GA;
+using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets; 
+using Altzone.Scripts.Settings;
+using Altzone.Scripts.Store;
+using Altzone.Scripts.Voting;
+using MQTTnet;
+using MQTTnet.Client;
+using NativeWebSocket;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Altzone.Scripts.Settings;
-using uPLibrary.Networking.M2Mqtt;
-using uPLibrary.Networking.M2Mqtt.Messages;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
-using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Voting;
-using System.Linq;
-using Altzone.Scripts.Model.Poco;
-using Altzone.Scripts.Store;
-using Altzone.Scripts.Chat;
-using Altzone.Scripts.Audio;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -52,6 +56,7 @@ public class ServerManager : MonoBehaviour
     private static string DEVADDRESS = "https://devapi.altzone.fi/";
 
     private Coroutine _heartbeatCoroutine;
+    private IMqttClient client;
 
     public static string SERVERADDRESS { get
         {
@@ -138,9 +143,14 @@ public class ServerManager : MonoBehaviour
         if (_automaticallyLogIn) StartCoroutine(LogIn());
     }
 
-    private void OnDestroy()
+    private async void OnDestroy()
     {
         ApplicationController.OnAppResume -= ResetHeartBeat;
+
+        if (client != null && client.IsConnected)
+        {
+            await client.DisconnectAsync();
+        }
     }
 
     public void Reset()
@@ -320,19 +330,7 @@ public class ServerManager : MonoBehaviour
             OnLogInStatusChanged?.Invoke(true);
             _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
 
-            MqttClient client = new("devapi.altzone.fi");
-            try
-            {
-                client.Connect(Player._id);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-            finally
-            {
-                Debug.LogWarning(client.IsConnected);
-            }
+            StartMQTT();
 
             if (Clan == null)
             {
@@ -351,6 +349,95 @@ public class ServerManager : MonoBehaviour
             }
         }
     }
+
+    private async void StartMQTT()
+    {
+        await RunTest();
+    }
+
+    private async Task RunTest()
+    {
+        var factory = new MqttFactory();
+        client = factory.CreateMqttClient();
+
+        var topic = $"/matchmaking/invites/player/unity-test-{69}";
+
+        client.ApplicationMessageReceivedAsync += (e) =>
+        {
+            var message = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
+            Debug.LogWarning($"MQTT message received. Topic: {e.ApplicationMessage.Topic}");
+            Debug.LogWarning($"Payload: {message}");
+            return Task.CompletedTask;
+        };
+
+        client.ConnectedAsync += e =>
+        {
+            Debug.LogWarning("MQTT connected");
+            return Task.CompletedTask;
+        };
+
+        client.DisconnectedAsync += e =>
+        {
+            Debug.LogWarning($"MQTT disconnected: {e.Reason}");
+            return Task.CompletedTask;
+        };
+
+        var options = new MqttClientOptionsBuilder()
+            .WithWebSocketServer(o => o.WithUri("ws://notifications.altzone.fi"))
+            .WithCredentials("subscriber", "QNecDttbY92MzfURzPzOjYvICnBkmAXI")
+            .WithClientId(Player._id)
+            .WithCleanSession()
+            .Build();
+
+        try
+        {
+            Debug.LogWarning($"Connecting to ws://notifications.altzone.fi");
+            await client.ConnectAsync(options);
+
+            Debug.LogWarning($"Subscribing to {topic}");
+            await client.SubscribeAsync(topic);
+
+            var payload = JsonUtility.ToJson(new MqttTestMessage
+            {
+                type = "INVITE_UPDATED",
+                payload = new MqttTestPayload
+                {
+                    test = true,
+                    source = "unity",
+                    ts = DateTime.UtcNow.ToString("O")
+                }
+            });
+
+            var message = new MqttApplicationMessageBuilder()
+                .WithTopic(topic)
+                .WithPayload(payload)
+                .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtMostOnce)
+                .Build();
+
+            Debug.LogWarning("Publishing test message");
+            await client.PublishAsync(message);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"MQTT test failed: {ex}");
+        }
+    }
+
+    [Serializable]
+    private class MqttTestMessage
+    {
+        public string type;
+        public MqttTestPayload payload;
+    }
+
+    [Serializable]
+    private class MqttTestPayload
+    {
+        public bool test;
+        public string source;
+        public string ts;
+    }
+
 
     /// <summary>
     /// Logs player out.
