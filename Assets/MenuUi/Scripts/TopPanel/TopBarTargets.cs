@@ -96,12 +96,16 @@ namespace MenuUI.Scripts.TopPanel
 
             bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.ClanTile);
             TopBarDefs.TopBarItem topBarItem = (TopBarDefs.TopBarItem.ClanTile);
+            bool clanPanel2ndOn = IsVisible(TopBarDefs.TopBarItem.ClanTile2nd);
+            TopBarDefs.TopBarItem topBarItem2nd = (TopBarDefs.TopBarItem.ClanTile2nd);
+
             Debug.Log($"[TB] BEFORE clanOn={clanPanelOn} " +
                       $"heartParent={_clanHeart.parent.name}, " +
                       $"textParent={_textContainer.parent.name}, " +
                       $"coinsParent={_coinsRow.parent.name}");
 
             ApplyClanPanelMode(clanPanelOn, topBarItem);
+            ApplyClanPanelMode(clanPanel2ndOn, topBarItem2nd);
 
             Debug.Log($"[TB] AFTER clanOn={clanPanelOn} " +
                       $"heartParent={_clanHeart.parent.name}, " +
@@ -246,8 +250,9 @@ namespace MenuUI.Scripts.TopPanel
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyOrderWithSpacer()");
 
             bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.ClanTile);
-
+            bool clanPanelOn2nd = IsVisible(TopBarDefs.TopBarItem.ClanTile2nd);
             int sib = 0;
+
             HashSet<Transform> alreadyMoved = new HashSet<Transform>();
 
             for (int i = 0; i < orderedVisible.Count; i++)
@@ -255,13 +260,39 @@ namespace MenuUI.Scripts.TopPanel
                 int rowIndex = orderedVisible[i];
                 TopBarDefs.TopBarItem item = _rows[rowIndex].item;
 
-                bool isClanSubItem =
-                    item == TopBarDefs.TopBarItem.Leaderboard ||
-                    item == TopBarDefs.TopBarItem.ClanLogo ||
-                    item == TopBarDefs.TopBarItem.ClanTextContainer ||
-                    item == TopBarDefs.TopBarItem.Coins;
 
-                if (clanPanelOn && isClanSubItem)
+
+                bool isClanSubItem = false;
+                bool isClanSubItemF2nd = false;
+                foreach (var j in _tileManagement)
+                {
+                    if(j.Tile == TopBarDefs.TopBarItem.ClanTile)
+                        foreach(var e in j.TileObjects)
+                        {
+                            if(item == e.Tag)
+                            {
+                                isClanSubItem = true;
+                            }
+                        }
+                }
+
+               
+
+                foreach (var j in _tileManagement)
+                {
+                    if (j.Tile == TopBarDefs.TopBarItem.ClanTile2nd)
+                        foreach (var e in j.TileObjects)
+                    {
+                        if (item == e.Tag)
+                        {
+                            isClanSubItemF2nd = true;
+                        }
+                    }
+                }
+
+
+
+                if ((clanPanelOn && isClanSubItem) || (clanPanelOn2nd && isClanSubItemF2nd))
                     continue;
 
                 Transform tr = _rows[rowIndex].orderTarget;
@@ -394,13 +425,12 @@ namespace MenuUI.Scripts.TopPanel
 
                     if(x.Tile == Tags)
                     {
-                    x.TilePanelRoot.gameObject.SetActive(true);
+                        x.TilePanelRoot.gameObject.SetActive(true);
                     
-                    
-                    foreach (var objects in x.TileObjects)
-                    {
-                        MoveToSlot(objects.Child, objects.SlotContainer);
-                    }
+                        foreach (var objects in x.TileObjects)
+                        {
+                            MoveToSlot(objects.Child, objects.SlotContainer);
+                        }
 
                     }
 
@@ -511,6 +541,7 @@ namespace MenuUI.Scripts.TopPanel
         [Serializable]
         private class TileObjects
         {
+            public TopBarDefs.TopBarItem Tag;
             public Transform Child;
             public Transform SlotContainer;
         }

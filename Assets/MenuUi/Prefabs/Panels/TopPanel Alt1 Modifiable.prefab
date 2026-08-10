@@ -4094,13 +4094,17 @@ MonoBehaviour:
     TilePanelRoot: {fileID: 6149830515762959213}
     TilePanel: {fileID: 8744637797419791712}
     TileObjects:
-    - Child: {fileID: 7504815644500887317}
+    - Tag: 1
+      Child: {fileID: 7504815644500887317}
       SlotContainer: {fileID: 1919495352340933612}
-    - Child: {fileID: 4438963529688278074}
+    - Tag: 2
+      Child: {fileID: 4438963529688278074}
       SlotContainer: {fileID: 8089712723454362646}
-    - Child: {fileID: 7757244758250276161}
+    - Tag: 3
+      Child: {fileID: 7757244758250276161}
       SlotContainer: {fileID: 2204920010328752272}
-    - Child: {fileID: 6851226448621178634}
+    - Tag: 4
+      Child: {fileID: 6851226448621178634}
       SlotContainer: {fileID: 3816327970030137213}
 --- !u!1 &6264391340277126322
 GameObject:
