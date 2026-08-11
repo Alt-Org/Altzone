@@ -56,7 +56,6 @@ public class ServerManager : MonoBehaviour
     private static string DEVADDRESS = "https://devapi.altzone.fi/";
 
     private Coroutine _heartbeatCoroutine;
-    private IMqttClient client;
 
     public static string SERVERADDRESS { get
         {
@@ -143,14 +142,9 @@ public class ServerManager : MonoBehaviour
         if (_automaticallyLogIn) StartCoroutine(LogIn());
     }
 
-    private async void OnDestroy()
+    private void OnDestroy()
     {
         ApplicationController.OnAppResume -= ResetHeartBeat;
-
-        if (client != null && client.IsConnected)
-        {
-            await client.DisconnectAsync();
-        }
     }
 
     public void Reset()
@@ -330,7 +324,7 @@ public class ServerManager : MonoBehaviour
             OnLogInStatusChanged?.Invoke(true);
             _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
 
-            StartMQTT();
+            MQTTManager.Instance.StartMQTT();
 
             if (Clan == null)
             {
@@ -349,95 +343,6 @@ public class ServerManager : MonoBehaviour
             }
         }
     }
-
-    private async void StartMQTT()
-    {
-        await RunTest();
-    }
-
-    private async Task RunTest()
-    {
-        var factory = new MqttFactory();
-        client = factory.CreateMqttClient();
-
-        var topic = $"/matchmaking/invites/player/unity-test-{69}";
-
-        client.ApplicationMessageReceivedAsync += (e) =>
-        {
-            var message = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
-            Debug.LogWarning($"MQTT message received. Topic: {e.ApplicationMessage.Topic}");
-            Debug.LogWarning($"Payload: {message}");
-            return Task.CompletedTask;
-        };
-
-        client.ConnectedAsync += e =>
-        {
-            Debug.LogWarning("MQTT connected");
-            return Task.CompletedTask;
-        };
-
-        client.DisconnectedAsync += e =>
-        {
-            Debug.LogWarning($"MQTT disconnected: {e.Reason}");
-            return Task.CompletedTask;
-        };
-
-        var options = new MqttClientOptionsBuilder()
-            .WithWebSocketServer(o => o.WithUri("ws://notifications.altzone.fi"))
-            .WithCredentials("subscriber", "QNecDttbY92MzfURzPzOjYvICnBkmAXI")
-            .WithClientId(Player._id)
-            .WithCleanSession()
-            .Build();
-
-        try
-        {
-            Debug.LogWarning($"Connecting to ws://notifications.altzone.fi");
-            await client.ConnectAsync(options);
-
-            Debug.LogWarning($"Subscribing to {topic}");
-            await client.SubscribeAsync(topic);
-
-            var payload = JsonUtility.ToJson(new MqttTestMessage
-            {
-                type = "INVITE_UPDATED",
-                payload = new MqttTestPayload
-                {
-                    test = true,
-                    source = "unity",
-                    ts = DateTime.UtcNow.ToString("O")
-                }
-            });
-
-            var message = new MqttApplicationMessageBuilder()
-                .WithTopic(topic)
-                .WithPayload(payload)
-                .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtMostOnce)
-                .Build();
-
-            Debug.LogWarning("Publishing test message");
-            await client.PublishAsync(message);
-        }
-        catch (Exception ex)
-        {
-            Debug.LogError($"MQTT test failed: {ex}");
-        }
-    }
-
-    [Serializable]
-    private class MqttTestMessage
-    {
-        public string type;
-        public MqttTestPayload payload;
-    }
-
-    [Serializable]
-    private class MqttTestPayload
-    {
-        public bool test;
-        public string source;
-        public string ts;
-    }
-
 
     /// <summary>
     /// Logs player out.
