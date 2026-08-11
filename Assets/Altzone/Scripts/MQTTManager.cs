@@ -61,7 +61,6 @@ public class MQTTManager : MonoBehaviour
         _client.ConnectedAsync += e =>
         {
             Debug.Log("MQTT connected");
-            OnMQTTConnectionEstablished?.Invoke(true);
             return Task.CompletedTask;
         };
 
@@ -84,12 +83,98 @@ public class MQTTManager : MonoBehaviour
             Debug.Log($"Connecting to ws://notifications.altzone.fi");
             await _client.ConnectAsync(options);
 
-            Debug.Log($"Subscribing to {topic}");
-            await _client.SubscribeAsync(topic);
+            await SubscribeToVoting();
         }
         catch (Exception ex)
         {
             Debug.LogError($"MQTT connection failed: {ex}");
+        }
+        finally
+        {
+            if (_client != null && _client.IsConnected)
+                OnMQTTConnectionEstablished?.Invoke(true);
+        }
+    }
+
+    public async Task SubscribeToVoting()
+    {
+        if (_client == null || !_client.IsConnected) return;
+
+        var topic = $"/clan/{ServerManager.Instance.Clan._id}/voting/+/+";
+
+        try
+        {
+            Debug.Log($"Subscribing to {topic}");
+            await _client.SubscribeAsync(topic);
+            Debug.Log($"Subscribtion to {topic} successful");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Subscription failed: {ex}");
+        }
+    }
+
+    public async Task SubscribeToDailyTask()
+    {
+        if (_client == null || !_client.IsConnected) return;
+
+        var topic1 = $"/player/{ServerManager.Instance.Player._id}/daily_task/+/+";
+        var topic2 = $"/clan/{ServerManager.Instance.Clan._id}/daily_task/+/+";
+
+        try
+        {
+            Debug.Log($"Subscribing to {topic1}");
+            await _client.SubscribeAsync(topic1);
+            Debug.Log($"Subscribtion to {topic1} successful");
+
+            Debug.Log($"Subscribing to {topic2}");
+            await _client.SubscribeAsync(topic2);
+            Debug.Log($"Subscribtion to {topic2} successful");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Subscription failed: {ex}");
+        }
+    }
+
+    public async Task SubscribeToMatchmaking()
+    {
+        if (_client == null || !_client.IsConnected) return;
+
+        var topic1 = $"/matchmaking/invites/player/{ServerManager.Instance.Player._id}";
+       // var topic2 = $"/matchmaking/matches/player/{ServerManager.Instance.Player._id}";
+
+        try
+        {
+            Debug.Log($"Subscribing to {topic1}");
+            await _client.SubscribeAsync(topic1);
+            Debug.Log($"Subscribtion to {topic1} successful");
+
+            //Debug.Log($"Subscribing to {topic2}");
+            //await _client.SubscribeAsync(topic2);
+            //Debug.Log($"Subscribtion to {topic2} successful");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Subscription failed: {ex}");
+        }
+    }
+
+    public async Task SubscribeToJukebox()
+    {
+        if (_client == null || !_client.IsConnected) return;
+
+        var topic1 = $"/clan/{ServerManager.Instance.Clan._id}/jukebox/+/update";
+
+        try
+        {
+            Debug.Log($"Subscribing to {topic1}");
+            await _client.SubscribeAsync(topic1);
+            Debug.Log($"Subscribtion to {topic1} successful");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Subscription failed: {ex}");
         }
     }
 
