@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using Altzone.Scripts;
 using MQTTnet;
 using MQTTnet.Client;
-using Photon.Realtime;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class MQTTManager : MonoBehaviour
