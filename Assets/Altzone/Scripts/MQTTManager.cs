@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Altzone.Scripts;
 using MQTTnet;
 using MQTTnet.Client;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 public class MQTTManager : MonoBehaviour
@@ -39,6 +37,12 @@ public class MQTTManager : MonoBehaviour
     public delegate void MQTTConnectionEstablished(bool established);
     public static event MQTTConnectionEstablished OnMQTTConnectionEstablished;
 
+    public delegate void VoteNotificationReceived();
+    public static event VoteNotificationReceived OnVoteNotificationReceived;
+
+    public delegate void MatchmakingInviteReceived(MqttMatchInvite invite);
+    public static event MatchmakingInviteReceived OnMatchmakingInviteReceived;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -71,9 +75,7 @@ public class MQTTManager : MonoBehaviour
 
         _client.ApplicationMessageReceivedAsync += (e) =>
         {
-            var message = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
-            Debug.Log($"MQTT message received. Topic: {e.ApplicationMessage.Topic}");
-            Debug.Log($"Payload: {message}");
+            ParsePayload(e);
             return Task.CompletedTask;
         };
 
@@ -308,18 +310,74 @@ public class MQTTManager : MonoBehaviour
         }
     }
 
-    [Serializable]
-    private class MqttTestMessage
+    private void ParsePayload(MqttApplicationMessageReceivedEventArgs args)
     {
-        public string type;
-        public MqttTestPayload payload;
+        try
+        {
+            var message = Encoding.UTF8.GetString(args.ApplicationMessage.PayloadSegment);
+            var topic = args.ApplicationMessage.Topic;
+            Debug.Log($"MQTT message received. Topic: {topic}");
+            Debug.Log($"Payload: {message}");
+            JObject result = JObject.Parse(message);
+            if (topic.Split("/")[0].Equals("Matchmaking"))
+            {
+                if (result["type"].ToString().Equals("INVITE_UPDATED"))
+                {
+                    MqttMatchInvite invite = result["payload"].ToObject<MqttMatchInvite>();
+
+                    OnMatchmakingInviteReceived?.Invoke(invite);
+                }
+            }else if(topic.Split("/")[2].Equals("Voting"))
+            {
+                OnVoteNotificationReceived?.Invoke();
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Payload parsing failed: {ex}");
+        }
     }
 
     [Serializable]
-    private class MqttTestPayload
+    public class MqttMatchInvite
     {
-        public bool test;
-        public string source;
-        public string ts;
+        public string id { get; set; }
+        public MatchType matchType { get; set; }
+        public InviteStatus status { get; set; }
+        public string ownerPlayreId { get; set; }
+        public string clanId { get; set; }
+        public string roomId { get; set; }
+        public string[] players { get; set; }
+        public MQTTBots bots { get; set; }
+        public int teamSize { get; set; }
+        public bool allowBots { get; set; }
+        public string createdAt { get; set; }
+        public string updatedAt { get; set; }
+        public string readyAt { get; set; }
+        public string matchId { get; set; }
+    }
+
+    public enum MatchType
+    {
+        RANDOM,
+        CLAN,
+        CUSTOM
+    }
+
+    public enum InviteStatus
+    {
+        OPEN,
+        READY,
+        QUEUED,
+        MATCHED,
+        CANCELLED
+    }
+
+    [Serializable]
+    public class MQTTBots
+    {
+        public string botId { get; set; }
+        public string displayName { get; set; }
+        public bool isBot { get; set; }
     }
 }
