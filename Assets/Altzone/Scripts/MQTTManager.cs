@@ -26,8 +26,15 @@ public class MQTTManager : MonoBehaviour
     private string _votingTopic = null;
     private string _dailyTaskPlayerTopic = null;
     private string _dailyTaskClanTopic = null;
-    private string _matchmakingClanTopic = null;
+    private string _matchmakingInviteTopic = null;
     private string _jukeboxTopic = null;
+
+    private const string VotingTopicBase = "/clan/{clanId}/voting/+/+";
+    private const string DailyTaskPlayerTopicBase = "/player/{playerId}/daily_task/+/+";
+    private const string DailyTaskClanTopicBase = "/clan/{clanId}/daily_task/+/+";
+    private const string MatchmakingInviteTopicBase = "/matchmaking/invites/player/{playerId}";
+    private const string MatchmakingMatchTopicBase = "/matchmaking/match/player/{playerId}";
+    private const string JukeboxTopicBase = "/clan/{clanId}/jukebox/+/update";
 
     public delegate void MQTTConnectionEstablished(bool established);
     public static event MQTTConnectionEstablished OnMQTTConnectionEstablished;
@@ -128,7 +135,7 @@ public class MQTTManager : MonoBehaviour
     {
         if (_client == null || !_client.IsConnected || _votingTopic != null) return;
 
-        _votingTopic = $"/clan/{ServerManager.Instance.Clan._id}/voting/+/+";
+        _votingTopic = VotingTopicBase.Replace("{clanId}", ServerManager.Instance.Clan._id);
 
         try
         {
@@ -168,8 +175,8 @@ public class MQTTManager : MonoBehaviour
     {
         if (_client == null || !_client.IsConnected || _dailyTaskPlayerTopic != null) return;
 
-        _dailyTaskPlayerTopic = $"/player/{ServerManager.Instance.Player._id}/daily_task/+/+";
-        _dailyTaskClanTopic = $"/clan/{ServerManager.Instance.Clan._id}/daily_task/+/+";
+        _dailyTaskPlayerTopic = DailyTaskPlayerTopicBase.Replace("{playerId}", ServerManager.Instance.Player._id);
+        _dailyTaskClanTopic = DailyTaskClanTopicBase.Replace("{clanId}", ServerManager.Instance.Clan._id);
 
         try
         {
@@ -218,16 +225,16 @@ public class MQTTManager : MonoBehaviour
 
     public async Task SubscribeToMatchmaking()
     {
-        if (_client == null || !_client.IsConnected || _matchmakingClanTopic != null) return;
+        if (_client == null || !_client.IsConnected || _matchmakingInviteTopic != null) return;
 
-        _matchmakingClanTopic = $"/matchmaking/invites/player/{ServerManager.Instance.Player._id}";
+        _matchmakingInviteTopic = MatchmakingInviteTopicBase.Replace("{playerId}", ServerManager.Instance.Player._id);
        // var topic2 = $"/matchmaking/matches/player/{ServerManager.Instance.Player._id}";
 
         try
         {
-            Debug.Log($"Subscribing to {_matchmakingClanTopic}");
-            await _client.SubscribeAsync(_matchmakingClanTopic);
-            Debug.Log($"Subscribtion to {_matchmakingClanTopic} successful");
+            Debug.Log($"Subscribing to {_matchmakingInviteTopic}");
+            await _client.SubscribeAsync(_matchmakingInviteTopic);
+            Debug.Log($"Subscribtion to {_matchmakingInviteTopic} successful");
 
             //Debug.Log($"Subscribing to {topic2}");
             //await _client.SubscribeAsync(topic2);
@@ -243,19 +250,17 @@ public class MQTTManager : MonoBehaviour
     {
         if (_client == null || !_client.IsConnected)
         {
-            _matchmakingClanTopic = null;
+            _matchmakingInviteTopic = null;
             return;
         }
 
-        _matchmakingClanTopic = $"/matchmaking/invites/player/{ServerManager.Instance.Player._id}";
-
         try
         {
-            Debug.Log($"Unsubscribing from {_matchmakingClanTopic}");
-            await _client.UnsubscribeAsync(_matchmakingClanTopic);
-            Debug.Log($"Unsubscribtion from {_matchmakingClanTopic} successful");
+            Debug.Log($"Unsubscribing from {_matchmakingInviteTopic}");
+            await _client.UnsubscribeAsync(_matchmakingInviteTopic);
+            Debug.Log($"Unsubscribtion from {_matchmakingInviteTopic} successful");
 
-            _matchmakingClanTopic = null;
+            _matchmakingInviteTopic = null;
         }
         catch (Exception ex)
         {
@@ -267,7 +272,7 @@ public class MQTTManager : MonoBehaviour
     {
         if (_client == null || !_client.IsConnected || _jukeboxTopic != null) return;
 
-        _jukeboxTopic = $"/clan/{ServerManager.Instance.Clan._id}/jukebox/+/update";
+        _jukeboxTopic = JukeboxTopicBase.Replace("{clanId}", ServerManager.Instance.Clan._id);
 
         try
         {
