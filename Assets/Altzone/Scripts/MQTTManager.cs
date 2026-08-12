@@ -128,8 +128,8 @@ public class MQTTManager : MonoBehaviour
         }
         finally
         {
-            if (_client != null && _client.IsConnected)
-                OnMQTTConnectionEstablished?.Invoke(true);
+            //if (_client != null && _client.IsConnected)
+                //OnMQTTConnectionEstablished?.Invoke(true);
 
             if(ServerManager.Instance.Clan != null) SubscribeToClanNotifications();
         }
@@ -141,6 +141,7 @@ public class MQTTManager : MonoBehaviour
         await SubscribeToDailyTask();
         await SubscribeToJukebox();
         await SubscribeToMatchmaking();
+        OnMQTTConnectionEstablished?.Invoke(true);
     }
 
     public async void UnsubscribeFromClanNotifications()
