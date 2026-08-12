@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using MQTTnet;
@@ -34,6 +35,8 @@ public class MQTTManager : MonoBehaviour
     private const string MatchmakingMatchTopicBase = "/matchmaking/match/player/{playerId}";
     private const string JukeboxTopicBase = "/clan/{clanId}/jukebox/+/update";
 
+    private List<MqttApplicationMessageReceivedEventArgs> _pendingNotificationList = new();
+
     public delegate void MQTTConnectionEstablished(bool established);
     public static event MQTTConnectionEstablished OnMQTTConnectionEstablished;
 
@@ -62,6 +65,21 @@ public class MQTTManager : MonoBehaviour
             await _client.DisconnectAsync();
         }
     }
+    private void Update()
+    {
+        int pendingCount = _pendingNotificationList.Count;
+        if (pendingCount > 0)
+        {
+            for(int i = 0; pendingCount > i; i++)
+            {
+                ParsePayload(_pendingNotificationList[i]);
+            }
+            for (int i = pendingCount - 1; i >= 0; i--)
+            {
+                _pendingNotificationList.RemoveAt(i);
+            }
+        }
+    }
 
     public async void StartMQTT()
     {
@@ -75,7 +93,7 @@ public class MQTTManager : MonoBehaviour
 
         _client.ApplicationMessageReceivedAsync += (e) =>
         {
-            ParsePayload(e);
+            _pendingNotificationList.Add(e);
             return Task.CompletedTask;
         };
 
@@ -131,6 +149,7 @@ public class MQTTManager : MonoBehaviour
         await UnsubscribeFromDailyTask();
         await UnsubscribeFromJukebox();
         await UnsubscribeFromMatchmaking();
+
     }
 
     public async Task SubscribeToVoting()
