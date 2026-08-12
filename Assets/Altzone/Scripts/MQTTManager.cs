@@ -319,7 +319,7 @@ public class MQTTManager : MonoBehaviour
             Debug.Log($"MQTT message received. Topic: {topic}");
             Debug.Log($"Payload: {message}");
             JObject result = JObject.Parse(message);
-            if (topic.Split("/")[0].Equals("Matchmaking"))
+            if (topic.Split("/")[1].Equals("matchmaking"))
             {
                 if (result["type"].ToString().Equals("INVITE_UPDATED"))
                 {
@@ -327,8 +327,10 @@ public class MQTTManager : MonoBehaviour
 
                     OnMatchmakingInviteReceived?.Invoke(invite);
                 }
-            }else if(topic.Split("/")[2].Equals("Voting"))
+            }
+            else if(topic.Split("/")[3].Equals("voting"))
             {
+                Debug.Log($"Voting received: {message}");
                 OnVoteNotificationReceived?.Invoke();
             }
         }
