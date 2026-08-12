@@ -15,6 +15,20 @@ public class MQTTManager : MonoBehaviour
 
     private IMqttClient _client = null;
 
+    public static bool IsConnected
+    {
+        get
+        {
+            return Instance.Client == null || !Instance.Client.IsConnected;
+        }
+    }
+
+    private string _votingTopic = null;
+    private string _dailyTaskPlayerTopic = null;
+    private string _dailyTaskClanTopic = null;
+    private string _matchmakingClanTopic = null;
+    private string _jukeboxTopic = null;
+
     public delegate void MQTTConnectionEstablished(bool established);
     public static event MQTTConnectionEstablished OnMQTTConnectionEstablished;
 
@@ -48,8 +62,6 @@ public class MQTTManager : MonoBehaviour
         var factory = new MqttFactory();
         _client = factory.CreateMqttClient();
 
-        var topic = $"/matchmaking/invites/player/unity-test-{69}";
-
         _client.ApplicationMessageReceivedAsync += (e) =>
         {
             var message = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
@@ -82,8 +94,6 @@ public class MQTTManager : MonoBehaviour
         {
             Debug.Log($"Connecting to ws://notifications.altzone.fi");
             await _client.ConnectAsync(options);
-
-            await SubscribeToVoting();
         }
         catch (Exception ex)
         {
@@ -93,20 +103,60 @@ public class MQTTManager : MonoBehaviour
         {
             if (_client != null && _client.IsConnected)
                 OnMQTTConnectionEstablished?.Invoke(true);
+
+            if(ServerManager.Instance.Clan != null) SubscribeToClanNotifications();
         }
+    }
+
+    public async void SubscribeToClanNotifications()
+    {
+        await SubscribeToVoting();
+        await SubscribeToDailyTask();
+        await SubscribeToJukebox();
+        await SubscribeToMatchmaking();
+    }
+
+    public async void UnsubscribeFromClanNotifications()
+    {
+        await UnsubscribeFromVoting();
+        await UnsubscribeFromDailyTask();
+        await UnsubscribeFromJukebox();
+        await UnsubscribeFromMatchmaking();
     }
 
     public async Task SubscribeToVoting()
     {
-        if (_client == null || !_client.IsConnected) return;
+        if (_client == null || !_client.IsConnected || _votingTopic != null) return;
 
-        var topic = $"/clan/{ServerManager.Instance.Clan._id}/voting/+/+";
+        _votingTopic = $"/clan/{ServerManager.Instance.Clan._id}/voting/+/+";
 
         try
         {
-            Debug.Log($"Subscribing to {topic}");
-            await _client.SubscribeAsync(topic);
-            Debug.Log($"Subscribtion to {topic} successful");
+            Debug.Log($"Subscribing to {_votingTopic}");
+            await _client.SubscribeAsync(_votingTopic);
+            Debug.Log($"Subscribtion to {_votingTopic} successful");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Subscription failed: {ex}");
+        }
+    }
+
+    public async Task UnsubscribeFromVoting()
+    {
+        if (_client == null || !_client.IsConnected)
+        {
+            _votingTopic = null;
+            return;
+        }
+
+        try
+        {
+            Debug.Log($"Unsubscribing from {_votingTopic}");
+            await _client.UnsubscribeAsync(_votingTopic);
+            Debug.Log($"Unsubscribtion from {_votingTopic} successful");
+
+            _votingTopic = null;
         }
         catch (Exception ex)
         {
@@ -116,20 +166,49 @@ public class MQTTManager : MonoBehaviour
 
     public async Task SubscribeToDailyTask()
     {
-        if (_client == null || !_client.IsConnected) return;
+        if (_client == null || !_client.IsConnected || _dailyTaskPlayerTopic != null) return;
 
-        var topic1 = $"/player/{ServerManager.Instance.Player._id}/daily_task/+/+";
-        var topic2 = $"/clan/{ServerManager.Instance.Clan._id}/daily_task/+/+";
+        _dailyTaskPlayerTopic = $"/player/{ServerManager.Instance.Player._id}/daily_task/+/+";
+        _dailyTaskClanTopic = $"/clan/{ServerManager.Instance.Clan._id}/daily_task/+/+";
 
         try
         {
-            Debug.Log($"Subscribing to {topic1}");
-            await _client.SubscribeAsync(topic1);
-            Debug.Log($"Subscribtion to {topic1} successful");
+            Debug.Log($"Subscribing to {_dailyTaskPlayerTopic}");
+            await _client.SubscribeAsync(_dailyTaskPlayerTopic);
+            Debug.Log($"Subscribtion to {_dailyTaskPlayerTopic} successful");
 
-            Debug.Log($"Subscribing to {topic2}");
-            await _client.SubscribeAsync(topic2);
-            Debug.Log($"Subscribtion to {topic2} successful");
+            Debug.Log($"Subscribing to {_dailyTaskClanTopic}");
+            await _client.SubscribeAsync(_dailyTaskClanTopic);
+            Debug.Log($"Subscribtion to {_dailyTaskClanTopic} successful");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Subscription failed: {ex}");
+        }
+    }
+
+    public async Task UnsubscribeFromDailyTask()
+    {
+        if (_client == null || !_client.IsConnected)
+        {
+            _dailyTaskPlayerTopic = null;
+            _dailyTaskClanTopic = null;
+            return;
+        }
+
+        try
+        {
+            Debug.Log($"Unsubscribing from {_dailyTaskPlayerTopic}");
+            await _client.UnsubscribeAsync(_dailyTaskPlayerTopic);
+            Debug.Log($"Unsubscribtion from {_dailyTaskPlayerTopic} successful");
+
+            _dailyTaskPlayerTopic = null;
+
+            Debug.Log($"Unsubscribing from {_dailyTaskClanTopic}");
+            await _client.UnsubscribeAsync(_dailyTaskClanTopic);
+            Debug.Log($"Unsubscribtion from {_dailyTaskClanTopic} successful");
+
+            _dailyTaskClanTopic = null;
         }
         catch (Exception ex)
         {
@@ -139,16 +218,16 @@ public class MQTTManager : MonoBehaviour
 
     public async Task SubscribeToMatchmaking()
     {
-        if (_client == null || !_client.IsConnected) return;
+        if (_client == null || !_client.IsConnected || _matchmakingClanTopic != null) return;
 
-        var topic1 = $"/matchmaking/invites/player/{ServerManager.Instance.Player._id}";
+        _matchmakingClanTopic = $"/matchmaking/invites/player/{ServerManager.Instance.Player._id}";
        // var topic2 = $"/matchmaking/matches/player/{ServerManager.Instance.Player._id}";
 
         try
         {
-            Debug.Log($"Subscribing to {topic1}");
-            await _client.SubscribeAsync(topic1);
-            Debug.Log($"Subscribtion to {topic1} successful");
+            Debug.Log($"Subscribing to {_matchmakingClanTopic}");
+            await _client.SubscribeAsync(_matchmakingClanTopic);
+            Debug.Log($"Subscribtion to {_matchmakingClanTopic} successful");
 
             //Debug.Log($"Subscribing to {topic2}");
             //await _client.SubscribeAsync(topic2);
@@ -160,21 +239,67 @@ public class MQTTManager : MonoBehaviour
         }
     }
 
-    public async Task SubscribeToJukebox()
+    public async Task UnsubscribeFromMatchmaking()
     {
-        if (_client == null || !_client.IsConnected) return;
+        if (_client == null || !_client.IsConnected)
+        {
+            _matchmakingClanTopic = null;
+            return;
+        }
 
-        var topic1 = $"/clan/{ServerManager.Instance.Clan._id}/jukebox/+/update";
+        _matchmakingClanTopic = $"/matchmaking/invites/player/{ServerManager.Instance.Player._id}";
 
         try
         {
-            Debug.Log($"Subscribing to {topic1}");
-            await _client.SubscribeAsync(topic1);
-            Debug.Log($"Subscribtion to {topic1} successful");
+            Debug.Log($"Unsubscribing from {_matchmakingClanTopic}");
+            await _client.UnsubscribeAsync(_matchmakingClanTopic);
+            Debug.Log($"Unsubscribtion from {_matchmakingClanTopic} successful");
+
+            _matchmakingClanTopic = null;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Unsubscription failed: {ex}");
+        }
+    }
+
+    public async Task SubscribeToJukebox()
+    {
+        if (_client == null || !_client.IsConnected || _jukeboxTopic != null) return;
+
+        _jukeboxTopic = $"/clan/{ServerManager.Instance.Clan._id}/jukebox/+/update";
+
+        try
+        {
+            Debug.Log($"Subscribing to {_jukeboxTopic}");
+            await _client.SubscribeAsync(_jukeboxTopic);
+            Debug.Log($"Subscribtion to {_jukeboxTopic} successful");
         }
         catch (Exception ex)
         {
             Debug.LogError($"Subscription failed: {ex}");
+        }
+    }
+
+    public async Task UnsubscribeFromJukebox()
+    {
+        if (_client == null || !_client.IsConnected)
+        {
+            _jukeboxTopic = null;
+            return;
+        }
+
+        try
+        {
+            Debug.Log($"Unsubscribing from {_jukeboxTopic}");
+            await _client.UnsubscribeAsync(_jukeboxTopic);
+            Debug.Log($"Unsubscribtion from {_jukeboxTopic} successful");
+
+            _jukeboxTopic = null;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Unsubscription failed: {ex}");
         }
     }
 
