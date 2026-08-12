@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections;
+using Altzone.Scripts.Voting;
+using UnityEngine;
 
 public class PollMonitor : MonoBehaviour // Monitors active polls to check if they should be expired
 {
@@ -22,11 +23,13 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
     private void Start()
     {
         ServerManager.OnClanPollsChanged += BuildPolls;
+        MQTTManager.OnVoteNotificationReceived += UpdatePollList;
     }
 
     private void OnDestroy()
     {
         ServerManager.OnClanPollsChanged -= BuildPolls;
+        MQTTManager.OnVoteNotificationReceived -= UpdatePollList;
     }
 
     private void BuildPolls() => PollManager.BuildPolls();
@@ -69,5 +72,11 @@ public class PollMonitor : MonoBehaviour // Monitors active polls to check if th
             Debug.Log("[PollMonitor] Checking for expired polls");
             yield return new WaitForSeconds(5f);
         }
+    }
+
+    private void UpdatePollList()
+    {
+        VotingActions.ReloadPollList?.Invoke();
+        PollManager.ShowVotingPopup?.Invoke(FurniturePollType.Buying);
     }
 }
