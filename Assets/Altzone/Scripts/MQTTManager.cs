@@ -372,17 +372,13 @@ public class MQTTManager : MonoBehaviour
             {
                 switch (result["type"].ToString())
                 {
-                    case "flea_market_sell_item":
+                    case "VOTING_CREATED":
                         break;
-                    case "flea_market_buy_item":
+                    case "VOTING_UPDATED":
                         break;
-                    case "change_item_price":
+                    case "VOTING_ENDED":
                         break;
-                    case "shop_buy_item":
-                        break;
-                    case "set_clan_role":
-                        break;
-                    case "clan_governance_update":
+                    case "VOTING_ERROR":
                         break;
                 }
                 Debug.Log($"Voting received: {message}");
