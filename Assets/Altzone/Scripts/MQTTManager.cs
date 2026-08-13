@@ -43,8 +43,14 @@ public class MQTTManager : MonoBehaviour
     public delegate void VoteNotificationReceived();
     public static event VoteNotificationReceived OnVoteNotificationReceived;
 
-    public delegate void MatchmakingInviteReceived(MqttMatchInvite invite);
+    public delegate void MatchmakingInviteReceived(MQTTMatchInvite invite);
     public static event MatchmakingInviteReceived OnMatchmakingInviteReceived;
+
+    public delegate void JukeboxPlaylistUpdated(MQTTJukeBoxPlaylist playList);
+    public static event JukeboxPlaylistUpdated OnJukeboxPlaylistUpdated;
+
+    public delegate void JukeboxSongUpdated(MQTTCurrentSong song);
+    public static event JukeboxSongUpdated OnJukeboxSongUpdated;
 
     private void Awake()
     {
@@ -339,11 +345,25 @@ public class MQTTManager : MonoBehaviour
             Debug.Log($"MQTT message received. Topic: {topic}");
             Debug.Log($"Payload: {message}");
             JObject result = JObject.Parse(message);
-            if (result[topic].Equals("matchmaking"))
+            if (result[topic].Equals("jukebox"))
+            {
+                switch (result["type"].ToString())
+                {
+                    case "SONG_UPDATED":
+                        MQTTCurrentSong song = result["payload"]["song"].ToObject<MQTTCurrentSong>();
+                        OnJukeboxSongUpdated?.Invoke(song);
+                        break;
+                    case "PLAYLIST_UPDATED":
+                        MQTTJukeBoxPlaylist playList = result["payload"]["playlist"].ToObject<MQTTJukeBoxPlaylist>();
+                        OnJukeboxPlaylistUpdated?.Invoke(playList);
+                        break;
+                }
+            }
+            else if (result[topic].Equals("matchmaking"))
             {
                 if (result["type"].ToString().Equals("INVITE_UPDATED"))
                 {
-                    MqttMatchInvite invite = result["payload"].ToObject<MqttMatchInvite>();
+                    MQTTMatchInvite invite = result["payload"].ToObject<MQTTMatchInvite>();
 
                     OnMatchmakingInviteReceived?.Invoke(invite);
                 }
@@ -376,7 +396,7 @@ public class MQTTManager : MonoBehaviour
     }
 
     [Serializable]
-    public class MqttMatchInvite
+    public class MQTTMatchInvite
     {
         public string id { get; set; }
         public MatchType matchType { get; set; }
@@ -458,5 +478,39 @@ public class MQTTManager : MonoBehaviour
     public class MatchResult
     {
         public string winningSide { get; set; }
+    }
+
+    [Serializable]
+    public class MQTTJukeBoxPlaylist
+    {
+        public string clanId { get; set; }
+        public MQTTJukeBoxSong currentSong { get; set; }
+        public List<MQTTJukeBoxQueue> songQueue { get; set; }
+    }
+
+    [Serializable]
+    public class MQTTJukeBoxSong
+    {
+        public string id { get; set; }
+        public string songId { get; set; }
+        public float songDurationSeconds { get; set; }
+        public string playerId { get; set; }
+        public float startedAt { get; set; }
+    }
+
+    [Serializable]
+    public class MQTTJukeBoxQueue
+    {
+        public string id { get; set; }
+        public string songId { get; set; }
+        public float songDurationSeconds { get; set; }
+        public string playerId { get; set; }
+    }
+
+    [Serializable]
+    public class MQTTCurrentSong
+    {
+        public string songId { get; set; }
+        public float startedAt { get; set; }
     }
 }
