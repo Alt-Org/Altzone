@@ -7,6 +7,8 @@ using MenuUi.Scripts.Signals;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
+using MenuUi.Scripts.Lobby.SelectedCharacters;
 
 /// <summary>
 /// Handles switching Battle Popup panels to a battle room and back to the main panel.
@@ -72,7 +74,7 @@ public class BattlePopupPanelManager : MonoBehaviour
                 {
                     try
                     {
-                        int mode = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.CustomGameModeKey, (int)CustomGameMode.TwoVersusTwo);
+                        int mode = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.CustomGameModeKey, (int)CustomGameMode.TwoVersusTwo);
                         SwitchCustomRoom((CustomGameMode)mode);
                     }
                     catch
@@ -108,7 +110,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         }
     }
 
-    private System.Collections.IEnumerator DelayedMatchCheckCoroutine(bool isLeader)
+    private IEnumerator DelayedMatchCheckCoroutine(bool isLeader)
     {
         yield return new WaitForSeconds(0.15f);
         bool inMatchmakingOrQueue = false;
@@ -278,11 +280,11 @@ public class BattlePopupPanelManager : MonoBehaviour
         _refreshMainPanelHolder = StartCoroutine(RefreshMainPanelCharactersNextFrame());
     }
 
-    private System.Collections.IEnumerator RefreshMainPanelCharactersNextFrame()
+    private IEnumerator RefreshMainPanelCharactersNextFrame()
     {
         yield return null;
-        MenuUi.Scripts.Lobby.SelectedCharacters.BattlePopupCharacterSlotController[] controllers = _mainPanel.GetComponentsInChildren<MenuUi.Scripts.Lobby.SelectedCharacters.BattlePopupCharacterSlotController>(true);
-        foreach (var controller in controllers)
+        BattlePopupCharacterSlotController[] controllers = _mainPanel.GetComponentsInChildren<BattlePopupCharacterSlotController>(true);
+        foreach (BattlePopupCharacterSlotController controller in controllers)
         {
             controller.SetCharacters();
         }
