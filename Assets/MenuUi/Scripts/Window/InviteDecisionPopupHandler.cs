@@ -29,6 +29,7 @@ namespace MenuUi.Scripts.Window
 
         private static InviteDecisionPopupHandler _instance;
         private static bool _isInstantiating;
+        private static bool _isRoot;
 
         private bool _waitingResponse;
         private Action<bool> _decisionResponse;
@@ -52,18 +53,6 @@ namespace MenuUi.Scripts.Window
                 return _instance;
             }
 
-            InviteDecisionPopupHandler existingInstance = Resources.FindObjectsOfTypeAll<InviteDecisionPopupHandler>()
-                .Where(handler => handler != null
-                    && handler.gameObject != null
-                    && handler.gameObject.scene.IsValid())
-                .OrderByDescending(handler => handler.gameObject.activeInHierarchy)
-                .FirstOrDefault();
-            if (existingInstance != null)
-            {
-                _instance = existingInstance;
-                return _instance;
-            }
-
             if (_isInstantiating)
             {
                 return null;
@@ -79,30 +68,14 @@ namespace MenuUi.Scripts.Window
                     return null;
                 }
 
-                Transform parent = ResolvePreferredParent();
-                bool useResolvedParent = IsUsableParent(parent);
-                GameObject popupInstance = useResolvedParent
-                    ? Instantiate(prefab, parent, false)
-                    : Instantiate(prefab);
+                GameObject popupInstance = Instantiate(prefab);
 
                 popupInstance.name = "InviteDecisionPanel";
-                if (!useResolvedParent)
-                {
-                    EnsureStandaloneCanvas(popupInstance);
-                    DontDestroyOnLoad(popupInstance);
-                }
-                else
-                {
-                    popupInstance.transform.SetAsLastSibling();
-                }
+
+                EnsureStandaloneCanvas(popupInstance);
+                popupInstance.transform.SetAsLastSibling();
 
                 InviteDecisionPopupHandler handler = popupInstance.GetComponent<InviteDecisionPopupHandler>();
-                if (handler == null)
-                {
-                    Debug.LogWarning("InviteDecisionPopupHandler: prefab is missing InviteDecisionPopupHandler component.");
-                    Destroy(popupInstance);
-                    return null;
-                }
 
                 _instance = handler;
                 return handler;
@@ -111,73 +84,6 @@ namespace MenuUi.Scripts.Window
             {
                 _isInstantiating = false;
             }
-        }
-
-        private static Transform ResolvePreferredParent()
-        {
-            GameObject directUiOverlayPanel = GameObject.Find("UIOverlayPanel");
-            if (directUiOverlayPanel != null
-                && directUiOverlayPanel.scene.IsValid()
-                && directUiOverlayPanel.activeInHierarchy)
-            {
-                return directUiOverlayPanel.transform;
-            }
-
-            GameObject overlayPanel = GameObject.FindWithTag("OverlayPanel");
-            if (overlayPanel != null && overlayPanel.scene.IsValid() && overlayPanel.activeInHierarchy)
-            {
-                Transform overlayContent = overlayPanel.transform.Find("UIOverlayPanel");
-                if (overlayContent != null
-                    && overlayContent.gameObject.scene.IsValid()
-                    && overlayContent.gameObject.activeInHierarchy)
-                {
-                    return overlayContent;
-                }
-
-                return overlayPanel.transform;
-            }
-
-            OverlayPanelCheck overlayPanelCheck = Resources.FindObjectsOfTypeAll<OverlayPanelCheck>()
-                .FirstOrDefault(check => check != null
-                    && check.gameObject != null
-                    && check.gameObject.scene.IsValid()
-                    && check.gameObject.activeInHierarchy);
-            if (overlayPanelCheck != null)
-            {
-                Transform overlayContent = overlayPanelCheck.transform.Find("UIOverlayPanel");
-                if (overlayContent != null
-                    && overlayContent.gameObject.scene.IsValid()
-                    && overlayContent.gameObject.activeInHierarchy)
-                {
-                    return overlayContent;
-                }
-
-                return overlayPanelCheck.transform;
-            }
-
-            if (InLobbyController.PopupContentsInstance != null
-                && InLobbyController.PopupContentsInstance.scene.IsValid()
-                && InLobbyController.PopupContentsInstance.activeInHierarchy)
-            {
-                return InLobbyController.PopupContentsInstance.transform;
-            }
-
-            Canvas fallbackCanvas = Resources.FindObjectsOfTypeAll<Canvas>()
-                .Where(canvas => canvas != null
-                    && canvas.gameObject != null
-                    && canvas.gameObject.scene.IsValid()
-                    && canvas.gameObject.activeInHierarchy)
-                .OrderByDescending(canvas => canvas.sortingOrder)
-                .FirstOrDefault();
-            return fallbackCanvas != null ? fallbackCanvas.transform : null;
-        }
-
-        private static bool IsUsableParent(Transform parent)
-        {
-            return parent != null
-                && parent.gameObject != null
-                && parent.gameObject.scene.IsValid()
-                && parent.gameObject.activeInHierarchy;
         }
 
         private static void EnsureStandaloneCanvas(GameObject popupRoot)
@@ -214,6 +120,9 @@ namespace MenuUi.Scripts.Window
             }
 
             _instance = this;
+
+            if (transform.parent == null) _isRoot = true;
+            else _isRoot = false;
         }
 
         private void OnEnable()
@@ -263,7 +172,6 @@ namespace MenuUi.Scripts.Window
         private void OpenPopup(string message, string acceptText, string declineText, Action<bool> responseCallback)
         {
             EnsureHostIsVisible();
-            CacheTextReferences();
 
             if (_messageText != null)
             {
@@ -282,17 +190,9 @@ namespace MenuUi.Scripts.Window
 
             _decisionResponse = responseCallback;
             _waitingResponse = true;
+
             GameObject popupTarget = GetPopupTarget();
             popupTarget.SetActive(true);
-
-            Transform targetTransform = popupTarget.transform;
-            targetTransform.SetAsLastSibling();
-
-            Canvas rootCanvas = targetTransform.root != null ? targetTransform.root.GetComponent<Canvas>() : null;
-            if (rootCanvas != null && rootCanvas.overrideSorting)
-            {
-                rootCanvas.sortingOrder = Mathf.Max(rootCanvas.sortingOrder, RuntimeFallbackSortingOrder);
-            }
         }
 
         private void EnsureHostIsVisible()
@@ -306,26 +206,12 @@ namespace MenuUi.Scripts.Window
             {
                 return;
             }
-
-            Transform preferredParent = ResolvePreferredParent();
-            if (IsUsableParent(preferredParent))
+            else
             {
-                transform.SetParent(preferredParent, false);
-                transform.SetAsLastSibling();
-                if (!gameObject.activeSelf)
-                {
-                    gameObject.SetActive(true);
-                }
-                return;
+                Debug.LogWarning("Invite Popup was called but is not visible in hierarcy.");
             }
 
-            transform.SetParent(null, false);
-            EnsureStandaloneCanvas(gameObject);
-            DontDestroyOnLoad(gameObject);
-            if (!gameObject.activeSelf)
-            {
-                gameObject.SetActive(true);
-            }
+            transform.SetAsLastSibling();
         }
 
         private void OnAccept()
@@ -346,41 +232,12 @@ namespace MenuUi.Scripts.Window
             Action<bool> response = _decisionResponse;
             _decisionResponse = null;
             response?.Invoke(accepted);
+            if (_isRoot) Destroy(gameObject);
         }
 
         private GameObject GetPopupTarget()
         {
             return _popup != null ? _popup : gameObject;
-        }
-
-        private void CacheTextReferences()
-        {
-            if (_popup == null)
-            {
-                return;
-            }
-
-            if (_acceptButtonText == null && _acceptButton != null)
-            {
-                _acceptButtonText = _acceptButton.GetComponentInChildren<TMP_Text>(true);
-            }
-
-            if (_rejectButtonText == null && _rejectButton != null)
-            {
-                _rejectButtonText = _rejectButton.GetComponentInChildren<TMP_Text>(true);
-            }
-
-            if (_messageText == null)
-            {
-                TMP_Text[] texts = _popup.GetComponentsInChildren<TMP_Text>(true);
-                foreach (TMP_Text text in texts)
-                {
-                    if (_acceptButton != null && text.transform.IsChildOf(_acceptButton.transform)) continue;
-                    if (_rejectButton != null && text.transform.IsChildOf(_rejectButton.transform)) continue;
-                    _messageText = text;
-                    break;
-                }
-            }
         }
     }
 }
