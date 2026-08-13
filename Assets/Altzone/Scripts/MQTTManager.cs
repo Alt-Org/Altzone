@@ -339,7 +339,7 @@ public class MQTTManager : MonoBehaviour
             Debug.Log($"MQTT message received. Topic: {topic}");
             Debug.Log($"Payload: {message}");
             JObject result = JObject.Parse(message);
-            if (topic.Split("/")[1].Equals("matchmaking"))
+            if (result[topic].Equals("matchmaking"))
             {
                 if (result["type"].ToString().Equals("INVITE_UPDATED"))
                 {
@@ -348,8 +348,23 @@ public class MQTTManager : MonoBehaviour
                     OnMatchmakingInviteReceived?.Invoke(invite);
                 }
             }
-            else if(topic.Split("/")[3].Equals("voting"))
+            else if(result["topic"].ToString().Equals("voting"))
             {
+                switch (result["type"].ToString())
+                {
+                    case "flea_market_sell_item":
+                        break;
+                    case "flea_market_buy_item":
+                        break;
+                    case "change_item_price":
+                        break;
+                    case "shop_buy_item":
+                        break;
+                    case "set_clan_role":
+                        break;
+                    case "clan_governance_update":
+                        break;
+                }
                 Debug.Log($"Voting received: {message}");
                 OnVoteNotificationReceived?.Invoke();
             }
