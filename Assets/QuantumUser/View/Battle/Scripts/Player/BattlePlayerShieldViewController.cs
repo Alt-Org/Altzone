@@ -114,6 +114,10 @@ namespace Battle.View.Player
             Bottom = 1
         }
 
+        public GameObject ShieldGameObject => _shieldSpriteGameObject;
+
+        public bool OnLocalTeam => _onLocalTeam;
+
         /// @anchor BattlePlayerShieldViewController-Public-SpriteControlMethods
         /// @name Public Sprite Control Methods
         /// Methods for controlling sprites.
@@ -218,17 +222,17 @@ namespace Battle.View.Player
 
             if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
             {
-                GameObject characterGameObject = _shieldGameObjects[0];
-                characterGameObject.SetActive(true);
-                _shieldSpriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
-                _isLocalPlayer = true;
+                _shieldSpriteGameObject = _shieldGameObjects[0];
+                _shieldSpriteGameObject.SetActive(true);
+                _shieldSpriteRenderer = _shieldSpriteGameObject.GetComponent<SpriteRenderer>();
+                _onLocalTeam = true;
             }
             else
             {
-                GameObject characterGameObject = _shieldGameObjects[1];
-                characterGameObject.SetActive(true);
-                _shieldSpriteRenderer = characterGameObject.GetComponent<SpriteRenderer>();
-                _isLocalPlayer = false;
+                _shieldSpriteGameObject = _shieldGameObjects[1];
+                _shieldSpriteGameObject.SetActive(true);
+                _shieldSpriteRenderer = _shieldSpriteGameObject.GetComponent<SpriteRenderer>();
+                _onLocalTeam = false;
             }
 
             //} initialize visuals
@@ -374,11 +378,13 @@ namespace Battle.View.Player
         /// See [{PlayerCharacterViewController}](#page-concepts-player-character-view-controller) for more info.
         private BattlePlayerCharacterViewController _characterViewController;
 
+        private GameObject _shieldSpriteGameObject;
+
         /// <summary>SpriteRenderer component of this shield.</summary>
         private SpriteRenderer _shieldSpriteRenderer;
 
-        /// <summary>Boolean that tells whether this shield is associated with the local player.</summary>
-        private bool _isLocalPlayer;
+        /// <summary>Boolean that tells whether this shield is associated with a player on the local team.</summary>
+        private bool _onLocalTeam;
 
         /// @anchor BattlePlayerShieldViewController-Private-GameflowMethods
         /// @name Private Gameflow Methods
@@ -420,7 +426,7 @@ namespace Battle.View.Player
             _characterViewController = characterViewController;
             _characterViewController.BindShield(this, _shieldNumber);
 
-            if (_isLocalPlayer)
+            if (_onLocalTeam)
             {
                 SetShieldSprite(_shieldNumber, ShieldSide.Top, isHit: false);
             }

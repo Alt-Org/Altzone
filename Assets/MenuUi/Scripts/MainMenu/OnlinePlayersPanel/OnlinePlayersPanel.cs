@@ -26,7 +26,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
 
     [Header("Main panel page")]
     [SerializeField] public GameObject _onlinePlayersPanel;
-    [SerializeField] private TextMeshProUGUI _onlineTitle;
+    //[SerializeField] private TextMeshProUGUI _onlineTitle;
     [Header("Global page")]
     [SerializeField] private GameObject _onlinePlayersPage;
     [SerializeField] private RectTransform _onlinePlayersPanelContent;
@@ -206,7 +206,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     private IEnumerator BuildOnlineList(List<ServerOnlinePlayer> onlinePlayers)
     {
         yield return StartCoroutine(FetchFriendData());
-        UpdateOnlineFriendsCount(onlinePlayers);
+        //UpdateOnlineFriendsCount(onlinePlayers);
 
         List<OnlinePlayersPanelItem> _onlinePlayersPanelsToCheck = new(_onlinePlayersPanelItems);
         List<OnlinePlayersPanelItem> _onlinePlayersPanelsChecked = new();
@@ -329,7 +329,7 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     {
         int onlinePlayerCount = onlinePlayers.Count;
 
-        _onlineTitle.text = $"Online-pelaajia {onlinePlayerCount}";
+        //_onlineTitle.text = $"Online-pelaajia {onlinePlayerCount}";
     }
 
     public void CallUpdateFriendList()

@@ -51,7 +51,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _button.onClick.AddListener(RequestBattlePopup);
 
             // Loading selected game type from player prefs Note: Only custom available for now
-            _selectedGameType = GameType.Random2v2; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
+            _selectedGameType = GameType.Custom; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
 
             UpdateGameType(_gameTypeReference.GetGameTypeInfos().Find(x => x.gameType == _selectedGameType));
 

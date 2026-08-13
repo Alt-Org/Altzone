@@ -526,7 +526,7 @@ namespace Altzone.Scripts.Model.Poco.Player
 
             _playerDataEmotions = _playerDataEmotions.OrderByDescending(o => o.DateTime).ToList();
 
-            _emotionSelectorDate = _playerDataEmotions[0].DateTime;
+            _emotionSelectorDate = DateTime.UtcNow.Date;
         }
     }
 }

@@ -13,6 +13,7 @@ public class TabChangeHandler : MonoBehaviour
     {
         public Button Button;
         public GameObject Window;
+        public GameObject TabAreaContent;
         public Image Image;
     }
     [Header("TablineScript reference")]
@@ -73,8 +74,17 @@ public class TabChangeHandler : MonoBehaviour
             for (int i = 0; i < _buttons.Count; i++)
             {
                 if (_buttons[i].Window != null) _buttons[i].Window.SetActive(i == activeIndex);
+                else continue;
+                if (_buttons[i].TabAreaContent != null) _buttons[i].TabAreaContent.SetActive(i == activeIndex);
             }
-        else _tablineScript.Swipe.CurrentPage = activeIndex;
+        else
+        {
+            _tablineScript.Swipe.CurrentPage = activeIndex;
+            for (int i = 0; i < _buttons.Count; i++)
+            {
+                if (_buttons[i].TabAreaContent != null) _buttons[i].TabAreaContent.SetActive(i == activeIndex);
+            }
+        }
         _tablineScript.UpdateTabVisuals(activeIndex);
         UpdateTabContextUI(activeIndex);
     }

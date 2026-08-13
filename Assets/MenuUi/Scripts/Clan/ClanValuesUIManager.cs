@@ -19,13 +19,7 @@ public class ClanValuesUIManager : MonoBehaviour
     public Transform iconGrid;
     public GameObject iconButtonPrefab;
 
-    [Header("Selected Values")]
     public List<ClanValues> selectedValues = new List<ClanValues>();
-    public int maxSelections = 10;
-
-    [Header("Selection Colors (Hex)")]
-    [SerializeField] private string selectedColorHex = "#00FF00";   // Vihreä
-    [SerializeField] private string unselectedColorHex = "#CBCBCB"; // Valkoinen
 
     private Dictionary<ClanValues, Sprite> iconDictionary;
     private List<IconButtonHandler> createdButtons = new List<IconButtonHandler>();
@@ -81,9 +75,7 @@ public class ClanValuesUIManager : MonoBehaviour
                 sprite,
                 value,
                 label,
-                selectedColorHex,
-                unselectedColorHex,
-                (ActionValue, callback) => OnValueSelected(ActionValue, callback));
+                (actionValue, callback) => OnValueSelected(actionValue, callback));
 
             createdButtons.Add(handler);
         }
@@ -91,18 +83,19 @@ public class ClanValuesUIManager : MonoBehaviour
 
     void OnValueSelected(ClanValues value, Action<bool> callback)
     {
-        bool active = false;
+        bool active;
+
         if (selectedValues.Contains(value))
         {
             selectedValues.Remove(value);
+            active = false;
         }
-        else if (selectedValues.Count < maxSelections)
+        else
         {
             selectedValues.Add(value);
             active = true;
         }
 
-        Debug.Log($"Selected values: {string.Join(", ", selectedValues)}");
         callback(active);
     }
 
@@ -114,7 +107,7 @@ public class ClanValuesUIManager : MonoBehaviour
     public void LoadSelectedValues(List<ClanValues> values)
     {
         selectedValues.Clear();
-        selectedValues.AddRange(values.Take(maxSelections));
+        //selectedValues.AddRange(values.Take(maxSelections));
 
         for (int i = 0; i < createdButtons.Count; i++)
         {

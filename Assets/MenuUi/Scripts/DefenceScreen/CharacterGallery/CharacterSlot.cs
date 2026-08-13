@@ -23,5 +23,10 @@ namespace MenuUi.Scripts.CharacterGallery
             _id = id;
             Character.SetInfo(sprite, bgColor, bgAltColor, name, className, id, this);
         }
+
+        public void GradientOverride(Sprite bgImage)
+        {
+            Character.GradientOverride(bgImage);
+        }
     }
 }

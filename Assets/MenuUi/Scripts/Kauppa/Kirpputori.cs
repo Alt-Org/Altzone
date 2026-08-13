@@ -28,7 +28,9 @@ public class Kirpputori : MonoBehaviour
     [SerializeField] private RectTransform _Content;
     private DataStore _store;
 
-    
+    [Header("Tabline button")]
+    [SerializeField] private GameObject _ClanStallButton;
+
 
     private void Awake()
     {
@@ -48,6 +50,19 @@ public class Kirpputori : MonoBehaviour
 
         StartCoroutine(RandomFurniture());
 
+    }
+
+    private void OnEnable()
+    {
+        //shows the player's own clan stall button on tabline
+        _ClanStallButton.SetActive(true);
+    }
+
+    private void OnDisable()
+    {
+        _ClanStallButton.SetActive(false);
+
+        _ClanPopup.SetActive(false);
     }
 
     public IEnumerator RandomFurniture()
@@ -88,11 +103,14 @@ public class Kirpputori : MonoBehaviour
 
 
 
-
-    public void OpenPopup(List<StorageFurniture> furnitureList)
+    // Gets furniture list and clicked ad gameObject from EsineDisplay 
+    public void OpenPopup(List<StorageFurniture> furnitureList, GameObject clickedAd)
     {
         _ClanPopup.SetActive(true);
         var clanStallPopupHandler = _ClanPopup.GetComponent<ClanStallPopupHandler>();
         clanStallPopupHandler.CreateStalls(furnitureList);
+
+        // Passes the list of all ads and the clicked ad to ClanStallHandler, used for Clan Stall pop up navigation arrows
+        clanStallPopupHandler.navigateClanStalls(_adsInScene, clickedAd);
     }
 }

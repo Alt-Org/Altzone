@@ -276,6 +276,8 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.FrameTimerPrototype JoystickTimer;
     [HideInInspector()]
     public Quantum.Prototypes.FrameTimerPrototype CooldownTimer;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype PlacementTimer;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClass100DataQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerClass100DataQComponent component = default;
@@ -287,6 +289,7 @@ namespace Quantum.Prototypes {
         result.JoystickDownPrevious = this.JoystickDownPrevious;
         this.JoystickTimer.Materialize(frame, ref result.JoystickTimer, in context);
         this.CooldownTimer.Materialize(frame, ref result.CooldownTimer, in context);
+        this.PlacementTimer.Materialize(frame, ref result.PlacementTimer, in context);
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -297,6 +300,8 @@ namespace Quantum.Prototypes {
     public FPVector2 Direction;
     [HideInInspector()]
     public FP Speed;
+    [HideInInspector()]
+    public FP Radius;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClass100ProjectileQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerClass100ProjectileQComponent component = default;
@@ -306,6 +311,7 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.BattlePlayerClass100ProjectileQComponent result, in PrototypeMaterializationContext context = default) {
         result.Direction = this.Direction;
         result.Speed = this.Speed;
+        result.Radius = this.Radius;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -348,6 +354,7 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
+    public QBoolean DisableMovement;
     public QBoolean DisableRotation;
     public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
     public QBoolean MovementEnabled;
@@ -381,6 +388,7 @@ namespace Quantum.Prototypes {
         this.Stats.Materialize(frame, ref result.Stats, in context);
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
+        result.DisableMovement = this.DisableMovement;
         result.DisableRotation = this.DisableRotation;
         result.SpawnBehaviour = this.SpawnBehaviour;
         result.MovementEnabled = this.MovementEnabled;
@@ -408,6 +416,7 @@ namespace Quantum.Prototypes {
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
     public Quantum.Prototypes.BattlePlayerHitboxTemplatePrototype Hitbox;
+    public QBoolean DisableMovement;
     public QBoolean DisableRotation;
     public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerDataTemplateQComponent result, in PrototypeMaterializationContext context);
@@ -420,6 +429,7 @@ namespace Quantum.Prototypes {
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
         this.Hitbox.Materialize(frame, ref result.Hitbox, in context);
+        result.DisableMovement = this.DisableMovement;
         result.DisableRotation = this.DisableRotation;
         result.SpawnBehaviour = this.SpawnBehaviour;
         MaterializeUser(frame, ref result, in context);
