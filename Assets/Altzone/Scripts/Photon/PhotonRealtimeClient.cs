@@ -342,19 +342,6 @@ public static class PhotonRealtimeClient
         }
     }
 
-    public static LobbyPhotonHashtable CustomProperties
-    {
-        get
-        {
-            /*if (offlineMode)
-            {
-                return offlineModeRoom;
-            }*/
-
-            return new(CurrentRoom.CustomProperties);
-        }
-    }
-
     static PhotonRealtimeClient()
     {
         #if !UNITY_EDITOR

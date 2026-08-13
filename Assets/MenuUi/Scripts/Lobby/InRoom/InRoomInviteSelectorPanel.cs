@@ -23,30 +23,12 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [SerializeField] private Image _overlayImage;
         [SerializeField] private Image _cardImage;
         [SerializeField] private Image _scrollBackgroundImage;
-        [SerializeField] private Image _closeButtonImage;
-        [SerializeField] private TMP_Text _closeButtonText;
-
-        [Header("Fallback Style")]
-        [SerializeField] private Color _fallbackOverlayColor = new(0f, 0f, 0f, 0.62f);
-        [SerializeField] private Color _fallbackCardColor = new(1f, 1f, 1f, 0.98f);
-        [SerializeField] private Color _fallbackScrollColor = new(0.95f, 0.95f, 0.95f, 0.95f);
-        [SerializeField] private Color _fallbackButtonColor = new(0.841f, 0.635f, 0.973f, 1f);
-        [SerializeField] private Color _fallbackTextColor = new(0.196f, 0.196f, 0.196f, 1f);
-        [SerializeField] private float _fallbackRowFontSize = 24f;
+        [SerializeField] private MatchInviteCandidateHandler _inviteItemPrefab;
 
         private readonly List<GameObject> _spawnedRows = new();
         private Action<ServerOnlinePlayer> _onSelected;
         private Action _onCancelled;
 
-        private Sprite _rowSprite;
-        private Material _rowMaterial;
-        private Image.Type _rowImageType = Image.Type.Simple;
-        private Color _rowColor;
-        private ColorBlock _rowColorBlock;
-        private TMP_FontAsset _rowFontAsset;
-        private Color _rowTextColor;
-        private float _rowFontSize;
-        private bool _rowStyleInitialized;
         private bool _closing;
 
         public bool IsVisible => _root != null && _root.activeSelf;
@@ -55,11 +37,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             if (_root == null)
             {
-                _root = gameObject;
+                InitializePanel();
             }
-
-            WireUi();
-            EnsureFallbackStyleInitialized();
         }
 
         private void OnDestroy()
@@ -100,14 +79,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             if (_root == null)
             {
-                _root = gameObject;
+                InitializePanel();
             }
 
-            // Show can be called before Awake when panel starts inactive in prefab.
-            WireUi();
-            EnsureFallbackStyleInitialized();
-
-            if (_root == null || _contentRoot == null)
+            if (_contentRoot == null)
             {
                 Debug.LogWarning("InRoomInviteSelectorPanel: missing UI references.");
                 return;
@@ -123,39 +98,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             BuildPlayerRows(players);
             _root.SetActive(true);
-        }
-
-        public void ConfigureVisualStyle(Button styleSourceButton)
-        {
-            if (styleSourceButton == null)
-            {
-                return;
-            }
-
-            Image sourceImage = styleSourceButton.targetGraphic as Image;
-            TMP_Text sourceText = styleSourceButton.GetComponentInChildren<TMP_Text>(true);
-
-            if (sourceImage != null)
-            {
-                _rowSprite = sourceImage.sprite;
-                _rowMaterial = sourceImage.material;
-                _rowImageType = sourceImage.sprite != null ? sourceImage.type : Image.Type.Simple;
-                _rowColor = sourceImage.color;
-            }
-
-            _rowColorBlock = styleSourceButton.colors;
-
-            if (sourceText != null)
-            {
-                _rowTextColor = sourceText.color;
-                _rowFontSize = Mathf.Max(18f, sourceText.fontSize);
-                if (sourceText.font != null)
-                {
-                    _rowFontAsset = sourceText.font;
-                }
-            }
-
-            _rowStyleInitialized = true;
         }
 
         public void Hide(bool invokeCancel)
@@ -184,21 +126,13 @@ namespace MenuUi.Scripts.Lobby.InRoom
             Hide(false);
         }
 
-        private void WireUi()
+        private void InitializePanel()
         {
+            _root = gameObject;
+
             if (_closeButton == null)
             {
                 return;
-            }
-
-            if (_closeButtonImage == null)
-            {
-                _closeButtonImage = _closeButton.targetGraphic as Image;
-            }
-
-            if (_closeButtonText == null)
-            {
-                _closeButtonText = _closeButton.GetComponentInChildren<TMP_Text>(true);
             }
 
             _closeButton.onClick.RemoveListener(OnClosePressed);
@@ -238,12 +172,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                          .OrderBy(GetDisplayName, StringComparer.OrdinalIgnoreCase))
             {
                 GameObject row = CreateRowObject(_contentRoot, player);
-                Button button = row.GetComponent<Button>();
-                if (button != null)
-                {
-                    ServerOnlinePlayer selectedPlayer = player;
-                    button.onClick.AddListener(() => OnPlayerPressed(selectedPlayer));
-                }
                 _spawnedRows.Add(row);
             }
         }
@@ -318,88 +246,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private GameObject CreateRowObject(Transform parent, ServerOnlinePlayer player)
         {
-            GameObject row = new("InviteCandidateRow", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button), typeof(LayoutElement));
-            row.transform.SetParent(parent, false);
+            MatchInviteCandidateHandler item = Instantiate(_inviteItemPrefab, parent);
+            item.SetData(player, (player) => OnPlayerPressed(player));
 
-            Image image = row.GetComponent<Image>();
-            ApplyImageStyle(image, _rowSprite, _rowMaterial, _rowImageType, _rowColor);
-
-            LayoutElement layoutElement = row.GetComponent<LayoutElement>();
-            layoutElement.preferredHeight = 100f;
-
-            Button button = row.GetComponent<Button>();
-            button.targetGraphic = image;
-            button.colors = _rowColorBlock;
-
-            GameObject textObj = new("Label", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-            textObj.transform.SetParent(row.transform, false);
-            RectTransform textRect = textObj.GetComponent<RectTransform>();
-            textRect.anchorMin = Vector2.zero;
-            textRect.anchorMax = Vector2.one;
-            textRect.offsetMin = new Vector2(22f, 8f);
-            textRect.offsetMax = new Vector2(-22f, -8f);
-
-            TextMeshProUGUI text = textObj.GetComponent<TextMeshProUGUI>();
-            string displayName = GetDisplayName(player);
-            string idText = player == null ? string.Empty : player._id;
-            text.richText = true;
-            text.text = string.IsNullOrEmpty(idText) || idText == displayName
-                ? displayName
-                : $"{displayName}\n<size=72%>{idText}</size>";
-            text.fontSize = _rowFontSize;
-            text.alignment = TextAlignmentOptions.MidlineLeft;
-            text.color = _rowTextColor;
-            text.enableAutoSizing = true;
-            text.fontSizeMin = 18f;
-            text.fontSizeMax = Mathf.Max(20f, _rowFontSize);
-            if (_rowFontAsset != null) text.font = _rowFontAsset;
-
-            return row;
+            return item.gameObject;
         }
-
-        private void EnsureFallbackStyleInitialized()
-        {
-            if (_rowStyleInitialized)
-            {
-                return;
-            }
-
-            if (_closeButtonImage == null && _closeButton != null)
-            {
-                _closeButtonImage = _closeButton.targetGraphic as Image;
-            }
-
-            if (_closeButtonText == null && _closeButton != null)
-            {
-                _closeButtonText = _closeButton.GetComponentInChildren<TMP_Text>(true);
-            }
-
-            _rowSprite = _closeButtonImage != null ? _closeButtonImage.sprite : null;
-            _rowMaterial = _closeButtonImage != null ? _closeButtonImage.material : null;
-            _rowImageType = _closeButtonImage != null && _closeButtonImage.sprite != null ? _closeButtonImage.type : Image.Type.Simple;
-            _rowColor = _closeButtonImage != null ? _closeButtonImage.color : _fallbackButtonColor;
-
-            _rowColorBlock = _closeButton != null ? _closeButton.colors : ColorBlock.defaultColorBlock;
-
-            _rowTextColor = _closeButtonText != null ? _closeButtonText.color : _fallbackTextColor;
-            _rowFontSize = _closeButtonText != null ? Mathf.Max(18f, _closeButtonText.fontSize) : _fallbackRowFontSize;
-            _rowFontAsset = _closeButtonText != null && _closeButtonText.font != null ? _closeButtonText.font : TMP_Settings.defaultFontAsset;
-
-            _rowStyleInitialized = true;
-        }
-
-        private static void ApplyImageStyle(Image image, Sprite sprite, Material material, Image.Type type, Color color)
-        {
-            if (image == null)
-            {
-                return;
-            }
-
-            image.sprite = sprite;
-            image.material = material;
-            image.type = sprite != null ? type : Image.Type.Simple;
-            image.color = color;
-        }
-
     }
 }
