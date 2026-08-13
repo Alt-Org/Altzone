@@ -11,7 +11,7 @@ public class TopBarOrderBridge : MonoBehaviour
     [SerializeField] private TopBarTargets[] _targetsByStyle;
     [SerializeField] private GameObject[] _clanSubItemSpacers;
     [SerializeField] private GameObject[] _clanSubItemRows;
-
+    [SerializeField] private TopBarClanTileLayout[] _topBarToggleLayouts;
     public static TopBarOrderBridge Active { get; private set; }
     private const bool DebugOn = true;
 
@@ -20,6 +20,8 @@ public class TopBarOrderBridge : MonoBehaviour
             ? SettingsCarrier.Instance.TopBarStyleSetting
             : SettingsCarrier.TopBarStyle.NewHelena;
 
+
+    public TopBarTargets[] TargetsByStyle { get => _targetsByStyle; }
 
     private void Awake()
     {
@@ -255,6 +257,11 @@ public class TopBarOrderBridge : MonoBehaviour
         ) != 0;
 
         SetClanSubItemIndent(clanTileOn);
+
+        foreach(var i in _topBarToggleLayouts)
+        {
+            StartCoroutine(i.IsThereATile(this));
+        }
     }
 
     private static void ApplyOrderToToggleList(
@@ -357,6 +364,7 @@ public class TopBarOrderBridge : MonoBehaviour
         owner.ApplyFromSettings();
         RefreshClanSubItemIndent();
     }
+
 
     private void MoveClanSubRowsUnderClanTile()
     {

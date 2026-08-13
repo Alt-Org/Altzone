@@ -43,7 +43,7 @@ namespace MenuUI.Scripts.TopPanel
         //SerializeField for slots in tiles panels
 
         [Serializable]
-        private class TileManagement
+        public class TileManagement
         {
             public TopBarDefs.TopBarItem Tile;
             public Transform TilePanelRoot;
@@ -52,6 +52,8 @@ namespace MenuUI.Scripts.TopPanel
         }
 
         [SerializeField] private List<TileManagement> _tileManagement;
+
+        public List<TileManagement> PTileManagement { get => _tileManagement; }
 
         private const bool DebugOn = true;
 
@@ -539,7 +541,7 @@ namespace MenuUI.Scripts.TopPanel
         }
 
         [Serializable]
-        private class TileObjects
+        public class TileObjects
         {
             public TopBarDefs.TopBarItem Tag;
             public Transform Child;
