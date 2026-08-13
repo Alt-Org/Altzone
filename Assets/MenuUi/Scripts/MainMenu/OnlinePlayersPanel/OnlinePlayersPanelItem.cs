@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Window;
 using MenuUi.Scripts.AvatarEditor;
 using MenuUi.Scripts.Window;
+using MenuUi.Scripts.Signals;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,6 +44,7 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
     [SerializeField] private Button _declineFriendButton;
     [SerializeField] private TextMeshProUGUI _addFriendButtonText;
     [SerializeField] private Button _profileButton;
+    [SerializeField] private Button _inviteButton;
 
     private ServerPlayer _player = null;
     private FriendPlayer _friend = null;
@@ -217,6 +220,28 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
             });
         }
 
+        if (_inviteButton != null)
+        {
+            _inviteButton.onClick.RemoveAllListeners();
+
+            if (id == ServerManager.Instance.Player._id || string.IsNullOrEmpty(id))
+            {
+                _inviteButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                _inviteButton.gameObject.SetActive(true);
+                // Disable the invite button if the player is offline
+                _inviteButton.interactable = IsOnline;
+
+                // Only attempt to send invite if the player is online when the button is pressed
+                _inviteButton.onClick.AddListener(() =>
+                {
+                    if (IsOnline) StartCoroutine(InviteSelectedPlayerRoutine());
+                });
+            }
+        }
+
         GetComponent<Button>().onClick.AddListener(() => UpdateSize());
 
         yield return new WaitForEndOfFrame();
@@ -362,6 +387,45 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
         DataCarrier.AddData(DataCarrier.PlayerProfile, new PlayerData(serverPlayer));
         yield return _profileButton.GetComponent<WindowNavigation>().Navigate();
         OnPlayerPanelCloseRequested?.Invoke();
+    }
+
+    private IEnumerator InviteSelectedPlayerRoutine()
+    {
+        string invitedUserId = string.Empty;
+        if (_player != null) invitedUserId = _player._id;
+        else if (_friend != null) invitedUserId = _friend._id;
+        if (string.IsNullOrEmpty(invitedUserId)) yield break;
+
+        bool result = false;
+        try
+        {
+            result = PhotonRealtimeClient.SendPremadeInvite(invitedUserId);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"InviteSelectedPlayerRoutine: exception while sending invite: {ex.Message}");
+        }
+
+        if (!result)
+        {
+            Debug.LogWarning($"InviteSelectedPlayerRoutine: invite failed to send to {invitedUserId}");
+        }
+        else
+        {
+            // Open the battle popup for Friend Lobby so the in-room waiting panel appears
+            try
+            {
+                SignalBus.OnBattlePopupRequestedSignal(GameType.FriendLobby);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"InviteSelectedPlayerRoutine: failed to open battle popup: {ex.Message}");
+            }
+
+            OnPlayerPanelCloseRequested?.Invoke();
+        }
+
+        yield break;
     }
 }
 

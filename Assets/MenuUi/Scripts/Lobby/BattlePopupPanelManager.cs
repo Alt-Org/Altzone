@@ -1,11 +1,14 @@
 using Altzone.Scripts.Lobby;
+using Altzone.Scripts;
+using Altzone.Scripts.Battle.Photon;
 using MenuUi.Scripts.Lobby;
 using MenuUi.Scripts.Lobby.CreateRoom;
-using Altzone.Scripts.Battle.Photon;
 using MenuUi.Scripts.Signals;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
+using MenuUi.Scripts.Lobby.SelectedCharacters;
 
 /// <summary>
 /// Handles switching Battle Popup panels to a battle room and back to the main panel.
@@ -20,6 +23,8 @@ public class BattlePopupPanelManager : MonoBehaviour
     [SerializeField] private GameObject _custom2v2WaitingRoom;
     [SerializeField] private GameObject _clanAndRandom2v2WaitingRoom;
     [SerializeField] private MatchmakingPanel _matchmakingPanel;
+    private Coroutine _delayedMatchCheckHolder;
+    private Coroutine _refreshMainPanelHolder;
 
     private void OnEnable()
     {
@@ -39,6 +44,28 @@ public class BattlePopupPanelManager : MonoBehaviour
     {
         ClosePanels();
 
+        // If we're already in a matchmaking or queue room, prefer showing the matchmaking panel
+        bool inMatchmakingOrQueue = false;
+        try
+        {
+            if (PhotonRealtimeClient.InMatchmakingRoom) inMatchmakingOrQueue = true;
+            var curr = PhotonRealtimeClient.LobbyCurrentRoom;
+            if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey)) inMatchmakingOrQueue = true;
+        }
+        catch { }
+
+        bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+
+        string currRoomName = "<none>";
+        try
+        {
+            var c = PhotonRealtimeClient.LobbyCurrentRoom;
+            if (c != null) currRoomName = c.Name ?? "<unnamed>";
+        }
+        catch { }
+
+        Debug.Log($"BattlePopupPanelManager.SwitchRoom: gameType={gameType}, inMatchmakingOrQueue={inMatchmakingOrQueue}, currRoom={currRoomName}, isLeader={isLeader}");
+
         switch (gameType)
         {
             case GameType.Custom:
@@ -47,26 +74,61 @@ public class BattlePopupPanelManager : MonoBehaviour
                 {
                     try
                     {
-                        int mode = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.CustomGameModeKey, (int)CustomGameMode.TwoVersusTwo);
+                        int mode = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.CustomGameModeKey, (int)CustomGameMode.TwoVersusTwo);
                         SwitchCustomRoom((CustomGameMode)mode);
                     }
                     catch
                     {
-                        _mainPanel.SetActive(true);
+                        ShowMainPanel();
                     }
                 }
                 else
                 {
-                    _mainPanel.SetActive(true);
+                    ShowMainPanel();
                 }
                 break;
+            case GameType.FriendLobby:
             case GameType.Clan2v2:
-                _clanAndRandom2v2WaitingRoom.SetActive(true);
-                break;
             case GameType.Random2v2:
-                _clanAndRandom2v2WaitingRoom.SetActive(true);
+                if (inMatchmakingOrQueue)
+                {
+                    SwitchToMatchmakingPanel(isLeader);
+                }
+                else
+                {
+                    _clanAndRandom2v2WaitingRoom.SetActive(true);
+                    // Start a short delayed check to catch race where matchmaking join finishes shortly after popup opens
+                    try
+                    {
+                        if (_delayedMatchCheckHolder != null) { StopCoroutine(_delayedMatchCheckHolder); _delayedMatchCheckHolder = null; }
+                        _delayedMatchCheckHolder = StartCoroutine(DelayedMatchCheckCoroutine(isLeader));
+                        Debug.Log("BattlePopupPanelManager.SwitchRoom: started delayed match check coroutine");
+                    }
+                    catch { }
+                }
                 break;
         }
+    }
+
+    private IEnumerator DelayedMatchCheckCoroutine(bool isLeader)
+    {
+        yield return new WaitForSeconds(0.15f);
+        bool inMatchmakingOrQueue = false;
+        try
+        {
+            if (PhotonRealtimeClient.InMatchmakingRoom) inMatchmakingOrQueue = true;
+            var curr = PhotonRealtimeClient.LobbyCurrentRoom;
+            if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey)) inMatchmakingOrQueue = true;
+        }
+        catch { }
+
+        if (inMatchmakingOrQueue)
+        {
+            Debug.Log($"BattlePopupPanelManager.DelayedMatchCheckCoroutine: switching to matchmaking panel, isLeader={isLeader}");
+            SwitchToMatchmakingPanel(isLeader);
+        }
+
+        _delayedMatchCheckHolder = null;
     }
 
     public void OpenCustomRoomSettings()
@@ -174,6 +236,7 @@ public class BattlePopupPanelManager : MonoBehaviour
 
     public void SwitchToMatchmakingPanel(bool isLeader)
     {
+        Debug.Log($"BattlePopupPanelManager.SwitchToMatchmakingPanel: isLeader={isLeader}");
         ClosePanels();
         _matchmakingPanel.SetCancelButton(isLeader);
         _matchmakingPanel.gameObject.SetActive(true);
@@ -197,6 +260,35 @@ public class BattlePopupPanelManager : MonoBehaviour
         }
 
         ClosePanels();
+        ShowMainPanel();
+    }
+
+    private void ShowMainPanel()
+    {
+        if (_mainPanel == null)
+        {
+            return;
+        }
+
         _mainPanel.SetActive(true);
+
+        if (_refreshMainPanelHolder != null)
+        {
+            StopCoroutine(_refreshMainPanelHolder);
+        }
+
+        _refreshMainPanelHolder = StartCoroutine(RefreshMainPanelCharactersNextFrame());
+    }
+
+    private IEnumerator RefreshMainPanelCharactersNextFrame()
+    {
+        yield return null;
+        BattlePopupCharacterSlotController[] controllers = _mainPanel.GetComponentsInChildren<BattlePopupCharacterSlotController>(true);
+        foreach (BattlePopupCharacterSlotController controller in controllers)
+        {
+            controller.SetCharacters();
+        }
+
+        _refreshMainPanelHolder = null;
     }
 }
