@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Voting;
-using UnityEngine;
 
 namespace Altzone.Scripts.MQTT
 {

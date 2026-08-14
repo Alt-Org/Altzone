@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts.Voting;
 using MQTTnet;
 using MQTTnet.Client;
 using Newtonsoft.Json.Linq;
