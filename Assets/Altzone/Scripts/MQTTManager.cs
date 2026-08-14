@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.Voting;
 using MQTTnet;
 using MQTTnet.Client;
 using Newtonsoft.Json.Linq;
@@ -40,8 +42,17 @@ public class MQTTManager : MonoBehaviour
     public delegate void MQTTConnectionEstablished(bool established);
     public static event MQTTConnectionEstablished OnMQTTConnectionEstablished;
 
-    public delegate void VoteNotificationReceived();
-    public static event VoteNotificationReceived OnVoteNotificationReceived;
+    public delegate void FurnitureSellPollCreatedReceived(MQTTFurnitureNotification sellFurniture);
+    public static event FurnitureSellPollCreatedReceived OnFurnitureSellPollCreatedReceived;
+    public delegate void FurnitureStallBuyReceived(MQTTFurnitureNotification sellFurniture);
+    public static event FurnitureStallBuyReceived OnFurnitureStallBuyReceived;
+    public delegate void FurnitureSellChangedReceived(MQTTFurnitureNotification sellFurniture);
+    public static event FurnitureSellChangedReceived OnFurnitureSellChangedReceived;
+    public delegate void FurnitureBuyReceived(MQTTFurnitureNotification sellFurniture);
+    public static event FurnitureBuyReceived OnFurnitureBuyReceived;
+
+    public delegate void VoteReceived(MQTTVotingUpdatedNotification vote);
+    public static event VoteReceived OnVoteReceived;
 
     public delegate void MatchmakingInviteReceived(MQTTMatchInvite invite);
     public static event MatchmakingInviteReceived OnMatchmakingInviteReceived;
@@ -345,7 +356,7 @@ public class MQTTManager : MonoBehaviour
             Debug.Log($"MQTT message received. Topic: {topic}");
             Debug.Log($"Payload: {message}");
             JObject result = JObject.Parse(message);
-            if (result[topic].Equals("jukebox"))
+            if (result["topic"].ToString().Equals("jukebox"))
             {
                 switch (result["type"].ToString())
                 {
@@ -359,7 +370,7 @@ public class MQTTManager : MonoBehaviour
                         break;
                 }
             }
-            else if (result[topic].Equals("matchmaking"))
+            else if (result["topic"].ToString().Equals("matchmaking"))
             {
                 if (result["type"].ToString().Equals("INVITE_UPDATED"))
                 {
@@ -373,8 +384,33 @@ public class MQTTManager : MonoBehaviour
                 switch (result["type"].ToString())
                 {
                     case "VOTING_CREATED":
+                        switch (result["payload"]["type"].ToString())
+                        {
+                            case "flea_market_sell_item":
+                                MQTTFurnitureNotification sellFurniture = result["payload"].ToObject<MQTTFurnitureNotification>();
+                                OnFurnitureSellPollCreatedReceived?.Invoke(sellFurniture);
+                                break;
+                            case "flea_market_buy_item":
+                                MQTTFurnitureNotification buyStallFurniture = result["payload"].ToObject<MQTTFurnitureNotification>();
+                                OnFurnitureStallBuyReceived?.Invoke(buyStallFurniture);
+                                break;
+                            case "change_item_price":
+                                MQTTFurnitureNotification changeFurniture = result["payload"].ToObject<MQTTFurnitureNotification>();
+                                OnFurnitureSellChangedReceived?.Invoke(changeFurniture);
+                                break;
+                            case "shop_buy_item":
+                                MQTTFurnitureNotification buyFurniture = result["payload"].ToObject<MQTTFurnitureNotification>();
+                                OnFurnitureBuyReceived?.Invoke(buyFurniture);
+                                break;
+                            case "set_clan_role":
+                                break;
+                            case "clan_governance_update":
+                                break;
+                        }
                         break;
                     case "VOTING_UPDATED":
+                        MQTTVotingUpdatedNotification vote = result["payload"].ToObject<MQTTVotingUpdatedNotification>();
+                        OnVoteReceived?.Invoke(vote);
                         break;
                     case "VOTING_ENDED":
                         break;
@@ -382,7 +418,6 @@ public class MQTTManager : MonoBehaviour
                         break;
                 }
                 Debug.Log($"Voting received: {message}");
-                OnVoteNotificationReceived?.Invoke();
             }
         }
         catch (Exception ex)
@@ -508,5 +543,55 @@ public class MQTTManager : MonoBehaviour
     {
         public string songId { get; set; }
         public float startedAt { get; set; }
+    }
+
+    [Serializable]
+    public abstract class MQTTVotingStartedNotification<T>
+    {
+        public string status { get; set; }
+        public string voting_id { get; set; }
+        public string type { get; set; }
+        public virtual T entity { get; set; }
+        public MQTTPollPlayer organizer { get; set; }
+    }
+
+    [Serializable]
+    public class MQTTFurnitureNotification : MQTTVotingStartedNotification<PollFurniture>
+    {
+    }
+
+    [Serializable]
+    public class PollFurniture
+    {
+        public string _id { get; set; }
+        public string name { get; set; }
+        public string shopItemName { get; set; }
+        public string price { get; set; }
+    }
+
+    [Serializable]
+    public class MQTTVotingUpdatedNotification
+    {
+        public string status { get; set; }
+        public string voting_id { get; set; }
+        public MQTTPollPlayer voter { get; set; }
+        public List<string> votes { get; set; }
+    }
+
+    [Serializable]
+    public class MQTTVotingEndedNotification
+    {
+        public string status { get; set; }
+        public string voting_id { get; set; }
+        public List<ServerPoll> votes { get; set; }
+        public string endedAt { get; set; }
+    }
+
+    [Serializable]
+    public class MQTTPollPlayer
+    {
+        public string _id { get; set; }
+        public string name { get; set; }
+        public ServerAvatar avatar { get; set; }
     }
 }
