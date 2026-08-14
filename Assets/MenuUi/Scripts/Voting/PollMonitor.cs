@@ -4,7 +4,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Voting;
 using UnityEngine;
-using static MQTTManager;
+using Altzone.Scripts.MQTT;
 
 public class PollMonitor : MonoBehaviour // Monitors active polls to check if they should be expired
 {
