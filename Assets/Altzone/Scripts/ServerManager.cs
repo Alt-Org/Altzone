@@ -1,30 +1,36 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using UnityEngine;
-using UnityEngine.Networking;
-using Altzone.Scripts.Model.Poco.Player;
-using System.Globalization;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.GA;
-using Altzone.Scripts.Model.Poco.Game;
-using UnityEngine.Assertions;
-using Altzone.Scripts.Model;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using Altzone.Scripts;
+using Altzone.Scripts.Audio;
+using Altzone.Scripts.Chat;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.GA;
+using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets; 
+using Altzone.Scripts.Settings;
+using Altzone.Scripts.Store;
+using Altzone.Scripts.Voting;
+using MQTTnet;
+using MQTTnet.Client;
+using NativeWebSocket;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Altzone.Scripts.Settings;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
-using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Voting;
-using System.Linq;
-using Altzone.Scripts.Model.Poco;
-using Altzone.Scripts.Store;
-using Altzone.Scripts.Chat;
-using Altzone.Scripts.Audio;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -159,6 +165,7 @@ public class ServerManager : MonoBehaviour
     {
         OnClanChanged?.Invoke(Clan);
         _firstJoin = false;
+        if (MQTTManager.IsConnected) MQTTManager.Instance.SubscribeToClanNotifications();
     }
 
     /// <summary>
@@ -318,6 +325,8 @@ public class ServerManager : MonoBehaviour
             OnLogInStatusChanged?.Invoke(true);
             _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
 
+            MQTTManager.Instance.StartMQTT();
+
             if (Clan == null)
             {
                 StartCoroutine(GetClanFromServer(clan =>
@@ -354,6 +363,8 @@ public class ServerManager : MonoBehaviour
         OnLogInStatusChanged?.Invoke(false);
 
         OnClanChanged?.Invoke(null);
+
+        if (MQTTManager.IsConnected) MQTTManager.Instance.UnsubscribeFromClanNotifications();
     }
 
     /// <summary>
@@ -1182,6 +1193,7 @@ public class ServerManager : MonoBehaviour
                     playerData.ClanId = string.Empty;
                     storefront.SavePlayerData(playerData, null);
                     OnClanChanged?.Invoke(null);
+                    if (MQTTManager.IsConnected) MQTTManager.Instance.UnsubscribeFromClanNotifications();
                 }
                 else
                 {

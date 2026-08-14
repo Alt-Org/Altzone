@@ -36,12 +36,15 @@ namespace MenuUi.Scripts.Loader
         private WindowNavigation _languageNavigation;
 
         private string _currentAccessToken = null;
+        private bool _clanFetched = false;
+        private bool _mqttEstablished = false;
 
         private void OnEnable()
         {
             ServerManager.OnLogInFailed += OpenLogInScreen;
             ServerManager.OnLogInStatusChanged += PlayerDataFetched;
-            ServerManager.OnClanFetchFinished += LogInReady;
+            ServerManager.OnClanFetchFinished += ClanDataFetched;
+            MQTTManager.OnMQTTConnectionEstablished += MQTTEstablished;
             _loginSuccess.OnLogInPanelSuccess += CloseLogInScreen;
             _loginSuccess.OnLogInPanelReturn += CloseLogInScreen;
             _changeAccountHandler.OnChangeAccountEvent += ChangeAccount;
@@ -53,7 +56,8 @@ namespace MenuUi.Scripts.Loader
         {
             ServerManager.OnLogInFailed -= OpenLogInScreen;
             ServerManager.OnLogInStatusChanged -= PlayerDataFetched;
-            ServerManager.OnClanFetchFinished -= LogInReady;
+            ServerManager.OnClanFetchFinished -= ClanDataFetched;
+            MQTTManager.OnMQTTConnectionEstablished -= MQTTEstablished;
             _loginSuccess.OnLogInPanelSuccess -= CloseLogInScreen;
             _loginSuccess.OnLogInPanelReturn -= CloseLogInScreen;
             _changeAccountHandler.OnChangeAccountEvent -= ChangeAccount;
@@ -124,6 +128,30 @@ namespace MenuUi.Scripts.Loader
         private void PlayerDataFetched(bool value)
         {
             _loadInfoController.Status = LogInStatus.FetchClanData;
+        }
+
+        private void ClanDataFetched()
+        {
+            _clanFetched = true;
+
+            if (_mqttEstablished)
+            {
+                LogInReady();
+            }
+            else
+            {
+                _loadInfoController.Status = LogInStatus.ConnectingMQTT;
+            }
+        }
+
+        private void MQTTEstablished(bool value)
+        {
+            _mqttEstablished = true;
+
+            if (_clanFetched)
+            {
+                LogInReady();
+            }
         }
 
         private void LogInReady()
