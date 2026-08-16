@@ -12,12 +12,15 @@ public class CutOutHandler : MonoBehaviour
     [SerializeField] private RectTransform _textBox;
     [SerializeField] private RectTransform _textBackground;
     [SerializeField] private bool _keepArrowActive = false;
+    [SerializeField] private CanvasGroup _canvasGroup;
 
     public GameObject Arrow { get => _arrow; }
     public bool KeepArrowActive { get => _keepArrowActive; }
 
     public IEnumerator SetPosition(Image imageToCutOut, GameObject fadeLayer)
     {
+        _canvasGroup.alpha = 0;
+
         if (!imageToCutOut.gameObject.activeInHierarchy) { gameObject.SetActive(false); yield break; }
         else gameObject.SetActive(true);
         if (gameObject != null && imageToCutOut != null)
@@ -84,6 +87,8 @@ public class CutOutHandler : MonoBehaviour
             _textBackground.anchorMin = _textBox.anchorMin;
             _textBackground.pivot = _textBox.pivot;
             _textBackground.sizeDelta = _textBox.sizeDelta;
+
+            _canvasGroup.alpha = 1;
         }
     }
 
