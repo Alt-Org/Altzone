@@ -18,6 +18,11 @@ PrefabInstance:
       propertyPath: _imageToCutOut
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
@@ -189,6 +194,11 @@ PrefabInstance:
       propertyPath: _imageToCutOut
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
@@ -347,6 +357,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TutorialPanelChat
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 8260917805380307090, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: m_Pivot.x
@@ -483,6 +498,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TutorialPanelAvatar
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 8260917805380307090, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: m_Pivot.x
@@ -619,6 +639,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TutorialPanelInfoBox
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 8260917805380307090, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: m_Pivot.x
@@ -755,6 +780,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TutorialPanelGallery
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
@@ -914,6 +944,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SkipTutorialButton
       objectReference: {fileID: 0}
+    - target: {fileID: 2611499008257152606, guid: 94fcee5e984a375449996cb67bc66e4d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4135009690569308411, guid: 94fcee5e984a375449996cb67bc66e4d,
         type: 3}
       propertyPath: m_Pivot.x
@@ -927,22 +962,22 @@ PrefabInstance:
     - target: {fileID: 4135009690569308411, guid: 94fcee5e984a375449996cb67bc66e4d,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.42
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4135009690569308411, guid: 94fcee5e984a375449996cb67bc66e4d,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.64
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4135009690569308411, guid: 94fcee5e984a375449996cb67bc66e4d,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.07
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4135009690569308411, guid: 94fcee5e984a375449996cb67bc66e4d,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4135009690569308411, guid: 94fcee5e984a375449996cb67bc66e4d,
         type: 3}
@@ -1024,6 +1059,42 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94fcee5e984a375449996cb67bc66e4d, type: 3}
+--- !u!114 &1286345565963000683 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5845915707210910422, guid: 94fcee5e984a375449996cb67bc66e4d,
+    type: 3}
+  m_PrefabInstance: {fileID: 4682293523304763837}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1620423eb80d326439ca3944da985c4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2091477087414877556 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6772484145534348489, guid: 94fcee5e984a375449996cb67bc66e4d,
+    type: 3}
+  m_PrefabInstance: {fileID: 4682293523304763837}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7561959533821495769 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2885579237895329892, guid: 94fcee5e984a375449996cb67bc66e4d,
+    type: 3}
+  m_PrefabInstance: {fileID: 4682293523304763837}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8761850111440398662 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4135009690569308411, guid: 94fcee5e984a375449996cb67bc66e4d,
@@ -1048,6 +1119,11 @@ PrefabInstance:
       propertyPath: _imageToCutOut
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
@@ -1210,6 +1286,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TutorialPanelStorage
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
@@ -1488,6 +1569,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3154960027245590223, guid: e1ab4bc5e79bd5041b9db2778adb64dc,
         type: 3}
+      propertyPath: _tutorialStopButton
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3154960027245590223, guid: e1ab4bc5e79bd5041b9db2778adb64dc,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
+    - target: {fileID: 3154960027245590223, guid: e1ab4bc5e79bd5041b9db2778adb64dc,
+        type: 3}
+      propertyPath: _tutorialStopButton1
+      value: 
+      objectReference: {fileID: 7561959533821495769}
+    - target: {fileID: 3154960027245590223, guid: e1ab4bc5e79bd5041b9db2778adb64dc,
+        type: 3}
+      propertyPath: _tutorialStopButton2
+      value: 
+      objectReference: {fileID: 2091477087414877556}
+    - target: {fileID: 3154960027245590223, guid: e1ab4bc5e79bd5041b9db2778adb64dc,
+        type: 3}
+      propertyPath: _tutorialStopButton3
+      value: 
+      objectReference: {fileID: 2091477087414877556}
+    - target: {fileID: 3154960027245590223, guid: e1ab4bc5e79bd5041b9db2778adb64dc,
+        type: 3}
       propertyPath: _tutorialPanelList.Array.size
       value: 14
       objectReference: {fileID: 0}
@@ -1724,6 +1830,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7445594768769157177, guid: e1ab4bc5e79bd5041b9db2778adb64dc,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7811443534201563655, guid: e1ab4bc5e79bd5041b9db2778adb64dc,
         type: 3}
       propertyPath: m_IsActive
@@ -1938,6 +2049,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TutorialPanelDropMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 8260917805380307090, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2079,6 +2195,11 @@ PrefabInstance:
       propertyPath: _imageToCutOut
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
@@ -2238,6 +2359,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TutorialPanelCharacters
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
@@ -2433,6 +2559,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TutorialPanelBattle
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
@@ -2628,6 +2759,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TutorialPanelJukebox
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 8260917805380307090, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2764,6 +2900,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TutorialPanelSoulHome
       objectReference: {fileID: 0}
+    - target: {fileID: 5779024529702947846, guid: 09d5130a97124924e906394830620820,
+        type: 3}
+      propertyPath: _skipTutorialHandler
+      value: 
+      objectReference: {fileID: 1286345565963000683}
     - target: {fileID: 6849510987660642057, guid: 09d5130a97124924e906394830620820,
         type: 3}
       propertyPath: _englishText
