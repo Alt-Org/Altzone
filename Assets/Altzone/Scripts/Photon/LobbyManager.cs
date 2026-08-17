@@ -4719,7 +4719,7 @@ namespace Altzone.Scripts.Lobby
 
                     // Fast-path: expected followers arrived, so fill any remaining slots with bots immediately
                     // instead of waiting the full matchmaking timeout.
-                    if (!botBackfillApplied && currentGameType == GameType.Random2v2)
+                    if (!botBackfillApplied /*&& currentGameType == GameType.Random2v2*/)
                     {
                         ClearStaleHumanPositionReservations("WaitForMatchmakingPlayers");
 
@@ -4815,7 +4815,7 @@ namespace Altzone.Scripts.Lobby
                     }
                     catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: failed to evaluate queue-formed match timeout: {ex.Message}"); }
 
-                    if (!botBackfillApplied && currentGameType == GameType.Random2v2 && Time.time - waitStartTime >= effectiveBotfillTimeoutSeconds)
+                    if (!botBackfillApplied /*&& currentGameType == GameType.Random2v2*/ && Time.time - waitStartTime >= effectiveBotfillTimeoutSeconds)
                     {
                         int timeoutHumanCount = 0;
                         int timeoutMaxPlayers = 0;
