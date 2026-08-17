@@ -890,10 +890,11 @@ public class ServerManager : MonoBehaviour
 
         yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "player/emotioncheck", AccessToken, request =>
         {
+            JObject result = JObject.Parse(request.downloadHandler.text);
             if (request.result == UnityWebRequest.Result.Success)
             {
                 if (callback != null)
-                    callback(true);
+                    callback(bool.Parse(result["emotioncheck"]["submitted_today"].ToString()));
             }
             else
             {

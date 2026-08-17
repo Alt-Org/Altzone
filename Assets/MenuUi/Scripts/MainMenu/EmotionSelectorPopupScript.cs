@@ -62,9 +62,10 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
 
             StartCoroutine(ServerManager.Instance.CheckEmotionInServer(success =>
             {
-                if (!success || _bSwitch)
+                if (!success)
                 {
                     _popupPrefab.SetActive(true);
+                    _bSwitch = false;
                 }
                 else
                 {
