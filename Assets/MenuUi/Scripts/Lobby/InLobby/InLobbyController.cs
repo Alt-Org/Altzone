@@ -16,11 +16,11 @@ namespace MenuUi.Scripts.Signals
 {
     public static partial class SignalBus
     {
-        public delegate void BattlePopupRequestedHandler(GameType gameType);
+        public delegate void BattlePopupRequestedHandler(GameType lobbygameType, GameType actualGameType);
         public static event BattlePopupRequestedHandler OnBattlePopupRequested;
-        public static void OnBattlePopupRequestedSignal(GameType gameType)
+        public static void OnBattlePopupRequestedSignal(GameType lobbygameType, GameType actualGameType = GameType.None)
         {
-            OnBattlePopupRequested?.Invoke(gameType);
+            OnBattlePopupRequested?.Invoke(lobbygameType, actualGameType);
         }
 
         public delegate void CloseBattlePopupRequestedHandler();
@@ -59,7 +59,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private Coroutine _creatingRoomCoroutineHolder = null;
 
         public static GameType SelectedGameType { get; private set; }
-        public static GameType SelectedPremadeTargetGameType { get; private set; } = GameType.Random2v2;
+        public static GameType SelectedPremadeTargetGameType { get; private set; } = GameType.Clan2v2;
 
         public static void SetPremadeTargetGameType(GameType gameType)
         {
@@ -188,7 +188,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         }*/
 
 
-        private void OpenWindow(GameType gameType)
+        private void OpenWindow(GameType gameType, GameType actualGameType = GameType.None)
         {
             _popupContents.SetActive(true);
             // Ensure top info shows current values when popup opens
@@ -268,6 +268,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         {
                             var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
                             currentFriendRoomMatches = gt == (int)gameType;
+                            SelectedPremadeTargetGameType = actualGameType;
                         }
                     }
                     catch { }
@@ -295,11 +296,13 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
 
             SelectedGameType = gameType;
+            if(SelectedGameType == GameType.Random2v2) SelectedGameType = GameType.Clan2v2; //This line is for testing purposes, remove when you no longer want to force Clan2v2.
+            SelectedPremadeTargetGameType = actualGameType;
 
             // Starting creating room of a selected game type if the coroutine is not already running
             if (_creatingRoomCoroutineHolder != null) return;
             _roomSwitcher.ClosePanels();
-            _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRoom(gameType, () =>
+            _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRoom(SelectedGameType, () =>
             {
                 _creatingRoomCoroutineHolder = null;
             }));

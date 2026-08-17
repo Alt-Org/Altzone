@@ -1,19 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using Altzone.Scripts;
+using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
-using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby.InLobby;
+using MQTTnet.Diagnostics;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
-using SignalBus = MenuUi.Scripts.Signals.SignalBus;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
-using System.Collections.Generic;
-using Altzone.Scripts.Language;
-using System;
 using Random = UnityEngine.Random;
+using SignalBus = MenuUi.Scripts.Signals.SignalBus;
 
 namespace MenuUi.Scripts.Lobby.InRoom
 {
@@ -303,11 +306,23 @@ namespace MenuUi.Scripts.Lobby.InRoom
             if (onlinePlayers == null || onlinePlayers.Count == 0) return candidates;
 
             string localUserId = GetLocalUserId();
+            List<ClanMember> members = null;
+            if (InLobbyController.SelectedPremadeTargetGameType == GameType.Clan2v2)
+            {
+                ClanData clan = null;
+                Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, data => clan = data);
+                members = clan.Members;
+            }
+
             foreach (ServerOnlinePlayer onlinePlayer in onlinePlayers)
             {
                 if (onlinePlayer == null || string.IsNullOrEmpty(onlinePlayer._id)) continue;
                 if (onlinePlayer._id == localUserId) continue;
                 if (IsPlayerAlreadyInCurrentRoom(onlinePlayer._id)) continue;
+                if (InLobbyController.SelectedPremadeTargetGameType == GameType.Clan2v2)
+                {
+                    if(members.Find((m) => m.Id == onlinePlayer._id) == null) continue;
+                }
                 candidates.Add(onlinePlayer);
             }
 

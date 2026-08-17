@@ -2,14 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts;
+using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
-using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Window;
 using MenuUi.Scripts.AvatarEditor;
-using MenuUi.Scripts.Window;
+using MenuUi.Scripts.Lobby.InLobby;
 using MenuUi.Scripts.Signals;
+using MenuUi.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -415,7 +416,13 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
             // Open the battle popup for Friend Lobby so the in-room waiting panel appears
             try
             {
-                SignalBus.OnBattlePopupRequestedSignal(GameType.FriendLobby);
+                ClanData clan = null;
+                Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, data => clan = data);
+                List<ClanMember>members = clan.Members;
+                if (members.Find((m) => m.Id == Player._id) == null) 
+                    SignalBus.OnBattlePopupRequestedSignal(GameType.FriendLobby, GameType.Random2v2);
+                else
+                    SignalBus.OnBattlePopupRequestedSignal(GameType.FriendLobby, GameType.Clan2v2);
             }
             catch (Exception ex)
             {

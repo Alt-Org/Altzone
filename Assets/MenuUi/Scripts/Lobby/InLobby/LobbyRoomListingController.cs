@@ -152,7 +152,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     switch (gameType)
                     {
                         case GameType.FriendLobby:
-                            PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom();
+                            PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(InLobbyController.SelectedPremadeTargetGameType);
                             break;
                         case GameType.Clan2v2:
                             CreateClan2v2Room();
