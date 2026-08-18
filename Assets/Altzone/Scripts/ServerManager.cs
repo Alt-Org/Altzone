@@ -158,7 +158,7 @@ public class ServerManager : MonoBehaviour
     {
         OnClanChanged?.Invoke(Clan);
         _firstJoin = false;
-        if (MQTTManager.IsConnected) MQTTManager.Instance.SubscribeToClanNotifications();
+        if (MQTTManager.IsConnected && !MQTTManager.IsSubscribed) MQTTManager.Instance.SubscribeToClanNotifications();
     }
 
     /// <summary>
@@ -357,7 +357,7 @@ public class ServerManager : MonoBehaviour
 
         OnClanChanged?.Invoke(null);
 
-        if (MQTTManager.IsConnected) MQTTManager.Instance.UnsubscribeFromClanNotifications();
+        if (MQTTManager.IsConnected && MQTTManager.IsSubscribed) MQTTManager.Instance.UnsubscribeFromClanNotifications();
     }
 
     /// <summary>
@@ -1187,7 +1187,7 @@ public class ServerManager : MonoBehaviour
                     playerData.ClanId = string.Empty;
                     storefront.SavePlayerData(playerData, null);
                     OnClanChanged?.Invoke(null);
-                    if (MQTTManager.IsConnected) MQTTManager.Instance.UnsubscribeFromClanNotifications();
+                    if (MQTTManager.IsConnected && MQTTManager.IsSubscribed) MQTTManager.Instance.UnsubscribeFromClanNotifications();
                 }
                 else
                 {

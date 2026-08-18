@@ -16,11 +16,21 @@ namespace Altzone.Scripts.MQTT
 
         private IMqttClient _client = null;
 
+        private bool _subscriptionsDone = false;
+
         public static bool IsConnected
         {
             get
             {
                 return Instance.Client == null || !Instance.Client.IsConnected;
+            }
+        }
+
+        public static bool IsSubscribed
+        {
+            get
+            {
+                return IsConnected && Instance._subscriptionsDone;
             }
         }
 
@@ -147,17 +157,36 @@ namespace Altzone.Scripts.MQTT
             {
                 //if (_client != null && _client.IsConnected)
                 //OnMQTTConnectionEstablished?.Invoke(true);
-
-                if (ServerManager.Instance.Clan != null) SubscribeToClanNotifications();
+                while (true)
+                {
+                    if (ServerManager.Instance.Clan != null)
+                    {
+                        Debug.Log($"Clan Found: Starting subscription.");
+                        SubscribeToClanNotifications();
+                        break;
+                    }
+                    Debug.LogWarning($"Clan not found: Trying again.");
+                    await Task.Delay(1000);
+                }
             }
         }
 
         public async void SubscribeToClanNotifications()
         {
-            await SubscribeToVoting();
-            await SubscribeToDailyTask();
-            await SubscribeToJukebox();
-            await SubscribeToMatchmaking();
+            Task voting = SubscribeToVoting();
+            Task dailyTask = SubscribeToDailyTask();
+            Task jukeBox = SubscribeToJukebox();
+            Task matchmaking = SubscribeToMatchmaking();
+
+            List<Task> tasks = new List<Task> { voting, dailyTask, jukeBox, matchmaking };
+
+            while (tasks.Count > 0)
+            {
+                Task finishedTask = await Task.WhenAny(tasks);
+                await finishedTask;
+                tasks.Remove(finishedTask);
+            }
+            _subscriptionsDone = true;
             OnMQTTConnectionEstablished?.Invoke(true);
         }
 
@@ -167,6 +196,7 @@ namespace Altzone.Scripts.MQTT
             await UnsubscribeFromDailyTask();
             await UnsubscribeFromJukebox();
             await UnsubscribeFromMatchmaking();
+            _subscriptionsDone = false;
 
         }
 
@@ -178,8 +208,13 @@ namespace Altzone.Scripts.MQTT
 
             try
             {
+                Task task= _client.SubscribeAsync(_votingTopic);
                 Debug.Log($"Subscribing to {_votingTopic}");
-                await _client.SubscribeAsync(_votingTopic);
+                while (!task.IsCompleted)
+                {
+                    Task ongoingTask = await Task.WhenAny(task);
+                    await ongoingTask;
+                }
                 Debug.Log($"Subscribtion to {_votingTopic} successful");
             }
             catch (Exception ex)
@@ -219,13 +254,27 @@ namespace Altzone.Scripts.MQTT
 
             try
             {
+                Task task = _client.SubscribeAsync(_dailyTaskPlayerTopic);
                 Debug.Log($"Subscribing to {_dailyTaskPlayerTopic}");
-                await _client.SubscribeAsync(_dailyTaskPlayerTopic);
-                Debug.Log($"Subscribtion to {_dailyTaskPlayerTopic} successful");
-
+                Task task2 = _client.SubscribeAsync(_dailyTaskClanTopic);
                 Debug.Log($"Subscribing to {_dailyTaskClanTopic}");
-                await _client.SubscribeAsync(_dailyTaskClanTopic);
-                Debug.Log($"Subscribtion to {_dailyTaskClanTopic} successful");
+
+                List<Task> tasks = new List<Task> { task, task2 };
+
+                while (tasks.Count > 0)
+                {
+                    Task finishedTask = await Task.WhenAny(tasks);
+                    if(finishedTask == task)
+                    {
+                        Debug.Log($"Subscribtion to {_dailyTaskPlayerTopic} successful");
+                    }
+                    else if (finishedTask == task2)
+                    {
+                        Debug.Log($"Subscribtion to {_dailyTaskPlayerTopic} successful");
+                    }
+                    await finishedTask;
+                    tasks.Remove(finishedTask);
+                }
             }
             catch (Exception ex)
             {
@@ -271,8 +320,13 @@ namespace Altzone.Scripts.MQTT
 
             try
             {
+                Task task = _client.SubscribeAsync(_matchmakingInviteTopic);
                 Debug.Log($"Subscribing to {_matchmakingInviteTopic}");
-                await _client.SubscribeAsync(_matchmakingInviteTopic);
+                while (!task.IsCompleted)
+                {
+                    Task ongoingTask = await Task.WhenAny(task);
+                    await ongoingTask;
+                }
                 Debug.Log($"Subscribtion to {_matchmakingInviteTopic} successful");
 
                 //Debug.Log($"Subscribing to {topic2}");
@@ -315,7 +369,13 @@ namespace Altzone.Scripts.MQTT
 
             try
             {
+                Task task = _client.SubscribeAsync(_jukeboxTopic);
                 Debug.Log($"Subscribing to {_jukeboxTopic}");
+                while (!task.IsCompleted)
+                {
+                    Task ongoingTask = await Task.WhenAny(task);
+                    await ongoingTask;
+                }
                 await _client.SubscribeAsync(_jukeboxTopic);
                 Debug.Log($"Subscribtion to {_jukeboxTopic} successful");
             }
