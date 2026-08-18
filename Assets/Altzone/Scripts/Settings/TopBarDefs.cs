@@ -15,8 +15,7 @@ namespace Altzone.Scripts.Settings
             PlayerProfile,
             Voting,
             Settings,
-            ClanTile2nd,
-            UserName
+            ClanTile2nd
         }
 
         public static string Key(TopBarItem item) => $"{KeyPrefix}{item}";

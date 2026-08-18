@@ -9,6 +9,7 @@ public class TopBarClanTileLayout : MonoBehaviour
 {
     [SerializeField] private TopBarDefs.TopBarItem _togglesClanTile;
     [SerializeField] private List<Transform> _clantileChildren;
+    [SerializeField] private List<TopBarToggleDrag> _toggleDrag;
     [SerializeField] private Toggle _toggle;
     [SerializeField] private RectTransform _topBarLayout;
     [SerializeField] private RectTransform _clanTileParent;
@@ -17,6 +18,7 @@ public class TopBarClanTileLayout : MonoBehaviour
     [SerializeField] private GameObject _clanTileLayout;
 
     [SerializeField] private List<TopBarToggleHandler> _objectToggles;
+
 
     // Start is called before the first frame update
     void Start()
@@ -34,17 +36,20 @@ public class TopBarClanTileLayout : MonoBehaviour
         //If off: detaches the toggles from clantile toggle group
         if (isOn)
         {
+            foreach(var e in _toggleDrag)
+            {
+                e.enabled = false;
+            }
             foreach(RectTransform t in  _clantileChildren)
             {
                 t.SetParent(_clanTileLayout.transform);
             }
 
-
             if(!_viewMore.isOn)
             {
             _clanTileLayout.SetActive(true);
 
-            layoutResize(60 * _clanTileLayout.transform.childCount);
+            layoutResize(80 * _clanTileLayout.transform.childCount);
             }
             _viewMore.interactable = true;
         } else
@@ -53,6 +58,10 @@ public class TopBarClanTileLayout : MonoBehaviour
             //The idea is here is so that anytime the children would detach they would go under the clantile toggle is, instead of going to the bottom of the selection
             int parentposition = _clanTileParent.GetSiblingIndex();
             int i = 1;
+            foreach (var e in _toggleDrag)
+            {
+                e.enabled = true;
+            }
             foreach (RectTransform t in _clantileChildren)
             {
                 t.SetParent(_topBarLayout);
@@ -83,7 +92,7 @@ public class TopBarClanTileLayout : MonoBehaviour
          else
         {
             _clanTileLayout.SetActive(true);
-            layoutResize(65 * _clanTileLayout.transform.childCount);
+            layoutResize(80 * _clanTileLayout.transform.childCount);
             _inputArrow.rotation = Quaternion.Euler(0, 0, -270);
         }
     }
@@ -120,8 +129,14 @@ public class TopBarClanTileLayout : MonoBehaviour
         {
             _clantileChildren[i].transform.SetParent(_topBarLayout.transform);
         }
+        foreach(var i in _toggleDrag)
+        {
+            i.enabled = true;
+        }
+
 
         _clantileChildren.Clear();
+        _toggleDrag.Clear();
         layoutResize(56.91293f);
 
         foreach (var i in TopBarOrderBridge.TileObjects)
@@ -130,12 +145,20 @@ public class TopBarClanTileLayout : MonoBehaviour
                 if(o.item == i.Tag)
                 {
                     _clantileChildren.Add(o.gameObject.transform);
+                    _toggleDrag.Add(o.TogglesDrag);
                 }
         }
 
         //This is only here because the arangement otherwise be ruined
         if(_toggle.isOn)
             ChangeParent(_toggle.isOn);
+        else
+        {
+            foreach (RectTransform t in _clantileChildren)
+            {
+                t.SetParent(_topBarLayout);
+            }
+        }
     }
 
     //Used to resize the Clantile size toggle

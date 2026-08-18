@@ -2434,6 +2434,7 @@ MonoBehaviour:
   - {fileID: 6818781044047175173, guid: bd46108b0f4ff254a802ed992a377f5d, type: 3}
   _clanSubItemSpacers: []
   _clanSubItemRows: []
+  _topBarToggleLayouts: []
 --- !u!114 &4488955048039476271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3942,6 +3943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2685c892342d3af4f86788d51652127f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _togglesClanTile: 0
   _clantileChildren: []
   _toggle: {fileID: 2721894571988628335}
   _topBarLayout: {fileID: 5977537012365875117}
@@ -3949,6 +3951,7 @@ MonoBehaviour:
   _inputArrow: {fileID: 0}
   _viewMore: {fileID: 0}
   _clanTileLayout: {fileID: 0}
+  _objectToggles: []
 --- !u!114 &1706643735515156069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6103,6 +6106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2685c892342d3af4f86788d51652127f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _togglesClanTile: 0
   _clantileChildren: []
   _toggle: {fileID: 2610165951287862342}
   _topBarLayout: {fileID: 5977537012365875117}
@@ -6110,6 +6114,7 @@ MonoBehaviour:
   _inputArrow: {fileID: 6272481320531640117}
   _viewMore: {fileID: 1239755475642515276}
   _clanTileLayout: {fileID: 0}
+  _objectToggles: []
 --- !u!114 &3674222842324361847
 MonoBehaviour:
   m_ObjectHideFlags: 0

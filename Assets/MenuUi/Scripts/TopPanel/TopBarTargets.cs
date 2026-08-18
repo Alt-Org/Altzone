@@ -98,6 +98,7 @@ namespace MenuUI.Scripts.TopPanel
 
             bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.ClanTile);
             TopBarDefs.TopBarItem topBarItem = (TopBarDefs.TopBarItem.ClanTile);
+
             bool clanPanel2ndOn = IsVisible(TopBarDefs.TopBarItem.ClanTile2nd);
             TopBarDefs.TopBarItem topBarItem2nd = (TopBarDefs.TopBarItem.ClanTile2nd);
 
@@ -383,11 +384,11 @@ namespace MenuUI.Scripts.TopPanel
 
                 TopBarDefs.TopBarItem item = _rows[idx].item;
 
-                bool isClanSubItem =
-                    item == TopBarDefs.TopBarItem.Leaderboard ||
-                    item == TopBarDefs.TopBarItem.ClanLogo ||
-                    item == TopBarDefs.TopBarItem.ClanTextContainer ||
-                    item == TopBarDefs.TopBarItem.Coins;
+                //bool isClanSubItem =
+                //    item == TopBarDefs.TopBarItem.Leaderboard ||
+                //    item == TopBarDefs.TopBarItem.ClanLogo ||
+                //    item == TopBarDefs.TopBarItem.ClanTextContainer ||
+                //    item == TopBarDefs.TopBarItem.Coins;
 
                 // if (clanPanelOn && isClanSubItem)
                 //     continue;

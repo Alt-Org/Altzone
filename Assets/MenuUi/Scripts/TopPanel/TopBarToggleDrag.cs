@@ -58,8 +58,8 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnBeginDrag()");
 
-        if (!DragAllowed())
-            return;
+        //if (!DragAllowed())
+            //return;
 
         if (_rootCanvas == null) return;
 
@@ -110,8 +110,8 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnDrag()");
 
-        if (!DragAllowed())
-            return;
+        //if (!DragAllowed())
+            //return;
 
         FollowPointer(e);
         UpdatePlaceholderIndex(e);
@@ -121,8 +121,8 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarToggleDrag : OnEndDrag()");
 
-        if (!DragAllowed())
-            return;
+        //if (!DragAllowed())
+            //return;
 
         _row.SetParent(_originalParent, false);
 
@@ -196,8 +196,8 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
             if (row.GetComponentInChildren<TopBarToggleHandler>(true) == null)
                 continue;
 
-            if (ClanTileIsOn() && IsClanSubItem(row))
-                continue;
+            //if (ClanTileIsOn() && IsClanSubItem(row))
+               // continue;
 
             rows.Add(row);
         }
@@ -300,7 +300,7 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
             int sibling = child.GetSiblingIndex();
 
-            if (handler.item == TopBarDefs.TopBarItem.ClanTile)
+            /*if (handler.item == TopBarDefs.TopBarItem.ClanTile)
                 clanTileIndex = sibling;
 
             if (handler.item == TopBarDefs.TopBarItem.Leaderboard ||
@@ -310,7 +310,7 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
             {
                 if (sibling > lastClanSubIndex)
                     lastClanSubIndex = sibling;
-            }
+            }*/
         }
 
         if (clanTileIndex < 0 || lastClanSubIndex < 0)

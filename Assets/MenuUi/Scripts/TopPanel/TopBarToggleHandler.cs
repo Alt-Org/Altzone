@@ -8,6 +8,7 @@ public class TopBarToggleHandler : MonoBehaviour
 {
     public TopBarDefs.TopBarItem item;
     [SerializeField] private Toggle _toggle;
+    public TopBarToggleDrag TogglesDrag;
 
     private const bool DebugOn = true;
 
