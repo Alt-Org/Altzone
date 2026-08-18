@@ -42,25 +42,27 @@ public class CutOutHandler : MonoBehaviour
 
             float cutoutRightEdge = screenWidth / 2 + _rect.transform.localPosition.x + _rect.GetComponent<RectTransform>().sizeDelta.x * (1 - _rect.GetComponent<RectTransform>().pivot.x);
 
+            bool flipped = false;
+
             if ((screenWidth - cutoutRightEdge) < widththreshold)
             {
                 float cutoutLeftEdge = screenWidth / 2 + _rect.transform.localPosition.x - _rect.GetComponent<RectTransform>().sizeDelta.x * _rect.GetComponent<RectTransform>().pivot.x;
 
                 if ((cutoutLeftEdge) > widththreshold)
                 {
-                    FlipInfo();
+                    flipped = FlipInfo();
                     if (cutoutLeftEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(300 - cutoutLeftEdge, 0);
                 }
                 else
                 {
-                    if (screenWidth - cutoutRightEdge < cutoutLeftEdge)
+                    if ((screenWidth - cutoutRightEdge) < cutoutLeftEdge)
                     {
-                        FlipInfo();
+                        flipped = FlipInfo();
                         if (cutoutLeftEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(300 - cutoutLeftEdge, 0);
                     }
                     else
                     {
-                        if (screenWidth - cutoutRightEdge < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
+                        if ((screenWidth - cutoutRightEdge) < 300) _arrow.GetComponent<RectTransform>().anchoredPosition = new(-300 + (screenWidth - cutoutRightEdge), 0);
                     }
                 }
 
@@ -89,10 +91,22 @@ public class CutOutHandler : MonoBehaviour
             _textBackground.sizeDelta = _textBox.sizeDelta;
 
             _canvasGroup.alpha = 1;
+
+            if (flipped)
+            {
+                float cutoutLeftEdge = screenWidth / 2 + _rect.transform.localPosition.x - _rect.GetComponent<RectTransform>().sizeDelta.x * _rect.GetComponent<RectTransform>().pivot.x;
+                if(cutoutLeftEdge + _arrow.GetComponent<RectTransform>().anchoredPosition.x < _textBackground.sizeDelta.x+50)
+                    _arrow.GetComponent<RectTransform>().anchoredPosition = new(_textBackground.sizeDelta.x - cutoutLeftEdge + 50, 0);
+            }
+            else
+            {
+                if (((screenWidth - cutoutRightEdge) + Mathf.Abs(_arrow.GetComponent<RectTransform>().anchoredPosition.x)) < _textBackground.sizeDelta.x + 50)
+                    _arrow.GetComponent<RectTransform>().anchoredPosition = new(-_textBackground.sizeDelta.x + (screenWidth - cutoutRightEdge)-50, 0);
+            }
         }
     }
 
-    private void FlipInfo(bool flip = true)
+    private bool FlipInfo(bool flip = true)
     {
         if (flip)
         {
@@ -110,5 +124,6 @@ public class CutOutHandler : MonoBehaviour
             _arrow.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 0);
             _infoText.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 0);
         }
+        return flip;
     }
 }
