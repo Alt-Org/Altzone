@@ -46,6 +46,8 @@ namespace Altzone.Scripts.Chat
             _chatChannelType = ChatChannelType.None;
             _lastMsgIndex = 0;
             _firstMsgIndex = 1;
+
+            _chatMessages = new List<ChatMessage>();
         }
 
         internal ChatChannel(string channelName, ChatChannelType channelType)
@@ -55,6 +57,8 @@ namespace Altzone.Scripts.Chat
             _chatChannelType = channelType;
             _lastMsgIndex = 0;
             _firstMsgIndex = 0;
+
+            _chatMessages = new List<ChatMessage>();
         }
         internal ChatChannel(string id, string channelName, ChatChannelType channelType)
         {
