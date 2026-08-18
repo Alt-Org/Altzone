@@ -23,9 +23,13 @@ namespace MenuUi.Scripts.TabLine
         private SwipeUI _swipe;
 
         public delegate void TabChanged(int newTab);
+
         public static event TabChanged OnTabChanged;
 
-        public SwipeUI Swipe { get => _swipe;}
+        public SwipeUI Swipe
+        {
+            get => _swipe;
+        }
 
         private void OnEnable()
         {
@@ -52,7 +56,7 @@ namespace MenuUi.Scripts.TabLine
             }
             else
             {
-                //UpdateTabVisuals(0);
+                UpdateTabVisuals(0);
             }
         }
 
@@ -75,6 +79,7 @@ namespace MenuUi.Scripts.TabLine
 
         public void ActivateTabButton(int index)
         {
+            UpdateTabVisuals(index);
             OnTabChanged?.Invoke(index);
         }
 
@@ -100,7 +105,8 @@ namespace MenuUi.Scripts.TabLine
                 }
                 else if (_tabLineImage.sprite == null) _tabLineImage.enabled = false;
             }
-            if(_tabLineStripe != null)
+
+            if (_tabLineStripe != null)
             {
                 if (stripeColour != Color.white)
                     _tabLineStripe.color = stripeColour;
@@ -135,6 +141,7 @@ namespace MenuUi.Scripts.TabLine
             {
                 tabline.TabObjectHandler.transform.SetAsLastSibling();
             }
+
             _tabLineButtons[index].TabObjectHandler.transform.SetAsLastSibling();
         }
 
@@ -142,16 +149,24 @@ namespace MenuUi.Scripts.TabLine
         [Serializable]
         private class TabLineButton
         {
-            [Header("References to components")]
-            [SerializeField] private TabObjectHandler _tabObjectHandler;
+            [Header("References to components")] [SerializeField]
+            private TabObjectHandler _tabObjectHandler;
+
             [SerializeField] private Sprite _tablineImage;
             [SerializeField] private Color _stripeColour;
 
-            public TabObjectHandler TabObjectHandler { get => _tabObjectHandler;}
+            public TabObjectHandler TabObjectHandler
+            {
+                get => _tabObjectHandler;
+            }
 
-            public (Sprite, Color) SetActiveVisuals() => _tabObjectHandler.SetActiveVisuals(_tablineImage, _stripeColour);
+            public (Sprite, Color) SetActiveVisuals() =>
+                _tabObjectHandler.SetActiveVisuals(_tablineImage, _stripeColour);
+
             public void SetInactiveVisuals() => _tabObjectHandler.SetInactiveVisuals();
-            public void SetColour(Color activeColour, Color inactiveColour) => _tabObjectHandler.SetColour(activeColour, inactiveColour);
+
+            public void SetColour(Color activeColour, Color inactiveColour) =>
+                _tabObjectHandler.SetColour(activeColour, inactiveColour);
         }
 
 
