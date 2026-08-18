@@ -270,7 +270,7 @@ namespace Altzone.Scripts.MQTT
                     }
                     else if (finishedTask == task2)
                     {
-                        Debug.Log($"Subscribtion to {_dailyTaskPlayerTopic} successful");
+                        Debug.Log($"Subscribtion to {_dailyTaskClanTopic} successful");
                     }
                     await finishedTask;
                     tasks.Remove(finishedTask);
@@ -376,7 +376,6 @@ namespace Altzone.Scripts.MQTT
                     Task ongoingTask = await Task.WhenAny(task);
                     await ongoingTask;
                 }
-                await _client.SubscribeAsync(_jukeboxTopic);
                 Debug.Log($"Subscribtion to {_jukeboxTopic} successful");
             }
             catch (Exception ex)
