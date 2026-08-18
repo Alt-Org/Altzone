@@ -19,13 +19,29 @@ public class TopBarClanTileLayout : MonoBehaviour
 
     [SerializeField] private List<TopBarToggleHandler> _objectToggles;
 
+    [SerializeField] private string SavedViewMore;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        _viewMore.isOn = PlayerPrefs.GetInt(SavedViewMore, 0) == 1;
+
+        _viewMore.interactable = _toggle.isOn;
+
+        if(_viewMore.isOn)
+        {
+            _inputArrow.rotation = Quaternion.Euler(0, 0, -90);
+        } else
+        {
+            _inputArrow.rotation = Quaternion.Euler(0, 0, -270);
+        }
+
         _viewMore.onValueChanged.AddListener(ViewSystem);
 
+
         _toggle.onValueChanged.AddListener(ChangeParent);
+        
 
 
     }
@@ -45,13 +61,12 @@ public class TopBarClanTileLayout : MonoBehaviour
                 t.SetParent(_clanTileLayout.transform);
             }
 
-            if(!_viewMore.isOn)
-            {
-            _clanTileLayout.SetActive(true);
 
-            layoutResize(80 * _clanTileLayout.transform.childCount);
-            }
+            _clanTileLayout.SetActive(_viewMore.isOn);
+            ViewSystem(_viewMore.isOn);
             _viewMore.interactable = true;
+
+
         } else
         {
 
@@ -69,7 +84,9 @@ public class TopBarClanTileLayout : MonoBehaviour
                 i++;
                 
             }
+
             _clanTileLayout.SetActive(false);
+            ViewSystem(_viewMore.isOn);
             layoutResize(56.91293f);
             _viewMore.interactable = false;
 
@@ -79,18 +96,18 @@ public class TopBarClanTileLayout : MonoBehaviour
 
     private void ViewSystem(bool isOn)
     {
-        if (!_toggle.isOn)
-            return;
-
-
-        if(isOn)
+        if (isOn)
         {
+            PlayerPrefs.SetInt(SavedViewMore, 1);
+            PlayerPrefs.Save();
             _clanTileLayout.SetActive(false);
             layoutResize(56.91293f);
             _inputArrow.rotation = Quaternion.Euler(0, 0, -90);
         }
          else
         {
+            PlayerPrefs.SetInt(SavedViewMore, 0);
+            PlayerPrefs.Save();
             _clanTileLayout.SetActive(true);
             layoutResize(80 * _clanTileLayout.transform.childCount);
             _inputArrow.rotation = Quaternion.Euler(0, 0, -270);

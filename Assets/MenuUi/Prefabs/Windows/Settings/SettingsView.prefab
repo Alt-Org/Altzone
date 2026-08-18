@@ -7185,6 +7185,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _togglesClanTile: 9
   _clantileChildren: []
+  _toggleDrag: []
   _toggle: {fileID: 4788212692434982301}
   _topBarLayout: {fileID: 3966789084178405332}
   _clanTileParent: {fileID: 2134643862424252570}
@@ -7198,6 +7199,7 @@ MonoBehaviour:
   - {fileID: 5194516097087965623}
   - {fileID: 5340971281972929925}
   - {fileID: 7478273010991364582}
+  SavedViewMore: ClanTileToggle2nd
 --- !u!1 &2191290124497381261
 GameObject:
   m_ObjectHideFlags: 0
@@ -35766,12 +35768,12 @@ PrefabInstance:
     - target: {fileID: 7648726682186411092, guid: f89f72ef7946c0e4d88849b561f1d0f3,
         type: 3}
       propertyPath: m_Size
-      value: 0.8142145
+      value: 0.71388704
       objectReference: {fileID: 0}
     - target: {fileID: 7648726682186411092, guid: f89f72ef7946c0e4d88849b561f1d0f3,
         type: 3}
       propertyPath: m_Value
-      value: 1
+      value: 1.0000002
       objectReference: {fileID: 0}
     - target: {fileID: 7700298346327601456, guid: f89f72ef7946c0e4d88849b561f1d0f3,
         type: 3}
@@ -36085,6 +36087,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _togglesClanTile: 0
   _clantileChildren: []
+  _toggleDrag: []
   _toggle: {fileID: 4738221681013531711}
   _topBarLayout: {fileID: 3966789084178405332}
   _clanTileParent: {fileID: 7789207957229298199}
@@ -36098,6 +36101,7 @@ MonoBehaviour:
   - {fileID: 5194516097087965623}
   - {fileID: 5340971281972929925}
   - {fileID: 7478273010991364582}
+  SavedViewMore: ClanTileToggle
 --- !u!114 &2324025375325251418 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3606262548970673102, guid: f89f72ef7946c0e4d88849b561f1d0f3,
@@ -36690,7 +36694,7 @@ PrefabInstance:
     - target: {fileID: 2641932565321544379, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.9643939
+      value: 0.9542763
       objectReference: {fileID: 0}
     - target: {fileID: 2664899868298564628, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -36847,12 +36851,12 @@ PrefabInstance:
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.87439394
+      value: 0.8582763
       objectReference: {fileID: 0}
     - target: {fileID: 3472046463813142143, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.18
+      value: 0.201
       objectReference: {fileID: 0}
     - target: {fileID: 3482542752552871026, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -37506,7 +37510,7 @@ PrefabInstance:
     - target: {fileID: 6891754130952581934, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_fontSize
-      value: 32
+      value: 29.4
       objectReference: {fileID: 0}
     - target: {fileID: 6924264353861042730, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -37832,7 +37836,7 @@ PrefabInstance:
     - target: {fileID: 7827142668286818857, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.18
+      value: 0.201
       objectReference: {fileID: 0}
     - target: {fileID: 7887861368517116277, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -38073,17 +38077,17 @@ PrefabInstance:
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.9643939
+      value: 0.9542763
       objectReference: {fileID: 0}
     - target: {fileID: 9009743781400064838, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.87439394
+      value: 0.8582763
       objectReference: {fileID: 0}
     - target: {fileID: 9011883256918754321, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_fontSize
-      value: 48
+      value: 42.75
       objectReference: {fileID: 0}
     - target: {fileID: 9055697728720554350, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -39764,7 +39768,7 @@ PrefabInstance:
     - target: {fileID: 2522924568871388016, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
       propertyPath: m_Value
-      value: 0.5
+      value: 0.50000006
       objectReference: {fileID: 0}
     - target: {fileID: 2522924569201874204, guid: 36168b4a92b6679449c8fc40f06c0cf9,
         type: 3}
