@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Altzone.Scripts.Language;
 using MenuUi.Scripts.Lobby.InLobby;
 using TMPro;
 using UnityEngine;
@@ -15,7 +16,7 @@ namespace MenuUi.Scripts.Window
         [SerializeField] private Button _rejectButton;
         [FormerlySerializedAs("_closeButton")]
         [SerializeField] private Button _acceptButton;
-        [SerializeField] private TMP_Text _messageText;
+        [SerializeField] private TextLanguageSelectorCaller _messageText;
         [FormerlySerializedAs("_returnButtonText")]
         [SerializeField] private TMP_Text _rejectButtonText;
         [FormerlySerializedAs("_closeButtonText")]
@@ -172,10 +173,12 @@ namespace MenuUi.Scripts.Window
         private void OpenPopup(string message, string acceptText, string declineText, Action<bool> responseCallback)
         {
             EnsureHostIsVisible();
+            Debug.LogWarning(message);
 
             if (_messageText != null)
             {
-                _messageText.text = string.IsNullOrEmpty(message) ? _defaultMessage : message;
+                Debug.LogWarning(message);
+                _messageText.SetText(string.IsNullOrEmpty(message) ? _defaultMessage : message);
             }
 
             if (_acceptButtonText != null)

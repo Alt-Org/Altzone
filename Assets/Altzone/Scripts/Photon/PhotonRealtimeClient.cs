@@ -709,6 +709,7 @@ public static class PhotonRealtimeClient
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeInviteStateKey);
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeInviteTimestampKey);
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeLeaderUserIdKey);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeLeaderUsernameKey);
         }
 
         if (lobbyType == GameType.Custom && customGameMode >= 0)

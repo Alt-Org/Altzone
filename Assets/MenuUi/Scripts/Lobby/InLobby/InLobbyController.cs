@@ -363,9 +363,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             if (inviteInfo == null || string.IsNullOrEmpty(inviteInfo.RoomName)) return;
 
-            string inviterName = ResolveOnlinePlayerName(inviteInfo.LeaderUserId);
+            string inviterName = ResolveOnlinePlayerName(inviteInfo.LeaderUserName);
             string targetMode = inviteInfo.TargetGameType == GameType.Clan2v2 ? "Clan 2v2" : "Random 2v2";
-            string message = $"{inviterName} kutsui sinut Friend Lobby -huoneeseen. Haettava pelimuoto: {targetMode}. Liitytaanko huoneeseen?";
+            string message = $"{inviterName} kutsui sinut Friend Lobby -huoneeseen.\n\nHaettava pelimuoto: {targetMode}.\n\nLiitytaanko huoneeseen?";
 
             bool popupShown = InviteDecisionPopupHandler.RequestInviteDecisionPrompt(
                 message,

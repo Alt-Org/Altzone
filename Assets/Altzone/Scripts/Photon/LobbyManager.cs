@@ -3833,6 +3833,7 @@ namespace Altzone.Scripts.Lobby
             try
             {
                 string localUserId = PhotonRealtimeClient.LocalPlayer.UserId;
+                string localUsername = PhotonRealtimeClient.LocalPlayer.NickName;
 
                 // Closing the room so that no others can join
                 PhotonRealtimeClient.CurrentRoom.IsOpen = false;
@@ -3981,9 +3982,9 @@ namespace Altzone.Scripts.Lobby
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)gameType);
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
-                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, GetPlayerName(localUserId));
+                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, localUsername);
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
-                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, GetPlayerName(localUserId));
+                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, localUsername);
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, _premadeTeammateUserId);
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, _premadeTeammateUserName);
                                 }
@@ -4147,9 +4148,9 @@ namespace Altzone.Scripts.Lobby
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)gameType);
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
-                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, PhotonRealtimeClient.LocalLobbyPlayer?.NickName);
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, localUsername);
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
-                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, PhotonRealtimeClient.LocalLobbyPlayer?.NickName);
+                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, localUsername);
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, _premadeTeammateUserId);
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, _premadeTeammateUserName);
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
@@ -7976,7 +7977,7 @@ namespace Altzone.Scripts.Lobby
                 Debug.Log($"Detected pending FriendLobby invite to room '{room.Name}', requesting decision from UI.");
                 try
                 {
-                    inviteReceivedHandler.Invoke(new InRoomInviteInfo(room.Name, leaderUserId, invitedUserId, targetGameType));
+                    inviteReceivedHandler.Invoke(new InRoomInviteInfo(room.Name, leaderUserId, leaderUserName, invitedUserId, targetGameType));
                 }
                 catch (Exception ex)
                 {
@@ -9126,13 +9127,15 @@ namespace Altzone.Scripts.Lobby
         {
             public readonly string RoomName;
             public readonly string LeaderUserId;
+            public readonly string LeaderUserName;
             public readonly string InvitedUserId;
             public readonly GameType TargetGameType;
 
-            public InRoomInviteInfo(string roomName, string leaderUserId, string invitedUserId, GameType targetGameType)
+            public InRoomInviteInfo(string roomName, string leaderUserId, string leaderUsername, string invitedUserId, GameType targetGameType)
             {
                 RoomName = roomName;
                 LeaderUserId = leaderUserId;
+                LeaderUserName = leaderUsername;
                 InvitedUserId = invitedUserId;
                 TargetGameType = targetGameType;
             }
