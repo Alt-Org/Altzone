@@ -27,6 +27,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
     public class InRoomController : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _title;
+        [SerializeField] private TextMeshProUGUI _gameType;
         [SerializeField] private TextLanguageSelectorCaller _conflictText;
         [SerializeField] private List<Conflicts> _conflicts;
         [SerializeField] private Button _startGameButton;
@@ -69,6 +70,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     break;
                 case GameType.FriendLobby:
                     if (_title != null) _title.text = "Friend Lobby";
+                    if (_gameType) _gameType.text = InLobbyController.SelectedPremadeTargetGameType.ToString();
                     if (_noticeText != null) _noticeText.text = "Kutsu yksi online-pelaaja ja valitse haettava 2v2 pelimuoto.";
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Kutsu online-pelaaja";
                     EnsureInviteSelectorPanel();

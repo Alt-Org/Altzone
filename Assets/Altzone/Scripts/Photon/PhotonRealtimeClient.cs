@@ -690,7 +690,6 @@ public static class PhotonRealtimeClient
 
         if (lobbyType == GameType.FriendLobby)
         {
-            Debug.LogWarning("Test");
             customRoomProperties.Add(PhotonBattleRoom.PremadeModeKey, true);
             customRoomProperties.Add(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)gametype);
             customRoomProperties.Add(PhotonBattleRoom.PremadeLeaderUserIdKey, LocalPlayer.UserId);
