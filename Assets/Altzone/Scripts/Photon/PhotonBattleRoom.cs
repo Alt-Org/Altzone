@@ -56,11 +56,14 @@ namespace Altzone.Scripts.Battle.Photon
         public const string PremadeModeKey = "pm";
         public const string PremadeTargetGameTypeKey = "ptg";
         public const string PremadeLeaderUserIdKey = "plid";
+        public const string PremadeLeaderUsernameKey = "pln";
         public const string PremadeInvitedUserIdKey = "piu";
         public const string PremadeInviteStateKey = "pis";
         public const string PremadeInviteTimestampKey = "pits";
         public const string PremadeUserId1Key = "pm1";
+        public const string PremadeUsername1Key = "pmn1";
         public const string PremadeUserId2Key = "pm2";
+        public const string PremadeUsername2Key = "pmn2";
 
         public const int PremadeInviteStateNone = 0;
         public const int PremadeInviteStatePending = 1;

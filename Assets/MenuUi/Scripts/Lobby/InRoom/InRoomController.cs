@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Language;
@@ -26,6 +27,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
     public class InRoomController : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _title;
+        [SerializeField] private TextMeshProUGUI _gameType;
         [SerializeField] private TextLanguageSelectorCaller _conflictText;
         [SerializeField] private List<Conflicts> _conflicts;
         [SerializeField] private Button _startGameButton;
@@ -68,6 +70,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     break;
                 case GameType.FriendLobby:
                     if (_title != null) _title.text = "Friend Lobby";
+                    if (_gameType) _gameType.text = InLobbyController.SelectedPremadeTargetGameType.ToString();
                     if (_noticeText != null) _noticeText.text = "Kutsu yksi online-pelaaja ja valitse haettava 2v2 pelimuoto.";
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Kutsu online-pelaaja";
                     EnsureInviteSelectorPanel();
@@ -190,7 +193,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, GetPlayerName(localUserId));
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, teammateUserId);
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, GetPlayerName(teammateUserId));
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
                     this.Publish(new LobbyManager.StartMatchmakingEvent(targetGameType, true));
                     break;
@@ -365,6 +370,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
             }
 
             string localUserId = GetLocalUserId();
+            string localUsername = PhotonRealtimeClient.LocalLobbyPlayer?.NickName;
+
             if (string.IsNullOrEmpty(localUserId) || invitedUserId == localUserId) return false;
             if (IsPlayerAlreadyInCurrentRoom(invitedUserId))
             {
@@ -380,6 +387,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return false;
             }
 
+            ApplyPendingPremadeInviteSelection(invitedUserId, localUserId, localUsername, InLobbyController.SelectedPremadeTargetGameType);
+
             try
             {
                 PhotonRealtimeClient.LobbyCurrentRoom.ClearExpectedUsers();
@@ -390,27 +399,29 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 Debug.LogWarning($"TrySendInviteToUserId: failed to set expected users: {ex.Message}");
             }
 
-            ApplyPendingPremadeInviteSelection(invitedUserId, localUserId, InLobbyController.SelectedPremadeTargetGameType);
-
             return true;
         }
 
-        private void ApplyPendingPremadeInviteSelection(string invitedUserId, string localUserId, GameType targetGameType)
+        private void ApplyPendingPremadeInviteSelection(string invitedUserId, string localUserId, string localUsername, GameType targetGameType)
         {
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, localUsername);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, invitedUserId);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStatePending);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, localUsername);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
         }
 
-        private void MarkPremadeInviteAccepted(string invitedUserId)
+        private void MarkPremadeInviteAccepted(string invitedUserId, string name)
         {
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, invitedUserId);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, name);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
 
             if (PhotonRealtimeClient.LobbyCurrentRoom.PlayerCount >= PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
@@ -424,6 +435,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateExpired);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
 
             try { PhotonRealtimeClient.LobbyCurrentRoom.ClearExpectedUsers(); }
@@ -460,6 +472,19 @@ namespace MenuUi.Scripts.Lobby.InRoom
             }
 
             return false;
+        }
+
+        private string GetPlayerName(string userId)
+        {
+            if (string.IsNullOrEmpty(userId) || PhotonRealtimeClient.LobbyCurrentRoom == null) return string.Empty;
+
+            foreach (var player in PhotonRealtimeClient.LobbyCurrentRoom.Players.Values)
+            {
+                if (player == null || string.IsNullOrEmpty(player.UserId)) continue;
+                if (player.UserId == userId) return player.NickName;
+            }
+
+            return string.Empty;
         }
 
         private static string GetOnlinePlayerDisplayName(ServerOnlinePlayer onlinePlayer)
@@ -627,7 +652,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
                 if (IsPlayerAlreadyInCurrentRoom(invitedUserId))
                 {
-                    MarkPremadeInviteAccepted(invitedUserId);
+                    string invitedPlayerName = GetPlayerName(invitedUserId);
+                    MarkPremadeInviteAccepted(invitedUserId, invitedPlayerName);
                     yield return delay;
                     continue;
                 }

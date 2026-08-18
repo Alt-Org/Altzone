@@ -690,15 +690,17 @@ public static class PhotonRealtimeClient
 
         if (lobbyType == GameType.FriendLobby)
         {
-            Debug.LogWarning("Test");
             customRoomProperties.Add(PhotonBattleRoom.PremadeModeKey, true);
             customRoomProperties.Add(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)gametype);
             customRoomProperties.Add(PhotonBattleRoom.PremadeLeaderUserIdKey, LocalPlayer.UserId);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeLeaderUsernameKey, LocalPlayer.NickName);
             customRoomProperties.Add(PhotonBattleRoom.PremadeInvitedUserIdKey, "");
             customRoomProperties.Add(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
             customRoomProperties.Add(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
             customRoomProperties.Add(PhotonBattleRoom.PremadeUserId1Key, LocalPlayer.UserId);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeUsername1Key, LocalPlayer.NickName);
             customRoomProperties.Add(PhotonBattleRoom.PremadeUserId2Key, "");
+            customRoomProperties.Add(PhotonBattleRoom.PremadeUsername2Key, "");
 
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeModeKey);
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeTargetGameTypeKey);
@@ -706,6 +708,7 @@ public static class PhotonRealtimeClient
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeInviteStateKey);
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeInviteTimestampKey);
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeLeaderUserIdKey);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeLeaderUsernameKey);
         }
 
         if (lobbyType == GameType.Custom && customGameMode >= 0)
@@ -937,15 +940,19 @@ public static class PhotonRealtimeClient
             }
 
             string localUserId = LocalPlayer?.UserId ?? string.Empty;
+            string localUsername = LocalPlayer?.NickName ?? string.Empty;
 
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
+            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, localUsername);
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, invitedUserId);
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStatePending);
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
+            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, localUsername);
             CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
 
             return true;
         }
@@ -964,9 +971,12 @@ public static class PhotonRealtimeClient
             roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeInviteStateKey] = PhotonBattleRoom.PremadeInviteStatePending;
             roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeInviteTimestampKey] = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeLeaderUserIdKey] = LocalPlayer?.UserId ?? string.Empty;
+            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeLeaderUsernameKey] = LocalPlayer?.NickName ?? string.Empty;
             roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeTargetGameTypeKey] = (int)targetGameType;
             roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeUserId1Key] = LocalPlayer?.UserId ?? string.Empty;
+            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeUsername1Key] = LocalPlayer?.NickName ?? string.Empty;
             roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeUserId2Key] = string.Empty;
+            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeUsername2Key] = string.Empty;
         }
         catch (Exception ex)
         {
