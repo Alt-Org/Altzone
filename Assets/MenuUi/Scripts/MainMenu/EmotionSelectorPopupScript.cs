@@ -53,7 +53,6 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
 
             if (!_playerData.EmotionSelectionDate.Equals(DateTime.MinValue))
             {
-                Debug.LogWarning(_playerData.EmotionSelectionDate.Date);
                 if (_playerData.EmotionSelectionDate.Date == DateTime.Today)
                 {
                     _bSwitch = false;
