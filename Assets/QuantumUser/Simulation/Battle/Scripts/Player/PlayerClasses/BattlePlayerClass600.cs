@@ -41,7 +41,7 @@ namespace Battle.QSimulation.Player
             if (shieldCollisionData->IsLoveProjectileCollision) return;
 
             Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntityRef);
-            Transform2D* transformShield = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetTransform(f);
+            Transform2D* transformShield     = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetTransform(f);
 
             FPVector2 normal = (transformProjectile->Position - transformShield->Position).Normalized;
 
@@ -100,8 +100,8 @@ namespace Battle.QSimulation.Player
 
             playerHandle.AllowCharacterSwapping = false;
 
+            Transform2D* transformShield = f.Unsafe.GetPointer<Transform2D>(playerData->AttachedShield);
             Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(classData->HeldProjectileEntity);
-            Transform2D* transformShield     = f.Unsafe.GetPointer<Transform2D>(playerData->AttachedShield);
 
             FPVector2 projectilePositionNext = transformShield->Position + classData->HeldProjectileOffset;
 
@@ -120,8 +120,8 @@ namespace Battle.QSimulation.Player
 
             BattleTeamNumber teamNumber = BattlePlayerManager.PlayerHandle.GetTeamNumber(playerHandle.Slot);
 
-            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(classData->HeldProjectileEntity);
             BattlePlayerShieldDataQComponent* shieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(playerData->AttachedShield);
+            BattleProjectileQComponent*       projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(classData->HeldProjectileEntity);
 
             FPVector2 direction = FPVector2.Zero;
 
