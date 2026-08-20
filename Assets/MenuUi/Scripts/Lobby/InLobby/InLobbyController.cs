@@ -143,40 +143,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
             _topInfoPanel.TitleText = $"{Application.productName} {PhotonRealtimeClient.GameVersion}";
         }
 
-        private IEnumerator StartLobby(string playerGuid, string photonRegion)
-        {
-            var networkClientState = PhotonRealtimeClient.LobbyNetworkClientState;
-            Debug.Log($"{networkClientState}");
-            var delay = new WaitForSeconds(0.1f);
-            while (!PhotonRealtimeClient.InLobby)
-            {
-                if (networkClientState != PhotonRealtimeClient.LobbyNetworkClientState)
-                {
-                    // Even with delay we must reduce NetworkClientState logging to only when it changes to avoid flooding (on slower connections).
-                    networkClientState = PhotonRealtimeClient.LobbyNetworkClientState;
-                    Debug.Log($"{networkClientState}");
-                }
-                if (PhotonRealtimeClient.InRoom)
-                {
-                    PhotonRealtimeClient.LeaveRoom();
-                }
-                else if (PhotonRealtimeClient.CanConnect)
-                {
-                    var store = Storefront.Get();
-                    PlayerData playerData = null;
-                    store.GetPlayerData(playerGuid, p => playerData = p);
-                    yield return new WaitUntil(() => playerData != null);
-                    PhotonRealtimeClient.Connect(playerData.Name, photonRegion);
-                }
-                else if (PhotonRealtimeClient.CanJoinLobby)
-                {
-                    PhotonRealtimeClient.JoinLobbyWithWrapper(null);
-                }
-                yield return delay;
-            }
-            UpdateTitle();
-        }
-
         private void Update()
         {
             if (!PhotonRealtimeClient.InLobby && !PhotonRealtimeClient.InRoom)
