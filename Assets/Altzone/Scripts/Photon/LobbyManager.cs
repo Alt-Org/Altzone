@@ -6586,10 +6586,15 @@ namespace Altzone.Scripts.Lobby
             return true;
         }
 
-        public static void ExitQuantum(bool winningTeam, float gameLengthSec)
+        public static void ExitQuantum(BattleTeamNumber winningTeam, BattleTeamNumber ownTeam, float gameLengthSec)
         {
+            DataCarrier.AddData(DataCarrier.BattleWinner,winningTeam == ownTeam);
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            string alphaTeamName = room.GetCustomProperty(TeamAlphaNameKey, "Alpha");
+            string betaTeamName = room.GetCustomProperty(TeamBetaNameKey, "Beta");
+            DataCarrier.AddData(DataCarrier.BattleOwnTeamName, ownTeam is BattleTeamNumber.TeamAlpha? alphaTeamName : betaTeamName);
+            DataCarrier.AddData(DataCarrier.BattleEnemyTeamName, ownTeam is BattleTeamNumber.TeamAlpha ? betaTeamName : alphaTeamName);
             CloseRunner();
-            DataCarrier.AddData(DataCarrier.BattleWinner,winningTeam);
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleStory);
         }
 

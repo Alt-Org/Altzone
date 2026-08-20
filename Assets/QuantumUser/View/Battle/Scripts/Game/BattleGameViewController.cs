@@ -183,7 +183,7 @@ namespace Battle.View.Game
         /// </summary>
         public void UiInputOnExitGamePressed()
         {
-            if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam == LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
+            if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam, LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
         }
 
         /// <summary>
