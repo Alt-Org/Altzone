@@ -437,7 +437,7 @@ public class ClanSearchFiltersPanel : MonoBehaviour
         if (_ageText != null)
         {
             _ageText.text = _clanAge == ClanAge.None
-                ? "Kaikki i‰t"
+                ? "Kaikki i√§t"
                 : ClanDataTypeConverter.GetAgeText(_clanAge);
         }
 

@@ -75,7 +75,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 StartCoroutine(_raidNavigation.Navigate());
                 return;
             }
-            SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+            SignalBus.OnBattlePopupRequestedSignal(_selectedGameType, _selectedGameType == GameType.FriendLobby? GameType.Clan2v2: GameType.None);
         }
 
         public void UpdateGameType(GameTypeInfo gameTypeInfo)

@@ -37,7 +37,6 @@ public static class PollManager // Handles the polls from creation to loading to
         {
             if (result)
             {
-                ShowVotingPopup?.Invoke(furniturePollType);
 
                 OnPollCreated?.Invoke();
                 if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null)
@@ -457,7 +456,7 @@ public static class PollManager // Handles the polls from creation to loading to
 
             // Refresh UI
             trayPopulator?.RefreshTray();
-            VotingActions.ReloadPollList?.Invoke();
+            //VotingActions.ReloadPollList?.Invoke();
             PastPollManager.OnPastPollsChanged?.Invoke();
 
             if (PollManagerData.Instance.pollDataList.Count == 0)
@@ -494,4 +493,5 @@ public static class PollManager // Handles the polls from creation to loading to
     {
         return PollManagerData.Instance.pastPollDataList;
     }
+
 }
