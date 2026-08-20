@@ -67,9 +67,10 @@ namespace Battle.QSimulation.Player
         /// Bot behavior spec settings is defined in @cref{BattlePlayerBotQSpec}.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="isInPlay">Bool to check if bot is in play.</param>
-        /// <param name="playerData">Pointer to player's BattlePlayerDataQComponent.</param>
+        /// <param name="playerHandle">The player handle of the bot.</param>
         /// <param name="outBotInput">Pointer to where bot's %Quantum Input will be written.</param>
+        /// <param name="commandType">Command type of the bot.</param>
+        /// <param name="commandData">Command data of the bot.</param>
         public static void GetBotInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, Input* outBotInput, BattleCommand.Type* commandType, BattleCommand commandData)
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);

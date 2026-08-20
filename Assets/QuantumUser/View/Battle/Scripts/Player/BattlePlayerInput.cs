@@ -43,7 +43,7 @@ namespace Battle.View.Player
     public class BattlePlayerInput : MonoBehaviour
     {
         /// @name Command input methods
-        /// Command input methods are called by @cref{BattleGameViewController} when the player gives a %UI input. These methods shouldn't be called any other way.<br/>
+        /// Command input methods are called by @cref{Battle.View.Game,BattleGameViewController} when the player gives a %UI input. These methods shouldn't be called any other way.<br/>
         /// These inputs are sent to %Quantum as commands.
         /// @{
 
@@ -79,7 +79,7 @@ namespace Battle.View.Player
         /// @}
 
         /// @name Queued input methods
-        /// Queued input methods are called by @cref{BattleGameViewController} when the player gives a %UI input. These methods shouldn't be called any other way.<br/>
+        /// Queued input methods are called by @cref{Battle.View.Game,BattleGameViewController} when the player gives a %UI input. These methods shouldn't be called any other way.<br/>
         /// These inputs are queued for next time that %Quantum polls input.
         /// @{
 
@@ -87,7 +87,7 @@ namespace Battle.View.Player
         /// Called when the player interacts with the movement joystick.
         /// </summary>
         ///
-        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick. (unused)</param>
+        /// <param name="state"><see cref="Quantum.BattleJoystickState"></see> of the joystick. (unused)</param>
         /// <param name="value">Value of the joystick as Vector2.</param>
         public void QueueJoystickMovement(BattleJoystickState state, Vector2 value)
         {
@@ -98,7 +98,7 @@ namespace Battle.View.Player
         /// Called when the player interacts with the rotation joystick.
         /// </summary>
         ///
-        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick. (unused)</param>
+        /// <param name="state"><see cref="Quantum.BattleJoystickState"></see> of the joystick. (unused)</param>
         /// <param name="value">Value of the joystick as float.</param>
         public void QueueJoystickRotation(BattleJoystickState state, float value)
         {
@@ -109,7 +109,7 @@ namespace Battle.View.Player
         /// Called when player interacts with the special joystick
         /// </summary>
         ///
-        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="state"><see cref="Quantum.BattleJoystickState"></see> of the joystick.</param>
         /// <param name="value">Value of the joystick as Vector2.</param>
         public void QueueJoystickSpecial(BattleJoystickState state, Vector2 value)
         {
@@ -162,7 +162,7 @@ namespace Battle.View.Player
             public Vector2 JoystickMovementVector;
             /// <summary>The float value received from the rotation joystick.</summary>
             public float JoystickRotationValue;
-            /// <summary>The <see cref="BattleJoystickState"></see> of the special joystick</summary>
+            /// <summary>The <see cref="Quantum.BattleJoystickState"></see> of the special joystick</summary>
             public BattleJoystickState JoystickSpecialState;
             /// <summary>The vector received from the special joystick.</summary>
             public Vector2 JoystickSpecialValue;

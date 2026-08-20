@@ -1,0 +1,43 @@
+/// @file BattlePlayerClass600Data.qtn
+/// <summary>
+/// Contains component used by character class 600.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerClass600DataQComponent}  
+///   @copybrief Quantum.BattlePlayerClass600DataQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerClass600DataQComponent
+/// <summary>
+/// %Player character class data for class 600.
+/// </summary>
+///
+/// @bigtext{See [{PlayerClassData}](#page-concepts-player-simulation-class-classdata) for more info.}  
+/// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}  
+/// @bigtext{See [{Player Character Class 600 - Confluent}](page-concepts-player-class-600) for more info.}
+///
+/// @bigtext{Generated from @ref BattlePlayerClass600Data.qtn}
+
+/// @var bool Quantum.BattlePlayerClass600DataQComponent::IsHoldingProjectile
+/// <summary>Is the projectile being held or not.</summary>
+///
+/// @var EntityRef Quantum.BattlePlayerClass600DataQComponent::HeldProjectileEntity
+/// <summary>Reference to the projectile entity being held.</summary>
+///
+/// @var FPVector2 Quantum.BattlePlayerClass600DataQComponent::HeldProjectileOffset
+/// <summary>Direction from the player to the held projectile.</summary>
+///
+/// @var FPVector2 Quantum.BattlePlayerClass600DataQComponent::PreviousPosition
+/// <summary>The character's position on the previous frame.</summary>
+///
+/// @var FrameTimer Quantum.BattlePlayerClass600DataQComponent::HoldMinTimer
+/// <summary>Timer for how long the projectile is held if not moving.</summary>
+///
+/// @var FrameTimer Quantum.BattlePlayerClass600DataQComponent::HoldMaxTimer
+/// <summary>Timer for how long the projectile is held if moving.</summary>
+///
+/// @var FrameTimer Quantum.BattlePlayerClass600DataQComponent::ReleaseBufferTimer
+/// <summary>Timer for how long the projectile is held after stopping.</summary>
+

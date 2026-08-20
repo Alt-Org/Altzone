@@ -1,6 +1,6 @@
 /// @file BattlePlayerClass500Test.cs
 /// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClass500Test} class which handles player character class logic for the 500 class.
+/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClass500Test} class which handles player character class logic for the 500/Reflector class.
 /// </summary>
 
 // Quantum usings
@@ -19,6 +19,7 @@ namespace Battle.QSimulation.Player
     ///
     /// @bigtext{See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
+    /// @bigtext{See [{Player Character Class 500 - Reflector}](#page-concepts-player-class-500) for more info.}<br/>
     public class BattlePlayerClass500Test : BattlePlayerClassBase
     {
         /// <summary>The BattlePlayerCharacterClass this class is for.</summary>

@@ -17,13 +17,13 @@ using Battle.View.Game;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// <span class="brief-h">100 <see cref="Battle.View.Player.BattlePlayerClassBaseViewControllerTest">class %view controller</see>.</span><br/>
+    /// <span class="brief-h">100 <see cref="BattlePlayerCharacterClassBaseViewController">class %view controller</see>.</span><br/>
     /// Handles view logic for the 100 character class
     /// </summary>
     ///
-    /// @bigtext{See [{PlayerClassViewController}](#page-concepts-player-view-class-controller) for more info.}<br/>
+    /// @bigtext{See [{PlayerClassViewController}](#page-concepts-player-view-character-class-controller) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
-    /// @bigtext ADD CONCEPT LINK TO 100 CLASS HERE}
+    /// @bigtext{See [{Player Character Class 100 - Desensitizer}](#page-concepts-player-class-100) for more info.}<br/>
     public class BattlePlayerClass100ViewControllerTest : BattlePlayerCharacterClassBaseViewController
     {
         /// @anchor BattlePlayerClass100ViewController-SerializeFields

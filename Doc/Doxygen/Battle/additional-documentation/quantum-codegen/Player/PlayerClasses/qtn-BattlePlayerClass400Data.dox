@@ -1,6 +1,6 @@
 /// @file BattlePlayerClass400Data.qtn
 /// <summary>
-/// Contains component used by Projector character class.
+/// Contains component used by character class 400.
 /// </summary>
 ///
 /// ## Generated Structs
@@ -11,7 +11,7 @@
 
 /// @struct Quantum::BattlePlayerClass400DataQComponent
 /// <summary>
-/// %Player character class data for the Projector class.
+/// %Player character class data for class 400.
 /// </summary>
 ///
 /// @bigtext{See [{PlayerClassData}](#page-concepts-player-simulation-class-classdata) for more info.}  
@@ -34,6 +34,3 @@
 ///
 /// @var FP Quantum.BattlePlayerClass400DataQComponent::HeldProjectileDistance
 /// <summary>Distance from the player to the held projectile.</summary>
-///
-/// @var FP Quantum.BattlePlayerClass400DataQComponent::RotationDurationFrames
-/// <summary>%Quantum Simulation frames needed to complete a rotation.</summary>

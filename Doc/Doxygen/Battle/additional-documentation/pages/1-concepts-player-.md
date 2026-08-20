@@ -489,8 +489,9 @@ and/or a [{PlayerShieldClassViewController}](#page-concepts-player-view-shield-c
 
 ### Player Character Class List {#page-concepts-player-characters-class-list}
 
-@subpage page-concepts-player-class-100
-@subpage page-concepts-player-class-400
+@subpage page-concepts-player-class-100 <br/>
+@subpage page-concepts-player-class-400 <br/>
+@subpage page-concepts-player-class-500 <br/>
 @subpage page-concepts-player-class-600
 
 <br/>
@@ -815,7 +816,7 @@ See [{Player Character Classes}](#page-concepts-player-characters-classes) for m
 
 ### PlayerClassQSpec (%Quantum Spec) {#page-concepts-player-simulation-QSpec}
 
-Every  **Player Character Class** can optionally have a **QSpec** for additional immutable data that is shared between all the [{Player Character Entities}](#page-concepts-player-character-entity) of the corresponding **Character Class**.
+Every  **Player Character Class** can optionally have a **QSpec** for additional immutable data that is shared between all the [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) of the corresponding **Character Class**.
 
 **C# code example**
 ```cs
