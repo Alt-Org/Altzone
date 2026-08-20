@@ -95,6 +95,8 @@ public class BattleEndController : MonoBehaviour
     private void LeaveToMain()
     {
         DataCarrier.GetData<bool?>(DataCarrier.BattleWinner, suppressWarning: true);
+        DataCarrier.GetData<string>(DataCarrier.BattleOwnTeamName, suppressWarning: true);
+        DataCarrier.GetData<string>(DataCarrier.BattleEnemyTeamName, suppressWarning: true);
         LobbyManager.ExitBattleStory();
     }
 }

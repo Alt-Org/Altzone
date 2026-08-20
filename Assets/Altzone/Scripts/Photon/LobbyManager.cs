@@ -524,7 +524,7 @@ namespace Altzone.Scripts.Lobby
                         }
                     }
 
-                    queueCompleteDuoPairs = GetQueueCompleteDuoPairsForParticipants(participantUserIds);
+                    queueCompleteDuoPairs = GetQueueCompleteDuoPairsForParticipants(participantUserIds, roomGameTypeInt);
                     queueSoloPairBlocks = GetQueueSoloPairBlocksForParticipants(participantUserIds, queueCompleteDuoPairs);
                 }
                 catch (Exception ex)
@@ -1209,6 +1209,19 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
+        private string GetQueuePlayerClanId(Player player)
+        {
+            if (player == null) return string.Empty;
+            try
+            {
+                return player.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, string.Empty) ?? string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
         private bool HasRecordedQueueDuoPair(string userIdA, string userIdB)
         {
             if (string.IsNullOrEmpty(userIdA) || string.IsNullOrEmpty(userIdB) || userIdA == userIdB) return false;
@@ -1593,7 +1606,7 @@ namespace Altzone.Scripts.Lobby
             return false;
         }
 
-        private List<(string userId1, string userId2)> GetQueueCompleteDuoPairsForParticipants(ICollection<string> participantUserIds)
+        private List<(string userId1, string userId2)> GetQueueCompleteDuoPairsForParticipants(ICollection<string> participantUserIds, int roomGameTypeInt)
         {
             List<(string userId1, string userId2)> result = new();
             if (participantUserIds == null || participantUserIds.Count < 2) return result;
@@ -1636,6 +1649,43 @@ namespace Altzone.Scripts.Lobby
 
                 result.Add((leader.UserId, followerId));
             }
+
+            if ((GameType)roomGameTypeInt is GameType.Clan2v2)
+            {
+
+                List<Player> remainingPlayers = playersById.Values
+                        .Where(p => !addedUsers.Contains(p.UserId))
+                        .OrderBy(p => p.ActorNumber)
+                        .ToList();
+
+                if (remainingPlayers.Count >= 2)
+                {
+                    foreach (Player leader in remainingPlayers)
+                    {
+                        if (leader == null || !participantSet.Contains(leader.UserId)) continue;
+
+                        List<Player> followers = remainingPlayers
+                            .Where(p => p != null && p.UserId != leader.UserId)
+                            .Where(p => participantSet.Contains(p.UserId))
+                            .Where(p => GetQueuePlayerClanId(p) == GetQueuePlayerClanId(leader))
+                            .OrderBy(p => p.ActorNumber)
+                            .ToList();
+
+                        string followerId = followers[0].UserId;
+                        if (string.IsNullOrEmpty(followerId)) continue;
+
+                        if (!addedUsers.Add(leader.UserId)) continue;
+                        if (!addedUsers.Add(followerId))
+                        {
+                            addedUsers.Remove(leader.UserId);
+                            continue;
+                        }
+
+                        result.Add((leader.UserId, followerId));
+                    }
+                }
+            }
+
 
             return result;
         }
@@ -1714,6 +1764,7 @@ namespace Altzone.Scripts.Lobby
 
         private List<string> SelectQueueFollowersFromTwoPlayerBlocks(
             int requiredFollowers,
+            int roomGameTypeInt, 
             string localUserId,
             List<Player> realPlayers,
             Dictionary<string, Player> playersById,
@@ -2055,7 +2106,7 @@ namespace Altzone.Scripts.Lobby
             }
             catch { }
 
-            List<(string userId1, string userId2)> selectedDuoPairs = GetQueueCompleteDuoPairsForParticipants(participantIds);
+            List<(string userId1, string userId2)> selectedDuoPairs = GetQueueCompleteDuoPairsForParticipants(participantIds, roomGameTypeInt);
             List<(string userId1, string userId2)> selectedSoloPairs = GetQueueSoloPairBlocksForParticipants(participantIds, selectedDuoPairs);
             int coveredParticipants = selectedDuoPairs.Count * 2 + selectedSoloPairs.Count * 2;
             if (coveredParticipants != participantIds.Count)
@@ -2464,6 +2515,7 @@ namespace Altzone.Scripts.Lobby
             {
                 return SelectQueueFollowersFromTwoPlayerBlocks(
                     requiredFollowers,
+                    roomGameTypeInt,
                     localUserId,
                     realPlayers,
                     playersById,
@@ -2772,7 +2824,7 @@ namespace Altzone.Scripts.Lobby
             return true;
         }
 
-        private bool ShouldDeferTwoPlayerBlockStartForMultiDuo(int requiredFollowers, ICollection<string> selectedFollowers, out string reason)
+        private bool ShouldDeferTwoPlayerBlockStartForMultiDuo(int requiredFollowers, int roomGameTypeInt, ICollection<string> selectedFollowers, out string reason)
         {
             reason = string.Empty;
 
@@ -2795,7 +2847,7 @@ namespace Altzone.Scripts.Lobby
                 return false;
             }
 
-            List<(string userId1, string userId2)> roomCompleteDuoPairs = GetQueueCompleteDuoPairsForParticipants(humanUserIds);
+            List<(string userId1, string userId2)> roomCompleteDuoPairs = GetQueueCompleteDuoPairsForParticipants(humanUserIds, roomGameTypeInt);
             if (roomCompleteDuoPairs.Count < 2)
             {
                 return false;
@@ -2810,7 +2862,7 @@ namespace Altzone.Scripts.Lobby
                 }
             }
 
-            List<(string userId1, string userId2)> selectedCompleteDuoPairs = GetQueueCompleteDuoPairsForParticipants(selectedParticipantIds);
+            List<(string userId1, string userId2)> selectedCompleteDuoPairs = GetQueueCompleteDuoPairsForParticipants(selectedParticipantIds, roomGameTypeInt);
             if (selectedCompleteDuoPairs.Count >= 2)
             {
                 return false;
@@ -2820,7 +2872,7 @@ namespace Altzone.Scripts.Lobby
             return true;
         }
 
-        private bool ShouldDeferTwoPlayerBlockStartForPendingQueueDuo(int requiredFollowers, ICollection<string> selectedFollowers, out string reason)
+        private bool ShouldDeferTwoPlayerBlockStartForPendingQueueDuo(int requiredFollowers, int gameTypeInt, ICollection<string> selectedFollowers, out string reason)
         {
             reason = string.Empty;
 
@@ -2860,7 +2912,7 @@ namespace Altzone.Scripts.Lobby
                 }
             }
 
-            int selectedCompleteDuoCount = GetQueueCompleteDuoPairsForParticipants(selectedParticipantIds).Count;
+            int selectedCompleteDuoCount = GetQueueCompleteDuoPairsForParticipants(selectedParticipantIds, gameTypeInt).Count;
             if (selectedCompleteDuoCount >= 2)
             {
                 return false;
@@ -2994,11 +3046,11 @@ namespace Altzone.Scripts.Lobby
                                 if (loopSelected.Count >= loopRequiredFollowers)
                                 {
                                     bool twoPlayerBlockMode = IsTwoPlayerBlockQueueMode(loopGameTypeInt);
-                                    if (twoPlayerBlockMode && ShouldDeferTwoPlayerBlockStartForMultiDuo(loopRequiredFollowers, loopSelected, out string loopMultiDuoReason))
+                                    if (twoPlayerBlockMode && ShouldDeferTwoPlayerBlockStartForMultiDuo(loopRequiredFollowers, loopGameTypeInt, loopSelected, out string loopMultiDuoReason))
                                     {
                                         Debug.Log($"QueueTimerCoroutine: early readiness deferred to preserve complete duo pairs ({loopMultiDuoReason}).");
                                     }
-                                    else if (twoPlayerBlockMode && ShouldDeferTwoPlayerBlockStartForPendingQueueDuo(loopRequiredFollowers, loopSelected, out string loopPendingDuoReason))
+                                    else if (twoPlayerBlockMode && ShouldDeferTwoPlayerBlockStartForPendingQueueDuo(loopRequiredFollowers, loopGameTypeInt, loopSelected, out string loopPendingDuoReason))
                                     {
                                         Debug.Log($"QueueTimerCoroutine: early readiness deferred for pending queue duo handoff ({loopPendingDuoReason}).");
                                     }
@@ -3089,21 +3141,21 @@ namespace Altzone.Scripts.Lobby
                                                             // defer formation to avoid splitting.
                                                             if (allowForm)
                                                             {
-                                                                    string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
-                                                                    foreach (string uid in loopSelected)
+                                                                string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
+                                                                foreach (string uid in loopSelected)
                                                                 {
                                                                     try
                                                                     {
-                                                                            if (TryGetQueueLocalTeammateUserId(uid, out string buddy, out _) && !string.IsNullOrEmpty(buddy) && playersById.ContainsKey(buddy))
+                                                                        if (TryGetQueueLocalTeammateUserId(uid, out string buddy, out _) && !string.IsNullOrEmpty(buddy) && playersById.ContainsKey(buddy))
+                                                                        {
+                                                                            bool buddySelected = buddy == localUserId || loopSelected.Contains(buddy);
+                                                                            if (!buddySelected)
                                                                             {
-                                                                                bool buddySelected = buddy == localUserId || loopSelected.Contains(buddy);
-                                                                                if (!buddySelected)
-                                                                                {
-                                                                                    allowForm = false;
-                                                                                    Debug.Log($"QueueTimerCoroutine: deferring formation because teammate {buddy} of selected user {uid} is present but not selected.");
-                                                                                    break;
-                                                                                }
+                                                                                allowForm = false;
+                                                                                Debug.Log($"QueueTimerCoroutine: deferring formation because teammate {buddy} of selected user {uid} is present but not selected.");
+                                                                                break;
                                                                             }
+                                                                        }
                                                                     }
                                                                     catch { }
                                                                 }
@@ -3197,7 +3249,7 @@ namespace Altzone.Scripts.Lobby
                                         .Select(p => p.UserId)
                                         .ToList();
 
-                                    var roomPairs = GetQueueCompleteDuoPairsForParticipants(humanUserIds);
+                                    var roomPairs = GetQueueCompleteDuoPairsForParticipants(humanUserIds, gameTypeInt);
                                     var localId = PhotonRealtimeClient.LocalPlayer?.UserId ?? string.Empty;
 
                                     if (roomPairs != null && roomPairs.Count > 0)
@@ -3341,13 +3393,13 @@ namespace Altzone.Scripts.Lobby
                         }
                     }
 
-                    if (IsTwoPlayerBlockQueueMode(gameTypeInt) && ShouldDeferTwoPlayerBlockStartForMultiDuo(requiredFollowers, selected, out string timeoutMultiDuoReason))
+                    if (IsTwoPlayerBlockQueueMode(gameTypeInt) && ShouldDeferTwoPlayerBlockStartForMultiDuo(requiredFollowers, gameTypeInt, selected, out string timeoutMultiDuoReason))
                     {
                         Debug.Log($"QueueTimerCoroutine: timeout selection deferred to preserve complete duo pairs ({timeoutMultiDuoReason}).");
                         continue;
                     }
 
-                    if (IsTwoPlayerBlockQueueMode(gameTypeInt) && ShouldDeferTwoPlayerBlockStartForPendingQueueDuo(requiredFollowers, selected, out string timeoutPendingDuoReason))
+                    if (IsTwoPlayerBlockQueueMode(gameTypeInt) && ShouldDeferTwoPlayerBlockStartForPendingQueueDuo(requiredFollowers, gameTypeInt, selected, out string timeoutPendingDuoReason))
                     {
                         Debug.Log($"QueueTimerCoroutine: timeout selection deferred for pending queue duo handoff ({timeoutPendingDuoReason}).");
                         continue;
@@ -3849,6 +3901,10 @@ namespace Altzone.Scripts.Lobby
 
                 // Saving custom properties from the room to the variables
                 string clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
+                if(gameType is GameType.Clan2v2 && string.IsNullOrEmpty(clanName))
+                {
+                    clanName = ServerManager.Instance.Clan.name;
+                }
                 int soulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0);
 
                 string positionValue1 = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "");
@@ -6104,8 +6160,8 @@ namespace Altzone.Scripts.Lobby
                 if (player.IsMasterClient)
                 {
                     // Ensure team names are not empty — use defaults for matchmaking/random games
-                    if (string.IsNullOrWhiteSpace(blueTeamName)) blueTeamName = "Team Alpha";
-                    if (string.IsNullOrWhiteSpace(redTeamName)) redTeamName = "Team Beta";
+                    /*if (string.IsNullOrWhiteSpace(blueTeamName))*/ blueTeamName = "Team Alpha";
+                    /*if (string.IsNullOrWhiteSpace(redTeamName))*/ redTeamName = "Team Beta";
                     //room.CustomProperties.Add(TeamAlphaNameKey, blueTeamName);
                     //room.CustomProperties.Add(TeamBetaNameKey, redTeamName);
                     //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
@@ -6530,10 +6586,15 @@ namespace Altzone.Scripts.Lobby
             return true;
         }
 
-        public static void ExitQuantum(bool winningTeam, float gameLengthSec)
+        public static void ExitQuantum(BattleTeamNumber winningTeam, BattleTeamNumber ownTeam, float gameLengthSec)
         {
+            DataCarrier.AddData(DataCarrier.BattleWinner,winningTeam == ownTeam);
+            Room room = PhotonRealtimeClient.CurrentRoom;
+            string alphaTeamName = room.GetCustomProperty(TeamAlphaNameKey, "Alpha");
+            string betaTeamName = room.GetCustomProperty(TeamBetaNameKey, "Beta");
+            DataCarrier.AddData(DataCarrier.BattleOwnTeamName, ownTeam is BattleTeamNumber.TeamAlpha? alphaTeamName : betaTeamName);
+            DataCarrier.AddData(DataCarrier.BattleEnemyTeamName, ownTeam is BattleTeamNumber.TeamAlpha ? betaTeamName : alphaTeamName);
             CloseRunner();
-            DataCarrier.AddData(DataCarrier.BattleWinner,winningTeam);
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleStory);
         }
 
