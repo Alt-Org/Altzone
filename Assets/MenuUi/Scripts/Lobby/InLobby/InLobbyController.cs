@@ -51,13 +51,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private LobbyRoomListingController _roomListingController;
         // Expose the runtime instance of the popup contents so other scene components can reference it at runtime.
-        public static GameObject PopupContentsInstance { get; private set; }
+        public static GameObject PopupContentsInstance => Instance?._popupContents;
 
         // Fired when `PopupContentsInstance` is assigned or cleared at runtime.
         public static event Action<GameObject> OnPopupContentsInstanceAssigned;
         private string _currentRegion;
         private Coroutine _creatingRoomCoroutineHolder = null;
 
+        public static InLobbyController Instance { get; private set; }
         public static GameType SelectedGameType { get; private set; }
         public static GameType SelectedPremadeTargetGameType { get; private set; } = GameType.Clan2v2;
 
@@ -71,19 +72,33 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                Instance = this;
+            }
+
             SignalBus.OnBattlePopupRequested += OpenWindow;
             SignalBus.OnCloseBattlePopupRequested += CloseWindow;
             LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
             LobbyManager.OnInRoomInviteReceived += OnInRoomInviteReceived;
             LobbyManager.OnInRoomInviteJoinFailed += OnInRoomInviteJoinFailed;
             // Register runtime popup reference for other components to find (safe to set here because serialized field is available in Awake)
-            PopupContentsInstance = _popupContents;
             OnPopupContentsInstanceAssigned?.Invoke(PopupContentsInstance);
         }
 
 
         private void OnDestroy()
         {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+
             SignalBus.OnBattlePopupRequested -= OpenWindow;
             SignalBus.OnCloseBattlePopupRequested -= CloseWindow;
             LobbyManager.OnMatchmakingStopped -= OnMatchmakingStopped;
@@ -91,7 +106,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
             LobbyManager.OnInRoomInviteJoinFailed -= OnInRoomInviteJoinFailed;
             if (PopupContentsInstance == _popupContents)
             {
-                PopupContentsInstance = null;
                 OnPopupContentsInstanceAssigned?.Invoke(null);
             }
         }
