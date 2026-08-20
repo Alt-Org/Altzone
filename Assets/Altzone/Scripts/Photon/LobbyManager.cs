@@ -4,33 +4,28 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using Assert = UnityEngine.Assertions.Assert;
-using Random = UnityEngine.Random;
-
-using Photon.Client;
-using Photon.Realtime;
-using Quantum;
-
-using Prg.Scripts.Common.PubSub;
-
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Settings;
+using Altzone.PhotonSerializer;
+using Altzone.Scripts.Audio;
+using Altzone.Scripts.AzDebug;
+using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Common;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
-using Altzone.Scripts.Battle.Photon;
-using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Settings;
 using Altzone.Scripts.Window;
-using Altzone.Scripts.Audio;
-using Altzone.Scripts.AzDebug;
-using Altzone.PhotonSerializer;
-
 using Battle.QSimulation.Game;
+using Photon.Client;
+using Photon.Realtime;
+using Prg.Scripts.Common.PubSub;
+using Quantum;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using Assert = UnityEngine.Assertions.Assert;
 using PlayerType = Battle.QSimulation.Game.BattleParameters.PlayerType;
+using Random = UnityEngine.Random;
 
 namespace Altzone.Scripts.Lobby
 {
@@ -556,9 +551,16 @@ namespace Altzone.Scripts.Lobby
                         // With sequence-numbered room names, including a deterministic pre-notify room name causes followers
                         // to attempt joining a non-existent room before the actual sequenced room is created.
 
+                        RoomChangeData data = new();
+                        data = new()
+                        {
+                            LeaderId = PhotonRealtimeClient.LocalPlayer.UserId,
+                            ExpectedPlayers = selected,
+                        };
+
                         SafeRaiseEvent(
                             PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                            new object[] { PhotonRealtimeClient.LocalPlayer.UserId, selected },
+                            RoomChangeData.Serialize(data),
                             new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                             SendOptions.SendReliable
                         );
@@ -854,11 +856,18 @@ namespace Altzone.Scripts.Lobby
                 // Notify others to follow the leader (this triggers FollowLeaderToNewRoom on clients)
                 try
                 {
+                    RoomChangeData data = new();
+                    data = new()
+                    {
+                        LeaderId = PhotonRealtimeClient.LocalPlayer.UserId,
+                        ExpectedPlayers = selected,
+                        RoomName = createdRoomName
+                    };
+
                     // payload: { leaderUserId, expectedUsers[], optionalRoomName }
-                    object[] payload = createdRoomName == null ? new object[] { PhotonRealtimeClient.LocalPlayer.UserId, selected } : new object[] { PhotonRealtimeClient.LocalPlayer.UserId, selected, createdRoomName };
                     SafeRaiseEvent(
                         PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                        payload,
+                        RoomChangeData.Serialize(data),
                         new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                         SendOptions.SendReliable
                     );
@@ -1005,7 +1014,7 @@ namespace Altzone.Scripts.Lobby
 
         private string[] GetTeammateIds()
         {
-            return _teammates.Select(p=> p.UserId).ToArray();
+            return _teammates.Length > 0? _teammates.Select(p=> p.UserId).ToArray(): new string[0];
         }
 
         // AutoJoinLargestMatchmakingRoom removed: client-side opportunistic joining
@@ -3898,7 +3907,7 @@ namespace Altzone.Scripts.Lobby
                     _premadeTeammateUserId = resolvedPremadeTeammateUserId ?? string.Empty;
                     _premadeTeammateUserName = resolvedPremadeTeammateUsername ?? string.Empty;
                     _premadeTeammateUserPlayer = resolvedPremadeTeammateUserPlayer;
-                    _teammates = expectedUsers.Count() >= 0 || expectedUsers.Find(p => p.UserId == _premadeTeammateUserId) == null
+                    _teammates = expectedUsers.Count() <= 0 || expectedUsers.Find(p => p.UserId == _premadeTeammateUserId) == null
                         ? Array.Empty<Player>()
                         : new[] { _premadeTeammateUserPlayer };
                 }
@@ -3913,15 +3922,22 @@ namespace Altzone.Scripts.Lobby
 
                 if (broadcastRoomChange && PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.Server == ServerConnection.GameServer && PhotonRealtimeClient.Client.IsConnectedAndReady && PhotonRealtimeClient.InRoom)
                 {
+                    RoomChangeData data = new();
                     object roomChangePayload = PhotonRealtimeClient.LocalPlayer.UserId;
                     if (_isPremadeMatchmakingFlow)
                     {
-                        roomChangePayload = new object[] { localUserId, _teammates, $"Queue_{gameType}" };
+                        data = new()
+                        {
+                            LeaderId = localUserId,
+                            ExpectedPlayers = _teammates.Select(p => p.UserId).ToArray(),
+                            RoomName = $"Queue_{gameType}"
+                        };
                     }
+
 
                     SafeRaiseEvent(
                         PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                        roomChangePayload,
+                        RoomChangeData.Serialize(data),
                         new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                         SendOptions.SendReliable
                     );
@@ -4001,9 +4017,17 @@ namespace Altzone.Scripts.Lobby
 
                             if (broadcastRoomChange && !string.IsNullOrEmpty(queueRoomName))
                             {
+                                RoomChangeData data = new();
+                                data = new()
+                                {
+                                    LeaderId = localUserId,
+                                    ExpectedPlayers = _teammates.Select(p => p.UserId).ToArray(),
+                                    RoomName = queueRoomName
+                                };
+
                                 SafeRaiseEvent(
                                     PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                                    new object[] { localUserId, _teammates, queueRoomName },
+                                    RoomChangeData.Serialize(data),
                                     new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                                     SendOptions.SendReliable
                                 );
@@ -5844,9 +5868,15 @@ namespace Altzone.Scripts.Lobby
                 // Only send RoomChangeRequested if we're connected to the Game server, ready and in a room.
                 if (PhotonRealtimeClient.Client != null && PhotonRealtimeClient.Client.Server == ServerConnection.GameServer && PhotonRealtimeClient.Client.IsConnectedAndReady && PhotonRealtimeClient.InRoom)
                 {
+                    RoomChangeData roomChangeData = new();
+                    roomChangeData = new()
+                    {
+                        LeaderId = PhotonRealtimeClient.LocalPlayer.UserId,
+                    };
+
                     SafeRaiseEvent(
                         PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                        PhotonRealtimeClient.LocalPlayer.UserId,
+                        RoomChangeData.Serialize(roomChangeData),
                         new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                         SendOptions.SendReliable
                     );
@@ -8273,14 +8303,31 @@ namespace Altzone.Scripts.Lobby
 
                     QueueCustomBattleStartCheck();
                     break;
-
                 case PhotonRealtimeClient.PhotonEvent.RoomChangeRequested:
                 {
+                    byte[] byteArray2;
+                    if (photonEvent.CustomData is byte[] directBytes2)
+                    {
+                        byteArray2 = directBytes2;
+                    }
+                    else if (photonEvent.CustomData is ByteArraySlice slice)
+                    {
+                        byteArray2 = new byte[slice.Count];
+                        System.Buffer.BlockCopy(slice.Buffer, slice.Offset, byteArray2, 0, slice.Count);
+                    }
+                    else
+                    {
+                        Debug.LogError($"StartGame event received with unexpected data type: {photonEvent.CustomData?.GetType()}");
+                        break;
+                    }
+                    var roomChangeData = RoomChangeData.Deserialize(byteArray2);
+
+                        Debug.LogWarning(roomChangeData.ToString());
                     // Payload can be either a leaderUserId string, or an object[] { leaderUserId, expectedUsers[] }
-                    string leaderUserId = string.Empty;
-                    string[] expectedUsers = null;
-                    string leaderRoomName = null;
-                    try
+                    string leaderUserId = roomChangeData.LeaderId;
+                    string[] expectedUsers = roomChangeData.ExpectedPlayers;
+                    string leaderRoomName = roomChangeData.RoomName;
+                    /*try
                     {
                         // Local helper flattened here so all branches in this try can use it.
                         string[] FlattenExpected(object obj)
@@ -8353,7 +8400,7 @@ namespace Altzone.Scripts.Lobby
                             }
                         }
                     }
-                    catch { }
+                    catch { }*/
 
                     string matchmakingLeaderId = string.Empty;
                     bool targetedByExpectedUsers = false;
@@ -8707,9 +8754,16 @@ namespace Altzone.Scripts.Lobby
                         if (!isCustomRoom)
                         {
                             try { PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.LeaderIdKey, PhotonRealtimeClient.LocalPlayer.UserId); OnRoomLeaderChanged?.Invoke(true); } catch { }
+
+                            RoomChangeData roomChangeData = new();
+                            roomChangeData = new()
+                            {
+                                LeaderId = PhotonRealtimeClient.LocalPlayer.UserId,
+                            };
+
                             SafeRaiseEvent(
                                 PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                                PhotonRealtimeClient.LocalPlayer.UserId,
+                                RoomChangeData.Serialize(roomChangeData),
                                 new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                                 SendOptions.SendReliable
                             );
@@ -8819,9 +8873,15 @@ namespace Altzone.Scripts.Lobby
                         try { StartCoroutine(LeaveAndAutoRequeue(roomGameType)); } catch { }
                         try
                         {
+                            RoomChangeData roomChangeData = new();
+                            roomChangeData = new()
+                            {
+                                LeaderId = PhotonRealtimeClient.LocalPlayer.UserId,
+                            };
+
                             SafeRaiseEvent(
                                 PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                                PhotonRealtimeClient.LocalPlayer.UserId,
+                                RoomChangeData.Serialize(roomChangeData),
                                 new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                                 SendOptions.SendReliable
                             );
@@ -8941,9 +9001,15 @@ namespace Altzone.Scripts.Lobby
 
                                 try { StartCoroutine(LeaveAndAutoRequeue(roomGameType)); } catch { }
 
+                                RoomChangeData roomChangeData = new();
+                                roomChangeData = new()
+                                {
+                                    LeaderId = PhotonRealtimeClient.LocalPlayer.UserId,
+                                };
+
                                 SafeRaiseEvent(
                                     PhotonRealtimeClient.PhotonEvent.RoomChangeRequested,
-                                    PhotonRealtimeClient.LocalPlayer.UserId,
+                                    RoomChangeData.Serialize(roomChangeData),
                                     new RaiseEventArgs { Receivers = ReceiverGroup.Others },
                                     SendOptions.SendReliable
                                 );
@@ -9245,6 +9311,44 @@ namespace Altzone.Scripts.Lobby
                  $"\nMapId: {MapId}" +
                  $"\nPlayerCount: {PlayerCount}" +
                  $"\nSeed: {Seed}";
+        }
+    }
+
+    public class RoomChangeData
+    {
+        public string LeaderId { get; set; }
+        public string[] ExpectedPlayers { get; set; }
+        public string RoomName { get; set; }
+
+        public static byte[] Serialize(RoomChangeData data)
+        {
+            Debug.LogWarning($"RoomChangeRequested parsed: leaderUserId={data.LeaderId}, matchmakingLeaderId={data.LeaderId}, expectedUsersCount={(data.ExpectedPlayers?.Length ?? 0)}, leaderRoomName={data.RoomName}");
+
+            var b = data;
+            byte[] bytes = new byte[0];
+            Serializer.Serialize(b.LeaderId, ref bytes);
+            Serializer.Serialize(b.ExpectedPlayers, ref bytes);
+            Serializer.Serialize(b.RoomName, ref bytes);
+
+            return bytes;
+        }
+
+        public static RoomChangeData Deserialize(byte[] data)
+        {
+            var result = new RoomChangeData();
+            int offset = 0;
+            result.LeaderId = Serializer.DeserializeString(data, ref offset);
+            result.ExpectedPlayers = Serializer.DeserializeStringArray(data, ref offset);
+            result.RoomName = Serializer.DeserializeString(data, ref offset);
+
+            return result;
+        }
+
+        public override string ToString()
+        {
+            return $"Leader Id: {LeaderId}" +
+                 $"\nExpected players: {string.Join(", ", ExpectedPlayers)}" +
+                 $"\nRoom name: {string.Join(", ", RoomName)}";
         }
     }
 
