@@ -1,9 +1,10 @@
+using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby.InLobby;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using MenuUi.Scripts.Lobby.InLobby;
 
 namespace MenuUi.Scripts.Lobby
 {
@@ -18,6 +19,8 @@ namespace MenuUi.Scripts.Lobby
         [SerializeField] private TMP_Text _matchmakingText;
         [SerializeField] private TMP_Text _matchmakingCountText;
         [SerializeField] private TMP_Text _elapsedTimeText;
+        [SerializeField] private TMP_Text _player1NameText;
+        [SerializeField] private TMP_Text _player2NameText;
         [SerializeField] private Button _cancelButton;
         [SerializeField] private Button _panelButton;
 
@@ -154,6 +157,19 @@ namespace MenuUi.Scripts.Lobby
                 int count = PhotonRealtimeClient.CurrentRoomPlayerCount;
                 _matchmakingCountText.text = count.ToString();
             }
+
+            if (_isMatchmaking && _player1NameText != null)
+            {
+                string name1 = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, string.Empty);
+                if(string.IsNullOrEmpty(name1)) name1 = PhotonRealtimeClient.LocalLobbyPlayer.NickName;
+                _player1NameText.text = name1;
+            }
+            if (_isMatchmaking && _player2NameText != null)
+            {
+                string name2 = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
+                _player2NameText.text = name2;
+            }
+
             // Retry locating the battle popup (prefer scene instance) for a short time if not found yet
             if ((_battlePopup == null || !_battlePopup.scene.IsValid()) && _popupSearchAttempts < MaxPopupSearchAttempts)
             {
