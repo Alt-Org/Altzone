@@ -258,9 +258,23 @@ public class TopBarOrderBridge : MonoBehaviour
 
         SetClanSubItemIndent(clanTileOn);
 
-        foreach(var i in _topBarToggleLayouts)
+        //Its like this so that both of the clan tiles can first empty themself,
+        //before they get new children, otherwise some toggles arent in the right place
+        foreach (var t in TargetsByStyle)
         {
-            StartCoroutine(i.IsThereATile(this));
+            //Checks whata theme is on
+            if (!t.gameObject.activeSelf)
+                continue;
+
+            foreach (var i in _topBarToggleLayouts)
+            {
+                i.SetTogglesFree();
+            }
+
+            foreach (var i in _topBarToggleLayouts)
+            {
+                StartCoroutine(i.IsThereATile(t));
+            }
         }
     }
 
@@ -314,8 +328,8 @@ public class TopBarOrderBridge : MonoBehaviour
 
         SetClanSubItemRowsLocked(clanTileOn);
 
-        if (clanTileOn)
-            MoveClanSubRowsUnderClanTile();
+        //if (clanTileOn)
+            //MoveClanSubRowsUnderClanTile();
     }
 
     public void RefreshClanSubItemIndent()
