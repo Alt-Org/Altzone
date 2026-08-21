@@ -6,7 +6,7 @@
     - Has simulation data components
       @cref{Quantum,BattlePlayerClass600DataQComponent}
     - Has spec
-      @cref{Battle.QSimulation.Player,BattlePlayerClass100QSpec}
+      @cref{Battle.QSimulation.Player,BattlePlayerClass600QSpec}
 
 - **View**
     - Has no view controller

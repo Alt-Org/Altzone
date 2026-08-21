@@ -21,23 +21,23 @@
 /// @bigtext{Generated from @ref BattlePlayerClass600Data.qtn}
 
 /// @var bool Quantum.BattlePlayerClass600DataQComponent::IsHoldingProjectile
-/// <summary>Is the projectile being held or not.</summary>
+/// <summary>Is holding a projectile or not.</summary>
 ///
 /// @var EntityRef Quantum.BattlePlayerClass600DataQComponent::HeldProjectileEntity
 /// <summary>Reference to the projectile entity being held.</summary>
 ///
 /// @var FPVector2 Quantum.BattlePlayerClass600DataQComponent::HeldProjectileOffset
-/// <summary>Direction from the player to the held projectile.</summary>
+/// <summary>The held projectile's position relative to the player.</summary>
 ///
 /// @var FPVector2 Quantum.BattlePlayerClass600DataQComponent::PreviousPosition
 /// <summary>The character's position on the previous frame.</summary>
 ///
 /// @var FrameTimer Quantum.BattlePlayerClass600DataQComponent::HoldMinTimer
-/// <summary>Timer for how long the projectile is held if not moving.</summary>
+/// <summary>Timer for the minimum time the projectile is held before releasing.</summary>
 ///
 /// @var FrameTimer Quantum.BattlePlayerClass600DataQComponent::HoldMaxTimer
-/// <summary>Timer for how long the projectile is held if moving.</summary>
+/// <summary>Timer for the maximum time the projectile can be held before releasing.</summary>
 ///
 /// @var FrameTimer Quantum.BattlePlayerClass600DataQComponent::ReleaseBufferTimer
-/// <summary>Timer for how long the projectile is held after stopping.</summary>
+/// <summary>Timer for the time the player can stay still before releasing the projectile.</summary>
 

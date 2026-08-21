@@ -1,6 +1,6 @@
-/// @file BattlePlayerClass100ViewControllerTest.cs
+/// @file BattlePlayerCharacterClass100ViewControllerTest.cs
 /// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerClass100ViewControllerTest} class,
+/// Contains @cref{Battle.View.Player,BattlePlayerCharacterClass100ViewControllerTest} class,
 /// which is a <see cref="Battle.View.Player.BattlePlayerCharacterClass100ViewControllerTest">class %view controller</see> for the 100 character class.
 /// </summary>
 
@@ -17,7 +17,7 @@ using Battle.View.Game;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// <span class="brief-h">100 <see cref="BattlePlayerCharacterClassBaseViewController">class %view controller</see>.</span><br/>
+    /// <span class="brief-h">100 <see cref="Battle.View.Player.BattlePlayerCharacterClassBaseViewController">class %view controller</see>.</span><br/>
     /// Handles view logic for the 100 character class
     /// </summary>
     ///

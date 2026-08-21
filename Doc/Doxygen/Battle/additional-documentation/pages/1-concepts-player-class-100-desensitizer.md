@@ -14,7 +14,7 @@
         @cref{Quantum,BattlePlayerClass100ProjectileQComponent}
 - **View**
     - Has view controller  
-      @cref{Battle.View.Player,BattlePlayerClass100ViewControllerTest}
+      @cref{Battle.View.Player,BattlePlayerCharacterClass100ViewControllerTest}
 
 - **Prefabs**
     - Base prefabs  
