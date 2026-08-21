@@ -12,6 +12,7 @@ public class TopBarOrderBridge : MonoBehaviour
     [SerializeField] private GameObject[] _clanSubItemSpacers;
     [SerializeField] private GameObject[] _clanSubItemRows;
     [SerializeField] private TopBarClanTileLayout[] _topBarToggleLayouts;
+    [SerializeField] private TopBarToggleHandler[] _topBarToggleHandlers;
     public static TopBarOrderBridge Active { get; private set; }
     private const bool DebugOn = true;
 
@@ -257,25 +258,7 @@ public class TopBarOrderBridge : MonoBehaviour
         ) != 0;
 
         SetClanSubItemIndent(clanTileOn);
-
-        //Its like this so that both of the clan tiles can first empty themself,
-        //before they get new children, otherwise some toggles arent in the right place
-        foreach (var t in TargetsByStyle)
-        {
-            //Checks whata theme is on
-            if (!t.gameObject.activeSelf)
-                continue;
-
-            foreach (var i in _topBarToggleLayouts)
-            {
-                i.SetTogglesFree();
-            }
-
-            foreach (var i in _topBarToggleLayouts)
-            {
-                StartCoroutine(i.IsThereATile(t));
-            }
-        }
+        ToggleUpdate();
     }
 
     private static void ApplyOrderToToggleList(
@@ -379,6 +362,52 @@ public class TopBarOrderBridge : MonoBehaviour
         RefreshClanSubItemIndent();
     }
 
+    //Checks what toggles are on this theme
+    private void ToggleUpdate()
+    {
+
+        foreach (var t in TargetsByStyle)
+        {
+            //Checks what theme is on
+            if (!t.gameObject.activeSelf)
+                continue;
+
+
+            //Releases all the toggles from clantile toggles
+            foreach (var i in _topBarToggleLayouts)
+            {
+                i.SetTogglesFree();
+            }
+            //Sets new toggles to the clantile depending what objects are on clan tile
+            foreach (var i in _topBarToggleLayouts)
+            {
+                StartCoroutine(i.IsThereATile(t));
+            }
+
+            //Checks what toggless are on this theme
+            foreach (var i in _topBarToggleHandlers)
+            {
+
+                foreach (var e in t.Rows)
+                {
+
+                    if (i.item == e.item)
+                    {
+
+                        i.gameObject.SetActive(true);
+                        break;
+
+                    }
+                    else
+                    {
+
+                        i.gameObject.SetActive(false);
+                    }
+                }
+            }
+        }
+
+    }
 
     private void MoveClanSubRowsUnderClanTile()
     {

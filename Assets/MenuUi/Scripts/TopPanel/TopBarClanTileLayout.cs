@@ -31,30 +31,8 @@ public class TopBarClanTileLayout : MonoBehaviour
     void Start()
     {
         _viewMore.isOn = PlayerPrefs.GetInt(SavedViewMore, 0) == 1;
-
-        if(_viewMore.isOn)
-        {
-            _inputArrow.rotation = Quaternion.Euler(0, 0, -90);
-        } else
-        {
-            _inputArrow.rotation = Quaternion.Euler(0, 0, -270);
-        }
-
-         _viewMore.onValueChanged.AddListener(ViewSystem);
-
-
+        _viewMore.onValueChanged.AddListener(ViewSystem);
         _toggle.onValueChanged.AddListener(ChangeParent);
-
-        if (_clanTileLayout.transform.childCount > 0)
-        {
-            _viewMore.gameObject.SetActive(true);
-        }
-        else
-        {
-            layoutResize(56.91293f);
-            _viewMore.gameObject.SetActive(false);
-        }
-
     }
 
     private void ChangeParent(bool isOn)

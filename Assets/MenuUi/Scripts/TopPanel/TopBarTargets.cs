@@ -10,7 +10,7 @@ namespace MenuUI.Scripts.TopPanel
     public class TopBarTargets : MonoBehaviour
     {
         [System.Serializable]
-        private class Row
+        public class Row
         {
             public TopBarDefs.TopBarItem item;
             public GameObject visibilityTarget;
@@ -21,7 +21,7 @@ namespace MenuUI.Scripts.TopPanel
 
         [Header("Items (1:1)")] [SerializeField]
         private List<Row> _rows = new List<Row>();
-
+        public List<Row> Rows { get => _rows; }
         [Header("Spacer (created if null)")] [SerializeField]
         private RectTransform _flexibleSpacer;
 
