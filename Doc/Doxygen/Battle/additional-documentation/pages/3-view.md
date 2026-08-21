@@ -85,13 +85,13 @@ These are supposed to work with the [{PlayerCharacterViewController}](#page-conc
 and [{PlayerShieldViewController}](#page-concepts-player-shield-view-controller), meaning certain logic and **%Quantum Events**
 are passed through those **View Controllers**, however some class specific **%Quantum Events** are passed straight from **%Quantum**.
 
-|  Namespace                                          || Class                                                                  | Description                                                                |
-| :------------------ | :----------------------------- | :--------------------------------------------------------------------- | :------------------------------------------------------------------------- |
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClassNoneViewController} | @copybrief Battle.View.Player.BattlePlayerCharacterClassNoneViewController |
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerClass100ViewControllerTest}       | @copybrief Battle.View.Player.BattlePlayerClass100ViewControllerTest       |
-|                                                                                                                                                                                                         ||||
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClassNoneViewController}    | @copybrief Battle.View.Player.BattlePlayerShieldClassNoneViewController    |
-| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController}     | @copybrief Battle.View.Player.BattlePlayerShieldClass400ViewController     |
+|  Namespace                                          || Class                                                                     | Description                                                                   |
+| :------------------ | :----------------------------- | :--------------------------------------------------------------------- ---| :---------------------------------------------------------------------------- |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClassNoneViewController}    | @copybrief Battle.View.Player.BattlePlayerCharacterClassNoneViewController    |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClass100ViewControllerTest} | @copybrief Battle.View.Player.BattlePlayerCharacterClass100ViewControllerTest |
+|                                                                                                                                                                                                               ||||
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClassNoneViewController}       | @copybrief Battle.View.Player.BattlePlayerShieldClassNoneViewController       |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController}        | @copybrief Battle.View.Player.BattlePlayerShieldClass400ViewController        |
 
 <br/>
 
