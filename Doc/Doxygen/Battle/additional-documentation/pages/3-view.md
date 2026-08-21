@@ -88,6 +88,7 @@ are passed through those **View Controllers**, however some class specific **%Qu
 |  Namespace                                          || Class                                                                  | Description                                                                |
 | :------------------ | :----------------------------- | :--------------------------------------------------------------------- | :------------------------------------------------------------------------- |
 | @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerCharacterClassNoneViewController} | @copybrief Battle.View.Player.BattlePlayerCharacterClassNoneViewController |
+| @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerClass100ViewControllerTest}       | @copybrief Battle.View.Player.BattlePlayerClass100ViewControllerTest       |
 |                                                                                                                                                                                                         ||||
 | @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClassNoneViewController}    | @copybrief Battle.View.Player.BattlePlayerShieldClassNoneViewController    |
 | @crefd{Battle.View} | @crefd{Battle.View,Player}     | @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController}     | @copybrief Battle.View.Player.BattlePlayerShieldClass400ViewController     |
