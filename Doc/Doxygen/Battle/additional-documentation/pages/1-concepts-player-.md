@@ -826,7 +826,7 @@ public class BattlePlayerClassExample3QSpec : AssetObject
 }
 ```
 
-See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.  
+See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.  
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
 <br/>
