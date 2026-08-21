@@ -11,7 +11,7 @@
 
 /// @struct Quantum::BattlePlayerClass100ProjectileQComponent
 /// <summary>
-/// Contains the direction and speed of the player class 100 projectile
+/// Contains the direction, speed and radius of the player class 100 projectile
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerClass100Projectile.qtn}
@@ -19,7 +19,10 @@
 // ---------------------------------------------------------------------------------------------------- //
 
 /// @var FPVector2 Quantum::BattlePlayerClass100ProjectileQComponent::Direction
-/// <summary>Direction of the player class 100 projectile</summary>
+/// <summary>Direction of the player class 100 projectile.</summary>
 ///
 /// @var FP Quantum::BattlePlayerClass100ProjectileQComponent::Speed
-/// <summary>Speed of the player class 100 projectile</summary>
+/// <summary>Speed of the player class 100 projectile.</summary>
+///
+/// @var FP Quantum::BattlePlayerClass100ProjectileQComponent::Radius
+/// <summary>Radius of the player class 100 projectile.</summary>

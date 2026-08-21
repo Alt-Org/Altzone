@@ -14,9 +14,9 @@
 /// %Player character class data for the 100 class.
 /// </summary>
 ///
-/// @bigtext{See [{PlayerClassData}](#page-concepts-player-simulation-classdata) for more info.}  
+/// @bigtext{See [{PlayerClassData}](#page-concepts-player-simulation-class-classdata) for more info.}  
 /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}  
-// concept page not added yet @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400-projector) for more info.}
+/// @bigtext{See [{Player Character Class 100 - Desensitizer}](#page-concepts-player-class-100) for more info.}
 ///
 /// @bigtext{Generated from @ref BattlePlayerClass100Data.qtn}
 
@@ -26,8 +26,11 @@
 /// @var bool Quantum.BattlePlayerClass100DataQComponent::JoystickDownPrevious
 /// <summary>Was the joystick down.</summary>
 ///
-/// @var int Quantum.BattlePlayerClass100DataQComponent::HoldStartFrame
-/// <summary>%Quantum Simulation frame on which the player started holding the projectile.</summary>
-///
 /// @var FrameTimer Quantum.BattlePlayerClass100DataQComponent::JoystickTimer
 /// <summary>Timer for how long the joystick has been pressed.</summary>
+///
+/// @var FrameTimer Quantum.BattlePlayerClass100DataQComponent::CooldownTimer
+/// <summary>Timer for how long to wait before being able to shoot again.</summary>
+///
+/// @var FrameTimer Quantum.BattlePlayerClass100DataQComponent::PlacementTimer
+/// <summary>Timer for how long the player has to place their character.</summary>

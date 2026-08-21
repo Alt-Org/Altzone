@@ -362,7 +362,6 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
-        /// <param name="playerData">Player data component.</param>
         /// <param name="stackInputStorage">Temporary input storage for bots and abandoned players.</param>
         ///
         /// <returns>Pointer to the player's input.</returns>
@@ -426,7 +425,7 @@ namespace Battle.QSimulation.Player
         /// Private helper method for handling when a player wants to give up or has abandoned the match.
         /// </summary>
         ///
-        /// Used by <see cref="BattlePlayerQSystem.HandleGiveUpInput">HandleGiveUpInput</see> and <see cref="BattlePlayerQSystem.HandlePlayerAbandoned">HandlePlayerAbandoned</see>.
+        /// Used by <see cref="BattlePlayerQSystem.HandleGiveUp">HandleGiveUp</see> and <see cref="BattlePlayerQSystem.HandlePlayerAbandoned">HandlePlayerAbandoned</see>.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
@@ -562,6 +561,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle of the player.</param>
+        /// <param name="playerCharacterNumber">Character number of the character being swapped to.</param>
         ///
         /// <returns>True if character was swapped.</returns>
         private bool HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)

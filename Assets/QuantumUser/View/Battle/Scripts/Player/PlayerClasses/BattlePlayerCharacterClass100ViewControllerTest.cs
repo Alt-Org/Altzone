@@ -1,7 +1,7 @@
-/// @file BattlePlayerClass100ViewControllerTest.cs
+/// @file BattlePlayerCharacterClass100ViewControllerTest.cs
 /// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerClass100ViewControllerTest} class,
-/// which is a <see cref="Battle.View.Player.BattlePlayerClass100ViewControllerTest">class %view controller</see> for the 100 character class.
+/// Contains @cref{Battle.View.Player,BattlePlayerCharacterClass100ViewControllerTest} class,
+/// which is a <see cref="Battle.View.Player.BattlePlayerCharacterClass100ViewControllerTest">class %view controller</see> for the 100 character class.
 /// </summary>
 
 // Unity usings
@@ -17,14 +17,14 @@ using Battle.View.Game;
 namespace Battle.View.Player
 {
     /// <summary>
-    /// <span class="brief-h">100 <see cref="Battle.View.Player.BattlePlayerClassBaseViewControllerTest">class %view controller</see>.</span><br/>
+    /// <span class="brief-h">100 <see cref="Battle.View.Player.BattlePlayerCharacterClassBaseViewController">class %view controller</see>.</span><br/>
     /// Handles view logic for the 100 character class
     /// </summary>
     ///
-    /// @bigtext{See [{PlayerClassViewController}](#page-concepts-player-view-class-controller) for more info.}<br/>
+    /// @bigtext{See [{PlayerClassViewController}](#page-concepts-player-view-character-class-controller) for more info.}<br/>
     /// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}<br/>
-    /// @bigtext ADD CONCEPT LINK TO 100 CLASS HERE}
-    public class BattlePlayerClass100ViewControllerTest : BattlePlayerCharacterClassBaseViewController
+    /// @bigtext{See [{Player Character Class 100 - Desensitizer}](#page-concepts-player-class-100) for more info.}<br/>
+    public class BattlePlayerCharacterClass100ViewControllerTest : BattlePlayerCharacterClassBaseViewController
     {
         /// @anchor BattlePlayerClass100ViewController-SerializeFields
         /// @name SerializeField variables

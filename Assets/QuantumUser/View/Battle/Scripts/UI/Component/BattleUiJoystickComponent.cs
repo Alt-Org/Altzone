@@ -43,7 +43,7 @@ namespace Battle.View.UI
         /// Event delegate for joystick input with both axis.
         /// </summary>
         ///
-        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="state"><see cref="Quantum.BattleJoystickState"></see> of the joystick.</param>
         /// <param name="value">Joystick input value as Vector2.</param>
         public delegate void JoystickTwoAxisInputHandler(BattleJoystickState state, Vector2 value);
 
@@ -54,7 +54,7 @@ namespace Battle.View.UI
         /// Event delegate for joystick input on x axis.
         /// </summary>
         ///
-        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="state"><see cref="Quantum.BattleJoystickState"></see> of the joystick.</param>
         /// <param name="input">Joystick input value on x axis as float.</param>
         public delegate void JoystickOneAxisInputHandler(BattleJoystickState state, float input);
 

@@ -2,9 +2,11 @@
 
 - **Simulation**
     - Has simulation logic  
-      @cref{Battle.QSimulation.Player,BattlePlayerClass600}
-    - Has no simulation data component
-    - Has no spec
+      @cref{Battle.QSimulation.Player,BattlePlayerClass600} / @cref{Battle.QSimulation.Player,BattlePlayerClass600Test}
+    - Has simulation data components
+      @cref{Quantum,BattlePlayerClass600DataQComponent}
+    - Has spec
+      @cref{Battle.QSimulation.Player,BattlePlayerClass600QSpec}
 
 - **View**
     - Has no view controller
