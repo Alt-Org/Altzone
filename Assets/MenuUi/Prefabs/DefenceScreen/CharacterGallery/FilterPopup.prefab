@@ -314,7 +314,7 @@ GameObject:
   - component: {fileID: 5820628627145661487}
   - component: {fileID: 1960202019728320115}
   m_Layer: 5
-  m_Name: AcknowledgedTitleText
+  m_Name: ConsciousTitleText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1119,7 +1119,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &75498047493849022
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1252,7 +1252,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _finnishText: Tiedostamattomat
-  _englishText: Unacknowledged
+  _englishText: Unconscious
 --- !u!1 &1258361471481670109
 GameObject:
   m_ObjectHideFlags: 0
@@ -1263,7 +1263,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4863953348878272990}
   - component: {fileID: 5775997039025364395}
-  - component: {fileID: 490461809634043161}
   m_Layer: 5
   m_Name: FIlterPanel
   m_TagString: Untagged
@@ -1299,26 +1298,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1258361471481670109}
   m_CullTransparentMesh: 1
---- !u!114 &490461809634043161
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1258361471481670109}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80e68bb74b2ced74f942347ce6d00336, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _unlockedCharacterGridContent: {fileID: 0}
-  _lockedCharacterGridContent: {fileID: 0}
-  _filterButton: {fileID: 8404482993449731681}
-  _filterText: {fileID: 6679449095329207750}
-  _scrollRect: {fileID: 0}
-  _characterSlotPrefab: {fileID: 4297384447084397024, guid: 4aaf0fba9ac0bb64bbb8abb1ff0c485b,
-    type: 3}
-  _classReference: {fileID: 11400000, guid: 3b5ea09e8ee0a3c4fb7574a299b54fe0, type: 2}
 --- !u!1 &1260943030893470096
 GameObject:
   m_ObjectHideFlags: 0
@@ -1330,7 +1309,7 @@ GameObject:
   - component: {fileID: 2273382655691306024}
   - component: {fileID: 1205611219204323042}
   m_Layer: 5
-  m_Name: AcknowledgedToggle
+  m_Name: ConsciousToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1405,7 +1384,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 0
+  m_IsOn: 1
 --- !u!1 &1390107289478795748
 GameObject:
   m_ObjectHideFlags: 0
@@ -1559,7 +1538,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7782932227310654748}
   m_Layer: 5
-  m_Name: AcknowledgedToggles
+  m_Name: ConsciousToggles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1792,22 +1771,25 @@ MonoBehaviour:
   _openFilterPopUpButton1: {fileID: 0}
   _openFilterPopUpButton2: {fileID: 0}
   _openFilterPopUpButton3: {fileID: 0}
-  _filterAcknowledged: {fileID: 1205611219204323042}
-  _filterUnacknowledged: {fileID: 3354450387860299131}
-  _filterAcknowledgedTextBold: {fileID: 8367898461018223816}
-  _filterUnacknowledgedTextBold: {fileID: 6831562113973956975}
+  _filterConscious: {fileID: 1205611219204323042}
+  _filterUnconscious: {fileID: 3354450387860299131}
+  _filterConsciousText: {fileID: 6366426283445497790}
+  _filterConsciousTextBold: {fileID: 8367898461018223816}
+  _filterUnconsciousText: {fileID: 1161441135463204760}
+  _filterUnconsciousTextBold: {fileID: 6831562113973956975}
   _toggleAll: {fileID: 7185429349848360257}
-  _toggleList:
-  - {fileID: 8784755730455082790}
-  - {fileID: 3211085712833668559}
-  - {fileID: 4047405847840211972}
+  _classFilterToggles:
   - {fileID: 1612654295397961066}
+  - {fileID: 7751607561616066903}
+  - {fileID: 4047405847840211972}
+  - {fileID: 3211085712833668559}
+  - {fileID: 8784755730455082790}
   - {fileID: 4178867414703556033}
   - {fileID: 5358352639562609562}
-  - {fileID: 7751607561616066903}
   _closeButton: {fileID: 2935703997506539294}
   _cancelButton: {fileID: 5010880491616311522}
   _confirmButton: {fileID: 4712483519621768040}
+  _galleryView: {fileID: 0}
 --- !u!1 &2302769351490417241
 GameObject:
   m_ObjectHideFlags: 0
@@ -2479,6 +2461,7 @@ GameObject:
   - component: {fileID: 7185429349848360257}
   - component: {fileID: 8750546465333457104}
   - component: {fileID: 8252315877147369257}
+  - component: {fileID: 6157307350352374496}
   m_Layer: 5
   m_Name: ToggleAll
   m_TagString: Untagged
@@ -2593,6 +2576,35 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6157307350352374496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2780484745910490231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 908539266886235118}
+          m_TargetAssemblyTypeName: CharacterFilterPanel, MainMenu
+          m_MethodName: ToggleAllCheck
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &2864050556014743373
 GameObject:
   m_ObjectHideFlags: 0
@@ -5379,7 +5391,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1021240002578863537
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5512,7 +5524,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _finnishText: Tiedostetut
-  _englishText: Acknowledged
+  _englishText: Conscious
 --- !u!1 &6409755216540628516
 GameObject:
   m_ObjectHideFlags: 0
@@ -6341,7 +6353,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5456934453145653325
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6474,7 +6486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _finnishText: Tiedostamattomat
-  _englishText: Unacknowledged
+  _englishText: Unconscious
 --- !u!1 &6911950802736196049
 GameObject:
   m_ObjectHideFlags: 0
@@ -6486,7 +6498,7 @@ GameObject:
   - component: {fileID: 1351001060808512339}
   - component: {fileID: 3354450387860299131}
   m_Layer: 5
-  m_Name: UnacknowledgedToggle
+  m_Name: UnconsciousToggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6561,7 +6573,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 0
+  m_IsOn: 1
 --- !u!1 &7056912250806611192
 GameObject:
   m_ObjectHideFlags: 0
@@ -7530,7 +7542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1535899740533846511
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7663,7 +7675,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _finnishText: Tiedostetut
-  _englishText: Acknowledged
+  _englishText: Conscious
 --- !u!1 &8494581572008145933
 GameObject:
   m_ObjectHideFlags: 0

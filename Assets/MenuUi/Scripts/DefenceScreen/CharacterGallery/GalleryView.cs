@@ -240,7 +240,6 @@ namespace MenuUi.Scripts.CharacterGallery
             _scrollRect.VerticalNormalizedPosition = 1; // setting scroll to the top so that it's not possibly scrolled too far
         }
 
-
         private void SetFilter(FilterType filter)
         {
             switch (filter)
@@ -322,6 +321,68 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
             }
         }
+
+        public void ResetFilter()
+        {
+            foreach (CharacterSlot characterSlot in _characterSlots) //set all inactive
+            {
+                if (characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(false);
+            }
+
+            _scrollRect.VerticalNormalizedPosition = 1; // setting scroll to the top so that it's not possibly scrolled too far
+        }
+
+        public void FilterClasses(List<CharacterClassType> classType)
+        {
+
+            int i = 0;
+            foreach (CharacterSlot characterSlot in _characterSlots) //go trough all characters
+            {
+                foreach (CharacterClassType classTypeList in classType) //set all wanted character classes active
+                {
+                    if (CustomCharacter.GetClass(characterSlot.Character.Id) == classType[i])
+                    {
+                        if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
+                    }
+                    i++;
+                }
+                i = 0;
+            }
+        }
+
+        public void FilterUnlocked(bool unlockedIsOn, bool lockedIsOn)
+        {
+
+            if (unlockedIsOn && lockedIsOn) //all active 
+            {
+                return;
+            }
+            else if (unlockedIsOn && !lockedIsOn) //set all locked inactive 
+            {
+                foreach (CharacterSlot characterSlot in _characterSlots)
+                {
+                    if(characterSlot.IsLocked)
+                        characterSlot.gameObject.SetActive(false);
+                }
+            }
+            else if (!unlockedIsOn && lockedIsOn) //set all unlocked inactive 
+            {
+                foreach (CharacterSlot characterSlot in _characterSlots)
+                {
+                    if (!characterSlot.IsLocked)
+                    characterSlot.gameObject.SetActive(false);
+                }
+            }
+            else if (!unlockedIsOn && !lockedIsOn) //set all inactive 
+            {
+                foreach (CharacterSlot characterSlot in _characterSlots)
+                {
+                    characterSlot.gameObject.SetActive(false);
+                }
+            }
+
+        }
+
 
 
         private void SetFilterText(FilterType filter)
