@@ -6160,8 +6160,8 @@ namespace Altzone.Scripts.Lobby
                 if (player.IsMasterClient)
                 {
                     // Ensure team names are not empty — use defaults for matchmaking/random games
-                    /*if (string.IsNullOrWhiteSpace(blueTeamName))*/ blueTeamName = "Team Alpha";
-                    /*if (string.IsNullOrWhiteSpace(redTeamName))*/ redTeamName = "Team Beta";
+                    if (string.IsNullOrWhiteSpace(blueTeamName)) blueTeamName = "Team Alpha";
+                    if (string.IsNullOrWhiteSpace(redTeamName)) redTeamName = "Team Beta";
                     //room.CustomProperties.Add(TeamAlphaNameKey, blueTeamName);
                     //room.CustomProperties.Add(TeamBetaNameKey, redTeamName);
                     //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
