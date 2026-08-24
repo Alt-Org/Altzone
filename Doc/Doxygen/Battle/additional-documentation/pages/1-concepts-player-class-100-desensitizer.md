@@ -1,7 +1,7 @@
 # Player Character Class 100 - Desensitizer {#page-concepts-player-class-100}
 
 - **Simulation**
-    - Has test simulation logic  
+    - Has simulation logic  
       @cref{Battle.QSimulation.Player,BattlePlayerClass100Test}
     - Has simulation data components  
       @cref{Quantum,BattlePlayerClass100DataQComponent}
@@ -13,17 +13,23 @@
         - Has simulation data components  
         @cref{Quantum,BattlePlayerClass100ProjectileQComponent}
 - **View**
-    - Has test view controller  
-      @cref{Battle.View.Player,BattlePlayerClass100ViewControllerTest}
+    - Has view controller  
+      @cref{Battle.View.Player,BattlePlayerCharacterClass100ViewControllerTest}
 
 - **Prefabs**
-    - Has no base prefab  
-    - Character prefabs  
+    - Base prefabs  
+      @ref "BattlePlayer100Character(BaseAndTestCharacter).prefab"  
+      @ref "BattlePlayer100Shield(BaseAndTestCharacter).prefab"
+    - Character and Shield prefabs  
       @ref BattlePlayer101Character.prefab  
+      @ref "BattlePlayer101Shield(Base).prefab"  
       @ref BattlePlayer102Character.prefab  
+      @ref "BattlePlayer102Shield(Base).prefab"  
       @ref BattlePlayer103Character.prefab  
+      @ref "BattlePlayer103Shield(Base).prefab"  
       @ref BattlePlayer104Character.prefab  
+      @ref "BattlePlayer104Shield(Base).prefab"  
       @ref BattlePlayer105Character.prefab  
-      @ref BattlePlayer106Character.prefab
-
-      Only character 103 "Sotaveteraani" is currently implemented. Implementation for it is done in the 100 character classes test script, and it applies to all characters of that class. When other characters are implemented, the code should be adjusted as needed.
+      @ref "BattlePlayer105Shield(Base).prefab"  
+      @ref BattlePlayer106Character.prefab  
+      @ref "BattlePlayer106Shield(Base).prefab"

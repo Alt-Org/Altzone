@@ -61,15 +61,17 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Handles bot AI by predicting the projectile and generating the input for a bot.
+        /// Handles bot AI by predicting the projectile and generating the <see cref="Quantum.Input">Quantum Input</see>
+        /// and/or <see cref="Battle.QSimulation.Game.BattleCommand">Battle Command</see> for a bot.
         /// </summary>
         ///
         /// Bot behavior spec settings is defined in @cref{BattlePlayerBotQSpec}.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="isInPlay">Bool to check if bot is in play.</param>
-        /// <param name="playerData">Pointer to player's BattlePlayerDataQComponent.</param>
+        /// <param name="playerHandle">The player handle of the bot.</param>
         /// <param name="outBotInput">Pointer to where bot's %Quantum Input will be written.</param>
+        /// <param name="commandType">Pointer to where battle command's type will be written.</param>
+        /// <param name="commandData">Reference to where battle command data will be written.</param>
         public static void GetBotInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, Input* outBotInput, BattleCommand.Type* commandType, BattleCommand commandData)
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);

@@ -70,8 +70,12 @@ namespace Altzone.Scripts.Voting
         {
             Id = poll._id;
             minPercentage = poll.minPercentage;
-            StartTime = poll.startedAt !=null ?((DateTimeOffset)DateTime.Parse(poll.startedAt).ToLocalTime()).ToUnixTimeSeconds(): 0;
-            if(DateTime.TryParse(poll.endsOn, out DateTime time))
+            StartTime = poll.startedAt !=null
+                    ? DateTime.TryParse(poll.startedAt, CultureInfo.CreateSpecificCulture("en-US"), DateTimeStyles.None, out DateTime startTime)
+                    ? ((DateTimeOffset)startTime.ToLocalTime()).ToUnixTimeSeconds()
+                    : ((DateTimeOffset)DateTime.ParseExact(poll.startedAt, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToLocalTime()).ToUnixTimeSeconds()
+                : 0;
+            if (DateTime.TryParse(poll.endsOn, CultureInfo.CreateSpecificCulture("en-US"), DateTimeStyles.None, out DateTime time))
                 EndTime = ((DateTimeOffset)time.ToLocalTime()).ToUnixTimeSeconds();
             else
                 EndTime = ((DateTimeOffset)DateTime.ParseExact(poll.endsOn, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToLocalTime()).ToUnixTimeSeconds();
