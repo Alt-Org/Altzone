@@ -13,6 +13,8 @@ public class TopBarOrderBridge : MonoBehaviour
     [SerializeField] private GameObject[] _clanSubItemRows;
     [SerializeField] private TopBarClanTileLayout[] _topBarToggleLayouts;
     [SerializeField] private TopBarToggleHandler[] _topBarToggleHandlers;
+    [SerializeField] private GameObject _notInUsePanel;
+
     public static TopBarOrderBridge Active { get; private set; }
     private const bool DebugOn = true;
 
@@ -365,13 +367,19 @@ public class TopBarOrderBridge : MonoBehaviour
     //Checks what toggles are on this theme
     private void ToggleUpdate()
     {
+        //Old Theme is disabled for now...
+        if(CurrentStyle == SettingsCarrier.TopBarStyle.Old)
+        {
+            _notInUsePanel.SetActive(true);
+            return;
+        }
+        _notInUsePanel.SetActive(false);
 
         foreach (var t in TargetsByStyle)
         {
             //Checks what theme is on
             if (!t.gameObject.activeSelf)
                 continue;
-
 
             //Releases all the toggles from clantile toggles
             foreach (var i in _topBarToggleLayouts)

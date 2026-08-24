@@ -3085,6 +3085,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a048112e4ca923948b998cfc132b0d77, type: 3}
+--- !u!1 &336379797 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4260146234933404655, guid: d269dfafcac9af443a8b1ffa039313c3,
+    type: 3}
+  m_PrefabInstance: {fileID: 442329875}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &369289466
 GameObject:
   m_ObjectHideFlags: 0
@@ -3733,6 +3739,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -50
       objectReference: {fileID: 0}
+    - target: {fileID: 5222453182822361590, guid: d269dfafcac9af443a8b1ffa039313c3,
+        type: 3}
+      propertyPath: _notInUsePanel
+      value: 
+      objectReference: {fileID: 336379797}
     - target: {fileID: 5222453182822361590, guid: d269dfafcac9af443a8b1ffa039313c3,
         type: 3}
       propertyPath: _targetsByStyle.Array.size
@@ -10351,7 +10362,7 @@ PrefabInstance:
     - target: {fileID: 6843645424878019333, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -79.80005
+      value: -92.400024
       objectReference: {fileID: 0}
     - target: {fileID: 6874875501156775734, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
