@@ -7,6 +7,7 @@ using Altzone.Scripts;
 using Altzone.Scripts.Chat;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.GA;
+using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model;
 using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.Model.Poco.Clan;
@@ -2017,6 +2018,79 @@ public class ServerManager : MonoBehaviour
     #endregion
 
     #region Battle
+
+    public IEnumerator MatchmakingCreateRoom(GameType gameType, Action<bool> callback, string RoomId = "", int teamSize = 2, bool allowBots = true, string automaticInvite = null)
+    {
+        object invite = automaticInvite != null ? (automaticInvite.ToUpper().Equals("CLAN") ? new { type = "CLAN" } : new { type = "PLAYER", playerId = automaticInvite }) : null;
+
+        string body = JObject.FromObject(
+            new
+            {
+                matchType = gameType,
+                roomId = string.IsNullOrEmpty(RoomId) ? Guid.NewGuid().ToString(): RoomId,
+                teamSize = teamSize,
+                allowBots = allowBots,
+                automaticInvite = invite,
+                clientVersion = ApplicationController.VersionNumber,
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings {})
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}matchmaking/rooms", body, AccessToken, Request =>
+        {
+            if (Request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(obj: true);
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(obj: false);
+                }
+            }
+        }));
+    }
+
+    public IEnumerator MatchmakingSendInviteToClan(Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}matchmaking/invites/clan", "", AccessToken, Request =>
+        {
+            if (Request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(obj: true);
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(obj: false);
+                }
+            }
+        }));
+    }
+
+    public IEnumerator MatchmakingSendInviteToPlayer(string playerId, Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}matchmaking/invites/{playerId}", "", AccessToken, Request =>
+        {
+            if (Request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(obj: true);
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(obj: false);
+                }
+            }
+        }));
+    }
+
 
     public void BattleSendDebugLogFile(List<IMultipartFormSection> formData, string secretKey, string id, Action<UnityWebRequest> callback)
     {
