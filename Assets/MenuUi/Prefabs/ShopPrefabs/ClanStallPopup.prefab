@@ -354,7 +354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.22352941, g: 0.3019608, b: 0.34117648, a: 0.392}
+  m_Color: {r: 0.15040937, g: 0.17592262, b: 0.18867922, a: 0.392}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2133,7 +2133,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28.45
+  m_fontSize: 33.55
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2445,7 +2445,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 43.7
+  m_fontSize: 40.8
   m_fontSizeBase: 72
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2652,9 +2652,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Background: {fileID: 4606865751688757198}
+  _itemIcon: {fileID: 0}
+  _itemNameText: {fileID: 0}
+  _itemPriceText: {fileID: 0}
+  _coinImage: {fileID: 0}
+  _popupBackgroundImage: {fileID: 0}
+  _popupBackgroundGradient: {fileID: 0}
+  _popupTabImage: {fileID: 0}
   _confirmText: {fileID: 8706586761142859997}
   _acceptButton: {fileID: 3203711133207222626}
   _declineButton: {fileID: 2184594387722816296}
+  _leftArrowButton: {fileID: 0}
+  _rightArrowButton: {fileID: 0}
+  _personificationShopPopupColor: {r: 0.188, g: 0.804, b: 0.325, a: 0.93}
+  _furnitureShopPopupColor: {r: 0.639, g: 0.839, b: 0.941, a: 0.93}
 --- !u!1 &5911084475599867669
 GameObject:
   m_ObjectHideFlags: 0
@@ -3547,7 +3558,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32.45
+  m_fontSize: 30.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3780,7 +3791,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28.45
+  m_fontSize: 33.55
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4299,7 +4310,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28.45
+  m_fontSize: 33.55
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
