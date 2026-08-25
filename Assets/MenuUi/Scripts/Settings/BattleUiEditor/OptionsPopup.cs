@@ -55,6 +55,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Slider _gyroscopeMinAngleSlider;
         [SerializeField] private TMP_InputField _gyroscopeMinAngleInputField;
         [Space] [SerializeField] private GameObject _swipeInstructionImage;
+        [SerializeField] private RectTransform _instructionImageRow;
         [SerializeField] private GameObject _pointAndClickInstructionImage;
         [SerializeField] private GameObject _joystickInstructionImage;
         [SerializeField] private GameObject _followPointerInstructionImage;
@@ -160,7 +161,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Input options listeners
             _swipeMovementToggle.onValueChanged.AddListener((value) =>
             {
-                if (value) UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger);
+                if (value)
+                    UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger);
             });
             _pointAndClickMovementToggle.onValueChanged.AddListener((value) =>
             {
@@ -169,8 +171,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             });
             _joystickMovementToggle.onValueChanged.AddListener((value) =>
             {
+                Debug.Log($"[MOVE JOYSTICK TOGGLE] value = {value}");
                 if (value)
                     UpdateInputSettings(BattleMovementInputType.Joystick, BattleRotationInputType.Joystick);
+                //UpdateInputSettings(BattleMovementInputType.Joystick, SettingsCarrier.Instance.BattleRotationInput);
             });
             _followPointerMovementToggle.onValueChanged.AddListener((value) =>
             {
@@ -292,6 +296,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Start()
         {
+            Debug.Log("OPTIONS POPUP START");
             // Loading grid settings. Grid settings are saved locally from this script because they aren't accessed anywhere else.
             _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnLinesKey, GridColumnLinesDefault);
             _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowLinesKey, GridRowLinesDefault);
@@ -413,23 +418,48 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             SettingsCarrier.Instance.BattleRotationInput = rotationType;
 
             // If joystick movement was selected instantianting the joysticks if they are not yet instantiated
-            if (movementType == BattleMovementInputType.Joystick)
-            {
-                if (_battleUiEditor._instantiatedMoveJoystick == null)
-                {
-                    _battleUiEditor._instantiatedMoveJoystick = _battleUiEditor
-                        .InstantiateBattleUiElement(BattleUiElementType.MoveJoystick)
-                        .GetComponent<BattleUiMovableElement>();
-                    _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedMoveJoystick);
-                }
+            // if (movementType == BattleMovementInputType.Joystick)
+            // {
+            //     if (_battleUiEditor._instantiatedMoveJoystick == null)
+            //     {
+            //         _battleUiEditor._instantiatedMoveJoystick = _battleUiEditor
+            //             .InstantiateBattleUiElement(BattleUiElementType.MoveJoystick)
+            //             .GetComponent<BattleUiMovableElement>();
+            //         _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedMoveJoystick);
+            //     }
+            //
+            //     if (_battleUiEditor._instantiatedRotateJoystick == null)
+            //     {
+            //         _battleUiEditor._instantiatedRotateJoystick = _battleUiEditor
+            //             .InstantiateBattleUiElement(BattleUiElementType.RotateJoystick)
+            //             .GetComponent<BattleUiMovableElement>();
+            //         _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedRotateJoystick);
+            //     }
+            // }
 
-                if (_battleUiEditor._instantiatedRotateJoystick == null)
-                {
-                    _battleUiEditor._instantiatedRotateJoystick = _battleUiEditor
-                        .InstantiateBattleUiElement(BattleUiElementType.RotateJoystick)
-                        .GetComponent<BattleUiMovableElement>();
-                    _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedRotateJoystick);
-                }
+            // Instantiate movement joystick if needed
+            if (movementType == BattleMovementInputType.Joystick &&
+                _battleUiEditor._instantiatedMoveJoystick == null)
+            {
+                Debug.Log("[MOVE JOYSTICK] Instantiating MoveJoystick");
+                _battleUiEditor._instantiatedMoveJoystick = _battleUiEditor
+                    .InstantiateBattleUiElement(BattleUiElementType.MoveJoystick)
+                    .GetComponent<BattleUiMovableElement>();
+
+                _battleUiEditor.SetDataToUiElement(
+                    _battleUiEditor._instantiatedMoveJoystick);
+            }
+
+            // Instantiate rotation joystick if needed
+            if (rotationType == BattleRotationInputType.Joystick &&
+                _battleUiEditor._instantiatedRotateJoystick == null)
+            {
+                _battleUiEditor._instantiatedRotateJoystick = _battleUiEditor
+                    .InstantiateBattleUiElement(BattleUiElementType.RotateJoystick)
+                    .GetComponent<BattleUiMovableElement>();
+
+                _battleUiEditor.SetDataToUiElement(
+                    _battleUiEditor._instantiatedRotateJoystick);
             }
 
             // Toggling rotation toggles isOn based on rotation type and visibility based on movement type
@@ -455,32 +485,94 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _gyroscopeMinAngleHolder.SetActive(rotationType == BattleRotationInputType.Gyroscope);
 
             // Rotation instruction images take priority over movement ones
-            bool showRotationImage =
-                (rotationType == BattleRotationInputType.TwoFinger && _twoFingerRotationInstructionImage != null) ||
-                (rotationType == BattleRotationInputType.Swipe && _swipeRotationInstructionImage != null) ||
-                (rotationType == BattleRotationInputType.Joystick && _joystickRotationInstructionImage != null) ||
-                (rotationType == BattleRotationInputType.Gyroscope && _gyroscopeRotationInstructionImage != null);
+            // bool showRotationImage =
+            //     (rotationType == BattleRotationInputType.TwoFinger && _twoFingerRotationInstructionImage != null) ||
+            //     (rotationType == BattleRotationInputType.Swipe && _swipeRotationInstructionImage != null) ||
+            //     (rotationType == BattleRotationInputType.Joystick && _joystickRotationInstructionImage != null) ||
+            //     (rotationType == BattleRotationInputType.Gyroscope && _gyroscopeRotationInstructionImage != null);
 
+            // if (_swipeInstructionImage != null)
+            //     _swipeInstructionImage.SetActive(!showRotationImage && movementType == BattleMovementInputType.Swipe);
+            // if (_pointAndClickInstructionImage != null)
+            //     _pointAndClickInstructionImage.SetActive(!showRotationImage &&
+            //                                              movementType == BattleMovementInputType.PointAndClick);
+            // if (_joystickInstructionImage != null)
+            //     _joystickInstructionImage.SetActive(!showRotationImage &&
+            //                                         movementType == BattleMovementInputType.Joystick);
+            // if (_followPointerInstructionImage != null)
+            //     _followPointerInstructionImage.SetActive(!showRotationImage &&
+            //                                              movementType == BattleMovementInputType.FollowPointer);
+            //
+            // if (_twoFingerRotationInstructionImage != null)
+            //     _twoFingerRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.TwoFinger);
+            // if (_swipeRotationInstructionImage != null)
+            //     _swipeRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Swipe);
+            // if (_joystickRotationInstructionImage != null)
+            //     _joystickRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Joystick);
+            // if (_gyroscopeRotationInstructionImage != null)
+            //     _gyroscopeRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Gyroscope);
+
+            Debug.Log(
+                $"[IMAGES] " +
+                $"Swipe={_swipeInstructionImage?.name ?? "NULL"}, " +
+                $"PointClick={_pointAndClickInstructionImage?.name ?? "NULL"}, " +
+                $"Joystick={_joystickInstructionImage?.name ?? "NULL"}, " +
+                $"Follow={_followPointerInstructionImage?.name ?? "NULL"}, " +
+                $"TwoFinger={_twoFingerRotationInstructionImage?.name ?? "NULL"}, " +
+                $"RotSwipe={_swipeRotationInstructionImage?.name ?? "NULL"}, " +
+                $"RotJoystick={_joystickRotationInstructionImage?.name ?? "NULL"}, " +
+                $"Gyro={_gyroscopeRotationInstructionImage?.name ?? "NULL"}");
+
+            // Movement instruction images
             if (_swipeInstructionImage != null)
-                _swipeInstructionImage.SetActive(!showRotationImage && movementType == BattleMovementInputType.Swipe);
-            if (_pointAndClickInstructionImage != null)
-                _pointAndClickInstructionImage.SetActive(!showRotationImage &&
-                                                         movementType == BattleMovementInputType.PointAndClick);
-            if (_joystickInstructionImage != null)
-                _joystickInstructionImage.SetActive(!showRotationImage &&
-                                                    movementType == BattleMovementInputType.Joystick);
-            if (_followPointerInstructionImage != null)
-                _followPointerInstructionImage.SetActive(!showRotationImage &&
-                                                         movementType == BattleMovementInputType.FollowPointer);
+                _swipeInstructionImage.SetActive(
+                    movementType == BattleMovementInputType.Swipe);
 
+            if (_pointAndClickInstructionImage != null)
+                _pointAndClickInstructionImage.SetActive(
+                    movementType == BattleMovementInputType.PointAndClick);
+
+            if (_joystickInstructionImage != null)
+                _joystickInstructionImage.SetActive(
+                    movementType == BattleMovementInputType.Joystick);
+
+            if (_followPointerInstructionImage != null)
+                _followPointerInstructionImage.SetActive(
+                    movementType == BattleMovementInputType.FollowPointer);
+
+            // Rotation instruction images
             if (_twoFingerRotationInstructionImage != null)
-                _twoFingerRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.TwoFinger);
+                _twoFingerRotationInstructionImage.SetActive(
+                    rotationType == BattleRotationInputType.TwoFinger);
+
             if (_swipeRotationInstructionImage != null)
-                _swipeRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Swipe);
+                _swipeRotationInstructionImage.SetActive(
+                    rotationType == BattleRotationInputType.Swipe);
+
             if (_joystickRotationInstructionImage != null)
-                _joystickRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Joystick);
+                _joystickRotationInstructionImage.SetActive(
+                    rotationType == BattleRotationInputType.Joystick);
+
             if (_gyroscopeRotationInstructionImage != null)
-                _gyroscopeRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Gyroscope);
+                _gyroscopeRotationInstructionImage.SetActive(
+                    rotationType == BattleRotationInputType.Gyroscope);
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_instructionImageRow);
+
+            Debug.Log(
+                $"[IMAGE STATE] " +
+                $"Swipe={_swipeInstructionImage?.activeSelf}, " +
+                $"PointClick={_pointAndClickInstructionImage?.activeSelf}, " +
+                $"Joystick={_joystickInstructionImage?.activeSelf}, " +
+                $"Follow={_followPointerInstructionImage?.activeSelf}, " +
+                $"TwoFinger={_twoFingerRotationInstructionImage?.activeSelf}, " +
+                $"RotSwipe={_swipeRotationInstructionImage?.activeSelf}, " +
+                $"RotJoystick={_joystickRotationInstructionImage?.activeSelf}, " +
+                $"GyroSelf={_gyroscopeRotationInstructionImage?.activeSelf}, " +
+                $"GyroHierarchy={_gyroscopeRotationInstructionImage?.activeInHierarchy}, " +
+                $"Gyro={_gyroscopeRotationInstructionImage?.activeSelf}");
+
+            Debug.Log($"[INSTRUCTION] Move={movementType}, Rotation={rotationType}");
 
             // Setting visibility to joysticks
             if (_battleUiEditor._instantiatedMoveJoystick != null)
