@@ -128,10 +128,10 @@ namespace Battle.View.Player
                 FeetStanding = 20,
 
                 /// <summary>Index: 21</summary>
-                FeetRunningLeft = 21,
+                FeetRunning1 = 21,
 
                 /// <summary>Index: 22</summary>
-                FeetRunningRight = 22,
+                FeetRunning2 = 22,
 
                 /// <summary>Index: 24</summary>
                 HandsShieldDown1 = 24,
@@ -335,6 +335,12 @@ namespace Battle.View.Player
         [Tooltip("The amount of stun flashes")]
         [SerializeField] private int _stunFlashAmount;
 
+        [SerializeField] private float _animationBreathingInterval;
+
+        [SerializeField] private float _animationBreathingSizeMultiplier;
+
+        [SerializeField] private float _animationRunningInterval;
+
         //} settings
 
         #endregion SerializeFields
@@ -476,8 +482,8 @@ namespace Battle.View.Player
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
                 sprite.EnumValue is
                     SpriteSheetMap.Enum.FeetStanding or
-                    SpriteSheetMap.Enum.FeetRunningLeft or
-                    SpriteSheetMap.Enum.FeetRunningRight,
+                    SpriteSheetMap.Enum.FeetRunning1 or
+                    SpriteSheetMap.Enum.FeetRunning2,
                 "{0} Sprite is not a feet sprite", sprite
             );
             _bodypartSpriteRenderers[3].sprite = _spriteSheet.GetSprite(sprite);
@@ -511,6 +517,8 @@ namespace Battle.View.Player
 
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
+
+            _normalScale = transform.localScale;
 
             _teamNumber = BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot);
 
@@ -615,18 +623,31 @@ namespace Battle.View.Player
 
             Vector2 movementVector = playerData->ViewMovementVector.ToUnityVector2();
 
-            if (movementVector == Vector2.zero)
+            if(_animationState != AnimationState.Stun)
             {
-                SetFeetSprite(SpriteSheetMap.Enum.FeetStanding);
+                if (movementVector == Vector2.zero)
+                {
+                    float t = AnimationStep(_animationBreathingInterval, reset: _animationState != AnimationState.Idle);
+                    //float sizeMultiplier = (MathF.Sin((t + 0.75f) * (MathF.PI * 2.0f)) + 1) * _animationBreathingSizeMultiplier;
+                    float sizeMultiplier = 1f + (_animationBreathingSizeMultiplier - 1f) * (MathF.Sin((t + 0.75f) * (MathF.PI * 2.0f)) + 1f) * 0.5f;
+                    transform.localScale = (_normalScale * sizeMultiplier);
+                    _animationState = AnimationState.Idle;
+                }
+                else
+                {
+                    float t = AnimationStep(_animationRunningInterval, reset: _animationState != AnimationState.Running);
+
+                    SpriteSheetMap sprite = (int)(t * 2f) == 0 ? SpriteSheetMap.Enum.FeetRunning1 : SpriteSheetMap.Enum.FeetRunning2;
+
+                    SetFeetSprite(sprite);
+
+                    _animationState = AnimationState.Running;
+                }
             }
-            else if (movementVector.x < 0)
-            {
-                SetFeetSprite(SpriteSheetMap.Enum.FeetRunningLeft);
-            }
-            else
-            {
-                SetFeetSprite(SpriteSheetMap.Enum.FeetRunningRight);
-            }
+
+            if (_animationState != AnimationState.Idle) transform.localScale = _normalScale;
+
+            if (_animationState != AnimationState.Running) SetFeetSprite(SpriteSheetMap.Enum.FeetStanding);
 
             Vector3 viewPosition = playerData->ViewPosition.ToUnityVector3();
 
@@ -672,6 +693,14 @@ namespace Battle.View.Player
         private const int SpriteRendererShadowIndex = 4;
 
         /// @}
+        ///
+        private enum AnimationState
+        {
+            Idle,
+            Running,
+            Stun,
+            StunEnd
+        }
 
         /// <summary>This classes %BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
@@ -706,6 +735,12 @@ namespace Battle.View.Player
         ///
         /// See [{Player Teams}](#page-concepts-player-slots-teams) for more info.
         private BattleTeamNumber _teamNumber;
+
+        private AnimationState _animationState;
+
+        private float _animationTimer;
+
+        private Vector3 _normalScale;
 
         /// @anchor BattlePlayerCharacterViewController-Private-GameflowMethods
         /// @name Private Gameflow Methods
@@ -857,6 +892,8 @@ namespace Battle.View.Player
         {
             //{ set stun sprites
 
+            _animationState = AnimationState.Stun;
+
             SpriteSheetMap sprite = emotion switch
             {
                 BattleEmotionState.Joy        => SpriteSheetMap.Enum.HeadJoy,
@@ -873,6 +910,9 @@ namespace Battle.View.Player
             SetHeadSprite(sprite);
 
             SetHandSprite(SpriteSheetMap.Enum.HandsScared);
+
+            _bodypartSpriteRenderers[SpriteRendererFeetIndex].enabled = false;
+            _bodypartSpriteRenderers[SpriteRendererBodyIndex].enabled = false;
 
             if (_shieldAttached)
             {
@@ -923,7 +963,12 @@ namespace Battle.View.Player
                 SetHandSprite(SpriteSheetMap.Enum.HandsNoShield);
             }
 
+            _bodypartSpriteRenderers[SpriteRendererFeetIndex].enabled = true;
+            _bodypartSpriteRenderers[SpriteRendererBodyIndex].enabled = true;
+
             //} reset sprites
+
+            _animationState = AnimationState.StunEnd;
         }
 
         /// <summary>
@@ -939,6 +984,13 @@ namespace Battle.View.Player
             int index = startIndex + shieldNumber;
 
             SetHandSprite(SpriteSheetMap.FromInt(index));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private float AnimationStep(float interval, bool reset)
+        {
+            _animationTimer = reset ? 0 : (_animationTimer + Time.deltaTime) % interval;
+            return _animationTimer / interval;
         }
 
         /// @}
