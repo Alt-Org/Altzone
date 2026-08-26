@@ -25,7 +25,10 @@ public class CharacterFilterPanel : MonoBehaviour
     [SerializeField] private Toggle _toggleAll;
     [SerializeField] private List<Toggle> _classFilterToggles = new List<Toggle>();
 
+    [Header("Dropdown")]
     [SerializeField] private TMP_Dropdown _classSortDropdown;
+    [SerializeField] private GameObject _dropDownArrowUp;
+    [SerializeField] private GameObject _dropDownArrowDown;
 
     [Header("Popup close buttons")]
     [SerializeField] private Button _closeButton;
@@ -75,6 +78,23 @@ public class CharacterFilterPanel : MonoBehaviour
         _classSortDropdown.onValueChanged.AddListener(ChangeDropDownValue);
     }
 
+
+    #region Dropdown controls
+    public void Update()
+    {
+        //control the direction of the drop down arrow
+        if (_classSortDropdown.IsExpanded) 
+        {
+            _dropDownArrowUp.SetActive(true);
+            _dropDownArrowDown.SetActive(false);
+        }
+        else
+        {
+            _dropDownArrowUp.SetActive(false);
+            _dropDownArrowDown.SetActive(true);
+        }
+    }
+
     private void ChangeDropDownValue(int value)
     {
         switch (value)
@@ -106,6 +126,7 @@ public class CharacterFilterPanel : MonoBehaviour
 
         }
     }
+    #endregion
 
     #region Controls for _toggleAll
     private void CheckClassToggles(bool toggleIsOn) //if all class toggles are on, set _toggleAll on (and in reverse)
@@ -265,7 +286,7 @@ public class CharacterFilterPanel : MonoBehaviour
         CheckClassFilters();
         CheckConsciousFilters();
 
-        //organize characters
+        //organize characters (all ways of organizing are not possible currently)
         switch (_sortOrder) {
             case SortOrder.Classes:
                 _galleryView.OrganizeGallery(false, true);
