@@ -59,6 +59,10 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public Action OnFilterChanged;
 
+        //list for sorting the slots
+        List<NameSortingPair> _nameSortingPairs = new List<NameSortingPair>();
+
+
 
         private void Awake()
         {
@@ -380,10 +384,59 @@ namespace MenuUi.Scripts.CharacterGallery
                     characterSlot.gameObject.SetActive(false);
                 }
             }
+        }
+
+
+        public void OrganizeGallery(bool reversed, bool alphabetical)
+        {
+            _nameSortingPairs.Clear();
+
+            //add all characters to the list
+            foreach (CharacterSlot characterSlot in _characterSlots) {
+
+                _nameSortingPairs.Add(new NameSortingPair() { Name = GetName(characterSlot), Id = (int)characterSlot.Id });
+            }
+
+            //select the sort mode
+            if (!reversed && !alphabetical)
+            {
+                _nameSortingPairs.Sort((a, b) => a.Name.CompareTo(b.Name));
+            }
+            else if (reversed && !alphabetical)
+            {
+                _nameSortingPairs.Sort((a, b) => b.Name.CompareTo(a.Name));
+            }
+            else if (alphabetical)
+            {
+                _nameSortingPairs.Sort((a, b) => a.Id.CompareTo(b.Id));
+            }
+
+            //sort the list and apply
+            foreach (NameSortingPair namePair in _nameSortingPairs)
+            {
+                foreach(CharacterSlot characterSlot in _characterSlots)
+                {
+                    if((int)characterSlot.Id == namePair.Id)
+                    {
+                        Debug.Log(namePair.Name);
+                        characterSlot.transform.SetAsLastSibling();
+                    }
+                }
+            }
 
         }
 
 
+
+        private string GetName(CharacterSlot characterSlot)
+        {
+            PlayerCharacterPrototype info;
+            info = PlayerCharacterPrototypes.GetCharacter(((int)characterSlot.Id).ToString());
+
+            Debug.Log(info.Name);
+            return info.Name;
+            
+        }
 
         private void SetFilterText(FilterType filter)
         {
@@ -428,5 +481,10 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
+        private class NameSortingPair
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
     }
 }

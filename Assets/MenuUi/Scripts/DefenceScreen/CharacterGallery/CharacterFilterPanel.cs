@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.CharacterGallery;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +25,8 @@ public class CharacterFilterPanel : MonoBehaviour
     [SerializeField] private Toggle _toggleAll;
     [SerializeField] private List<Toggle> _classFilterToggles = new List<Toggle>();
 
+    [SerializeField] private TMP_Dropdown _classSortDropdown;
+
     [Header("Popup close buttons")]
     [SerializeField] private Button _closeButton;
     [SerializeField] private Button _cancelButton;
@@ -35,16 +38,19 @@ public class CharacterFilterPanel : MonoBehaviour
 
     private List<CharacterClassType> _filteredClasses = new List<CharacterClassType>();
 
-    private enum _order
+    private enum SortOrder
     {
-        Alphabetical = 0,
-        AlphabeticalReverse = 1,
-        LowestLevel = 2,
-        HighestLevel = 3,
-        RarestFirst = 4,
-        RarestLast = 5,
-        FavouritesFirst = 6
+        Classes = 0,
+        Alphabetical = 1,
+        AlphabeticalReverse = 2,
+        LowestLevel = 3,
+        HighestLevel = 4,
+        RarestFirst = 5,
+        RarestLast = 6,
+        FavouritesFirst = 7
     }
+
+    private SortOrder _sortOrder = SortOrder.Classes;
 
 
     private void Start()
@@ -58,15 +64,46 @@ public class CharacterFilterPanel : MonoBehaviour
 
         _confirmButton.onClick.AddListener(CloseAndApply);
 
-        /*
-        //_toggleAll.onValueChanged.AddListener(ToggleAllCheck);
-        */
         _filterConscious.onValueChanged.AddListener(ConsciousToggleBold);
         _filterUnconscious.onValueChanged.AddListener(UnconsciousToggleBold);
 
         foreach (Toggle toggle in _classFilterToggles)
         {
             toggle.onValueChanged.AddListener(CheckClassToggles);
+        }
+
+        _classSortDropdown.onValueChanged.AddListener(ChangeDropDownValue);
+    }
+
+    private void ChangeDropDownValue(int value)
+    {
+        switch (value)
+        {
+            case 0:
+                _sortOrder = SortOrder.Classes;
+                break;
+            case 1:
+                _sortOrder = SortOrder.Alphabetical;
+                break;
+            case 2:
+                _sortOrder = SortOrder.AlphabeticalReverse;
+                break;
+            case 3:
+                _sortOrder = SortOrder.LowestLevel;
+                break;
+            case 4:
+                _sortOrder = SortOrder.HighestLevel;
+                break;
+            case 5:
+                _sortOrder = SortOrder.RarestFirst;
+                break;
+            case 6:
+                _sortOrder = SortOrder.RarestLast;
+                break;
+            case 7:
+                _sortOrder = SortOrder.FavouritesFirst;
+                break;
+
         }
     }
 
@@ -227,6 +264,29 @@ public class CharacterFilterPanel : MonoBehaviour
         _galleryView.ResetFilter();
         CheckClassFilters();
         CheckConsciousFilters();
+
+        //organize characters
+        switch (_sortOrder) {
+            case SortOrder.Classes:
+                _galleryView.OrganizeGallery(false, true);
+                break;
+            case SortOrder.Alphabetical:
+                _galleryView.OrganizeGallery(false, false);
+                break;
+            case SortOrder.AlphabeticalReverse:
+                _galleryView.OrganizeGallery(true, false);
+                break;
+            case SortOrder.LowestLevel:
+                break;
+            case SortOrder.HighestLevel:
+                break;
+            case SortOrder.RarestFirst:
+                break;
+            case SortOrder.RarestLast:
+                break;
+            case SortOrder.FavouritesFirst:
+                break;
+        }
 
         Debug.Log("Close and apply");
 
