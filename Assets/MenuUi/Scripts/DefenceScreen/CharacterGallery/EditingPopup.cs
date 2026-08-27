@@ -27,6 +27,8 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private BlinkingFrame[] _blinkingFrames;
 
+        [SerializeField] private bool _inDefenceGalleryView;
+
         //[SerializeField] private Button _removeCharacterButton;
 
 
@@ -42,6 +44,8 @@ namespace MenuUi.Scripts.CharacterGallery
             if (_swipe) _swipe.OnCurrentPageChanged += ClosePopup;
 
             if (_popup.activeSelf) _popup.SetActive(false);
+
+            if(_inDefenceGalleryView) _popup.SetActive(true);
 
             _galleryView.OnGalleryCharactersSet += SetCharacters;
             _galleryView.OnFilterChanged += HandleFilterChanged;
@@ -116,6 +120,7 @@ namespace MenuUi.Scripts.CharacterGallery
             StopAllBlinking();
 
             _popup.SetActive(false);
+            if (_inDefenceGalleryView) _popup.SetActive(true);
             _openedFromLoadout = false;
             _currentLoadoutIndex = -1;
             if (_charactersUpdated) SignalBus.OnReloadCharacterGalleryRequestedSignal();

@@ -438,6 +438,24 @@ namespace MenuUi.Scripts.CharacterGallery
             
         }
 
+        public void CheckIfSlotsActive() //if all character slots are inactive, make all active
+        {
+            int i = 0;
+            foreach (CharacterSlot characterSlot in _characterSlots)
+            {
+                if (!characterSlot.gameObject.activeSelf)
+                    i++;
+            }
+
+            if (i == _characterSlots.Count)
+            {
+                foreach (CharacterSlot characterSlot in _characterSlots)
+                {
+                    characterSlot.gameObject.SetActive(true);
+                }
+            }
+        }
+
         private void SetFilterText(FilterType filter)
         {
             switch (filter)

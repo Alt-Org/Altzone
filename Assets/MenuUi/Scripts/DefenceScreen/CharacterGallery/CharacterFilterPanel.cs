@@ -286,6 +286,7 @@ public class CharacterFilterPanel : MonoBehaviour
         CheckClassFilters();
         CheckConsciousFilters();
 
+        _galleryView.CheckIfSlotsActive();
         //organize characters (all ways of organizing are not possible currently)
         switch (_sortOrder) {
             case SortOrder.Classes:
