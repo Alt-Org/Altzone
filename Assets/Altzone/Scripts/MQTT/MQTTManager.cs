@@ -64,8 +64,14 @@ namespace Altzone.Scripts.MQTT
         public delegate void VoteReceived(MQTTVotingUpdatedNotification vote);
         public static event VoteReceived OnVoteReceived;
 
+        public delegate void MatchmakingRoomDataUpdated(MQTTMatchRoomData data);
+        public static event MatchmakingRoomDataUpdated OnMatchmakingRoomDataUpdated;
+
         public delegate void MatchmakingInviteReceived(MQTTMatchInvite invite);
         public static event MatchmakingInviteReceived OnMatchmakingInviteReceived;
+
+        public delegate void MatchmakingClanInviteReceived(MQTTMatchInvite invite);
+        public static event MatchmakingClanInviteReceived OnMatchmakingClanInviteReceived;
 
         public delegate void JukeboxPlaylistUpdated(MQTTJukeBoxPlaylist playList);
         public static event JukeboxPlaylistUpdated OnJukeboxPlaylistUpdated;
@@ -431,11 +437,20 @@ namespace Altzone.Scripts.MQTT
                 }
                 else if (result["topic"].ToString().Equals("matchmaking"))
                 {
-                    if (result["type"].ToString().Equals("INVITE_UPDATED"))
+                    switch (result["type"].ToString())
                     {
-                        MQTTMatchInvite invite = result["payload"].ToObject<MQTTMatchInvite>();
-
-                        OnMatchmakingInviteReceived?.Invoke(invite);
+                        case "ROOM_UPDATED":
+                            MQTTMatchRoomData data = result["payload"].ToObject<MQTTMatchRoomData>();
+                            OnMatchmakingRoomDataUpdated?.Invoke(data);
+                            break;
+                        case "INVITE_RECEIVED":
+                            MQTTMatchInvite invite = result["payload"].ToObject<MQTTMatchInvite>();
+                            OnMatchmakingInviteReceived?.Invoke(invite);
+                            break;
+                        case "CLAN_INVITE_RECEIVED":
+                            MQTTMatchInvite claninvite = result["payload"].ToObject<MQTTMatchInvite>();
+                            OnMatchmakingClanInviteReceived?.Invoke(claninvite);
+                            break;
                     }
                 }
                 else if (result["topic"].ToString().Equals("voting"))
