@@ -1,25 +1,39 @@
 using System;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Player;
 
 namespace Altzone.Scripts.MQTT
 {
+    [Serializable]
+    public class MQTTMatchRoomData
+    {
+        public string id { get; set; }
+        public MatchType matchType { get; set; }
+        public InviteStatus status { get; set; }
+        public string ownerPlayerId { get; set; }
+        public string clanId { get; set; }
+        public List<MQTTMatchPlayers> players { get; set; }
+        public List<MQTTBots> bots { get; set; }
+        public int teamSize { get; set; }
+        public bool allowBots { get; set; }
+        public string createdAt { get; set; }
+        public string updatedAt { get; set; }
+        public string readyAt { get; set; }
+    }
+
     [Serializable]
     public class MQTTMatchInvite
     {
         public string id { get; set; }
         public MatchType matchType { get; set; }
         public InviteStatus status { get; set; }
-        public string ownerPlayreId { get; set; }
+        public MQTTMatchPlayers ownerPlayer{ get; set; }
+        public MQTTMatchPlayers senderPlayer { get; set; }
         public string clanId { get; set; }
-        public string roomId { get; set; }
-        public List<string> players { get; set; }
-        public MQTTBots bots { get; set; }
+        public List<MQTTMatchPlayers> players { get; set; }
         public int teamSize { get; set; }
         public bool allowBots { get; set; }
-        public string createdAt { get; set; }
-        public string updatedAt { get; set; }
-        public string readyAt { get; set; }
-        public string matchId { get; set; }
+        public string sentAt { get; set; }
     }
 
     [Serializable]
@@ -70,7 +84,8 @@ namespace Altzone.Scripts.MQTT
     public class MQTTMatchPlayers
     {
         public string playerId { get; set; }
-        public string displayName { get; set; }
+        public string name { get; set; }
+        public ServerAvatar avatar { get; set; }
         public bool isBot { get; set; }
     }
 
