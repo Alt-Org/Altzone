@@ -48,6 +48,10 @@ namespace Altzone.Scripts.Audio
             All
         }
 
+        ServerPlaylist _serverPlaylistData = null;
+
+        public ServerPlaylist ServerCurrentPlaylist => _serverPlaylistData;
+
         private Playlist _currentPlaylist = null;
         public Playlist CurrentPlaylist {  get { return _currentPlaylist; } }
 
@@ -140,16 +144,13 @@ namespace Altzone.Scripts.Audio
 
             _currentPlaylist = new Playlist("Klaani", PlaylistType.Clan);
 
-            ServerPlaylist playlistData = null;
             bool? success = null;
 
-            StartCoroutine(UpdateLocalClanPlaylist((successData) => success = successData, (serverPlaylistData) => playlistData = serverPlaylistData));
+            StartCoroutine(UpdateLocalClanPlaylist((successData) => success = successData));
 
             yield return new WaitUntil(() => (success != null));
 
             if (!success.Value) yield break;
-
-            UpdateQueueContents(playlistData);
 
             _musicTrackFavorites = GetFavoriteDatas();
             _playlistReady = true;
@@ -278,9 +279,9 @@ namespace Altzone.Scripts.Audio
             playlistData(serverPlaylist);
         }
 
-        private void UpdateLocalClanPlaylist() { StartCoroutine(UpdateLocalClanPlaylist(null, null)); }
+        private void UpdateLocalClanPlaylist() { StartCoroutine(UpdateLocalClanPlaylist(null)); }
 
-        private IEnumerator UpdateLocalClanPlaylist(System.Action<bool> successCallback, System.Action<ServerPlaylist> serverPlaylistCallback)
+        private IEnumerator UpdateLocalClanPlaylist(System.Action<bool> successCallback)
         {
             ServerPlaylist serverPlaylistData = null;
             bool? timeout = null;
@@ -305,15 +306,16 @@ namespace Altzone.Scripts.Audio
                 yield break;
             }
 
-            UpdateQueueContents(serverPlaylistData);
+            _serverPlaylistData = serverPlaylistData;
+
+            UpdateQueueContents();
             OnQueueChange?.Invoke();
-            StartCoroutine(PlayServerTrack(serverPlaylistData.currentSong));
+            StartCoroutine(PlayServerTrack());
 
             _serverOperationAvailable = true;
 
             _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
 
-            serverPlaylistCallback?.Invoke(serverPlaylistData);
             successCallback?.Invoke(true);
         }
 
@@ -393,7 +395,7 @@ namespace Altzone.Scripts.Audio
                 timer += Time.deltaTime;
             }
 
-            StartCoroutine(UpdateLocalClanPlaylist((successData) => success = successData, null));
+            StartCoroutine(UpdateLocalClanPlaylist((successData) => success = successData));
 
             yield return new WaitUntil(() => (success != null));
 
@@ -404,11 +406,11 @@ namespace Altzone.Scripts.Audio
         #endregion
 
         #region Playback
-        private IEnumerator PlayServerTrack(ServerCurrentSong serverCurrentSong)
+        private IEnumerator PlayServerTrack()
         {
-            yield return new WaitUntil(() => _currentPlaylist != null);
+            yield return new WaitUntil(() => _currentPlaylist != null || _serverPlaylistData != null);
 
-            if (serverCurrentSong == null)
+            if (_serverPlaylistData.currentSong == null)
             {
                 _currentTrackQueueData = null;
 
@@ -422,6 +424,7 @@ namespace Altzone.Scripts.Audio
 
                 yield break;
             }
+            ServerCurrentSong serverCurrentSong = _serverPlaylistData.currentSong;
 
             System.DateTime gmtTime = System.DateTimeOffset.FromUnixTimeMilliseconds(serverCurrentSong.startedAt).DateTime;
             System.DateTime localTime = gmtTime.ToLocalTime();
@@ -826,10 +829,10 @@ namespace Altzone.Scripts.Audio
         /// <summary>
         /// Update local track queue contents with server playlist.
         /// </summary>
-        /// <param name="serverPlaylist"></param>
-        public void UpdateQueueContents(ServerPlaylist serverPlaylist)
+        public void UpdateQueueContents()
         {
             _trackQueue.Clear();
+            ServerPlaylist serverPlaylist = _serverPlaylistData;
 
             for (int i = 0; i < serverPlaylist.songQueue.Count; i++)
             {
