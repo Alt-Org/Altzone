@@ -29,6 +29,7 @@ public class KojuPopup : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject infoObject;
     [SerializeField] private GameObject removePopup;
+    [SerializeField] private GameObject kojuPanel; // Uusi lisäys (Perttu)
 
     [Header("Remove Confirmation")]
     [SerializeField] private Button removeConfirmButton;
@@ -105,6 +106,12 @@ public class KojuPopup : MonoBehaviour
         if (infoBoxBackground != null)
         {
             infoBoxBackground.color = rarityColor;
+        }
+
+        // Uusi lisäys (Perttu)
+        if (kojuPanel != null)
+        {
+            kojuPanel.SetActive(false);
         }
     }
 
@@ -197,6 +204,12 @@ public class KojuPopup : MonoBehaviour
         infoObject.SetActive(false);
         removePopup.SetActive(false);
         gameObject.SetActive(false);
+
+        // Uusi lisäys (Perttu)
+        if (kojuPanel != null)
+        {
+            kojuPanel.SetActive(true);
+        }
     }
 
     public void ToggleInfo(GameObject target)
