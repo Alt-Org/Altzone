@@ -206,6 +206,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="playerEntityRef">Reference to player entity.</param>
+        /// <param name="playerTransform">Pointer to the player's transform2D component.</param>
         /// <param name="position">World position to move to.</param>
         public static void Move(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, Transform2D* playerTransform, FPVector2 position)
         {

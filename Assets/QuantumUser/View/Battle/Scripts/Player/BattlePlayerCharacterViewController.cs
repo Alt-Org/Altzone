@@ -335,10 +335,19 @@ namespace Battle.View.Player
         [Tooltip("The amount of stun flashes")]
         [SerializeField] private int _stunFlashAmount;
 
+        /// <summary>[SerializeField] The duration in seconds of a single breathing animation cycle.</summary>
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        [Tooltip("The duration in seconds of a single breathing animation cycle")]
         [SerializeField] private float _animationBreathingInterval;
 
+        /// <summary>[SerializeField] The size multiplier for the breathing animation.</summary>
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        [Tooltip("The size multiplier for the breathing animation")]
         [SerializeField] private float _animationBreathingSizeMultiplier;
 
+        /// <summary>[SerializeField] The duration in seconds of a single running animation cycle.</summary>
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        [Tooltip("The duration in seconds of a single running animation cycle")]
         [SerializeField] private float _animationRunningInterval;
 
         //} settings
@@ -693,12 +702,34 @@ namespace Battle.View.Player
         private const int SpriteRendererShadowIndex = 4;
 
         /// @}
-        ///
+
+        /// <summary>Enum used to define player animation states.</summary>
         private enum AnimationState
         {
+            /// <summary>
+            /// %Player is idle, playing the idle breathing animation.<br/>
+            /// Condition: player is not moving.
+            /// </summary>
             Idle,
+            /// <summary>
+            /// %Player is running, playing the running animation.<br/>
+            /// Condition: player is moving.
+            /// </summary>
             Running,
+            /// <summary>
+            /// %Player is stunned, playing the stun animation.<br/>
+            /// Condition: player is stunned.<br/>
+            /// Blocking: blocks other states until
+            /// in <see cref="Battle.View.Player.BattlePlayerCharacterViewController.AnimationState.StunEnd">StunEnd</see>
+            /// state.
+            /// </summary>
             Stun,
+            /// <summary>
+            /// %Player is no longer stunned, transitioning to the next state.<br/>
+            /// Condition: player is no longer
+            /// in <see cref="Battle.View.Player.BattlePlayerCharacterViewController.AnimationState.Stun">Stun</see>
+            /// state.
+            /// </summary>
             StunEnd
         }
 
@@ -736,10 +767,13 @@ namespace Battle.View.Player
         /// See [{Player Teams}](#page-concepts-player-slots-teams) for more info.
         private BattleTeamNumber _teamNumber;
 
+        /// <summary>Current animation state.</summary>
         private AnimationState _animationState;
 
+        /// <summary>Timer used for animations.</summary>
         private float _animationTimer;
 
+        /// <summary>Normal scale of the gameobject.</summary>
         private Vector3 _normalScale;
 
         /// @anchor BattlePlayerCharacterViewController-Private-GameflowMethods
@@ -986,6 +1020,22 @@ namespace Battle.View.Player
             SetHandSprite(SpriteSheetMap.FromInt(index));
         }
 
+        /// <summary>
+        /// Private helper method for playing looping animations.<br/>
+        /// Called every animation step.
+        /// </summary>
+        ///
+        /// Advances the @cref{Battle.View.Player.BattlePlayerCharacterViewController,_animationTimer}
+        /// and calculates the current normalized time of the looping animation based on @a interval,
+        /// ranging from 0 to 1 and resetting to 0 after each completed cycle.<br/>
+        ///
+        /// The animation loop can be force @a reset,
+        /// which is recommended when changing animations.
+        ///
+        /// <param name="interval">The interval of the current looping animation.</param>
+        /// <param name="reset">Whether to force reset the animation loop or not.</param>
+        ///
+        /// <returns>Normalized looped animation time.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private float AnimationStep(float interval, bool reset)
         {
