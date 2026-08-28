@@ -196,7 +196,7 @@ namespace Battle.QSimulation.Player
             //} handle rotation
 
             // update position and rotation
-            Move(f, playerData, playerEntityRef, positionNext);
+            Move(f, playerData, playerEntityRef, transform, positionNext);
         }
 
         /// <summary>
@@ -206,10 +206,11 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="playerEntityRef">Reference to player entity.</param>
+        /// <param name="playerTransform">Pointer to the player's transform2D component.</param>
         /// <param name="position">World position to move to.</param>
-        public static void Move(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, FPVector2 position)
+        public static void Move(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, Transform2D* playerTransform, FPVector2 position)
         {
-            playerData->ViewMovementVector = position - playerData->ViewPosition;
+            playerData->ViewMovementVector = position - playerTransform->Position;
             BattleEntityManager.MoveCompound(f, playerEntityRef, position, playerData->RotationBaseRad);
             if (playerData->AttachedShield.ERef == EntityRef.None) return;
             BattleEntityManager.MoveCompound(f, playerData->AttachedShield, position, playerData->RotationBaseRad + playerData->RotationOffsetRad);
