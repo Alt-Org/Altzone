@@ -158,16 +158,16 @@ namespace Battle.View.Player
                 ShieldUp4 = 35,
 
                 /// <summary>Index: 36</summary>
-                ShieldUpHit1 = 36,
+                SpecialElementUp1 = 36,
 
                 /// <summary>Index: 37</summary>
-                ShieldUpHit2 = 37,
+                SpecialElementUp2 = 37,
 
                 /// <summary>Index: 38</summary>
-                ShieldUpHit3 = 38,
+                SpecialElementUp3 = 38,
 
                 /// <summary>Index: 39</summary>
-                ShieldUpHit4 = 39,
+                SpecialElementUp4 = 39,
 
                 /// <summary>Index: 40</summary>
                 ShieldDown1 = 40,
@@ -182,16 +182,16 @@ namespace Battle.View.Player
                 ShieldDown4 = 43,
 
                 /// <summary>Index: 44</summary>
-                ShieldDownHit1 = 44,
+                SpecialElementDown1 = 44,
 
                 /// <summary>Index: 45</summary>
-                ShieldDownHit2 = 45,
+                SpecialElementDown2 = 45,
 
                 /// <summary>Index: 46</summary>
-                ShieldDownHit3 = 46,
+                SpecialElementDown3 = 46,
 
                 /// <summary>Index: 47</summary>
-                ShieldDownHit4 = 47,
+                SpecialElementDown4 = 47,
 
                 /// <summary>Index: 48</summary>
                 HeadJoy = 48,
@@ -990,7 +990,7 @@ namespace Battle.View.Player
             {
                 SetHandOnShieldSprite(teamNumber, shieldNumber);
                 BattlePlayerShieldViewController.ShieldSide shieldSide = BattleGameViewController.LocalPlayerTeam == teamNumber ? BattlePlayerShieldViewController.ShieldSide.Top : BattlePlayerShieldViewController.ShieldSide.Bottom;
-                _playerShieldViewControllers[shieldNumber].SetShieldSprite(shieldNumber, shieldSide, isHit: false);
+                _playerShieldViewControllers[shieldNumber].SetShieldSprite(shieldNumber, shieldSide);
             }
             else
             {
