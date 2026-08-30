@@ -38,6 +38,17 @@ namespace MenuUi.Scripts.CharacterGallery
         private bool _openedFromLoadout = false;
         private int _currentLoadoutIndex = -1;
 
+
+        [SerializeField] private Button _leftArrow;
+        [SerializeField] private Button _rightArrow;
+
+        [SerializeField] private List<Button> _dotsList = new List<Button>();
+
+        [SerializeField] private int _currentLoadOut = 1;
+        private int _amountOfLoadouts = 3;
+
+        [SerializeField] private LoadoutRowController _loadoutController;
+
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>();
@@ -57,6 +68,10 @@ namespace MenuUi.Scripts.CharacterGallery
                 _selectedCharacterSlots[i].SlotIndex = i;
                 _selectedCharacterSlots[i].OnSlotPressed += HandleSlotPressed;
             }
+
+            _amountOfLoadouts = _dotsList.Count;
+            _leftArrow.onClick.AddListener(PressArrowLeft);
+            _rightArrow.onClick.AddListener(PressArrowRight);
 
             //if (_removeCharacterButton != null)
             //{
@@ -415,6 +430,51 @@ namespace MenuUi.Scripts.CharacterGallery
             }
 
             _charactersUpdated = true;
+        }
+
+
+
+        /// <summary>
+        /// Rotates the selected loadout backwards once
+        /// </summary>
+        public void PressArrowLeft()
+        {
+            if (_currentLoadOut > 1)
+            {  _currentLoadOut--;  }
+            else
+            {  _currentLoadOut = _amountOfLoadouts;  }
+
+            ChangeDots();
+
+            _loadoutController.ChangeLoadOutInGallery(_currentLoadOut);
+        }
+
+        /// <summary>
+        /// Rotates the selected loadout forwards once
+        /// </summary>
+        public void PressArrowRight()
+        {
+            if (_currentLoadOut < _amountOfLoadouts)
+            {  _currentLoadOut++;  }
+            else
+            {  _currentLoadOut = 1;  }
+
+            ChangeDots();
+
+            _loadoutController.ChangeLoadOutInGallery(_currentLoadOut);
+        }
+
+        /// <summary>
+        /// Update the dots under loadout
+        /// </summary>
+        private void ChangeDots()
+        {
+            foreach (Button dot in _dotsList)
+            {
+                dot.interactable = false;
+            }
+            Debug.Log(_currentLoadOut - 1);
+            _dotsList[_currentLoadOut - 1].interactable = true;
         }
     }
 }
