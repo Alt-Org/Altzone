@@ -27,6 +27,11 @@ namespace MenuUI.Scripts.SoulHome
 
         [SerializeField] private SpriteRenderer _slotValidityIndicator;
 
+        public bool IsReserved { get; set; }
+
+        public FurnitureHandling InteractionOwner;
+        public FurnitureHandling SlotOwner;
+
         public Furniture Furniture { get => furniture;
             set
             {
@@ -82,9 +87,14 @@ namespace MenuUI.Scripts.SoulHome
             _slotValidityIndicator.sortingOrder = id*1000 + 901;
         }
 
-        public void SetValidity(bool validity)
+        public void SetValidity(bool validity, bool isInteractSlot = false)
         {
-            if (validity)
+            if (isInteractSlot)
+            {
+
+                _slotValidityIndicator.color = new Color(1, 1, 0, 0.3f); //Yellow
+            }
+            else if (validity)
             {
                 _slotValidityIndicator.color = new Color(0,1,0, 0.3f);
             }
