@@ -158,8 +158,10 @@ namespace Quantum {
     Character705 = 705,
   }
   public enum BattlePlayerCharacterState : int {
-    Alive,
-    Dead,
+    OutOfPlay,
+    OutOfPlayDead,
+    InPlay,
+    InPlaySelected,
   }
   public enum BattlePlayerCollisionType : int {
     None = 0,
