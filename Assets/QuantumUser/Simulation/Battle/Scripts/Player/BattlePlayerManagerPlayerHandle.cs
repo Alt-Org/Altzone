@@ -419,6 +419,26 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly BattlePlayerEntityRef GetSelectedCharacterEntityRef(Frame f) => _internalHandle.GetSelectedCharacterEntityRef(f);
 
+            /// <summary>
+            /// Retrieves a character's EntityRef based on <paramref name="characterNumber"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicMethods-PlayerCharacterMethods "Player Character Methods"
+            ///
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Character Numbers}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// <param name="f">Current simulation frame.</param>
+            /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
+            /// <param name="updateViewPlayState">Whether to update view play state or not.</param>
+            ///
+            /// <returns>Character's EntityRef.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly BattlePlayerEntityRef GetCharacterEntityRef(Frame f, int characterNumber, bool updateViewPlayState = false)
+            {
+                return _internalHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState);
+            }
+
             #endregion Public Methods - Player Character Methods
             /// @}
 
