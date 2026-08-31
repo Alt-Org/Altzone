@@ -5489,6 +5489,7 @@ MonoBehaviour:
   uiElementsToHide:
   - {fileID: 1999130015878417801}
   - {fileID: 8642815707627354233}
+  - {fileID: 3065880051927959376}
   kojuSortingText: {fileID: 4561431458701460355}
   kojuSortButton: {fileID: 3543655573897036450}
   varastoSortingText: {fileID: 2053840484821391901}
@@ -8807,10 +8808,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4962537417488388343}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 479.99997, y: -72}
+  m_SizeDelta: {x: 191.99998, y: 114}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7712567702467427286
 CanvasRenderer:
@@ -11638,10 +11639,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4962537417488388343}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 95.99999, y: -72}
+  m_SizeDelta: {x: 191.99998, y: 114}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6137019768194478234
 CanvasRenderer:
@@ -11792,10 +11793,10 @@ RectTransform:
   - {fileID: 8976899021426596850}
   m_Father: {fileID: 4962537417488388343}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 287.99997, y: -72}
+  m_SizeDelta: {x: 191.99998, y: 114}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4067328208784659455
 CanvasRenderer:
@@ -12353,6 +12354,11 @@ PrefabInstance:
     - target: {fileID: 322518866647742354, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 380158908593822016, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 406035742189508960, guid: 57890b7dbec8a984abb7d8148eefe9f6,
@@ -13044,6 +13050,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4460171364614202443, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4478151558889824458, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -13194,6 +13205,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Color.r
       value: 0.30980393
+      objectReference: {fileID: 0}
+    - target: {fileID: 5077297755068026202, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5128630271997044813, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -13525,6 +13541,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7386002680133301277, guid: 57890b7dbec8a984abb7d8148eefe9f6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7386642737046265432, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -15118,7 +15139,7 @@ PrefabInstance:
     - target: {fileID: 2183429299387162393, guid: 3817768121a5f724cb0ed629f647c55b,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 2151.5469
+      value: 2076.6665
       objectReference: {fileID: 0}
     - target: {fileID: 2220128378134936561, guid: 3817768121a5f724cb0ed629f647c55b,
         type: 3}
@@ -15384,6 +15405,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: KojuContent
+      objectReference: {fileID: 0}
+    - target: {fileID: 5535014815631342011, guid: 3817768121a5f724cb0ed629f647c55b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5596916678991924971, guid: 3817768121a5f724cb0ed629f647c55b,
         type: 3}
@@ -15933,6 +15959,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 607bcf1f0b9821c44b6178273a64721f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3065880051927959376 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7128106909089710255, guid: 3817768121a5f724cb0ed629f647c55b,
+    type: 3}
+  m_PrefabInstance: {fileID: 5215219901497837567}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &6434618941988514820 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1237492690282228731, guid: 3817768121a5f724cb0ed629f647c55b,
