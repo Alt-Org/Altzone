@@ -678,6 +678,8 @@ namespace MenuUI.Scripts.SoulHome
         }
         private void CheckFurnitureButtons()
         {
+            return; // ----------------------------------------------
+            /*
             if (_soulHomeTower.SelectedFurniture != null)
             {
                 _furnitureButtons.transform.Find("RotateFurniture").GetComponent<Button>().interactable = true;
@@ -687,7 +689,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _furnitureButtons.transform.Find("RotateFurniture").GetComponent<Button>().interactable = false;
                 _furnitureButtons.transform.Find("SetFurniture").GetComponent<Button>().interactable = false;
-            }
+            }*/
         }
         public void SetHoverButtons(Vector3 relPos)
         {
@@ -696,6 +698,7 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 localPosition = new(x * relPos.x - x / 2, y * relPos.y - y / 2);
             Vector2 position = transform.Find("Screen").TransformPoint(localPosition);
             _hoverButtons.transform.position = position;
+            CheckHoverButtons(); // ----------------------------------------------
         }
 
         public IEnumerator ScreenRotation()
