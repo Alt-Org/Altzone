@@ -262,36 +262,22 @@ namespace Battle.QSimulation.Player
 
                 //{ non-character logic
 
-                switch (inputData.CommandType)
-                {
-                    case BattleCommand.Type.GiveUp:
-                        if (HandleGiveUp(f, playerHandle)) continue;
-                        break;
-
-                    case BattleCommand.Type.SwapCharacter:
-                        BattleCharacterSwapQCommand swapCharacterData = (BattleCharacterSwapQCommand)inputData.CommandData;
-                        if (HandleCharacterSwapping(f, playerHandle, swapCharacterData.CharacterNumber)) continue;
-                        break;
-                }
-
-                if (HandleOutOfPlay(f, playerHandle)) continue;
+                if (HandleNonCharacterUpdate(f, playerHandle, inputData)) continue;
 
                 //} non-character logic
 
                 //{ character logic
 
-                playerEntity    = playerHandle.GetSelectedCharacterEntityRef(f);
-                playerData      = playerEntity.GetDataQComponent(f);
-                playerTransform = playerEntity.GetTransform(f);
-
-                switch (inputData.CommandType)
+                for (int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
                 {
-                    case BattleCommand.Type.ActivateAbility:
-                        playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
-                        break;
-                }
+                    if (playerHandle.GetCharacterState(i) != BattlePlayerCharacterState.InPlaySelected) continue;
 
-                HandleInPlay(f, inputData.Input, playerHandle, playerData, playerEntity, playerTransform);
+                    playerEntity    = playerHandle.GetCharacterEntityRef(f, i);
+                    playerData      = playerEntity.GetDataQComponent(f);
+                    playerTransform = playerEntity.GetTransform(f);
+
+                    HandleCharacterUpdate(f, inputData, playerHandle, playerData, playerEntity, playerTransform, selected: true);
+                }
 
                 //} character logic
             }
@@ -578,21 +564,55 @@ namespace Battle.QSimulation.Player
 
             s_debugLogger.LogFormat(f, "({0}) Swapping to character number: {1}", playerHandle.Slot, playerCharacterNumber);
 
-            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, playerCharacterNumber);
+            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, playerCharacterNumber, select: true);
             return true;
         }
 
-        /// <summary>
-        /// Private helper method for handling player logic when out of play or any of its substates.<br/>
-        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Handle of the player.</param>
-        ///
-        /// <returns>True if the player is out of play or out of play respawn.</returns>
-        private bool HandleOutOfPlay(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        private void HandleCharacterUpdate(Frame f, InputData inputData, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, Transform2D* playerTransform, bool selected)
         {
+            playerData->ViewMovementVector = FPVector2.Zero;
+
+            bool updateMovement = true;
+
+            Input* input = inputData.Input;
+
+            if (!playerData->AbilityCooldownSec.IsRunning(f) && playerData->AbilityActivateBufferSec.IsRunning(f))
+            {
+                AbilityActivate(f, playerData, playerTransform);
+                updateMovement = false;
+            }
+
+            if (!playerData->StunCooldown.IsRunning(f))
+            {
+                playerData->MovementEnabled = !playerData->DisableMovement;
+                playerData->RotationEnabled = !playerData->DisableRotation;
+            }
+
+            switch (inputData.CommandType)
+            {
+                case BattleCommand.Type.ActivateAbility:
+                    playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
+                    break;
+            }
+
+            BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity, &input->Special);
+            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerEntity, playerTransform, input);
+        }
+
+        private bool HandleNonCharacterUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, InputData inputData)
+        {
+            switch (inputData.CommandType)
+            {
+                case BattleCommand.Type.GiveUp:
+                    if (HandleGiveUp(f, playerHandle)) return true;
+                    break;
+
+                case BattleCommand.Type.SwapCharacter:
+                    BattleCharacterSwapQCommand swapCharacterData = (BattleCharacterSwapQCommand)inputData.CommandData;
+                    if (HandleCharacterSwapping(f, playerHandle, swapCharacterData.CharacterNumber)) return true;
+                    break;
+            }
+
             // handle auto respawning
             if (playerHandle.PlayState.IsOutOfPlayRespawning() && !playerHandle.RespawnTimer.IsRunning(f) && playerHandle.AllowCharacterSwapping)
             {
@@ -601,11 +621,11 @@ namespace Battle.QSimulation.Player
                 // try to spawn next character
                 for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
                 {
-                    if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
+                    if (playerHandle.GetCharacterState(i) != BattlePlayerCharacterState.OutOfPlayDead)
                     {
-                        s_debugLogger.LogFormat(f,"({0}) Auto spawning character number: {1}", playerHandle.Slot, i);
+                        s_debugLogger.LogFormat(f, "({0}) Auto spawning character number: {1}", playerHandle.Slot, i);
 
-                        BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
+                        BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i, select: true);
                         break;
                     }
                 }
@@ -624,39 +644,6 @@ namespace Battle.QSimulation.Player
             if (playerHandle.PlayState.IsOutOfPlay()) return true;
 
             return false;
-        }
-
-        /// <summary>
-        /// Private helper method for handling player logic and updates when state is in play.<br/>
-        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="input">Pointer to the player's input data.</param>
-        /// <param name="playerHandle">Handle of the player.</param>
-        /// <param name="playerData">Pointer to the player's data component</param>
-        /// <param name="playerEntity">Reference to the player's entity</param>
-        /// <param name="playerTransform">Pointer to the player's transform component.</param>
-        private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, Transform2D* playerTransform)
-        {
-            playerData->ViewMovementVector = FPVector2.Zero;
-
-            bool updateMovement = true;
-
-            if (!playerData->AbilityCooldownSec.IsRunning(f) && playerData->AbilityActivateBufferSec.IsRunning(f))
-            {
-                AbilityActivate(f, playerData, playerTransform);
-                updateMovement = false;
-            }
-
-            if (!playerData->StunCooldown.IsRunning(f))
-            {
-                playerData->MovementEnabled = !playerData->DisableMovement;
-                playerData->RotationEnabled = !playerData->DisableRotation;
-            }
-
-            BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity, &input->Special);
-            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerEntity, playerTransform, input);
         }
 
         private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)
