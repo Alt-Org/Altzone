@@ -11,10 +11,12 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Button denyButton;
     [SerializeField] private Button increasePriceButton;
     [SerializeField] private Button decreasePriceButton;
+    [SerializeField] private Image fakeConfirm; // Uusi lisäys (Perttu)
 
     [Header("Price UI")]
     [SerializeField] private TMP_InputField priceInput;
     [SerializeField] private TMP_Text kojuPriceText;
+    [SerializeField] private GameObject inputBar; // Uusi lisäys (Perttu)
 
     [Header("Info UI")]
     [SerializeField] private TMP_Text nameText;
@@ -39,6 +41,7 @@ public class KojuPopup : MonoBehaviour
     [Header("Backgrounds")]
     [SerializeField] private Image infoBoxBackground;
     [SerializeField] private Image removePopupBackground;
+    [SerializeField] private TMP_Text chooseText; // Uusi lisäys (Perttu)
 
     [Header("Rarity Color Reference")]
     [SerializeField] private RarityColourReference rarityColourReference;
@@ -108,6 +111,22 @@ public class KojuPopup : MonoBehaviour
         {
             infoBoxBackground.color = rarityColor;
         }
+
+        // Uusi lisäys (Perttu)
+        if (!iconImage.enabled)
+        {
+            iconImage.enabled = true;
+        }
+        if (!inputBar)
+        {
+            inputBar.SetActive(true);
+        }
+        if (!confirmButton.enabled)
+        {
+            confirmButton.enabled = true;
+        }
+        fakeConfirm.enabled = false;
+        chooseText.enabled = false;
     }
 
     // Opens the popup in removal confirmation mode
