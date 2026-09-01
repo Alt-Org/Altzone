@@ -33,6 +33,9 @@ namespace Altzone.Scripts.Audio
         private bool _jukeboxMuted = false;
         public bool JukeboxMuted { get {  return _jukeboxMuted; } }
 
+        private bool _jukeboxDisabled = false;
+        public bool JukeboxDisabled { get { return _jukeboxDisabled; } }
+
         private float _musicElapsedTime = 0f;
         #endregion
 
@@ -165,7 +168,6 @@ namespace Altzone.Scripts.Audio
 
             OnQueueChange?.Invoke();
 
-            //_playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
             MQTTManager.OnJukeboxPlaylistUpdated += UpdateLocalClanPlaylist;
             MQTTManager.OnJukeboxSongUpdated += UpdateLocalClanSong;
         }
@@ -324,8 +326,6 @@ namespace Altzone.Scripts.Audio
 
             _serverOperationAvailable = true;
 
-            //_playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
-
             successCallback?.Invoke(true);
         }
 
@@ -444,6 +444,8 @@ namespace Altzone.Scripts.Audio
         {
             yield return new WaitUntil(() => _currentPlaylist != null || _serverPlaylistData != null);
 
+            if(_jukeboxDisabled) yield break; 
+
             if (_serverPlaylistData.currentSong == null)
             {
                 _currentTrackQueueData = null;
@@ -517,7 +519,7 @@ namespace Altzone.Scripts.Audio
         /// <returns>Track name that is playing.</returns>
         public string PlayTrack(TrackQueueData trackQueueData, bool forcePlay)
         {
-            if (!forcePlay && PlayTrackBlockingCheck(trackQueueData) || _trackPreviewActive) return null;
+            if (!forcePlay && PlayTrackBlockingCheck(trackQueueData) || _trackPreviewActive || _jukeboxDisabled) return null;
 
             string trackName = "";
 
@@ -586,6 +588,29 @@ namespace Altzone.Scripts.Audio
             return (muteActivation ? _jukeboxMuted : _playbackPaused);
         }
 
+        public void DisableJukeBox()
+        {
+            if (JukeboxDisabled) return;
+            _jukeboxDisabled = true;
+            if (JukeboxMuted) return;
+            if (_serverPlaylistData.currentSong != null) AudioManager.Instance.PlayFallBackTrack();
+        }
+
+        public void EnableJukeBox()
+        {
+            _jukeboxDisabled = false;
+
+            if (!_playbackPaused && !_jukeboxMuted)
+            {
+                if (_currentTrackQueueData != null)
+                    ContinueTrack(false);
+                else
+                    PlayTrack();
+            }
+            else
+                AudioManager.Instance.PlayFallBackTrack();
+        }
+
         /// <summary>
         /// Continues the current music track.
         /// </summary>
@@ -620,7 +645,7 @@ namespace Altzone.Scripts.Audio
 
             OnSetSongInfo?.Invoke(_currentTrackQueueData.MusicTrack);
 
-            if (!_jukeboxMuted)
+            if (!_jukeboxMuted || !_jukeboxDisabled)
                 return AudioManager.Instance.ContinueMusic(AudioCategoryType.Jukebox, _currentTrackQueueData.MusicTrack,
                     MusicHandler.MusicSwitchType.CrossFade, _musicElapsedTime, forcePlay);
 
