@@ -17,8 +17,8 @@ public class ServerPlaylist
 
     public ServerPlaylist(MQTTJukeBoxPlaylist mqttPlaylist)
     {
-        currentSong = new(mqttPlaylist.currentSong);
+        currentSong = mqttPlaylist.currentSong != null ? new(mqttPlaylist.currentSong) : null;
 
-        songQueue = mqttPlaylist.songQueue.Select(x => new ServerSong(x)).ToList();
+        songQueue = mqttPlaylist.currentSong != null ? mqttPlaylist.songQueue.Select(x => new ServerSong(x)).ToList() : null;
     }
 }
