@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.MQTT;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 
@@ -48,7 +50,7 @@ namespace Altzone.Scripts.Audio
             All
         }
 
-        ServerPlaylist _serverPlaylistData = null;
+        private ServerPlaylist _serverPlaylistData = null;
 
         public ServerPlaylist ServerCurrentPlaylist => _serverPlaylistData;
 
@@ -136,6 +138,12 @@ namespace Altzone.Scripts.Audio
 
         private void Start() { StartCoroutine(Setup()); }
 
+        private void OnDestroy()
+        {
+            MQTTManager.OnJukeboxPlaylistUpdated -= UpdateLocalClanPlaylist;
+            MQTTManager.OnJukeboxSongUpdated -= UpdateLocalClanSong;
+        }
+
         private IEnumerator Setup()
         {
             StartCoroutine(GetPlayerData());
@@ -157,7 +165,9 @@ namespace Altzone.Scripts.Audio
 
             OnQueueChange?.Invoke();
 
-            _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
+            //_playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
+            MQTTManager.OnJukeboxPlaylistUpdated += UpdateLocalClanPlaylist;
+            MQTTManager.OnJukeboxSongUpdated += UpdateLocalClanSong;
         }
 
         private IEnumerator GetPlayerData()
@@ -279,7 +289,7 @@ namespace Altzone.Scripts.Audio
             playlistData(serverPlaylist);
         }
 
-        private void UpdateLocalClanPlaylist() { StartCoroutine(UpdateLocalClanPlaylist(null)); }
+        private void UpdateLocalClanPlaylist() { StartCoroutine(UpdateLocalClanPlaylist(successCallback: null)); }
 
         private IEnumerator UpdateLocalClanPlaylist(System.Action<bool> successCallback)
         {
@@ -314,9 +324,56 @@ namespace Altzone.Scripts.Audio
 
             _serverOperationAvailable = true;
 
-            _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
+            //_playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
 
             successCallback?.Invoke(true);
+        }
+
+        private void UpdateLocalClanPlaylist(MQTTJukeBoxPlaylist list) => StartCoroutine(UpdateLocalClanPlaylistCoroutine(list));
+
+        private IEnumerator UpdateLocalClanPlaylistCoroutine(MQTTJukeBoxPlaylist list)
+        {
+            yield return new WaitUntil(() =>_serverOperationAvailable == true);
+
+            if (list == null)
+            {
+                yield break;
+            }
+
+            _serverPlaylistData = new(list);
+
+            UpdateQueueContents();
+            OnQueueChange?.Invoke();
+            StartCoroutine(PlayServerTrack());
+        }
+
+        private void UpdateLocalClanSong(MQTTCurrentSong song) => StartCoroutine(UpdateLocalClanSongCoroutine(song));
+
+
+        private IEnumerator UpdateLocalClanSongCoroutine(MQTTCurrentSong song)
+        {
+            yield return new WaitUntil(() => _serverOperationAvailable == true);
+
+            if (song == null)
+            {
+                yield break;
+            }
+
+            foreach (var data in _serverPlaylistData.songQueue)
+            {
+                if (data.songId.Equals(song.songId))
+                {
+                    _serverPlaylistData.currentSong = new(data,song);
+                    _serverPlaylistData.songQueue.Remove(data);
+
+                }
+            }
+
+            _serverPlaylistData.currentSong = new(song);
+
+            UpdateQueueContents();
+            OnQueueChange?.Invoke();
+            StartCoroutine(PlayServerTrack());
         }
 
         private IEnumerator DeleteTrackFromServer(System.Action<bool> successCallback, string trackUniqueId, string trackName)
@@ -832,6 +889,7 @@ namespace Altzone.Scripts.Audio
         public void UpdateQueueContents()
         {
             _trackQueue.Clear();
+            if (_serverPlaylistData == null)  return;
             ServerPlaylist serverPlaylist = _serverPlaylistData;
 
             for (int i = 0; i < serverPlaylist.songQueue.Count; i++)
