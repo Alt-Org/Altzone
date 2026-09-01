@@ -437,29 +437,6 @@ namespace Altzone.Scripts.Audio
             return tracks.Find(track => track.Id == musicTrackId);
         }
 
-        /// <summary>
-        /// Used to update clan playlist.
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerator ServerPlaylistFetchLoop()
-        {
-            bool? success = null;
-            float timer = 0f;
-
-            while (timer < _playlistServerFetchFrequency)
-            {
-                yield return null;
-                timer += Time.deltaTime;
-            }
-
-            StartCoroutine(UpdateLocalClanPlaylist((successData) => success = successData));
-
-            yield return new WaitUntil(() => (success != null));
-
-            if (success != null && !success.Value) yield break;
-
-            _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
-        }
         #endregion
 
         #region Playback
