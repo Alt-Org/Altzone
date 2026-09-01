@@ -6600,6 +6600,7 @@ namespace Altzone.Scripts.Lobby
 
         public static void CloseRunner()
         {
+            JukeboxManager.Instance.DisableJukeBox();
             AudioManager.Instance.StopMusic();
             QuantumRunner.ShutdownAll();
             DebugLogFileHandler.ContextEnter(DebugLogFileHandler.ContextID.MenuUI);
