@@ -1478,6 +1478,7 @@ GameObject:
   - component: {fileID: 8386857968232960386}
   - component: {fileID: 7324075220428498649}
   - component: {fileID: 7567745627190113838}
+  - component: {fileID: 7041237202784624608}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1604,6 +1605,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7041237202784624608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1581129128598159366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Katso Replay
+  _englishText: Watch the replay
 --- !u!1 &1617381282463401891
 GameObject:
   m_ObjectHideFlags: 0
@@ -2311,6 +2326,7 @@ GameObject:
   - component: {fileID: 3521247696027474249}
   - component: {fileID: 7676619287200284274}
   - component: {fileID: 7358336735810959069}
+  - component: {fileID: 3881260981518030337}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2437,6 +2453,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3881260981518030337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2776875703182835938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Palaa p\xE4\xE4ikkunaan"
+  _englishText: Return to Main Menu
 --- !u!1 &3005681340707228758
 GameObject:
   m_ObjectHideFlags: 0
@@ -4988,6 +5018,7 @@ GameObject:
   - component: {fileID: 4838069268673304484}
   - component: {fileID: 4339082225376862361}
   - component: {fileID: 557061741529603927}
+  - component: {fileID: 1997818697518028408}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -5114,6 +5145,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1997818697518028408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8715385518171828950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Pelaa Uudestaan\n(Ei toimi viel\xE4)"
+  _englishText: 'Play again
+
+    (Doesn''t work yet)'
 --- !u!1 &8748727049976383547
 GameObject:
   m_ObjectHideFlags: 0
