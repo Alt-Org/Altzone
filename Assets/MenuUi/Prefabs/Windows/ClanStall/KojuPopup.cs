@@ -11,7 +11,7 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Button denyButton;
     [SerializeField] private Button increasePriceButton;
     [SerializeField] private Button decreasePriceButton;
-    [SerializeField] private Image fakeConfirm; // Uusi lisäys (Perttu)
+    [SerializeField] private Image confirmImage; // Uusi lisäys (Perttu)
 
     [Header("Price UI")]
     [SerializeField] private TMP_InputField priceInput;
@@ -112,21 +112,24 @@ public class KojuPopup : MonoBehaviour
             infoBoxBackground.color = rarityColor;
         }
 
-        // Uusi lisäys (Perttu)
-        if (!iconImage.enabled)
+        // uusi lisäys(perttu)
+        if (iconImage.enabled == false)
         {
             iconImage.enabled = true;
         }
-        if (!inputBar)
+        if (!inputBar.active)
         {
             inputBar.SetActive(true);
         }
-        if (!confirmButton.enabled)
+        if (confirmButton.enabled == false)
         {
             confirmButton.enabled = true;
+            confirmImage.color = new Vector4(255f, 255f, 255f, 255f);
         }
-        fakeConfirm.enabled = false;
-        chooseText.enabled = false;
+        if (chooseText.enabled == true)
+        {
+            chooseText.enabled = false;
+        }
     }
 
     // Opens the popup in removal confirmation mode
