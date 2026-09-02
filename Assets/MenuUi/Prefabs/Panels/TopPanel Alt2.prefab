@@ -301,6 +301,7 @@ RectTransform:
   - {fileID: 6769508266521005098}
   - {fileID: 6179761661529267833}
   - {fileID: 856690320710882968}
+  - {fileID: 7131415783926435123}
   - {fileID: 6149830515762959213}
   - {fileID: 8088963060838462464}
   - {fileID: 6580083112298689753}
@@ -2179,6 +2180,62 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &6101434682045295577
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7131415783926435123}
+  - component: {fileID: 1415704100195628782}
+  m_Layer: 5
+  m_Name: Spacer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7131415783926435123
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6101434682045295577}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4610801773283088190}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1415704100195628782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6101434682045295577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: 1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &6221160951982613882
 GameObject:
   m_ObjectHideFlags: 0
@@ -2265,7 +2322,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   style: 2
   _rows:
-  - item: 0
+  - item: 9
     visibilityTarget: {fileID: 6950948124574557314}
     orderTarget: {fileID: 6769508266521005098}
   - item: 1
@@ -2289,11 +2346,12 @@ MonoBehaviour:
   - item: 7
     visibilityTarget: {fileID: 5187521075274919889}
     orderTarget: {fileID: 856690320710882968}
-  - item: 9
+  - item: 0
     visibilityTarget: {fileID: 4699019827900075299}
     orderTarget: {fileID: 6149830515762959213}
-  _flexibleSpacer: {fileID: 0}
+  _flexibleSpacer: {fileID: 7131415783926435123}
   _spacerMinWidth: 0
+  _spacer: {fileID: 7131415783926435123}
   _clanTileBackground: {fileID: 0}
   _standaloneLeaderboard: {fileID: 0}
   _clanTileLeaderboard: {fileID: 0}
@@ -2306,7 +2364,7 @@ MonoBehaviour:
   _textContainer: {fileID: 2500106974544179646}
   _coinsRow: {fileID: 8782303747129721840}
   _tileManagement:
-  - Tile: 0
+  - Tile: 9
     TilePanelRoot: {fileID: 6769508266521005098}
     TilePanel: {fileID: 6769508266521005098}
     TileObjects:
@@ -2316,7 +2374,7 @@ MonoBehaviour:
     - Tag: 2
       Child: {fileID: 8782303747129721840}
       SlotContainer: {fileID: 8275066923004832184}
-  - Tile: 9
+  - Tile: 0
     TilePanelRoot: {fileID: 6149830515762959213}
     TilePanel: {fileID: 6149830515762959213}
     TileObjects:
@@ -2524,7 +2582,7 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 45
+  m_PreferredWidth: 100
   m_PreferredHeight: 100
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
@@ -3050,8 +3108,8 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 135.6
-  m_PreferredHeight: 80
+  m_PreferredWidth: 150
+  m_PreferredHeight: 100
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -5048,7 +5106,7 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 65
+  m_PreferredWidth: 100
   m_PreferredHeight: 100
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1

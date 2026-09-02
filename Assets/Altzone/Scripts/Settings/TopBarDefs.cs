@@ -6,7 +6,7 @@ namespace Altzone.Scripts.Settings
 
         public enum TopBarItem
         {
-            ClanTile,
+            Tile,
             Leaderboard,
             Coins,
             ClanLogo,
@@ -15,7 +15,7 @@ namespace Altzone.Scripts.Settings
             PlayerProfile,
             Voting,
             Settings,
-            ClanTile2nd
+            Tile2nd
         }
 
         public static string Key(TopBarItem item) => $"{KeyPrefix}{item}";

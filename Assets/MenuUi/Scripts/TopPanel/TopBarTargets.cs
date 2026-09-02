@@ -26,20 +26,20 @@ namespace MenuUI.Scripts.TopPanel
         private RectTransform _flexibleSpacer;
 
         [SerializeField] private float _spacerMinWidth = 0f;
+        [SerializeField] private Transform _spacer;
 
         [SerializeField] private Transform _clanTileBackground;
         [SerializeField] private GameObject _standaloneLeaderboard;
         [SerializeField] private GameObject _clanTileLeaderboard;
-        [SerializeField] private TopBarDefs.TopBarItem _tileItem1st = TopBarDefs.TopBarItem.ClanTile;
+        [SerializeField] private TopBarDefs.TopBarItem _tileItem1st = TopBarDefs.TopBarItem.Tile;
         [SerializeField] private TopBarDefs.TopBarItem _leaderboardItem = TopBarDefs.TopBarItem.Leaderboard;
-        [SerializeField] private TopBarDefs.TopBarItem _tileItem2nd = TopBarDefs.TopBarItem.ClanTile2nd;
+        [SerializeField] private TopBarDefs.TopBarItem _tileItem2nd = TopBarDefs.TopBarItem.Tile2nd;
 
         [SerializeField] private Transform _topBarContent;
         [SerializeField] private Transform _clanLeaderboardButton;
         [SerializeField] private Transform _clanHeart;
         [SerializeField] private Transform _textContainer;
         [SerializeField] private Transform _coinsRow;
-
         //SerializeField for slots in tiles panels
 
         [Serializable]
@@ -96,11 +96,11 @@ namespace MenuUI.Scripts.TopPanel
 
             bool[] isVisible = ReadVisibility();
 
-            bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.ClanTile);
-            TopBarDefs.TopBarItem topBarItem = (TopBarDefs.TopBarItem.ClanTile);
+            bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.Tile);
+            TopBarDefs.TopBarItem topBarItem = (TopBarDefs.TopBarItem.Tile);
 
-            bool clanPanel2ndOn = IsVisible(TopBarDefs.TopBarItem.ClanTile2nd);
-            TopBarDefs.TopBarItem topBarItem2nd = (TopBarDefs.TopBarItem.ClanTile2nd);
+            bool clanPanel2ndOn = IsVisible(TopBarDefs.TopBarItem.Tile2nd);
+            TopBarDefs.TopBarItem topBarItem2nd = (TopBarDefs.TopBarItem.Tile2nd);
 
             Debug.Log($"[TB] BEFORE clanOn={clanPanelOn} " +
                       $"heartParent={_clanHeart.parent.name}, " +
@@ -252,8 +252,8 @@ namespace MenuUI.Scripts.TopPanel
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyOrderWithSpacer()");
 
-            bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.ClanTile);
-            bool clanPanelOn2nd = IsVisible(TopBarDefs.TopBarItem.ClanTile2nd);
+            bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.Tile);
+            bool clanPanelOn2nd = IsVisible(TopBarDefs.TopBarItem.Tile2nd);
             int sib = 0;
 
             HashSet<Transform> alreadyMoved = new HashSet<Transform>();
@@ -269,7 +269,7 @@ namespace MenuUI.Scripts.TopPanel
                 bool isClanSubItemF2nd = false;
                 foreach (var j in _tileManagement)
                 {
-                    if(j.Tile == TopBarDefs.TopBarItem.ClanTile)
+                    if(j.Tile == TopBarDefs.TopBarItem.Tile)
                         foreach(var e in j.TileObjects)
                         {
                             if(item == e.Tag)
@@ -283,7 +283,7 @@ namespace MenuUI.Scripts.TopPanel
 
                 foreach (var j in _tileManagement)
                 {
-                    if (j.Tile == TopBarDefs.TopBarItem.ClanTile2nd)
+                    if (j.Tile == TopBarDefs.TopBarItem.Tile2nd)
                         foreach (var e in j.TileObjects)
                     {
                         if (item == e.Tag)
@@ -323,6 +323,21 @@ namespace MenuUI.Scripts.TopPanel
                           $"parent={c.parent.name}");
             }
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
+
+
+
+            //Spacer System
+            int activeChild = 0;
+
+            foreach(Transform child in _topBarContent)
+            {
+                if(child.gameObject.activeSelf)
+                {
+                    activeChild++;
+                }
+            }
+            _spacer.SetSiblingIndex((activeChild / 2) - 1);
+
         }
 
         public bool TryGetRowIndex(TopBarDefs.TopBarItem item, out int index)
@@ -365,7 +380,7 @@ namespace MenuUI.Scripts.TopPanel
             }
 
             bool[] vis = ReadVisibility();
-            bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.ClanTile);
+            bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.Tile);
 
             List<int> rawOrder = SettingsCarrier.LoadTopBarOrderStatic(style, _rows.Count);
 

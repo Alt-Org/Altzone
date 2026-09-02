@@ -531,8 +531,8 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 3
   m_Spacing: 0
-  m_ChildForceExpandWidth: 0
-  m_ChildForceExpandHeight: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
@@ -591,7 +591,7 @@ MonoBehaviour:
   m_MinWidth: -1
   m_MinHeight: -1
   m_PreferredWidth: 150
-  m_PreferredHeight: 40
+  m_PreferredHeight: 100
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -1804,6 +1804,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   style: 1
   _rows:
+  - item: 7
+    visibilityTarget: {fileID: 6725284887274007202}
+    orderTarget: {fileID: 1246185762394002411}
   - item: 0
     visibilityTarget: {fileID: 4699019827900075299}
     orderTarget: {fileID: 6149830515762959213}
@@ -1825,10 +1828,7 @@ MonoBehaviour:
   - item: 6
     visibilityTarget: {fileID: 1609676208198424510}
     orderTarget: {fileID: 9212066207485454122}
-  - item: 7
-    visibilityTarget: {fileID: 6725284887274007202}
-    orderTarget: {fileID: 1246185762394002411}
-  _flexibleSpacer: {fileID: 0}
+  _flexibleSpacer: {fileID: 2778533595470406781}
   _spacerMinWidth: 0
   _clanTileBackground: {fileID: 0}
   _standaloneLeaderboard: {fileID: 0}
@@ -1841,6 +1841,7 @@ MonoBehaviour:
   _clanHeart: {fileID: 7757244758250276161}
   _textContainer: {fileID: 6851226448621178634}
   _coinsRow: {fileID: 4438963529688278074}
+  _spacer: {fileID: 2778533595470406781}
   _tileManagement:
   - Tile: 0
     TilePanelRoot: {fileID: 6149830515762959213}
@@ -2286,16 +2287,16 @@ MonoBehaviour:
       m_Calls: []
   m_text: klaani
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
-  m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
+  m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
+  m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278231807
+  m_fontColor: {r: 1, g: 0.63529414, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2312,7 +2313,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28
+  m_fontSize: 47.95
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2371,8 +2372,8 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: -1
-  m_PreferredHeight: 30
+  m_PreferredWidth: 150
+  m_PreferredHeight: 50
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1

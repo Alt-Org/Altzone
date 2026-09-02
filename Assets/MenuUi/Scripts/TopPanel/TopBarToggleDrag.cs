@@ -244,7 +244,7 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         if (handler == null) return true;
 
         bool clanTileOn = PlayerPrefs.GetInt(
-            TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile) + "_" + SettingsCarrier.Instance.TopBarStyleSetting,
+            TopBarDefs.Key(TopBarDefs.TopBarItem.Tile) + "_" + SettingsCarrier.Instance.TopBarStyleSetting,
             1
         ) != 0;
 
@@ -274,7 +274,7 @@ public class TopBarToggleDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         if (SettingsCarrier.Instance == null) return false;
 
         string key =
-            TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile)
+            TopBarDefs.Key(TopBarDefs.TopBarItem.Tile)
             + "_"
             + SettingsCarrier.Instance.TopBarStyleSetting;
 

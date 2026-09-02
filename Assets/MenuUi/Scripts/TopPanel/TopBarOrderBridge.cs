@@ -111,7 +111,7 @@ public class TopBarOrderBridge : MonoBehaviour
         int nextPos = 0;
 
         bool clanTileOn = PlayerPrefs.GetInt(
-            TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile) + "_" + CurrentStyle,
+            TopBarDefs.Key(TopBarDefs.TopBarItem.Tile) + "_" + CurrentStyle,
             1
         ) != 0;
 
@@ -204,7 +204,7 @@ public class TopBarOrderBridge : MonoBehaviour
 
         SetClanSubItemIndent(
             PlayerPrefs.GetInt(
-                TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile) + "_" + CurrentStyle,
+                TopBarDefs.Key(TopBarDefs.TopBarItem.Tile) + "_" + CurrentStyle,
                 1
             ) != 0
         );
@@ -255,7 +255,7 @@ public class TopBarOrderBridge : MonoBehaviour
         ApplyOrderToToggleList(order, _toggleContainer, owner);
 
         bool clanTileOn = PlayerPrefs.GetInt(
-            TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile) + "_" + style,
+            TopBarDefs.Key(TopBarDefs.TopBarItem.Tile) + "_" + style,
             1
         ) != 0;
 
@@ -321,7 +321,7 @@ public class TopBarOrderBridge : MonoBehaviour
     {
         SetClanSubItemIndent(
             PlayerPrefs.GetInt(
-                TopBarDefs.Key(TopBarDefs.TopBarItem.ClanTile) + "_" + CurrentStyle,
+                TopBarDefs.Key(TopBarDefs.TopBarItem.Tile) + "_" + CurrentStyle,
                 1
             ) != 0
         );
@@ -436,7 +436,7 @@ public class TopBarOrderBridge : MonoBehaviour
 
             switch (h.item)
             {
-                case TopBarDefs.TopBarItem.ClanTile:
+                case TopBarDefs.TopBarItem.Tile:
                     clanTileRow = row;
                     break;
                 case TopBarDefs.TopBarItem.Leaderboard:
