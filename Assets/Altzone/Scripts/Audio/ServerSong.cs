@@ -1,4 +1,6 @@
-﻿public class ServerSong
+﻿using Altzone.Scripts.MQTT;
+
+public class ServerSong
 {
     public string id;
     public string songId;
@@ -20,6 +22,14 @@
         songId = serverCurrentSong.songId;
         playerId = serverCurrentSong.playerId;
         songDurationSeconds = -1;
+    }
+
+    public ServerSong(MQTTJukeBoxQueue song)
+    {
+        id = song.id;
+        songId = song.songId;
+        playerId = song.playerId;
+        songDurationSeconds = song.songDurationSeconds;
     }
 }
 

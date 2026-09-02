@@ -16,9 +16,9 @@ namespace Altzone.Scripts.MQTT
     {
         public string id { get; set; }
         public string songId { get; set; }
-        public float songDurationSeconds { get; set; }
+        public int songDurationSeconds { get; set; }
         public string playerId { get; set; }
-        public float startedAt { get; set; }
+        public long startedAt { get; set; }
     }
 
     [Serializable]
@@ -26,7 +26,7 @@ namespace Altzone.Scripts.MQTT
     {
         public string id { get; set; }
         public string songId { get; set; }
-        public float songDurationSeconds { get; set; }
+        public int songDurationSeconds { get; set; }
         public string playerId { get; set; }
     }
 
@@ -34,6 +34,6 @@ namespace Altzone.Scripts.MQTT
     public class MQTTCurrentSong
     {
         public string songId { get; set; }
-        public float startedAt { get; set; }
+        public long startedAt { get; set; }
     }
 }
