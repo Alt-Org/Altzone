@@ -23,9 +23,13 @@ public class BattleEndController : MonoBehaviour
     [Header("End Animator"), SerializeField]
     private Animator _victoryDefeatAnimation;
     [SerializeField]
-    private AnimationClip _victoryAnimation;
+    private AnimationClip _victoryAnimationEN;
     [SerializeField]
-    private AnimationClip _defeatAnimation;
+    private AnimationClip _victoryAnimationFI;
+    [SerializeField]
+    private AnimationClip _defeatAnimationEN;
+    [SerializeField]
+    private AnimationClip _defeatAnimationFI;
 
     // Start is called before the first frame update
     void Start()
@@ -71,20 +75,39 @@ public class BattleEndController : MonoBehaviour
 
     private float PlayBattleEnd(bool winner)
     {
+        AnimationClip animationClip = null;
         if (winner)
         {
             _battleWinnerText.text = "Voitto";
             _battleWinnerText.color = Color.blue;
-            _victoryDefeatAnimation.Play(_victoryAnimation.name);
-            return _victoryAnimation.length;
+
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            {
+                animationClip = _victoryAnimationFI;
+            }
+            else if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            {
+                animationClip = _victoryAnimationEN;
+            }
         }
         else
         {
             _battleWinnerText.text = "Häviö";
             _battleWinnerText.color = Color.red;
-            _victoryDefeatAnimation.Play(_defeatAnimation.name);
-            return _defeatAnimation.length;
+
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            {
+                animationClip = _defeatAnimationFI;
+            }
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            {
+                animationClip = _defeatAnimationEN;
+            }
         }
+        if (animationClip == null) return 0;
+
+        _victoryDefeatAnimation.Play(animationClip.name);
+        return animationClip.length;
     }
 
     private void SwitchToStory()
