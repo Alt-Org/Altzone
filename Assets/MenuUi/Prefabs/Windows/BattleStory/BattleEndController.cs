@@ -14,6 +14,12 @@ public class BattleEndController : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _battleWinnerText;
     [SerializeField]
+    private Image _background;
+    [SerializeField]
+    private GameObject _victoryDefeatAnimationScreen;
+    [SerializeField]
+    private GameObject _resultPanel;
+    [SerializeField]
     private GameObject _menuButtons;
     [SerializeField]
     private Button _battleStoryButton;
@@ -34,6 +40,9 @@ public class BattleEndController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _background.enabled = true;
+        _victoryDefeatAnimationScreen.SetActive(true);
+        _resultPanel.SetActive(false);
         _menuButtons.SetActive(false);
 
         _battleStoryButton.onClick.AddListener(SwitchToStory);
@@ -69,7 +78,10 @@ public class BattleEndController : MonoBehaviour
     {
 
         float time = PlayBattleEnd(winner);
-        yield return new WaitForSeconds(time);
+        yield return new WaitForSeconds(time+1);
+        _background.enabled = false;
+        _victoryDefeatAnimationScreen.SetActive(false);
+        _resultPanel.SetActive(true);
         _menuButtons.SetActive(true);
     }
 
