@@ -12,11 +12,13 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Button increasePriceButton;
     [SerializeField] private Button decreasePriceButton;
     [SerializeField] private Image confirmImage; // Uusi lisäys (Perttu)
+    [SerializeField] private Image denyImage; // Uusi lisäys (Perttu)
 
     [Header("Price UI")]
     [SerializeField] private TMP_InputField priceInput;
     [SerializeField] private TMP_Text kojuPriceText;
     [SerializeField] private GameObject inputBar; // Uusi lisäys (Perttu)
+    [SerializeField] private TMP_Text removeKojuPriceText; // Uusi lisäys (Perttu)
 
     [Header("Info UI")]
     [SerializeField] private TMP_Text nameText;
@@ -27,6 +29,9 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text artistNameText;
+    [SerializeField] private Image removeIconImage; // Uusi lisäys (Perttu)
+    [SerializeField] private TMP_Text removeNameText; // Uusi lisäys (Perttu)
+    [SerializeField] private TMP_Text removeSetNameText; // Uusi lisäys (Perttu)
 
     [Header("Panels")]
     [SerializeField] private GameObject infoObject;
@@ -146,8 +151,50 @@ public class KojuPopup : MonoBehaviour
             removePopupBackground.color = rarityColor;
         }
 
+        // Uusi lisäys (Perttu)
+        if (cardUI != null && removeIconImage != null && removeKojuPriceText != null)
+        {
+            Sprite cardIconImage = cardUI.GetIcon();
+            removeIconImage.sprite = cardIconImage;
+            float cardPrice = cardUI.GetValue();
+            removeKojuPriceText.text = cardPrice.ToString();
+        }
+
+        // Uusi lisäys (Perttu)
+        if (cardUI != null && removeNameText != null && removeSetNameText != null)
+        {
+            string cardNameText = cardUI.GetNameText();
+            removeNameText.text = cardNameText;
+            string cardSetNameText = cardUI.GetSetNameText();
+            removeSetNameText.text = cardSetNameText;
+        }
+
         removePopup.SetActive(true);
         gameObject.SetActive(true);
+
+        // uusi lisäys(perttu)
+        if (iconImage.enabled == true)
+        {
+            iconImage.enabled = false;
+        }
+        if (inputBar.active)
+        {
+            inputBar.SetActive(false);
+        }
+        if (confirmButton.enabled == true)
+        {
+            confirmButton.enabled = false;
+            confirmImage.enabled = false;
+        }
+        if (denyButton.enabled == true)
+        {
+            denyButton.enabled = false;
+            denyImage.enabled = false;
+        }
+        if (chooseText.enabled == true)
+        {
+            chooseText.enabled = false;
+        }
     }
 
     private void OnIncreasePrice()
