@@ -26,6 +26,9 @@ public class BattleEndController : MonoBehaviour
     [SerializeField]
     private Button _leaveButton;
 
+    [SerializeField]
+    private BattleResultHandler _resultHandler;
+
     [Header("End Animator"), SerializeField]
     private Animator _victoryDefeatAnimation;
     [SerializeField]
@@ -50,7 +53,7 @@ public class BattleEndController : MonoBehaviour
 
         OverlayPanelCheck.Instance.ToggleOverlay(false);
 
-        bool? winner = DataCarrier.GetData<bool?>(DataCarrier.BattleWinner, false);
+        bool? winner = DataCarrier.GetData<bool?>(DataCarrier.OwnBattleResult, false);
 
         if (winner.HasValue)
         {
@@ -78,6 +81,7 @@ public class BattleEndController : MonoBehaviour
     {
 
         float time = PlayBattleEnd(winner);
+        _resultHandler.SetBattleResult(winner);
         yield return new WaitForSeconds(time+1);
         _background.enabled = false;
         _victoryDefeatAnimationScreen.SetActive(false);
@@ -129,7 +133,8 @@ public class BattleEndController : MonoBehaviour
     }
     private void LeaveToMain()
     {
-        DataCarrier.GetData<bool?>(DataCarrier.BattleWinner, suppressWarning: true);
+        DataCarrier.GetData<int>(DataCarrier.BattleWinner, suppressWarning: true);
+        DataCarrier.GetData<bool?>(DataCarrier.OwnBattleResult, suppressWarning: true);
         DataCarrier.GetData<string>(DataCarrier.BattleOwnTeamName, suppressWarning: true);
         DataCarrier.GetData<string>(DataCarrier.BattleEnemyTeamName, suppressWarning: true);
         LobbyManager.ExitBattleStory();

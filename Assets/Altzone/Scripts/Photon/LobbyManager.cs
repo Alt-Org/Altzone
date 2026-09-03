@@ -6588,7 +6588,8 @@ namespace Altzone.Scripts.Lobby
 
         public static void ExitQuantum(BattleTeamNumber winningTeam, BattleTeamNumber ownTeam, float gameLengthSec)
         {
-            DataCarrier.AddData(DataCarrier.BattleWinner,winningTeam == ownTeam);
+            DataCarrier.AddData(DataCarrier.BattleWinner, (int)winningTeam);
+            DataCarrier.AddData(DataCarrier.OwnBattleResult, winningTeam == ownTeam);
             Room room = PhotonRealtimeClient.CurrentRoom;
             string alphaTeamName = room.GetCustomProperty(TeamAlphaNameKey, "Alpha");
             string betaTeamName = room.GetCustomProperty(TeamBetaNameKey, "Beta");
