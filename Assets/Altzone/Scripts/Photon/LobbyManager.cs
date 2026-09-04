@@ -6135,8 +6135,11 @@ namespace Altzone.Scripts.Lobby
                     {
                         string positionKey = PhotonBattleRoom.GetPositionKey(j);
                         string positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
-                        if (positionValue == "Bot") playerTypes[j-1] = PlayerType.Bot;
-                        playerUserNames[j - 1] = "Bot";
+                        if (positionValue == "Bot")
+                        {
+                            playerTypes[j - 1] = PlayerType.Bot;
+                            playerUserNames[j - 1] = "Bot";
+                        }
                     }
                     j++;
                 }

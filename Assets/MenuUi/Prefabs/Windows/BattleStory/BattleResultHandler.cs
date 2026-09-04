@@ -11,12 +11,12 @@ public class BattleResultHandler : MonoBehaviour
     [SerializeField]
     private Image _ownResultImage;
 
-    [SerializeField]
+    [Header("Result Wings Objects"), SerializeField]
     private GameObject _teamAlphaWingsImage;
     [SerializeField]
     private GameObject _teamBetaWingsImage;
 
-    [SerializeField]
+    [Header("Result sprites"), SerializeField]
     private Sprite _winImageEN;
     [SerializeField]
     private Sprite _winImageFI;
@@ -25,11 +25,10 @@ public class BattleResultHandler : MonoBehaviour
     [SerializeField]
     private Sprite _loseImageFI;
 
+    [Header("Two Player Panels"), SerializeField]
+    private GameObject _teamAlpha2PlayerPanel;
     [SerializeField]
-    private GameObject _teamAlphaPlayerPanel;
-    [SerializeField]
-    private GameObject _teamBetaPlayerPanel;
-
+    private GameObject _teamBeta2PlayerPanel;
     [SerializeField]
     private TMP_Text _player1Name;
     [SerializeField]
@@ -39,7 +38,16 @@ public class BattleResultHandler : MonoBehaviour
     [SerializeField]
     private TMP_Text _player4Name;
 
+    [Header("Single Player Panels"), SerializeField]
+    private GameObject _teamAlpha1PlayerPanel;
     [SerializeField]
+    private GameObject _teamBeta1PlayerPanel;
+    [SerializeField]
+    private TMP_Text _singlePlayer1Name;
+    [SerializeField]
+    private TMP_Text _singlePlayer2Name;
+
+    [Header("Clan Panels"), SerializeField]
     private GameObject _teamAlphaPanel;
     [SerializeField]
     private GameObject _teamBetaPanel;
@@ -92,27 +100,56 @@ public class BattleResultHandler : MonoBehaviour
 
         BattleRoomInfo info = LobbyManager.Instance.RoomInfo;
 
-        if(info.GameType is GameType.Clan2v2)
+        _teamAlphaPanel.SetActive(false);
+        _teamBetaPanel.SetActive(false);
+        _teamAlpha2PlayerPanel.SetActive(false);
+        _teamBeta2PlayerPanel.SetActive(false);
+        _teamAlpha1PlayerPanel.SetActive(false);
+        _teamBeta1PlayerPanel.SetActive(false);
+
+        if (info.GameType is GameType.Clan2v2)
         {
             _teamAlphaPanel.SetActive(true);
             _teamBetaPanel.SetActive(true);
-            _teamAlphaPlayerPanel.SetActive(false);
-            _teamBetaPlayerPanel.SetActive(false);
 
             _clanAlphaName.text = info.TeamAlphaName;
             _clanBetaName.text = info.TeamBetaName;
         }
         else
         {
-            _teamAlphaPanel.SetActive(false);
-            _teamBetaPanel.SetActive(false);
-            _teamAlphaPlayerPanel.SetActive(true);
-            _teamBetaPlayerPanel.SetActive(true);
+            if (!string.IsNullOrEmpty(info.Player1Name) && !string.IsNullOrEmpty(info.Player2Name))
+            {
+                _teamAlpha2PlayerPanel.SetActive(true);
+                _player1Name.text = info.Player1Name;
+                _player2Name.text = info.Player2Name;
+            }
+            else if (!string.IsNullOrEmpty(info.Player1Name))
+            {
+                _teamAlpha1PlayerPanel.SetActive(true);
+                _singlePlayer1Name.text = info.Player1Name;
+            }
+            else if (!string.IsNullOrEmpty(info.Player2Name))
+            {
+                _teamAlpha1PlayerPanel.SetActive(true);
+                _singlePlayer1Name.text = info.Player2Name;
+            }
 
-            _player1Name.text = info.Player1Name;
-            _player2Name.text = info.Player2Name;
-            _player3Name.text = info.Player3Name;
-            _player4Name.text = info.Player4Name;
+            if (!string.IsNullOrEmpty(info.Player3Name) && !string.IsNullOrEmpty(info.Player4Name))
+            {
+                _teamBeta2PlayerPanel.SetActive(true);
+                _player1Name.text = info.Player1Name;
+                _player2Name.text = info.Player2Name;
+            }
+            else if (!string.IsNullOrEmpty(info.Player3Name))
+            {
+                _teamBeta1PlayerPanel.SetActive(true);
+                _singlePlayer2Name.text = info.Player3Name;
+            }
+            else if (!string.IsNullOrEmpty(info.Player4Name))
+            {
+                _teamBeta1PlayerPanel.SetActive(true);
+                _singlePlayer2Name.text = info.Player4Name;
+            }
         }
 
     }
