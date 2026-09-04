@@ -30,6 +30,7 @@ namespace Battle.View.Audio
         public static void PlayMusic()
         {
             AudioManager.Instance.PlayMusic(AudioCategoryType.Battle, MusicHandler.MusicSwitchType.Immediate, forcePlay: true);
+            JukeboxManager.Instance.EnableJukeBox();
         }
 
         /// <summary>

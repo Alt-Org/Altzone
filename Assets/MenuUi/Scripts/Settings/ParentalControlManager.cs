@@ -1,96 +1,507 @@
+using System;
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class ParentalControlManager : MonoBehaviour
 {
-    public GameObject parentalControlPanel;
-    public GameObject passwordPanel;
-    //public InputField passwordInput;
-    public TMP_InputField passwordInput;
-    public TMP_InputField confirmPasswordInput;
-    //public Text messageText;
-    public TMP_Text messageText;
-    public Toggle controlToggle;
-    public TMP_InputField timeLimitInput;
+    private SettingsCarrier _carrier = SettingsCarrier.Instance; //SettingsCarrier carries all the settings between scenes etc.
 
-    private string sessionPassword = "";
+    [Header("Parental Control Login Objects")]
+    [SerializeField] private GameObject _activateLogInPanel; //The panel when you can activate Parental Control or log in if Parental Control is already activated
+    [SerializeField] private GameObject _passwordPanel;
+    [SerializeField] private TMP_Text _description; //The text that describes what Parental Control does
+    [SerializeField] private TMP_InputField _passwordInput; //The password input field in the log in panel
+    [SerializeField] private TMP_Text _messageText; //Message text when trying to input a wrong password
+    [SerializeField] private GameObject _parentalControlPopupButton; //The button that opens the pop up for setting the password
+    [SerializeField] private GameObject _controlEnabledButton; //No current functionality, just a visual indicator that Parental Control is enabled
+    [SerializeField] private Button _eyeButton; //The "eye" for the password fields
+    [SerializeField] private Button _parentalControlLogIn; //Button to login into parental control
+
+    [Header("Prental Control Activation Popup Objects")]
+
+    //the password will be set in the pop up
+    [SerializeField] private GameObject _parentalControlPopup; //The actual pop up for setting the password
+
+    [SerializeField] private TMP_InputField _popupPasswordInput; //The field for setting the password in the pop up
+    [SerializeField] private TMP_InputField _confirmPasswordInput;
+
+    [SerializeField] private TMP_Text _messageTextPopUpLength; //Message text when trying to set a password that is too short in the pop up
+    [SerializeField] private TMP_Text _messageTextPopUpWrongPassword; //Message text when trying to set a password that doesn't match the confirmation
+
+    [SerializeField] private Button _parentalControlSetButton; //Button to set the inputted password and activate parental control
+    [SerializeField] private Button _parentalControlSetClearButton; //Button to set the inputted password and activate parental control
+
+
+    [Header("Parental Control Settings Objects")]
+    [SerializeField] private GameObject _parentalControlSettings; //The panel that contains all the settings for Parental Control
+
+    [SerializeField] private Button _popupEye; //The "eye" for the popupPasswordInput field 
+    [SerializeField] private Button _confirmEye; //The "eye" for the confirmPasswordInput field
+
+    //boolean to check if the ParentalControl is on
+    private bool _parentalControl;
+
+
+    private string _presetPassword; //the password already set in PlayerPrefs
+    private string _setPasswordInput; //the password input in the pop up
+    private string _setConfirmPasswordInput;
+
+    //the ParentalControl settings
+    //the toggles have to be seen by ToggleSetting.cs, so they are public and not private
+    //the input fields may refer to TextFieldSetting.cs, so they are also public
+
+    //SocialControls
+
+    public Toggle internetLinksToggle;
+    public Toggle chatMessagesToggle;
+    public Toggle emojiCommentsToggle;
+    public Toggle treasureHuntToggle;
+
+    //MoneyControls
+
+    public TMP_InputField monthlyLimitInput;
+    public Toggle independentSpendingActivationToggle;
+
+    //TimeControls
+
+    public TMP_InputField timeLimitInput;
+    public Toggle midMatchToggle;
+    public Toggle endMatchToggle;
+
+    [SerializeField] private Button _parentalControlLogOutButton; //Button to logout of the parental control
+    [SerializeField] private Button _parentalControlSaveButton; //Button to save the parental control changes
+    [SerializeField] private Button _parentalControlDeactivateButton; //Button to deactivate parental control
+
+    [Header("Visibility Toggle sprites")]
+    [SerializeField] private Sprite _eyeOpen;
+    [SerializeField] private Sprite _eyeClosed;
+
+    [Header("Popup")]
+    [SerializeField] private GameObject _settingsSavedPopUp; //The pop up that is shown shortly when settings are saved
 
     void Start()
     {
-        parentalControlPanel.SetActive(true);
-        passwordPanel.SetActive(true);
+        _parentalControlSettings.SetActive(false);
+        CheckControl(); //checks if Parental Control is on
+        GetPassword(); //gets the password that is already set in PlayerPrefs
+        
+        _messageText.enabled = false;
 
-        controlToggle.isOn = true; // PlayerPrefs.GetInt("ParentalControl", 0) == 1;
-        timeLimitInput.text = 10f.ToString(); //PlayerPrefs.GetFloat("MaxPlayTime", 2f).ToString();
+        _messageTextPopUpWrongPassword.enabled = false;
+        _messageTextPopUpLength.enabled = false;
 
+        internetLinksToggle.onValueChanged.AddListener(_ => SetInternetLinks()); //Listeners are added for all the settings
+        chatMessagesToggle.onValueChanged.AddListener(_ => SetChatMessages());
+        emojiCommentsToggle.onValueChanged.AddListener(_ => SetEmojis());
+        treasureHuntToggle.onValueChanged.AddListener(_ => SetTreasureHunt());
+        monthlyLimitInput.onValueChanged.AddListener(_ => SetMonthlyLimit());
+        independentSpendingActivationToggle.onValueChanged.AddListener(_ => SetIndependentSpendingActivation());
+        timeLimitInput.onValueChanged.AddListener(_ => SetTimeLimit());
+        midMatchToggle.onValueChanged.AddListener(_ => SetEndMidMatch());
+        endMatchToggle.onValueChanged.AddListener(_ => SetEndAfterMatch());
+
+        _eyeButton.onClick.AddListener(ChangePasswordVisibility);
+        _popupEye.onClick.AddListener(ChangePopUpPasswordVisibility);
+        _confirmEye.onClick.AddListener(ChangePopUpConfirmPasswordVisibility);
+
+        _parentalControlLogIn.onClick.AddListener(LogIn);
+        _parentalControlSetButton.onClick.AddListener(SetPassword);
+        _parentalControlSetClearButton.onClick.AddListener(ClearPasswordFields);
+
+        _popupPasswordInput.onValueChanged.AddListener((value) => SetPasswordInput(value));
+        _confirmPasswordInput.onValueChanged.AddListener((value) => SetConfirmPasswordInput(value));
+
+        _parentalControlLogOutButton.onClick.AddListener(LogOut);
+        _parentalControlLogOutButton.onClick.AddListener(SaveSettings);
+        _parentalControlDeactivateButton.onClick.AddListener(DisableParentalControl);
     }
 
-    public void OpenPasswordPanel()
+    private void OnEnable()
     {
-        passwordPanel.SetActive(true);
-        messageText.text = "";
+        SetInternetLinksToggle(); //Sets all the settings
+        SetChatMessagesToggle();
+        SetEmojisToggle();
+        SetTreasureHuntToggle();
+        GetMonthlyLimit();
+        SetIndependentSpendingActivationToggle();
+        GetTimeLimit();
+        SetEndMidMatchToggle();
+        SetEndAfterMatchToggle();
+        CheckControl();
+        GetPassword();
     }
 
-    public void CheckPassword()
+    private void GetPassword()
     {
-        if (sessionPassword == "")
+        _presetPassword = PlayerPrefs.GetString("ParentalControlPassword");
+    }
+
+    private void LogIn()
+    {
+        if (_parentalControl == true)
         {
-            if (passwordInput.text.Length < 4-8)            // < -4 ??
+            if (_passwordInput.text == _presetPassword)
             {
-                messageText.text = "Password must be at least 4-8 characters";
-                return;
+                _messageText.enabled = false;
+                _parentalControlSettings.SetActive(true);
+                _passwordInput.text = "";
+                _passwordPanel.SetActive(false);
+                _activateLogInPanel.SetActive(false);
             }
 
-            if (passwordInput.text != confirmPasswordInput.text)
+            else if (_passwordInput.text != _presetPassword)
             {
-                messageText.text = "Passwords do not match";
-                return;
+                //messageText will show the message that the password is wrong
+                _messageText.enabled = true;
             }
-
-            sessionPassword = passwordInput.text;
-            messageText.text = "Password set!";
-            Invoke("ShowSettings", 1.0f);
-        }
-        else if (passwordInput.text == sessionPassword)
-        {
-            messageText.text = "Access granted!";
-            Invoke("ShowSettings", 0.5f);
         }
         else
         {
-            messageText.text = "Incorrect password!";
+            //Could show a message that you can't log in because Parental Control is not activated
+            //Or that you can change the settings only after log in
+            //Maybe not needed because you can't interact with the "ParentalControl is on"-button. It is only a visual indicator that Parental Control is on
+            //And you can't see the log in password field if Parental Control is not activated, so you can't log in anyway
         }
     }
 
-    private void ShowSettings()
+    private void LogOut()
     {
-        passwordInput.text = "";
-        confirmPasswordInput.text = "";
-        messageText.text = "";
-        passwordPanel.SetActive(false);
-        parentalControlPanel.SetActive(true);
+        _parentalControlSettings.SetActive(false);
+        _passwordPanel.SetActive(true);
+        _activateLogInPanel.SetActive(true);
     }
 
-    public void CloseParentalControl()
+    private void SetPasswordInput(string text)
     {
-        parentalControlPanel.SetActive(false);
-        sessionPassword = "";
+        _setPasswordInput = text;
     }
 
-
-    public void ToggleParentalControl(bool isEnabled)
+    private void SetConfirmPasswordInput(string text)
     {
-        PlayerPrefs.SetInt("ParentalControl", isEnabled ? 1 : 0);
+        _setConfirmPasswordInput = text;
+    }
+
+    private void SetPassword() {
+        //this is done in the pop-up
+        if (_setPasswordInput.Length < 8)
+        {
+            _messageTextPopUpLength.enabled = true; //messageTextPopUpLength will show the message that the password is too short
+            _messageTextPopUpWrongPassword.enabled = false;   
+        }
+        else if (_setPasswordInput != _setConfirmPasswordInput)
+        {
+            //messageTextPopUpWrongPassword will show the message that the password and confirmation do not match
+            _messageTextPopUpWrongPassword.enabled = true;
+            _messageTextPopUpLength.enabled = false;
+        }
+        else if (_setPasswordInput.Equals(_setConfirmPasswordInput))
+        {
+
+            PlayerPrefs.SetString("ParentalControlPassword", _setPasswordInput);
+
+            //the int will indicate if Parental Control is on, 1 means that it is set
+            //boolean is not allowed in PlayerPrefs, otherwise it would be that
+            PlayerPrefs.SetInt("ParentalControl", 1);
+            _parentalControlPopupButton.SetActive(false);
+            _controlEnabledButton.SetActive(true); //just a visual indicator that Parental Control is on, no functionality
+
+            ClearPasswordFields();
+            _parentalControlPopup.SetActive(false);
+            CheckControl();
+            GetPassword();
+            _parentalControlSettings.SetActive(true);
+            _passwordPanel.SetActive(false);
+            _activateLogInPanel.SetActive(false);
+        }
+    }
+
+    private void ClearPasswordFields()
+    {
+        //all the three password input fields will be cleared
+        _popupPasswordInput.text = "";
+        _confirmPasswordInput.text = "";
+        _passwordInput.text = "";
+        HideMessageTexts();
+    }
+
+    private void CheckControl()
+    {
+        //at start is used to check if Parental Control is on
+        int checkControl = PlayerPrefs.GetInt("ParentalControl");
+
+        if (checkControl == 1) {
+            _parentalControl = true;
+            _parentalControlPopupButton.SetActive(false);
+            _passwordPanel.SetActive(true);
+            _controlEnabledButton.SetActive(true);
+            _parentalControlLogIn.gameObject.SetActive(true);
+        }
+        else
+        {
+            _parentalControl = false;
+            _passwordPanel.SetActive(false);
+            _controlEnabledButton.SetActive(false);
+            _parentalControlLogIn.gameObject.SetActive(false);
+        }
+    }
+
+    private void DisableParentalControl()
+    {
+        //ParentalControl is active only if PlayerPrefs "ParentalControl" equals 1
+        PlayerPrefs.SetInt("ParentalControl", 0);
+        PlayerPrefs.SetString("ParentalControlPassword", "");
+
+        _carrier.AllowLinks = false;
+        _carrier.ChatMessages = false;
+        _carrier.AllowEmojis = false;
+        _carrier.AllowTreasureHunt = false;
+        _carrier.MonthlyLimit = 0;
+        _carrier.ActivatePurchasesSeparately = false;
+        PlayerPrefs.SetFloat("DailyTimeLimit", 1); //for some reason there has also been a setting that is called DailyTimeLimit, current use unknown
+        _carrier.MaxPlayTime = 1;
+        _carrier.EndMidMatch = false;
+        _carrier.EndAfterMatch = true;
         PlayerPrefs.Save();
+        SetInternetLinksToggle();
+        SetChatMessagesToggle();
+        SetEmojisToggle();
+        SetTreasureHuntToggle();
+        GetMonthlyLimit();
+        SetIndependentSpendingActivationToggle();
+        GetTimeLimit();
+        SetEndMidMatchToggle();
+        SetEndAfterMatchToggle();
+
+        _parentalControlPopupButton.SetActive(true);
+        _controlEnabledButton.SetActive(false);
+        _activateLogInPanel.SetActive(true);
+        CheckControl();
+    }
+    
+    private void HideMessageTexts()
+    {
+        //Hides all the message texts
+        _messageText.enabled = false;
+        _messageTextPopUpLength.enabled = false;
+        _messageTextPopUpWrongPassword.enabled = false;
     }
 
-    public void SetTimeLimit()
+    //Example, how to set values / toggles, is taken from SettingEditor, ShowButtonLabels
+
+    private void SetInternetLinks ()
+    {
+        _carrier.AllowLinks = internetLinksToggle.isOn;       
+    }
+
+    private void SetInternetLinksToggle() {
+        
+        internetLinksToggle.isOn = _carrier.AllowLinks;           
+    }
+
+    private void SetChatMessages()
+    {
+        _carrier.ChatMessages = chatMessagesToggle.isOn;   
+    }
+
+    private void SetChatMessagesToggle()
+    {
+        chatMessagesToggle.isOn = _carrier.ChatMessages; 
+    }
+
+    private void SetEmojis()
+    {
+        _carrier.AllowEmojis = emojiCommentsToggle.isOn;
+    }
+
+    private void SetEmojisToggle()
+    {
+        emojiCommentsToggle.isOn = _carrier.AllowEmojis;
+    }
+
+    private void SetTreasureHunt()
+    {
+        _carrier.AllowTreasureHunt = treasureHuntToggle.isOn;
+    }
+
+    private void SetTreasureHuntToggle()
+    {
+        treasureHuntToggle.isOn = _carrier.AllowTreasureHunt;
+    }
+
+
+    private void SaveSettings()
+    {
+        PlayerPrefs.Save();
+        //A pop up will be shown for a short time to indicate that the settings have been saved
+        _settingsSavedPopUp.SetActive(true);
+        CloseSettingsPopUp();
+    }
+
+    private void SetMonthlyLimit()
+    {
+        //money control: monthly spending limit
+        string money = monthlyLimitInput.text;
+        float moneyFloat = float.Parse(monthlyLimitInput.text); //maybe not needed, because the field is set to accept only floats in Unity's side
+              
+        if (string.IsNullOrEmpty(money))
+        {
+            PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
+            _carrier.MonthlyLimit = 0;
+            PlayerPrefs.Save();
+            GetMonthlyLimit();
+        }
+        else if (moneyFloat < 0) //you can't set a negative value for the money limit
+        {
+            PlayerPrefs.SetFloat("MonthlySpendingLimit", 0);
+            _carrier.MonthlyLimit = 0;
+            //There could be some kind of message, "please input a positive value". On the other hand value is set to 0 automatically, if user tries to input <0
+            PlayerPrefs.Save();
+            GetMonthlyLimit();
+        }
+        else //if (moneyFloat >= 0) 
+        {
+            PlayerPrefs.SetFloat("MonthlySpendingLimit", float.Parse(money));
+            _carrier.MonthlyLimit = float.Parse(money);
+            PlayerPrefs.Save();
+            GetMonthlyLimit();
+        }
+           
+    }
+
+    private void GetMonthlyLimit()
+    {
+        monthlyLimitInput.text = _carrier.MonthlyLimit.ToString();
+    }
+
+
+    private void SetIndependentSpendingActivation()
+    {
+        _carrier.ActivatePurchasesSeparately = independentSpendingActivationToggle.isOn;
+    }
+
+    private void SetIndependentSpendingActivationToggle()
+    {
+        independentSpendingActivationToggle.isOn = _carrier.ActivatePurchasesSeparately;
+    }
+
+
+    private void SetTimeLimit()
     {
         if (float.TryParse(timeLimitInput.text, out float time))
         {
-            PlayerPrefs.SetFloat("MaxPlayTime", time);
-            PlayerPrefs.Save();
+            if (time > 1 && time <= 24) //The time limit is daily, so it can't go below 0 or above 24 hours. If the user inputs a value below 1, it will be set to 1, if above 24, it will be set to 24
+            {
+                PlayerPrefs.SetFloat("DailyTimeLimit", time);
+                _carrier.MaxPlayTime = time;
+                PlayerPrefs.Save();
+                GetTimeLimit();
+            }
+            else if (time > 24)
+            {
+                PlayerPrefs.SetFloat("DailyTimeLimit", 24);
+                _carrier.MaxPlayTime = 24;
+                PlayerPrefs.Save();
+                GetTimeLimit();
+            }
+            else
+            { //There is a minimum time limit of 1 hour per day
+                PlayerPrefs.SetFloat("DailyTimeLimit", 1);
+                _carrier.MaxPlayTime = 1;
+                PlayerPrefs.Save();
+                GetTimeLimit();
+            }  
+        }  
+    }
+
+    private void GetTimeLimit()
+    {
+        timeLimitInput.text = _carrier.MaxPlayTime.ToString();
+    }
+
+    private void SetEndMidMatch()
+    {
+        _carrier.EndMidMatch = midMatchToggle.isOn;
+    }
+
+    private void SetEndMidMatchToggle()
+    {
+        midMatchToggle.isOn = _carrier.EndMidMatch;
+    }
+
+    private void SetEndAfterMatch()
+    {
+        _carrier.EndAfterMatch = endMatchToggle.isOn;
+    }
+
+    private void SetEndAfterMatchToggle()
+    {
+        endMatchToggle.isOn = _carrier.EndAfterMatch;
+    }
+
+    private void ChangePasswordVisibility()
+    {
+        //changes the eye icon to open eye and password to visible text
+        if (_passwordInput.contentType == TMP_InputField.ContentType.Password)
+        {
+            _eyeButton.image.sprite = _eyeOpen;
+            _passwordInput.contentType = TMP_InputField.ContentType.Standard;
         }
+        else
+        {
+            _passwordInput.contentType = TMP_InputField.ContentType.Password;
+            _eyeButton.image.sprite = _eyeClosed;
+        }
+
+        _passwordInput.Select();
+    }
+
+
+
+    private void ChangePopUpPasswordVisibility()
+    {
+        //changes the eye icon to open eye and password to visible text
+        if (_popupPasswordInput.contentType == TMP_InputField.ContentType.Password)
+        {
+            _popupEye.image.sprite = _eyeOpen;
+            _popupPasswordInput.contentType = TMP_InputField.ContentType.Standard;
+        }
+        else
+        {
+            _popupPasswordInput.contentType = TMP_InputField.ContentType.Password;
+            _popupEye.image.sprite = _eyeClosed;
+        }
+
+        _popupPasswordInput.Select();
+    }
+
+    private void ChangePopUpConfirmPasswordVisibility()
+    {
+        //changes the eye icon to open eye and password to visible text
+        if (_confirmPasswordInput.contentType == TMP_InputField.ContentType.Password)
+        {
+            _confirmEye.image.sprite = _eyeOpen;
+            _confirmPasswordInput.contentType = TMP_InputField.ContentType.Standard;
+        }
+        else
+        {
+            _confirmPasswordInput.contentType = TMP_InputField.ContentType.Password;
+            _confirmEye.image.sprite = _eyeClosed;
+        }
+
+        _confirmPasswordInput.Select();
+    }
+
+
+    private void CloseSettingsPopUp() //The settingsSavedPopUp will be closed after 2 seconds
+    {
+        StartCoroutine(RemoveAfterSeconds(2));
+    }
+
+    private IEnumerator RemoveAfterSeconds(int seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        _settingsSavedPopUp.SetActive(false);
     }
 }

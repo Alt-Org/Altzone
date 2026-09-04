@@ -68,8 +68,12 @@ namespace Altzone.Scripts.Voting
         public PollData(ServerPoll poll)
         {
             Id = poll._id;
-            StartTime = poll.startedAt !=null ?((DateTimeOffset)DateTime.Parse(poll.startedAt).ToLocalTime()).ToUnixTimeSeconds(): 0;
-            if(DateTime.TryParse(poll.endsOn, out DateTime time))
+            StartTime = poll.startedAt !=null
+                    ? DateTime.TryParse(poll.startedAt, CultureInfo.CreateSpecificCulture("en-US"), DateTimeStyles.None, out DateTime startTime)
+                    ? ((DateTimeOffset)startTime.ToLocalTime()).ToUnixTimeSeconds()
+                    : ((DateTimeOffset)DateTime.ParseExact(poll.startedAt, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToLocalTime()).ToUnixTimeSeconds()
+                : 0;
+            if (DateTime.TryParse(poll.endsOn, CultureInfo.CreateSpecificCulture("en-US"), DateTimeStyles.None, out DateTime time))
                 EndTime = ((DateTimeOffset)time.ToLocalTime()).ToUnixTimeSeconds();
             else
                 EndTime = ((DateTimeOffset)DateTime.ParseExact(poll.endsOn, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture).ToLocalTime()).ToUnixTimeSeconds();

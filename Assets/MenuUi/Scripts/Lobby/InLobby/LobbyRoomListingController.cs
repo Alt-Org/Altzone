@@ -42,6 +42,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private JoinIntent _pendingJoinIntent = JoinIntent.None;
         private GameType _pendingQueueGameType = GameType.Random2v2;
         private Coroutine _queueRejoinHolder;
+        private bool _createRoomRequestInFlight;
 
         private enum JoinIntent
         {
@@ -99,6 +100,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 StopCoroutine(_queueRejoinHolder);
                 _queueRejoinHolder = null;
             }
+            _createRoomRequestInFlight = false;
             _pendingJoinIntent = JoinIntent.None;
         }
 
@@ -118,6 +120,15 @@ namespace MenuUi.Scripts.Lobby.InLobby
         /// <returns></returns>
         public IEnumerator StartCreatingRoom(GameType gameType, Action callback)
         {
+            if (_createRoomRequestInFlight)
+            {
+                Debug.Log("StartCreatingRoom: room creation already in flight, ignoring duplicate request.");
+                yield break;
+            }
+
+            _createRoomRequestInFlight = true;
+            try
+            {
             // Do not show the creating-room text if the client is in a matchmaking or queue room
             bool isMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
             try
@@ -140,11 +151,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 {
                     switch (gameType)
                     {
+                        case GameType.FriendLobby:
+                            PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(InLobbyController.SelectedPremadeTargetGameType);
+                            break;
                         case GameType.Clan2v2:
-                            CreateClan2v2Room();
+                            yield return CreateClan2v2Room();
                             break;
                         case GameType.Random2v2:
-                            CreateRandom2v2Room();
+                            yield return CreateRandom2v2Room();
                             break;
                         case GameType.Custom:
                             if (!_createRoomCustom.IsCustomRoomOptionsReady) _createRoomCustom.InitializeCustomRoomOptions();
@@ -155,7 +169,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 }
             } while (!roomCreated);
 
-            callback();
+            callback?.Invoke();
+            }
+            finally
+            {
+                _createRoomRequestInFlight = false;
+            }
         }
 
         private void CreateCustomRoom()
@@ -237,32 +256,36 @@ namespace MenuUi.Scripts.Lobby.InLobby
             return null;
         }
 
-        private void CreateClan2v2Room()  // soulhome value for matchmaking
+        private IEnumerator CreateClan2v2Room()  // soulhome value for matchmaking
         {
-            StartCoroutine(GetClanData( clanData =>
+            yield return GetClanData( clanData =>
             {
                 if (clanData != null)
                 {
                     // Join the persistent queue room instead of creating a matchmaking room immediately
                     _pendingJoinIntent = JoinIntent.QueueJoin;
                     _pendingQueueGameType = GameType.Clan2v2;
-                    PhotonRealtimeClient.JoinOrCreateQueueRoom(GameType.Clan2v2);
+                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(GameType.Clan2v2);
                 }
-            }));
+            });
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+            this.Publish(new LobbyManager.StartMatchmakingEvent(GameType.Clan2v2));
         }
 
-        private void CreateRandom2v2Room()  // soulhome value for matchmaking
+        private IEnumerator CreateRandom2v2Room()  // soulhome value for matchmaking
         {
-            StartCoroutine(GetClanData(clanData =>
+            yield return GetClanData(clanData =>
             {
                 if (clanData != null)
                 {
                     // Join the persistent queue room instead of creating a matchmaking room immediately
                     _pendingJoinIntent = JoinIntent.QueueJoin;
                     _pendingQueueGameType = GameType.Random2v2;
-                    PhotonRealtimeClient.JoinOrCreateQueueRoom(GameType.Random2v2);
+                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(GameType.Random2v2);
                 }
-            }));
+            });
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+            this.Publish(new LobbyManager.StartMatchmakingEvent(GameType.Random2v2));
         }
 
         private void JoinRoom(string roomName)
@@ -361,6 +384,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             if (ShouldRejoinQueueAfterJoinFailed(returnCode, message, out GameType queueGameType))
             {
+                if (LobbyManager.Instance != null && LobbyManager.Instance.IsJoinFailureAutoRequeueInFlight)
+                {
+                    if (creatingTextActive) _creatingRoomText.SetActive(false);
+                    _pendingJoinIntent = JoinIntent.None;
+                    Debug.Log("OnJoinedRoomFailed: skipping queue rejoin because LobbyManager already started recovery.");
+                    return;
+                }
+
                 if (creatingTextActive) _creatingRoomText.SetActive(false);
                 _pendingJoinIntent = JoinIntent.None;
                 StartQueueRejoin(queueGameType);

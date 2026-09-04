@@ -378,7 +378,7 @@ public class PollInfoPopup : MonoBehaviour
             voteButtons.SetActive(false);
             voteBar.SetActive(true);
 
-            VotingActions.ReloadPollList?.Invoke();
+            //VotingActions.ReloadPollList?.Invoke();
             playerHeads.InstantiateHeads(_currentPollData.Id);
         });
     }
