@@ -6429,9 +6429,13 @@ namespace Altzone.Scripts.Lobby
                 _roomInfo = new()
                 {
                     GameType = data.GameType,
+                    Player1Id = data.PlayerSlotUserIds[0],
                     Player1Name = data.PlayerSlotUserNames[0],
+                    Player2Id = data.PlayerSlotUserIds[1],
                     Player2Name = data.PlayerSlotUserNames[1],
+                    Player3Id = data.PlayerSlotUserIds[2],
                     Player3Name = data.PlayerSlotUserNames[2],
+                    Player4Id = data.PlayerSlotUserIds[3],
                     Player4Name = data.PlayerSlotUserNames[3],
                     TeamAlphaName = alphaTeamName,
                     TeamBetaName = betaTeamName,
@@ -9446,9 +9450,13 @@ namespace Altzone.Scripts.Lobby
     public class BattleRoomInfo
     {
         public GameType GameType { get; set; }
+        public string Player1Id { get; set; }
         public string Player1Name { get; set; }
+        public string Player2Id { get; set; }
         public string Player2Name { get; set; }
+        public string Player3Id { get; set; }
         public string Player3Name { get; set; }
+        public string Player4Id { get; set; }
         public string Player4Name { get; set; }
         public string TeamAlphaName { get; set; }
         public string TeamBetaName { get; set; }
