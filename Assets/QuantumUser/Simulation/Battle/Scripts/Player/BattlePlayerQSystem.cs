@@ -64,7 +64,12 @@ namespace Battle.QSimulation.Player
         public static void HandlePlayerAbandoned(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             playerHandle.GiveUpState = true;
-            HandleGiveUpLogic(f, playerHandle);
+
+            BattleTeamNumber giveUpTeam = HandleGiveUpLogic(f, playerHandle);
+            if (giveUpTeam != BattleTeamNumber.NoTeam)
+            {
+                BattleGameControlQSystem.OnGameOverGiveUp(f, giveUpTeam);
+            }
         }
 
         /// <summary>
@@ -247,10 +252,6 @@ namespace Battle.QSimulation.Player
             UpdateData updateData = new();
             Input stackInputStorage;
 
-            BattlePlayerEntityRef       playerEntity    = BattlePlayerEntityRef.None;
-            BattlePlayerDataQComponent* playerData      = null;
-            Transform2D*                playerTransform = null;
-
             BattlePlayerManager.PlayerHandle[] playerHandleArray = BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f);
 
             for (int playerNumber = 0; playerNumber < playerHandleArray.Length; playerNumber++)
@@ -270,10 +271,8 @@ namespace Battle.QSimulation.Player
 
                 for (int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
                 {
-                    if (playerHandle.GetCharacterState(i) != BattlePlayerCharacterState.InPlaySelected) continue;
-
-                    playerData      = playerEntity.GetDataQComponent(f);
-                    playerTransform = playerEntity.GetTransform(f);
+                    BattlePlayerCharacterState characterState = updateData.PlayerHandle.GetCharacterState(i);
+                    if (characterState is BattlePlayerCharacterState.OutOfPlay or BattlePlayerCharacterState.OutOfPlayDead) continue;
 
                     updateData.LoadPlayerCharacter(f, updateData.PlayerHandle.GetCharacterEntityRef(f, i));
                     HandleCharacterUpdate(f, updateData, selected: characterState is BattlePlayerCharacterState.InPlaySelected);
@@ -413,7 +412,7 @@ namespace Battle.QSimulation.Player
                     s_debugLogger.LogFormat(f,
                                             "({0}) Received input ({1}) ({2})\n" +
                                             "struct: {3}",
-                                            playerHandle.Slot,
+                                            updateData.PlayerHandle.Slot,
                                             inputData.Input->DebugNumber,
                                             inputDebugInfo.Summary,
                                             inputDebugInfo.Struct
@@ -451,7 +450,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle of the player.</param>
         ///
         /// <returns>True if all players on a team have given up.</returns>
-        private static bool HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        private static BattleTeamNumber HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             BattlePlayerSlot slot = playerHandle.Slot;
             BattleTeamNumber team = BattlePlayerManager.PlayerHandle.GetTeamNumber(playerHandle.Slot);
@@ -459,11 +458,11 @@ namespace Battle.QSimulation.Player
             if (!playerHandle.GiveUpState)
             {
                 f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpVoteCancel);
-                return false;
+                return BattleTeamNumber.NoTeam;
             }
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, slot);
-            if (!teammateHandle.PlayState.IsNotInGame())
+            if (teammateHandle.PlayState.IsInGame())
             {
                 if (!playerHandle.IsAbandoned)
                 {
@@ -473,23 +472,14 @@ namespace Battle.QSimulation.Player
                 {
                     f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.Abandoned);
                 }
-                if (!teammateHandle.GiveUpState) return false;
+                if (!teammateHandle.GiveUpState) return BattleTeamNumber.NoTeam;
             }
             else
             {
                 f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpNow);
             }
 
-            BattleTeamNumber winningTeam = team switch
-            {
-                BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,
-                BattleTeamNumber.TeamBeta => BattleTeamNumber.TeamAlpha,
-
-                _ => BattleTeamNumber.NoTeam
-            };
-
-            BattleGameControlQSystem.OnGameOver(f, winningTeam);
-            return true;
+            return team;
         }
 
         /// <summary>
@@ -567,6 +557,9 @@ namespace Battle.QSimulation.Player
         /// <returns>True if all players on a team have given up.</returns>
         private void HandleGiveUp(Frame f, UpdateData updateData)
         {
+            if (updateData.GiveUpTeam != BattleTeamNumber.NoTeam) return;
+
+            BattlePlayerManager.PlayerHandle playerHandle = updateData.PlayerHandle;
             playerHandle.GiveUpState = !playerHandle.GiveUpState;
 
             s_debugLogger.LogFormat(f, "({0}) Give up input received, new state: {1}", playerHandle.Slot, playerHandle.GiveUpState);
@@ -616,11 +609,9 @@ namespace Battle.QSimulation.Player
                 updateData.PlayerCharacterData->RotationEnabled = !updateData.PlayerCharacterData->DisableRotation;
             }
 
-            if (!playerData->StunCooldown.IsRunning(f))
-            {
-                playerData->MovementEnabled = !playerData->DisableMovement;
-                playerData->RotationEnabled = !playerData->DisableRotation;
-            }
+            BattlePlayerClassManager.OnUpdate(f, updateData.PlayerHandle, updateData.PlayerCharacterData, updateData.PlayerCharacterEntityRef, &input->Special);
+
+            if (!selected) return;
 
             switch (updateData.PlayerInputData.CommandType)
             {
@@ -629,8 +620,13 @@ namespace Battle.QSimulation.Player
                     break;
             }
 
-            BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity, &input->Special);
-            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerEntity, playerTransform, input);
+            if (!updateData.PlayerCharacterData->AbilityCooldownSec.IsRunning(f) && updateData.PlayerCharacterData->AbilityActivateBufferSec.IsRunning(f))
+            {
+                AbilityActivate(f, updateData.PlayerCharacterData, updateData.PlayerCharacterTransform);
+                updateMovement = false;
+            }
+
+            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, updateData.PlayerCharacterData, updateData.PlayerCharacterEntityRef, updateData.PlayerCharacterTransform, input);
         }
 
         private void HandleNonCharacterUpdate(Frame f, UpdateData updateData)
@@ -638,7 +634,7 @@ namespace Battle.QSimulation.Player
             switch (updateData.PlayerInputData.CommandType)
             {
                 case BattleCommand.Type.GiveUp:
-                    if (HandleGiveUp(f, playerHandle)) return true;
+                    HandleGiveUp(f, updateData);
                     break;
 
                 case BattleCommand.Type.SwapCharacter:
@@ -671,13 +667,7 @@ namespace Battle.QSimulation.Player
 
                     updateData.PlayerHandle.SetOutOfPlayFinal();
                 }
-
-                return true;
             }
-
-            if (playerHandle.PlayState.IsOutOfPlay()) return true;
-
-            return false;
         }
 
         private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)
