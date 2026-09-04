@@ -93,20 +93,22 @@ namespace Battle.QSimulation.Game
             }
         }
 
-        /// <summary>
-        /// Called when the game ends. Updates the game session state and calls the BattleViewGameOver Event and BattleOnGameOver Signal.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="winningTeam">The team that won the match.</param>
-        public static void OnGameOver(Frame f, BattleTeamNumber winningTeam)
+        public static void OnGameOverGoal(Frame f, BattleTeamNumber winningTeam)
         {
-            BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
-            f.Events.BattleViewGameOver(winningTeam, gameSession->GameTimeSec);
-            gameSession->State = BattleGameState.GameOver;
+            HandleGameOver(f, winningTeam);
+        }
 
-            BattleTeamNumber WinningTeam = winningTeam;
-            f.Signals.BattleOnGameOver(WinningTeam);
+        public static void OnGameOverGiveUp(Frame f, BattleTeamNumber giveUpTeam)
+        {
+            BattleTeamNumber winningTeam = giveUpTeam switch
+            {
+                BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,
+                BattleTeamNumber.TeamBeta => BattleTeamNumber.TeamAlpha,
+
+                _ => throw new System.NotImplementedException(),
+            };
+
+            HandleGameOver(f, winningTeam);
         }
 
         /// <summary>
@@ -211,6 +213,16 @@ namespace Battle.QSimulation.Game
             BattleProjectileQSystem.CreateProjectile(f);
 
             BattlePlayerQSystem.SpawnPlayers(f);
+        }
+
+        private static void HandleGameOver(Frame f, BattleTeamNumber winningTeam)
+        {
+            BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            f.Events.BattleViewGameOver(winningTeam, gameSession->GameTimeSec);
+            gameSession->State = BattleGameState.GameOver;
+
+            BattleTeamNumber WinningTeam = winningTeam;
+            f.Signals.BattleOnGameOver(WinningTeam);
         }
     }
 }
