@@ -475,7 +475,7 @@ namespace Battle.QSimulation.Player
                     f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerData->CharacterId, playerData->CharacterClass, playerData->ShieldCount, BattleGridManager.GridScaleFactor);
 
                     // set playerManagerData for player character
-                    BattlePlayerCharacterState playerCharacterState = playerData->Stats.Defence > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead;
+                    BattlePlayerCharacterState playerCharacterState = playerData->Stats.Defence > 0 ? BattlePlayerCharacterState.OutOfPlay : BattlePlayerCharacterState.OutOfPlayDead;
                     playerHandle.SetCharacterState(playerCharacterNumber, playerCharacterState);
                 }
 
@@ -630,11 +630,6 @@ namespace Battle.QSimulation.Player
                         worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.GetSelectedCharacterEntityRef(f))->Position;
                     }
                     break;
-            }
-
-            if (playerHandle.PlayState.IsInPlay())
-            {
-                DespawnPlayer(f, playerHandle);
             }
 
             s_debugLogger.LogFormat(f, "({0}) Spawning character number: {1}", playerData->Slot, characterNumber);
