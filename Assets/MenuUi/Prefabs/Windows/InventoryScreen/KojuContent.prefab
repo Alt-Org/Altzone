@@ -370,7 +370,7 @@ GameObject:
   - component: {fileID: 7065586843004127061}
   - component: {fileID: 5071316545611968777}
   m_Layer: 5
-  m_Name: Title
+  m_Name: T_Notice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3272,7 +3272,7 @@ GameObject:
   - component: {fileID: 7980325834360931026}
   - component: {fileID: 8313829852714842520}
   m_Layer: 5
-  m_Name: Title
+  m_Name: T_Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6564,6 +6564,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7241808444977507461, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7490600609917108402, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
         type: 3}
