@@ -114,6 +114,7 @@ namespace Altzone.Scripts.Lobby
         private Coroutine _joinTimeoutWatcherHolder = null;
 
         private QuantumRunner _runner = null;
+        private BattleRoomInfo _roomInfo = null;
 
         private Coroutine _reserveFreePositionHolder = null;
         private Coroutine _requestPositionChangeHolder = null;
@@ -203,6 +204,8 @@ namespace Altzone.Scripts.Lobby
         private static bool _battleStartUiReady = false;
 
         public bool RunnerActive => _runner != null;
+
+        public BattleRoomInfo RoomInfo { get => _roomInfo;}
 
         private void LogSelectQueueStateIfChanged(string tag, string key, string msg)
         {
@@ -6160,8 +6163,8 @@ namespace Altzone.Scripts.Lobby
                 if (player.IsMasterClient)
                 {
                     // Ensure team names are not empty — use defaults for matchmaking/random games
-                    /*if (string.IsNullOrWhiteSpace(blueTeamName))*/ blueTeamName = "Team Alpha";
-                    /*if (string.IsNullOrWhiteSpace(redTeamName))*/ redTeamName = "Team Beta";
+                    if (string.IsNullOrWhiteSpace(blueTeamName)) blueTeamName = "Team Alpha";
+                    if (string.IsNullOrWhiteSpace(redTeamName)) redTeamName = "Team Beta";
                     //room.CustomProperties.Add(TeamAlphaNameKey, blueTeamName);
                     //room.CustomProperties.Add(TeamBetaNameKey, redTeamName);
                     //room.CustomProperties.Add(PlayerCountKey, realPlayerCount);
@@ -6205,6 +6208,7 @@ namespace Altzone.Scripts.Lobby
                 {
                     GameType roomGameType = (GameType)room.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
                     useCountdown = roomGameType != GameType.Custom;
+                    data.GameType = roomGameType;
                 }
                 catch (Exception ex)
                 {
@@ -6414,6 +6418,22 @@ namespace Altzone.Scripts.Lobby
                     Communicator              = new QuantumNetworkCommunicator(PhotonRealtimeClient.Client)
                 };
                 long sendTime = data.StartTime;
+
+                Room room = PhotonRealtimeClient.CurrentRoom;
+                string alphaTeamName = room.GetCustomProperty(TeamAlphaNameKey, "Alpha");
+                string betaTeamName = room.GetCustomProperty(TeamBetaNameKey, "Beta");
+
+                _roomInfo = new()
+                {
+                    GameType = data.GameType,
+                    Player1Name = data.PlayerSlotUserNames[0],
+                    Player2Name = data.PlayerSlotUserNames[1],
+                    Player3Name = data.PlayerSlotUserNames[2],
+                    Player4Name = data.PlayerSlotUserNames[3],
+                    TeamAlphaName = alphaTeamName,
+                    TeamBetaName = betaTeamName,
+
+                };
 
                 // Start Battle Countdown (request UI to show countdown)
                 _battleStartUiReady = false;
@@ -9324,6 +9344,7 @@ namespace Altzone.Scripts.Lobby
         public string[] PlayerSlotUserIds { get; set; }
         public string[] PlayerSlotUserNames { get; set; }
         public PlayerType[] PlayerSlotTypes { get; set; }
+        public GameType GameType { get; set; }
         public Emotion ProjectileInitialEmotion { get; set; }
         public string MapId { get; set; }
         public int PlayerCount { get; set; }
@@ -9338,6 +9359,7 @@ namespace Altzone.Scripts.Lobby
             Serializer.Serialize(b.PlayerSlotUserIds, ref bytes);
             Serializer.Serialize(b.PlayerSlotUserNames, ref bytes);
             Serializer.Serialize(b.PlayerSlotTypes.Cast<int>().ToArray(), ref bytes);
+            Serializer.Serialize((int)b.GameType, ref bytes);
             Serializer.Serialize((int)b.ProjectileInitialEmotion, ref bytes);
             Serializer.Serialize(b.MapId, ref bytes);
             Serializer.Serialize(b.PlayerCount, ref bytes);
@@ -9355,6 +9377,7 @@ namespace Altzone.Scripts.Lobby
             result.PlayerSlotUserIds = Serializer.DeserializeStringArray(data, ref offset);
             result.PlayerSlotUserNames = Serializer.DeserializeStringArray(data, ref offset);
             result.PlayerSlotTypes = Serializer.DeserializeIntArray(data, ref offset).Cast<PlayerType>().ToArray();
+            result.GameType = (GameType)Serializer.DeserializeInt(data, ref offset);
             result.ProjectileInitialEmotion = (Emotion)Serializer.DeserializeInt(data, ref offset);
             result.MapId = Serializer.DeserializeString(data, ref offset);
             result.PlayerCount = Serializer.DeserializeInt(data, ref offset);
@@ -9416,4 +9439,15 @@ namespace Altzone.Scripts.Lobby
     }
 
     #endregion
+
+    public class BattleRoomInfo
+    {
+        public GameType GameType { get; set; }
+        public string Player1Name { get; set; }
+        public string Player2Name { get; set; }
+        public string Player3Name { get; set; }
+        public string Player4Name { get; set; }
+        public string TeamAlphaName { get; set; }
+        public string TeamBetaName { get; set; }
+    }
 }
