@@ -135,11 +135,15 @@ public class BattleResultHandler : MonoBehaviour
             _teamBetaPanel.SetActive(true);
 
             _clanAlphaName.text = info.TeamAlphaName;
-            /*StartCoroutine(FetchClanLogo(info.Player1Id, c =>
+            StartCoroutine(FetchClanLogo(info.TeamAlphaId, c =>
             {
-                _clanAlphaLogo.SetHeartColors();
-            }));*/
+                _clanAlphaLogo.SetHeartColors(c);
+            }));
             _clanBetaName.text = info.TeamBetaName;
+            StartCoroutine(FetchClanLogo(info.TeamBetaId, c =>
+            {
+                _clanBetaLogo.SetHeartColors(c);
+            }));
         }
         else
         {

@@ -484,7 +484,7 @@ namespace Altzone.Scripts.Lobby
             return true;
         }
 
-        private IEnumerator FormMatchFromQueue(string[] selected, int roomGameTypeInt, string clanName, int soulhomeRank)
+        private IEnumerator FormMatchFromQueue(string[] selected, int roomGameTypeInt, string clanName, string clanId, int soulhomeRank)
         {
             bool queuePremadeMode = false;
             string queuePremadeUserId1 = string.Empty;
@@ -625,7 +625,7 @@ namespace Altzone.Scripts.Lobby
                 // Use deterministic server-side join-or-create to avoid leader create races.
                 if ((GameType)roomGameTypeInt == GameType.Clan2v2)
                 {
-                    created = PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Clan2v2, selected, clanName, soulhomeRank);
+                    created = PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Clan2v2, selected, clanName, clanId, soulhomeRank);
                     Debug.Log($"FormMatchFromQueue: JoinOrCreateMatchmakingRoom(Clan2v2) returned: {created}");
                 }
                 else
@@ -3026,9 +3026,11 @@ namespace Altzone.Scripts.Lobby
                             {
                                 int loopGameTypeInt = (int)GameType.Random2v2;
                                 string loopClanName = string.Empty;
+                                string loopClanId = string.Empty;
                                 int loopSoulhomeRank = 0;
                                 try { loopGameTypeInt = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch { }
                                 try { loopClanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, ""); } catch { }
+                                try { loopClanId = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanIdKey, ""); } catch { }
                                 try { loopSoulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.SoulhomeRank, 0); } catch { }
 
                                 int loopRequiredFollowers = GetQueueRequiredFollowerCount(loopGameTypeInt);
@@ -3173,7 +3175,7 @@ namespace Altzone.Scripts.Lobby
                                                         Debug.Log($"QueueTimerCoroutine: one-duo composition safe to form; forming match with followers [{string.Join(",", loopSelected)}].");
                                                         try
                                                         {
-                                                            _formingMatchHolder = StartCoroutine(FormMatchFromQueue(loopSelected.ToArray(), loopGameTypeInt, loopClanName, loopSoulhomeRank));
+                                                            _formingMatchHolder = StartCoroutine(FormMatchFromQueue(loopSelected.ToArray(), loopGameTypeInt, loopClanName, loopClanId, loopSoulhomeRank));
                                                         }
                                                         catch (Exception ex)
                                                         {
@@ -3193,7 +3195,7 @@ namespace Altzone.Scripts.Lobby
                                         else
                                         {
                                             Debug.Log($"QueueTimerCoroutine: queue became ready before timeout, forming match with followers [{string.Join(",", loopSelected)}].");
-                                            _formingMatchHolder = StartCoroutine(FormMatchFromQueue(loopSelected.ToArray(), loopGameTypeInt, loopClanName, loopSoulhomeRank));
+                                            _formingMatchHolder = StartCoroutine(FormMatchFromQueue(loopSelected.ToArray(), loopGameTypeInt, loopClanName, loopClanId, loopSoulhomeRank));
                                             yield break;
                                         }
                                     }
@@ -3210,9 +3212,11 @@ namespace Altzone.Scripts.Lobby
 
                     int gameTypeInt = (int)GameType.Random2v2;
                     string clanName = string.Empty;
+                    string clanId = string.Empty;
                     int soulhomeRank = 0;
                     try { gameTypeInt = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read game type: {ex.Message}"); }
                     try { clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey, ""); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read clan name: {ex.Message}"); }
+                    try { clanId = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanIdKey, ""); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read clan id: {ex.Message}"); }
                     try { soulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.SoulhomeRank, 0); } catch (Exception ex) { Debug.LogWarning($"QueueTimerCoroutine: failed to read soulhome rank: {ex.Message}"); }
 
                     int requiredFollowers = GetQueueRequiredFollowerCount(gameTypeInt);
@@ -3521,7 +3525,7 @@ namespace Altzone.Scripts.Lobby
                         Debug.Log($"QueueTimerCoroutine: Queue wait expired after {QueueWaitSeconds}s, forming match with followers [{string.Join(",", selected)}].");
                         try
                         {
-                            _formingMatchHolder = StartCoroutine(FormMatchFromQueue(selected.ToArray(), gameTypeInt, clanName, soulhomeRank));
+                            _formingMatchHolder = StartCoroutine(FormMatchFromQueue(selected.ToArray(), gameTypeInt, clanName, clanId, soulhomeRank));
                             yield break;
                         }
                         catch (Exception ex)
@@ -3900,6 +3904,7 @@ namespace Altzone.Scripts.Lobby
                 string localUserId = PhotonRealtimeClient.LocalPlayer.UserId;
                 string localUsername = PhotonRealtimeClient.LocalPlayer.NickName;
                 string clanName = string.Empty;
+                string clanId = string.Empty;
                 int soulhomeRank = 0;
                 string positionValue1 = "";
                 string positionValue2 = "";
@@ -3913,9 +3918,11 @@ namespace Altzone.Scripts.Lobby
 
                     // Saving custom properties from the room to the variables
                     clanName = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
+                    clanId = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.ClanIdKey, "");
                     if (gameType is GameType.Clan2v2 && string.IsNullOrEmpty(clanName))
                     {
                         clanName = ServerManager.Instance.Clan.name;
+                        clanId = ServerManager.Instance.Clan._id;
                     }
                     soulhomeRank = PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0);
 
@@ -3937,6 +3944,7 @@ namespace Altzone.Scripts.Lobby
                         if (!string.IsNullOrEmpty(clanName))
                         {
                             player.Value.SetCustomProperty(PhotonBattleRoom.ClanNameKey, clanName);
+                            player.Value.SetCustomProperty(PhotonBattleRoom.ClanIdKey, clanId);
                             player.Value.SetCustomProperty(PhotonBattleRoom.SoulhomeRank, soulhomeRank);
                         }
                     }
@@ -4024,10 +4032,13 @@ namespace Altzone.Scripts.Lobby
                     if (gameType is GameType.Clan2v2)
                     {
                         clanName = ServerManager.Instance.Clan.name;
+                        clanId = ServerManager.Instance.Clan._id;
+                        PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.ClanIdKey, clanId);
                         PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PhotonBattleRoom.ClanNameKey, clanName);
                     }
                     CurrentRooms = null;
                     _teammates = Array.Empty<Player>();
+                    PhotonRealtimeClient.LeaveRoom();
                 }
 
                 // Wait for lobby and initial room listing; room search below depends on CurrentRooms.
@@ -4221,11 +4232,11 @@ namespace Altzone.Scripts.Lobby
                         case GameType.Clan2v2:
                             if (_isPremadeMatchmakingFlow)
                             {
-                                PhotonRealtimeClient.JoinRandomOrCreateClan2v2Room(clanName, soulhomeRank, GetTeammateIds(), true);
+                                PhotonRealtimeClient.JoinRandomOrCreateClan2v2Room(clanName, clanId, soulhomeRank, GetTeammateIds(), true);
                             }
                             else
                             {
-                                PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Clan2v2, GetTeammateIds(), clanName, soulhomeRank);
+                                PhotonRealtimeClient.JoinOrCreateMatchmakingRoom(GameType.Clan2v2, GetTeammateIds(), clanName, clanId, soulhomeRank);
                             }
                             break;
                         case GameType.Random2v2:
@@ -4395,6 +4406,7 @@ namespace Altzone.Scripts.Lobby
                                 {
                                     // Setting clan name as opponent clan
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentNameKey, clanName);
+                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentIdKey, clanId);
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, localUserId);
                                 }
                             }
@@ -4402,6 +4414,7 @@ namespace Altzone.Scripts.Lobby
                             {
                                 // Setting clan name as opponent clan
                                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentNameKey, clanName);
+                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentIdKey, clanId);
 
                                 // Setting own and teammate positions from old room to position keys 3 and 4
                                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, positionValue1);
@@ -5234,7 +5247,9 @@ namespace Altzone.Scripts.Lobby
                     if (roomGameType == GameType.Clan2v2)
                     {
                         string primaryClan = string.Empty;
+                        string primaryClanId = string.Empty;
                         string opponentClan = string.Empty;
+                        string opponentClanId = string.Empty;
 
                         foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
                         {
@@ -5243,20 +5258,25 @@ namespace Altzone.Scripts.Lobby
                             if (playerPos == PhotonBattleRoom.PlayerPosition1)
                             {
                                 primaryClan = player.Value.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                                primaryClanId = player.Value.GetCustomProperty(PhotonBattleRoom.ClanIdKey, string.Empty);
                             }
                             else if (playerPos == PhotonBattleRoom.PlayerPosition3)
                             {
                                 opponentClan = player.Value.GetCustomProperty(PhotonBattleRoom.ClanNameKey, string.Empty);
+                                opponentClanId = player.Value.GetCustomProperty(PhotonBattleRoom.ClanIdKey, string.Empty);
                             }
                         }
+
                         if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanNameKey) != primaryClan)
                         {
                             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanNameKey, primaryClan);
+                            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanIdKey, primaryClanId);
                         }
 
                         if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.ClanOpponentNameKey) != opponentClan)
                         {
                             PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentNameKey, opponentClan);
+                            PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.ClanOpponentIdKey, opponentClanId);
                         }
 
                         _blueTeamName = primaryClan;
@@ -5790,8 +5810,9 @@ namespace Altzone.Scripts.Lobby
                 case GameType.Clan2v2:
                 {
                     string clanName = PhotonRealtimeClient.LocalLobbyPlayer?.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
+                    string clanId = PhotonRealtimeClient.LocalLobbyPlayer?.GetCustomProperty(PhotonBattleRoom.ClanIdKey, "");
                     int soulhomeRank = PhotonRealtimeClient.LocalLobbyPlayer?.GetCustomProperty(PhotonBattleRoom.SoulhomeRank, 0) ?? 0;
-                    PhotonRealtimeClient.CreateClan2v2LobbyRoom(clanName, soulhomeRank, GetTeammateIds());
+                    PhotonRealtimeClient.CreateClan2v2LobbyRoom(clanName, clanId, soulhomeRank, GetTeammateIds());
                     break;
                 }
             }
@@ -6469,7 +6490,9 @@ namespace Altzone.Scripts.Lobby
 
                 Room room = PhotonRealtimeClient.CurrentRoom;
                 string alphaTeamName = room.GetCustomProperty(TeamAlphaNameKey, "Alpha");
+                string alphaTeamId = room.GetCustomProperty(PhotonBattleRoom.ClanIdKey, "");
                 string betaTeamName = room.GetCustomProperty(TeamBetaNameKey, "Beta");
+                string betaTeamId = room.GetCustomProperty(PhotonBattleRoom.ClanOpponentIdKey, "");
 
                 _roomInfo = new()
                 {
@@ -6483,7 +6506,9 @@ namespace Altzone.Scripts.Lobby
                     Player4Id = data.PlayerSlotUserIds[3],
                     Player4Name = data.PlayerSlotUserNames[3],
                     TeamAlphaName = alphaTeamName,
+                    TeamAlphaId = alphaTeamId,
                     TeamBetaName = betaTeamName,
+                    TeamBetaId = betaTeamId,
 
                 };
 
@@ -9504,6 +9529,8 @@ namespace Altzone.Scripts.Lobby
         public string Player4Id { get; set; }
         public string Player4Name { get; set; }
         public string TeamAlphaName { get; set; }
+        public string TeamAlphaId { get; set; }
         public string TeamBetaName { get; set; }
+        public string TeamBetaId { get; set; }
     }
 }
