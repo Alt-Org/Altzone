@@ -129,7 +129,7 @@ public class KojuPopup : MonoBehaviour
         if (confirmButton.enabled == false)
         {
             confirmButton.enabled = true;
-            confirmImage.color = new Vector4(255f, 255f, 255f, 255f);
+            confirmImage.color = new Vector4(255f, 255f, 255f, 1f);
         }
         if (chooseText.enabled == true)
         {
@@ -173,14 +173,9 @@ public class KojuPopup : MonoBehaviour
         gameObject.SetActive(true);
 
         // uusi lisäys(perttu)
-        if (iconImage.enabled == true)
-        {
-            iconImage.enabled = false;
-        }
-        if (inputBar.active)
-        {
-            inputBar.SetActive(false);
-        }
+        if (chooseText.enabled == true) { chooseText.enabled = false; }
+        if (iconImage.enabled == true) { iconImage.enabled = false; }
+        if (inputBar.active) { inputBar.SetActive(false); }
         if (confirmButton.enabled == true)
         {
             confirmButton.enabled = false;
@@ -190,10 +185,6 @@ public class KojuPopup : MonoBehaviour
         {
             denyButton.enabled = false;
             denyImage.enabled = false;
-        }
-        if (chooseText.enabled == true)
-        {
-            chooseText.enabled = false;
         }
     }
 
@@ -261,6 +252,13 @@ public class KojuPopup : MonoBehaviour
     // Called when pressing the cancel button
     private void Close()
     {
+        // Uusi lisäys (Perttu)
+        iconImage.enabled = false;
+        inputBar.SetActive(false);
+        confirmButton.enabled = false;
+        confirmImage.color = new Vector4(255f, 255f, 255f, 0.2f);
+        chooseText.enabled = true;
+
         currentCard = null;
         furnitureData = null;
         itemMover = null;
