@@ -673,7 +673,7 @@ public static class PhotonRealtimeClient
         }
     }
 
-    private static RoomOptions GetRoomOptions(GameType lobbyType, GameType gametype = GameType.None, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", int soulhomeRank = -1, int customGameMode = -1, bool showToFriends = false, bool showToClan = false, string leaderId = null)
+    private static RoomOptions GetRoomOptions(GameType lobbyType, GameType gametype = GameType.None, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", string clanId = "", int soulhomeRank = -1, int customGameMode = -1, bool showToFriends = false, bool showToClan = false, string leaderId = null)
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
@@ -764,6 +764,12 @@ public static class PhotonRealtimeClient
             propertiesShowingToLobby.Add(PhotonBattleRoom.ClanNameKey);
         }
 
+        if (!string.IsNullOrEmpty(clanId))
+        {
+            customRoomProperties.Add(PhotonBattleRoom.ClanIdKey, clanId);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.ClanIdKey);
+        }
+
         if (showToFriends)
         {
             customRoomProperties.Add(PhotonBattleRoom.ShowToFriendsKey, true);
@@ -831,12 +837,13 @@ public static class PhotonRealtimeClient
         );
     }
 
-    public static bool CreateClan2v2LobbyRoom(string clanName, int soulhomeRank, string[] expectedUsers = null, bool isMatchmaking = false)
+    public static bool CreateClan2v2LobbyRoom(string clanName, string clanId, int soulhomeRank, string[] expectedUsers = null, bool isMatchmaking = false)
     {
         RoomOptions roomOptions = GetRoomOptions(
             lobbyType: GameType.Clan2v2,
             isMatchmaking: isMatchmaking,
             clanName: clanName,
+            clanId: clanId,
             soulhomeRank: soulhomeRank
         );
 
@@ -850,22 +857,22 @@ public static class PhotonRealtimeClient
     {
         // Use provided displayName for lobby-visible name if given, otherwise fall back to the roomName
         string leaderId = null;
-        string clanName = null;
+        string clanId = null;
         try
         {
             leaderId = ServerManager.Instance?.Player?._id;
             if (showToClan)
             {
-                clanName = ServerManager.Instance?.Player?.clan_id;
+                clanId = ServerManager.Instance?.Player?.clan_id;
             }
         }
         catch
         {
             leaderId = null;
-            clanName = null;
+            clanId = null;
         }
 
-        if (showToClan && string.IsNullOrWhiteSpace(clanName))
+        if (showToClan && string.IsNullOrWhiteSpace(clanId))
         {
             Debug.LogWarning("CreateCustomLobbyRoom: showToClan is enabled but the local player's clan id is empty; the room will not be visible to clan members.");
         }
@@ -876,7 +883,7 @@ public static class PhotonRealtimeClient
             startingEmotion: startingEmotion,
             roomName: displayName ?? roomName,
             password: password,
-            clanName: showToClan ? clanName : null,
+            clanId: showToClan ? clanId : null,
             customGameMode: customGameMode,
             showToFriends: showToFriends,
             showToClan: showToClan,
@@ -1009,7 +1016,7 @@ public static class PhotonRealtimeClient
         return Client.OpCreateRoom(opParams);
     }
 
-    public static bool JoinRandomOrCreateClan2v2Room(string clanName = "", int soulhomeRank = -1, string[] expectedUsers = null, bool isMatchmaking = false)
+    public static bool JoinRandomOrCreateClan2v2Room(string clanName = "", string clanId = "", int soulhomeRank = -1, string[] expectedUsers = null, bool isMatchmaking = false)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
@@ -1021,6 +1028,7 @@ public static class PhotonRealtimeClient
             lobbyType: GameType.Clan2v2,
             isMatchmaking: isMatchmaking,
             clanName: clanName,
+            clanId: clanId,
             soulhomeRank: soulhomeRank
         );
 
@@ -1086,7 +1094,7 @@ public static class PhotonRealtimeClient
 
     // Server-side matchmaking room assignment using shared bucket properties.
     // Room names are allocated by the server when creating new rooms.
-    public static bool JoinOrCreateMatchmakingRoom(GameType gameType, string[] expectedUsers = null, string clanName = "", int soulhomeRank = -1)
+    public static bool JoinOrCreateMatchmakingRoom(GameType gameType, string[] expectedUsers = null, string clanName = "", string clanId = "", int soulhomeRank = -1)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
@@ -1094,12 +1102,13 @@ public static class PhotonRealtimeClient
             return false;
         }
 
-        RoomOptions roomOptions = GetRoomOptions(gameType, GameType.None, true, "", Emotion.Blank, "", "", clanName, soulhomeRank);
+        RoomOptions roomOptions = GetRoomOptions(gameType, GameType.None, true, "", Emotion.Blank, "", "", clanName, clanId, soulhomeRank);
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs("", roomOptions, expectedUsers);
 
         JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
         var expectedProps = new PhotonHashtable{ { PhotonBattleRoom.GameTypeKey, gameType }, { PhotonBattleRoom.IsMatchmakingKey, true } };
         if (!string.IsNullOrEmpty(clanName)) expectedProps.Add(PhotonBattleRoom.ClanNameKey, clanName);
+        if (!string.IsNullOrEmpty(clanId)) expectedProps.Add(PhotonBattleRoom.ClanIdKey, clanId);
         if (soulhomeRank >= 0) expectedProps.Add(PhotonBattleRoom.SoulhomeRank, soulhomeRank);
         joinRandomRoomArgs.ExpectedCustomRoomProperties = expectedProps;
         joinRandomRoomArgs.ExpectedMaxPlayers = roomOptions.MaxPlayers;

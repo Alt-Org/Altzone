@@ -809,7 +809,7 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator GetPlayerFromServer(string playerId, Action<ServerPlayer> callback)
+    public IEnumerator GetPlayerFromServer(string playerId, Action<ServerPlayer> callback, Action<bool> finished = null)
     {
         if (Player != null)
             Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
@@ -830,6 +830,8 @@ public class ServerManager : MonoBehaviour
                 if (callback != null)
                     callback(null);
             }
+            if (finished != null)
+                finished(true);
         }));
     }
 
@@ -938,7 +940,7 @@ public class ServerManager : MonoBehaviour
     #endregion
 
     #region Clan
-    public IEnumerator GetClanFromServer(Action<ServerClan> callback)
+    public IEnumerator GetClanFromServer(Action<ServerClan> callback, Action<bool> finished = null)
     {
         if (Clan != null)
             Debug.LogWarning("Clan already exists. Consider using ServerManager.Instance.Clan if the most up to data data from server is not needed.");
@@ -947,6 +949,8 @@ public class ServerManager : MonoBehaviour
         {
             if (callback != null)
                 callback(Clan);
+            if (finished != null)
+                finished(true);
             yield break;
         }
 
@@ -970,15 +974,19 @@ public class ServerManager : MonoBehaviour
                 if (callback != null)
                     callback(null);
             }
+            if (finished != null)
+                finished(true);
         }));
     }
 
-    public IEnumerator GetClanFromServer(string clanId, Action<ServerClan> callback)
+    public IEnumerator GetClanFromServer(string clanId, Action<ServerClan> callback, Action<bool> finished = null)
     {
         if (string.IsNullOrEmpty(clanId))
         {
             Debug.LogWarning("GetClanFromServer called with empty clanId.");
             callback?.Invoke(null);
+            if (finished != null)
+                finished(true);
             yield break;
         }
 
@@ -995,6 +1003,8 @@ public class ServerManager : MonoBehaviour
             {
                 callback?.Invoke(null);
             }
+            if (finished != null)
+                finished(true);
         }));
     }
 

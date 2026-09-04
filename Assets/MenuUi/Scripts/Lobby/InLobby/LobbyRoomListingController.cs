@@ -155,10 +155,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
                             PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(InLobbyController.SelectedPremadeTargetGameType);
                             break;
                         case GameType.Clan2v2:
-                            CreateClan2v2Room();
+                            yield return CreateClan2v2Room();
                             break;
                         case GameType.Random2v2:
-                            CreateRandom2v2Room();
+                            yield return CreateRandom2v2Room();
                             break;
                         case GameType.Custom:
                             if (!_createRoomCustom.IsCustomRoomOptionsReady) _createRoomCustom.InitializeCustomRoomOptions();
@@ -256,32 +256,36 @@ namespace MenuUi.Scripts.Lobby.InLobby
             return null;
         }
 
-        private void CreateClan2v2Room()  // soulhome value for matchmaking
+        private IEnumerator CreateClan2v2Room()  // soulhome value for matchmaking
         {
-            StartCoroutine(GetClanData( clanData =>
+            yield return GetClanData( clanData =>
             {
                 if (clanData != null)
                 {
                     // Join the persistent queue room instead of creating a matchmaking room immediately
                     _pendingJoinIntent = JoinIntent.QueueJoin;
                     _pendingQueueGameType = GameType.Clan2v2;
-                    PhotonRealtimeClient.JoinOrCreateQueueRoom(GameType.Clan2v2);
+                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(GameType.Clan2v2);
                 }
-            }));
+            });
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+            this.Publish(new LobbyManager.StartMatchmakingEvent(GameType.Clan2v2));
         }
 
-        private void CreateRandom2v2Room()  // soulhome value for matchmaking
+        private IEnumerator CreateRandom2v2Room()  // soulhome value for matchmaking
         {
-            StartCoroutine(GetClanData(clanData =>
+            yield return GetClanData(clanData =>
             {
                 if (clanData != null)
                 {
                     // Join the persistent queue room instead of creating a matchmaking room immediately
                     _pendingJoinIntent = JoinIntent.QueueJoin;
                     _pendingQueueGameType = GameType.Random2v2;
-                    PhotonRealtimeClient.JoinOrCreateQueueRoom(GameType.Random2v2);
+                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(GameType.Random2v2);
                 }
-            }));
+            });
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+            this.Publish(new LobbyManager.StartMatchmakingEvent(GameType.Random2v2));
         }
 
         private void JoinRoom(string roomName)
