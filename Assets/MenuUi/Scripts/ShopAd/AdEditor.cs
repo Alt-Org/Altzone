@@ -35,6 +35,10 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private Transform _backgroundColourSelectorContent;
     [SerializeField] private GameObject _backgroundColourSelectorPrefab;
 
+    // Uusi lisäys (Perttu)
+    [Header("Panels")]
+    [SerializeField] private GameObject kojuPanel;
+
     private AdStoreObject _adData;
     private string _posterName = null;
     private List<HeartPieceData> _heartPieceData = new();
@@ -145,5 +149,8 @@ public class AdEditor : AltMonoBehaviour
     public void CloseEditor()
     {
         if(gameObject.activeSelf) gameObject.SetActive(false);
+
+        // Uusi lisäys (Perttu)
+        if (!kojuPanel.active) { kojuPanel.SetActive(true); }
     }
 }
