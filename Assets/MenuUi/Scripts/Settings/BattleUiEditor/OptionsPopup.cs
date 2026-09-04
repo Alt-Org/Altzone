@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -39,9 +40,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Toggle _joystickMovementToggle;
         [SerializeField] private Toggle _followPointerMovementToggle;
         [Space] [SerializeField] private Toggle _twoFingerRotationToggle;
+        [SerializeField] private GameObject _spacerAfterTwoFinger;
         [SerializeField] private Toggle _swipeRotationToggle;
+        [SerializeField] private GameObject _spacerAfterSwipeRotation;
         [SerializeField] private Toggle _joystickRotationToggle;
+        [SerializeField] private GameObject _spacerAfterJoystickRotation;
         [SerializeField] private Toggle _gyroscopeRotationToggle;
+        [SerializeField] private GameObject _spacerAftergyroscopeRotation;
         [Space] [SerializeField] private GameObject _swipeMinDistanceHolder;
         [SerializeField] private Slider _swipeMinDistanceSlider;
         [SerializeField] private TMP_InputField _swipeMinDistanceInputField;
@@ -462,20 +467,55 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     _battleUiEditor._instantiatedRotateJoystick);
             }
 
-            // Toggling rotation toggles isOn based on rotation type and visibility based on movement type
-            _twoFingerRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.TwoFinger);
-            _twoFingerRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Swipe ||
-                                                          movementType == BattleMovementInputType.PointAndClick ||
-                                                          movementType == BattleMovementInputType.FollowPointer);
+            // // Toggling rotation toggles isOn based on rotation type and visibility based on movement type
+            // _twoFingerRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.TwoFinger);
+            // _twoFingerRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Swipe ||
+            //                                               movementType == BattleMovementInputType.PointAndClick ||
+            //                                               movementType == BattleMovementInputType.FollowPointer);
+            //
+            // _swipeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Swipe);
+            // _swipeRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.PointAndClick);
+            //
+            // _joystickRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Joystick);
+            // _joystickRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
+            //
+            // _gyroscopeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Gyroscope);
 
-            _swipeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Swipe);
-            _swipeRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.PointAndClick);
+            //Rotation togglle visibility
+            bool twoFingerVisibility =
+                movementType == BattleMovementInputType.Swipe ||
+                movementType == BattleMovementInputType.PointAndClick ||
+                movementType == BattleMovementInputType.FollowPointer;
 
-            _joystickRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Joystick);
-            _joystickRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Joystick ||
-                                                         movementType == BattleMovementInputType.FollowPointer);
+            bool swipeRotationVisibility =
+                movementType == BattleMovementInputType.PointAndClick;
 
-            _gyroscopeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Gyroscope);
+            bool joystickRotationVisibility =
+                movementType == BattleMovementInputType.Joystick;
+
+            //Toggle states
+            _twoFingerRotationToggle.SetIsOnWithoutNotify(
+                rotationType == BattleRotationInputType.Gyroscope);
+
+            _swipeRotationToggle.SetIsOnWithoutNotify(
+                rotationType == BattleRotationInputType.Swipe);
+
+            _gyroscopeRotationToggle.SetIsOnWithoutNotify(
+                rotationType == BattleRotationInputType.Gyroscope);
+
+            //Toggle visibility
+            _twoFingerRotationToggle.gameObject.SetActive(twoFingerVisibility);
+            _swipeRotationToggle.gameObject.SetActive(swipeRotationVisibility);
+            _joystickRotationToggle.gameObject.SetActive(joystickRotationVisibility);
+
+            //Gyroscope toggle visibility
+            _gyroscopeRotationToggle.gameObject.SetActive(true);
+
+            //Spacer visibilty
+            _spacerAfterTwoFinger.SetActive(twoFingerVisibility);
+            _spacerAfterSwipeRotation.SetActive(swipeRotationVisibility);
+            _spacerAfterJoystickRotation.SetActive(joystickRotationVisibility);
+            _spacerAftergyroscopeRotation.SetActive(true);
 
             // Setting visibility for the swipe and gyroscope additional options
             _swipeMinDistanceHolder.SetActive(movementType == BattleMovementInputType.Swipe ||
