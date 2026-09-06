@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
+using UnityEngine.EventSystems; // -------------------
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace MenuUI.Scripts.SoulHome
@@ -23,15 +24,15 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _hoverButtons;
         [SerializeField]
-        private GameObject _furnitureButtonTray;
-        [SerializeField]
+        //private GameObject _furnitureButtonTray;
+        //[SerializeField]
         private GameObject _changeHandleButtonTray;
         [SerializeField]
         private GameObject _verticalItemTray;
         [SerializeField]
         private GameObject _horizontalItemTray;
-        [SerializeField]
-        private GameObject _furnitureButtons;
+        //[SerializeField]
+        //private GameObject _furnitureButtons;
 
         private bool _rotated = false;
 
@@ -130,8 +131,33 @@ namespace MenuUI.Scripts.SoulHome
             _soulHomeTower.ResetChanges();
         }
 
+        private bool IsPointerOverUi() // ----------------------------------------------
+        {
+            /**/
+            if (EventSystem.current == null) return false;
+
+            // Mouse
+            if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                Debug.Log("mouse pointer over ui: " + EventSystem.current.IsPointerOverGameObject() + "-------------------------");
+                return EventSystem.current.IsPointerOverGameObject();
+            }
+            // Touch
+            foreach (var touch in Touch.activeTouches)
+            {
+                if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began)
+                    Debug.Log("touch pointer over ui: " + EventSystem.current.IsPointerOverGameObject(touch.finger.index) + " always false -------------------------");
+                    return EventSystem.current.IsPointerOverGameObject(touch.finger.index);
+            }
+
+            return false;
+        }
+
         private void RayPoint(ClickState click)
         {
+            if (IsPointerOverUi()) // Check to stop clicks from both pressing hover buttons and moving furniture (in theory) ------------
+                return;
+
             //Debug.Log(click);
             //Debug.Log(Screen.orientation);
 
@@ -373,12 +399,12 @@ namespace MenuUI.Scripts.SoulHome
                 if(!_rotated)tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.8f, tray.transform.localPosition.y);
                 else tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.2f + tray.transform.Find("EditButton").GetComponent<RectTransform>().rect.width, tray.transform.localPosition.y);
                 _trayOpen = true;
-                RectTransform furnitureRectTransform = tray.transform.Find("FurnitureButton").GetComponent<RectTransform>();
+                RectTransform furnitureRectTransform = tray.transform.Find("CategoryButton").GetComponent<RectTransform>();
                 furnitureRectTransform.sizeDelta = new(width *0.2f, furnitureRectTransform.sizeDelta.y);
                 furnitureRectTransform.gameObject.SetActive(true);
-                RectTransform trapRectTransform = tray.transform.Find("TrapButton").GetComponent<RectTransform>();
-                trapRectTransform.sizeDelta = new(width * 0.2f, trapRectTransform.sizeDelta.y);
-                trapRectTransform.gameObject.SetActive(true);
+                //RectTransform trapRectTransform = tray.transform.Find("TrapButton").GetComponent<RectTransform>();
+                //trapRectTransform.sizeDelta = new(width * 0.2f, trapRectTransform.sizeDelta.y);
+                //trapRectTransform.gameObject.SetActive(true);
                 //transform.Find("ChangeHandleButtons/SaveChangesButton").gameObject.SetActive(true);
                 //if (!_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
             }
@@ -386,8 +412,8 @@ namespace MenuUI.Scripts.SoulHome
             {
                 tray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                 _trayOpen = false;
-                tray.transform.Find("FurnitureButton").GetComponent<RectTransform>().gameObject.SetActive(false);
-                tray.transform.Find("TrapButton").GetComponent<RectTransform>().gameObject.SetActive(false);
+                //tray.transform.Find("FurnitureButton").GetComponent<RectTransform>().gameObject.SetActive(false); // -----------
+                //tray.transform.Find("TrapButton").GetComponent<RectTransform>().gameObject.SetActive(false); // -----------
                 //transform.Find("ChangeHandleButtons/SaveChangesButton").gameObject.SetActive(false);
                 //if (_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
             }
@@ -400,7 +426,7 @@ namespace MenuUI.Scripts.SoulHome
                 OverlayPanelCheck.Instance.ToggleBottomBar(false);
                 tray.SetActive(true);
                 _changeHandleButtonTray.SetActive(true);
-                _furnitureButtonTray.SetActive(true);
+                //_furnitureButtonTray.SetActive(true);
                 SetFurnitureButtons();
             }
             else
@@ -409,7 +435,7 @@ namespace MenuUI.Scripts.SoulHome
                 OverlayPanelCheck.Instance.ToggleBottomBar(true);
                 tray.SetActive(false);
                 _changeHandleButtonTray.SetActive(false);
-                _furnitureButtonTray.SetActive(false);
+                //_furnitureButtonTray.SetActive(false);
             }
             CheckEditMode();
         }
@@ -463,7 +489,7 @@ namespace MenuUI.Scripts.SoulHome
         }
 
         private void SetFurnitureButtons()
-        {
+        {/*
             float width = _furnitureButtonTray.GetComponent<RectTransform>().rect.width;
             float height = _furnitureButtonTray.GetComponent<RectTransform>().rect.height;
 
@@ -501,7 +527,7 @@ namespace MenuUI.Scripts.SoulHome
                 rotateButton.GetComponent<RectTransform>().anchorMin = new(0.75f, 0.5f);
                 rotateButton.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                 rotateButton.GetComponent<RectTransform>().sizeDelta = new(buttonSize, buttonSize);
-            }
+            }*/
         }
 
         private void SetBottomButtons()
@@ -670,7 +696,6 @@ namespace MenuUI.Scripts.SoulHome
                 _changeHandleButtonTray.transform.Find("SaveChangesButton").GetComponent<Button>().interactable = false;
             }
         }
-
         private void CheckHoverButtons()
         {
             if(_soulHomeTower.SelectedFurniture != null && _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled) _hoverButtons.SetActive(true);

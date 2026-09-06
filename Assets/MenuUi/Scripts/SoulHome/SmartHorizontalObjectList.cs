@@ -69,23 +69,6 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
     public delegate void LateDataRequest();
     public event LateDataRequest OnLateDataRequest; //Used to get data for the list when this list is enabled.
 
-    //public List<GameObject> children { get => _content.gameObject.GetChildren();} // ---------------------------------------------------
-
-    public List<GameObject> children // --------------------------------------
-    {
-        get
-        {
-            List<GameObject> result = new();
-
-            for (int i = 0; i < _content.childCount; i++)
-            {
-                result.Add(_content.GetChild(i).gameObject);
-            }
-
-            return result;
-        }
-    }
-
     private enum HorizontalDirectionType
     {
         Neutral = 0,
@@ -95,6 +78,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     private void Awake()
     {
+        // Called when furniture edit mode pressed - meaning this gets called after Setup() (OK)
         if (_smartListItems.Count == 0) CreatePool();
 
         _contentStartAnchoredPosition = _content.anchoredPosition;
@@ -162,25 +146,23 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
     #region Data
     public void Setup<T>(List<T> data)
     {
-        Debug.Log("setup in smarthorizontal -------------------------------------------------------------------------------------------------------------------------------------");
-        //if (!isActiveAndEnabled || _buildOnEnable)
-        //{
+        if (_smartListItems.Count == 0) CreatePool(); // because Awake() is not called yet, causing _smartListItems to be disabled --------------------
+
         if (!isActiveAndEnabled)
         {
-            Debug.Log("(!isActiveAndEnabled) in smarthorizontal -------------------------------------------------------------------------------------------------------------------------------------");
+            // When furniture tray loaded, smart list always disabled
+            Debug.Log("(!isActiveAndEnabled) in smarthorizontal ----------------------------------------------------------------------");
         }
         if (_buildOnEnable)
         {
-            Debug.Log("(_buildOnEnable) in smarthorizontal -------------------------------------------------------------------------------------------------------------------------------------");
+            Debug.Log("(_buildOnEnable) in smarthorizontal --------------------------------------------------------------------------");
             _buildOnEnable = true;
             return;
         }
-        //}
 
         if (!_locationHelper) CreateLocationHelper();
 
         _contentListLenght = data.Count;
-        Debug.Log("_contentListLenght in smarthorizontal -------------------------------------------------------------------------------------------------------------------------------------" + _contentListLenght);
 
         _viewportLeftAnchoredBorder = -HalfWidth(_viewport);
         _viewportRightAnchoredBorder = HalfWidth(_viewport);
@@ -214,7 +196,6 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     public void UpdateContent<T>(int index, T data)
     {
-        Debug.Log("update data in amrthorizontal -------------------------------------------------------------------------------------------------------------------------------------");
         if (index < _smartListLeftIndex || index > _smartListRightIndex) return;
 
         int smartIndex = index % _smartListItems.Count;
@@ -262,6 +243,9 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
             }
         }
 
+        // T is FurnitureListObject and data is a list of FurnitureListObjects -------------------
+        // _smartListItems are FurnitureTraySlots which have FurnitureTraySlotHandler -----------------------
+
         //Set all generated smart items.
         for (int i = 0; i < _smartListItems.Count; i++)
         {
@@ -275,7 +259,6 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
                 _smartListItems[smartIndex].SetVisibility(false);
                 continue;
             }
-
             _smartListItems[smartIndex].SetData<T>(data[i]);
             smartPositionIndexesUsed++;
         }
@@ -290,7 +273,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
         {
             SmartListItem firstSmartListItem = Instantiate(_contentPrefab, _content).GetComponent<SmartListItem>();
 
-            if (!firstSmartListItem.SelfRectTransform) firstSmartListItem.SetSelfRectTransform(); // null reference -----------------------
+            if (!firstSmartListItem.SelfRectTransform) firstSmartListItem.SetSelfRectTransform();
 
             _smartListItemLocalWidthWithPadding = firstSmartListItem.SelfRectTransform.rect.width + _horizontalPadding;
             firstSmartListItem.SelfRectTransform.sizeDelta = new Vector2(
@@ -320,7 +303,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
             smartListItem.SelfRectTransform.sizeDelta = new Vector2(
                 smartListItem.SelfRectTransform.sizeDelta.x, _content.rect.height);
 
-            smartListItem.ClearData();
+            smartListItem.ClearData(); // does nothing?? what is it even clearing in a fresh prefab? (OK)
             _smartListItems.Add(smartListItem);
         }
     }

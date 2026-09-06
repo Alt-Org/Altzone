@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7236189284163807650}
   - component: {fileID: 4874988545612545066}
   - component: {fileID: 2816184518050586444}
+  - component: {fileID: 8856340460374482883}
   m_Layer: 5
   m_Name: FurnitureTraySlot
   m_TagString: FurnitureTrayItem
@@ -37,10 +38,10 @@ RectTransform:
   - {fileID: 1619582303083277009}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -37.5}
-  m_SizeDelta: {x: 150, y: 175}
+  m_AnchorMin: {x: 0, y: 0.91400003}
+  m_AnchorMax: {x: 0.13755557, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 3, y: -1}
   m_Pivot: {x: 0, y: 1}
 --- !u!61 &8804162836233781768
 BoxCollider2D:
@@ -150,8 +151,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d62d849a99689964f9a685eeddda6ed2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _furnitureRefrence: {fileID: 11400000, guid: 4d7ae157e7f642342b3e1c145294f7b1, type: 2}
   _name: {fileID: 3530433794589622897}
   _amountField: {fileID: 707649535535726409}
+--- !u!114 &8856340460374482883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1457898553423387374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9805132610c943babb8ce5f326a71686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5994814573272376437
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,7 +259,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.8
+  m_fontSize: 18.95
   m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -382,7 +396,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18.15
+  m_fontSize: 18.35
   m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 1

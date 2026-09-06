@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace MenuUI.Scripts.SoulHome
 {
-    public class FurnitureTrayHandler : SmartListItem //MonoBehaviour
+    public class FurnitureTrayHandler : SmartHorizontalObjectList //MonoBehaviour
     {
         [SerializeField]
         private GameObject _traySlotObject;
@@ -57,10 +57,10 @@ namespace MenuUI.Scripts.SoulHome
             if (list == null && list.Count < 1) return;
 
             // FurnitureList = how many furniture items in total, FurnitureListObject = how many of that type?, Furniture = the actual furniture object
-            //FillSelectionButtonList(list); // ----------------
+            FillSelectionButtonList(list); // ----------------
             _smartList.OnNewDataRequested += UpdateButtonHandlerData; // -------------
 
-            /**/
+            /*
             foreach (FurnitureListObject listObject in list.Get())
             {
                 GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(listObject.Name);
@@ -77,28 +77,24 @@ namespace MenuUI.Scripts.SoulHome
                 GameObject trayFurniture = Instantiate(furnitureObject, furnitureSlot.transform);
                 furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList = listObject;
                 if(listObject.Count - listObject.GetInRoomCount() <= 0) furnitureSlot.SetActive(false);
-            }
+            }*/
 
         }
 
          private void FillSelectionButtonList(FurnitureList furnitureList) // ----------------------
         {
-            //_furnitureList.Clear();
             _furnitureListObjects.Clear();
 
             foreach (FurnitureListObject listObject in furnitureList.Get())
             {
-                //_furnitureList.Add(listObject.Get()[0]); // Get the first furniture in the list object
                 _furnitureListObjects.Add(listObject);
             }
-            Debug.Log("FurnitureListObjects Count: " + _furnitureListObjects.Count + " -------------------------------------------------------------------------------------------------------------------------------------");
-            _smartList.Setup<FurnitureListObject>(_furnitureListObjects); // ----------------------
-            //_smartList.Setup<FurnitureListObject>(_furnitureList);
+            _smartList.Setup<FurnitureListObject>(_furnitureListObjects);
         }
 
         private void UpdateButtonHandlerData(int targetIndex) // ----------------------
         {
-            Debug.Log("UpdateButtonHandlerData -------------------------------------------------------------------------------------------------------------------------------------");
+            Debug.Log("UpdateButtonHandlerData -----------------------------------------------------------------------");
             _smartList.UpdateContent<FurnitureListObject>(targetIndex, _furnitureListObjects[targetIndex]);
         }
 

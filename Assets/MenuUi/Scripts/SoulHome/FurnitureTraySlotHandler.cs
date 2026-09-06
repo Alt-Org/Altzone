@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Audio; // ----------------------
 using TMPro;
 using UnityEngine;
 
 namespace MenuUI.Scripts.SoulHome
 {
-    public class FurnitureTraySlotHandler : MonoBehaviour
+    public class FurnitureTraySlotHandler : SmartListItem //IBeginDragHandler, IEndDragHandler // MonoBehaviour
     {
+        [SerializeField] // ----------------------
+        private SoulHomeFurnitureReference _furnitureRefrence; // ----------------------
         [SerializeField]
         private TextMeshProUGUI _name;
         [SerializeField]
@@ -50,6 +53,26 @@ namespace MenuUI.Scripts.SoulHome
                 return value;
             }
             return -1;
+        }
+
+        public void UpdateFurniture() // ----------------------
+        {
+            if (_furnitureList == null) return;
+            _name.text = _furnitureList.Name; // ----------------------
+            int value = _furnitureList.Count - _furnitureList.GetInRoomCount();
+            if (value > 1)
+                _amountField.text = "x" + value.ToString();
+            else
+                _amountField.text = "";
+            GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(_furnitureList.Name);
+            GameObject trayFurniture = Instantiate(furnitureObject, SelfRectTransform.transform);
+        }
+
+        public override void SetData<T1>(T1 data) // ----------------------
+        {
+            if (!CheckClassType<T1, FurnitureListObject>(data, out FurnitureListObject furnitureData)) return;
+            _furnitureList = furnitureData;
+            UpdateFurniture();
         }
 
         public void SaveCount()

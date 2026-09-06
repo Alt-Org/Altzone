@@ -37,7 +37,7 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _rooms;
 
         [SerializeField]
-        private GameObject _furnitureHoverButtons; // ----------------------------------------------
+        private GameObject _furnitureHoverButtons; //----------------------------------------------
 
         private Bounds _roomBounds;
 
@@ -81,6 +81,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _selectedFurniture?.GetComponent<FurnitureHandling>().SetOutline(false);
                 _selectedFurniture = value;
+                _furnitureHoverButtons.SetActive(false); // ----------------------------------------------
                 //if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
                 if(_selectedFurniture != null) _selectedFurniture.GetComponent<FurnitureHandling>().SetOutline(true);
                 _soulHomeController.SetFurniture(_selectedFurniture?.GetComponent<FurnitureHandling>().Furniture);
@@ -712,7 +713,6 @@ namespace MenuUI.Scripts.SoulHome
 
         public void RemoveFurniture()
         {
-            _furnitureHoverButtons.SetActive(false); // ----------------------------------------------
             if (_selectedFurniture.GetComponent<FurnitureHandling>().Slot != null)
                 _rooms.transform.GetChild(_selectedFurniture.GetComponent<FurnitureHandling>().Slot.roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(_selectedFurniture.GetComponent<FurnitureHandling>(), _selectedFurniture.GetComponent<FurnitureHandling>().Slot);
             else if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
