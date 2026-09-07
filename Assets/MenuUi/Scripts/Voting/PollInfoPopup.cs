@@ -234,9 +234,22 @@ public class PollInfoPopup : MonoBehaviour
         valueText.text = $"{furnitureData.Furniture.Value}";
     }
 
-    private void SetClanRoleData(ClanRolePollData _)
+    private void SetClanRoleData(ClanRolePollData clanRolePollData)
     {
-        Debug.LogWarning("ClanRolePoll not implemented yet");
+        if (clanRolePollData == null) return;
+        var _targetRole = clanRolePollData.TargetRole.ToString();
+
+        nameText.text = _targetRole;
+        var _targetUser = "Me";
+
+        descriptionText.text = Language == SettingsCarrier.LanguageType.English
+            ? $"Do give {_targetRole} to {_targetUser}?"
+            : $"Annetaanko oikeudet?";
+    }
+
+    private void SetKickPoll()
+    {
+        // Implement later
     }
 
     private void SetExpiredPollInfo()
