@@ -75,6 +75,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
 
             PlayerHandleInternal.SetAllPlayStates(playerManagerData, BattlePlayerPlayState.NotInGame);
+            PlayerHandleInternal.SetAllCharacterNumbers(playerManagerData, -1);
             PlayerHandleInternal.SetAllPreviousCharacterPosition(playerManagerData, s_noPreviousPosition);
             playerManagerData->PlayerCount = 0;
 
@@ -381,6 +382,7 @@ namespace Battle.QSimulation.Player
                         TeamNumber             = teamNumber,
                         CharacterId            = playerCharacterId,
                         CharacterClass         = playerCharacterClass,
+                        CharacterNumber        = playerCharacterNumber,
 
                         // player's stats
                         Stats                  = battleBaseCharacters[playerCharacterNumber].Stats,
@@ -503,8 +505,10 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="slot">The slot of the player for which the character is to be spawned.</param>
         /// <param name="characterNumber">The character number of the character to be spawned.</param>
-        public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber, bool select)
+        public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber, bool select = false)
         {
+            BattlePlayerCharacterState unSelectedCharacterState = BattleParameters.GetIsFlipperGameTest(f) ? BattlePlayerCharacterState.InPlay : BattlePlayerCharacterState.OutOfPlay;
+
             PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
 
             if (playerHandle.PlayState.IsNotInGame())
@@ -525,11 +529,28 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
-            playerHandle.SetCharacterState(characterNumber, select ? BattlePlayerCharacterState.InPlaySelected : BattlePlayerCharacterState.InPlay);
-
             if (!(playerHandle.GetCharacterState(characterNumber) is BattlePlayerCharacterState.InPlay or BattlePlayerCharacterState.InPlaySelected))
             {
                 SpawnPlayer(f, playerHandle, characterNumber);
+            }
+
+            playerHandle.PlayState = BattlePlayerPlayState.InPlay;
+
+            if (select)
+            {
+                if (playerHandle.SelectedCharacterNumber != -1)
+                {
+                    playerHandle.SetCharacterState(playerHandle.SelectedCharacterNumber, unSelectedCharacterState);
+                }
+
+                playerHandle.SetSelectedCharacterNumber(characterNumber);
+                playerHandle.SetCharacterState(characterNumber, BattlePlayerCharacterState.InPlaySelected);
+
+                f.Events.BattleCharacterSelected(slot, characterNumber);
+            }
+            else
+            {
+                playerHandle.SetCharacterState(characterNumber, BattlePlayerCharacterState.InPlay);
             }
         }
 
@@ -554,9 +575,13 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
-            playerHandle.SetCharacterState(characterNumber, kill ? BattlePlayerCharacterState.OutOfPlayDead : BattlePlayerCharacterState.OutOfPlay);
-
             DespawnPlayer(f, playerHandle, characterNumber);
+
+            playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
+            playerHandle.SetCharacterState(characterNumber, kill ? BattlePlayerCharacterState.OutOfPlayDead : BattlePlayerCharacterState.OutOfPlay);
+            playerHandle.UnsetSelectedCharacterNumber();
+
+            f.Events.BattleCharacterSelected(slot, -1);
         }
 
         #endregion Public - Static Methods - Spawn/Despawn
@@ -573,7 +598,7 @@ namespace Battle.QSimulation.Player
         /// <summary>Debug overlay entry number for stats.</summary>
         private static int s_debugOverlayStats;
 
-        private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_SLOT_COUNT];
+        private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_CHARACTER_TOTAL_COUNT];
 
         private static readonly FPVector2 s_noPreviousPosition = FPVector2.MaxValue;
 
@@ -612,9 +637,11 @@ namespace Battle.QSimulation.Player
             BattlePlayerEntityRef       characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState: true);
             BattlePlayerDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
 
-            FPVector2 worldPosition = playerHandle.DefaultSpawnPosition;
+            FPVector2 worldPosition = BattleParameters.GetIsFlipperGameTest(f) ? playerHandle.GetCharacterDefaultSpawnPosition(characterNumber) : playerHandle.DefaultSpawnPosition;
 
-            switch (playerData->SpawnBehaviour)
+            BattlePlayerSpawnBehaviour spawnBehaviour = BattleParameters.GetIsFlipperGameTest(f) ? BattlePlayerSpawnBehaviour.DefaultPosition : playerData->SpawnBehaviour;
+
+            switch (spawnBehaviour)
             {
                 case BattlePlayerSpawnBehaviour.DefaultPosition:
                     break;
@@ -630,6 +657,11 @@ namespace Battle.QSimulation.Player
                         worldPosition = f.Unsafe.GetPointer<Transform2D>(playerHandle.GetSelectedCharacterEntityRef(f))->Position;
                     }
                     break;
+            }
+
+            if (playerHandle.PlayState.IsInPlay() && !BattleParameters.GetIsFlipperGameTest(f))
+            {
+                DespawnPlayer(f, playerHandle, playerHandle.SelectedCharacterNumber);
             }
 
             s_debugLogger.LogFormat(f, "({0}) Spawning character number: {1}", playerData->Slot, characterNumber);
@@ -650,8 +682,6 @@ namespace Battle.QSimulation.Player
             BattlePlayerMovementController.Teleport(f, playerData, characterEntityRef, worldPosition);
 
             // update player handle
-            playerHandle.SetSelectedCharacterNumber(characterNumber);
-            playerHandle.PlayState = BattlePlayerPlayState.InPlay;
 
             BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, characterEntityRef);
 
@@ -665,7 +695,6 @@ namespace Battle.QSimulation.Player
             });
 
             // update view
-            f.Events.BattleCharacterSelected(playerData->Slot, characterNumber);
             f.Events.BattleViewSetRotationJoystickVisibility(!playerData->DisableRotation, playerData->Slot);
         }
 
@@ -701,11 +730,8 @@ namespace Battle.QSimulation.Player
             playerData->ViewPosition = characterEntityRef.GetTransform(f)->Position;
 
             // update player handle
-            playerHandle.UnsetSelectedCharacterNumber();
-            playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
 
             // update view
-            f.Events.BattleCharacterSelected(playerData->Slot, -1);
         }
 
         private static void Error(Frame f, string messageformat, params object[] args)
