@@ -6,6 +6,7 @@
 /// </summary>
 
 // System usings
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 // Quantum usings
@@ -706,6 +707,14 @@ namespace Battle.QSimulation.Player
                 }
             }
 
+            public static void SetAllCharacterNumbers(BattlePlayerManagerDataQSingleton* playerManagerData, int characterNumber)
+            {
+                for (int i = 0; i < Constants.BATTLE_PLAYER_SLOT_COUNT; i++)
+                {
+                    playerManagerData->CharacterSelectedNumbers[i] = characterNumber;
+                }
+            }
+
             /// <summary>
             /// Sets all character's previous positions to a given <paramref name="position"/>
             /// </summary>
@@ -718,7 +727,7 @@ namespace Battle.QSimulation.Player
             /// <param name="position">The position that all previous character positions will be set to.</param>
             public static void SetAllPreviousCharacterPosition(BattlePlayerManagerDataQSingleton* playerManagerData, FPVector2 position)
             {
-                for(int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_TOTAL_COUNT; i++)
+                for (int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_TOTAL_COUNT; i++)
                 {
                     playerManagerData->CharacterAllPreviousPositions[i] = position;
                 }
@@ -739,7 +748,7 @@ namespace Battle.QSimulation.Player
             {
                 if (!(characterNumber >= 0 && characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT))
                 {
-                    s_debugLogger.ErrorFormat("Character number {1} is not valid", characterNumber);
+                    s_debugLogger.ErrorFormat("Character number {0} is not valid", characterNumber);
                     return false;
                 }
                 return true;
@@ -942,7 +951,7 @@ namespace Battle.QSimulation.Player
             /// Internal only
 
             public readonly FPVector2 DefaultSpawnPosition
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_spawnPoints[Index]; }
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetCharacterDefaultSpawnPosition(1); }
 
             /// @}
 
@@ -1086,7 +1095,16 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly BattlePlayerEntityRef GetCharacterEntityRef(Frame f, int characterNumber, bool updateViewPlayState = false)
             {
+                DevAssertIsValidCharacterNumber(characterNumber);
                 return (BattlePlayerEntityRef)BattleEntityManager.Get(f, _playerManagerData->CharacterEntityGroupIDs[Index], characterNumber, updateViewPlayState);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly FPVector2 GetCharacterDefaultSpawnPosition(int characterNumber)
+            {
+                BattleDebugLogger.WarningFormat(nameof(BattlePlayerManager), "{0} {1}({2})", Index, nameof(GetCharacterDefaultSpawnPosition), characterNumber);
+                BattleDebugLogger.Warning(nameof(BattlePlayerManager), GetCharacterIndex(characterNumber).ToString());
+                return s_spawnPoints[GetCharacterIndex(characterNumber)];
             }
 
             #endregion Public Methods - Player Character - Character Entity
@@ -1193,6 +1211,13 @@ namespace Battle.QSimulation.Player
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number)
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private readonly int GetCharacterIndex(int characterNumber) => GetCharacterOffset() + characterNumber;
+
+            [Conditional("UNITY_EDITOR")]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private readonly void DevAssertIsValidCharacterNumber(int characterNumber)
+            {
+                BattleDebugLogger.DevAssertFormat(nameof(PlayerHandleInternal), IsValidCharacterNumber(characterNumber), "Invalid characterNumber = {0}", characterNumber);
+            }
 
             #endregion Private Methods
         }
