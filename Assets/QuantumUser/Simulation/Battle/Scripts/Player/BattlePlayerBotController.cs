@@ -30,6 +30,13 @@ namespace Battle.QSimulation.Player
     /// Bot behavior and other spec settings are defined in @cref{BattlePlayerBotQSpec}.
     public static unsafe class BattlePlayerBotController
     {
+        public struct BotInputData
+        {
+            public Input Input;
+            public BattleCommand.Type CommandType;
+            public BattleCommand CommandData;
+        }
+
         /// <summary>
         /// Helper method to get characters for a bot.
         /// </summary>
@@ -72,52 +79,79 @@ namespace Battle.QSimulation.Player
         /// <param name="outBotInput">Pointer to where bot's %Quantum Input will be written.</param>
         /// <param name="commandType">Pointer to where battle command's type will be written.</param>
         /// <param name="commandData">Reference to where battle command data will be written.</param>
-        public static void GetBotInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, Input* outBotInput, BattleCommand.Type* commandType, BattleCommand commandData)
+        public static BotInputData GetBotInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
+            BotInputData botInputData = new();
+
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
 
             BattleMovementInputType movementInput = BattleMovementInputType.None;
             BattleGridPosition predictedGridPosition = new() { Col = 0, Row = 0 };
 
+            bool hasCharacter = false;
+
+            BattlePlayerEntityRef playerEntity;
+            BattlePlayerDataQComponent* playerData = null;
+
+            if (playerHandle.SelectedCharacterNumber != -1)
+            {
+                playerEntity = playerHandle.GetSelectedCharacterEntityRef(f);
+                playerData = playerEntity.GetDataQComponent(f);
+
+                hasCharacter = true;
+            }
+
             //{ non-character logic
 
             if (BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerHandle.Slot).GiveUpState && !playerHandle.GiveUpState)
             {
-                *commandType = BattleCommand.Type.GiveUp;
-                commandData = new BattleGiveUpQCommand();
-                return;
+                botInputData.CommandType = BattleCommand.Type.GiveUp;
+                botInputData.CommandData = new BattleGiveUpQCommand();
+                return botInputData;
+            }
+
+            if (hasCharacter && playerData->BotCharacterSwapTimerSec > FP._0)
+            {
+                playerData->BotCharacterSwapTimerSec -= f.DeltaTime;
+            }
+            else
+            {
+                int nextCharacter = hasCharacter
+                    ? (playerHandle.SelectedCharacterNumber + f.RNG->NextInclusive(1, Constants.BATTLE_PLAYER_CHARACTER_COUNT - 1)) % Constants.BATTLE_PLAYER_CHARACTER_COUNT
+                    : f.RNG->NextInclusive(0, Constants.BATTLE_PLAYER_CHARACTER_COUNT - 1);
+
+                playerHandle.GetCharacterEntityRef(f, nextCharacter).GetDataQComponent(f)->BotCharacterSwapTimerSec =
+                    f.RNG->NextInclusive(playerBotSpec.CharacterSwapTimeSecMin, playerBotSpec.CharacterSwapTimeSecMax);
+
+                botInputData.CommandType = BattleCommand.Type.SwapCharacter;
+                botInputData.CommandData = new BattleCharacterSwapQCommand
+                {
+                    CharacterNumber = nextCharacter
+                };
+                return botInputData;
             }
 
             //} non-character logic
 
             //{ character logic
 
-            BattlePlayerEntityRef playerEntity;
-            BattlePlayerDataQComponent* playerData = null;
-
-            if (playerHandle.PlayState.IsInPlay())
+            if (playerData->BotMovementCooldownSec > FP._0)
             {
-                playerEntity = playerHandle.GetSelectedCharacterEntityRef(f);
-                playerData = playerEntity.GetDataQComponent(f);
-
-                if (playerData->BotMovementCooldownSec > FP._0)
-                {
-                    playerData->BotMovementCooldownSec -= f.DeltaTime;
-                }
-                else
-                {
-                    movementInput = BattleMovementInputType.PositionTarget;
-                }
+                playerData->BotMovementCooldownSec -= f.DeltaTime;
+            }
+            else
+            {
+                movementInput = BattleMovementInputType.PositionTarget;
             }
 
             if (movementInput != BattleMovementInputType.None)
             {
-                playerData->BotMovementCooldownSec = f.RNG->NextInclusive(playerBotSpec.MovementCooldownSecMin, playerBotSpec.MovementCooldownSecMax); ;
+                playerData->BotMovementCooldownSec = f.RNG->NextInclusive(playerBotSpec.MovementCooldownSecMin, playerBotSpec.MovementCooldownSecMax);
                 ComponentFilter<BattleProjectileQComponent> projectiles = f.Filter<BattleProjectileQComponent>();
                 if (projectiles.NextUnsafe(out EntityRef projectileEntity, out BattleProjectileQComponent* projectile))
                 {
                     FPVector2 projectileDirection = projectile->Direction;
-                    if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? projectileDirection.Y > 0 : projectileDirection.Y < 0) return;
+                    if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? projectileDirection.Y > 0 : projectileDirection.Y < 0) return botInputData;
                     FPVector2 projectilePosition = projectile->Position;
                     FP predictionTimeSec = playerBotSpec.LookAheadTimeSec;
 
@@ -183,7 +217,7 @@ namespace Battle.QSimulation.Player
                 }
             }
 
-            *outBotInput = new Input()
+            botInputData.Input = new Input()
             {
                 IsValid                       = true,
                 MovementInput                 = movementInput,
@@ -193,6 +227,8 @@ namespace Battle.QSimulation.Player
                 RotationInput                 = false,
                 RotationValue                 = FP._0
             };
+
+            return botInputData;
 
             //} character logic
         }
