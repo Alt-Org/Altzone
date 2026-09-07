@@ -536,33 +536,36 @@ namespace Battle.QSimulation.Projectile
 
             BattlePlayerDataQComponent* playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
-            bool isOnTopOfTeammate = false;
-
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
 
-            if (teammateHandle.PlayState.IsInPlay())
+            if (!BattleParameters.GetIsFlipperGameTest(f))
             {
-                EntityRef teammateEntity = teammateHandle.GetSelectedCharacterEntityRef(f);
+                bool isOnTopOfTeammate = false;
 
-                Transform2D* playerTransform   = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
-                Transform2D* teammateTransform = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
+                if (teammateHandle.PlayState.IsInPlay())
+                {
+                    EntityRef teammateEntity = teammateHandle.GetSelectedCharacterEntityRef(f);
 
-                BattleGridPosition playerGridPosition   = BattleGridManager.WorldPositionToGridPosition(playerTransform->Position);
-                BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateTransform->Position);
+                    Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
+                    Transform2D* teammateTransform = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
 
-                isOnTopOfTeammate = playerGridPosition.Row == teammateGridPosition.Row && playerGridPosition.Col == teammateGridPosition.Col;
+                    BattleGridPosition playerGridPosition = BattleGridManager.WorldPositionToGridPosition(playerTransform->Position);
+                    BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateTransform->Position);
 
-            }
+                    isOnTopOfTeammate = playerGridPosition.Row == teammateGridPosition.Row && playerGridPosition.Col == teammateGridPosition.Col;
 
-            // if player is in the same grid cell as teammate, change the projectile to love emotion
-            if (isOnTopOfTeammate)
-            {
-                s_debugLogger.Log(f, "changing projectile emotion to Love");
-                SetEmotion(f, projectile, BattleEmotionState.Love);
-                shieldCollisionData->IsLoveProjectileCollision = true;
+                }
 
-                normal = playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down;
-                return true;
+                // if player is in the same grid cell as teammate, change the projectile to love emotion
+                if (isOnTopOfTeammate)
+                {
+                    s_debugLogger.Log(f, "changing projectile emotion to Love");
+                    SetEmotion(f, projectile, BattleEmotionState.Love);
+                    shieldCollisionData->IsLoveProjectileCollision = true;
+
+                    normal = playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down;
+                    return true;
+                }
             }
 
             if (shieldCollisionData->PlayerShieldHitbox->CollisionType == BattlePlayerCollisionType.None) return false;
