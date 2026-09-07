@@ -59,7 +59,6 @@ namespace Battle.QSimulation.Player
 
             s_debugOverlayStats = BattleDebugOverlayLink.AddEntries(new string[]
             {
-                "Stat Hp",
                 "Stat Speed",
                 "Stat CharacterSize",
                 "Stat Attack",

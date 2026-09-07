@@ -185,7 +185,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6581901345453682579
 Transform:
   m_ObjectHideFlags: 0
@@ -5320,6 +5320,9 @@ MonoBehaviour:
   - {fileID: 7918865761784379886}
   _particleSystem: {fileID: 4033677569434794206}
   _stunFlashAmount: 5
+  _animationBreathingIntervalSec: 2
+  _animationBreathingSizeMultiplier: 1.05
+  _animationRunningIntervalSec: 0.25
 --- !u!1 &5468922730058828943
 GameObject:
   m_ObjectHideFlags: 0
@@ -5336,7 +5339,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &114013519096929518
 Transform:
   m_ObjectHideFlags: 0
