@@ -269,6 +269,10 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass100DataQComponent))]
   public unsafe partial class BattlePlayerClass100DataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass100DataQComponent> {
     [HideInInspector()]
+    public Quantum.QEnum32<BattlePlayerClass100State> ClassState;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype PlacementTimer;
+    [HideInInspector()]
     public FPVector2 JoystickValuePrevious;
     [HideInInspector()]
     public QBoolean JoystickDownPrevious;
@@ -276,8 +280,6 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.FrameTimerPrototype JoystickTimer;
     [HideInInspector()]
     public Quantum.Prototypes.FrameTimerPrototype CooldownTimer;
-    [HideInInspector()]
-    public Quantum.Prototypes.FrameTimerPrototype PlacementTimer;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClass100DataQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerClass100DataQComponent component = default;
@@ -285,11 +287,12 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerClass100DataQComponent result, in PrototypeMaterializationContext context = default) {
+        result.ClassState = this.ClassState;
+        this.PlacementTimer.Materialize(frame, ref result.PlacementTimer, in context);
         result.JoystickValuePrevious = this.JoystickValuePrevious;
         result.JoystickDownPrevious = this.JoystickDownPrevious;
         this.JoystickTimer.Materialize(frame, ref result.JoystickTimer, in context);
         this.CooldownTimer.Materialize(frame, ref result.CooldownTimer, in context);
-        this.PlacementTimer.Materialize(frame, ref result.PlacementTimer, in context);
         MaterializeUser(frame, ref result, in context);
     }
   }

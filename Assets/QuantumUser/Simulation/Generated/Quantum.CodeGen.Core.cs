@@ -163,6 +163,11 @@ namespace Quantum {
     InPlay,
     InPlaySelected,
   }
+  public enum BattlePlayerClass100State : int {
+    Unused,
+    Placement,
+    Placed,
+  }
   public enum BattlePlayerCollisionType : int {
     None = 0,
     Reflect = 1,
@@ -1518,10 +1523,16 @@ namespace Quantum {
   public unsafe partial struct BattlePlayerClass100DataQComponent : Quantum.IComponent {
     public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
+    [FieldOffset(0)]
+    [HideInInspector()]
+    public BattlePlayerClass100State ClassState;
+    [FieldOffset(24)]
+    [HideInInspector()]
+    public FrameTimer PlacementTimer;
     [FieldOffset(32)]
     [HideInInspector()]
     public FPVector2 JoystickValuePrevious;
-    [FieldOffset(0)]
+    [FieldOffset(4)]
     [HideInInspector()]
     public QBoolean JoystickDownPrevious;
     [FieldOffset(16)]
@@ -1530,22 +1541,21 @@ namespace Quantum {
     [FieldOffset(8)]
     [HideInInspector()]
     public FrameTimer CooldownTimer;
-    [FieldOffset(24)]
-    [HideInInspector()]
-    public FrameTimer PlacementTimer;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 12277;
+        hash = hash * 31 + (Int32)ClassState;
+        hash = hash * 31 + PlacementTimer.GetHashCode();
         hash = hash * 31 + JoystickValuePrevious.GetHashCode();
         hash = hash * 31 + JoystickDownPrevious.GetHashCode();
         hash = hash * 31 + JoystickTimer.GetHashCode();
         hash = hash * 31 + CooldownTimer.GetHashCode();
-        hash = hash * 31 + PlacementTimer.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerClass100DataQComponent*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->ClassState);
         QBoolean.Serialize(&p->JoystickDownPrevious, serializer);
         FrameTimer.Serialize(&p->CooldownTimer, serializer);
         FrameTimer.Serialize(&p->JoystickTimer, serializer);
@@ -2528,6 +2538,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattlePlayerCharacterState), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerClass100DataQComponent), Quantum.BattlePlayerClass100DataQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerClass100ProjectileQComponent), Quantum.BattlePlayerClass100ProjectileQComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattlePlayerClass100State), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerClass400DataQComponent), Quantum.BattlePlayerClass400DataQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerClass600DataQComponent), Quantum.BattlePlayerClass600DataQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerCollisionType), 4);
@@ -2680,6 +2691,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerCharacterClass>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerCharacterID>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerCharacterState>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerClass100State>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerCollisionType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerHitboxType>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.BattlePlayerPlayState>();
