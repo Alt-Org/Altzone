@@ -140,8 +140,11 @@ namespace Battle.QSimulation.Player
                 int characterNumber = playerData->CharacterNumber;
 
                 BattlePlayerManager.DespawnPlayer(f, playerData->Slot, characterNumber, kill: true);
-                playerHandle.SetOutOfPlayRespawning();
-                playerHandle.RespawnTimer = FrameTimer.FromSeconds(f, playerSpec.AutoRespawnTimeSec);
+                if (playerHandle.PlayState.IsOutOfPlay())
+                {
+                    playerHandle.SetOutOfPlayRespawning();
+                    playerHandle.RespawnTimer = FrameTimer.FromSeconds(f, playerSpec.AutoRespawnTimeSec);
+                }
 
                 HandleSFXCommon(f, playerData->Slot, SoundEffectTypeCommon.Death, SoundEffectTarget.All);
                 f.Events.BattleCharacterDeath(playerData->Slot, characterNumber);
@@ -230,15 +233,19 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         public static void OnGameStart(Frame f)
         {
-            /*foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
+            foreach (BattlePlayerManager.PlayerHandle playerHandle in BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f))
             {
                 if (playerHandle.PlayState.IsNotInGame()) continue;
 
-                BattlePlayerEntityRef entityRef        = playerHandle.GetSelectedCharacterEntityRef(f);
-                BattlePlayerDataQComponent* playerData = entityRef.GetDataQComponent(f);
+                for (int characterNumber = 0; characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT; characterNumber++)
+                {
+                    bool selected = characterNumber == playerHandle.SelectedCharacterNumber;
+                    BattlePlayerEntityRef entityRef = playerHandle.GetCharacterEntityRef(f, characterNumber);
+                    BattlePlayerDataQComponent* playerData = entityRef.GetDataQComponent(f);
 
-                BattlePlayerClassManager.OnGameStart(f, playerHandle, playerData, entityRef);
-            }*/
+                    BattlePlayerClassManager.OnGameStart(f, playerHandle, playerData, entityRef, selected);
+                }
+            }
         }
 
         /// <summary>
