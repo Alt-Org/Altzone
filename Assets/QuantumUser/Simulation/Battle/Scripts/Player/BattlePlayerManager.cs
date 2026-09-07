@@ -529,9 +529,17 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
-            if (!(playerHandle.GetCharacterState(characterNumber) is BattlePlayerCharacterState.InPlay or BattlePlayerCharacterState.InPlaySelected))
+            bool spawn = !(playerHandle.GetCharacterState(characterNumber) is BattlePlayerCharacterState.InPlay or BattlePlayerCharacterState.InPlaySelected);
+
+            BattlePlayerClassManager.SpawnEventType spawnEventType = BattlePlayerClassManager.SpawnEventType.Spawn;
+
+            if (spawn)
             {
                 SpawnPlayer(f, playerHandle, characterNumber);
+            }
+            else
+            {
+                if (!select) return;
             }
 
             playerHandle.PlayState = BattlePlayerPlayState.InPlay;
@@ -541,10 +549,17 @@ namespace Battle.QSimulation.Player
                 if (playerHandle.SelectedCharacterNumber != -1)
                 {
                     playerHandle.SetCharacterState(playerHandle.SelectedCharacterNumber, unSelectedCharacterState);
+
+                    BattlePlayerEntityRef previousCharacterEntityRef = playerHandle.GetSelectedCharacterEntityRef(f);
+                    BattlePlayerDataQComponent* previousPlayerData = previousCharacterEntityRef.GetDataQComponent(f);
+
+                    BattlePlayerClassManager.OnDespawn(f, BattlePlayerClassManager.DespawnEventType.UnSelect, playerHandle.ConvertToPublic(), previousPlayerData, previousCharacterEntityRef);
                 }
 
                 playerHandle.SetSelectedCharacterNumber(characterNumber);
                 playerHandle.SetCharacterState(characterNumber, BattlePlayerCharacterState.InPlaySelected);
+
+                spawnEventType = spawn ? BattlePlayerClassManager.SpawnEventType.SpawnSelect : BattlePlayerClassManager.SpawnEventType.Select;
 
                 f.Events.BattleCharacterSelected(slot, characterNumber);
             }
@@ -552,6 +567,11 @@ namespace Battle.QSimulation.Player
             {
                 playerHandle.SetCharacterState(characterNumber, BattlePlayerCharacterState.InPlay);
             }
+
+            BattlePlayerEntityRef characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber);
+            BattlePlayerDataQComponent* playerData = characterEntityRef.GetDataQComponent(f);
+
+            BattlePlayerClassManager.OnSpawn(f, spawnEventType, playerHandle.ConvertToPublic(), playerData, characterEntityRef);
         }
 
 
@@ -575,13 +595,18 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
+            bool selected = playerHandle.GetCharacterState(characterNumber) == BattlePlayerCharacterState.InPlaySelected;
+
             DespawnPlayer(f, playerHandle, characterNumber);
 
-            playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
             playerHandle.SetCharacterState(characterNumber, kill ? BattlePlayerCharacterState.OutOfPlayDead : BattlePlayerCharacterState.OutOfPlay);
-            playerHandle.UnsetSelectedCharacterNumber();
 
-            f.Events.BattleCharacterSelected(slot, -1);
+            if (selected)
+            {
+                playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
+                playerHandle.UnsetSelectedCharacterNumber();
+                f.Events.BattleCharacterSelected(slot, playerHandle.SelectedCharacterNumber);
+            }
         }
 
         #endregion Public - Static Methods - Spawn/Despawn
@@ -683,8 +708,6 @@ namespace Battle.QSimulation.Player
 
             // update player handle
 
-            BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, characterEntityRef);
-
             // update debug overlay
             BattleDebugOverlayLink.SetEntries(playerData->Slot, s_debugOverlayStats, new object[]
             {
@@ -715,7 +738,7 @@ namespace Battle.QSimulation.Player
 
             playerHandle.SetPreviousCharacterPosition(characterNumber, playerTransform->Position);
 
-            BattlePlayerClassManager.OnDespawn(f, playerHandle.ConvertToPublic(), playerData, characterEntityRef);
+            BattlePlayerClassManager.OnDespawn(f, BattlePlayerClassManager.DespawnEventType.DespawnUnSelect, playerHandle.ConvertToPublic(), playerData, characterEntityRef);
 
             BattleEntityManager.Return(f, playerHandle.CharacterEntityGroupID, characterNumber);
 
