@@ -28,6 +28,15 @@ namespace Battle.QSimulation.Player
         /// </summary>
         public override BattlePlayerCharacterClass Class { get; } = BattlePlayerCharacterClass.Class100;
 
+        public override unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        {
+            GetClassData(f, playerEntity)->ClassState = BattlePlayerClass100State.Unused;
+
+            s_debugOverlayPlacementTimer = BattleDebugOverlayLink.AddEntry(playerData->Slot, "PlacementTimer");
+
+            return BattlePlayerClassManager.CreationParameters.Default;
+        }
+
         /// <summary>
         /// Called when the player is spawned.
         /// </summary>
@@ -36,9 +45,21 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle for the player.</param>
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
-        public override unsafe void OnSpawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe void OnSpawn(Frame f, BattlePlayerClassManager.SpawnEventType spawnEventType, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            f.Events.BattleSpecialJoystickVisibilityChange(playerData->Slot, true);
+            if (spawnEventType is BattlePlayerClassManager.SpawnEventType.Select or BattlePlayerClassManager.SpawnEventType.SpawnSelect)
+            {
+                BattlePlayerClass100QSpec spec                = BattleQConfig.GetBattlePlayerClass100Spec(f);
+                BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
+
+                if (BattleParameters.GetIsFlipperGameTest(f) && classData->ClassState == BattlePlayerClass100State.Unused)
+                {
+                    classData->ClassState     = BattlePlayerClass100State.Placement;
+                    classData->PlacementTimer = FrameTimer.FromSeconds(f, spec.PlacementTimeDurationSec);
+                }
+
+                f.Events.BattleSpecialJoystickVisibilityChange(playerData->Slot, true);
+            }
         }
 
         /// <summary>
@@ -49,8 +70,11 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle for the player.</param>
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
-        public override unsafe void OnDespawn(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe void OnDespawn(Frame f, BattlePlayerClassManager.DespawnEventType despawnEventType, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
+            playerData->DisableMovement               = true;
+            GetClassData(f, playerEntity)->ClassState = BattlePlayerClass100State.Placed;
+
             f.Events.BattleSpecialJoystickVisibilityChange(playerData->Slot, false);
         }
 
@@ -65,22 +89,36 @@ namespace Battle.QSimulation.Player
         /// <param name="specialInput">Pointer to special input (unused)</param>
         public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
         {
-            if (GetClassData(f, playerEntity)->PlacementTimer.IsRunning(f)) return;
+            BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
 
-            playerData->DisableMovement = true;
+            BattleDebugOverlayLink.SetEntry(playerData->Slot, s_debugOverlayPlacementTimer, classData->PlacementTimer.RemainingTime(f));
 
-            switch (playerData->CharacterId)
+            switch (classData->ClassState)
             {
-                case BattlePlayerCharacterID.Character101:
-                case BattlePlayerCharacterID.Character103:
-                case BattlePlayerCharacterID.Character105:
-                    HandleAiming(f, playerData, playerEntity, specialInput);
+                case BattlePlayerClass100State.Unused:
                     break;
 
-                case BattlePlayerCharacterID.Character102:
-                case BattlePlayerCharacterID.Character104:
-                case BattlePlayerCharacterID.Character106:
-                    HandleAutoAim(f, playerEntity, specialInput);
+                case BattlePlayerClass100State.Placement:
+                    if (classData->PlacementTimer.IsRunning(f)) return;
+                    playerData->DisableMovement = true;
+                    classData->ClassState = BattlePlayerClass100State.Placed;
+                    break;
+
+                case BattlePlayerClass100State.Placed:
+                    switch (playerData->CharacterId)
+                    {
+                        case BattlePlayerCharacterID.Character101:
+                        case BattlePlayerCharacterID.Character103:
+                        case BattlePlayerCharacterID.Character105:
+                            HandleAiming(f, playerData, playerEntity, specialInput);
+                            break;
+
+                        case BattlePlayerCharacterID.Character102:
+                        case BattlePlayerCharacterID.Character104:
+                        case BattlePlayerCharacterID.Character106:
+                            HandleAutoAim(f, playerEntity, specialInput);
+                            break;
+                    }
                     break;
             }
         }
@@ -93,14 +131,19 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle for the player.</param>
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference to the player.</param>
-        public override unsafe void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, bool selected)
         {
-            BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
+            if (!BattleParameters.GetIsFlipperGameTest(f) && selected)
+            {
+                BattlePlayerClass100QSpec spec                = BattleQConfig.GetBattlePlayerClass100Spec(f);
+                BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
 
-            BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
-
-            classData->PlacementTimer = FrameTimer.FromSeconds(f, spec.PlacementTimeDurationSec);
+                classData->ClassState     = BattlePlayerClass100State.Placement;
+                classData->PlacementTimer = FrameTimer.FromSeconds(f, spec.PlacementTimeDurationSec);
+            }
         }
+
+        private static int s_debugOverlayPlacementTimer;
 
         /// <summary>
         /// Handles joystick based aiming.
