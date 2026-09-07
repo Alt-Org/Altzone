@@ -383,6 +383,7 @@ namespace Quantum.Prototypes {
     public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
     public Quantum.QEnum32<BattlePlayerCharacterID> CharacterId;
     public Quantum.QEnum32<BattlePlayerCharacterClass> CharacterClass;
+    public Int32 CharacterNumber;
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
@@ -404,6 +405,7 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
     public FP BotMovementCooldownSec;
+    public FP BotCharacterSwapTimerSec;
     public FPVector2 ViewPosition;
     public FPVector2 ViewMovementVector;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -417,6 +419,7 @@ namespace Quantum.Prototypes {
         result.TeamNumber = this.TeamNumber;
         result.CharacterId = this.CharacterId;
         result.CharacterClass = this.CharacterClass;
+        result.CharacterNumber = this.CharacterNumber;
         this.Stats.Materialize(frame, ref result.Stats, in context);
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
@@ -438,6 +441,7 @@ namespace Quantum.Prototypes {
         this.AbilityCooldownSec.Materialize(frame, ref result.AbilityCooldownSec, in context);
         this.AbilityActivateBufferSec.Materialize(frame, ref result.AbilityActivateBufferSec, in context);
         result.BotMovementCooldownSec = this.BotMovementCooldownSec;
+        result.BotCharacterSwapTimerSec = this.BotCharacterSwapTimerSec;
         result.ViewPosition = this.ViewPosition;
         result.ViewMovementVector = this.ViewMovementVector;
     }
