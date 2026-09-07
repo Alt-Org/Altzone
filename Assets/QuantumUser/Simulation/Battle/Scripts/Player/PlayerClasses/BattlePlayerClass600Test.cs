@@ -98,7 +98,10 @@ namespace Battle.QSimulation.Player
 
             if (!classData->IsHoldingProjectile) return;
 
-            playerHandle.AllowCharacterSwapping = false;
+            if (!BattleParameters.GetIsFlipperGameTest(f))
+            {
+                playerHandle.AllowCharacterSwapping = false;
+            }
 
             Transform2D* transformShield     = f.Unsafe.GetPointer<Transform2D>(playerData->AttachedShield);
             Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(classData->HeldProjectileEntity);
@@ -141,7 +144,10 @@ namespace Battle.QSimulation.Player
 
             classData->IsHoldingProjectile = false;
 
-            playerHandle.AllowCharacterSwapping = true;
+            if (!BattleParameters.GetIsFlipperGameTest(f))
+            {
+                playerHandle.AllowCharacterSwapping = true;
+            }
         }
     }
 }

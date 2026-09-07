@@ -95,7 +95,10 @@ namespace Battle.QSimulation.Player
             BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
             if (!data->IsHoldingProjectile) return;
 
-            playerHandle.AllowCharacterSwapping = false;
+            if (!BattleParameters.GetIsFlipperGameTest(f))
+            {
+                playerHandle.AllowCharacterSwapping = false;
+            }
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
             if (teammateHandle.PlayState.IsOutOfPlay()) return;
@@ -126,7 +129,11 @@ namespace Battle.QSimulation.Player
                     BattleProjectileQSystem.UpdateVelocity(f, projectile, newDirection, BattleProjectileQSystem.SpeedChange.Increment, passed: true);
                     BattleProjectileQSystem.SetHeld(projectile, false);
                     data->IsHoldingProjectile = false;
-                    playerHandle.AllowCharacterSwapping = true;
+
+                    if (!BattleParameters.GetIsFlipperGameTest(f))
+                    {
+                        playerHandle.AllowCharacterSwapping = true;
+                    }
                 }
             }
         }
