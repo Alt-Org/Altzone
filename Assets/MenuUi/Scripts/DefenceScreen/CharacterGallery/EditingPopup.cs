@@ -278,20 +278,22 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _charactersUpdated = true;
 
-            int checkingvalue = -1;
+            if (_inDefenceGalleryView) { int checkingvalue = -1;
 
-            for(int i = _activeSlotIndex; i < _selectedCharacterSlots.Length; ++i)
-            {
-                if (_selectedCharacterSlots[i].SelectedCharacter == null) checkingvalue = i;
+                for (int i = _activeSlotIndex; i < _selectedCharacterSlots.Length; ++i)
+                {
+                    if (_selectedCharacterSlots[i].SelectedCharacter == null) checkingvalue = i;
+                }
+
+                if (checkingvalue == -1)
+                    for (int i = 0; i < _activeSlotIndex; i++)
+                    {
+                        if (_selectedCharacterSlots[i].SelectedCharacter == null) checkingvalue = i;
+                    }
+
+                SetActiveSlot(checkingvalue);
             }
-
-            if(checkingvalue == -1)
-            for (int i = 0; i < _activeSlotIndex; i++)
-            {
-                if (_selectedCharacterSlots[i].SelectedCharacter == null) checkingvalue = i;
-            }
-
-            SetActiveSlot(checkingvalue);
+            else SetActiveSlot((_activeSlotIndex + 1) % _selectedCharacterSlots.Length);
 
             RefreshGalleryUsedVisuals();
         }
