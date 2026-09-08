@@ -44,6 +44,8 @@ namespace MenuUi.Scripts.TabLine
                 else button.SetColour(Color.white, Color.gray);
             }
 
+            if(_tabLineRibbon.GetComponent<Image>().enabled) _tabLineRibbon.GetComponent<Image>().color = _tabColorActive;
+
             if (_getActiveButtonFromSwipe)
             {
                 _swipe = FindObjectOfType<SwipeUI>();
