@@ -852,7 +852,7 @@ RectTransform:
   m_Father: {fileID: 3376944723985637693}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -930,7 +930,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.000061035156}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: -738.2}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6284113109606877215
 MonoBehaviour:
@@ -2503,6 +2503,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4da6ac16194673c41b0996450b430e2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  furnitureSection: {fileID: 8870925253428980567}
+  clanSection: {fileID: 5019745324300498238}
   infoBox: {fileID: 0}
   furniturePollInfoObject: {fileID: 3520803720712383946}
   timer: {fileID: 7337905220871997093}
@@ -3176,7 +3178,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4894148787059665059
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3358,9 +3360,9 @@ RectTransform:
   m_Father: {fileID: 6666540099643234463}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 3, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &5578729864065027552
 CanvasRenderer:
@@ -3766,10 +3768,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1408812618156403526}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 294.76404, y: 0}
+  m_SizeDelta: {x: 589.5281, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2051554822258584063
 CanvasRenderer:

@@ -1663,9 +1663,27 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ffc3c1b8d099b8d0b9796fec497ba27a, type: 3}
+--- !u!1 &2664923361431475647 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2745182772082903440, guid: ffc3c1b8d099b8d0b9796fec497ba27a,
+    type: 3}
+  m_PrefabInstance: {fileID: 208129314502564911}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3356936881159404910 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3203555551286698305, guid: ffc3c1b8d099b8d0b9796fec497ba27a,
+    type: 3}
+  m_PrefabInstance: {fileID: 208129314502564911}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &5986992116065754068 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5905764035603499003, guid: ffc3c1b8d099b8d0b9796fec497ba27a,
+    type: 3}
+  m_PrefabInstance: {fileID: 208129314502564911}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7195317758099065295 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7005784501012616672, guid: ffc3c1b8d099b8d0b9796fec497ba27a,
     type: 3}
   m_PrefabInstance: {fileID: 208129314502564911}
   m_PrefabAsset: {fileID: 0}
@@ -3262,10 +3280,10 @@ MonoBehaviour:
   ShopNotVotedListContent: {fileID: 6037578092251586133}
   ShopSection: {fileID: 1506625067568284197}
   NoPollsShop: {fileID: 6459358866281641604}
-  AdminNotVotedListContent: {fileID: 0}
-  AdminVotedListContent: {fileID: 0}
-  AdminSection: {fileID: 0}
-  NoPollsAdmin: {fileID: 0}
+  AdminNotVotedListContent: {fileID: 2664923361431475647}
+  AdminVotedListContent: {fileID: 2664923361431475647}
+  AdminSection: {fileID: 7195317758099065295}
+  NoPollsAdmin: {fileID: 3356936881159404910}
   PollObjectPrefab: {fileID: 2192335415255639714, guid: ce0c88b97e317e247a85411a8bda706f,
     type: 3}
   PollPopup: {fileID: 5464236341991877446}

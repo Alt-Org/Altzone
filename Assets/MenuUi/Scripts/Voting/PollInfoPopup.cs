@@ -15,6 +15,10 @@ public class PollInfoPopup : MonoBehaviour
 {
     public static PollInfoPopup Instance { get; private set; }
 
+    [Header("Sections")]
+    [SerializeField] private GameObject furnitureSection;
+    [SerializeField] private GameObject clanSection;
+
     [Header("Core UI")]
     [SerializeField] private GameObject infoBox;
     [SerializeField] private GameObject furniturePollInfoObject;
@@ -193,6 +197,7 @@ public class PollInfoPopup : MonoBehaviour
     private void SetFurnitureData(FurniturePollData furnitureData)
     {
         if (furnitureData == null || furnitureData.Furniture == null) return;
+        furnitureSection.SetActive(true);
 
         bool isBuying = furnitureData.FurniturePollType == FurniturePollType.Buying;
 
@@ -373,7 +378,7 @@ public class PollInfoPopup : MonoBehaviour
 
         furniturePollInfoObject?.SetActive(true);
 
-        clanRolePollInfoObject?.SetActive(false);
+        // clanRolePollInfoObject?.SetActive(false);
     }
 
     private void SetGreenFill(int yesCount, int noCount)
