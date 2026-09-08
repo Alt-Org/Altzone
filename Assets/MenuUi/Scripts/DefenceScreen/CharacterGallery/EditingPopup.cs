@@ -70,8 +70,8 @@ namespace MenuUi.Scripts.CharacterGallery
             }
 
             _amountOfLoadouts = _dotsList.Count;
-            _leftArrow.onClick.AddListener(PressArrowLeft);
-            _rightArrow.onClick.AddListener(PressArrowRight);
+            if (_leftArrow) _leftArrow.onClick.AddListener(PressArrowLeft);
+            if (_rightArrow) _rightArrow.onClick.AddListener(PressArrowRight);
 
             //if (_removeCharacterButton != null)
             //{
@@ -276,9 +276,20 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _charactersUpdated = true;
 
-            _activeSlotIndex = (_activeSlotIndex + 1) < _selectedCharacterSlots.Length? ++_activeSlotIndex : -1;
+            int checkingvalue = -1;
 
-            SetActiveSlot(_activeSlotIndex);
+            for(int i = _activeSlotIndex; i < _selectedCharacterSlots.Length; ++i)
+            {
+                if (_selectedCharacterSlots[i].SelectedCharacter == null) checkingvalue = i;
+            }
+
+            if(checkingvalue == -1)
+            for (int i = 0; i < _activeSlotIndex; i++)
+            {
+                if (_selectedCharacterSlots[i].SelectedCharacter == null) checkingvalue = i;
+            }
+
+            SetActiveSlot(checkingvalue);
 
             RefreshGalleryUsedVisuals();
         }
