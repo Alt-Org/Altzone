@@ -82,7 +82,7 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 _charactersUpdated = false;
 
-                SetActiveSlot(0);
+                SetActiveSlot(-1);
             }
 
         }
@@ -130,7 +130,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _charactersUpdated = false;
             _popup.SetActive(true);
 
-            StartCoroutine(SetActiveSlot(0));
+            SetActiveSlot(0);
         }
 
 
@@ -218,10 +218,11 @@ namespace MenuUi.Scripts.CharacterGallery
                
                     RemoveCharacterFromSpecificSlot(i);
                     RefreshGalleryUsedVisuals();
+                    SetActiveSlot(_selectedCharacterSlots[i].SlotIndex);
                     return;
                 }
             }
-
+            if (_activeSlotIndex < 0) return;
             SelectedCharacterEditingSlot targetSlot = _selectedCharacterSlots[_activeSlotIndex];
             if (targetSlot == null) return;
 
@@ -271,7 +272,9 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _charactersUpdated = true;
 
-            SetActiveSlot((_activeSlotIndex + 1) % _selectedCharacterSlots.Length);
+            _activeSlotIndex = (_activeSlotIndex + 1) < _selectedCharacterSlots.Length? _activeSlotIndex++ : -1;
+
+            SetActiveSlot(_activeSlotIndex);
 
             RefreshGalleryUsedVisuals();
         }
@@ -312,7 +315,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (!_popup.activeInHierarchy) return;
 
-            _activeSlotIndex = Mathf.Clamp(index, 0, _selectedCharacterSlots.Length - 1);
+            _activeSlotIndex = Mathf.Clamp(index, -1, _selectedCharacterSlots.Length - 1);
 
             if (_blinkingFrames == null || _blinkingFrames.Length == 0) return;
 
