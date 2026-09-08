@@ -7,6 +7,7 @@ using MenuUi.Scripts.UIScaling;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
 using Altzone.Scripts.ModelV2;
+using System.Collections;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -54,9 +55,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _swipe = FindObjectOfType<SwipeUI>();
             if (_swipe) _swipe.OnCurrentPageChanged += ClosePopup;
 
-            if (_popup.activeSelf) _popup.SetActive(false);
-
-            if(_inDefenceGalleryView) _popup.SetActive(true);
+            if (_inDefenceGalleryView) _popup.SetActive(true);
+            else if (_popup.activeSelf) _popup.SetActive(false);
 
             _galleryView.OnGalleryCharactersSet += SetCharacters;
             _galleryView.OnFilterChanged += HandleFilterChanged;
@@ -77,6 +77,13 @@ namespace MenuUi.Scripts.CharacterGallery
             //{
             //    _removeCharacterButton.onClick.AddListener(RemoveActiveSlotCharacter);
             //}
+
+            if (_inDefenceGalleryView)
+            {
+                _charactersUpdated = false;
+
+                SetActiveSlot(0);
+            }
 
         }
 
@@ -123,7 +130,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _charactersUpdated = false;
             _popup.SetActive(true);
 
-            SetActiveSlot(0);
+            StartCoroutine(SetActiveSlot(0));
         }
 
 
@@ -134,8 +141,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             StopAllBlinking();
 
-            _popup.SetActive(false);
-            if (_inDefenceGalleryView) _popup.SetActive(true);
+            if (!_inDefenceGalleryView) _popup.SetActive(false);
             _openedFromLoadout = false;
             _currentLoadoutIndex = -1;
             if (_charactersUpdated) SignalBus.OnReloadCharacterGalleryRequestedSignal();
