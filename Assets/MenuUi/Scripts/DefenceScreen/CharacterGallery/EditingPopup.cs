@@ -209,12 +209,12 @@ namespace MenuUi.Scripts.CharacterGallery
             CharacterSlot characterSlot = pressedSlot as CharacterSlot;
             if (characterSlot == null) return;
 
-            if (_activeSlotIndex < 0)
+            if (_activeSlotIndex < 0 && _inDefenceGalleryView)
             {
                 SignalBus.OnDefenceGalleryStatPopupRequestedSignal(characterSlot.Id);
                 return;
             }
-
+            SelectedCharacterEditingSlot prevSlot = null;
             // If clicked character is already selected, remove it from its slot
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
@@ -224,8 +224,13 @@ namespace MenuUi.Scripts.CharacterGallery
                
                     RemoveCharacterFromSpecificSlot(i);
                     RefreshGalleryUsedVisuals();
-                    SetActiveSlot(_selectedCharacterSlots[i].SlotIndex);
-                    return;
+                    if (_activeSlotIndex == i)
+                    {
+                        SetActiveSlot(_selectedCharacterSlots[i].SlotIndex);
+                        return;
+                    }
+                    prevSlot = _selectedCharacterSlots[i];
+                    break;
                 }
             }
 
@@ -241,6 +246,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 //    targetSlot.SelectedCharacter.OriginalSlot.gameObject.SetActive(true);
                 //}
 
+                if (prevSlot != null) prevSlot.SelectedCharacter = targetSlot.SelectedCharacter;
                 targetSlot.SelectedCharacter = null;
 
                 // Clear battle-style visuals when removing old selection
@@ -249,10 +255,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 if (_openedFromLoadout)
                 {
+                    if(prevSlot != null) SignalBus.OnLoadoutDefenceCharacterChangedSignal(prevSlot.SelectedCharacter.Id, prevSlot.SlotIndex, _currentLoadoutIndex);
                     SignalBus.OnLoadoutDefenceCharacterChangedSignal(CharacterID.None, targetSlot.SlotIndex, _currentLoadoutIndex);
                 }
                 else
                 {
+                    if (prevSlot != null) SignalBus.OnSelectedDefenceCharacterChangedSignal(prevSlot.SelectedCharacter.Id, prevSlot.SlotIndex);
                     SignalBus.OnSelectedDefenceCharacterChangedSignal(CharacterID.None, targetSlot.SlotIndex);
                 }
 
@@ -265,6 +273,11 @@ namespace MenuUi.Scripts.CharacterGallery
             {
                 var proto = PlayerCharacterPrototypes.GetCharacter(((int)characterSlot.Character.Id).ToString());
                 targetSlot.BattleView.SetInfo(proto.GalleryHeadImage, characterSlot.Character.Id);
+            }
+            if (prevSlot && prevSlot.BattleView != null)
+            {
+                var proto = PlayerCharacterPrototypes.GetCharacter(((int)prevSlot.SelectedCharacter.Id).ToString());
+                prevSlot.BattleView.SetInfo(proto.GalleryHeadImage, prevSlot.SelectedCharacter.Id);
             }
 
             if (_openedFromLoadout)
