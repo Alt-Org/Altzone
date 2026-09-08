@@ -11,8 +11,10 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Button denyButton;
     [SerializeField] private Button increasePriceButton;
     [SerializeField] private Button decreasePriceButton;
+    [SerializeField] private Button removeButton; // Uusi lisäys (Perttu)
     [SerializeField] private Image confirmImage; // Uusi lisäys (Perttu)
-    [SerializeField] private Image denyImage; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject denyButtonGO; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject removeButtonGO; // Uusi lisäys (Perttu)
 
     [Header("Price UI")]
     [SerializeField] private TMP_InputField priceInput;
@@ -135,6 +137,16 @@ public class KojuPopup : MonoBehaviour
         {
             chooseText.enabled = false;
         }
+        if (itemMover.assignedSlot != null)
+        {
+            if (!removeButtonGO.active)
+            {
+                removeButtonGO.SetActive(true);
+                removeButton.onClick.AddListener(() => OpenRemovePopup(currentCard));
+            }
+            if (kojuPanel.active) { kojuPanel.SetActive(false); }
+            //if (!furnitureTray.active) { furnitureTray.SetActive(true); }
+        }
     }
 
     // Opens the popup in removal confirmation mode
@@ -171,21 +183,6 @@ public class KojuPopup : MonoBehaviour
 
         removePopup.SetActive(true);
         gameObject.SetActive(true);
-
-        // uusi lisäys(perttu)
-        if (chooseText.enabled == true) { chooseText.enabled = false; }
-        if (iconImage.enabled == true) { iconImage.enabled = false; }
-        if (inputBar.active) { inputBar.SetActive(false); }
-        if (confirmButton.enabled == true)
-        {
-            confirmButton.enabled = false;
-            confirmImage.enabled = false;
-        }
-        if (denyButton.enabled == true)
-        {
-            denyButton.enabled = false;
-            denyImage.enabled = false;
-        }
     }
 
     private void OnIncreasePrice()
@@ -238,7 +235,7 @@ public class KojuPopup : MonoBehaviour
         gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
 
         // Moves the item, see ItemMover.cs
-        itemMover?.ExecuteMove();
+        if (itemMover.assignedSlot == null) { itemMover?.ExecuteMove(); } // Uusi lisäys (Perttu)
         Close();
     }
 
@@ -258,6 +255,7 @@ public class KojuPopup : MonoBehaviour
         confirmButton.enabled = false;
         confirmImage.color = new Vector4(255f, 255f, 255f, 0.2f);
         chooseText.enabled = true;
+        removeButtonGO.SetActive(false);
 
         currentCard = null;
         furnitureData = null;

@@ -9,7 +9,7 @@ public class ItemMover : MonoBehaviour
 {
     private Transform trayParent;
     private Transform gridParent;
-    private KojuItemSlot assignedSlot;
+    public KojuItemSlot assignedSlot; // Uusi muokkaus (Perttu)
 
     private KojuPopup popup;
 
@@ -56,7 +56,8 @@ public class ItemMover : MonoBehaviour
     {
         if (assignedSlot != null)
         {
-            popup?.OpenRemovePopup(gameObject);
+            //popup?.OpenRemovePopup(gameObject);
+            popup?.Open(gameObject); // Uusi muokkaus (Perttu)
         }
         else if (HasFreeSlot())
         {
