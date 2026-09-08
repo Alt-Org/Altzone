@@ -5,15 +5,15 @@ using UnityEngine.UI;
 
 public class ChooseBox : MonoBehaviour
 {
-    public Transform ChooseEffect;
     public Transform ChooseBorder;
-    public Button buttonEffect;
+    public Transform ChooseIcon;
     public Button buttonBorder;
+    public Button buttonIcon;
 
     void Start()
     {
-        buttonEffect.onClick.AddListener(() => BringToFront(ChooseEffect));
         buttonBorder.onClick.AddListener(() => BringToFront(ChooseBorder));
+        buttonIcon.onClick.AddListener(() => BringToFront(ChooseIcon)); // Uusi muokkaus (Perttu)
     }
 
     void BringToFront(Transform folder)

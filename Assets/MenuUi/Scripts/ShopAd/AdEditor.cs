@@ -12,7 +12,7 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private TextMeshProUGUI clanNameText;
 
     [SerializeField] private Image _backgroundImage;
-    [SerializeField] private Image _effectImage;
+    //[SerializeField] private Image _effectImage;
     [SerializeField] private Image _itemImage;
     [SerializeField] private Image _borderImage;
     [SerializeField] private AdPosterHandler _adGraphicHandler;
@@ -97,7 +97,7 @@ public class AdEditor : AltMonoBehaviour
             colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
             colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeColor(colour));
         }
-        _backgroundColourSelectorContent.GetComponent<VerticalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width * 0.1f;
+        _backgroundColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;  // Uusi muokkaus (Perttu)
 
         StartCoroutine(SetFrameSelectionSize());
     }
