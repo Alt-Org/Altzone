@@ -25,13 +25,13 @@ namespace MenuUi.Scripts.CharacterGallery
             Unlocked = 1,
             Locked = 2,
             Test = 3,
-            Desensitizer = 100,
-            Trickster = 200,
-            Obedient = 300,
-            Projector = 400,
-            Retroflector = 500,
-            Confluent = 600,
-            Intellectualizer = 700,
+            Desensitizer = CharacterClassType.Desensitizer,
+            Trickster = CharacterClassType.Trickster,
+            Obedient = CharacterClassType.Obedient,
+            Projector = CharacterClassType.Projector,
+            Retroflector = CharacterClassType.Retroflector,
+            Confluent = CharacterClassType.Confluent,
+            Intellectualizer = CharacterClassType.Intellectualizer,
         }
 
         [SerializeField] private Transform _unlockedCharacterGridContent;
