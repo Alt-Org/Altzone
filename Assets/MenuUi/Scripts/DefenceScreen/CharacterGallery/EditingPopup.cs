@@ -209,6 +209,12 @@ namespace MenuUi.Scripts.CharacterGallery
             CharacterSlot characterSlot = pressedSlot as CharacterSlot;
             if (characterSlot == null) return;
 
+            if (_activeSlotIndex < 0)
+            {
+                SignalBus.OnDefenceGalleryStatPopupRequestedSignal(characterSlot.Id);
+                return;
+            }
+
             // If clicked character is already selected, remove it from its slot
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
@@ -222,11 +228,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     return;
                 }
             }
-            if (_activeSlotIndex < 0)
-            {
-                SignalBus.OnDefenceGalleryStatPopupRequestedSignal(characterSlot.Id);
-                return;
-            }
+
             SelectedCharacterEditingSlot targetSlot = _selectedCharacterSlots[_activeSlotIndex];
             if (targetSlot == null) return;
 
