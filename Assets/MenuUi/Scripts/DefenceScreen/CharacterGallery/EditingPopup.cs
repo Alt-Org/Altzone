@@ -276,7 +276,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _charactersUpdated = true;
 
-            _activeSlotIndex = (_activeSlotIndex + 1) < _selectedCharacterSlots.Length? _activeSlotIndex++ : -1;
+            _activeSlotIndex = (_activeSlotIndex + 1) < _selectedCharacterSlots.Length? ++_activeSlotIndex : -1;
 
             SetActiveSlot(_activeSlotIndex);
 
