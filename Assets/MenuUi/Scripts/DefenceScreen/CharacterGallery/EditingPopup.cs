@@ -222,7 +222,11 @@ namespace MenuUi.Scripts.CharacterGallery
                     return;
                 }
             }
-            if (_activeSlotIndex < 0) return;
+            if (_activeSlotIndex < 0)
+            {
+                SignalBus.OnDefenceGalleryStatPopupRequestedSignal(characterSlot.Id);
+                return;
+            }
             SelectedCharacterEditingSlot targetSlot = _selectedCharacterSlots[_activeSlotIndex];
             if (targetSlot == null) return;
 
@@ -299,7 +303,6 @@ namespace MenuUi.Scripts.CharacterGallery
             if (!gameObject.activeInHierarchy) return;
             _openedFromLoadout = false;
             _currentLoadoutIndex = -1;
-            Debug.LogWarning("Test");
             OpenPopup();
         }
 
