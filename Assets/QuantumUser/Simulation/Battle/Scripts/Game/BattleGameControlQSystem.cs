@@ -42,8 +42,6 @@ namespace Battle.QSimulation.Game
         /// <param name="f">Current simulation frame.</param>
         public override void OnInit(Frame f)
         {
-            OnGameOverGiveUp(f, BattleTeamNumber.NoTeam);
-
             _debugLogger = BattleDebugLogger.Create<BattleGameControlQSystem>();
 
             _debugLogger.Log("OnInit");
