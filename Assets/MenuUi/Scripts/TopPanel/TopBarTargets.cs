@@ -241,7 +241,7 @@ namespace MenuUI.Scripts.TopPanel
             LayoutElement le = _flexibleSpacer.GetComponent<LayoutElement>();
             le.minWidth = _spacerMinWidth;
             le.preferredWidth = 0f;
-            le.flexibleWidth = 1f;
+            le.flexibleWidth = 1000f;
             le.minHeight = 0f;
             le.preferredHeight = 0f;
             le.flexibleHeight = 0f;
@@ -251,51 +251,62 @@ namespace MenuUI.Scripts.TopPanel
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyOrderWithSpacer()");
 
-            bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.Tile);
-            bool clanPanelOn2nd = IsVisible(TopBarDefs.TopBarItem.Tile2nd);
+            bool clanPanelOn = false;
+            TileManagement clanTileRow = null;
+            bool playerPanelOn = false;
+            TileManagement playerTileRow = null;
+
+            foreach (Row i in _rows)
+            {
+                if(i.item is TopBarDefs.TopBarItem.Tile)
+                {
+                    clanPanelOn = i.visibilityTarget.activeSelf;
+                    clanTileRow = _tileManagement.FirstOrDefault(x => x.Tile is TopBarDefs.TopBarItem.Tile);
+                }
+                if (i.item is TopBarDefs.TopBarItem.Tile2nd)
+                {
+                    playerPanelOn = i.visibilityTarget.activeSelf;
+                    playerTileRow = _tileManagement.FirstOrDefault(x => x.Tile is TopBarDefs.TopBarItem.Tile2nd);
+                }
+            }
+
             int sib = 0;
 
             HashSet<Transform> alreadyMoved = new HashSet<Transform>();
 
-            for (int i = 0; i < orderedVisible.Count; i++)
+            foreach (int rowIndex in orderedVisible)
             {
-                int rowIndex = orderedVisible[i];
                 TopBarDefs.TopBarItem item = _rows[rowIndex].item;
 
-
-
-                bool isClanSubItem = false;
-                bool isClanSubItemF2nd = false;
-                foreach (var j in _tileManagement)
+                if (clanPanelOn)
                 {
-                    if(j.Tile == TopBarDefs.TopBarItem.Tile)
-                        foreach(var e in j.TileObjects)
+                    bool isClanSubItem = false;
+                    foreach (var e in clanTileRow.TileObjects)
+                    {
+                        if (item == e.Tag)
                         {
-                            if(item == e.Tag)
-                            {
-                                isClanSubItem = true;
-                            }
+                            isClanSubItem = true;
+                            break;
                         }
+                    }
+                    if (isClanSubItem)
+                        continue;
                 }
 
-               
-
-                foreach (var j in _tileManagement)
+                if (playerPanelOn)
                 {
-                    if (j.Tile == TopBarDefs.TopBarItem.Tile2nd)
-                        foreach (var e in j.TileObjects)
+                    bool isClanSubItemF2nd = false;
+                    foreach (var e in playerTileRow.TileObjects)
                     {
                         if (item == e.Tag)
                         {
                             isClanSubItemF2nd = true;
+                            break;
                         }
                     }
+                    if (isClanSubItemF2nd)
+                        continue;
                 }
-
-
-
-                if ((clanPanelOn && isClanSubItem) || (clanPanelOn2nd && isClanSubItemF2nd))
-                    continue;
 
                 Transform tr = _rows[rowIndex].orderTarget;
                 if (tr == null) continue;

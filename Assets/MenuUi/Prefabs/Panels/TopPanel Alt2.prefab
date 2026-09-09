@@ -32,7 +32,7 @@ RectTransform:
   m_Father: {fileID: 46167998053091059}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.125, y: 0.1}
-  m_AnchorMax: {x: 0.9, y: 0.5}
+  m_AnchorMax: {x: 0.9, y: 0.45}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -62,14 +62,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934092503525569288}
-  m_LocalRotation: {x: -0, y: -0, z: 0.0014648836, w: 0.999999}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1838241770173966533}
   m_Father: {fileID: 8782303747129721840}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.168}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.2, y: 0.1}
   m_AnchorMax: {x: 1, y: 0.9}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -569,7 +569,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45.35
+  m_fontSize: 42.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -856,8 +856,8 @@ RectTransform:
   - {fileID: 3244062255519893595}
   m_Father: {fileID: 46167998053091059}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.125, y: 0.4}
-  m_AnchorMax: {x: 0.98, y: 1}
+  m_AnchorMin: {x: 0.125, y: 0.45}
+  m_AnchorMax: {x: 0.98, y: 0.9}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -954,7 +954,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29.95
+  m_fontSize: 32
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1583,10 +1583,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
+  m_MinWidth: 250
+  m_MinHeight: 125
   m_PreferredWidth: 250
-  m_PreferredHeight: 100
+  m_PreferredHeight: 125
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -2233,7 +2233,7 @@ MonoBehaviour:
   m_MinHeight: -1
   m_PreferredWidth: -1
   m_PreferredHeight: -1
-  m_FlexibleWidth: 1
+  m_FlexibleWidth: 1000
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
 --- !u!1 &6221160951982613882
@@ -2351,7 +2351,6 @@ MonoBehaviour:
     orderTarget: {fileID: 6149830515762959213}
   _flexibleSpacer: {fileID: 7131415783926435123}
   _spacerMinWidth: 0
-  _spacer: {fileID: 7131415783926435123}
   _clanTileBackground: {fileID: 0}
   _standaloneLeaderboard: {fileID: 0}
   _clanTileLeaderboard: {fileID: 0}
@@ -3179,10 +3178,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: 379.4
-  m_PreferredHeight: 100
+  m_MinWidth: 375
+  m_MinHeight: 125
+  m_PreferredWidth: 375
+  m_PreferredHeight: 125
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -4012,8 +4011,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
+  m_MinWidth: 125
+  m_MinHeight: 125
   m_PreferredWidth: 125
   m_PreferredHeight: 125
   m_FlexibleWidth: -1
@@ -4412,10 +4411,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: 100
-  m_PreferredHeight: 100
+  m_MinWidth: 125
+  m_MinHeight: 125
+  m_PreferredWidth: 125
+  m_PreferredHeight: 125
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -4571,10 +4570,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: 100
-  m_PreferredHeight: 100
+  m_MinWidth: 125
+  m_MinHeight: 125
+  m_PreferredWidth: 125
+  m_PreferredHeight: 125
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
