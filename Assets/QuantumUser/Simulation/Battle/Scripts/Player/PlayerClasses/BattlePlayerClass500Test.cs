@@ -45,7 +45,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
-        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
+        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData, bool selected)
         {
             BattleArenaQSpec spec = BattleQConfig.GetArenaSpec(f);
 

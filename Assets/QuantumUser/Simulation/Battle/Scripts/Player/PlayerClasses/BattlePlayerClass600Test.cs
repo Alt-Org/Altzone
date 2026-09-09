@@ -32,7 +32,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
-        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
+        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData, bool selected)
         {
             BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
 
@@ -53,7 +53,7 @@ namespace Battle.QSimulation.Player
                 shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset * FP._1_10
             );
 
-            if (!playerShieldData->IsAttached)
+            if (!selected || !playerShieldData->IsAttached)
             {
                 FPVector2 direction = FPVector2.Reflect(projectileCollisionData->Projectile->Direction, normal).Normalized;
 

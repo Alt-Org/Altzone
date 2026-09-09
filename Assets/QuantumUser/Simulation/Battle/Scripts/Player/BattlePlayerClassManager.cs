@@ -123,7 +123,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="playerCollisionData">Collision data related to the player character.</param>
-        public virtual unsafe void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData) { }
+        public virtual unsafe void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData, bool selected) { }
 
         /// <summary>
         /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
@@ -136,7 +136,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
-        public virtual unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData) { }
+        public virtual unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData, bool selected) { }
 
         /// <summary>
         /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
@@ -395,7 +395,13 @@ namespace Battle.QSimulation.Player
 
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
-            playerClass.OnProjectileHitPlayerCharacter(f, projectileCollisionData, playerCollisionData);
+            BattlePlayerDataQComponent* playerData = ((BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef).GetDataQComponent(f);
+
+            BattlePlayerManager.PlayerHandle playerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, playerData->Slot);
+
+            bool selected = playerHandle.SelectedCharacterNumber == playerData->CharacterNumber;
+
+            playerClass.OnProjectileHitPlayerCharacter(f, projectileCollisionData, playerCollisionData, selected);
         }
 
         /// <summary>
@@ -413,7 +419,13 @@ namespace Battle.QSimulation.Player
 
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
-            playerClass.OnProjectileHitPlayerShield(f, projectileCollisionData, shieldCollisionData);
+            BattlePlayerDataQComponent* playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
+
+            BattlePlayerManager.PlayerHandle playerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, playerData->Slot);
+
+            bool selected = playerHandle.SelectedCharacterNumber == playerData->CharacterNumber;
+
+            playerClass.OnProjectileHitPlayerShield(f, projectileCollisionData, shieldCollisionData, selected);
         }
 
         /// <summary>
