@@ -42,6 +42,8 @@ namespace Battle.QSimulation.Game
         /// <param name="f">Current simulation frame.</param>
         public override void OnInit(Frame f)
         {
+            OnGameOverGiveUp(f, BattleTeamNumber.NoTeam);
+
             _debugLogger = BattleDebugLogger.Create<BattleGameControlQSystem>();
 
             _debugLogger.Log("OnInit");
@@ -93,11 +95,29 @@ namespace Battle.QSimulation.Game
             }
         }
 
+        /// <summary>
+        /// Called to end the game when one team scores a goal.<br/>
+        /// Calls <see cref="HandleGameOver(Frame, BattleTeamNumber)">HandleGameOver</see>,
+        /// which handles ending the game.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="winningTeam">The team that won the match.</param>
         public static void OnGameOverGoal(Frame f, BattleTeamNumber winningTeam)
         {
             HandleGameOver(f, winningTeam);
         }
 
+        /// <summary>
+        /// Called to end the game when one team gives up.<br/>
+        /// Calls <see cref="HandleGameOver(Frame, BattleTeamNumber)">HandleGameOver</see>,
+        /// which handles ending the game.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="giveUpTeam">The team that gave up.</param>
+        ///
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="giveUpTeam"/> is NoTeam, which is invalid give up team.</exception>
         public static void OnGameOverGiveUp(Frame f, BattleTeamNumber giveUpTeam)
         {
             BattleTeamNumber winningTeam = giveUpTeam switch
@@ -105,7 +125,8 @@ namespace Battle.QSimulation.Game
                 BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,
                 BattleTeamNumber.TeamBeta => BattleTeamNumber.TeamAlpha,
 
-                _ => throw new System.NotImplementedException(),
+                BattleTeamNumber.NoTeam => throw new System.ArgumentException("NoTeam is not valid giveUpTeam"),
+                _ => throw new System.NotImplementedException()
             };
 
             HandleGameOver(f, winningTeam);
@@ -215,6 +236,16 @@ namespace Battle.QSimulation.Game
             BattlePlayerQSystem.SpawnPlayers(f);
         }
 
+        /// <summary>
+        /// Private method for handling ending the game.<br/>
+        /// Called by <see cref="OnGameOverGoal(Frame, BattleTeamNumber)">OnGameOverGoal</see> and
+        /// <see cref="OnGameOverGiveUp(Frame, BattleTeamNumber)">OnGameOverGiveUp</see>.<br/>
+        /// Sends the <see cref="Quantum.EventBattleViewGameOver">BattleViewGameOver</see> Event and
+        /// <see cref="Quantum.ISignalBattleOnGameOver">BattleOnGameOver</see> Signal.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="winningTeam">The team that won the match.</param>
         private static void HandleGameOver(Frame f, BattleTeamNumber winningTeam)
         {
             BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();

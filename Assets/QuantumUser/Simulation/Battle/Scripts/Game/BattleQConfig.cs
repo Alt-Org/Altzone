@@ -93,8 +93,7 @@ namespace Battle.QSimulation.Game
         public BattleEmotionState ProjectileInitialEmotion;
 
         public bool IsTestMode;
-
-        public bool IsFlipperGameTest;
+        public bool IsTestFlipperGame;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static PlayerType[] GetPlayerSlotTypes(Frame f) => f.RuntimeConfig.BattleParameters.PlayerSlotTypes;
@@ -113,7 +112,8 @@ namespace Battle.QSimulation.Game
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool GetIsTestMode(Frame f) => f.RuntimeConfig.BattleParameters.IsTestMode;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool GetIsFlipperGameTest(Frame f) => f.RuntimeConfig.BattleParameters.IsFlipperGameTest;
+        public static bool GetIsTestFlipperGame(Frame f) => f.RuntimeConfig.BattleParameters.IsTestFlipperGame;
     }
 }

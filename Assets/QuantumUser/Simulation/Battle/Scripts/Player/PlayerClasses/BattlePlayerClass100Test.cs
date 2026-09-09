@@ -28,11 +28,19 @@ namespace Battle.QSimulation.Player
         /// </summary>
         public override BattlePlayerCharacterClass Class { get; } = BattlePlayerCharacterClass.Class100;
 
+        /// <summary>
+        /// Called when the character is created.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle for the player.</param>
+        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerEntity">Entity reference for the player.</param>
+        ///
+        /// <returns>Default <see cref="Battle.QSimulation.Player.BattlePlayerClassManager.CreationParameters">CreationParameters</see></returns>
         public override unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
             GetClassData(f, playerEntity)->ClassState = BattlePlayerClass100State.Unused;
-
-            s_debugOverlayPlacementTimer = BattleDebugOverlayLink.AddEntry(playerData->Slot, "PlacementTimer");
 
             return BattlePlayerClassManager.CreationParameters.Default;
         }
@@ -52,7 +60,7 @@ namespace Battle.QSimulation.Player
                 BattlePlayerClass100QSpec spec                = BattleQConfig.GetBattlePlayerClass100Spec(f);
                 BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
 
-                if (BattleParameters.GetIsFlipperGameTest(f) && classData->ClassState == BattlePlayerClass100State.Unused)
+                if (BattleParameters.GetIsTestFlipperGame(f) && classData->ClassState == BattlePlayerClass100State.Unused)
                 {
                     classData->ClassState     = BattlePlayerClass100State.Placement;
                     classData->PlacementTimer = FrameTimer.FromSeconds(f, spec.PlacementTimeDurationSec);
@@ -90,8 +98,6 @@ namespace Battle.QSimulation.Player
         public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
         {
             BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
-
-            BattleDebugOverlayLink.SetEntry(playerData->Slot, s_debugOverlayPlacementTimer, classData->PlacementTimer.RemainingTime(f));
 
             switch (classData->ClassState)
             {
@@ -133,7 +139,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntity">Entity reference to the player.</param>
         public override unsafe void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, bool selected)
         {
-            if (!BattleParameters.GetIsFlipperGameTest(f) && selected)
+            if (!BattleParameters.GetIsTestFlipperGame(f) && selected)
             {
                 BattlePlayerClass100QSpec spec                = BattleQConfig.GetBattlePlayerClass100Spec(f);
                 BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
@@ -142,8 +148,6 @@ namespace Battle.QSimulation.Player
                 classData->PlacementTimer = FrameTimer.FromSeconds(f, spec.PlacementTimeDurationSec);
             }
         }
-
-        private static int s_debugOverlayPlacementTimer;
 
         /// <summary>
         /// Handles joystick based aiming.

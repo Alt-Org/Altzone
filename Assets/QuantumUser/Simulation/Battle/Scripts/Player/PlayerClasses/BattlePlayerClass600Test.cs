@@ -98,7 +98,7 @@ namespace Battle.QSimulation.Player
 
             if (!classData->IsHoldingProjectile) return;
 
-            if (!BattleParameters.GetIsFlipperGameTest(f))
+            if (!BattleParameters.GetIsTestFlipperGame(f))
             {
                 playerHandle.AllowCharacterSwapping = false;
             }
@@ -144,7 +144,7 @@ namespace Battle.QSimulation.Player
 
             classData->IsHoldingProjectile = false;
 
-            if (!BattleParameters.GetIsFlipperGameTest(f))
+            if (!BattleParameters.GetIsTestFlipperGame(f))
             {
                 playerHandle.AllowCharacterSwapping = true;
             }

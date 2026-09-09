@@ -95,7 +95,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
             if (!data->IsHoldingProjectile) return;
 
-            if (!BattleParameters.GetIsFlipperGameTest(f))
+            if (!BattleParameters.GetIsTestFlipperGame(f))
             {
                 playerHandle.AllowCharacterSwapping = false;
             }
@@ -130,7 +130,7 @@ namespace Battle.QSimulation.Player
                     BattleProjectileQSystem.SetHeld(projectile, false);
                     data->IsHoldingProjectile = false;
 
-                    if (!BattleParameters.GetIsFlipperGameTest(f))
+                    if (!BattleParameters.GetIsTestFlipperGame(f))
                     {
                         playerHandle.AllowCharacterSwapping = true;
                     }

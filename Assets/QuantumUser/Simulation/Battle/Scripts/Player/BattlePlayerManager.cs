@@ -507,7 +507,7 @@ namespace Battle.QSimulation.Player
         /// <param name="characterNumber">The character number of the character to be spawned.</param>
         public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber, bool select = false)
         {
-            BattlePlayerCharacterState unSelectedCharacterState = BattleParameters.GetIsFlipperGameTest(f) ? BattlePlayerCharacterState.InPlay : BattlePlayerCharacterState.OutOfPlay;
+            BattlePlayerCharacterState unSelectedCharacterState = BattleParameters.GetIsTestFlipperGame(f) ? BattlePlayerCharacterState.InPlay : BattlePlayerCharacterState.OutOfPlay;
 
             PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
 
@@ -662,9 +662,9 @@ namespace Battle.QSimulation.Player
             BattlePlayerEntityRef       characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState: true);
             BattlePlayerDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
 
-            FPVector2 worldPosition = BattleParameters.GetIsFlipperGameTest(f) ? playerHandle.GetCharacterDefaultSpawnPosition(characterNumber) : playerHandle.DefaultSpawnPosition;
+            FPVector2 worldPosition = BattleParameters.GetIsTestFlipperGame(f) ? playerHandle.GetCharacterDefaultSpawnPosition(characterNumber) : playerHandle.DefaultSpawnPosition;
 
-            BattlePlayerSpawnBehaviour spawnBehaviour = BattleParameters.GetIsFlipperGameTest(f) ? BattlePlayerSpawnBehaviour.DefaultPosition : playerData->SpawnBehaviour;
+            BattlePlayerSpawnBehaviour spawnBehaviour = BattleParameters.GetIsTestFlipperGame(f) ? BattlePlayerSpawnBehaviour.DefaultPosition : playerData->SpawnBehaviour;
 
             switch (spawnBehaviour)
             {
@@ -684,7 +684,7 @@ namespace Battle.QSimulation.Player
                     break;
             }
 
-            if (playerHandle.PlayState.IsInPlay() && !BattleParameters.GetIsFlipperGameTest(f))
+            if (playerHandle.PlayState.IsInPlay() && !BattleParameters.GetIsTestFlipperGame(f))
             {
                 DespawnPlayer(f, playerHandle, playerHandle.SelectedCharacterNumber);
             }

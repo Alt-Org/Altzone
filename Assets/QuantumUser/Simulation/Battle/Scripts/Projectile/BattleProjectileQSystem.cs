@@ -538,7 +538,7 @@ namespace Battle.QSimulation.Projectile
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
 
-            if (!BattleParameters.GetIsFlipperGameTest(f))
+            if (!BattleParameters.GetIsTestFlipperGame(f))
             {
                 bool isOnTopOfTeammate = false;
 

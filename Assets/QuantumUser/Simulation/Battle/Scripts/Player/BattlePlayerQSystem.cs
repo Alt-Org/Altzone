@@ -49,7 +49,7 @@ namespace Battle.QSimulation.Player
             {
                 if (playerHandle.PlayState.IsNotInGame()) continue;
 
-                if (BattleParameters.GetIsFlipperGameTest(f))
+                if (BattleParameters.GetIsTestFlipperGame(f))
                 {
                     for (int characterNumber = 0; characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT; characterNumber++)
                     {
