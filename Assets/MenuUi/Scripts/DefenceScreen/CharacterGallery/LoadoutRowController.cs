@@ -243,6 +243,16 @@ public class LoadoutRowController : AltMonoBehaviour
             _rowBackground.color = _normalColor;
         }
     }
+
+
+    /// <summary>
+    /// Changes the loadout based on which loadout is activated in character gallery by pressing the arrows
+    /// </summary>
+    public void ChangeLoadOutInGallery(int loadout)
+    {
+        _loadoutIndex = loadout;
+        OnRowBackgroundClicked();
+    }
 }
 
 

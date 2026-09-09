@@ -25,13 +25,13 @@ namespace MenuUi.Scripts.CharacterGallery
             Unlocked = 1,
             Locked = 2,
             Test = 3,
-            Desensitizer = 100,
-            Trickster = 200,
-            Obedient = 300,
-            Projector = 400,
-            Retroflector = 500,
-            Confluent = 600,
-            Intellectualizer = 700,
+            Desensitizer = CharacterClassType.Desensitizer,
+            Trickster = CharacterClassType.Trickster,
+            Obedient = CharacterClassType.Obedient,
+            Projector = CharacterClassType.Projector,
+            Retroflector = CharacterClassType.Retroflector,
+            Confluent = CharacterClassType.Confluent,
+            Intellectualizer = CharacterClassType.Intellectualizer,
         }
 
         [SerializeField] private Transform _unlockedCharacterGridContent;
@@ -58,6 +58,10 @@ namespace MenuUi.Scripts.CharacterGallery
         public GalleryCharactersSetHandler OnGalleryCharactersSet;
 
         public Action OnFilterChanged;
+
+        //list for sorting the slots
+        List<NameSortingPair> _nameSortingPairs = new List<NameSortingPair>();
+
 
 
         private void Awake()
@@ -240,7 +244,6 @@ namespace MenuUi.Scripts.CharacterGallery
             _scrollRect.VerticalNormalizedPosition = 1; // setting scroll to the top so that it's not possibly scrolled too far
         }
 
-
         private void SetFilter(FilterType filter)
         {
             switch (filter)
@@ -323,6 +326,135 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
+        public void ResetFilter()
+        {
+            foreach (CharacterSlot characterSlot in _characterSlots) //set all inactive
+            {
+                if (characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(false);
+            }
+
+            _scrollRect.VerticalNormalizedPosition = 1; // setting scroll to the top so that it's not possibly scrolled too far
+        }
+
+        public void FilterClasses(List<CharacterClassType> classType)
+        {
+
+            int i = 0;
+            foreach (CharacterSlot characterSlot in _characterSlots) //go trough all characters
+            {
+                foreach (CharacterClassType classTypeList in classType) //set all wanted character classes active
+                {
+                    if (CustomCharacter.GetClass(characterSlot.Character.Id) == classType[i])
+                    {
+                        if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
+                    }
+                    i++;
+                }
+                i = 0;
+            }
+        }
+
+        public void FilterUnlocked(bool unlockedIsOn, bool lockedIsOn)
+        {
+
+            if (unlockedIsOn && lockedIsOn) //all active 
+            {
+                return;
+            }
+            else if (unlockedIsOn && !lockedIsOn) //set all locked inactive 
+            {
+                foreach (CharacterSlot characterSlot in _characterSlots)
+                {
+                    if(characterSlot.IsLocked)
+                        characterSlot.gameObject.SetActive(false);
+                }
+            }
+            else if (!unlockedIsOn && lockedIsOn) //set all unlocked inactive 
+            {
+                foreach (CharacterSlot characterSlot in _characterSlots)
+                {
+                    if (!characterSlot.IsLocked)
+                    characterSlot.gameObject.SetActive(false);
+                }
+            }
+            else if (!unlockedIsOn && !lockedIsOn) //set all inactive 
+            {
+                foreach (CharacterSlot characterSlot in _characterSlots)
+                {
+                    characterSlot.gameObject.SetActive(false);
+                }
+            }
+        }
+
+
+        public void OrganizeGallery(bool reversed, bool alphabetical)
+        {
+            _nameSortingPairs.Clear();
+
+            //add all characters to the list
+            foreach (CharacterSlot characterSlot in _characterSlots) {
+
+                _nameSortingPairs.Add(new NameSortingPair() { Name = GetName(characterSlot), Id = (int)characterSlot.Id });
+            }
+
+            //select the sort mode
+            if (!reversed && !alphabetical)
+            {
+                _nameSortingPairs.Sort((a, b) => a.Name.CompareTo(b.Name));
+            }
+            else if (reversed && !alphabetical)
+            {
+                _nameSortingPairs.Sort((a, b) => b.Name.CompareTo(a.Name));
+            }
+            else if (alphabetical)
+            {
+                _nameSortingPairs.Sort((a, b) => a.Id.CompareTo(b.Id));
+            }
+
+            //sort the list and apply
+            foreach (NameSortingPair namePair in _nameSortingPairs)
+            {
+                foreach(CharacterSlot characterSlot in _characterSlots)
+                {
+                    if((int)characterSlot.Id == namePair.Id)
+                    {
+                        Debug.Log(namePair.Name);
+                        characterSlot.transform.SetAsLastSibling();
+                    }
+                }
+            }
+
+        }
+
+
+
+        private string GetName(CharacterSlot characterSlot)
+        {
+            PlayerCharacterPrototype info;
+            info = PlayerCharacterPrototypes.GetCharacter(((int)characterSlot.Id).ToString());
+
+            Debug.Log(info.Name);
+            return info.Name;
+            
+        }
+
+        public void CheckIfSlotsActive() //if all character slots are inactive, make all active
+        {
+            int i = 0;
+            foreach (CharacterSlot characterSlot in _characterSlots)
+            {
+                if (!characterSlot.gameObject.activeSelf)
+                    i++;
+            }
+
+            if (i == _characterSlots.Count)
+            {
+                foreach (CharacterSlot characterSlot in _characterSlots)
+                {
+                    characterSlot.gameObject.SetActive(true);
+                }
+            }
+        }
 
         private void SetFilterText(FilterType filter)
         {
@@ -367,5 +499,10 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
+        private class NameSortingPair
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
     }
 }
