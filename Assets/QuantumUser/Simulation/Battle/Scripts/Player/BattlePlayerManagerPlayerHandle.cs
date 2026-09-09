@@ -707,6 +707,16 @@ namespace Battle.QSimulation.Player
                 }
             }
 
+            /// <summary>
+            /// Sets all players' character numbers to a given <paramref name="characterNumber"/>.
+            /// </summary>
+            ///
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
+            /// <param name="characterNumber">The character number that all players will be set to.</param>
             public static void SetAllCharacterNumbers(BattlePlayerManagerDataQSingleton* playerManagerData, int characterNumber)
             {
                 for (int i = 0; i < Constants.BATTLE_PLAYER_SLOT_COUNT; i++)
@@ -943,13 +953,12 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets player's <em>SpawnPosition</em>. Used for default position spawn behaviour.
+            /// Gets player's <em>DefaultSpawnPosition</em>. Used for default position spawn behaviour.
             /// </summary>
             ///
             /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
             ///
             /// Internal only
-
             public readonly FPVector2 DefaultSpawnPosition
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetCharacterDefaultSpawnPosition(1); }
 
@@ -1086,7 +1095,7 @@ namespace Battle.QSimulation.Player
             /// See [{Character Numbers}](#page-concepts-player-character-entity-character-number) for more info.<br/>
             /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
             ///
-            /// Internal only
+            /// @clink{Exposed:PlayerHandle.GetCharacterEntityRef} in public @cref{PlayerHandle}
             ///
             /// <param name="f">Current simulation frame.</param>
             /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
@@ -1100,6 +1109,14 @@ namespace Battle.QSimulation.Player
                 return (BattlePlayerEntityRef)BattleEntityManager.Get(f, _playerManagerData->CharacterEntityGroupIDs[Index], characterNumber, updateViewPlayState);
             }
 
+            /// <summary>
+            /// Gets a player character's default spawn position based on <paramref name="characterNumber"/>. Used for default position spawn behaviour.
+            /// </summary>
+            ///
+            /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.<br/>
+            /// See [{Character Numbers}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// Internal only
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly FPVector2 GetCharacterDefaultSpawnPosition(int characterNumber)
             {
