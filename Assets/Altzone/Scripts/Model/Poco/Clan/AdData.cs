@@ -11,6 +11,8 @@ namespace Altzone.Scripts.Store
     {
         public string _borderFrame;
         public string _backgroundColour;
+        public string _adFont; // Uusi lisäys (Perttu)
+        public string _adTextColour; // Uusi lisäys (Perttu)
 
         public string BorderFrame
         {
@@ -33,6 +35,19 @@ namespace Altzone.Scripts.Store
                 else
                 {
                     Debug.LogError($"Invalid colour value: \"{value}\". Background colour not changed.");
+                }
+            }
+        }
+
+        public string AdTextColour
+        {
+            get => _adTextColour;
+            set
+            {
+                if (ColorUtility.TryParseHtmlString(value, out Color colour)) _adTextColour = value;
+                else
+                {
+                    Debug.LogError($"Invalid colour value: \"{value}\". Ad text colour not changed.");
                 }
             }
         }

@@ -19,6 +19,8 @@ public class AdPosterHandler : AltMonoBehaviour
     private ClanHeartColorSetter _adClanLogo;
     [SerializeField]
     private TextMeshProUGUI _adClanName;
+    [SerializeField]
+    private TextMeshProUGUI _adText;
 
 
 
@@ -58,6 +60,7 @@ public class AdPosterHandler : AltMonoBehaviour
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
         if(_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
+        if (ColorUtility.TryParseHtmlString(data.AdTextColour, out Color adTextColour)) _adText.color = adTextColour; // Uusi lisäys (Perttu)
         _adClanLogo.SetHeartColors(pieceData);
         _adClanName.text = clanName;
     }
@@ -67,6 +70,7 @@ public class AdPosterHandler : AltMonoBehaviour
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
+        if (ColorUtility.TryParseHtmlString(data.AdTextColour, out Color adTextColour)) _adText.color = adTextColour; // Uusi lisäys (Perttu)
         _adClanName.text = clanName;
     }
 

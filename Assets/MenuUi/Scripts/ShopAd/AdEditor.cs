@@ -33,6 +33,7 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private DailyTaskSelectButtons _dtSelectButtons;
     [Header("Colour Selectors")]
     [SerializeField] private Transform _backgroundColourSelectorContent;
+    [SerializeField] private Transform _textColourSelectorContent; // Uusi lisäys (Perttu)
     [SerializeField] private GameObject _backgroundColourSelectorPrefab;
 
     // Uusi lisäys (Perttu)
@@ -97,7 +98,19 @@ public class AdEditor : AltMonoBehaviour
             colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
             colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeColor(colour));
         }
-        _backgroundColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;  // Uusi muokkaus (Perttu)
+        _backgroundColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f; // rect.width -> rect.height (Perttu)
+
+        // Uusi lisäys (Perttu)
+        foreach (Color colour in colorList)
+        {
+            GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _textColourSelectorContent);
+            colourObject.GetComponent<Image>().color = colour;
+            float objectWidth = _textColourSelectorContent.GetComponent<RectTransform>().rect.width;
+            colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
+            colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextColor(colour));
+        }
+        _textColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _textColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
+
 
         StartCoroutine(SetFrameSelectionSize());
     }
@@ -142,6 +155,14 @@ public class AdEditor : AltMonoBehaviour
     public void ChangeBorder(AdBorderFrameObject frame)
     {
         _adData.BorderFrame = frame.Name;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        SaveAdData();
+    }
+
+    // Uusi lisäys (Perttu)
+    public void ChangeTextColor(Color colour)
+    {
+        _adData.AdTextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
