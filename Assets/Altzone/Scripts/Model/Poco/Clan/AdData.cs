@@ -11,7 +11,7 @@ namespace Altzone.Scripts.Store
     {
         public string _borderFrame;
         public string _backgroundColour;
-        public string _adFont; // Uusi lisäys (Perttu)
+        public string _adTextFont; // Uusi lisäys (Perttu)
         public string _adTextColour; // Uusi lisäys (Perttu)
 
         public string BorderFrame
@@ -39,7 +39,20 @@ namespace Altzone.Scripts.Store
             }
         }
 
-        public string AdTextColour
+        public string AdTextFont // Uusi lisäys (Perttu)
+        {
+            get => _adTextFont;
+            set
+            {
+                return;
+                //else
+                //{
+                //    Debug.LogError($"Invalid font value: \"{value}\". Ad text font not changed.");
+                //}
+            }
+        }
+
+        public string AdTextColour // Uusi lisäys (Perttu)
         {
             get => _adTextColour;
             set
@@ -63,6 +76,10 @@ namespace Altzone.Scripts.Store
 
             if (ColorUtility.TryParseHtmlString(backgroundColour, out Color colour)) _backgroundColour = backgroundColour;
             else _backgroundColour = "#E35000";
+
+            // Uusi lisäys (Perttu)
+            //if (ColorUtility.TryParseHtmlString(adTextColour, out Color textColour)) _adTextColour = adTextColour;
+            //else _adTextColour = "#FFFFFF";
         }
     }
 }

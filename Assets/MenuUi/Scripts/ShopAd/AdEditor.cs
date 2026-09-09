@@ -26,6 +26,8 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private Color darkPinkColor;
     [SerializeField] private Color redColor;
 
+    [SerializeField] private List<Font> fontList; // Uusi lisäys (Perttu)
+
     [SerializeField] private AdDecorationReference _borderReference;
     [Header("Frame Selectors")]
     [SerializeField] private Transform _borderSelectionContent;
@@ -111,7 +113,6 @@ public class AdEditor : AltMonoBehaviour
         }
         _textColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _textColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
 
-
         StartCoroutine(SetFrameSelectionSize());
     }
 
@@ -163,6 +164,13 @@ public class AdEditor : AltMonoBehaviour
     public void ChangeTextColor(Color colour)
     {
         _adData.AdTextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        SaveAdData();
+    }
+
+    public void ChangeTextFont(Font font)
+    {
+        //
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
