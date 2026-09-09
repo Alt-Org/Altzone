@@ -706,8 +706,6 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerMovementController.Teleport(f, playerData, characterEntityRef, worldPosition);
 
-            // update player handle
-
             // update debug overlay
             BattleDebugOverlayLink.SetEntries(playerData->Slot, s_debugOverlayStats, new object[]
             {
@@ -716,9 +714,6 @@ namespace Battle.QSimulation.Player
                 playerData->Stats.Attack,
                 playerData->Stats.Defence
             });
-
-            // update view
-            f.Events.BattleViewSetRotationJoystickVisibility(!playerData->DisableRotation, playerData->Slot);
         }
 
         /// <summary>
@@ -751,10 +746,6 @@ namespace Battle.QSimulation.Player
             // update data
             playerData->PlayerRef = PlayerRef.None;
             playerData->ViewPosition = characterEntityRef.GetTransform(f)->Position;
-
-            // update player handle
-
-            // update view
         }
 
         private static void Error(Frame f, string messageformat, params object[] args)
