@@ -395,12 +395,10 @@ namespace Battle.QSimulation.Player
 
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
-            BattlePlayerDataQComponent* playerData = ((BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef).GetDataQComponent(f);
-
+            BattlePlayerDataQComponent* playerData        = ((BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef).GetDataQComponent(f);
             BattlePlayerManager.PlayerHandle playerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, playerData->Slot);
 
             bool selected = playerHandle.SelectedCharacterNumber == playerData->CharacterNumber;
-
             playerClass.OnProjectileHitPlayerCharacter(f, projectileCollisionData, playerCollisionData, selected);
         }
 
@@ -419,12 +417,10 @@ namespace Battle.QSimulation.Player
 
             if (returnCode != ReturnCode.ClassRetrieved) return;
 
-            BattlePlayerDataQComponent* playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
-
+            BattlePlayerDataQComponent* playerData        = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
             BattlePlayerManager.PlayerHandle playerHandle = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, playerData->Slot);
 
             bool selected = playerHandle.SelectedCharacterNumber == playerData->CharacterNumber;
-
             playerClass.OnProjectileHitPlayerShield(f, projectileCollisionData, shieldCollisionData, selected);
         }
 
