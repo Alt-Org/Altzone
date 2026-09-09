@@ -26,7 +26,6 @@ namespace MenuUI.Scripts.TopPanel
         private RectTransform _flexibleSpacer;
 
         [SerializeField] private float _spacerMinWidth = 0f;
-        [SerializeField] private Transform _spacer;
 
         [SerializeField] private Transform _clanTileBackground;
         [SerializeField] private GameObject _standaloneLeaderboard;
@@ -312,16 +311,7 @@ namespace MenuUI.Scripts.TopPanel
 
             EnsureSpacer(parentRT);
             _flexibleSpacer.gameObject.SetActive(true);
-            _flexibleSpacer.SetSiblingIndex(sib);
 
-            Debug.Log("[TB] FINAL TOPBAR CHILDREN:");
-            for (int i = 0; i < parentRT.childCount; i++)
-            {
-                Transform c = parentRT.GetChild(i);
-                Debug.Log($"[TB] {i}: {c.name}, " +
-                          $"active={c.gameObject.activeSelf}, " +
-                          $"parent={c.parent.name}");
-            }
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
 
 
@@ -336,7 +326,7 @@ namespace MenuUI.Scripts.TopPanel
                     activeChild++;
                 }
             }
-            _spacer.SetSiblingIndex((activeChild / 2) - 1);
+            _flexibleSpacer.SetSiblingIndex((activeChild / 2) - 1);
 
         }
 
