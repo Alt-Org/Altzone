@@ -4,12 +4,12 @@
 /// </summary>
 
 // Quantum usings
-using Quantum;
-using Photon.Deterministic;
-
+using System.Runtime.CompilerServices;
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
+using Photon.Deterministic;
+using Quantum;
 
 namespace Battle.QSimulation.Player
 {
@@ -46,6 +46,25 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
+        /// Called when the game starts to start the placement timer.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerHandle">Handle for the player.</param>
+        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerEntity">Entity reference to the player.</param>
+        public override unsafe void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, bool selected)
+        {
+            if (!BattleParameters.GetIsTestFlipperGame(f) && selected)
+            {
+                BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
+                BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
+
+                StateSetPlacement(f, spec, classData);
+            }
+        }
+
+        /// <summary>
         /// Called when the player is spawned.
         /// </summary>
         ///
@@ -62,8 +81,7 @@ namespace Battle.QSimulation.Player
 
                 if (BattleParameters.GetIsTestFlipperGame(f) && classData->ClassState == BattlePlayerClass100State.Unused)
                 {
-                    classData->ClassState     = BattlePlayerClass100State.Placement;
-                    classData->PlacementTimer = FrameTimer.FromSeconds(f, spec.PlacementTimeDurationSec);
+                    StateSetPlacement(f, spec, classData);
                 }
 
                 f.Events.BattleSpecialJoystickVisibilityChange(playerData->Slot, true);
@@ -80,8 +98,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntity">Entity reference for the player.</param>
         public override unsafe void OnDespawn(Frame f, BattlePlayerClassManager.DespawnEventType despawnEventType, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
         {
-            playerData->DisableMovement               = true;
-            GetClassData(f, playerEntity)->ClassState = BattlePlayerClass100State.Placed;
+            StateSetPlaced(f, playerData, GetClassData(f, playerEntity));
 
             f.Events.BattleSpecialJoystickVisibilityChange(playerData->Slot, false);
         }
@@ -106,8 +123,7 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerClass100State.Placement:
                     if (classData->PlacementTimer.IsRunning(f)) return;
-                    playerData->DisableMovement = true;
-                    classData->ClassState = BattlePlayerClass100State.Placed;
+                    StateSetPlaced(f, playerData, classData);
                     break;
 
                 case BattlePlayerClass100State.Placed:
@@ -130,23 +146,31 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Called when the game starts to start the placement timer.
+        /// Private helper method for transitioning to <see cref="Quantum.BattlePlayerClass100State.Placement">Placement</see> state.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerData">Pointer to player data.</param>
-        /// <param name="playerEntity">Entity reference to the player.</param>
-        public override unsafe void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, bool selected)
+        /// <param name="spec">Reference to class 100 spec.</param>
+        /// <param name="classData">Pointer to class 100 data.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe void StateSetPlacement(Frame f, BattlePlayerClass100QSpec spec, BattlePlayerClass100DataQComponent* classData)
         {
-            if (!BattleParameters.GetIsTestFlipperGame(f) && selected)
-            {
-                BattlePlayerClass100QSpec spec                = BattleQConfig.GetBattlePlayerClass100Spec(f);
-                BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
+            classData->ClassState     = BattlePlayerClass100State.Placement;
+            classData->PlacementTimer = FrameTimer.FromSeconds(f, spec.PlacementTimeDurationSec);
+        }
 
-                classData->ClassState     = BattlePlayerClass100State.Placement;
-                classData->PlacementTimer = FrameTimer.FromSeconds(f, spec.PlacementTimeDurationSec);
-            }
+        /// <summary>
+        /// Private helper method for transitioning to <see cref="Quantum.BattlePlayerClass100State.Placed">Placed</see> state.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="classData">Pointer to class 100 data.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe void StateSetPlaced(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerClass100DataQComponent* classData)
+        {
+            playerData->DisableMovement = true;
+            classData->ClassState       = BattlePlayerClass100State.Placed;
         }
 
         /// <summary>
