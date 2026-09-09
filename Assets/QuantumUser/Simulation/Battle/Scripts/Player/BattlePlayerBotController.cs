@@ -68,17 +68,23 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Handles bot AI by predicting the projectile and generating the <see cref="Quantum.Input">Quantum Input</see>
-        /// and/or <see cref="Battle.QSimulation.Game.BattleCommand">Battle Command</see> for a bot.
+        /// Handles bot AI logic and generates <see cref="Quantum.Input">Quantum Input</see>
+        /// and/or <see cref="Battle.QSimulation.Game.BattleCommand">Battle Command</see>.
         /// </summary>
+        ///
+        /// Bot behavior:
+        /// - Selects a random character on random intervals or if none is selected.
+        /// - Character movement: Moves intentionally or "misclicks" based on @cref{Battle.QSimulation.Player,BattlePlayerBotQSpec.MissClickChance}.
+        ///   - Intentional movement: Predicts and intercepts the projectile, with some inaccuracy based on @cref{Battle.QSimulation.Player,BattlePlayerBotQSpec.Inaccuracy}.
+        ///   - Misclick: Performs a random movement.
+        /// - Gives up when teammate gives up.
         ///
         /// Bot behavior spec settings is defined in @cref{BattlePlayerBotQSpec}.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">The player handle of the bot.</param>
-        /// <param name="outBotInput">Pointer to where bot's %Quantum Input will be written.</param>
-        /// <param name="commandType">Pointer to where battle command's type will be written.</param>
-        /// <param name="commandData">Reference to where battle command data will be written.</param>
+        ///
+        /// <returns><see cref="BotInputData"/> struct, which contains the generated inputs.</returns>
         public static BotInputData GetBotInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             BotInputData botInputData = new();
@@ -103,6 +109,7 @@ namespace Battle.QSimulation.Player
 
             //{ non-character logic
 
+            // behavior: gives up when teammate gives up
             if (BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerHandle.Slot).GiveUpState && !playerHandle.GiveUpState)
             {
                 botInputData.CommandType = BattleCommand.Type.GiveUp;
@@ -110,6 +117,7 @@ namespace Battle.QSimulation.Player
                 return botInputData;
             }
 
+            // behavior: selects a random character on random intervals or if none is selected
             if (hasCharacter && playerData->BotCharacterSwapTimerSec > FP._0)
             {
                 playerData->BotCharacterSwapTimerSec -= f.DeltaTime;
@@ -134,6 +142,9 @@ namespace Battle.QSimulation.Player
             //} non-character logic
 
             //{ character logic
+            // behavior character movement: moves intentionally or "misclicks" based on BattlePlayerBotQSpec.MissClickChance.
+            // - intentional movement: predicts and intercepts the projectile, with some inaccuracy based on BattlePlayerBotQSpec.Inaccuracy.
+            // - misclick: performs a random movement.
 
             if (playerData->BotMovementCooldownSec > FP._0)
             {
