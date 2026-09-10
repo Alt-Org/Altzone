@@ -224,10 +224,13 @@ public class TopBarOrderBridge : MonoBehaviour
                 pos++;
             }
         }
-
-        owner.ApplyFromSettings();
-        owner.ApplyOrderFromSettings();
-        ApplyOrderToToggleList(order, _toggleContainer, owner);
+        //Old Theme is disabled for now...
+        if (CurrentStyle != SettingsCarrier.TopBarStyle.Old)
+        {
+            owner.ApplyFromSettings();
+            owner.ApplyOrderFromSettings();
+            ApplyOrderToToggleList(order, _toggleContainer, owner);
+        }
 
         bool clanTileOn = PlayerPrefs.GetInt(
             TopBarDefs.Key(TopBarDefs.TopBarItem.Tile) + "_" + style,

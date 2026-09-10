@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Settings;
-using UnityEditor.Sprites;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -79,6 +78,10 @@ namespace MenuUI.Scripts.TopPanel
 
         public void ApplyFromSettings()
         {
+            if (style == SettingsCarrier.TopBarStyle.Old)
+            {
+                return;
+            }
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyFromSettings()");
 
             Debug.Log($"[TB] APPLY style={style} " +
@@ -359,6 +362,10 @@ namespace MenuUI.Scripts.TopPanel
 
         public void ApplyOrderFromSettings()
         {
+            if (style == SettingsCarrier.TopBarStyle.Old)
+            {
+                return;
+            }
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyOrderFromSettings()");
 
             if (!IsValid(out RectTransform parentRT)) return;
