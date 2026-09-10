@@ -43,6 +43,7 @@ namespace MenuUI.Scripts.TopPanel
         [SerializeField] private Transform _textContainer;
         [SerializeField] private Transform _coinsRow;
         //SerializeField for slots in tiles panels
+        [SerializeField] private GameObject _dropdownButton;
 
         [Serializable]
         public class TileManagement
@@ -350,6 +351,21 @@ namespace MenuUI.Scripts.TopPanel
                     _spacerList[i].transform.SetAsLastSibling();
                 }
             }
+            int sectionCount = 1;
+            foreach (Row row in spaceredRows)
+            {
+                if (row.item is TopBarDefs.TopBarItem.Tile or TopBarDefs.TopBarItem.Tile2nd) sectionCount += 3;
+                else sectionCount++;
+            }
+            float topbarWidth = parentRT.rect.width;
+            float sectionWidth = Mathf.Min((topbarWidth - 10 * spaceredRows.Count*2) /sectionCount, parentRT.rect.height);
+
+            foreach (Row row in spaceredRows)
+            {
+                if (row.item is TopBarDefs.TopBarItem.Tile or TopBarDefs.TopBarItem.Tile2nd) row.visibilityTarget.GetComponent<LayoutElement>().minWidth = sectionWidth*3;
+                else row.visibilityTarget.GetComponent<LayoutElement>().minWidth = sectionWidth;
+            }
+            _dropdownButton.GetComponent<LayoutElement>().minWidth = sectionWidth;
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
         }
