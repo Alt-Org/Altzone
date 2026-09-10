@@ -26,8 +26,6 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private Color darkPinkColor;
     [SerializeField] private Color redColor;
 
-    [SerializeField] private List<Font> fontList; // Uusi lisäys (Perttu)
-
     [SerializeField] private AdDecorationReference _borderReference;
     [Header("Frame Selectors")]
     [SerializeField] private Transform _borderSelectionContent;
@@ -167,10 +165,10 @@ public class AdEditor : AltMonoBehaviour
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
-
-    public void ChangeTextFont(Font font)
+    // Uusi lisäys (Perttu)
+    public void ChangeTextFont(TMPro.TMP_FontAsset font)
     {
-        //
+        _adData.AdTextFont = font;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }

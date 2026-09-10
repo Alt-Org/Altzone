@@ -1164,15 +1164,7 @@ MonoBehaviour:
   purpleColor: {r: 0.6, g: 0, b: 0.87843144, a: 1}
   darkPinkColor: {r: 0.8470589, g: 0, b: 0.2392157, a: 1}
   redColor: {r: 0.8313726, g: 0, b: 0.015686275, a: 1}
-  _fontList:
-  - {fileID: 12800000, guid: 2f4b1d482759a954499325c24838fdd3, type: 3}
-  - {fileID: 12800000, guid: 5b79089020a21094e81e13800f34d39e, type: 3}
-  - {fileID: 12800000, guid: 0caeea83df1443a4faf45b59295f68d1, type: 3}
-  - {fileID: 12800000, guid: 28ca86086fd827844a221a9e6d580295, type: 3}
-  - {fileID: 12800000, guid: f289aa73c6d007448960f5d8afd1f26f, type: 3}
-  - {fileID: 12800000, guid: 87e617c5e148aae4fa806568341a37bf, type: 3}
-  - {fileID: 12800000, guid: 8e63987be175fa342ad8b2c23a91522f, type: 3}
-  - {fileID: 12800000, guid: a60871d66770b4a4883483bee6f345b4, type: 3}
+  fontList: []
   _borderReference: {fileID: 11400000, guid: e527845925edf23418596bb0e6da8b5c, type: 2}
   _borderSelectionContent: {fileID: 3264556469795064128}
   _borderFramePrefab: {fileID: 7082800346161996096, guid: 37373c23272a4244696039fd58bc1190,
@@ -2013,9 +2005,9 @@ MonoBehaviour:
         m_MethodName: ChangeTextFont
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 12800000, guid: 2f4b1d482759a954499325c24838fdd3,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Font, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: dcc089e132356ac4a9eb8090bee5e304,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_FontAsset, Unity.TextMeshPro
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2147,9 +2139,9 @@ MonoBehaviour:
         m_MethodName: ChangeTextFont
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 12800000, guid: 0caeea83df1443a4faf45b59295f68d1,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Font, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: 8f29e6a373bbb7344a0c136aeb1ba5f2,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_FontAsset, Unity.TextMeshPro
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2343,9 +2335,9 @@ MonoBehaviour:
         m_MethodName: ChangeTextFont
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 12800000, guid: a60871d66770b4a4883483bee6f345b4,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Font, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: e6ad6b116f046f343ba8473329c51a08,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_FontAsset, Unity.TextMeshPro
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2477,9 +2469,9 @@ MonoBehaviour:
         m_MethodName: ChangeTextFont
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 12800000, guid: 5b79089020a21094e81e13800f34d39e,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Font, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: 3c2f07b74051d294cace0480a4dc96fd,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_FontAsset, Unity.TextMeshPro
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2899,9 +2891,9 @@ MonoBehaviour:
         m_MethodName: ChangeTextFont
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 12800000, guid: f289aa73c6d007448960f5d8afd1f26f,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Font, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: cb6f0c7388e8e824fa41414306ede11f,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_FontAsset, Unity.TextMeshPro
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3425,9 +3417,9 @@ MonoBehaviour:
         m_MethodName: ChangeTextFont
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 12800000, guid: 28ca86086fd827844a221a9e6d580295,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Font, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_FontAsset, Unity.TextMeshPro
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3634,9 +3626,9 @@ MonoBehaviour:
         m_MethodName: ChangeTextFont
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 12800000, guid: 87e617c5e148aae4fa806568341a37bf,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Font, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: 7573fa126ddb0bd45846faa25129de46,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_FontAsset, Unity.TextMeshPro
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4645,9 +4637,9 @@ MonoBehaviour:
         m_MethodName: ChangeTextFont
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 12800000, guid: 8e63987be175fa342ad8b2c23a91522f,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Font, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: e91ba9477e562634f86a6d5eefb1582c,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: TMPro.TMP_FontAsset, Unity.TextMeshPro
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4796,8 +4788,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Abcdefg
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e6de96579f6e6464f89038dac1ad2882, type: 2}
-  m_sharedMaterial: {fileID: -6395784680899376689, guid: e6de96579f6e6464f89038dac1ad2882,
+  m_fontAsset: {fileID: 11400000, guid: 3c2f07b74051d294cace0480a4dc96fd, type: 2}
+  m_sharedMaterial: {fileID: -2832907553426538675, guid: 3c2f07b74051d294cace0480a4dc96fd,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -4822,7 +4814,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 29.75
+  m_fontSize: 30.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
