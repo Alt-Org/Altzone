@@ -53,7 +53,6 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
 
             if (!_playerData.EmotionSelectionDate.Equals(DateTime.MinValue))
             {
-                Debug.LogWarning(_playerData.EmotionSelectionDate.Date);
                 if (_playerData.EmotionSelectionDate.Date == DateTime.Today)
                 {
                     _bSwitch = false;
@@ -62,9 +61,10 @@ public class EmotionSelectorPopupScript : AltMonoBehaviour
 
             StartCoroutine(ServerManager.Instance.CheckEmotionInServer(success =>
             {
-                if (!success || _bSwitch)
+                if (!success)
                 {
                     _popupPrefab.SetActive(true);
+                    _bSwitch = false;
                 }
                 else
                 {

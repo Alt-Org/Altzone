@@ -1,19 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Altzone.Scripts;
+using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
-using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby.InLobby;
+using MQTTnet.Diagnostics;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
-using SignalBus = MenuUi.Scripts.Signals.SignalBus;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
-using System.Collections.Generic;
-using Altzone.Scripts.Language;
-using System;
 using Random = UnityEngine.Random;
+using SignalBus = MenuUi.Scripts.Signals.SignalBus;
 
 namespace MenuUi.Scripts.Lobby.InRoom
 {
@@ -23,6 +27,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
     public class InRoomController : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _title;
+        [SerializeField] private TextMeshProUGUI _gameType;
         [SerializeField] private TextLanguageSelectorCaller _conflictText;
         [SerializeField] private List<Conflicts> _conflicts;
         [SerializeField] private Button _startGameButton;
@@ -30,6 +35,15 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private TMP_Text _noticeText;
         [SerializeField] private TMP_Text _sendInviteToFriendText;
+        
+        [SerializeField] private Button _inviteOnlinePlayerButton;
+        [SerializeField] private InRoomInviteSelectorPanel _inviteSelectorPanel;
+
+        private Coroutine _inviteLifecycleHolder;
+        private const float InviteLifecycleTickSeconds = 1f;
+        private const long InviteExpirationSeconds = 60;
+        private Coroutine _customRoomTimeoutHolder;
+        private const float CustomRoomTimeoutSeconds = 300f;
 
         private void Awake()
         {
@@ -37,16 +51,29 @@ namespace MenuUi.Scripts.Lobby.InRoom
             //buttons[1].onClick.AddListener(SetPlayerAsSpectator);
             _startGameButton.onClick.AddListener(StartPlaying);
             _backButton.onClick.AddListener(GoBack);
+            // premade target-mode selector removed until prefab wiring is fixed
+            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.AddListener(OnInviteOnlinePlayerButtonPressed);
             //buttons[3].onClick.AddListener(StartRaidTest);
         }
 
         private void OnEnable()
         {
+            if (_startGameButton != null) _startGameButton.interactable = true;
+            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = InLobbyController.SelectedGameType == GameType.FriendLobby;
+
             switch (InLobbyController.SelectedGameType)
             {
                 case GameType.Custom:
                     if (_title != null) StartCoroutine(SetRoomTitle());
                     if (_conflictText != null) StartCoroutine(CycleConflicts());
+                    StartCustomRoomTimeoutMonitoring();
+                    break;
+                case GameType.FriendLobby:
+                    if (_title != null) _title.text = "Friend Lobby";
+                    if (_gameType) _gameType.text = InLobbyController.SelectedPremadeTargetGameType.ToString();
+                    if (_noticeText != null) _noticeText.text = "Kutsu yksi online-pelaaja ja valitse haettava 2v2 pelimuoto.";
+                    if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Kutsu online-pelaaja";
+                    EnsureInviteSelectorPanel();
                     break;
                 case GameType.Random2v2:
                     //if (_title != null) _title.text = "Keräily 2v2";
@@ -61,12 +88,38 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu yhdelle klaanin jäsenelle";
                     break;
             }
+
+            if (InLobbyController.SelectedGameType == GameType.FriendLobby)
+            {
+                StartInviteLifecycleMonitoring();
+            }
+            else
+            {
+                StopInviteLifecycleMonitoring();
+            }
+
+            if (InLobbyController.SelectedGameType != GameType.Custom)
+            {
+                StopCustomRoomTimeoutMonitoring();
+            }
         }
 
         private void OnDestroy()
         {
+            // premade target-mode selector removed until prefab wiring is fixed
+            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.RemoveListener(OnInviteOnlinePlayerButtonPressed);
+            if (_inviteSelectorPanel != null) _inviteSelectorPanel.HideSilently();
+            StopInviteLifecycleMonitoring();
+            StopCustomRoomTimeoutMonitoring();
             _startGameButton.onClick.RemoveAllListeners();
             _backButton.onClick.RemoveAllListeners();
+        }
+
+        private void OnDisable()
+        {
+            if (_inviteSelectorPanel != null) _inviteSelectorPanel.HideSilently();
+            StopInviteLifecycleMonitoring();
+            StopCustomRoomTimeoutMonitoring();
         }
 
         private void SetPlayerAsGuest()
@@ -83,6 +136,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void StartPlaying()
         {
+            void RestoreStartButton()
+            {
+                if (_startGameButton != null) _startGameButton.interactable = true;
+            }
+
             //if (!PhotonLobbyRoom.IsValidAllSelectedCharacters())
             //{
             //    SignalBus.OnChangePopupInfoSignal("Kaikkien pelaajien pitää ensin valita 3 puolustushahmoa.");
@@ -96,6 +154,52 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     this.Publish(new LobbyManager.StartPlayingEvent());
                     break;
 
+                case GameType.FriendLobby:
+                    if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
+                    {
+                        RestoreStartButton();
+                        return;
+                    }
+
+                    if (!PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
+                    {
+                        PopupSignalBus.OnChangePopupInfoSignal("Vain huoneen johtaja voi aloittaa matchmakingin.");
+                        RestoreStartButton();
+                        return;
+                    }
+
+                    if (PhotonLobbyRoom.CountRealPlayers() != PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
+                    {
+                        PopupSignalBus.OnChangePopupInfoSignal($"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
+                        RestoreStartButton();
+                        return;
+                    }
+
+                    GameType targetGameType = InLobbyController.SelectedPremadeTargetGameType;
+                    if (targetGameType != GameType.Random2v2 && targetGameType != GameType.Clan2v2)
+                    {
+                        targetGameType = GameType.Random2v2;
+                    }
+
+                    string localUserId = PhotonRealtimeClient.LocalLobbyPlayer?.UserId ?? string.Empty;
+                    string teammateUserId = string.Empty;
+                    foreach (var player in PhotonRealtimeClient.LobbyCurrentRoom.Players.Values)
+                    {
+                        if (player == null || player.UserId == localUserId) continue;
+                        teammateUserId = player.UserId;
+                        break;
+                    }
+
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, GetPlayerName(localUserId));
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, teammateUserId);
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, GetPlayerName(teammateUserId));
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
+                    this.Publish(new LobbyManager.StartMatchmakingEvent(targetGameType, true));
+                    break;
+
                 case GameType.Clan2v2:
                     if (PhotonLobbyRoom.CountRealPlayers() == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
                     {
@@ -106,6 +210,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                             if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
                             {
                                 Debug.Log("StartPlaying suppressed: current room is a queue room (Clan2v2).");
+                                RestoreStartButton();
                                 return;
                             }
                         }
@@ -115,6 +220,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     else
                     {
                         PopupSignalBus.OnChangePopupInfoSignal($"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
+                        RestoreStartButton();
                     }
                     break;
                 case GameType.Random2v2:
@@ -125,6 +231,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                         if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
                         {
                             Debug.Log("StartPlaying suppressed: current room is a queue room (Random2v2).");
+                            RestoreStartButton();
                             return;
                         }
                     }
@@ -133,6 +240,476 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     break;
             }
         }
+
+        // Premade target selector UI path temporarily removed.
+
+        private void OnInviteOnlinePlayerButtonPressed()
+        {
+            if (InLobbyController.SelectedGameType != GameType.FriendLobby) return;
+            StartCoroutine(InviteOnlinePlayerRoutine());
+        }
+
+        private IEnumerator InviteOnlinePlayerRoutine()
+        {
+            if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null) yield break;
+
+            if (!PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Vain huoneen johtaja voi lähettää kutsun.");
+                yield break;
+            }
+
+            List<ServerOnlinePlayer> candidates = null;
+            yield return StartCoroutine(GetInviteCandidatesRoutine(result => candidates = result));
+
+            if (candidates == null || candidates.Count == 0)
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Ei sopivia online-pelaajia kutsuttavaksi.");
+                yield break;
+            }
+
+            EnsureInviteSelectorPanel();
+            if (_inviteSelectorPanel == null)
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Kutsulistaa ei voitu avata. Yrita uudelleen.");
+                yield break;
+            }
+
+                    SetInviteButtonInteractable(false);
+            _inviteSelectorPanel.Show(
+                candidates,
+                selectedPlayer =>
+                {
+                        SetInviteButtonInteractable(true);
+                    SendInviteToOnlinePlayer(selectedPlayer);
+                },
+                () =>
+                {
+                        SetInviteButtonInteractable(true);
+                    PopupSignalBus.OnChangePopupInfoSignal("Kutsun lähetys peruttu.");
+                });
+        }
+
+        private IEnumerator GetInviteCandidatesRoutine(Action<List<ServerOnlinePlayer>> callback)
+        {
+            List<ServerOnlinePlayer> onlinePlayers = null;
+            if (ServerManager.Instance != null)
+            {
+                List<ServerOnlinePlayer> fetchedPlayers = null;
+                yield return StartCoroutine(ServerManager.Instance.GetOnlinePlayersFromServer(players => fetchedPlayers = players));
+
+                // Always prefer a fresh server snapshot when opening the invite list.
+                onlinePlayers = fetchedPlayers ?? ServerManager.Instance.OnlinePlayers;
+            }
+
+            callback?.Invoke(FilterInviteCandidates(onlinePlayers));
+        }
+
+        private List<ServerOnlinePlayer> FilterInviteCandidates(List<ServerOnlinePlayer> onlinePlayers)
+        {
+            List<ServerOnlinePlayer> candidates = new();
+            if (onlinePlayers == null || onlinePlayers.Count == 0) return candidates;
+
+            string localUserId = GetLocalUserId();
+            List<ClanMember> members = null;
+            if (InLobbyController.SelectedPremadeTargetGameType == GameType.Clan2v2)
+            {
+                ClanData clan = null;
+                Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, data => clan = data);
+                members = clan.Members;
+            }
+
+            foreach (ServerOnlinePlayer onlinePlayer in onlinePlayers)
+            {
+                if (onlinePlayer == null || string.IsNullOrEmpty(onlinePlayer._id)) continue;
+                if (onlinePlayer._id == localUserId) continue;
+                if (IsPlayerAlreadyInCurrentRoom(onlinePlayer._id)) continue;
+                if (InLobbyController.SelectedPremadeTargetGameType == GameType.Clan2v2)
+                {
+                    if(members.Find((m) => m.Id == onlinePlayer._id) == null) continue;
+                }
+                candidates.Add(onlinePlayer);
+            }
+
+            return candidates;
+        }
+
+        private void SendInviteToOnlinePlayer(ServerOnlinePlayer onlinePlayer)
+        {
+            if (onlinePlayer == null || string.IsNullOrEmpty(onlinePlayer._id))
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Virheellinen kutsuttava pelaaja.");
+                return;
+            }
+
+            if (!TrySendInviteToUserId(onlinePlayer._id))
+            {
+                return;
+            }
+
+            PopupSignalBus.OnChangePopupInfoSignal($"Kutsu lähetetty pelaajalle {GetOnlinePlayerDisplayName(onlinePlayer)}.");
+        }
+
+        private bool TrySendInviteToUserId(string invitedUserId)
+        {
+            if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
+            {
+                return false;
+            }
+
+            if (!PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Vain huoneen johtaja voi lähettää kutsun.");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(invitedUserId))
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Sopivaa kutsuttavaa online-pelaajaa ei löytynyt.");
+                return false;
+            }
+
+            string localUserId = GetLocalUserId();
+            string localUsername = PhotonRealtimeClient.LocalLobbyPlayer?.NickName;
+
+            if (string.IsNullOrEmpty(localUserId) || invitedUserId == localUserId) return false;
+            if (IsPlayerAlreadyInCurrentRoom(invitedUserId))
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Valittu pelaaja on jo huoneessa.");
+                return false;
+            }
+
+            int inviteState = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
+            string currentInvitedUserId = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
+            if (inviteState == PhotonBattleRoom.PremadeInviteStatePending && currentInvitedUserId == invitedUserId)
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Kutsu on jo lähetetty tälle pelaajalle.");
+                return false;
+            }
+
+            ApplyPendingPremadeInviteSelection(invitedUserId, localUserId, localUsername, InLobbyController.SelectedPremadeTargetGameType);
+
+            try
+            {
+                PhotonRealtimeClient.LobbyCurrentRoom.ClearExpectedUsers();
+                PhotonRealtimeClient.LobbyCurrentRoom.SetExpectedUsers(new[] { invitedUserId });
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"TrySendInviteToUserId: failed to set expected users: {ex.Message}");
+            }
+
+            return true;
+        }
+
+        private void ApplyPendingPremadeInviteSelection(string invitedUserId, string localUserId, string localUsername, GameType targetGameType)
+        {
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, localUsername);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, invitedUserId);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStatePending);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, localUsername);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
+        }
+
+        private void MarkPremadeInviteAccepted(string invitedUserId, string name)
+        {
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, invitedUserId);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, name);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
+
+            if (PhotonRealtimeClient.LobbyCurrentRoom.PlayerCount >= PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
+            {
+                PhotonRealtimeClient.LobbyCurrentRoom.IsOpen = false;
+            }
+        }
+
+        private void ExpirePremadeInvite()
+        {
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateExpired);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
+            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
+
+            try { PhotonRealtimeClient.LobbyCurrentRoom.ClearExpectedUsers(); }
+            catch (Exception ex) { Debug.LogWarning($"InviteLifecycleRoutine: failed to clear expected users on expiry: {ex.Message}"); }
+        }
+
+        private void SetInviteButtonInteractable(bool interactable)
+        {
+            if (_inviteOnlinePlayerButton != null)
+            {
+                _inviteOnlinePlayerButton.interactable = interactable;
+            }
+        }
+
+        private string GetLocalUserId()
+        {
+            string localUserId = PhotonRealtimeClient.LocalLobbyPlayer?.UserId;
+            if (string.IsNullOrEmpty(localUserId) && ServerManager.Instance?.Player != null)
+            {
+                localUserId = ServerManager.Instance.Player._id;
+            }
+
+            return localUserId;
+        }
+
+        private bool IsPlayerAlreadyInCurrentRoom(string userId)
+        {
+            if (string.IsNullOrEmpty(userId) || PhotonRealtimeClient.LobbyCurrentRoom == null) return false;
+
+            foreach (var player in PhotonRealtimeClient.LobbyCurrentRoom.Players.Values)
+            {
+                if (player == null || string.IsNullOrEmpty(player.UserId)) continue;
+                if (player.UserId == userId) return true;
+            }
+
+            return false;
+        }
+
+        private string GetPlayerName(string userId)
+        {
+            if (string.IsNullOrEmpty(userId) || PhotonRealtimeClient.LobbyCurrentRoom == null) return string.Empty;
+
+            foreach (var player in PhotonRealtimeClient.LobbyCurrentRoom.Players.Values)
+            {
+                if (player == null || string.IsNullOrEmpty(player.UserId)) continue;
+                if (player.UserId == userId) return player.NickName;
+            }
+
+            return string.Empty;
+        }
+
+        private static string GetOnlinePlayerDisplayName(ServerOnlinePlayer onlinePlayer)
+        {
+            if (onlinePlayer == null) return "Tuntematon";
+            if (!string.IsNullOrWhiteSpace(onlinePlayer.name)) return onlinePlayer.name;
+            return string.IsNullOrEmpty(onlinePlayer._id) ? "Tuntematon" : onlinePlayer._id;
+        }
+
+        private void StartInviteLifecycleMonitoring()
+        {
+            if (_inviteLifecycleHolder != null)
+            {
+                return;
+            }
+
+            _inviteLifecycleHolder = StartCoroutine(InviteLifecycleRoutine());
+        }
+
+        private void StopInviteLifecycleMonitoring()
+        {
+            if (_inviteLifecycleHolder == null)
+            {
+                return;
+            }
+
+            StopCoroutine(_inviteLifecycleHolder);
+            _inviteLifecycleHolder = null;
+        }
+
+        private void StartCustomRoomTimeoutMonitoring()
+        {
+            if (_customRoomTimeoutHolder != null)
+            {
+                return;
+            }
+
+            _customRoomTimeoutHolder = StartCoroutine(CustomRoomTimeoutRoutine());
+        }
+
+        private void StopCustomRoomTimeoutMonitoring()
+        {
+            if (_customRoomTimeoutHolder == null)
+            {
+                return;
+            }
+
+            StopCoroutine(_customRoomTimeoutHolder);
+            _customRoomTimeoutHolder = null;
+        }
+
+        private IEnumerator CustomRoomTimeoutRoutine()
+        {
+            try
+            {
+                yield return new WaitUntil(() => PhotonRealtimeClient.InRoom || InLobbyController.SelectedGameType != GameType.Custom);
+
+                if (InLobbyController.SelectedGameType != GameType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
+                {
+                    yield break;
+                }
+
+                bool isCustomRoom = false;
+                try
+                {
+                    isCustomRoom = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == (int)GameType.Custom;
+                }
+                catch { }
+
+                if (!isCustomRoom)
+                {
+                    yield break;
+                }
+
+                yield return new WaitForSecondsRealtime(CustomRoomTimeoutSeconds);
+
+                if (InLobbyController.SelectedGameType != GameType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
+                {
+                    yield break;
+                }
+
+                if (_startGameButton != null && !_startGameButton.interactable)
+                {
+                    yield break;
+                }
+
+                try
+                {
+                    isCustomRoom = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == (int)GameType.Custom;
+                }
+                catch
+                {
+                    isCustomRoom = false;
+                }
+
+                if (!isCustomRoom)
+                {
+                    yield break;
+                }
+
+                Debug.Log($"Custom room timeout reached after {CustomRoomTimeoutSeconds}s, leaving room.");
+                GoBack();
+            }
+            finally
+            {
+                _customRoomTimeoutHolder = null;
+            }
+        }
+
+        private IEnumerator InviteLifecycleRoutine()
+        {
+            WaitForSecondsRealtime delay = new(InviteLifecycleTickSeconds);
+
+            while (true)
+            {
+                if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
+                {
+                    yield return delay;
+                    continue;
+                }
+
+                var localLobbyPlayer = PhotonRealtimeClient.LocalLobbyPlayer;
+                if (localLobbyPlayer == null || !localLobbyPlayer.IsMasterClient)
+                {
+                    yield return delay;
+                    continue;
+                }
+
+                GameType roomGameType = GameType.FriendLobby;
+                bool failedToReadRoomGameType = false;
+                try
+                {
+                    roomGameType = (GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                }
+                catch
+                {
+                    failedToReadRoomGameType = true;
+                }
+
+                if (failedToReadRoomGameType)
+                {
+                    yield return delay;
+                    continue;
+                }
+
+                if (roomGameType != GameType.FriendLobby)
+                {
+                    yield return delay;
+                    continue;
+                }
+
+                int inviteState = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
+                if (inviteState != PhotonBattleRoom.PremadeInviteStatePending)
+                {
+                    yield return delay;
+                    continue;
+                }
+
+                string invitedUserId = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
+                if (string.IsNullOrEmpty(invitedUserId))
+                {
+                    yield return delay;
+                    continue;
+                }
+
+                if (IsPlayerAlreadyInCurrentRoom(invitedUserId))
+                {
+                    string invitedPlayerName = GetPlayerName(invitedUserId);
+                    MarkPremadeInviteAccepted(invitedUserId, invitedPlayerName);
+                    yield return delay;
+                    continue;
+                }
+
+                long inviteTimestampMilliseconds = 0;
+                try
+                {
+                    if (PhotonRealtimeClient.LobbyCurrentRoom.CustomProperties != null
+                        && PhotonRealtimeClient.LobbyCurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeInviteTimestampKey))
+                    {
+                        inviteTimestampMilliseconds = Convert.ToInt64(PhotonRealtimeClient.LobbyCurrentRoom.CustomProperties[PhotonBattleRoom.PremadeInviteTimestampKey]);
+                    }
+                }
+                catch
+                {
+                    inviteTimestampMilliseconds = 0;
+                }
+
+                long nowMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                if (inviteTimestampMilliseconds <= 0)
+                {
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, nowMilliseconds);
+                    yield return delay;
+                    continue;
+                }
+
+                if (nowMilliseconds - inviteTimestampMilliseconds >= InviteExpirationSeconds * 1000L)
+                {
+                    ExpirePremadeInvite();
+                    yield return delay;
+                    continue;
+                }
+
+                yield return delay;
+            }
+        }
+
+        private void EnsureInviteSelectorPanel()
+        {
+            if (_inviteSelectorPanel != null)
+            {
+                return;
+            }
+
+            _inviteSelectorPanel = GetComponentInChildren<InRoomInviteSelectorPanel>(true);
+            if (_inviteSelectorPanel == null)
+            {
+                Debug.LogWarning("InRoomController: InRoomInviteSelectorPanel prefab instance is missing from Battle Popup hierarchy.");
+                if (_inviteOnlinePlayerButton != null)
+                {
+                    _inviteOnlinePlayerButton.interactable = false;
+                }
+                return;
+            }
+        }
+
         private void GoBack()
         {
             Debug.Log($"leavingRoom");

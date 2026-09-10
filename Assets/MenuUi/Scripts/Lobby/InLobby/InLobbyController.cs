@@ -2,22 +2,25 @@
 using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Lobby;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MenuUi.Scripts.Signals;
 using Altzone.Scripts.Battle.Photon;
+using MenuUi.Scripts.Window;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Signals
 {
     public static partial class SignalBus
     {
-        public delegate void BattlePopupRequestedHandler(GameType gameType);
+        public delegate void BattlePopupRequestedHandler(GameType lobbygameType, GameType actualGameType);
         public static event BattlePopupRequestedHandler OnBattlePopupRequested;
-        public static void OnBattlePopupRequestedSignal(GameType gameType)
+        public static void OnBattlePopupRequestedSignal(GameType lobbygameType, GameType actualGameType = GameType.None)
         {
-            OnBattlePopupRequested?.Invoke(gameType);
+            OnBattlePopupRequested?.Invoke(lobbygameType, actualGameType);
         }
 
         public delegate void CloseBattlePopupRequestedHandler();
@@ -48,32 +51,61 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private LobbyRoomListingController _roomListingController;
         // Expose the runtime instance of the popup contents so other scene components can reference it at runtime.
-        public static GameObject PopupContentsInstance { get; private set; }
+        public static GameObject PopupContentsInstance => Instance?._popupContents;
 
         // Fired when `PopupContentsInstance` is assigned or cleared at runtime.
         public static event Action<GameObject> OnPopupContentsInstanceAssigned;
         private string _currentRegion;
         private Coroutine _creatingRoomCoroutineHolder = null;
 
+        public static InLobbyController Instance { get; private set; }
         public static GameType SelectedGameType { get; private set; }
+        public static GameType SelectedPremadeTargetGameType { get; private set; } = GameType.Clan2v2;
+
+        public static void SetPremadeTargetGameType(GameType gameType)
+        {
+            if (gameType == GameType.Random2v2 || gameType == GameType.Clan2v2)
+            {
+                SelectedPremadeTargetGameType = gameType;
+            }
+        }
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                Instance = this;
+            }
+
             SignalBus.OnBattlePopupRequested += OpenWindow;
             SignalBus.OnCloseBattlePopupRequested += CloseWindow;
+            LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
+            LobbyManager.OnInRoomInviteReceived += OnInRoomInviteReceived;
+            LobbyManager.OnInRoomInviteJoinFailed += OnInRoomInviteJoinFailed;
             // Register runtime popup reference for other components to find (safe to set here because serialized field is available in Awake)
-            PopupContentsInstance = _popupContents;
             OnPopupContentsInstanceAssigned?.Invoke(PopupContentsInstance);
         }
 
 
         private void OnDestroy()
         {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+
             SignalBus.OnBattlePopupRequested -= OpenWindow;
             SignalBus.OnCloseBattlePopupRequested -= CloseWindow;
+            LobbyManager.OnMatchmakingStopped -= OnMatchmakingStopped;
+            LobbyManager.OnInRoomInviteReceived -= OnInRoomInviteReceived;
+            LobbyManager.OnInRoomInviteJoinFailed -= OnInRoomInviteJoinFailed;
             if (PopupContentsInstance == _popupContents)
             {
-                PopupContentsInstance = null;
                 OnPopupContentsInstanceAssigned?.Invoke(null);
             }
         }
@@ -111,40 +143,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
             _topInfoPanel.TitleText = $"{Application.productName} {PhotonRealtimeClient.GameVersion}";
         }
 
-        private IEnumerator StartLobby(string playerGuid, string photonRegion)
-        {
-            var networkClientState = PhotonRealtimeClient.LobbyNetworkClientState;
-            Debug.Log($"{networkClientState}");
-            var delay = new WaitForSeconds(0.1f);
-            while (!PhotonRealtimeClient.InLobby)
-            {
-                if (networkClientState != PhotonRealtimeClient.LobbyNetworkClientState)
-                {
-                    // Even with delay we must reduce NetworkClientState logging to only when it changes to avoid flooding (on slower connections).
-                    networkClientState = PhotonRealtimeClient.LobbyNetworkClientState;
-                    Debug.Log($"{networkClientState}");
-                }
-                if (PhotonRealtimeClient.InRoom)
-                {
-                    PhotonRealtimeClient.LeaveRoom();
-                }
-                else if (PhotonRealtimeClient.CanConnect)
-                {
-                    var store = Storefront.Get();
-                    PlayerData playerData = null;
-                    store.GetPlayerData(playerGuid, p => playerData = p);
-                    yield return new WaitUntil(() => playerData != null);
-                    PhotonRealtimeClient.Connect(playerData.Name, photonRegion);
-                }
-                else if (PhotonRealtimeClient.CanJoinLobby)
-                {
-                    PhotonRealtimeClient.JoinLobbyWithWrapper(null);
-                }
-                yield return delay;
-            }
-            UpdateTitle();
-        }
-
         private void Update()
         {
             if (!PhotonRealtimeClient.InLobby && !PhotonRealtimeClient.InRoom)
@@ -170,7 +168,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         }*/
 
 
-        private void OpenWindow(GameType gameType)
+        private void OpenWindow(GameType gameType, GameType actualGameType = GameType.None)
         {
             _popupContents.SetActive(true);
             // Ensure top info shows current values when popup opens
@@ -209,7 +207,19 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     }
                     catch { }
 
-                    if ((PhotonRealtimeClient.InMatchmakingRoom || inQueueRoom) && gameType == SelectedGameType)
+                    bool currentRoomGameTypeMatches = false;
+                    try
+                    {
+                        var currRoom = PhotonRealtimeClient.LobbyCurrentRoom;
+                        if (currRoom != null)
+                        {
+                            var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                            currentRoomGameTypeMatches = gt == (int)gameType;
+                        }
+                    }
+                    catch { }
+
+                    if ((PhotonRealtimeClient.InMatchmakingRoom || inQueueRoom) && currentRoomGameTypeMatches)
                     {
                         _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
                         return;
@@ -217,7 +227,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     else if (PhotonRealtimeClient.InRoom) // If we are in a room
                     {
                         // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
-                        if (gameType == SelectedGameType)
+                        if (currentRoomGameTypeMatches)
                         {
                             return;
                         }
@@ -229,16 +239,50 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         }
                     }
                     break;
+                case GameType.FriendLobby:
+                    bool currentFriendRoomMatches = false;
+                    try
+                    {
+                        var currRoom = PhotonRealtimeClient.LobbyCurrentRoom;
+                        if (currRoom != null)
+                        {
+                            var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                            currentFriendRoomMatches = gt == (int)gameType;
+                            SelectedPremadeTargetGameType = actualGameType;
+                        }
+                    }
+                    catch { }
+
+                    if (PhotonRealtimeClient.InMatchmakingRoom && currentFriendRoomMatches)
+                    {
+                        _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
+                        return;
+                    }
+
+                    if (PhotonRealtimeClient.InRoom)
+                    {
+                        if (currentFriendRoomMatches)
+                        {
+                            _roomSwitcher.SwitchRoom(GameType.FriendLobby);
+                            return;
+                        }
+
+                        LobbyManager.Instance.StopMatchmakingCoroutines();
+                        PhotonRealtimeClient.LeaveRoom();
+                    }
+                    break;
                 default:
                     return;
             }
 
             SelectedGameType = gameType;
+            if(SelectedGameType == GameType.Random2v2) SelectedGameType = GameType.Clan2v2; //This line is for testing purposes, remove when you no longer want to force Clan2v2.
+            SelectedPremadeTargetGameType = actualGameType;
 
             // Starting creating room of a selected game type if the coroutine is not already running
             if (_creatingRoomCoroutineHolder != null) return;
             _roomSwitcher.ClosePanels();
-            _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRoom(gameType, () =>
+            _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRoom(SelectedGameType, () =>
             {
                 _creatingRoomCoroutineHolder = null;
             }));
@@ -249,6 +293,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             _roomSwitcher.ClosePanels();
             _popupContents.SetActive(false);
+        }
+
+        private void OnMatchmakingStopped()
+        {
+            // Any matchmaking stop should close the battle popup to avoid stale queue UI.
+            CloseWindow();
         }
 
         private void RefreshTopInfo()
@@ -287,6 +337,89 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void QuickGameButtonOnClick()
         {
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
+        }
+
+        private void OnInRoomInviteReceived(LobbyManager.InRoomInviteInfo inviteInfo)
+        {
+            if (inviteInfo == null || string.IsNullOrEmpty(inviteInfo.RoomName)) return;
+
+            string inviterName = ResolveOnlinePlayerName(inviteInfo.LeaderUserName);
+            string targetMode = inviteInfo.TargetGameType == GameType.Clan2v2 ? "Clan 2v2" : "Random 2v2";
+            string message = $"{inviterName} kutsui sinut Friend Lobby -huoneeseen.\n\nHaettava pelimuoto: {targetMode}.\n\nLiitytaanko huoneeseen?";
+
+            bool popupShown = InviteDecisionPopupHandler.RequestInviteDecisionPrompt(
+                message,
+                "Liity",
+                "Hylkää",
+                accepted =>
+                {
+                    if (LobbyManager.Instance == null) return;
+                    if (accepted)
+                    {
+                        OpenBattlePopupForInviteAccept();
+                        LobbyManager.Instance.AcceptInRoomInvite(inviteInfo.RoomName);
+                    }
+                    else LobbyManager.Instance.DeclineInRoomInvite(inviteInfo.RoomName);
+                });
+
+            if (!popupShown)
+            {
+                Debug.LogWarning("OnInRoomInviteReceived: decision popup unavailable, declining invite to fail closed.");
+                LobbyManager.Instance?.DeclineInRoomInvite(inviteInfo.RoomName);
+                PopupSignalBus.OnChangePopupInfoSignal("Friend Lobby -kutsu saatu, mutta vahvistusikkunaa ei voitu avata. Kutsu hylättiin turvallisuussyista.");
+            }
+        }
+
+        private void OpenBattlePopupForInviteAccept()
+        {
+            SelectedGameType = GameType.FriendLobby;
+
+            if (_popupContents != null && !_popupContents.activeSelf)
+            {
+                _popupContents.SetActive(true);
+            }
+
+            RefreshTopInfo();
+            _roomSwitcher?.SwitchRoom(GameType.FriendLobby);
+        }
+
+        private string ResolveOnlinePlayerName(string userId)
+        {
+            if (string.IsNullOrEmpty(userId)) return "Pelaaja";
+
+            try
+            {
+                var onlinePlayers = ServerManager.Instance?.OnlinePlayers;
+                if (onlinePlayers != null)
+                {
+                    foreach (ServerOnlinePlayer player in onlinePlayers)
+                    {
+                        if (player == null || player._id != userId) continue;
+                        if (!string.IsNullOrWhiteSpace(player.name)) return player.name;
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"ResolveOnlinePlayerName failed: {ex.Message}");
+            }
+
+            return userId;
+        }
+
+        private void OnInRoomInviteJoinFailed(string roomName, short returnCode, string message)
+        {
+            bool isRoomFull = returnCode == 32765
+                || (!string.IsNullOrEmpty(message) && message.ToLowerInvariant().Contains("game full"));
+
+            string popupMessage = isRoomFull
+                ? "Friend Lobby -kutsuun liittyminen epaonnistui: huone on taynna tai kutsu ei ole enaa voimassa."
+                : "Friend Lobby -kutsuun liittyminen epaonnistui. Yrita uudelleen, jos kutsu on yha voimassa.";
+
+            PopupSignalBus.OnChangePopupInfoSignal(popupMessage);
+            // Close the battle popup since join failed and we're not in the FriendLobby room
+            try { CloseWindow(); } catch (Exception ex) { Debug.LogWarning($"OnInRoomInviteJoinFailed: failed to close popup: {ex.Message}"); }
         }
     }
 }

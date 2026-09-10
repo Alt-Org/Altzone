@@ -5,6 +5,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TutorialController : AltMonoBehaviour
 {
@@ -12,6 +13,8 @@ public class TutorialController : AltMonoBehaviour
     [SerializeField] private List<TutorialPanelHandler> _tutorialPanelList;
     [SerializeField] private string _tutorialPanelName;
     [SerializeField] private SwipeUI _swipe;
+    [SerializeField] private Button _tutorialStopButton1;
+    [SerializeField] private Button _tutorialStopButton2;
 
     private int _currentPage=0;
     private string _playerName = string.Empty;
@@ -19,11 +22,19 @@ public class TutorialController : AltMonoBehaviour
     private bool _inProgress = false;
     public bool IsTutorialInProgress => _inProgress;
 
+    [SerializeField] private SkipTutorialHandler _skipTutorialHandler;
+
     // Start is called before the first frame update
     void Start()
     {
         _tutorialStart.OnTutorialStarted += StartTutorial;
         _tutorialStart.OnTutorialSkip += SkipTutorial;
+
+        if (_tutorialStopButton1 != null)
+            _tutorialStopButton1.onClick.AddListener(() => SkipTutorial());
+
+        if (_tutorialStopButton2 != null)
+            _tutorialStopButton2.onClick.AddListener(() => SkipTutorial());
     }
 
     public void Initialize()
@@ -40,12 +51,14 @@ public class TutorialController : AltMonoBehaviour
         _inProgress = true;
     }
 
-    private void SkipTutorial()
+    public void SkipTutorial()
     {
         if(_currentPage < 0)_tutorialStart.gameObject.SetActive(false);
         else _tutorialPanelList[_currentPage].gameObject.SetActive(false);
         PlayerPrefs.SetInt(_tutorialPanelName + "_" + _playerName, 1);
         _inProgress = false;
+        _tutorialStopButton1.gameObject.SetActive(false);
+        _tutorialStopButton2.gameObject.SetActive(false);
     }
     private void StartTutorial()
     {
@@ -53,12 +66,14 @@ public class TutorialController : AltMonoBehaviour
         _currentPage = 0;
         if (_tutorialPanelList.Count == 0) return;
         _tutorialPanelList[0].gameObject.SetActive(true);
+        _skipTutorialHandler.SetSkipTutorialPanel(_currentPage);
     }
 
     private void AdvanceTutorial()
     {
         _tutorialPanelList[_currentPage].gameObject.SetActive(false);
         _currentPage++;
+        _skipTutorialHandler.SetSkipTutorialPanel(_currentPage);
         if (_tutorialPanelList.Count > _currentPage)
         {
             _tutorialPanelList[_currentPage].gameObject.SetActive(true);
@@ -67,6 +82,8 @@ public class TutorialController : AltMonoBehaviour
         {
             PlayerPrefs.SetInt(_tutorialPanelName + "_" + _playerName, 1);
             _inProgress = false;
+            _tutorialStopButton1.gameObject.SetActive(false);
+            _tutorialStopButton2.gameObject.SetActive(false);
         }
     }
 

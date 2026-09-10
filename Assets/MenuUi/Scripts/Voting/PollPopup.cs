@@ -64,7 +64,7 @@ public class PollPopup : MonoBehaviour // Controls the popup display for polls
     {
         pollData.AddVote(answer, null);
         SetValues();
-        VotingActions.ReloadPollList?.Invoke();
+        //VotingActions.ReloadPollList?.Invoke();
 
         gameObject.SetActive(false);
 

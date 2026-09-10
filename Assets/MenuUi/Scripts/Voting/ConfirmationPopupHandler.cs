@@ -208,7 +208,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         yield return new WaitUntil(()=> result.HasValue);
         if (result == true && furniture != null)
             VotingActions.ShopItemInVoting?.Invoke(furniture.Name);
-        VotingActions.ReloadPollList?.Invoke();
+        //VotingActions.ReloadPollList?.Invoke();
         ClosePopup();
     }
 
@@ -245,7 +245,7 @@ public class ConfirmationPopupHandler : MonoBehaviour
         if (storageFurnitures != null) PollManager.CreateVotingPoll(FurniturePollType.Buying, storageFurnitures, c => result = c);
         yield return new WaitUntil(() => result.HasValue);
         
-        VotingActions.ReloadPollList?.Invoke();
+        //VotingActions.ReloadPollList?.Invoke();
         ClosePopup();
         
 

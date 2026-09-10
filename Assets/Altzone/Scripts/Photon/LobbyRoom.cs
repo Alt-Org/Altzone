@@ -35,7 +35,32 @@ namespace Altzone.Scripts.Lobby.Wrappers
         /// As part of RoomInfo this can't be set.
         /// As part of a Room (which the player joined), the setter will update the server and all clients.
         /// </remarks>
-        public bool IsOpen => _room.IsOpen;
+        public bool IsOpen
+        {
+            get
+            {
+                return _room.IsOpen;
+            }
+
+            set
+            {
+                _room.IsOpen = value;
+            }
+        }
+
+
+        public LobbyPhotonHashtable CustomProperties
+        {
+            get
+            {
+                /*if (offlineMode)
+                {
+                    return offlineModeRoom;
+                }*/
+
+                return new(_room.CustomProperties);
+            }
+        }
 
         /// <summary>
         /// Defines if the room is listed in its lobby.
@@ -63,7 +88,22 @@ namespace Altzone.Scripts.Lobby.Wrappers
         public int PlayerCount => _room.PlayerCount;
 
         /// <summary>While inside a Room, this is the list of players who are also in that room.</summary>
-        public Dictionary<int, Player> Players => _room.Players;
+        public Dictionary<int, LobbyPlayer> Players
+        {
+            get
+            {
+                Dictionary<int, Player> Players = _room.Players;
+
+                Dictionary<int, LobbyPlayer> LobbyPlayers= new();
+
+                foreach (var player in Players)
+                {
+                    LobbyPlayers.Add(player.Key, new(player.Value));
+                }
+
+                return LobbyPlayers;
+            }
+        }
 
         /// <summary>
         /// List of users who are expected to join this room. In matchmaking, Photon blocks a slot for each of these UserIDs out of the MaxPlayers.
@@ -195,6 +235,12 @@ namespace Altzone.Scripts.Lobby.Wrappers
             {
                 return _room.SetCustomProperties(propertiesToSet.GetOriginal());
             }
+        }
+
+
+        public virtual void SetCustomProperty(string key, object value)
+        {
+            _room.SetCustomProperty(key, value);
         }
 
         /// <summary>

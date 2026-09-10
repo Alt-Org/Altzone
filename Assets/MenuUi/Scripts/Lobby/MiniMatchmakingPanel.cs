@@ -1,11 +1,10 @@
+using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby.InLobby;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using MenuUi.Scripts.Lobby.InLobby;
-using MenuUi.Scripts.Signals;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Lobby
 {
@@ -20,6 +19,8 @@ namespace MenuUi.Scripts.Lobby
         [SerializeField] private TMP_Text _matchmakingText;
         [SerializeField] private TMP_Text _matchmakingCountText;
         [SerializeField] private TMP_Text _elapsedTimeText;
+        [SerializeField] private TMP_Text _player1NameText;
+        [SerializeField] private TMP_Text _player2NameText;
         [SerializeField] private Button _cancelButton;
         [SerializeField] private Button _panelButton;
 
@@ -73,18 +74,11 @@ namespace MenuUi.Scripts.Lobby
                 _battlePopup = InLobbyController.PopupContentsInstance; 
             }
 
-            // Fallback: try to find the battle popup at runtime if it's in a separate prefab
-            TryFindBattlePopup();
-
-            // Try to auto-assign matchmaking count text if inspector field is empty
-            TryFindMatchmakingCountText();
-
             SetVisible(false);
 
             // Initialize state from current Photon/room state in case matchmaking started before this component was enabled
             TryInitFromCurrentState();
             _popupSearchAttempts = 0; // Initialize popup search attempts
-            TryFindBattlePopup(); // Attempt to find the battle popup
         }
 
         private void TryInitFromCurrentState()
@@ -163,14 +157,26 @@ namespace MenuUi.Scripts.Lobby
                 int count = PhotonRealtimeClient.CurrentRoomPlayerCount;
                 _matchmakingCountText.text = count.ToString();
             }
+
+            if (_isMatchmaking && _player1NameText != null)
+            {
+                string name1 = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, string.Empty);
+                if(string.IsNullOrEmpty(name1)) name1 = PhotonRealtimeClient.LocalLobbyPlayer.NickName;
+                _player1NameText.text = name1;
+            }
+            if (_isMatchmaking && _player2NameText != null)
+            {
+                string name2 = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
+                _player2NameText.text = name2;
+            }
+
             // Retry locating the battle popup (prefer scene instance) for a short time if not found yet
             if ((_battlePopup == null || !_battlePopup.scene.IsValid()) && _popupSearchAttempts < MaxPopupSearchAttempts)
             {
                 _popupSearchAttempts++;
-                if (TryFindBattlePopupSceneOnly())
+                if (_battlePopup != null)
                 {
                     UpdateCancelButtonFromState();
-                    TryFindMatchmakingCountText();
                     UpdateVisibility();
                 }
             }
@@ -184,158 +190,7 @@ namespace MenuUi.Scripts.Lobby
             {
                 _battlePopup = popup;
                 UpdateCancelButtonFromState();
-                TryFindMatchmakingCountText();
                 UpdateVisibility();
-            }
-        }
-
-        private void TryFindBattlePopup()
-        {
-            if (_battlePopup != null) return;
-            // Try scene-only search first
-            if (TryFindBattlePopupSceneOnly()) return;
-
-            // If immediate scene search failed, fallback to asset/inactive search (less desirable)
-            var mgrs = Resources.FindObjectsOfTypeAll<BattlePopupPanelManager>();
-            foreach (var m in mgrs)
-            {
-                if (m == null) continue;
-                var go = m.gameObject;
-                if (go != null)
-                {
-                    _battlePopup = go;
-                    Debug.Log($"MiniMatchmakingPanel: Found battle popup (asset/inactive) via BattlePopupPanelManager: {_battlePopup.name}");
-                    return;
-                }
-            }
-
-            var gos = Resources.FindObjectsOfTypeAll<GameObject>();
-            foreach (var g in gos)
-            {
-                if (g == null) continue;
-                string n = g.name.ToLowerInvariant();
-                if (n.Contains("popup") || n.Contains("battle") || n.Contains("popupcontents"))
-                {
-                    _battlePopup = g;
-                    Debug.Log($"MiniMatchmakingPanel: Found battle popup (asset/inactive) via name match: {_battlePopup.name}");
-                    return;
-                }
-            }
-
-            Debug.Log("MiniMatchmakingPanel: Battle popup not found by any fallback.");
-        }
-
-        private bool TryFindBattlePopupSceneOnly()
-        {
-            // Prefer explicit runtime registration from InLobbyController
-            var popupInst = InLobbyController.PopupContentsInstance;
-            if (popupInst != null && popupInst.scene.IsValid() && popupInst.scene.isLoaded)
-            {
-                _battlePopup = popupInst;
-                Debug.Log($"MiniMatchmakingPanel: Found battle popup via InLobbyController: {_battlePopup.name}");
-                return true;
-            }
-
-            // Prefer a BattlePopupPanelManager scene instance
-            var mgrs = Resources.FindObjectsOfTypeAll<BattlePopupPanelManager>();
-            foreach (var m in mgrs)
-            {
-                if (m == null) continue;
-                var go = m.gameObject;
-                if (go == null) continue;
-                var scene = go.scene;
-                if (scene.IsValid() && scene.isLoaded)
-                {
-                    _battlePopup = go;
-                    Debug.Log($"MiniMatchmakingPanel: Found battle popup (scene instance) via BattlePopupPanelManager: {_battlePopup.name}");
-                    return true;
-                }
-            }
-
-            // Prefer a MatchmakingPanel scene instance and climb to a reasonable popup root
-            var mps = Resources.FindObjectsOfTypeAll<MatchmakingPanel>();
-            foreach (var mp in mps)
-            {
-                if (mp == null) continue;
-                var go = mp.gameObject;
-                if (go == null) continue;
-                var scene = go.scene;
-                if (!(scene.IsValid() && scene.isLoaded)) continue;
-                var candidate = FindPopupRootFrom(go);
-                _battlePopup = candidate ?? go;
-                Debug.Log($"MiniMatchmakingPanel: Found battle popup (scene instance) via MatchmakingPanel: {_battlePopup.name}");
-                return true;
-            }
-
-            // As a last resort, search scene GameObjects that contain MatchmakingPanel or BattlePopupPanelManager in their descendants
-            var gos = Resources.FindObjectsOfTypeAll<GameObject>();
-            foreach (var g in gos)
-            {
-                if (g == null) continue;
-                var scene = g.scene;
-                if (!(scene.IsValid() && scene.isLoaded)) continue;
-                if (g.GetComponentsInChildren<MatchmakingPanel>(true).Length > 0 || g.GetComponentsInChildren<BattlePopupPanelManager>(true).Length > 0)
-                {
-                    _battlePopup = g;
-                    Debug.Log($"MiniMatchmakingPanel: Found battle popup (scene instance) via descendant component: {_battlePopup.name}");
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private GameObject FindPopupRootFrom(GameObject g)
-        {
-            if (g == null) return null;
-            var t = g.transform;
-            GameObject last = g;
-            while (t.parent != null)
-            {
-                var p = t.parent.gameObject;
-                if (p == null) break;
-                var pn = p.name.ToLowerInvariant();
-                // Prefer parent that explicitly looks like a popup/root
-                if (pn.Contains("popup") || pn.Contains("battle") || pn.Contains("popupcontents") || pn.Contains("window") || pn.Contains("uicanvas"))
-                {
-                    last = p;
-                }
-                t = t.parent;
-            }
-            return last;
-        }
-
-        private void TryFindMatchmakingCountText()
-        {
-            if (_matchmakingCountText != null) return;
-            Transform root = _content != null ? _content.transform : transform;
-            var texts = root.GetComponentsInChildren<TMP_Text>(true);
-            TMP_Text candidate = null;
-            foreach (var t in texts)
-            {
-                if (t == _matchmakingText || t == _elapsedTimeText) continue;
-                string n = t.gameObject.name.ToLowerInvariant();
-                if (n.Contains("count") || n.Contains("matchmaking") || n.Contains("players") || n.Contains("match"))
-                {
-                    candidate = t;
-                    break;
-                }
-            }
-            if (candidate == null && texts.Length > 0)
-            {
-                foreach (var t in texts)
-                {
-                    if (t != _matchmakingText && t != _elapsedTimeText)
-                    {
-                        candidate = t;
-                        break;
-                    }
-                }
-            }
-            if (candidate != null)
-            {
-                _matchmakingCountText = candidate;
-                candidate.gameObject.SetActive(true);
             }
         }
 
@@ -429,7 +284,7 @@ namespace MenuUi.Scripts.Lobby
             this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType, true));
             // If caller is non-leader, close the battle popup to reset UI state (except Clan2v2)
             bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
-            if (!isLeader && InLobbyController.SelectedGameType != GameType.Clan2v2)
+            if (!isLeader && InLobbyController.SelectedGameType != GameType.Clan2v2 && InLobbyController.SelectedGameType != GameType.FriendLobby)
             {
                 Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
             }

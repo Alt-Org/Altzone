@@ -508,6 +508,7 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileSystemData">Pointer to the projectile system data singleton.</param>
+        /// <param name="updateViewPlayState">Whether to update the ViewPlayState.</param>
         ///
         /// <returns>The EntityRef of the projectile.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

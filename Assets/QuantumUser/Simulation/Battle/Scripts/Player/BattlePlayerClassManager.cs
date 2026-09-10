@@ -127,7 +127,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
-        /// <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, BattlePlayerEntityRef)">OnUpdate</see> method
+        /// <see cref="BattlePlayerClassManager.OnUpdate(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, BattlePlayerEntityRef, BattleSpecialInput*)">OnUpdate</see> method
         /// once per frame.<br/>
         /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
@@ -136,6 +136,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
+        /// <param name="specialInput">Pointer to special input.</param>
         public virtual unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput) { }
 
         /// <summary>
@@ -241,12 +242,12 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerCharacterClass.Class500:
                     if (s_classArray[ClassIndex500].State != ClassState.NotLoaded) break;
-                    LoadClass(characterClass, ClassIndex500, null, null, isTestMode);
+                    LoadClass(characterClass, ClassIndex500, null, new BattlePlayerClass500Test(), isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Class600:
                     if (s_classArray[ClassIndex600].State != ClassState.NotLoaded) break;
-                    LoadClass(characterClass, ClassIndex600, new BattlePlayerClass600(), null, isTestMode);
+                    LoadClass(characterClass, ClassIndex600, new BattlePlayerClass600(), new BattlePlayerClass600Test(), isTestMode);
                     break;
 
                 case BattlePlayerCharacterClass.Class700:
@@ -393,6 +394,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
+        /// <param name="specialInput">Pointer to special input.</param>
         public static void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
         {
             ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);

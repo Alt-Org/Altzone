@@ -3,7 +3,19 @@
 /// Prefab for the shield (Base) of character 202 "Ilveily".
 /// </summary>
 ///
-/// This prefab is a variant of @ref "BattlePlayer200Shield(BaseAndTestCharacter).prefab" and has the same structure as the base prefab.
+/// This prefab is a variant of @ref "BattlePlayer200Shield(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
+///
+/// ### Structure Overrides
+/// - **BattlePlayer202Shield(Base)**
+///     - *Children:*
+///         - **ShieldViewModel**
+///             - *Components:*
+///                 - @cref{Battle.View.Player,BattlePlayerShieldViewController}
+///         - *Children:*
+///             - **Shield**
+///                 - *Components:*
+///                     - SpriteRenderer
+///
 
 /// @file "BattlePlayer202Shield(Base)EntityPrototype.qprototype"
 /// <summary>

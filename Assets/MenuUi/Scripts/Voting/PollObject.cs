@@ -177,7 +177,7 @@ public class PollObject : MonoBehaviour
             // -------------------
 
             SetValues();
-            VotingActions.ReloadPollList?.Invoke();
+            //VotingActions.ReloadPollList?.Invoke();
             if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null
                                 && DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == Altzone.Scripts.Model.Poco.Game.TaskEducationSocialType.ClanVote)
             {
@@ -198,7 +198,7 @@ public class PollObject : MonoBehaviour
 
         if (InfoBackground != null)
         {
-            // *** kommentoidaan värityksen testauksen ajaksi pois ***
+            // *** kommentoidaan vï¿½rityksen testauksen ajaksi pois ***
 
             //if (pollData is ClanRolePollData)
             //{
@@ -387,7 +387,7 @@ public class PollObject : MonoBehaviour
 
 
 
-    //// Erjan lisäys, testi ***
+    //// Erjan lisï¿½ys, testi ***
 
     public void SetTheme(Color themeColor)
     {

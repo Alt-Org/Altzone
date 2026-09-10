@@ -12,7 +12,7 @@ public class ClanLanguageList : MonoBehaviour
     public Language SelectedLanguage { get; private set; }
     private Language _tempLanguage;
 
-    public void Initialize(Language firstSelected)
+    public void Initialize(Language firstSelected, bool includeNoneOption = false)
     {
         SelectedLanguage = firstSelected;
         _tempLanguage = SelectedLanguage;
@@ -22,11 +22,18 @@ public class ClanLanguageList : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        Language[] allowedLanguages =
-        {
-        Language.Finnish,
-        Language.English
-    };
+        Language[] allowedLanguages = includeNoneOption
+            ? new[]
+            {
+            Language.None,
+            Language.Finnish,
+            Language.English
+            }
+            : new[]
+            {
+            Language.Finnish,
+            Language.English
+            };
 
         foreach (Language language in allowedLanguages)
         {

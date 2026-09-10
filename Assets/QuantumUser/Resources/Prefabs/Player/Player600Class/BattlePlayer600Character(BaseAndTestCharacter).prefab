@@ -71,5 +71,51 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5521468026819928245, guid: 3dabbd57053cc831eb011c465c487e14,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1492254944701011582}
   m_SourcePrefab: {fileID: 100100000, guid: 3dabbd57053cc831eb011c465c487e14, type: 3}
+--- !u!1 &8641189467035510406 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5521468026819928245, guid: 3dabbd57053cc831eb011c465c487e14,
+    type: 3}
+  m_PrefabInstance: {fileID: 4272682270079895091}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1492254944701011582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8641189467035510406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d80e00481912e1409f62c2ce8d798c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    IsHoldingProjectile:
+      Value: 0
+    HeldProjectileEntity: {fileID: 0}
+    HeldProjectileOffset:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    HoldMinTimer:
+      Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    HoldMaxTimer:
+      Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0
+    ReleaseBufferTimer:
+      Mode: 0
+      Frames: 0
+      Seconds:
+        RawValue: 0

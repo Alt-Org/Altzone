@@ -55,11 +55,11 @@ namespace MenuUi.Scripts.Storage
                 bool? result = null;
                 PollManager.CreateFurnitureSellPoll(FurniturePollType.Selling, Furniture, c => result = c);
                 yield return new WaitUntil(() => result.HasValue);
-                VotingActions.ReloadPollList?.Invoke();
+                //VotingActions.ReloadPollList?.Invoke();
                 Furniture.ClanFurniture.InVoting = true;
 
                 UpdateInfoAction?.Invoke(Furniture.ClanFurniture.InVoting);
-                VotingActions.ReloadPollList?.Invoke();
+                //VotingActions.ReloadPollList?.Invoke();
 
                 gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             }

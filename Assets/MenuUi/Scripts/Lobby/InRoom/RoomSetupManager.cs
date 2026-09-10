@@ -109,7 +109,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void OnEnable()
         {
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
-            _buttonStartPlay.interactable = false;
+            if (_buttonStartPlay != null) _buttonStartPlay.interactable = false;
             //_buttonRaidTest.interactable = false;
 
             LobbyManager.LobbyOnPlayerEnteredRoom += OnPlayerEnteredRoom;
@@ -118,7 +118,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnPlayerPropertiesUpdate += OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched += OnMasterClientSwitched;
 
-            _toggleBotFill.onValueChanged.AddListener(SetFillBotToggle);
+            if (_toggleBotFill != null) _toggleBotFill.onValueChanged.AddListener(SetFillBotToggle);
 
             PhotonRealtimeClient.AddCallbackTarget(this);
             if (_onEnableCoroutineHolder == null) _onEnableCoroutineHolder = StartCoroutine(OnEnableInRoom());
@@ -132,7 +132,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnRoomPropertiesUpdate -= OnRoomPropertiesUpdate;
             LobbyManager.LobbyOnPlayerPropertiesUpdate -= OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched -= OnMasterClientSwitched;
-            _toggleBotFill.onValueChanged.RemoveListener(SetFillBotToggle);
+            if (_toggleBotFill != null) _toggleBotFill.onValueChanged.RemoveListener(SetFillBotToggle);
             PhotonRealtimeClient.RemoveCallbackTarget(this);
             if (_onEnableCoroutineHolder != null) StopCoroutine(_onEnableCoroutineHolder);
             _onEnableCoroutineHolder = null;
@@ -226,7 +226,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 // Setting custom characters for quantum
                 List<CustomCharacter> selectedCharacters = GetSelectedCustomCharacters(playerData);
                 LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
-                _selectedCharactersEditable.SetCharacters();
+                if (_selectedCharactersEditable != null) _selectedCharactersEditable.SetCharacters();
                 _reloadCharacters = false;
                 UpdateStatus();
             }));
@@ -298,36 +298,36 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             // Check if bot fill is active
             bool botFillActive = PhotonBattleRoom.IsBotFillActive();
-            _toggleBotFill.SetState(botFillActive);
+            if (_toggleBotFill != null) _toggleBotFill.SetState(botFillActive);
 
             //Check if positions have bots
             bool botActive1 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
-            _toggleBotPlayerP1.SetState(botActive1);
+            if (_toggleBotPlayerP1 != null) _toggleBotPlayerP1.SetState(botActive1);
             if (botActive1)
             {
                 _captionPlayerP1 = "Bot";
-                _selectedCharactersP1.SetBotCharacters();
+                if (_selectedCharactersP1 != null) _selectedCharactersP1.SetBotCharacters();
             }
             bool botActive2 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition2);
-            _toggleBotPlayerP2.SetState(botActive2);
+            if (_toggleBotPlayerP2 != null) _toggleBotPlayerP2.SetState(botActive2);
             if (botActive2)
             {
                 _captionPlayerP2 = "Bot";
-                _selectedCharactersP2.SetBotCharacters();
+                if (_selectedCharactersP2 != null) _selectedCharactersP2.SetBotCharacters();
             }
             bool botActive3 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition3);
-            _toggleBotPlayerP3.SetState(botActive3);
+            if (_toggleBotPlayerP3 != null) _toggleBotPlayerP3.SetState(botActive3);
             if (botActive3)
             {
                 _captionPlayerP3 = "Bot";
-                _selectedCharactersP3.SetBotCharacters();
+                if (_selectedCharactersP3 != null) _selectedCharactersP3.SetBotCharacters();
             }
             bool botActive4 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition4);
-            _toggleBotPlayerP4.SetState(botActive4);
+            if (_toggleBotPlayerP4 != null) _toggleBotPlayerP4.SetState(botActive4);
             if (botActive4)
             {
                 _captionPlayerP4 = "Bot";
-                _selectedCharactersP4.SetBotCharacters();
+                if (_selectedCharactersP4 != null) _selectedCharactersP4.SetBotCharacters();
             }
 
 
@@ -362,7 +362,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             if (_nameP4 != null) _nameP4.SetText(_captionPlayerP4);
 
             // Setting start game button interactable status
-            _buttonStartPlay.interactable = _interactableStartPlay;
+            if (_buttonStartPlay != null) _buttonStartPlay.interactable = _interactableStartPlay;
 
             // Setting team text
             SetTeamText();
@@ -511,7 +511,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (!_interactablePlayerP3) { _captionPlayerP3 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP3 = false;
                     if (_captionPlayerP3 != null) _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
-                    if (_selectedCharactersP4 != null) _selectedCharactersP3.SetCharacters();
+                    if (_selectedCharactersP3 != null) _selectedCharactersP3.SetCharacters();
                     break;
                 case PlayerPosition4:
                     if (!_interactablePlayerP4) { _captionPlayerP4 = $"<color=red>Confict Detected!!</color> "; break; }
