@@ -23,7 +23,6 @@ public class TopBarOrderBridge : MonoBehaviour
             ? SettingsCarrier.Instance.TopBarStyleSetting
             : SettingsCarrier.TopBarStyle.NewHelena;
 
-
     public TopBarTargets[] TargetsByStyle { get => _targetsByStyle; }
 
     private void Awake()
@@ -39,9 +38,6 @@ public class TopBarOrderBridge : MonoBehaviour
 
         if (_targetsByStyle == null || _targetsByStyle.Length == 0)
         {
-            // TopBarTargets[] found = FindObjectsOfType<TopBarTargets>(true);
-            // if (found != null && found.Length > 0) _targetsByStyle = found;
-
             Debug.LogWarning("[TB] Targets By Style is empty. Assign the correct TopPanel Alt1 manually in Inspector.");
             return;
         }
@@ -122,36 +118,19 @@ public class TopBarOrderBridge : MonoBehaviour
 
             TopBarDefs.TopBarItem item = h.item;
 
-            // bool isClanSubItem =
-            //     item == TopBarDefs.TopBarItem.Leaderboard ||
-            //     item == TopBarDefs.TopBarItem.ClanLogo ||
-            //     item == TopBarDefs.TopBarItem.ClanTextContainer ||
-            //     item == TopBarDefs.TopBarItem.Coins;
-            //
-            // if (clanTileOn && isClanSubItem)
-            //     continue;
-
             if (order.ContainsValue(item)) continue;
 
             order[nextPos] = item;
             nextPos++;
-
-            // if (clanTileOn && item == TopBarDefs.TopBarItem.ClanTile)
-            // {
-            //     order[nextPos++] = TopBarDefs.TopBarItem.Leaderboard;
-            //     order[nextPos++] = TopBarDefs.TopBarItem.Coins;
-            //     order[nextPos++] = TopBarDefs.TopBarItem.ClanTextContainer;
-            //     order[nextPos++] = TopBarDefs.TopBarItem.ClanLogo;
-            // }
         }
 
         int total = owner.RowCount();
         for (int i = 0; i < total; i++)
         {
-            TopBarDefs.TopBarItem it = owner.GetItemAt(i);
-            if (!order.ContainsValue(it))
+            TopBarDefs.TopBarItem item = owner.GetItemAt(i);
+            if (!order.ContainsValue(item))
             {
-                order[nextPos] = it;
+                order[nextPos] = item;
                 nextPos++;
             }
         }
@@ -162,20 +141,19 @@ public class TopBarOrderBridge : MonoBehaviour
         List<int> indices = new List<int>(positions.Count);
         foreach (int pos in positions)
         {
-            TopBarDefs.TopBarItem item;
-            if (!order.TryGetValue(pos, out item)) continue;
+            if (!order.TryGetValue(pos, out TopBarDefs.TopBarItem item)) continue;
 
-            int idx = -1;
-            for (int k = 0; k < total; k++)
+            int index = -1;
+            for (int i = 0; i < total; i++)
             {
-                if (owner.GetItemAt(k).Equals(item))
+                if (owner.GetItemAt(i).Equals(item))
                 {
-                    idx = k;
+                    index = i;
                     break;
                 }
             }
 
-            if (idx >= 0 && !indices.Contains(idx)) indices.Add(idx);
+            if (index >= 0 && !indices.Contains(index)) indices.Add(index);
         }
 
         for (int i = 0; i < total; i++)
@@ -214,11 +192,9 @@ public class TopBarOrderBridge : MonoBehaviour
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : UpdateTopBarStyle()");
 
-
         TopBarTargets owner = GetTargetsFor(style);
 
         if (owner != null)
-
             Debug.Log($"[TopBarDebug] Bridge target = {owner.name}, style={owner.style}, rows={owner.RowCount()}");
 
         if (owner == null || _toggleContainer == null) return;
@@ -227,11 +203,10 @@ public class TopBarOrderBridge : MonoBehaviour
 
         List<int> orderList = SettingsCarrier.LoadTopBarOrderStatic(style, total);
 
-        Dictionary<int, TopBarDefs.TopBarItem> order = new Dictionary<int, TopBarDefs.TopBarItem>(orderList.Count);
+        Dictionary<int, TopBarDefs.TopBarItem> order = new(orderList.Count);
         int pos = 0;
 
         foreach (int idx in orderList)
-
         {
             if ((uint)idx >= (uint)total) continue;
             TopBarDefs.TopBarItem item = owner.GetItemAt(idx);
@@ -242,10 +217,10 @@ public class TopBarOrderBridge : MonoBehaviour
 
         for (int i = 0; i < total; i++)
         {
-            TopBarDefs.TopBarItem it = owner.GetItemAt(i);
-            if (!order.ContainsValue(it))
+            TopBarDefs.TopBarItem item = owner.GetItemAt(i);
+            if (!order.ContainsValue(item))
             {
-                order[pos] = it;
+                order[pos] = item;
                 pos++;
             }
         }
@@ -270,8 +245,7 @@ public class TopBarOrderBridge : MonoBehaviour
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : ApplyOrderToToggleList()");
 
-        Dictionary<TopBarDefs.TopBarItem, RectTransform> rowOf =
-            new Dictionary<TopBarDefs.TopBarItem, RectTransform>(container.childCount);
+        Dictionary<TopBarDefs.TopBarItem, RectTransform> rowOf = new(container.childCount);
 
         foreach (Transform t in container)
         {
@@ -286,11 +260,9 @@ public class TopBarOrderBridge : MonoBehaviour
         int sibling = 0;
         foreach (int pos in positions)
         {
-            TopBarDefs.TopBarItem item;
-            if (!order.TryGetValue(pos, out item)) continue;
+            if (!order.TryGetValue(pos, out TopBarDefs.TopBarItem item)) continue;
 
-            RectTransform rt;
-            if (rowOf.TryGetValue(item, out rt))
+            if (rowOf.TryGetValue(item, out RectTransform rt))
             {
                 rt.SetSiblingIndex(sibling);
                 sibling++;
@@ -395,20 +367,15 @@ public class TopBarOrderBridge : MonoBehaviour
             //Checks what toggless are on this theme
             foreach (var i in _topBarToggleHandlers)
             {
-
                 foreach (var e in t.Rows)
                 {
-
                     if (i.item == e.item)
                     {
-
                         i.gameObject.SetActive(true);
                         break;
-
                     }
                     else
                     {
-
                         i.gameObject.SetActive(false);
                     }
                 }
