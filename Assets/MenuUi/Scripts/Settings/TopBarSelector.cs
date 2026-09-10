@@ -6,6 +6,12 @@ public class TopBarSelector : MonoBehaviour
 {
     [SerializeField] private List<GameObject> _topBarList;
 
+    // public static TopBarSelector Instance { get; private set; }
+    //
+    // private void Awake()
+    // {
+    //     Instance = this;
+    // }
     private static int s_topbar = 0;
 
     void Start()
@@ -47,6 +53,4 @@ public class TopBarSelector : MonoBehaviour
         }
         _topBarList[s_topbar].SetActive(true);
     }
-
-    
 }
