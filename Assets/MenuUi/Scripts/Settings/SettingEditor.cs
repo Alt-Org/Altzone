@@ -191,7 +191,7 @@ public class SettingEditor : MonoBehaviour
         if (carrier == null) return;
 
         int index = (int)carrier.TopBarStyleSetting;
-        int max = Enum.GetValues(typeof(SettingsCarrier.TopBarStyle)).Length - 1;
+        int max = Enum.GetValues(typeof(SettingsCarrier.TopBarStyle)).Length - 2; // One is removed due to index staarting from 0 the other bacause None value should be ignored.
 
         index += value;
 

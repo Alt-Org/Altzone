@@ -1,14 +1,13 @@
 using System.Collections.Generic;
-using UnityEngine;
 using Altzone.Scripts.Settings; // TopBarDefs
 using MenuUI.Scripts.TopPanel;
+using UnityEngine;
 using UnityEngine.UI;
 
 
 public class TopBarOrderBridge : MonoBehaviour
 {
     [SerializeField] private RectTransform _toggleContainer;
-    [SerializeField] private TopBarTargets[] _targetsByStyle;
     [SerializeField] private GameObject[] _clanSubItemSpacers;
     [SerializeField] private GameObject[] _clanSubItemRows;
     [SerializeField] private TopBarClanTileLayout[] _topBarToggleLayouts;
@@ -23,8 +22,6 @@ public class TopBarOrderBridge : MonoBehaviour
             ? SettingsCarrier.Instance.TopBarStyleSetting
             : SettingsCarrier.TopBarStyle.NewHelena;
 
-    public TopBarTargets[] TargetsByStyle { get => _targetsByStyle; }
-
     private void Awake()
     {
         Debug.Log("[TopBarDebug] TopBarOrderBridge : Awake()");
@@ -35,12 +32,6 @@ public class TopBarOrderBridge : MonoBehaviour
         Active = this;
 
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : OnEnable()");
-
-        if (_targetsByStyle == null || _targetsByStyle.Length == 0)
-        {
-            Debug.LogWarning("[TB] Targets By Style is empty. Assign the correct TopPanel Alt1 manually in Inspector.");
-            return;
-        }
 
         SetRowDropEventSubscriptions(true);
         UpdateTopBarStyle(CurrentStyle);
@@ -76,25 +67,11 @@ public class TopBarOrderBridge : MonoBehaviour
         }
     }
 
-    private TopBarTargets GetTargetsFor(SettingsCarrier.TopBarStyle style)
-    {
-        if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : GetTargetsFor()");
-
-        if (_targetsByStyle == null) return null;
-        for (int i = 0; i < _targetsByStyle.Length; i++)
-        {
-            TopBarTargets t = _targetsByStyle[i];
-            if (t != null && t.style == style) return t;
-        }
-
-        return null;
-    }
-
     private void OnRowDropped()
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : OnRowDropped()");
 
-        TopBarTargets owner = GetTargetsFor(CurrentStyle);
+        TopBarTargets owner = TopBarSelector.Instance.GetTopBarTargets(CurrentStyle);
 
         Debug.Log($"[TopBarDebug] CurrentStyle={CurrentStyle}, " +
                   $"owner={(owner ? owner.name : "NULL")}, " +
@@ -192,7 +169,7 @@ public class TopBarOrderBridge : MonoBehaviour
     {
         if (DebugOn) Debug.Log($"[TopBarDebug] TopBarOrderBridge : UpdateTopBarStyle()");
 
-        TopBarTargets owner = GetTargetsFor(style);
+        TopBarTargets owner = TopBarSelector.Instance.GetTopBarTargets(style);
 
         if (owner != null)
             Debug.Log($"[TopBarDebug] Bridge target = {owner.name}, style={owner.style}, rows={owner.RowCount()}");
@@ -225,7 +202,7 @@ public class TopBarOrderBridge : MonoBehaviour
             }
         }
         //Old Theme is disabled for now...
-        if (CurrentStyle != SettingsCarrier.TopBarStyle.Old)
+        if (style != SettingsCarrier.TopBarStyle.Old)
         {
             owner.ApplyFromSettings();
             owner.ApplyOrderFromSettings();
@@ -325,7 +302,7 @@ public class TopBarOrderBridge : MonoBehaviour
 
     public void ApplyCurrentTarget()
     {
-        TopBarTargets owner = GetTargetsFor(CurrentStyle);
+        TopBarTargets owner = TopBarSelector.Instance.GetTopBarTargets(CurrentStyle);
 
         if (owner == null)
         {
@@ -350,37 +327,32 @@ public class TopBarOrderBridge : MonoBehaviour
         }
         _notInUsePanel.SetActive(false);
 
-        foreach (var t in TargetsByStyle)
+        TopBarTargets t = TopBarSelector.Instance.GetTopBarTargets();
+
+        //Releases all the toggles from clantile toggles
+        foreach (var i in _topBarToggleLayouts)
         {
-            //Checks what theme is on
-            if (!t.gameObject.activeSelf)
-                continue;
+            i.SetTogglesFree();
+        }
+        //Sets new toggles to the clantile depending what objects are on clan tile
+        foreach (var i in _topBarToggleLayouts)
+        {
+            StartCoroutine(i.IsThereATile(t));
+        }
 
-            //Releases all the toggles from clantile toggles
-            foreach (var i in _topBarToggleLayouts)
+        //Checks what toggless are on this theme
+        foreach (var i in _topBarToggleHandlers)
+        {
+            foreach (var e in t.Rows)
             {
-                i.SetTogglesFree();
-            }
-            //Sets new toggles to the clantile depending what objects are on clan tile
-            foreach (var i in _topBarToggleLayouts)
-            {
-                StartCoroutine(i.IsThereATile(t));
-            }
-
-            //Checks what toggless are on this theme
-            foreach (var i in _topBarToggleHandlers)
-            {
-                foreach (var e in t.Rows)
+                if (i.item == e.item)
                 {
-                    if (i.item == e.item)
-                    {
-                        i.gameObject.SetActive(true);
-                        break;
-                    }
-                    else
-                    {
-                        i.gameObject.SetActive(false);
-                    }
+                    i.gameObject.SetActive(true);
+                    break;
+                }
+                else
+                {
+                    i.gameObject.SetActive(false);
                 }
             }
         }
