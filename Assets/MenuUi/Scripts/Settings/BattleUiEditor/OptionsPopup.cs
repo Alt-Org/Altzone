@@ -70,14 +70,29 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _gyroscopeRotationInstructionImage;
 
         [Header("Arena options")] [SerializeField]
-        private RectTransform _arenaImage;
+        private Image _arenaBackgroundImage;
 
+        //[SerializeField] private Sprite _arenaFloorBackground;
+        [SerializeField] private RectTransform _arenaImage;
         [Space] [SerializeField] private Slider _arenaScaleSlider;
         [SerializeField] private TMP_InputField _arenaScaleInputField;
         [Space] [SerializeField] private Slider _arenaPosXSlider;
         [SerializeField] private TMP_InputField _arenaPosXInputField;
         [Space] [SerializeField] private Slider _arenaPosYSlider;
         [SerializeField] private TMP_InputField _arenaPosYInputField;
+        [SerializeField] private Toggle _stoneWallToggle;
+        [SerializeField] private Toggle _outerEdgeWithoutFloorToggle;
+
+        [Header("StoneWall Figure")] [SerializeField]
+        private GameObject _stoneWallTopCharacterImage;
+
+        [SerializeField] private GameObject _stoneWallBottomCharacterImage;
+
+        [Header("Outer Edge Without Floor")] [SerializeField]
+        private GameObject _outsideFloorPopup;
+
+        [SerializeField] private Button _outsideFloorOkButton;
+        [SerializeField] private Button _outsideFloorCancelButton;
 
         [Header("References")] [SerializeField]
         private BattleUiEditor _battleUiEditor;
@@ -101,7 +116,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Awake()
         {
-            //_resetButton.onClick.AddListener(_saveReset.OnResetButtonClicked);
+            _resetButton.onClick.AddListener(_saveReset.OnResetButtonClicked);
             if (_closeButton != null) _closeButton.onClick.AddListener(CloseOptionsPopup);
 
             // Show grid toggle listener
@@ -256,7 +271,29 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SettingsCarrier.Instance.BattleGyroMinAngle = _gyroscopeMinAngleSlider.value;
             });
 
-            // Arena scale listeners
+            // Arena options listeners
+            _stoneWallToggle.onValueChanged.AddListener((value) =>
+                {
+                    _stoneWallTopCharacterImage.SetActive(value);
+                    _stoneWallBottomCharacterImage.SetActive(value);
+                }
+            );
+
+            _outerEdgeWithoutFloorToggle.onValueChanged.AddListener((value) =>
+                {
+                    Debug.Log($"[OuterEdgeWithoutFloorToggle] value = {value}");
+
+                    if (value)
+                    {
+                        _outsideFloorPopup.SetActive(true);
+                    }
+                    else
+                    {
+                        SetOuterEdgeWithoutFloor(false);
+                    }
+                }
+            );
+
             _arenaScaleSlider.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.UpdateInputFieldText(value, _arenaScaleInputField);
@@ -268,6 +305,23 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _battleUiEditor.VerifyAndUpdateSliderValue(_arenaScaleInputField, _arenaScaleSlider);
                 SettingsCarrier.Instance.BattleArenaScale = (int)_arenaScaleSlider.value;
                 UpdateArena();
+            });
+
+            //Outside Floor Popup optionsm listeners
+            _outsideFloorOkButton.onClick.AddListener(() =>
+            {
+                _outsideFloorPopup.SetActive(false);
+
+                SetOuterEdgeWithoutFloor(true);
+            });
+
+            _outsideFloorCancelButton.onClick.AddListener(() =>
+            {
+                _outsideFloorPopup.SetActive(false);
+
+                _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(false);
+
+                SetOuterEdgeWithoutFloor(false);
             });
 
             // Arena pos x listeners
@@ -403,7 +457,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _gyroscopeMinAngleSlider.onValueChanged.RemoveAllListeners();
             _gyroscopeMinAngleInputField.onValueChanged.RemoveAllListeners();
 
-            // Removing arena scale listeners
+            // Removing arena options listeners
+            _stoneWallToggle.onValueChanged.RemoveAllListeners();
+            _outerEdgeWithoutFloorToggle.onValueChanged.RemoveAllListeners();
+
             _arenaScaleSlider.onValueChanged.RemoveAllListeners();
             _arenaScaleInputField.onValueChanged.RemoveAllListeners();
 
@@ -412,6 +469,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             _arenaPosYSlider.onValueChanged.RemoveAllListeners();
             _arenaPosYInputField.onValueChanged.RemoveAllListeners();
+
+            //Removing Outside Floor Popup listeners
+            _outsideFloorOkButton.onClick.RemoveAllListeners();
+            _outsideFloorCancelButton.onClick.RemoveAllListeners();
         }
 
         private void UpdateInputSettings(BattleMovementInputType movementType, BattleRotationInputType rotationType)
@@ -495,10 +556,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             //Toggle states
             _twoFingerRotationToggle.SetIsOnWithoutNotify(
-                rotationType == BattleRotationInputType.Gyroscope);
+                rotationType == BattleRotationInputType.TwoFinger);
 
             _swipeRotationToggle.SetIsOnWithoutNotify(
                 rotationType == BattleRotationInputType.Swipe);
+
+            _joystickRotationToggle.SetIsOnWithoutNotify(
+                rotationType == BattleRotationInputType.Joystick);
 
             _gyroscopeRotationToggle.SetIsOnWithoutNotify(
                 rotationType == BattleRotationInputType.Gyroscope);
@@ -713,6 +777,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void CloseOptionsPopup()
         {
             _optionsContents.SetActive(false);
+        }
+
+        private void SetOuterEdgeWithoutFloor(bool enabled)
+        {
+            if (enabled)
+            {
+                _arenaBackgroundImage.sprite = null;
+                _arenaBackgroundImage.color = Color.black;
+            }
+            else
+            {
+                //_arenaBackgroundImage.sprite = _arenaFloorBackground;
+                _arenaBackgroundImage.color = Color.white;
+            }
         }
     }
 }
