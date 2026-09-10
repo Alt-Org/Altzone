@@ -30,18 +30,12 @@ namespace MenuUI.Scripts.TopPanel
 
         [SerializeField] private float _spacerMinWidth = 0f;
 
-        [SerializeField] private Transform _clanTileBackground;
-        [SerializeField] private GameObject _standaloneLeaderboard;
-        [SerializeField] private GameObject _clanTileLeaderboard;
         [SerializeField] private TopBarDefs.TopBarItem _tileItem1st = TopBarDefs.TopBarItem.Tile;
         [SerializeField] private TopBarDefs.TopBarItem _leaderboardItem = TopBarDefs.TopBarItem.Leaderboard;
         [SerializeField] private TopBarDefs.TopBarItem _tileItem2nd = TopBarDefs.TopBarItem.Tile2nd;
 
         [SerializeField] private Transform _topBarContent;
-        [SerializeField] private Transform _clanLeaderboardButton;
-        [SerializeField] private Transform _clanHeart;
-        [SerializeField] private Transform _textContainer;
-        [SerializeField] private Transform _coinsRow;
+
         //SerializeField for slots in tiles panels
         [SerializeField] private GameObject _dropdownButton;
 
@@ -63,9 +57,6 @@ namespace MenuUI.Scripts.TopPanel
         private void OnEnable()
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : OnEnable()");
-            //
-            // PlayerPrefs.DeleteAll();
-            // PlayerPrefs.Save();
 
             ApplyFromSettings();
             SettingsCarrier.OnTopBarChanged += OnCarrierChanged;
@@ -94,29 +85,9 @@ namespace MenuUI.Scripts.TopPanel
                       $"active={gameObject.activeInHierarchy} " +
                       $"name={name}");
 
-            RectTransform parentRT;
-            if (!IsValid(out parentRT)) return;
+            if (!IsValid(out RectTransform parentRT)) return;
 
             bool[] isVisible = ReadVisibility();
-
-            bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.Tile);
-            TopBarDefs.TopBarItem topBarItem = (TopBarDefs.TopBarItem.Tile);
-
-            bool clanPanel2ndOn = IsVisible(TopBarDefs.TopBarItem.Tile2nd);
-            TopBarDefs.TopBarItem topBarItem2nd = (TopBarDefs.TopBarItem.Tile2nd);
-
-            Debug.Log($"[TB] BEFORE clanOn={clanPanelOn} " +
-                      $"heartParent={_clanHeart.parent.name}, " +
-                      $"textParent={_textContainer.parent.name}, " +
-                      $"coinsParent={_coinsRow.parent.name}");
-
-            ApplyClanPanelMode(clanPanelOn, topBarItem);
-            ApplyClanPanelMode(clanPanel2ndOn, topBarItem2nd);
-
-            Debug.Log($"[TB] AFTER clanOn={clanPanelOn} " +
-                      $"heartParent={_clanHeart.parent.name}, " +
-                      $"textParent={_textContainer.parent.name}, " +
-                      $"coinsParent={_coinsRow.parent.name}");
 
             for (int i = 0; i < _rows.Count; i++)
             {
@@ -124,12 +95,14 @@ namespace MenuUI.Scripts.TopPanel
                     _rows[i].visibilityTarget.SetActive(isVisible[i]);
             }
 
+            ApplyClanPanelMode(TopBarDefs.TopBarItem.Tile);
+            ApplyClanPanelMode(TopBarDefs.TopBarItem.Tile2nd);
+
             ApplyOrderFromSettings();
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
 
             StartCoroutine(CheckAfterFrame());
         }
-
 
         public int RowCount()
         {
@@ -145,7 +118,6 @@ namespace MenuUI.Scripts.TopPanel
             if (_rows == null || index < 0 || index >= _rows.Count) return default(TopBarDefs.TopBarItem);
             return _rows[index].item;
         }
-
 
         private bool IsValid(out RectTransform parentRT)
         {
@@ -172,13 +144,6 @@ namespace MenuUI.Scripts.TopPanel
             return true;
         }
 
-        private static string PrefKeyForItem(TopBarDefs.TopBarItem item)
-        {
-            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : PrefKeyForItem()");
-
-            return TopBarDefs.Key(item);
-        }
-
         private bool[] ReadVisibility()
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ReadVisibility()");
@@ -198,7 +163,6 @@ namespace MenuUI.Scripts.TopPanel
 
             return vis;
         }
-
 
         private void ApplyClanLeaderboardRule(bool[] vis, out bool clanOn, out bool lbOn)
         {
@@ -397,8 +361,7 @@ namespace MenuUI.Scripts.TopPanel
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyOrderFromSettings()");
 
-            RectTransform parentRT;
-            if (!IsValid(out parentRT)) return;
+            if (!IsValid(out RectTransform parentRT)) return;
 
             if (DebugOn)
             {
@@ -409,100 +372,75 @@ namespace MenuUI.Scripts.TopPanel
                 }
             }
 
-            bool[] vis = ReadVisibility();
-            bool clanPanelOn = IsVisible(TopBarDefs.TopBarItem.Tile);
+            bool[] visibleRows = ReadVisibility();
 
             List<int> rawOrder = SettingsCarrier.LoadTopBarOrderStatic(style, _rows.Count);
 
             Debug.Log("[TopBarDebugOn] RAW ORDER:");
             foreach (int idx in rawOrder)
             {
-                Debug.Log($"[TopBarDebugOn] : idx={idx}, item={_rows[idx].item}, visible={vis[idx]}");
+                Debug.Log($"[TopBarDebugOn] : idx={idx}, item={_rows[idx].item}, visible={visibleRows[idx]}");
             }
 
-            List<int> ordered = new List<int>(_rows.Count);
+            List<int> ordered = new(_rows.Count);
 
-            foreach (int idx in rawOrder)
+            foreach (int index in rawOrder)
             {
-                if ((uint)idx >= (uint)_rows.Count) continue;
-                //if (!vis[idx]) continue;
+                if ((uint)index >= (uint)_rows.Count) continue;
 
-                TopBarDefs.TopBarItem item = _rows[idx].item;
-
-                //bool isClanSubItem =
-                //    item == TopBarDefs.TopBarItem.Leaderboard ||
-                //    item == TopBarDefs.TopBarItem.ClanLogo ||
-                //    item == TopBarDefs.TopBarItem.ClanTextContainer ||
-                //    item == TopBarDefs.TopBarItem.Coins;
-
-                // if (clanPanelOn && isClanSubItem)
-                //     continue;
-
-                // if (!clanPanelOn && item == TopBarDefs.TopBarItem.ClanTile)
-                // {
-                //     AddIfVisible(TopBarDefs.TopBarItem.Leaderboard, vis, ordered);
-                //     AddIfVisible(TopBarDefs.TopBarItem.ClanLogo, vis, ordered);
-                //     AddIfVisible(TopBarDefs.TopBarItem.ClanTextContainer, vis, ordered);
-                //     AddIfVisible(TopBarDefs.TopBarItem.Coins, vis, ordered);
-                //     continue;
-                // }
-
-                if (!vis[idx])
+                if (!visibleRows[index])
                     continue;
 
-                if (!ordered.Contains(idx))
-                    ordered.Add(idx);
+                if (!ordered.Contains(index))
+                    ordered.Add(index);
             }
 
             ApplyOrderWithSpacer(parentRT, ordered);
         }
 
-        private void ApplyClanPanelMode(bool clanPanelOn, TopBarDefs.TopBarItem Tags)
+        private void ApplyClanPanelMode(TopBarDefs.TopBarItem Tags)
         {
+            bool clanPanelOn = false;
+            List<Row> visibleRows = _rows.Where(x => x.visibilityTarget.activeSelf).ToList();
+            TileManagement clanTileRow = null;
+
+            foreach (Row i in visibleRows)
+            {
+                if (i.item == Tags)
+                {
+                    clanPanelOn = i.visibilityTarget.activeSelf;
+                    clanTileRow = _tileManagement.FirstOrDefault(x => x.Tile == Tags);
+                }
+            }
+
             if (DebugOn)
                 Debug.Log($"[TB] ApplyClanPanelMode clanPanelOn={clanPanelOn}");
 
+            if (clanTileRow == null) return;
 
             if (clanPanelOn)
             {
+                if (clanTileRow.TilePanelRoot == null)
+                    return;
 
-                foreach (var x in _tileManagement)
-                {
-                    if (x.TilePanelRoot == null)
-                        return;
-
-                    if(x.Tile == Tags)
-                    {
-                        x.TilePanelRoot.gameObject.SetActive(true);
+                clanTileRow.TilePanelRoot.gameObject.SetActive(true);
                     
-                        foreach (var objects in x.TileObjects)
-                        {
-                            MoveToSlot(objects.Child, objects.SlotContainer);
-                        }
-
-                    }
-
+                foreach (var objects in clanTileRow.TileObjects)
+                {
+                    MoveToSlot(objects.Child, objects.SlotContainer);
                 }
-
             }
             else
             {
 
-                foreach (var x in _tileManagement)
+                if (clanTileRow.TilePanelRoot == null)
+                    return;
+
+                clanTileRow.TilePanelRoot.gameObject.SetActive(false);
+
+                foreach (var objects in clanTileRow.TileObjects)
                 {
-                    if (x.TilePanelRoot == null)
-                        return;
-
-
-                    if (x.Tile == Tags)
-                    {
-                        x.TilePanelRoot.gameObject.SetActive(false);
-
-                        foreach (var objects in x.TileObjects)
-                        {
-                            MoveToTopBar(objects.Child, _topBarContent);
-                        }
-                    }
+                    MoveToTopBar(objects.Child, _topBarContent);
                 }
             }
 
@@ -524,30 +462,6 @@ namespace MenuUI.Scripts.TopPanel
 
             item.SetParent(parent, false);
             item.gameObject.SetActive(true);
-        }
-
-        private bool IsVisible(TopBarDefs.TopBarItem item)
-        {
-            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : IsVisible()");
-
-            string key = TopBarDefs.Key(item) + "_" + style;
-            return PlayerPrefs.GetInt(key, 1) != 0;
-        }
-
-        private void AddIfVisible(TopBarDefs.TopBarItem item, bool[] vis, List<int> ordered)
-        {
-            if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : AddIfVisible()");
-
-            int idx = IndexOfItem(item);
-
-            if (idx < 0)
-                return;
-
-            if (!vis[idx])
-                return;
-
-            if (!ordered.Contains(idx))
-                ordered.Add(idx);
         }
 
         private System.Collections.IEnumerator CheckAfterFrame()
