@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Altzone.Scripts.Settings;
+using UnityEditor.Sprites;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts.Settings;
-using System;
-using System.Linq;
 
 namespace MenuUI.Scripts.TopPanel
 {
@@ -23,7 +24,9 @@ namespace MenuUI.Scripts.TopPanel
         private List<Row> _rows = new List<Row>();
         public List<Row> Rows { get => _rows; }
         [Header("Spacer (created if null)")] [SerializeField]
-        private RectTransform _flexibleSpacer;
+        private GameObject _flexibleSpacerPrefab;
+
+        private List<GameObject> _spacerList = new();
 
         [SerializeField] private float _spacerMinWidth = 0f;
 
@@ -220,31 +223,30 @@ namespace MenuUI.Scripts.TopPanel
             return -1;
         }
 
-        private void EnsureSpacer(RectTransform parent)
+        private GameObject EnsureSpacer(RectTransform parent)
         {
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : EnsureSpacer()");
 
-            if (_flexibleSpacer == null)
+            if (_flexibleSpacerPrefab == null)
             {
                 GameObject go = new GameObject("FlexibleSpacer", typeof(RectTransform), typeof(LayoutElement));
-                _flexibleSpacer = go.GetComponent<RectTransform>();
+                _flexibleSpacerPrefab = go;
 
-                CanvasGroup cg = go.AddComponent<CanvasGroup>();
-                cg.blocksRaycasts = false;
-                cg.interactable = false;
-                cg.alpha = 0f;
+                LayoutElement le = _flexibleSpacerPrefab.GetComponent<LayoutElement>();
+                le.minWidth = _spacerMinWidth;
+                le.preferredWidth = 0f;
+                le.flexibleWidth = 1000f;
+                le.minHeight = 0f;
+                le.preferredHeight = 0f;
+                le.flexibleHeight = 0f;
             }
 
-            if (_flexibleSpacer.parent != parent)
-                _flexibleSpacer.SetParent(parent, false);
+            GameObject spacer = Instantiate(_flexibleSpacerPrefab, parent);
 
-            LayoutElement le = _flexibleSpacer.GetComponent<LayoutElement>();
-            le.minWidth = _spacerMinWidth;
-            le.preferredWidth = 0f;
-            le.flexibleWidth = 1000f;
-            le.minHeight = 0f;
-            le.preferredHeight = 0f;
-            le.flexibleHeight = 0f;
+            if (spacer.transform.parent != parent)
+                spacer.transform.SetParent(parent, false);
+
+            return spacer;
         }
 
         private void ApplyOrderWithSpacer(RectTransform parentRT, List<int> orderedVisible)
@@ -255,6 +257,8 @@ namespace MenuUI.Scripts.TopPanel
             TileManagement clanTileRow = null;
             bool playerPanelOn = false;
             TileManagement playerTileRow = null;
+
+            List<Row> visibleRows = _rows.Where(x => x.visibilityTarget.activeSelf).ToList();
 
             foreach (Row i in _rows)
             {
@@ -273,6 +277,7 @@ namespace MenuUI.Scripts.TopPanel
             int sib = 0;
 
             HashSet<Transform> alreadyMoved = new HashSet<Transform>();
+            List<Row> spaceredRows = visibleRows;
 
             foreach (int rowIndex in orderedVisible)
             {
@@ -286,6 +291,7 @@ namespace MenuUI.Scripts.TopPanel
                         if (item == e.Tag)
                         {
                             isClanSubItem = true;
+                            spaceredRows.Remove(_rows[rowIndex]);
                             break;
                         }
                     }
@@ -301,6 +307,7 @@ namespace MenuUI.Scripts.TopPanel
                         if (item == e.Tag)
                         {
                             isClanSubItemF2nd = true;
+                            spaceredRows.Remove(_rows[rowIndex]);
                             break;
                         }
                     }
@@ -320,25 +327,31 @@ namespace MenuUI.Scripts.TopPanel
                 alreadyMoved.Add(tr);
             }
 
-            EnsureSpacer(parentRT);
-            _flexibleSpacer.gameObject.SetActive(true);
-
-            LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
-
-
-
             //Spacer System
-            int activeChild = 0;
-
-            foreach(Transform child in _topBarContent)
+            if (_spacerList.Count == 0)
             {
-                if(child.gameObject.activeSelf)
+                for(int i = 0; i < _rows.Count - 1 ; i++)
                 {
-                    activeChild++;
+                    GameObject spacer = EnsureSpacer(parentRT);
+                    _spacerList.Add(spacer);
                 }
             }
-            _flexibleSpacer.SetSiblingIndex((activeChild / 2) - 1);
 
+            for (int i = 0; i < _spacerList.Count; i++)
+            {
+                if(i < spaceredRows.Count)
+                {
+                    _spacerList[i].SetActive(true);
+                    _spacerList[i].transform.SetSiblingIndex(i*2+1);
+                }
+                else
+                {
+                    _spacerList[i].SetActive(false);
+                    _spacerList[i].transform.SetAsLastSibling();
+                }
+            }
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
         }
 
         public bool TryGetRowIndex(TopBarDefs.TopBarItem item, out int index)
