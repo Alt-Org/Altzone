@@ -72,7 +72,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [Header("Arena options")] [SerializeField]
         private Image _arenaBackgroundImage;
 
-        //[SerializeField] private Sprite _arenaFloorBackground;
+        [SerializeField] private Sprite _arenaFloorBackground;
         [SerializeField] private RectTransform _arenaImage;
         [Space] [SerializeField] private Slider _arenaScaleSlider;
         [SerializeField] private TMP_InputField _arenaScaleInputField;
@@ -290,6 +290,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     else
                     {
                         SetOuterEdgeWithoutFloor(false);
+
+                        SettingsCarrier.Instance.BattleOuterEdgeWithoutFloor = false;
                     }
                 }
             );
@@ -307,10 +309,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 UpdateArena();
             });
 
-            //Outside Floor Popup optionsm listeners
+            //Outside Floor Popup options listeners
             _outsideFloorOkButton.onClick.AddListener(() =>
             {
                 _outsideFloorPopup.SetActive(false);
+
+                SettingsCarrier.Instance.BattleOuterEdgeWithoutFloor = true;
 
                 SetOuterEdgeWithoutFloor(true);
             });
@@ -320,6 +324,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _outsideFloorPopup.SetActive(false);
 
                 _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(false);
+
+                SettingsCarrier.Instance.BattleOuterEdgeWithoutFloor = false;
 
                 SetOuterEdgeWithoutFloor(false);
             });
@@ -411,6 +417,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaScaleSlider.value = SettingsCarrier.Instance.BattleArenaScale;
             _arenaPosXSlider.value = SettingsCarrier.Instance.BattleArenaPosX;
             _arenaPosYSlider.value = SettingsCarrier.Instance.BattleArenaPosY;
+
+            //Loading OuterEdgeWithoutFloor settings.
+            bool outerEdgeWithoutFloor = SettingsCarrier.Instance.BattleOuterEdgeWithoutFloor;
+            _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(outerEdgeWithoutFloor);
+            SetOuterEdgeWithoutFloor(outerEdgeWithoutFloor);
         }
 
         private void OnDestroy()
@@ -788,7 +799,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
             else
             {
-                //_arenaBackgroundImage.sprite = _arenaFloorBackground;
+                _arenaBackgroundImage.sprite = _arenaFloorBackground;
                 _arenaBackgroundImage.color = Color.white;
             }
         }
