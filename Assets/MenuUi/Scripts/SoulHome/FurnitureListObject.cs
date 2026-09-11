@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game; // --------------------------------
 using UnityEngine;
 
 namespace MenuUI.Scripts.SoulHome
@@ -33,6 +34,12 @@ namespace MenuUI.Scripts.SoulHome
                 _count--;
                 if (!furniture.Position.Equals(new(-1, -1))) _inRoomCount--;
             }
+        }
+
+        public FurniturePlacement GetListObjectType() // want to get FurniturePlacement for category sorting, but would need more references
+        {
+            if (_count == 0) return FurniturePlacement.FloorNonblock;
+            else return _list[0].Place;
         }
 
         public int GetInRoomCount()

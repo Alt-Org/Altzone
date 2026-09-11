@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Game; // --------------------------------
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,12 +53,41 @@ namespace MenuUI.Scripts.SoulHome
         public void InitializeTray()
         {
             FurnitureList list = _controller.FurnitureList;
-            Debug.Log("Count: "+list.Count);
+            //Debug.Log("Count: "+list.Count);
             if (list == null && list.Count < 1) return;
 
             // FurnitureList = how many furniture items in total, FurnitureListObject = how many of that type?, Furniture = the actual furniture object
             FillSelectionButtonList(list); // ----------------
             _smartList.OnNewDataRequested += UpdateButtonHandlerData; // Called when a new slot needs to be shown -------------
+        }
+
+        public void FilterTrayObjects(int _category) // ------------------------------------
+        {
+            FurnitureList list = _controller.FurnitureList;
+            if (list == null) return;
+            FurnitureList filtered_list = new();
+            
+            if (_category == 1) // Should display all
+            {
+                FillSelectionButtonList(list);
+                _smartList.OnNewDataRequested += UpdateButtonHandlerData;
+                return;
+            }
+            else if (_category == 2) { // Should display favorites
+                // Favorites not implemented?
+                return;
+            }
+
+            foreach (var _furnitureListObject in list.List)
+            {
+                if (_furnitureListObject.GetListObjectType() == (FurniturePlacement)_category)
+                {
+                    filtered_list.List.Add(_furnitureListObject);
+                }
+            }
+            // TODO - need to clear existing slots
+            FillSelectionButtonList(filtered_list);
+            _smartList.OnNewDataRequested += UpdateButtonHandlerData;
         }
 
          private void FillSelectionButtonList(FurnitureList furnitureList) // ----------------------
@@ -287,8 +317,8 @@ namespace MenuUI.Scripts.SoulHome
                 for (int i = 0; i < childCount; i++)
                 {
                     GameObject slotObject = _trayContent.transform.GetChild(i).gameObject;
-                    slotObject.GetComponent<RectTransform>().sizeDelta = new(slotSize * 0.7f, slotSize);
-                    slotObject.GetComponent<BoxCollider2D>().size = new(slotSize * 0.7f, slotSize);
+                    slotObject.GetComponent<RectTransform>().sizeDelta = new(slotSize * 0.6f, slotSize);
+                    slotObject.GetComponent<BoxCollider2D>().size = new(slotSize * 0.6f, slotSize);
                     slotObject.GetComponent<ResizeCollider>().Resize();
                 }
             }
