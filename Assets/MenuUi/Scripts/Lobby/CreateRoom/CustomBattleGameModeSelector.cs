@@ -51,18 +51,4 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
             _gameTypes.Remove(GameType.Raid);
         }
     }
-
-    public static class CustomGameModeExtension
-    {
-        public static string GetString(this GameType gameMode)
-        {
-            return gameMode switch
-            {
-                GameType.BattlePingPong => "Peruspeli",
-                GameType.BattleTestFlipperGame => "Flipper testi",
-                GameType.Raid => "Ryöstö",
-                _ => ""
-            };
-        }
-    }
 }

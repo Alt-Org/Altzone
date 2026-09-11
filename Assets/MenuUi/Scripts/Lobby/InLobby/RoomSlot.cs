@@ -1,5 +1,7 @@
 using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
+using Photon.Client.StructWrapping;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +15,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
     {
         [Header("GameObject references")]
         [SerializeField] private TMP_Text _roomName;
+        [SerializeField] private TMP_Text _roomGameType;
         [SerializeField] private TMP_Text _roomPlayerCount;
         [SerializeField] private Image _openStatusLockImage;
         [Header("Sprite references")]
@@ -28,6 +31,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             _roomName.text = roomInfo.Name;
             _roomPlayerCount.text = $"{roomInfo.PlayerCount}/4";
+
+            if(roomInfo.CustomProperties.TryGetValue(PhotonBattleRoom.GameTypeKey, out int gameType))
+            {
+                _roomGameType.text = ((GameType)gameType).GetString();
+            }
 
             bool hasPassword = roomInfo.CustomProperties.ContainsKey(PhotonBattleRoom.PasswordKey);
 

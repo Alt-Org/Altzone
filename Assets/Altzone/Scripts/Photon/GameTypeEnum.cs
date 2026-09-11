@@ -19,5 +19,35 @@ namespace Altzone.Scripts.Lobby
         BattleTestFlipperGame = 1,
         Raid = 10,
     }
+    public static class CustomGameModeExtension
+    {
+        public static string GetString(this GameType gameMode)
+        {
+            return SettingsCarrier.Instance.Language switch
+            {
+                SettingsCarrier.LanguageType.English => gameMode switch
+                {
+                    GameType.BattlePingPong => "Basegame",
+                    GameType.BattleTestFlipperGame => "Flipper test",
+                    GameType.Raid => "Raid",
+                    _ => ""
+                },
+                SettingsCarrier.LanguageType.Finnish => gameMode switch
+                {
+                    GameType.BattlePingPong => "Peruspeli",
+                    GameType.BattleTestFlipperGame => "Flipper testi",
+                    GameType.Raid => "Ryöstö",
+                    _ => ""
+                },
+                _ => gameMode switch
+                {
+                    GameType.BattlePingPong => "Peruspeli",
+                    GameType.BattleTestFlipperGame => "Flipper testi",
+                    GameType.Raid => "Ryöstö",
+                    _ => ""
+                },
+            };
+        }
+    }
 }
 
