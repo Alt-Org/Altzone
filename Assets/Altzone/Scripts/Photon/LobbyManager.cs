@@ -1286,9 +1286,9 @@ namespace Altzone.Scripts.Lobby
                 bool roomPremadeMode = room.GetCustomProperty<bool>(PhotonBattleRoom.PremadeModeKey, false);
                 string premadeUserId1 = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
                 string premadeUserId2 = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
-            
+
                 Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: premade check - mode={roomPremadeMode}, userId1={premadeUserId1}, userId2={premadeUserId2}, localUserId={localUserId}");
-            
+
                 if (roomPremadeMode)
                 {
                     if (localUserId == premadeUserId1 || localUserId == premadeUserId2)
@@ -1307,8 +1307,8 @@ namespace Altzone.Scripts.Lobby
 
             // Check 3: QueueDuoPairs array
             string[] queueDuoFlat = room.GetCustomProperty<string[]>(QueueDuoPairsKey, null);
-            if (queueDuoFlat == null || queueDuoFlat.Length < 2) 
-            { 
+            if (queueDuoFlat == null || queueDuoFlat.Length < 2)
+            {
                 Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: queueDuoFlat is null or too short (length={(queueDuoFlat?.Length ?? 0)})");
                 return false;
             }
@@ -1322,8 +1322,8 @@ namespace Altzone.Scripts.Lobby
                 if (pairUserId1 != localUserId && pairUserId2 != localUserId) continue;
 
                 string partnerUserId = pairUserId1 == localUserId ? pairUserId2 : pairUserId1;
-                if (string.IsNullOrEmpty(partnerUserId)) 
-                { 
+                if (string.IsNullOrEmpty(partnerUserId))
+                {
                     Debug.Log($"ShouldLeaveQueueWhenDuoPartnerLeaves: queueDuoFlat check - partner is empty");
                     return false;
                 }
@@ -1768,7 +1768,7 @@ namespace Altzone.Scripts.Lobby
 
         private List<string> SelectQueueFollowersFromTwoPlayerBlocks(
             int requiredFollowers,
-            int roomGameTypeInt, 
+            int roomGameTypeInt,
             string localUserId,
             List<Player> realPlayers,
             Dictionary<string, Player> playersById,
@@ -2200,7 +2200,7 @@ namespace Altzone.Scripts.Lobby
                     room.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
-                    room.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty); 
+                    room.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
@@ -3539,7 +3539,7 @@ namespace Altzone.Scripts.Lobby
                 _queueTimerHolder = null;
             }
         }
-        
+
         private void StopHolderCoroutines()
         {
             if (_reserveFreePositionHolder != null)
@@ -6471,6 +6471,7 @@ namespace Altzone.Scripts.Lobby
                         PlayerCount = data.PlayerCount,
                         ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion,
                         IsTestMode = data.TestMode,
+                        IsTestFlipperGame = data.GameType == GameType.TestFlipperGame
                     }
                 };
 
@@ -6620,7 +6621,7 @@ namespace Altzone.Scripts.Lobby
                 // In the Custom room flow, SetPlayerQuantumCharacters is called by RoomSetupManager,
                 // but in the Matchmaking flow it was never called — leaving _player.Characters stale.
                 // Loading here ensures all game types have correct, up-to-date character data
-               
+
                 {
                     string playerGuid = GameConfig.Get().PlayerSettings.PlayerGuid;
                     PlayerData playerData = null;
@@ -7955,7 +7956,7 @@ namespace Altzone.Scripts.Lobby
                 LobbyOnJoinedRoom?.Invoke();
             }
         }
-        
+
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
             _gamePlayedOut = false;
