@@ -1,4 +1,4 @@
-namespace Altzone.Scripts.Lobby 
+namespace Altzone.Scripts.Lobby
 {
     /// <summary>
     /// Used for determining battle popup game type.
@@ -10,6 +10,7 @@ namespace Altzone.Scripts.Lobby
         Random2v2 = 1,
         Clan2v2 = 2,
         FriendLobby = 3,
+        TestFlipperGame = 4,
         Raid = 10,
     }
 }
