@@ -115,10 +115,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
         /// <summary>
         /// Coroutine to create a room after client is connected to lobby.
         /// </summary>
-        /// <param name="gameType">Game type of which room to create.</param>
+        /// <param name="matchmakingType">Game type of which room to create.</param>
         /// <param name="callback">Callback which is called after room is created.</param>
         /// <returns></returns>
-        public IEnumerator StartCreatingRoom(MatchmakingType gameType, Action callback)
+        public IEnumerator StartCreatingRoom(MatchmakingType matchmakingType, GameType gameType, Action callback)
         {
             if (_createRoomRequestInFlight)
             {
@@ -149,16 +149,16 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 yield return null;
                 if (PhotonRealtimeClient.InLobby)
                 {
-                    switch (gameType)
+                    switch (matchmakingType)
                     {
                         case MatchmakingType.FriendLobby:
-                            PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(InLobbyController.SelectedPremadeTargetGameType);
+                            PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(InLobbyController.SelectedPremadeTargetMatchmakingType, gameType);
                             break;
                         case MatchmakingType.Clan2v2:
-                            yield return CreateClan2v2Room();
+                            yield return CreateClan2v2Room(gameType);
                             break;
                         case MatchmakingType.Random2v2:
-                            yield return CreateRandom2v2Room();
+                            yield return CreateRandom2v2Room(gameType);
                             break;
                         case MatchmakingType.Custom:
                             if (!_createRoomCustom.IsCustomRoomOptionsReady) _createRoomCustom.InitializeCustomRoomOptions();
@@ -256,7 +256,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             return null;
         }
 
-        private IEnumerator CreateClan2v2Room()  // soulhome value for matchmaking
+        private IEnumerator CreateClan2v2Room(GameType gameType)  // soulhome value for matchmaking
         {
             yield return GetClanData( clanData =>
             {
@@ -265,14 +265,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     // Join the persistent queue room instead of creating a matchmaking room immediately
                     _pendingJoinIntent = JoinIntent.QueueJoin;
                     _pendingQueueGameType = MatchmakingType.Clan2v2;
-                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(MatchmakingType.Clan2v2);
+                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(MatchmakingType.Clan2v2, gameType);
                 }
             });
             yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
             this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Clan2v2));
         }
 
-        private IEnumerator CreateRandom2v2Room()  // soulhome value for matchmaking
+        private IEnumerator CreateRandom2v2Room(GameType gameType)  // soulhome value for matchmaking
         {
             yield return GetClanData(clanData =>
             {
@@ -281,7 +281,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     // Join the persistent queue room instead of creating a matchmaking room immediately
                     _pendingJoinIntent = JoinIntent.QueueJoin;
                     _pendingQueueGameType = MatchmakingType.Random2v2;
-                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(MatchmakingType.Random2v2);
+                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(MatchmakingType.Random2v2, gameType);
                 }
             });
             yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
@@ -376,7 +376,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
 
             // Only attempt to create a custom room automatically when the user was creating a custom room.
-            if (_pendingJoinIntent == JoinIntent.CustomCreate || (creatingTextActive && InLobbyController.SelectedGameType == MatchmakingType.Custom))
+            if (_pendingJoinIntent == JoinIntent.CustomCreate || (creatingTextActive && InLobbyController.SelectedMatchmakingType == MatchmakingType.Custom))
             {
                 CreateCustomRoom();
                 return;
@@ -416,9 +416,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 queueGameType = _pendingQueueGameType;
             }
-            else if (InLobbyController.SelectedGameType == MatchmakingType.Random2v2 || InLobbyController.SelectedGameType == MatchmakingType.Clan2v2)
+            else if (InLobbyController.SelectedMatchmakingType == MatchmakingType.Random2v2 || InLobbyController.SelectedMatchmakingType == MatchmakingType.Clan2v2)
             {
-                queueGameType = InLobbyController.SelectedGameType;
+                queueGameType = InLobbyController.SelectedMatchmakingType;
             }
             else
             {
@@ -513,7 +513,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         public void SwitchToRoom()
         {
-            _roomSwitcher.SwitchRoom(InLobbyController.SelectedGameType);
+            _roomSwitcher.SwitchRoom(InLobbyController.SelectedMatchmakingType);
         }
 
         private void UpdateStatus()

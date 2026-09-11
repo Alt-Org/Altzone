@@ -59,9 +59,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void OnEnable()
         {
             if (_startGameButton != null) _startGameButton.interactable = true;
-            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = InLobbyController.SelectedGameType == MatchmakingType.FriendLobby;
+            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = InLobbyController.SelectedMatchmakingType == MatchmakingType.FriendLobby;
 
-            switch (InLobbyController.SelectedGameType)
+            switch (InLobbyController.SelectedMatchmakingType)
             {
                 case MatchmakingType.Custom:
                     if (_title != null) StartCoroutine(SetRoomTitle());
@@ -70,7 +70,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     break;
                 case MatchmakingType.FriendLobby:
                     if (_title != null) _title.text = "Friend Lobby";
-                    if (_gameType) _gameType.text = InLobbyController.SelectedPremadeTargetGameType.ToString();
+                    if (_gameType) _gameType.text = InLobbyController.SelectedPremadeTargetMatchmakingType.ToString();
                     if (_noticeText != null) _noticeText.text = "Kutsu yksi online-pelaaja ja valitse haettava 2v2 pelimuoto.";
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Kutsu online-pelaaja";
                     EnsureInviteSelectorPanel();
@@ -89,7 +89,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     break;
             }
 
-            if (InLobbyController.SelectedGameType == MatchmakingType.FriendLobby)
+            if (InLobbyController.SelectedMatchmakingType == MatchmakingType.FriendLobby)
             {
                 StartInviteLifecycleMonitoring();
             }
@@ -98,7 +98,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 StopInviteLifecycleMonitoring();
             }
 
-            if (InLobbyController.SelectedGameType != MatchmakingType.Custom)
+            if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Custom)
             {
                 StopCustomRoomTimeoutMonitoring();
             }
@@ -148,7 +148,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             //}
             _startGameButton.interactable = false;
 
-            switch (InLobbyController.SelectedGameType)
+            switch (InLobbyController.SelectedMatchmakingType)
             {
                 case MatchmakingType.Custom:
                     this.Publish(new LobbyManager.StartPlayingEvent());
@@ -175,7 +175,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                         return;
                     }
 
-                    MatchmakingType targetGameType = InLobbyController.SelectedPremadeTargetGameType;
+                    MatchmakingType targetGameType = InLobbyController.SelectedPremadeTargetMatchmakingType;
                     if (targetGameType != MatchmakingType.Random2v2 && targetGameType != MatchmakingType.Clan2v2)
                     {
                         targetGameType = MatchmakingType.Random2v2;
@@ -215,7 +215,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                             }
                         }
                         catch { }
-                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedGameType));
+                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType));
                     }
                     else
                     {
@@ -236,7 +236,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                         }
                     }
                     catch { }
-                    this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedGameType));
+                    this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType));
                     break;
             }
         }
@@ -245,7 +245,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void OnInviteOnlinePlayerButtonPressed()
         {
-            if (InLobbyController.SelectedGameType != MatchmakingType.FriendLobby) return;
+            if (InLobbyController.SelectedMatchmakingType != MatchmakingType.FriendLobby) return;
             StartCoroutine(InviteOnlinePlayerRoutine());
         }
 
@@ -312,7 +312,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             string localUserId = GetLocalUserId();
             List<ClanMember> members = null;
-            if (InLobbyController.SelectedPremadeTargetGameType == MatchmakingType.Clan2v2)
+            if (InLobbyController.SelectedPremadeTargetMatchmakingType == MatchmakingType.Clan2v2)
             {
                 ClanData clan = null;
                 Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, data => clan = data);
@@ -324,7 +324,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 if (onlinePlayer == null || string.IsNullOrEmpty(onlinePlayer._id)) continue;
                 if (onlinePlayer._id == localUserId) continue;
                 if (IsPlayerAlreadyInCurrentRoom(onlinePlayer._id)) continue;
-                if (InLobbyController.SelectedPremadeTargetGameType == MatchmakingType.Clan2v2)
+                if (InLobbyController.SelectedPremadeTargetMatchmakingType == MatchmakingType.Clan2v2)
                 {
                     if(members.Find((m) => m.Id == onlinePlayer._id) == null) continue;
                 }
@@ -387,7 +387,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return false;
             }
 
-            ApplyPendingPremadeInviteSelection(invitedUserId, localUserId, localUsername, InLobbyController.SelectedPremadeTargetGameType);
+            ApplyPendingPremadeInviteSelection(invitedUserId, localUserId, localUsername, InLobbyController.SelectedPremadeTargetMatchmakingType);
 
             try
             {
@@ -540,9 +540,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             try
             {
-                yield return new WaitUntil(() => PhotonRealtimeClient.InRoom || InLobbyController.SelectedGameType != MatchmakingType.Custom);
+                yield return new WaitUntil(() => PhotonRealtimeClient.InRoom || InLobbyController.SelectedMatchmakingType != MatchmakingType.Custom);
 
-                if (InLobbyController.SelectedGameType != MatchmakingType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
+                if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
                 {
                     yield break;
                 }
@@ -561,7 +561,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
                 yield return new WaitForSecondsRealtime(CustomRoomTimeoutSeconds);
 
-                if (InLobbyController.SelectedGameType != MatchmakingType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
+                if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
                 {
                     yield break;
                 }
@@ -714,7 +714,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             Debug.Log($"leavingRoom");
             PhotonRealtimeClient.LeaveRoom();
-            if (InLobbyController.SelectedGameType != MatchmakingType.Clan2v2) SignalBus.OnCloseBattlePopupRequestedSignal();
+            if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Clan2v2) SignalBus.OnCloseBattlePopupRequestedSignal();
             //this.Publish(new LobbyManager.StartPlayingEvent());
         }
 

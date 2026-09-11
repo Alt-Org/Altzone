@@ -711,12 +711,6 @@ public static class PhotonRealtimeClient
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeLeaderUsernameKey);
         }
 
-        if (lobbyType == MatchmakingType.Custom && customGameMode >= 0)
-        {
-            customRoomProperties.Add(PhotonBattleRoom.CustomGameModeKey, customGameMode);
-            propertiesShowingToLobby.Add(PhotonBattleRoom.CustomGameModeKey);
-        }
-
         int maxPlayers;
 
         switch (lobbyType)
@@ -750,6 +744,12 @@ public static class PhotonRealtimeClient
         {
             customRoomProperties.Add(PhotonBattleRoom.RoomNameKey, roomName);
             // propertiesShowingToLobby.Add(PhotonBattleRoom.RoomNameKey); Commented out because maybe needed later
+        }
+
+        if (customGameMode >= 0)
+        {
+            customRoomProperties.Add(PhotonBattleRoom.GameTypeKey, customGameMode);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.GameTypeKey);
         }
 
         if (!string.IsNullOrEmpty(password))
@@ -897,12 +897,13 @@ public static class PhotonRealtimeClient
         );
     }
 
-    public static bool CreateInRoomPremadeLobbyRoom(MatchmakingType matchmakingType= MatchmakingType.None, string[] expectedUsers = null)
+    public static bool CreateInRoomPremadeLobbyRoom(MatchmakingType matchmakingType= MatchmakingType.None, GameType gameType = GameType.BattlePingPong, string[] expectedUsers = null)
     {
         string roomName = $"FriendLobby_{LocalPlayer.UserId}_{matchmakingType}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
         RoomOptions roomOptions = GetRoomOptions(
             lobbyType: MatchmakingType.FriendLobby,
             matchmakingType: matchmakingType,
+            customGameMode: (int)gameType,
             roomName: roomName
         );
 

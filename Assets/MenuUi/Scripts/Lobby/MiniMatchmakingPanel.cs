@@ -281,10 +281,10 @@ namespace MenuUi.Scripts.Lobby
             }
             catch { }
 
-            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType, true));
+            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedMatchmakingType, true));
             // If caller is non-leader, close the battle popup to reset UI state (except Clan2v2)
             bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
-            if (!isLeader && InLobbyController.SelectedGameType != MatchmakingType.Clan2v2 && InLobbyController.SelectedGameType != MatchmakingType.FriendLobby)
+            if (!isLeader && InLobbyController.SelectedMatchmakingType != MatchmakingType.Clan2v2 && InLobbyController.SelectedMatchmakingType != MatchmakingType.FriendLobby)
             {
                 Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
             }
@@ -294,7 +294,7 @@ namespace MenuUi.Scripts.Lobby
         {
             // Reopen the battle popup and hide this mini panel
             Hide();
-            Signals.SignalBus.OnBattlePopupRequestedSignal(InLobbyController.SelectedGameType);
+            Signals.SignalBus.OnBattlePopupRequestedSignal(InLobbyController.SelectedMatchmakingType);
         }
 
         private void OnGameCountdownUpdate(int secondsRemaining)

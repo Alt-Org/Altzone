@@ -78,7 +78,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 StartCoroutine(_raidNavigation.Navigate());
                 return;
             }
-            SignalBus.OnBattlePopupRequestedSignal(_selectedMatchmakingType, _selectedMatchmakingType == MatchmakingType.FriendLobby? MatchmakingType.Clan2v2: MatchmakingType.None);
+            SignalBus.OnBattlePopupRequestedSignal(_selectedMatchmakingType, _selectedMatchmakingType == MatchmakingType.FriendLobby? MatchmakingType.Clan2v2: MatchmakingType.None, _selectedGameType);
         }
 
         public void UpdateGameType(GameTypeInfo gameTypeInfo)

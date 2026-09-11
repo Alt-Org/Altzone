@@ -74,7 +74,7 @@ public class BattlePopupPanelManager : MonoBehaviour
                 {
                     try
                     {
-                        int mode = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.CustomGameModeKey, (int)GameType.BattlePingPong);
+                        int mode = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.GameTypeKey, (int)GameType.BattlePingPong);
                         SwitchCustomRoom((GameType)mode);
                     }
                     catch
