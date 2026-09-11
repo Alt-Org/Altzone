@@ -64,13 +64,13 @@ namespace MenuUI.Scripts.SoulHome
             CheckFurnitureButtons();
             if (!_rotated)
             {
-                GetTray().GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().rect.width * 0.8f - 50, GetTray().GetComponent<RectTransform>().sizeDelta.y);
+                //GetTray().GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().rect.width * 0.8f - 50, GetTray().GetComponent<RectTransform>().sizeDelta.y);
                 GetTrayHandler().SetTrayContentSize();
                 GetTrayHandler().GetComponent<ResizeCollider>().Resize();
             }
             else
             {
-                GetTray().GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().rect.width * 0.2f - 50, GetTray().GetComponent<RectTransform>().sizeDelta.y);
+                //GetTray().GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().rect.width * 0.2f - 50, GetTray().GetComponent<RectTransform>().sizeDelta.y);
                 GetTrayHandler().SetTrayContentSize();
                 GetTrayHandler().GetComponent<ResizeCollider>().Resize();
             }
@@ -396,10 +396,11 @@ namespace MenuUI.Scripts.SoulHome
             if(tray is null) tray = GetTray();
             if (!_trayOpen)
             {
-                if(!_rotated)tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.8f, tray.transform.localPosition.y);
-                else tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.2f + tray.transform.Find("EditButton").GetComponent<RectTransform>().rect.width, tray.transform.localPosition.y);
+                //if(!_rotated)tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.8f, tray.transform.localPosition.y);
+                //else tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.2f + tray.transform.Find("EditButton").GetComponent<RectTransform>().rect.width, tray.transform.localPosition.y);
                 _trayOpen = true;
-                RectTransform furnitureRectTransform = tray.transform.Find("CategoryButton").GetComponent<RectTransform>();
+                RectTransform furnitureRectTransform = tray.transform.Find("TopButtons").transform.Find("CategoryButton").GetComponent<RectTransform>();
+                //RectTransform furnitureRectTransform = tray.transform.Find("CategoryButton").GetComponent<RectTransform>(); // original -----------------
                 furnitureRectTransform.sizeDelta = new(width *0.2f, furnitureRectTransform.sizeDelta.y);
                 furnitureRectTransform.gameObject.SetActive(true);
                 //RectTransform trapRectTransform = tray.transform.Find("TrapButton").GetComponent<RectTransform>();

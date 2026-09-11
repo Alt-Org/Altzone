@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Audio; // To enable SmartListItem?? ------------------------------
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
@@ -58,27 +57,7 @@ namespace MenuUI.Scripts.SoulHome
 
             // FurnitureList = how many furniture items in total, FurnitureListObject = how many of that type?, Furniture = the actual furniture object
             FillSelectionButtonList(list); // ----------------
-            _smartList.OnNewDataRequested += UpdateButtonHandlerData; // -------------
-
-            /*
-            foreach (FurnitureListObject listObject in list.Get())
-            {
-                GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(listObject.Name);
-                if (furnitureObject == null) continue;
-
-                if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
-                GameObject furnitureSlot = Instantiate(_traySlotObject, _trayContent.transform);
-                furnitureSlot.GetComponent<FurnitureTraySlotHandler>().Name.text = listObject.Name;
-
-                float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
-                furnitureSlot.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
-                furnitureSlot.GetComponent<ResizeCollider>().Resize();
-
-                GameObject trayFurniture = Instantiate(furnitureObject, furnitureSlot.transform);
-                furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList = listObject;
-                if(listObject.Count - listObject.GetInRoomCount() <= 0) furnitureSlot.SetActive(false);
-            }*/
-
+            _smartList.OnNewDataRequested += UpdateButtonHandlerData; // Called when a new slot needs to be shown -------------
         }
 
          private void FillSelectionButtonList(FurnitureList furnitureList) // ----------------------
@@ -94,7 +73,6 @@ namespace MenuUI.Scripts.SoulHome
 
         private void UpdateButtonHandlerData(int targetIndex) // ----------------------
         {
-            Debug.Log("UpdateButtonHandlerData -----------------------------------------------------------------------");
             _smartList.UpdateContent<FurnitureListObject>(targetIndex, _furnitureListObjects[targetIndex]);
         }
 
@@ -300,15 +278,17 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SetTrayContentSize()
         {
+            /**/
             if (!_vertical)
             {
                 int childCount = _trayContent.transform.childCount;
                 float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
+
                 for (int i = 0; i < childCount; i++)
                 {
                     GameObject slotObject = _trayContent.transform.GetChild(i).gameObject;
-                    slotObject.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
-                    slotObject.GetComponent<BoxCollider2D>().size = new(slotSize, slotSize);
+                    slotObject.GetComponent<RectTransform>().sizeDelta = new(slotSize * 0.7f, slotSize);
+                    slotObject.GetComponent<BoxCollider2D>().size = new(slotSize * 0.7f, slotSize);
                     slotObject.GetComponent<ResizeCollider>().Resize();
                 }
             }
