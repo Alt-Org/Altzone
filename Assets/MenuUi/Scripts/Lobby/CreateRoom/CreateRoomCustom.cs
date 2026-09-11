@@ -1,4 +1,5 @@
 using Altzone.Scripts.Common;
+using Altzone.Scripts.Lobby;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -53,7 +54,7 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         public bool ShowToFriends {  get { return _showToFriends.isOn; } }
         public bool ShowToClan { get {  return _showToClan.isOn; } }
         public Button CreateRoomButton { get { return _createRoom; } }
-        public CustomGameMode SelectedCustomGameMode { get { return _customBattleGameModeSelector.SelectedGameMode; } }
+        public GameType SelectedCustomGameMode { get { return _customBattleGameModeSelector.SelectedGameMode; } }
         public int SelectedCustomGameModeIndex { get { return (int)_customBattleGameModeSelector.SelectedGameMode; } }
         public bool CanCreateRoom => !IsPrivate || !string.IsNullOrWhiteSpace(RoomPassword);
 

@@ -54,7 +54,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             foreach(LobbyRoomInfo roomInfo in _roomsData)
             {
                 bool gameTypePropertyExist = roomInfo.CustomProperties.TryGetValue(PhotonBattleLobbyRoom.GameTypeKey, out int gameType);
-                if (gameTypePropertyExist && gameType == (int)GameType.Custom)
+                if (gameTypePropertyExist && gameType == (int)MatchmakingType.Custom)
                 {
                     GameObject button = Instantiate(_slotPrefab, _content);
                     RoomSlot roomSlot = button.GetComponent<RoomSlot>();

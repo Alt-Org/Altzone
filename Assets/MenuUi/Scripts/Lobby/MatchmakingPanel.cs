@@ -116,9 +116,9 @@ namespace MenuUi.Scripts.Lobby
             }
             catch { }
 
-            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType, true));
+            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedMatchmakingType, true));
             bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
-            if (!isLeader && InLobbyController.SelectedGameType != GameType.Clan2v2 && InLobbyController.SelectedGameType != GameType.FriendLobby)
+            if (!isLeader && InLobbyController.SelectedMatchmakingType != MatchmakingType.Clan2v2 && InLobbyController.SelectedMatchmakingType != MatchmakingType.FriendLobby)
             {
                 Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
             }

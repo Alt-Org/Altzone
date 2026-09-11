@@ -41,8 +41,8 @@ namespace Altzone.Scripts.Battle.Photon
         public const string StartingEmotionKey = "e";
         public const string RoomNameKey = "n";
         public const string PasswordKey = "pw";
+        public const string MatchmakingKey = "mt";
         public const string GameTypeKey = "gt";
-        public const string CustomGameModeKey = "cgm";
         public const string BotFillKey = "bf";
         public const string IsMatchmakingKey = "mm";
         public const string IsQueueKey = "iq";
