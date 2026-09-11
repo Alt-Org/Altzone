@@ -70,6 +70,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public enum TopBarStyle
     {
+        None = -1,
         Old,
         NewHelena,
         NewNiko

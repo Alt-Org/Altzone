@@ -468,7 +468,6 @@ namespace MenuUI.Scripts.TopPanel
             if (item == null || parent == null) return;
 
             item.SetParent(parent, false);
-            item.gameObject.SetActive(true);
         }
 
         private System.Collections.IEnumerator CheckAfterFrame()
@@ -494,7 +493,6 @@ namespace MenuUI.Scripts.TopPanel
 
             item.SetParent(slot, false);
             item.SetSiblingIndex(0);
-            item.gameObject.SetActive(true);
 
             if (item is RectTransform rt)
             {

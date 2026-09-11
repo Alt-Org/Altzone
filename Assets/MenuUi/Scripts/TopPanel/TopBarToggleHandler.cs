@@ -71,26 +71,15 @@ public class TopBarToggleHandler : MonoBehaviour
 
         Debug.Log($"[TopBarDebug] Saved {key} = {(isOn ? 1 : 0)}");
 
-        var targets = FindObjectsOfType<MenuUI.Scripts.TopPanel.TopBarTargets>(true);
-
-        // foreach (var target in targets)
-        // {
-        //     Debug.Log(
-        //         $"[TB] FOUND: {target.name}, style={target.style}, parent={target.transform.parent.name}, ready={target.IsReady()}");
-        // }
-
         TopBarOrderBridge.Active?.ApplyCurrentTarget();
 
-        foreach (var target in targets)
-        {
-            if (target == null) continue;
-            if (target.style != carrier.TopBarStyleSetting) continue;
-            if (!target.IsReady()) continue;
+        var target = TopBarSelector.Instance.GetTopBarTargets(carrier.TopBarStyleSetting);
 
+        if (target != null && target.style == carrier.TopBarStyleSetting && target.IsReady())
+        {
             Debug.Log($"[TB] APPLYING READY TARGET: {target.name}, parent={target.transform.parent.name}");
 
             target.ApplyFromSettings();
-            break;
         }
 
         TopBarOrderBridge.Active?.RefreshClanSubItemIndent();
