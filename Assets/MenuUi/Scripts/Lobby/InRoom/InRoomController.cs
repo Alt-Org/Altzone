@@ -65,6 +65,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             {
                 case MatchmakingType.Custom:
                     if (_title != null) StartCoroutine(SetRoomTitle());
+                    if (_gameType) _gameType.text = InLobbyController.SelectedPremadeTargetMatchmakingType.ToString();
                     if (_conflictText != null) StartCoroutine(CycleConflicts());
                     StartCustomRoomTimeoutMonitoring();
                     break;
@@ -730,8 +731,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // Getting room name either from custom properties or from the room's name itself.
             string roomName = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonLobbyRoom.RoomNameKey);
             bool testRoom = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<bool>(PhotonLobbyRoom.TestModeKey);
+            string gameType = ((GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey)).GetString();
             if (string.IsNullOrEmpty(roomName)) roomName = PhotonRealtimeClient.LobbyCurrentRoom.Name;
             _title.text = _title.text = testRoom ? $"{roomName} (test)" : roomName;
+            _gameType.text = gameType;
         }
 
         private IEnumerator CycleConflicts()
@@ -745,8 +748,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 if (selectedConflict == previousConflict) continue;
                 _conflictText.SetText(_conflicts[selectedConflict].ConlictText);
                 yield return new WaitForSecondsRealtime(7);
-            }
-            
+            }  
         }
     }
     [Serializable]
