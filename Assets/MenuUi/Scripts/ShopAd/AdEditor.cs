@@ -30,7 +30,9 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private AdDecorationReference _borderReference;
     [Header("Frame Selectors")]
     [SerializeField] private Transform _borderSelectionContent;
+    [SerializeField] private Transform _furnitureSelectionContent; // Uusi lisäys (Perttu)
     [SerializeField] private GameObject _borderFramePrefab;
+    [SerializeField] private GameObject _furniturePrefab; // Uusi lisäys (Perttu)
     [SerializeField] private DailyTaskSelectButtons _dtSelectButtons;
     [Header("Colour Selectors")]
     [SerializeField] private Transform _backgroundColourSelectorContent;
@@ -77,6 +79,17 @@ public class AdEditor : AltMonoBehaviour
 
 
         List<AdBorderFrameObject> frameList = _borderReference.FrameList;
+        List<AdFurnitureObject> furnitureList = _borderReference.FurnitureList; // Uusi lisäys (Perttu)
+
+        foreach (AdFurnitureObject furniture in furnitureList) // Uusi lisäys (Perttu)
+        {
+            GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
+            furnitureObject.GetComponent<Image>().sprite = furniture.Image;
+            float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            furnitureObject.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
+            furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
+            if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
+        }
 
         foreach (AdBorderFrameObject frame in frameList)
         {
@@ -161,16 +174,23 @@ public class AdEditor : AltMonoBehaviour
     }
 
     // Uusi lisäys (Perttu)
+    public void ChangeFurniture(AdFurnitureObject furniture)
+    {
+        _adData.Furniture = furniture.Name;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        SaveAdData();
+    }
+    // Uusi lisäys (Perttu)
     public void ChangeTextColor(Color colour)
     {
-        _adData.AdTextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
+        _adData.TextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
     // Uusi lisäys (Perttu)
     public void ChangeTextFont(TMPro.TMP_FontAsset font)
     {
-        _adData.AdTextFont = font;
+        _adData.TextFont = font;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }

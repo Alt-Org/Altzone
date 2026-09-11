@@ -1179,7 +1179,10 @@ MonoBehaviour:
   blackColor: {r: 0, g: 0, b: 0, a: 1}
   _borderReference: {fileID: 11400000, guid: e527845925edf23418596bb0e6da8b5c, type: 2}
   _borderSelectionContent: {fileID: 3264556469795064128}
+  _furnitureSelectionContent: {fileID: 8939032660931280806}
   _borderFramePrefab: {fileID: 7082800346161996096, guid: 37373c23272a4244696039fd58bc1190,
+    type: 3}
+  _furniturePrefab: {fileID: 7082800346161996096, guid: 0e96c0cc4a41acf4da8c87079b43354a,
     type: 3}
   _dtSelectButtons: {fileID: 0}
   _backgroundColourSelectorContent: {fileID: 6706930507759647334}
@@ -1820,7 +1823,7 @@ GameObject:
   - component: {fileID: 6582500542213596144}
   - component: {fileID: 6671655297916829978}
   m_Layer: 5
-  m_Name: Content
+  m_Name: FontContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2999,7 +3002,7 @@ GameObject:
   - component: {fileID: 5727746565788487207}
   - component: {fileID: 7255890386729773412}
   m_Layer: 5
-  m_Name: Content
+  m_Name: BorderContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4384,7 +4387,7 @@ GameObject:
   - component: {fileID: 1925897001463952938}
   - component: {fileID: 1080863626957085985}
   m_Layer: 5
-  m_Name: ChooseIcon
+  m_Name: ChooseFurniture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4460,7 +4463,7 @@ GameObject:
   - component: {fileID: 5665192289463060865}
   - component: {fileID: 3444713905888007874}
   m_Layer: 5
-  m_Name: Content
+  m_Name: FurnitureContent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
