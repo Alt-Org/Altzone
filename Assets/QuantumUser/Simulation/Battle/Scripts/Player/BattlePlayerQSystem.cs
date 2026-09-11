@@ -49,17 +49,7 @@ namespace Battle.QSimulation.Player
             {
                 if (playerHandle.PlayState.IsNotInGame()) continue;
 
-                if (BattleParameters.GetIsTestFlipperGame(f))
-                {
-                    for (int characterNumber = 0; characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT; characterNumber++)
-                    {
-                        BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, characterNumber);
-                    }
-                }
-                else
-                {
-                    BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, 0, select: true);
-                }
+                BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, 0, select: true);
             }
         }
 
