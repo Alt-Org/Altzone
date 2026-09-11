@@ -49,7 +49,7 @@ namespace Battle.QSimulation.Player
             {
                 if (playerHandle.PlayState.IsNotInGame()) continue;
 
-                BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, 0);
+                BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, 0, select: true);
             }
         }
 
@@ -64,7 +64,12 @@ namespace Battle.QSimulation.Player
         public static void HandlePlayerAbandoned(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             playerHandle.GiveUpState = true;
-            HandleGiveUpLogic(f, playerHandle);
+
+            BattleTeamNumber giveUpTeam = HandleGiveUpLogic(f, playerHandle);
+            if (giveUpTeam != BattleTeamNumber.NoTeam)
+            {
+                BattleGameControlQSystem.OnGameOverGiveUp(f, giveUpTeam);
+            }
         }
 
         /// <summary>
@@ -82,19 +87,19 @@ namespace Battle.QSimulation.Player
             BattlePlayerQSpec playerSpec = BattleQConfig.GetPlayerSpec(f);
 
             // get references
-            BattlePlayerEntityRef            damagedPlayerEntityRef = (BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef;
-            BattlePlayerDataQComponent*      damagedPlayerData      = damagedPlayerEntityRef.GetDataQComponent(f);
-            BattlePlayerManager.PlayerHandle playerHandle           = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot);
+            BattlePlayerEntityRef            playerEntityRef = (BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef;
+            BattlePlayerDataQComponent*      playerData      = playerEntityRef.GetDataQComponent(f);
+            BattlePlayerManager.PlayerHandle playerHandle    = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, playerData->Slot);
 
-            if (damagedPlayerData->StunCooldown.IsRunning(f) || damagedPlayerData->ShieldHitCooldown.IsRunning(f)) goto Exit;
+            if (playerData->StunCooldown.IsRunning(f) || playerData->ShieldHitCooldown.IsRunning(f)) goto Exit;
 
-            if (damagedPlayerData->CurrentDefence > 0)
+            if (playerData->CurrentDefence > 0)
             {
                 // handle stun
 
-                damagedPlayerData->MovementEnabled = false;
-                damagedPlayerData->RotationEnabled = false;
-                damagedPlayerData->StunCooldown    = FrameTimer.FromSeconds(f, playerSpec.StunDurationSec);
+                playerData->MovementEnabled = false;
+                playerData->RotationEnabled = false;
+                playerData->StunCooldown    = FrameTimer.FromSeconds(f, playerSpec.StunDurationSec);
 
                 SoundEffectTypeCommon soundEffectType = projectileCollisionData->ProjectileEmotionCurrent switch
                 {
@@ -106,14 +111,14 @@ namespace Battle.QSimulation.Player
 
                     _ => throw new System.NotImplementedException()
                 };
-                HandleSFXCommon(f, damagedPlayerData->Slot, soundEffectType, SoundEffectTarget.All);
+                HandleSFXCommon(f, playerData->Slot, soundEffectType, SoundEffectTarget.All);
 
                 f.Events.BattleCharacterHit(
-                    damagedPlayerEntityRef,
-                    damagedPlayerData->TeamNumber,
-                    damagedPlayerData->Slot,
-                    playerHandle.SelectedCharacterNumber,
-                    damagedPlayerData->AttachedShieldNumber,
+                    playerEntityRef,
+                    playerData->TeamNumber,
+                    playerData->Slot,
+                    playerData->CharacterNumber,
+                    playerData->AttachedShieldNumber,
                     playerSpec.StunDurationSec,
                     projectileCollisionData->ProjectileEmotionCurrent
                 );
@@ -122,14 +127,17 @@ namespace Battle.QSimulation.Player
             {
                 // handle death
 
-                int selectedCharacterNumber = playerHandle.SelectedCharacterNumber;
+                int characterNumber = playerData->CharacterNumber;
 
-                BattlePlayerManager.DespawnPlayer(f, damagedPlayerData->Slot, kill: true);
-                playerHandle.SetOutOfPlayRespawning();
-                playerHandle.RespawnTimer = FrameTimer.FromSeconds(f, playerSpec.AutoRespawnTimeSec);
+                BattlePlayerManager.DespawnPlayer(f, playerData->Slot, characterNumber, kill: true);
+                if (playerHandle.PlayState.IsOutOfPlay())
+                {
+                    playerHandle.SetOutOfPlayRespawning();
+                    playerHandle.RespawnTimer = FrameTimer.FromSeconds(f, playerSpec.AutoRespawnTimeSec);
+                }
 
-                HandleSFXCommon(f, damagedPlayerData->Slot, SoundEffectTypeCommon.Death, SoundEffectTarget.All);
-                f.Events.BattleCharacterDeath(damagedPlayerData->Slot, selectedCharacterNumber);
+                HandleSFXCommon(f, playerData->Slot, SoundEffectTypeCommon.Death, SoundEffectTarget.All);
+                f.Events.BattleCharacterDeath(playerData->Slot, characterNumber);
             }
 
         Exit:
@@ -151,15 +159,15 @@ namespace Battle.QSimulation.Player
             //{ hit
 
             BattlePlayerShieldDataQComponent* playerShieldData  = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetDataQComponent(f);
-            BattlePlayerDataQComponent*       damagedPlayerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
+            BattlePlayerDataQComponent*       playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
-            int  characterNumber     = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, damagedPlayerData->Slot).SelectedCharacterNumber;
+            int  characterNumber     = playerData->CharacterNumber;
             bool defenceUpdateVisual = false;
             FP   defencePercentage   = -1;
 
             if (playerShieldData->ShieldHitCooldown.IsRunning(f)) goto ExitNoHit;
 
-            HandleSFXCommon(f, damagedPlayerData->Slot, SoundEffectTypeCommon.HitShield, SoundEffectTarget.Player);
+            HandleSFXCommon(f, playerData->Slot, SoundEffectTypeCommon.HitShield, SoundEffectTarget.Player);
 
             //} hit
 
@@ -169,20 +177,20 @@ namespace Battle.QSimulation.Player
 
             FP damageTaken = projectileCollisionData->Projectile->Attack;
 
-            BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, damagedPlayerData->Stats.Attack);
+            BattleProjectileQSystem.SetAttack(f, projectileCollisionData->Projectile, playerData->Stats.Attack);
 
             if (damageTaken <= FP._0) goto ExitNoHit;
 
-            damagedPlayerData->CurrentDefence = damagedPlayerData->CurrentDefence - damageTaken;
+            playerData->CurrentDefence = playerData->CurrentDefence - damageTaken;
 
             defenceUpdateVisual = true;
-            defencePercentage = damagedPlayerData->CurrentDefence / damagedPlayerData->Stats.Defence;
+            defencePercentage = playerData->CurrentDefence / playerData->Stats.Defence;
 
-            if (damagedPlayerData->CurrentDefence <= 0)
+            if (playerData->CurrentDefence <= 0)
             {
-                s_debugLogger.LogFormat(f, "({0}) Current characters shield destroyed!", damagedPlayerData->Slot);
+                s_debugLogger.LogFormat(f, "({0}) Current characters shield destroyed!", playerData->Slot);
 
-                BattlePlayerShieldManager.RemoveShield(f, damagedPlayerData->Slot, characterNumber, playerShieldData->ShieldNumber);
+                BattlePlayerShieldManager.RemoveShield(f, playerData->Slot, characterNumber, playerShieldData->ShieldNumber);
             }
 
             //} hit attach
@@ -190,17 +198,17 @@ namespace Battle.QSimulation.Player
         ExitHit:
             FP damageCooldownSec                 = BattleQConfig.GetPlayerSpec(f).DamageCooldownSec;
             playerShieldData->ShieldHitCooldown  = FrameTimer.FromSeconds(f, damageCooldownSec);
-            if (damagedPlayerData->AttachedShield != EntityRef.None)
+            if (playerData->AttachedShield != EntityRef.None)
             {
-                damagedPlayerData->ShieldHitCooldown = FrameTimer.FromSeconds(f, damageCooldownSec);
+                playerData->ShieldHitCooldown = FrameTimer.FromSeconds(f, damageCooldownSec);
             }
 
             f.Events.BattleShieldHit(
                 shieldCollisionData->PlayerShieldHitbox->ParentEntityRef,
-                damagedPlayerData->TeamNumber,
-                damagedPlayerData->Slot,
+                playerData->TeamNumber,
+                playerData->Slot,
                 characterNumber,
-                damagedPlayerData->AttachedShieldNumber,
+                playerData->AttachedShieldNumber,
                 defenceUpdateVisual,
                 defencePercentage
             );
@@ -209,7 +217,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Calls <see cref="BattlePlayerClassManager.OnGameStart">BattlePlayerClassManager.OnGameStart</see> for every player's selected character.
+        /// Calls <see cref="BattlePlayerClassManager.OnGameStart">BattlePlayerClassManager.OnGameStart</see> for every player's every character.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -219,10 +227,14 @@ namespace Battle.QSimulation.Player
             {
                 if (playerHandle.PlayState.IsNotInGame()) continue;
 
-                BattlePlayerEntityRef entityRef        = playerHandle.GetSelectedCharacterEntityRef(f);
-                BattlePlayerDataQComponent* playerData = entityRef.GetDataQComponent(f);
+                for (int characterNumber = 0; characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT; characterNumber++)
+                {
+                    bool selected = characterNumber == playerHandle.SelectedCharacterNumber;
+                    BattlePlayerEntityRef entityRef = playerHandle.GetCharacterEntityRef(f, characterNumber);
+                    BattlePlayerDataQComponent* playerData = entityRef.GetDataQComponent(f);
 
-                BattlePlayerClassManager.OnGameStart(f, playerHandle, playerData, entityRef);
+                    BattlePlayerClassManager.OnGameStart(f, playerHandle, playerData, entityRef, selected);
+                }
             }
         }
 
@@ -231,12 +243,16 @@ namespace Battle.QSimulation.Player
         /// Relays the appropriate input data to each player in the game
         /// </summary>
         ///
-        /// Update method has been split into subprocesses.<br/>
-        /// see @cref{BattlePlayerQSystem,GetInput}<br/>
-        /// see @cref{BattlePlayerQSystem,HandleGiveUp}<br/>
-        /// see @cref{BattlePlayerQSystem,HandleCharacterSwapping}<br/>
-        /// see @cref{BattlePlayerQSystem,HandleOutOfPlay}<br/>
-        /// see @cref{BattlePlayerQSystem,HandleInPlay}
+        /// Update method has been split into subprocesses:
+        /// - @cref{BattlePlayerQSystem,GetInput}
+        /// - @cref{BattlePlayerQSystem,HandleNonCharacterUpdate}
+        ///   - @cref{BattlePlayerQSystem,HandleGiveUp}
+        ///   - @cref{BattlePlayerQSystem,HandleCharacterSwapping}
+        /// - @cref{BattlePlayerQSystem,HandleCharacterUpdate}
+        ///   - @cref{BattlePlayerQSystem,AbilityActivate}
+        ///
+        /// The Update method and it's subprocesses use @cref{Battle.QSimulation.Player.BattlePlayerQSystem,UpdateData}
+        /// to store and share all necessary data used by the update logic.
         ///
         /// <param name="f">Current simulation frame</param>
         public override void Update(Frame f)
@@ -244,56 +260,38 @@ namespace Battle.QSimulation.Player
             BattleGameSessionQSingleton* singleton = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
             if (singleton->State != BattleGameState.Playing) return;
 
-            InputData inputData;
+            UpdateData updateData = new();
             Input stackInputStorage;
-
-            BattlePlayerEntityRef       playerEntity    = BattlePlayerEntityRef.None;
-            BattlePlayerDataQComponent* playerData      = null;
-            Transform2D*                playerTransform = null;
 
             BattlePlayerManager.PlayerHandle[] playerHandleArray = BattlePlayerManager.PlayerHandle.GetPlayerHandleArray(f);
 
             for (int playerNumber = 0; playerNumber < playerHandleArray.Length; playerNumber++)
             {
-                BattlePlayerManager.PlayerHandle playerHandle = playerHandleArray[playerNumber];
-                if (playerHandle.PlayState.IsNotInGame()) continue;
+                updateData.SetPlayer(playerHandleArray[playerNumber]);
+                if (updateData.PlayerHandle.PlayState.IsNotInGame()) continue;
 
-                inputData = GetInput(f, playerHandle, &stackInputStorage);
+                GetInput(f, updateData, &stackInputStorage);
 
-                //{ non-character logic
-
-                switch (inputData.CommandType)
-                {
-                    case BattleCommand.Type.GiveUp:
-                        if (HandleGiveUp(f, playerHandle)) continue;
-                        break;
-
-                    case BattleCommand.Type.SwapCharacter:
-                        BattleCharacterSwapQCommand swapCharacterData = (BattleCharacterSwapQCommand)inputData.CommandData;
-                        if (HandleCharacterSwapping(f, playerHandle, swapCharacterData.CharacterNumber)) continue;
-                        break;
-                }
-
-                if (HandleOutOfPlay(f, playerHandle)) continue;
-
-                //} non-character logic
+                // non-character logic
+                HandleNonCharacterUpdate(f, updateData);
 
                 //{ character logic
 
-                playerEntity    = playerHandle.GetSelectedCharacterEntityRef(f);
-                playerData      = playerEntity.GetDataQComponent(f);
-                playerTransform = playerEntity.GetTransform(f);
-
-                switch (inputData.CommandType)
+                for (int characterNumber = 0; characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT; characterNumber++)
                 {
-                    case BattleCommand.Type.ActivateAbility:
-                        playerData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
-                        break;
+                    BattlePlayerCharacterState characterState = updateData.PlayerHandle.GetCharacterState(characterNumber);
+                    if (characterState is BattlePlayerCharacterState.OutOfPlay or BattlePlayerCharacterState.OutOfPlayDead) continue;
+
+                    updateData.LoadPlayerCharacter(f, updateData.PlayerHandle.GetCharacterEntityRef(f, characterNumber));
+                    HandleCharacterUpdate(f, updateData, selected: characterState is BattlePlayerCharacterState.InPlaySelected);
                 }
 
-                HandleInPlay(f, inputData.Input, playerHandle, playerData, playerEntity, playerTransform);
-
                 //} character logic
+            }
+
+            if (updateData.GiveUpTeam != BattleTeamNumber.NoTeam)
+            {
+                BattleGameControlQSystem.OnGameOverGiveUp(f, updateData.GiveUpTeam);
             }
         }
 
@@ -352,6 +350,140 @@ namespace Battle.QSimulation.Player
             public BattleCommand CommandData;
         }
 
+        /// <summary>
+        /// Class containing all necessary data for player <see cref="BattlePlayerQSystem.Update">Update</see> logic.
+        /// </summary>
+        ///
+        /// @anchor BattlePlayerQSystem-UpdateData-DetailedDescription
+        ///
+        /// Created at the start of the @cref{Battle.QSimulation.Player.BattlePlayerQSystem,Update} method.
+        ///
+        /// The data is split into 3 categories:
+        /// - @ref BattlePlayerQSystem-UpdateData-CommonData "Common Data"<br/>
+        /// Common data related to the update logic.
+        /// - @ref BattlePlayerQSystem-UpdateData-CurrentPlayer "Current Player Properties"<br/>
+        /// Data related to the current player that is being processed.<br/>
+        /// Is set for each player that is being processed using
+        /// @cref{Battle.QSimulation.Player.BattlePlayerQSystem.UpdateData,SetPlayer}.
+        /// - @ref BattlePlayerQSystem-UpdateData-CurrentPlayerCharacter "Current Player Character Properties"<br/>
+        /// Data related to the current player character that is being processed.<br/>
+        /// Is loaded for each player character that is being processed using
+        /// @cref{Battle.QSimulation.Player.BattlePlayerQSystem.UpdateData,LoadPlayerCharacter}.
+        private class UpdateData
+        {
+            /// @anchor BattlePlayerQSystem-UpdateData-CommonData
+            /// @name Common Data
+            /// Common data related to the update logic. @ref BattlePlayerQSystem-UpdateData-DetailedDescription "More..."
+            /// @{
+
+            /// <summary>
+            /// Used to keep track of the team that wants to give up.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerQSystem-UpdateData-CommonData "Common Data"
+            public BattleTeamNumber GiveUpTeam = BattleTeamNumber.NoTeam;
+            /// @}
+
+            /// @anchor BattlePlayerQSystem-UpdateData-CurrentPlayer
+            /// @name Current Player Properties
+            /// Data related to the current player that is being processed. @ref BattlePlayerQSystem-UpdateData-DetailedDescription "More..."
+            /// @{
+
+            /// <summary>
+            /// PlayerHandle of the current player.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerQSystem-UpdateData-CurrentPlayer "Current Player Properties"
+            public BattlePlayerManager.PlayerHandle PlayerHandle { get; private set; }
+
+            /// <summary>
+            /// %Input data of the current player.<br/>
+            /// Is not set by <see cref="Battle.QSimulation.Player.BattlePlayerQSystem.UpdateData.SetPlayer">SetPlayer</see>.
+            /// Needs to be set separately using <see cref="Battle.QSimulation.Player.BattlePlayerQSystem.UpdateData.SetPlayerInput">SetPlayerInput</see>.
+            /// </summary>
+            ///
+            /// This property needs to be set separately because the current player's @cref{Battle.QSimulation.Player.BattlePlayerQSystem,InputData}
+            /// is fetched later in the @cref{Battle.QSimulation.Player.BattlePlayerQSystem,Update} logic.
+            ///
+            /// Part of @ref BattlePlayerQSystem-UpdateData-CurrentPlayer "Current Player Properties"
+            public InputData PlayerInputData { get; private set; }
+
+            /// <summary>
+            /// Has the current player swapped character this frame or not.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerQSystem-UpdateData-CurrentPlayer "Current Player Properties"
+            public bool PlayerHasSwappedCharacter { get; set; }
+            /// @}
+
+            /// @anchor BattlePlayerQSystem-UpdateData-CurrentPlayerCharacter
+            /// @name Current Player Character Properties
+            /// Data related to the current player character that is being processed. @ref BattlePlayerQSystem-UpdateData-DetailedDescription "More..."
+            /// @{
+
+            /// <summary>
+            /// Current player character's EntityRef
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerQSystem-UpdateData-CurrentPlayerCharacter "Current Player Character Properties"
+            public BattlePlayerEntityRef PlayerCharacterEntityRef { get; private set; }
+
+            /// <summary>
+            /// Pointer to current player character's data.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerQSystem-UpdateData-CurrentPlayerCharacter "Current Player Character Properties"
+            public BattlePlayerDataQComponent* PlayerCharacterData { get; private set; }
+
+            /// <summary>
+            /// Pointer to current player character's Transform2D component.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerQSystem-UpdateData-CurrentPlayerCharacter "Current Player Character Properties"
+            public Transform2D* PlayerCharacterTransform { get; private set; }
+            /// @}
+
+            /// <summary>
+            /// Sets the current player.
+            /// </summary>
+            ///
+            /// See @ref BattlePlayerQSystem-UpdateData-DetailedDescription "Detailed Description" for more info.
+            ///
+            /// <param name="playerHandle">Player handle of the player being set.</param>
+            public void SetPlayer(BattlePlayerManager.PlayerHandle playerHandle)
+            {
+                PlayerHandle              = playerHandle;
+                PlayerHasSwappedCharacter = false;
+            }
+
+            /// <summary>
+            /// Sets the current player's input data.
+            /// </summary>
+            ///
+            /// See @cref{Battle.QSimulation.Player.BattlePlayerQSystem.UpdateData,PlayerInputData} for more info.
+            ///
+            /// <param name="inputData">Input data being set.</param>
+            public void SetPlayerInput(InputData inputData)
+            {
+                PlayerInputData = inputData;
+            }
+
+            /// <summary>
+            /// Loads a player character to current character properties.
+            /// </summary>
+            ///
+            /// See @ref BattlePlayerQSystem-UpdateData-DetailedDescription "Detailed Description" for more info.
+            ///
+            /// <param name="f">Current simulation frame.</param>
+            /// <param name="playerEntityRef">EntityRef of the player character being loaded.</param>
+            public void LoadPlayerCharacter(Frame f, BattlePlayerEntityRef playerEntityRef)
+            {
+                PlayerCharacterEntityRef = playerEntityRef;
+                PlayerCharacterData      = playerEntityRef.GetDataQComponent(f);
+                PlayerCharacterTransform = playerEntityRef.GetTransform(f);
+            }
+        }
+
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;
 
@@ -361,11 +493,9 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Handle of the player.</param>
+        /// <param name="updateData">Reference to <see cref="BattlePlayerQSystem.UpdateData"/>.</param>
         /// <param name="stackInputStorage">Temporary input storage for bots and abandoned players.</param>
-        ///
-        /// <returns>Pointer to the player's input.</returns>
-        private InputData GetInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle, Input* stackInputStorage)
+        private void GetInput(Frame f, UpdateData updateData, Input* stackInputStorage)
         {
             InputData inputData = new()
             {
@@ -376,15 +506,19 @@ namespace Battle.QSimulation.Player
 
             bool isValid = false;
 
-            if (playerHandle.IsBot)
+            if (updateData.PlayerHandle.IsBot)
             {
-                BattlePlayerBotController.GetBotInput(f, playerHandle, inputData.Input, &inputData.CommandType, inputData.CommandData);
+                BattlePlayerBotController.BotInputData botInput = BattlePlayerBotController.GetBotInput(f, updateData.PlayerHandle);
+                *stackInputStorage    = botInput.Input;
+                inputData.CommandType = botInput.CommandType;
+                inputData.CommandData = botInput.CommandData;
+
                 isValid = inputData.Input->IsValid;
             }
-            else if (!playerHandle.IsAbandoned)
+            else if (!updateData.PlayerHandle.IsAbandoned)
             {
-                inputData.Input = f.GetPlayerInput(playerHandle.PlayerRef);
-                inputData.CommandType = BattleCommand.GetCommand(f, playerHandle.PlayerRef, out inputData.CommandData);
+                inputData.Input = f.GetPlayerInput(updateData.PlayerHandle.PlayerRef);
+                inputData.CommandType = BattleCommand.GetCommand(f, updateData.PlayerHandle.PlayerRef, out inputData.CommandData);
 
                 BattleInputDebugUtils.InputDebugInfo inputDebugInfo = BattleInputDebugUtils.GenerateDebugInfo(inputData.Input);
 
@@ -393,7 +527,7 @@ namespace Battle.QSimulation.Player
                     s_debugLogger.LogFormat(f,
                                             "({0}) Received input ({1}) ({2})\n" +
                                             "struct: {3}",
-                                            playerHandle.Slot,
+                                            updateData.PlayerHandle.Slot,
                                             inputData.Input->DebugNumber,
                                             inputDebugInfo.Summary,
                                             inputDebugInfo.Struct
@@ -418,7 +552,7 @@ namespace Battle.QSimulation.Player
                 };
             }
 
-            return inputData;
+            updateData.SetPlayerInput(inputData);
         }
 
         /// <summary>
@@ -431,7 +565,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle of the player.</param>
         ///
         /// <returns>True if all players on a team have given up.</returns>
-        private static bool HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        private static BattleTeamNumber HandleGiveUpLogic(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
             BattlePlayerSlot slot = playerHandle.Slot;
             BattleTeamNumber team = BattlePlayerManager.PlayerHandle.GetTeamNumber(playerHandle.Slot);
@@ -439,11 +573,11 @@ namespace Battle.QSimulation.Player
             if (!playerHandle.GiveUpState)
             {
                 f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpVoteCancel);
-                return false;
+                return BattleTeamNumber.NoTeam;
             }
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, slot);
-            if (!teammateHandle.PlayState.IsNotInGame())
+            if (teammateHandle.PlayState.IsInGame())
             {
                 if (!playerHandle.IsAbandoned)
                 {
@@ -453,23 +587,14 @@ namespace Battle.QSimulation.Player
                 {
                     f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.Abandoned);
                 }
-                if (!teammateHandle.GiveUpState) return false;
+                if (!teammateHandle.GiveUpState) return BattleTeamNumber.NoTeam;
             }
             else
             {
                 f.Events.BattleGiveUpStateChange(team, slot, BattleGiveUpStateUpdate.GiveUpNow);
             }
 
-            BattleTeamNumber winningTeam = team switch
-            {
-                BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,
-                BattleTeamNumber.TeamBeta => BattleTeamNumber.TeamAlpha,
-
-                _ => BattleTeamNumber.NoTeam
-            };
-
-            BattleGameControlQSystem.OnGameOver(f, winningTeam);
-            return true;
+            return team;
         }
 
         /// <summary>
@@ -542,16 +667,17 @@ namespace Battle.QSimulation.Player
         /// Updates give up state and calls <see cref="BattlePlayerQSystem.HandleGiveUpLogic">HandleGiveUpLogic</see> method which handles the rest of the logic.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Handle of the player.</param>
-        ///
-        /// <returns>True if all players on a team have given up.</returns>
-        private bool HandleGiveUp(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        /// <param name="updateData">Reference to <see cref="BattlePlayerQSystem.UpdateData"/>.</param>
+        private void HandleGiveUp(Frame f, UpdateData updateData)
         {
+            if (updateData.GiveUpTeam != BattleTeamNumber.NoTeam) return;
+
+            BattlePlayerManager.PlayerHandle playerHandle = updateData.PlayerHandle;
             playerHandle.GiveUpState = !playerHandle.GiveUpState;
 
             s_debugLogger.LogFormat(f, "({0}) Give up input received, new state: {1}", playerHandle.Slot, playerHandle.GiveUpState);
 
-            return HandleGiveUpLogic(f, playerHandle);
+            updateData.GiveUpTeam = HandleGiveUpLogic(f, playerHandle);
         }
 
         /// <summary>
@@ -560,52 +686,61 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Handle of the player.</param>
+        /// <param name="updateData">Reference to <see cref="BattlePlayerQSystem.UpdateData"/>.</param>
         /// <param name="playerCharacterNumber">Character number of the character being swapped to.</param>
-        ///
-        /// <returns>True if character was swapped.</returns>
-        private bool HandleCharacterSwapping(Frame f, BattlePlayerManager.PlayerHandle playerHandle, int playerCharacterNumber)
+        private void HandleCharacterSwapping(Frame f, UpdateData updateData, int playerCharacterNumber)
         {
-            if (playerCharacterNumber == playerHandle.SelectedCharacterNumber) return false;
+            if (playerCharacterNumber == updateData.PlayerHandle.SelectedCharacterNumber) return;
 
-            s_debugLogger.LogFormat(f, "({0}) Character swap input received", playerHandle.Slot);
+            s_debugLogger.LogFormat(f, "({0}) Character swap input received", updateData.PlayerHandle.Slot);
 
-            if (!playerHandle.AllowCharacterSwapping)
+            if (!updateData.PlayerHandle.AllowCharacterSwapping)
             {
-                s_debugLogger.LogFormat(f, "({0}) Character swap input rejected, as AllowCharacterSwapping == false", playerHandle.Slot);
-                return false;
+                s_debugLogger.LogFormat(f, "({0}) Character swap input rejected, as AllowCharacterSwapping == false", updateData.PlayerHandle.Slot);
+                return;
             }
 
-            s_debugLogger.LogFormat(f, "({0}) Swapping to character number: {1}", playerHandle.Slot, playerCharacterNumber);
+            s_debugLogger.LogFormat(f, "({0}) Swapping to character number: {1}", updateData.PlayerHandle.Slot, playerCharacterNumber);
 
-            BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, playerCharacterNumber);
-            return true;
+            bool select = true;
+            BattlePlayerManager.SpawnPlayer(f, updateData.PlayerHandle.Slot, playerCharacterNumber, select);
+            updateData.PlayerHasSwappedCharacter = select;
         }
 
         /// <summary>
-        /// Private helper method for handling player logic when out of play or any of its substates.<br/>
-        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// Private helper method for handling non character update.<br/>
+        /// Subprocess of <see cref="BattlePlayerQSystem.Update">Update</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Handle of the player.</param>
-        ///
-        /// <returns>True if the player is out of play or out of play respawn.</returns>
-        private bool HandleOutOfPlay(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        /// <param name="updateData">Reference to <see cref="BattlePlayerQSystem.UpdateData"/>.</param>
+        private void HandleNonCharacterUpdate(Frame f, UpdateData updateData)
         {
+            switch (updateData.PlayerInputData.CommandType)
+            {
+                case BattleCommand.Type.GiveUp:
+                    HandleGiveUp(f, updateData);
+                    break;
+
+                case BattleCommand.Type.SwapCharacter:
+                    BattleCharacterSwapQCommand swapCharacterData = (BattleCharacterSwapQCommand)updateData.PlayerInputData.CommandData;
+                    HandleCharacterSwapping(f, updateData, swapCharacterData.CharacterNumber);
+                    break;
+            }
+
             // handle auto respawning
-            if (playerHandle.PlayState.IsOutOfPlayRespawning() && !playerHandle.RespawnTimer.IsRunning(f) && playerHandle.AllowCharacterSwapping)
+            if (updateData.PlayerHandle.PlayState.IsOutOfPlayRespawning() && !updateData.PlayerHandle.RespawnTimer.IsRunning(f) && updateData.PlayerHandle.AllowCharacterSwapping)
             {
                 int i;
 
                 // try to spawn next character
                 for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
                 {
-                    if (playerHandle.GetCharacterState(i) == BattlePlayerCharacterState.Alive)
+                    if (updateData.PlayerHandle.GetCharacterState(i) != BattlePlayerCharacterState.OutOfPlayDead)
                     {
-                        s_debugLogger.LogFormat(f,"({0}) Auto spawning character number: {1}", playerHandle.Slot, i);
+                        s_debugLogger.LogFormat(f, "({0}) Auto spawning character number: {1}", updateData.PlayerHandle.Slot, i);
 
-                        BattlePlayerManager.SpawnPlayer(f, playerHandle.Slot, i);
+                        BattlePlayerManager.SpawnPlayer(f, updateData.PlayerHandle.Slot, i, select: true);
                         break;
                     }
                 }
@@ -613,50 +748,55 @@ namespace Battle.QSimulation.Player
                 // handle out of characters
                 if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
                 {
-                    s_debugLogger.LogFormat(f, "({0}) Player is out of characters!", playerHandle.Slot);
+                    s_debugLogger.LogFormat(f, "({0}) Player is out of characters!", updateData.PlayerHandle.Slot);
 
-                    playerHandle.SetOutOfPlayFinal();
+                    updateData.PlayerHandle.SetOutOfPlayFinal();
                 }
-
-                return true;
             }
-
-            if (playerHandle.PlayState.IsOutOfPlay()) return true;
-
-            return false;
         }
 
         /// <summary>
-        /// Private helper method for handling player logic and updates when state is in play.<br/>
-        /// Subprocess of the <see cref="BattlePlayerQSystem.Update">Update</see> method.
+        /// Private helper method for handling character update.<br/>
+        /// Subprocess of <see cref="BattlePlayerQSystem.Update">Update</see> method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="input">Pointer to the player's input data.</param>
-        /// <param name="playerHandle">Handle of the player.</param>
-        /// <param name="playerData">Pointer to the player's data component</param>
-        /// <param name="playerEntity">Reference to the player's entity</param>
-        /// <param name="playerTransform">Pointer to the player's transform component.</param>
-        private void HandleInPlay(Frame f, Input* input, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, Transform2D* playerTransform)
+        /// <param name="updateData">Reference to <see cref="BattlePlayerQSystem.UpdateData"/>.</param>
+        /// <param name="selected"></param>
+        private void HandleCharacterUpdate(Frame f, UpdateData updateData, bool selected)
         {
-            playerData->ViewMovementVector = FPVector2.Zero;
+            if (updateData.PlayerHasSwappedCharacter) selected = false;
+
+            updateData.PlayerCharacterData->ViewMovementVector = FPVector2.Zero;
 
             bool updateMovement = true;
 
-            if (!playerData->AbilityCooldownSec.IsRunning(f) && playerData->AbilityActivateBufferSec.IsRunning(f))
+            Input* input = updateData.PlayerInputData.Input;
+
+            if (!updateData.PlayerCharacterData->StunCooldown.IsRunning(f))
             {
-                AbilityActivate(f, playerData, playerTransform);
+                updateData.PlayerCharacterData->MovementEnabled = !updateData.PlayerCharacterData->DisableMovement;
+                updateData.PlayerCharacterData->RotationEnabled = !updateData.PlayerCharacterData->DisableRotation;
+            }
+
+            BattlePlayerClassManager.OnUpdate(f, updateData.PlayerHandle, updateData.PlayerCharacterData, updateData.PlayerCharacterEntityRef, &input->Special);
+
+            if (!selected) return;
+
+            switch (updateData.PlayerInputData.CommandType)
+            {
+                case BattleCommand.Type.ActivateAbility:
+                    updateData.PlayerCharacterData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0_50);
+                    break;
+            }
+
+            if (!updateData.PlayerCharacterData->AbilityCooldownSec.IsRunning(f) && updateData.PlayerCharacterData->AbilityActivateBufferSec.IsRunning(f))
+            {
+                AbilityActivate(f, updateData.PlayerCharacterData, updateData.PlayerCharacterTransform);
                 updateMovement = false;
             }
 
-            if (!playerData->StunCooldown.IsRunning(f))
-            {
-                playerData->MovementEnabled = !playerData->DisableMovement;
-                playerData->RotationEnabled = !playerData->DisableRotation;
-            }
-
-            BattlePlayerClassManager.OnUpdate(f, playerHandle, playerData, playerEntity, &input->Special);
-            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, playerData, playerEntity, playerTransform, input);
+            if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, updateData.PlayerCharacterData, updateData.PlayerCharacterEntityRef, updateData.PlayerCharacterTransform, input);
         }
 
         private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)

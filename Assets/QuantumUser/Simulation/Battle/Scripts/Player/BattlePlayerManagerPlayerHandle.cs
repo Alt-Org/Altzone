@@ -6,6 +6,7 @@
 /// </summary>
 
 // System usings
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 // Quantum usings
@@ -419,6 +420,26 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly BattlePlayerEntityRef GetSelectedCharacterEntityRef(Frame f) => _internalHandle.GetSelectedCharacterEntityRef(f);
 
+            /// <summary>
+            /// Retrieves a character's EntityRef based on <paramref name="characterNumber"/>.
+            /// </summary>
+            ///
+            /// Part of @ref BattlePlayerManager-PlayerHandle-PublicMethods-PlayerCharacterMethods "Player Character Methods"
+            ///
+            /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+            /// See [{Character Numbers}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// <param name="f">Current simulation frame.</param>
+            /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
+            /// <param name="updateViewPlayState">Whether to update view play state or not.</param>
+            ///
+            /// <returns>Character's EntityRef.</returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly BattlePlayerEntityRef GetCharacterEntityRef(Frame f, int characterNumber, bool updateViewPlayState = false)
+            {
+                return _internalHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState);
+            }
+
             #endregion Public Methods - Player Character Methods
             /// @}
 
@@ -687,6 +708,24 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
+            /// Sets all players' character numbers to a given <paramref name="characterNumber"/>.
+            /// </summary>
+            ///
+            /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// Internal only
+            ///
+            /// <param name="playerManagerData">Pointer to the player manager data.</param>
+            /// <param name="characterNumber">The character number that all players will be set to.</param>
+            public static void SetAllCharacterNumbers(BattlePlayerManagerDataQSingleton* playerManagerData, int characterNumber)
+            {
+                for (int i = 0; i < Constants.BATTLE_PLAYER_SLOT_COUNT; i++)
+                {
+                    playerManagerData->CharacterSelectedNumbers[i] = characterNumber;
+                }
+            }
+
+            /// <summary>
             /// Sets all character's previous positions to a given <paramref name="position"/>
             /// </summary>
             ///
@@ -698,7 +737,7 @@ namespace Battle.QSimulation.Player
             /// <param name="position">The position that all previous character positions will be set to.</param>
             public static void SetAllPreviousCharacterPosition(BattlePlayerManagerDataQSingleton* playerManagerData, FPVector2 position)
             {
-                for(int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_TOTAL_COUNT; i++)
+                for (int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_TOTAL_COUNT; i++)
                 {
                     playerManagerData->CharacterAllPreviousPositions[i] = position;
                 }
@@ -719,7 +758,7 @@ namespace Battle.QSimulation.Player
             {
                 if (!(characterNumber >= 0 && characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT))
                 {
-                    s_debugLogger.ErrorFormat("Character number {1} is not valid", characterNumber);
+                    s_debugLogger.ErrorFormat("Character number {0} is not valid", characterNumber);
                     return false;
                 }
                 return true;
@@ -914,15 +953,14 @@ namespace Battle.QSimulation.Player
             }
 
             /// <summary>
-            /// Gets player's <em>SpawnPosition</em>. Used for default position spawn behaviour.
+            /// Gets player's <em>DefaultSpawnPosition</em>. Used for default position spawn behaviour.
             /// </summary>
             ///
             /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
             ///
             /// Internal only
-
             public readonly FPVector2 DefaultSpawnPosition
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => s_spawnPoints[Index]; }
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetCharacterDefaultSpawnPosition(1); }
 
             /// @}
 
@@ -982,6 +1020,7 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly void SetSelectedCharacterNumber(int characterNumber)
             {
+                DevAssertIsValidCharacterNumber(characterNumber);
                 _playerManagerData->CharacterSelectedNumbers[Index] = characterNumber;
             }
 
@@ -1056,7 +1095,7 @@ namespace Battle.QSimulation.Player
             /// See [{Character Numbers}](#page-concepts-player-character-entity-character-number) for more info.<br/>
             /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
             ///
-            /// Internal only
+            /// @clink{Exposed:PlayerHandle.GetCharacterEntityRef} in public @cref{PlayerHandle}
             ///
             /// <param name="f">Current simulation frame.</param>
             /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
@@ -1066,7 +1105,23 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public readonly BattlePlayerEntityRef GetCharacterEntityRef(Frame f, int characterNumber, bool updateViewPlayState = false)
             {
+                DevAssertIsValidCharacterNumber(characterNumber);
                 return (BattlePlayerEntityRef)BattleEntityManager.Get(f, _playerManagerData->CharacterEntityGroupIDs[Index], characterNumber, updateViewPlayState);
+            }
+
+            /// <summary>
+            /// Gets a player character's default spawn position based on <paramref name="characterNumber"/>. Used for default position spawn behaviour.
+            /// </summary>
+            ///
+            /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.<br/>
+            /// See [{Character Numbers}](#page-concepts-player-character-entity-character-number) for more info.
+            ///
+            /// Internal only
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public readonly FPVector2 GetCharacterDefaultSpawnPosition(int characterNumber)
+            {
+                DevAssertIsValidCharacterNumber(characterNumber);
+                return s_spawnPoints[GetCharacterIndex(characterNumber)];
             }
 
             #endregion Public Methods - Player Character - Character Entity
@@ -1093,7 +1148,11 @@ namespace Battle.QSimulation.Player
             ///
             /// <returns>The CharacterState of the given player.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public readonly BattlePlayerCharacterState GetCharacterState(int characterNumber) => _playerManagerData->CharactersAllStates[GetCharacterIndex(characterNumber)];
+            public readonly BattlePlayerCharacterState GetCharacterState(int characterNumber)
+            {
+                DevAssertIsValidCharacterNumber(characterNumber);
+                return _playerManagerData->CharactersAllStates[GetCharacterIndex(characterNumber)];
+            }
 
             /// <summary>
             /// Sets a player's Character's Character state to given <paramref name="state"/> based on <paramref name="characterNumber"/>.
@@ -1109,7 +1168,11 @@ namespace Battle.QSimulation.Player
             /// <param name="characterNumber">CharacterNumber of desired player's character.</param>
             /// <param name="state">New state of the character.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public readonly void SetCharacterState(int characterNumber, BattlePlayerCharacterState state) => _playerManagerData->CharactersAllStates[GetCharacterIndex(characterNumber)] = state;
+            public readonly void SetCharacterState(int characterNumber, BattlePlayerCharacterState state)
+            {
+                DevAssertIsValidCharacterNumber(characterNumber);
+                _playerManagerData->CharactersAllStates[GetCharacterIndex(characterNumber)] = state;
+            }
 
             /// <summary>
             /// Retrieves a player's character's previous position based on <paramref name="characterNumber"/>.
@@ -1126,7 +1189,11 @@ namespace Battle.QSimulation.Player
             ///
             /// <returns>The previous position of the given player's character.</returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public readonly FPVector2 GetPreviousCharacterPosition(int characterNumber) => _playerManagerData->CharacterAllPreviousPositions[GetCharacterIndex(characterNumber)];
+            public readonly FPVector2 GetPreviousCharacterPosition(int characterNumber)
+            {
+                DevAssertIsValidCharacterNumber(characterNumber);
+                return _playerManagerData->CharacterAllPreviousPositions[GetCharacterIndex(characterNumber)];
+            }
 
             /// <summary>
             /// Sets a player's character's previous position to given <paramref name="position"/> based on <paramref name="characterNumber"/>.
@@ -1140,7 +1207,11 @@ namespace Battle.QSimulation.Player
             /// <param name="characterNumber">CharacterNumber of the desired player's character.</param>
             /// <param name="position">New previous position of the character.</param>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public readonly void SetPreviousCharacterPosition(int characterNumber, FPVector2 position) => _playerManagerData->CharacterAllPreviousPositions[GetCharacterIndex(characterNumber)] = position;
+            public readonly void SetPreviousCharacterPosition(int characterNumber, FPVector2 position)
+            {
+                DevAssertIsValidCharacterNumber(characterNumber);
+                _playerManagerData->CharacterAllPreviousPositions[GetCharacterIndex(characterNumber)] = position;
+            }
 
             #endregion Public Methods - Player Character - Character State
             /// @}
@@ -1172,7 +1243,18 @@ namespace Battle.QSimulation.Player
             ///
             /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number)
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private readonly int GetCharacterIndex(int characterNumber) => GetCharacterOffset() + characterNumber;
+            private readonly int GetCharacterIndex(int characterNumber)
+            {
+                DevAssertIsValidCharacterNumber(characterNumber);
+                return GetCharacterOffset() + characterNumber;
+            }
+
+            [Conditional("UNITY_EDITOR")]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private readonly void DevAssertIsValidCharacterNumber(int characterNumber)
+            {
+                BattleDebugLogger.DevAssertFormat(nameof(PlayerHandleInternal), IsValidCharacterNumber(characterNumber), "Invalid characterNumber = {0}", characterNumber);
+            }
 
             #endregion Private Methods
         }

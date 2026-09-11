@@ -1,5 +1,7 @@
 enum BattlePlayerCharacterState
 {
-    Alive,
-    Dead
+    OutOfPlay,
+    OutOfPlayDead,
+    InPlay,
+    InPlaySelected
 }
