@@ -70,9 +70,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private GameObject _gyroscopeRotationInstructionImage;
 
         [Header("Arena options")] [SerializeField]
-        private Image _arenaBackgroundImage;
+        private GameObject _arenaBackgroundBlackImage;
 
-        [SerializeField] private Sprite _arenaFloorBackground;
         [SerializeField] private RectTransform _arenaImage;
         [Space] [SerializeField] private Slider _arenaScaleSlider;
         [SerializeField] private TMP_InputField _arenaScaleInputField;
@@ -276,13 +275,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 {
                     _stoneWallTopCharacterImage.SetActive(value);
                     _stoneWallBottomCharacterImage.SetActive(value);
+
+
+                    SettingsCarrier.Instance.BattleArenaStoneWallCharacter = value;
                 }
             );
 
             _outerEdgeWithoutFloorToggle.onValueChanged.AddListener((value) =>
                 {
-                    Debug.Log($"[OuterEdgeWithoutFloorToggle] value = {value}");
-
                     if (value)
                     {
                         _outsideFloorPopup.SetActive(true);
@@ -291,7 +291,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     {
                         SetOuterEdgeWithoutFloor(false);
 
-                        SettingsCarrier.Instance.BattleOuterEdgeWithoutFloor = false;
+                        SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor = false;
                     }
                 }
             );
@@ -314,7 +314,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 _outsideFloorPopup.SetActive(false);
 
-                SettingsCarrier.Instance.BattleOuterEdgeWithoutFloor = true;
+                SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor = true;
 
                 SetOuterEdgeWithoutFloor(true);
             });
@@ -325,7 +325,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
                 _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(false);
 
-                SettingsCarrier.Instance.BattleOuterEdgeWithoutFloor = false;
+                SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor = false;
 
                 SetOuterEdgeWithoutFloor(false);
             });
@@ -418,8 +418,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaPosXSlider.value = SettingsCarrier.Instance.BattleArenaPosX;
             _arenaPosYSlider.value = SettingsCarrier.Instance.BattleArenaPosY;
 
+            //Loading StoneWallCharacter settings.
+            bool stoneWallCharacter = SettingsCarrier.Instance.BattleArenaStoneWallCharacter;
+            _stoneWallToggle.SetIsOnWithoutNotify(stoneWallCharacter);
+
+            _stoneWallTopCharacterImage.SetActive(stoneWallCharacter);
+            _stoneWallBottomCharacterImage.SetActive(stoneWallCharacter);
+
             //Loading OuterEdgeWithoutFloor settings.
-            bool outerEdgeWithoutFloor = SettingsCarrier.Instance.BattleOuterEdgeWithoutFloor;
+            bool outerEdgeWithoutFloor = SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor;
             _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(outerEdgeWithoutFloor);
             SetOuterEdgeWithoutFloor(outerEdgeWithoutFloor);
         }
@@ -488,37 +495,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void UpdateInputSettings(BattleMovementInputType movementType, BattleRotationInputType rotationType)
         {
-            Debug.Log($"[INPUT SETTINGS] Movement: {movementType}, Rotation: {rotationType}");
-
             // Setting input values to settings carrier
             SettingsCarrier.Instance.BattleMovementInput = movementType;
             SettingsCarrier.Instance.BattleRotationInput = rotationType;
-
-            // If joystick movement was selected instantianting the joysticks if they are not yet instantiated
-            // if (movementType == BattleMovementInputType.Joystick)
-            // {
-            //     if (_battleUiEditor._instantiatedMoveJoystick == null)
-            //     {
-            //         _battleUiEditor._instantiatedMoveJoystick = _battleUiEditor
-            //             .InstantiateBattleUiElement(BattleUiElementType.MoveJoystick)
-            //             .GetComponent<BattleUiMovableElement>();
-            //         _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedMoveJoystick);
-            //     }
-            //
-            //     if (_battleUiEditor._instantiatedRotateJoystick == null)
-            //     {
-            //         _battleUiEditor._instantiatedRotateJoystick = _battleUiEditor
-            //             .InstantiateBattleUiElement(BattleUiElementType.RotateJoystick)
-            //             .GetComponent<BattleUiMovableElement>();
-            //         _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedRotateJoystick);
-            //     }
-            // }
 
             // Instantiate movement joystick if needed
             if (movementType == BattleMovementInputType.Joystick &&
                 _battleUiEditor._instantiatedMoveJoystick == null)
             {
-                Debug.Log("[MOVE JOYSTICK] Instantiating MoveJoystick");
                 _battleUiEditor._instantiatedMoveJoystick = _battleUiEditor
                     .InstantiateBattleUiElement(BattleUiElementType.MoveJoystick)
                     .GetComponent<BattleUiMovableElement>();
@@ -538,20 +522,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _battleUiEditor.SetDataToUiElement(
                     _battleUiEditor._instantiatedRotateJoystick);
             }
-
-            // // Toggling rotation toggles isOn based on rotation type and visibility based on movement type
-            // _twoFingerRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.TwoFinger);
-            // _twoFingerRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Swipe ||
-            //                                               movementType == BattleMovementInputType.PointAndClick ||
-            //                                               movementType == BattleMovementInputType.FollowPointer);
-            //
-            // _swipeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Swipe);
-            // _swipeRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.PointAndClick);
-            //
-            // _joystickRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Joystick);
-            // _joystickRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
-            //
-            // _gyroscopeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Gyroscope);
 
             //Rotation togglle visibility
             bool twoFingerVisibility =
@@ -598,45 +568,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _swipeMaxDistanceHolder.SetActive(rotationType == BattleRotationInputType.Swipe);
             _movementSwipeSensitivityHolder.SetActive(movementType == BattleMovementInputType.Swipe);
             _gyroscopeMinAngleHolder.SetActive(rotationType == BattleRotationInputType.Gyroscope);
-
-            // Rotation instruction images take priority over movement ones
-            // bool showRotationImage =
-            //     (rotationType == BattleRotationInputType.TwoFinger && _twoFingerRotationInstructionImage != null) ||
-            //     (rotationType == BattleRotationInputType.Swipe && _swipeRotationInstructionImage != null) ||
-            //     (rotationType == BattleRotationInputType.Joystick && _joystickRotationInstructionImage != null) ||
-            //     (rotationType == BattleRotationInputType.Gyroscope && _gyroscopeRotationInstructionImage != null);
-
-            // if (_swipeInstructionImage != null)
-            //     _swipeInstructionImage.SetActive(!showRotationImage && movementType == BattleMovementInputType.Swipe);
-            // if (_pointAndClickInstructionImage != null)
-            //     _pointAndClickInstructionImage.SetActive(!showRotationImage &&
-            //                                              movementType == BattleMovementInputType.PointAndClick);
-            // if (_joystickInstructionImage != null)
-            //     _joystickInstructionImage.SetActive(!showRotationImage &&
-            //                                         movementType == BattleMovementInputType.Joystick);
-            // if (_followPointerInstructionImage != null)
-            //     _followPointerInstructionImage.SetActive(!showRotationImage &&
-            //                                              movementType == BattleMovementInputType.FollowPointer);
-            //
-            // if (_twoFingerRotationInstructionImage != null)
-            //     _twoFingerRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.TwoFinger);
-            // if (_swipeRotationInstructionImage != null)
-            //     _swipeRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Swipe);
-            // if (_joystickRotationInstructionImage != null)
-            //     _joystickRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Joystick);
-            // if (_gyroscopeRotationInstructionImage != null)
-            //     _gyroscopeRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Gyroscope);
-
-            Debug.Log(
-                $"[IMAGES] " +
-                $"Swipe={_swipeInstructionImage?.name ?? "NULL"}, " +
-                $"PointClick={_pointAndClickInstructionImage?.name ?? "NULL"}, " +
-                $"Joystick={_joystickInstructionImage?.name ?? "NULL"}, " +
-                $"Follow={_followPointerInstructionImage?.name ?? "NULL"}, " +
-                $"TwoFinger={_twoFingerRotationInstructionImage?.name ?? "NULL"}, " +
-                $"RotSwipe={_swipeRotationInstructionImage?.name ?? "NULL"}, " +
-                $"RotJoystick={_joystickRotationInstructionImage?.name ?? "NULL"}, " +
-                $"Gyro={_gyroscopeRotationInstructionImage?.name ?? "NULL"}");
 
             // Movement instruction images
             if (_swipeInstructionImage != null)
@@ -792,16 +723,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void SetOuterEdgeWithoutFloor(bool enabled)
         {
-            if (enabled)
-            {
-                _arenaBackgroundImage.sprite = null;
-                _arenaBackgroundImage.color = Color.black;
-            }
-            else
-            {
-                _arenaBackgroundImage.sprite = _arenaFloorBackground;
-                _arenaBackgroundImage.color = Color.white;
-            }
+            _arenaBackgroundBlackImage.SetActive(enabled);
         }
     }
 }

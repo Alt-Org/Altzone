@@ -127,6 +127,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public const string BattleSwipeMaxDistanceKey = "BattleSwipeMaxDistance";
     public const string BattleSwipeSensitivityKey = "BattleSwipeSensitivity";
     public const string BattleGyroMinAngleKey = "BattleGyroMinAngle";
+    public const string BattleArenaStoneWallCharacterKey = "BattleStoneWallCharacter";
     public const string BattleOuterEdgeWithoutFloorKey = "BattleOuterEdgeWithoutFloor";
 
     public const int BattleArenaScaleDefault = 100;
@@ -423,16 +424,32 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         MainMenuMusic
     }
 
-    private bool _battleOuterEdgeWithoutFloor;
+    private bool _battleArenaArenaStoneWallCharacter;
 
-    public bool BattleOuterEdgeWithoutFloor
+    public bool BattleArenaStoneWallCharacter
     {
-        get => _battleOuterEdgeWithoutFloor;
+        get => _battleArenaArenaStoneWallCharacter;
         set
         {
-            if (_battleOuterEdgeWithoutFloor == value) return;
+            if (_battleArenaArenaStoneWallCharacter == value) return;
+            _battleArenaArenaStoneWallCharacter = value;
 
-            _battleOuterEdgeWithoutFloor = value;
+            PlayerPrefs.SetInt(
+                BattleArenaStoneWallCharacterKey,
+                value ? 1 : 0);
+        }
+    }
+
+    private bool _battleArenaArenaOuterEdgeWithoutFloor;
+
+    public bool BattleArenaOuterEdgeWithoutFloor
+    {
+        get => _battleArenaArenaOuterEdgeWithoutFloor;
+        set
+        {
+            if (_battleArenaArenaOuterEdgeWithoutFloor == value) return;
+
+            _battleArenaArenaOuterEdgeWithoutFloor = value;
 
             PlayerPrefs.SetInt(
                 BattleOuterEdgeWithoutFloorKey,
@@ -492,7 +509,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _battleSwipeSensitivity = PlayerPrefs.GetFloat(BattleSwipeSensitivityKey, BattleSwipeSensitivityDefault);
         _battleGyroMinAngle = PlayerPrefs.GetFloat(BattleGyroMinAngleKey, BattleGyroMinAngleDefault);
 
-        _battleOuterEdgeWithoutFloor = PlayerPrefs.GetInt(BattleOuterEdgeWithoutFloorKey, 0) == 1;
+        _battleArenaArenaStoneWallCharacter = PlayerPrefs.GetInt(BattleArenaStoneWallCharacterKey, 1) == 0;
+        _battleArenaArenaOuterEdgeWithoutFloor = PlayerPrefs.GetInt(BattleOuterEdgeWithoutFloorKey, 0) == 1;
 
         _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
 
