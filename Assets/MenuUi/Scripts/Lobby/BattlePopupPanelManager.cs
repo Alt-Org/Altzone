@@ -74,8 +74,8 @@ public class BattlePopupPanelManager : MonoBehaviour
                 {
                     try
                     {
-                        int mode = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.CustomGameModeKey, (int)CustomGameMode.TwoVersusTwo);
-                        SwitchCustomRoom((CustomGameMode)mode);
+                        int mode = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.CustomGameModeKey, (int)GameType.BattlePingPong);
+                        SwitchCustomRoom((GameType)mode);
                     }
                     catch
                     {
@@ -221,11 +221,12 @@ public class BattlePopupPanelManager : MonoBehaviour
         return null;
     }
 
-    private void SwitchCustomRoom(CustomGameMode mode)
+    private void SwitchCustomRoom(GameType mode)
     {
         switch (mode)
         {
-            case CustomGameMode.TwoVersusTwo:
+            case GameType.BattlePingPong:
+            case GameType.BattleTestFlipperGame:
                 _custom2v2WaitingRoom.SetActive(true);
                 break;
             default:

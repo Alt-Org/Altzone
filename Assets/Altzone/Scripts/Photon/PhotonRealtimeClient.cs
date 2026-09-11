@@ -673,7 +673,7 @@ public static class PhotonRealtimeClient
         }
     }
 
-    private static RoomOptions GetRoomOptions(MatchmakingType lobbyType, MatchmakingType gametype = MatchmakingType.None, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", string clanId = "", int soulhomeRank = -1, int customGameMode = -1, bool showToFriends = false, bool showToClan = false, string leaderId = null)
+    private static RoomOptions GetRoomOptions(MatchmakingType lobbyType, MatchmakingType matchmakingType = MatchmakingType.None, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", string clanId = "", int soulhomeRank = -1, int customGameMode = -1, bool showToFriends = false, bool showToClan = false, string leaderId = null)
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
@@ -684,14 +684,14 @@ public static class PhotonRealtimeClient
             { PhotonBattleRoom.PlayerPositionKey1, LocalPlayer.UserId }, // Local player always starts in slot 1 first when creating room
             { PhotonBattleRoom.PlayerPositionKey2, "" },
         };
-        if (gametype is MatchmakingType.None) { gametype = lobbyType; }
+        if (matchmakingType is MatchmakingType.None) { matchmakingType = lobbyType; }
 
         List<string> propertiesShowingToLobby = new() { PhotonBattleRoom.MatchmakingKey, PhotonBattleRoom.IsMatchmakingKey };
 
         if (lobbyType == MatchmakingType.FriendLobby)
         {
             customRoomProperties.Add(PhotonBattleRoom.PremadeModeKey, true);
-            customRoomProperties.Add(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)gametype);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)matchmakingType);
             customRoomProperties.Add(PhotonBattleRoom.PremadeLeaderUserIdKey, LocalPlayer.UserId);
             customRoomProperties.Add(PhotonBattleRoom.PremadeLeaderUsernameKey, LocalPlayer.NickName);
             customRoomProperties.Add(PhotonBattleRoom.PremadeInvitedUserIdKey, "");
@@ -897,12 +897,12 @@ public static class PhotonRealtimeClient
         );
     }
 
-    public static bool CreateInRoomPremadeLobbyRoom(MatchmakingType gameType= MatchmakingType.None, string[] expectedUsers = null)
+    public static bool CreateInRoomPremadeLobbyRoom(MatchmakingType matchmakingType= MatchmakingType.None, string[] expectedUsers = null)
     {
-        string roomName = $"FriendLobby_{LocalPlayer.UserId}_{gameType}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        string roomName = $"FriendLobby_{LocalPlayer.UserId}_{matchmakingType}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
         RoomOptions roomOptions = GetRoomOptions(
             lobbyType: MatchmakingType.FriendLobby,
-            gametype: gameType,
+            matchmakingType: matchmakingType,
             roomName: roomName
         );
 
