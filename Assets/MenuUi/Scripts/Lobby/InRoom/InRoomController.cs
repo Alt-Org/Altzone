@@ -59,37 +59,37 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void OnEnable()
         {
             if (_startGameButton != null) _startGameButton.interactable = true;
-            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = InLobbyController.SelectedGameType == GameType.FriendLobby;
+            if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.interactable = InLobbyController.SelectedGameType == MatchmakingType.FriendLobby;
 
             switch (InLobbyController.SelectedGameType)
             {
-                case GameType.Custom:
+                case MatchmakingType.Custom:
                     if (_title != null) StartCoroutine(SetRoomTitle());
                     if (_conflictText != null) StartCoroutine(CycleConflicts());
                     StartCustomRoomTimeoutMonitoring();
                     break;
-                case GameType.FriendLobby:
+                case MatchmakingType.FriendLobby:
                     if (_title != null) _title.text = "Friend Lobby";
                     if (_gameType) _gameType.text = InLobbyController.SelectedPremadeTargetGameType.ToString();
                     if (_noticeText != null) _noticeText.text = "Kutsu yksi online-pelaaja ja valitse haettava 2v2 pelimuoto.";
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Kutsu online-pelaaja";
                     EnsureInviteSelectorPanel();
                     break;
-                case GameType.Random2v2:
+                case MatchmakingType.Random2v2:
                     //if (_title != null) _title.text = "Keräily 2v2";
                     //if (_noticeText != null) _noticeText.text = "Tätä pelimuotoa voi mennä pelaamaan yksin tai kaverin kanssa (työn alla). Huom. Jos menet pelaamaan yksin, paikan valinnalla ei ole merkitystä.";
                     //if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu kaverille";
                     _roomSwitcher.ClosePanels();
                     StartPlaying();
                     break;
-                case GameType.Clan2v2:
+                case MatchmakingType.Clan2v2:
                     if (_title != null) _title.text = "Klaani 2v2";
                     if (_noticeText != null) _noticeText.text = "Kutsun lähettäminen ei vielä toimi. Saman klaanin jäsen voi liittyä tähän huoneeseen menemällä peliin 2v2 klaanijäsenen kanssa.";
                     if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu yhdelle klaanin jäsenelle";
                     break;
             }
 
-            if (InLobbyController.SelectedGameType == GameType.FriendLobby)
+            if (InLobbyController.SelectedGameType == MatchmakingType.FriendLobby)
             {
                 StartInviteLifecycleMonitoring();
             }
@@ -98,7 +98,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 StopInviteLifecycleMonitoring();
             }
 
-            if (InLobbyController.SelectedGameType != GameType.Custom)
+            if (InLobbyController.SelectedGameType != MatchmakingType.Custom)
             {
                 StopCustomRoomTimeoutMonitoring();
             }
@@ -150,11 +150,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             switch (InLobbyController.SelectedGameType)
             {
-                case GameType.Custom:
+                case MatchmakingType.Custom:
                     this.Publish(new LobbyManager.StartPlayingEvent());
                     break;
 
-                case GameType.FriendLobby:
+                case MatchmakingType.FriendLobby:
                     if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
                     {
                         RestoreStartButton();
@@ -175,10 +175,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
                         return;
                     }
 
-                    GameType targetGameType = InLobbyController.SelectedPremadeTargetGameType;
-                    if (targetGameType != GameType.Random2v2 && targetGameType != GameType.Clan2v2)
+                    MatchmakingType targetGameType = InLobbyController.SelectedPremadeTargetGameType;
+                    if (targetGameType != MatchmakingType.Random2v2 && targetGameType != MatchmakingType.Clan2v2)
                     {
-                        targetGameType = GameType.Random2v2;
+                        targetGameType = MatchmakingType.Random2v2;
                     }
 
                     string localUserId = PhotonRealtimeClient.LocalLobbyPlayer?.UserId ?? string.Empty;
@@ -200,7 +200,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     this.Publish(new LobbyManager.StartMatchmakingEvent(targetGameType, true));
                     break;
 
-                case GameType.Clan2v2:
+                case MatchmakingType.Clan2v2:
                     if (PhotonLobbyRoom.CountRealPlayers() == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
                     {
                         // Prevent starting matchmaking when this room is actually a queue room
@@ -223,7 +223,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                         RestoreStartButton();
                     }
                     break;
-                case GameType.Random2v2:
+                case MatchmakingType.Random2v2:
                     // Prevent starting matchmaking when this room is a queue room
                     try
                     {
@@ -245,7 +245,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void OnInviteOnlinePlayerButtonPressed()
         {
-            if (InLobbyController.SelectedGameType != GameType.FriendLobby) return;
+            if (InLobbyController.SelectedGameType != MatchmakingType.FriendLobby) return;
             StartCoroutine(InviteOnlinePlayerRoutine());
         }
 
@@ -312,7 +312,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             string localUserId = GetLocalUserId();
             List<ClanMember> members = null;
-            if (InLobbyController.SelectedPremadeTargetGameType == GameType.Clan2v2)
+            if (InLobbyController.SelectedPremadeTargetGameType == MatchmakingType.Clan2v2)
             {
                 ClanData clan = null;
                 Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, data => clan = data);
@@ -324,7 +324,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 if (onlinePlayer == null || string.IsNullOrEmpty(onlinePlayer._id)) continue;
                 if (onlinePlayer._id == localUserId) continue;
                 if (IsPlayerAlreadyInCurrentRoom(onlinePlayer._id)) continue;
-                if (InLobbyController.SelectedPremadeTargetGameType == GameType.Clan2v2)
+                if (InLobbyController.SelectedPremadeTargetGameType == MatchmakingType.Clan2v2)
                 {
                     if(members.Find((m) => m.Id == onlinePlayer._id) == null) continue;
                 }
@@ -402,7 +402,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             return true;
         }
 
-        private void ApplyPendingPremadeInviteSelection(string invitedUserId, string localUserId, string localUsername, GameType targetGameType)
+        private void ApplyPendingPremadeInviteSelection(string invitedUserId, string localUserId, string localUsername, MatchmakingType targetGameType)
         {
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
             PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
@@ -540,9 +540,9 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             try
             {
-                yield return new WaitUntil(() => PhotonRealtimeClient.InRoom || InLobbyController.SelectedGameType != GameType.Custom);
+                yield return new WaitUntil(() => PhotonRealtimeClient.InRoom || InLobbyController.SelectedGameType != MatchmakingType.Custom);
 
-                if (InLobbyController.SelectedGameType != GameType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
+                if (InLobbyController.SelectedGameType != MatchmakingType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
                 {
                     yield break;
                 }
@@ -550,7 +550,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 bool isCustomRoom = false;
                 try
                 {
-                    isCustomRoom = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == (int)GameType.Custom;
+                    isCustomRoom = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey) == (int)MatchmakingType.Custom;
                 }
                 catch { }
 
@@ -561,7 +561,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
                 yield return new WaitForSecondsRealtime(CustomRoomTimeoutSeconds);
 
-                if (InLobbyController.SelectedGameType != GameType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
+                if (InLobbyController.SelectedGameType != MatchmakingType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
                 {
                     yield break;
                 }
@@ -573,7 +573,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
                 try
                 {
-                    isCustomRoom = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey) == (int)GameType.Custom;
+                    isCustomRoom = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey) == (int)MatchmakingType.Custom;
                 }
                 catch
                 {
@@ -613,11 +613,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     continue;
                 }
 
-                GameType roomGameType = GameType.FriendLobby;
+                MatchmakingType roomGameType = MatchmakingType.FriendLobby;
                 bool failedToReadRoomGameType = false;
                 try
                 {
-                    roomGameType = (GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                    roomGameType = (MatchmakingType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey);
                 }
                 catch
                 {
@@ -630,7 +630,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     continue;
                 }
 
-                if (roomGameType != GameType.FriendLobby)
+                if (roomGameType != MatchmakingType.FriendLobby)
                 {
                     yield return delay;
                     continue;
@@ -714,7 +714,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             Debug.Log($"leavingRoom");
             PhotonRealtimeClient.LeaveRoom();
-            if (InLobbyController.SelectedGameType != GameType.Clan2v2) SignalBus.OnCloseBattlePopupRequestedSignal();
+            if (InLobbyController.SelectedGameType != MatchmakingType.Clan2v2) SignalBus.OnCloseBattlePopupRequestedSignal();
             //this.Publish(new LobbyManager.StartPlayingEvent());
         }
 

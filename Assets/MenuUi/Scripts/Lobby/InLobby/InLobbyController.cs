@@ -16,9 +16,9 @@ namespace MenuUi.Scripts.Signals
 {
     public static partial class SignalBus
     {
-        public delegate void BattlePopupRequestedHandler(GameType lobbygameType, GameType actualGameType);
+        public delegate void BattlePopupRequestedHandler(MatchmakingType lobbygameType, MatchmakingType actualGameType);
         public static event BattlePopupRequestedHandler OnBattlePopupRequested;
-        public static void OnBattlePopupRequestedSignal(GameType lobbygameType, GameType actualGameType = GameType.None)
+        public static void OnBattlePopupRequestedSignal(MatchmakingType lobbygameType, MatchmakingType actualGameType = MatchmakingType.None)
         {
             OnBattlePopupRequested?.Invoke(lobbygameType, actualGameType);
         }
@@ -59,12 +59,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private Coroutine _creatingRoomCoroutineHolder = null;
 
         public static InLobbyController Instance { get; private set; }
-        public static GameType SelectedGameType { get; private set; }
-        public static GameType SelectedPremadeTargetGameType { get; private set; } = GameType.Clan2v2;
+        public static MatchmakingType SelectedGameType { get; private set; }
+        public static MatchmakingType SelectedPremadeTargetGameType { get; private set; } = MatchmakingType.Clan2v2;
 
-        public static void SetPremadeTargetGameType(GameType gameType)
+        public static void SetPremadeTargetGameType(MatchmakingType gameType)
         {
-            if (gameType == GameType.Random2v2 || gameType == GameType.Clan2v2)
+            if (gameType == MatchmakingType.Random2v2 || gameType == MatchmakingType.Clan2v2)
             {
                 SelectedPremadeTargetGameType = gameType;
             }
@@ -168,7 +168,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         }*/
 
 
-        private void OpenWindow(GameType gameType, GameType actualGameType = GameType.None)
+        private void OpenWindow(MatchmakingType gameType, MatchmakingType actualGameType = MatchmakingType.None)
         {
             _popupContents.SetActive(true);
             // Ensure top info shows current values when popup opens
@@ -177,12 +177,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
             // Checking if we are in room or matchmaking room depending on the game mode which would prevent changing the selected game type
             switch (gameType)
             {
-                case GameType.Custom:
+                case MatchmakingType.Custom:
                     if (PhotonRealtimeClient.InRoom)
                     {
                         if (gameType == SelectedGameType)
                         {
-                            _roomSwitcher.SwitchRoom(GameType.Custom);
+                            _roomSwitcher.SwitchRoom(gameType);
                             return;
                         }
                         else
@@ -194,10 +194,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     }
 
                     SelectedGameType = gameType;
-                    _roomSwitcher.SwitchRoom(GameType.Custom);
+                    _roomSwitcher.SwitchRoom(gameType);
                     return;
-                case GameType.Clan2v2:
-                case GameType.Random2v2:
+                case MatchmakingType.Clan2v2:
+                case MatchmakingType.Random2v2:
                     // Treat persistent queue rooms as matchmaking state so reopening the popup shows matchmaking panel
                     bool inQueueRoom = false;
                     try
@@ -213,7 +213,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         var currRoom = PhotonRealtimeClient.LobbyCurrentRoom;
                         if (currRoom != null)
                         {
-                            var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                            var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey);
                             currentRoomGameTypeMatches = gt == (int)gameType;
                         }
                     }
@@ -239,14 +239,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         }
                     }
                     break;
-                case GameType.FriendLobby:
+                case MatchmakingType.FriendLobby:
                     bool currentFriendRoomMatches = false;
                     try
                     {
                         var currRoom = PhotonRealtimeClient.LobbyCurrentRoom;
                         if (currRoom != null)
                         {
-                            var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+                            var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey);
                             currentFriendRoomMatches = gt == (int)gameType;
                             SelectedPremadeTargetGameType = actualGameType;
                         }
@@ -263,7 +263,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     {
                         if (currentFriendRoomMatches)
                         {
-                            _roomSwitcher.SwitchRoom(GameType.FriendLobby);
+                            _roomSwitcher.SwitchRoom(MatchmakingType.FriendLobby);
                             return;
                         }
 
@@ -276,7 +276,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
 
             SelectedGameType = gameType;
-            if(SelectedGameType == GameType.Random2v2) SelectedGameType = GameType.Clan2v2; //This line is for testing purposes, remove when you no longer want to force Clan2v2.
+            if(SelectedGameType == MatchmakingType.Random2v2) SelectedGameType = MatchmakingType.Clan2v2; //This line is for testing purposes, remove when you no longer want to force Clan2v2.
             SelectedPremadeTargetGameType = actualGameType;
 
             // Starting creating room of a selected game type if the coroutine is not already running
@@ -344,7 +344,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             if (inviteInfo == null || string.IsNullOrEmpty(inviteInfo.RoomName)) return;
 
             string inviterName = ResolveOnlinePlayerName(inviteInfo.LeaderUserName);
-            string targetMode = inviteInfo.TargetGameType == GameType.Clan2v2 ? "Clan 2v2" : "Random 2v2";
+            string targetMode = inviteInfo.TargetGameType == MatchmakingType.Clan2v2 ? "Clan 2v2" : "Random 2v2";
             string message = $"{inviterName} kutsui sinut Friend Lobby -huoneeseen.\n\nHaettava pelimuoto: {targetMode}.\n\nLiitytaanko huoneeseen?";
 
             bool popupShown = InviteDecisionPopupHandler.RequestInviteDecisionPrompt(
@@ -372,7 +372,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void OpenBattlePopupForInviteAccept()
         {
-            SelectedGameType = GameType.FriendLobby;
+            SelectedGameType = MatchmakingType.FriendLobby;
 
             if (_popupContents != null && !_popupContents.activeSelf)
             {
@@ -380,7 +380,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
 
             RefreshTopInfo();
-            _roomSwitcher?.SwitchRoom(GameType.FriendLobby);
+            _roomSwitcher?.SwitchRoom(MatchmakingType.FriendLobby);
         }
 
         private string ResolveOnlinePlayerName(string userId)

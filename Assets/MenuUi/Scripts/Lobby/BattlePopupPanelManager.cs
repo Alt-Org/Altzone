@@ -40,7 +40,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         SignalBus.OnCustomRoomSettingsRequested -= OpenCustomRoomSettings;
     }
 
-    public void SwitchRoom(GameType gameType)
+    public void SwitchRoom(MatchmakingType gameType)
     {
         ClosePanels();
 
@@ -68,7 +68,7 @@ public class BattlePopupPanelManager : MonoBehaviour
 
         switch (gameType)
         {
-            case GameType.Custom:
+            case MatchmakingType.Custom:
                 // If already in a room, prefer showing the correct custom waiting room based on room's custom game mode
                 if (PhotonRealtimeClient.InRoom)
                 {
@@ -87,9 +87,9 @@ public class BattlePopupPanelManager : MonoBehaviour
                     ShowMainPanel();
                 }
                 break;
-            case GameType.FriendLobby:
-            case GameType.Clan2v2:
-            case GameType.Random2v2:
+            case MatchmakingType.FriendLobby:
+            case MatchmakingType.Clan2v2:
+            case MatchmakingType.Random2v2:
                 if (inMatchmakingOrQueue)
                 {
                     SwitchToMatchmakingPanel(isLeader);
@@ -137,7 +137,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         // Ensure the create-room UI has its selectors initialized before showing
         if (_createCustomRoom != null)
         {
-            var createComp = _createCustomRoom.GetComponent<MenuUi.Scripts.Lobby.CreateRoom.CreateRoomCustom>();
+            var createComp = _createCustomRoom.GetComponent<CreateRoomCustom>();
             if (createComp != null && !createComp.IsCustomRoomOptionsReady)
             {
                 createComp.InitializeCustomRoomOptions();

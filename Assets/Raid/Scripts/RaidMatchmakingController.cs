@@ -350,7 +350,7 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
             CustomRoomProperties = customRoomProperties,
             CustomRoomPropertiesForLobby = new[]
             {
-                PhotonBattleRoom.GameTypeKey,
+                PhotonBattleRoom.MatchmakingKey,
                 RaidPhotonRoom.RaidMatchmakingKey,
                 RaidPhotonRoom.RaidClanCountsKey,
                 RaidPhotonRoom.RaidStateKey,

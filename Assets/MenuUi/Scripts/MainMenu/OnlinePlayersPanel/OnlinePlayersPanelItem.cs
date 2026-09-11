@@ -420,9 +420,9 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
                 Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, data => clan = data);
                 List<ClanMember>members = clan.Members;
                 if (members.Find((m) => m.Id == Player._id) == null) 
-                    SignalBus.OnBattlePopupRequestedSignal(GameType.FriendLobby, GameType.Random2v2);
+                    SignalBus.OnBattlePopupRequestedSignal(MatchmakingType.FriendLobby, MatchmakingType.Random2v2);
                 else
-                    SignalBus.OnBattlePopupRequestedSignal(GameType.FriendLobby, GameType.Clan2v2);
+                    SignalBus.OnBattlePopupRequestedSignal(MatchmakingType.FriendLobby, MatchmakingType.Clan2v2);
             }
             catch (Exception ex)
             {
