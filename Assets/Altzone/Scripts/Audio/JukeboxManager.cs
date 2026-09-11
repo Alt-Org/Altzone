@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.MQTT;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 
@@ -31,6 +33,9 @@ namespace Altzone.Scripts.Audio
         private bool _jukeboxMuted = false;
         public bool JukeboxMuted { get {  return _jukeboxMuted; } }
 
+        private bool _jukeboxDisabled = false;
+        public bool JukeboxDisabled { get { return _jukeboxDisabled; } }
+
         private float _musicElapsedTime = 0f;
         #endregion
 
@@ -47,6 +52,10 @@ namespace Altzone.Scripts.Audio
             Custom,
             All
         }
+
+        private ServerPlaylist _serverPlaylistData = null;
+
+        public ServerPlaylist ServerCurrentPlaylist => _serverPlaylistData;
 
         private Playlist _currentPlaylist = null;
         public Playlist CurrentPlaylist {  get { return _currentPlaylist; } }
@@ -132,6 +141,12 @@ namespace Altzone.Scripts.Audio
 
         private void Start() { StartCoroutine(Setup()); }
 
+        private void OnDestroy()
+        {
+            MQTTManager.OnJukeboxPlaylistUpdated -= UpdateLocalClanPlaylist;
+            MQTTManager.OnJukeboxSongUpdated -= UpdateLocalClanSong;
+        }
+
         private IEnumerator Setup()
         {
             StartCoroutine(GetPlayerData());
@@ -140,23 +155,21 @@ namespace Altzone.Scripts.Audio
 
             _currentPlaylist = new Playlist("Klaani", PlaylistType.Clan);
 
-            ServerPlaylist playlistData = null;
             bool? success = null;
 
-            StartCoroutine(UpdateLocalClanPlaylist((successData) => success = successData, (serverPlaylistData) => playlistData = serverPlaylistData));
+            StartCoroutine(UpdateLocalClanPlaylist((successData) => success = successData));
 
             yield return new WaitUntil(() => (success != null));
 
             if (!success.Value) yield break;
-
-            UpdateQueueContents(playlistData);
 
             _musicTrackFavorites = GetFavoriteDatas();
             _playlistReady = true;
 
             OnQueueChange?.Invoke();
 
-            _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
+            MQTTManager.OnJukeboxPlaylistUpdated += UpdateLocalClanPlaylist;
+            MQTTManager.OnJukeboxSongUpdated += UpdateLocalClanSong;
         }
 
         private IEnumerator GetPlayerData()
@@ -278,9 +291,9 @@ namespace Altzone.Scripts.Audio
             playlistData(serverPlaylist);
         }
 
-        private void UpdateLocalClanPlaylist() { StartCoroutine(UpdateLocalClanPlaylist(null, null)); }
+        private void UpdateLocalClanPlaylist() { StartCoroutine(UpdateLocalClanPlaylist(successCallback: null)); }
 
-        private IEnumerator UpdateLocalClanPlaylist(System.Action<bool> successCallback, System.Action<ServerPlaylist> serverPlaylistCallback)
+        private IEnumerator UpdateLocalClanPlaylist(System.Action<bool> successCallback)
         {
             ServerPlaylist serverPlaylistData = null;
             bool? timeout = null;
@@ -305,16 +318,62 @@ namespace Altzone.Scripts.Audio
                 yield break;
             }
 
-            UpdateQueueContents(serverPlaylistData);
+            _serverPlaylistData = serverPlaylistData;
+
+            UpdateQueueContents();
             OnQueueChange?.Invoke();
-            StartCoroutine(PlayServerTrack(serverPlaylistData.currentSong));
+            StartCoroutine(PlayServerTrack());
 
             _serverOperationAvailable = true;
 
-            _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
-
-            serverPlaylistCallback?.Invoke(serverPlaylistData);
             successCallback?.Invoke(true);
+        }
+
+        private void UpdateLocalClanPlaylist(MQTTJukeBoxPlaylist list) => StartCoroutine(UpdateLocalClanPlaylistCoroutine(list));
+
+        private IEnumerator UpdateLocalClanPlaylistCoroutine(MQTTJukeBoxPlaylist list)
+        {
+            yield return new WaitUntil(() =>_serverOperationAvailable == true);
+
+            if (list == null)
+            {
+                yield break;
+            }
+
+            _serverPlaylistData = new(list);
+
+            UpdateQueueContents();
+            OnQueueChange?.Invoke();
+            StartCoroutine(PlayServerTrack());
+        }
+
+        private void UpdateLocalClanSong(MQTTCurrentSong song) => StartCoroutine(UpdateLocalClanSongCoroutine(song));
+
+
+        private IEnumerator UpdateLocalClanSongCoroutine(MQTTCurrentSong song)
+        {
+            yield return new WaitUntil(() => _serverOperationAvailable == true);
+
+            if (song == null)
+            {
+                yield break;
+            }
+
+            foreach (var data in _serverPlaylistData.songQueue)
+            {
+                if (data.songId.Equals(song.songId))
+                {
+                    _serverPlaylistData.currentSong = new(data,song);
+                    _serverPlaylistData.songQueue.Remove(data);
+
+                }
+            }
+
+            _serverPlaylistData.currentSong = new(song);
+
+            UpdateQueueContents();
+            OnQueueChange?.Invoke();
+            StartCoroutine(PlayServerTrack());
         }
 
         private IEnumerator DeleteTrackFromServer(System.Action<bool> successCallback, string trackUniqueId, string trackName)
@@ -378,37 +437,16 @@ namespace Altzone.Scripts.Audio
             return tracks.Find(track => track.Id == musicTrackId);
         }
 
-        /// <summary>
-        /// Used to update clan playlist.
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerator ServerPlaylistFetchLoop()
-        {
-            bool? success = null;
-            float timer = 0f;
-
-            while (timer < _playlistServerFetchFrequency)
-            {
-                yield return null;
-                timer += Time.deltaTime;
-            }
-
-            StartCoroutine(UpdateLocalClanPlaylist((successData) => success = successData, null));
-
-            yield return new WaitUntil(() => (success != null));
-
-            if (success != null && !success.Value) yield break;
-
-            _playlistServerFetchCoroutine = StartCoroutine(ServerPlaylistFetchLoop());
-        }
         #endregion
 
         #region Playback
-        private IEnumerator PlayServerTrack(ServerCurrentSong serverCurrentSong)
+        private IEnumerator PlayServerTrack()
         {
-            yield return new WaitUntil(() => _currentPlaylist != null);
+            yield return new WaitUntil(() => _currentPlaylist != null || _serverPlaylistData != null);
 
-            if (serverCurrentSong == null)
+            if(_jukeboxDisabled) yield break; 
+
+            if (_serverPlaylistData.currentSong == null)
             {
                 _currentTrackQueueData = null;
 
@@ -422,6 +460,7 @@ namespace Altzone.Scripts.Audio
 
                 yield break;
             }
+            ServerCurrentSong serverCurrentSong = _serverPlaylistData.currentSong;
 
             System.DateTime gmtTime = System.DateTimeOffset.FromUnixTimeMilliseconds(serverCurrentSong.startedAt).DateTime;
             System.DateTime localTime = gmtTime.ToLocalTime();
@@ -480,7 +519,7 @@ namespace Altzone.Scripts.Audio
         /// <returns>Track name that is playing.</returns>
         public string PlayTrack(TrackQueueData trackQueueData, bool forcePlay)
         {
-            if (!forcePlay && PlayTrackBlockingCheck(trackQueueData) || _trackPreviewActive) return null;
+            if (!forcePlay && PlayTrackBlockingCheck(trackQueueData) || _trackPreviewActive || _jukeboxDisabled) return null;
 
             string trackName = "";
 
@@ -549,6 +588,29 @@ namespace Altzone.Scripts.Audio
             return (muteActivation ? _jukeboxMuted : _playbackPaused);
         }
 
+        public void DisableJukeBox()
+        {
+            if (JukeboxDisabled) return;
+            _jukeboxDisabled = true;
+            if (JukeboxMuted) return;
+            if (_serverPlaylistData.currentSong != null) AudioManager.Instance.PlayFallBackTrack();
+        }
+
+        public void EnableJukeBox()
+        {
+            _jukeboxDisabled = false;
+
+            if (!_playbackPaused && !_jukeboxMuted)
+            {
+                if (_currentTrackQueueData != null)
+                    ContinueTrack(false);
+                else
+                    PlayTrack();
+            }
+            else
+                AudioManager.Instance.PlayFallBackTrack();
+        }
+
         /// <summary>
         /// Continues the current music track.
         /// </summary>
@@ -583,7 +645,7 @@ namespace Altzone.Scripts.Audio
 
             OnSetSongInfo?.Invoke(_currentTrackQueueData.MusicTrack);
 
-            if (!_jukeboxMuted)
+            if (!_jukeboxMuted || !_jukeboxDisabled)
                 return AudioManager.Instance.ContinueMusic(AudioCategoryType.Jukebox, _currentTrackQueueData.MusicTrack,
                     MusicHandler.MusicSwitchType.CrossFade, _musicElapsedTime, forcePlay);
 
@@ -826,10 +888,11 @@ namespace Altzone.Scripts.Audio
         /// <summary>
         /// Update local track queue contents with server playlist.
         /// </summary>
-        /// <param name="serverPlaylist"></param>
-        public void UpdateQueueContents(ServerPlaylist serverPlaylist)
+        public void UpdateQueueContents()
         {
             _trackQueue.Clear();
+            if (_serverPlaylistData == null)  return;
+            ServerPlaylist serverPlaylist = _serverPlaylistData;
 
             for (int i = 0; i < serverPlaylist.songQueue.Count; i++)
             {
