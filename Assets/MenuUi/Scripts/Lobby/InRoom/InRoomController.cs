@@ -65,7 +65,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             {
                 case MatchmakingType.Custom:
                     if (_title != null) StartCoroutine(SetRoomTitle());
-                    if (_gameType) _gameType.text = InLobbyController.SelectedPremadeTargetMatchmakingType.ToString();
                     if (_conflictText != null) StartCoroutine(CycleConflicts());
                     StartCustomRoomTimeoutMonitoring();
                     break;
