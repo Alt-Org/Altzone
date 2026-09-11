@@ -25,6 +25,7 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private Color purpleColor;
     [SerializeField] private Color darkPinkColor;
     [SerializeField] private Color redColor;
+    [SerializeField] private Color blackColor; // Uusi lisäys (Perttu)
 
     [SerializeField] private AdDecorationReference _borderReference;
     [Header("Frame Selectors")]
@@ -89,6 +90,7 @@ public class AdEditor : AltMonoBehaviour
         if (_dtSelectButtons) _dtSelectButtons.RefreshListeners();
 
         List<Color> colorList = _borderReference.ColourList;
+        List<Color> textColorList = _borderReference.TextColourList; // Uusi lisäys (Perttu)
 
         foreach (Color colour in colorList)
         {
@@ -101,7 +103,7 @@ public class AdEditor : AltMonoBehaviour
         _backgroundColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f; // rect.width -> rect.height (Perttu)
 
         // Uusi lisäys (Perttu)
-        foreach (Color colour in colorList)
+        foreach (Color colour in textColorList)
         {
             GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _textColourSelectorContent);
             colourObject.GetComponent<Image>().color = colour;
@@ -180,4 +182,10 @@ public class AdEditor : AltMonoBehaviour
         // Uusi lisäys (Perttu)
         if (!kojuPanel.active) { kojuPanel.SetActive(true); }
     }
+
+    //public void SaveAndCloseEditor()
+    //{
+        
+    //    CloseEditor();
+    //}
 }

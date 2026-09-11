@@ -20,7 +20,9 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Color _purpleColor;
         [SerializeField] private Color _darkPinkColor;
         [SerializeField] private Color _redColor;
+        [SerializeField] private Color _blackColor; // Uusi lisäys (Perttu)
         private List<Color> _colourList;
+        private List<Color> _textColourList;
 
         private List<AdBorderFrameObject> _validatedFrameList = null;
         private static AdDecorationReference _instance = null;
@@ -52,6 +54,26 @@ namespace Altzone.Scripts.ReferenceSheets
                     _colourList.Add(_redColor);
                 }
                 return _colourList;
+            }
+        }
+
+        public List<Color> TextColourList // Uusi lisäys (Perttu)
+        {
+            get
+            {
+                if (_textColourList == null || _textColourList.Count == 0)
+                {
+                    _textColourList = new();
+                    _textColourList.Add(_blackColor);
+                    _textColourList.Add(_yellowColor);
+                    _textColourList.Add(_lightGreenColor);
+                    _textColourList.Add(_lightBlueColor);
+                    _textColourList.Add(_blueColor);
+                    _textColourList.Add(_purpleColor);
+                    _textColourList.Add(_darkPinkColor);
+                    _textColourList.Add(_redColor);
+                }
+                return _textColourList;
             }
         }
 
