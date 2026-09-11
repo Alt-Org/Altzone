@@ -285,7 +285,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             // Starting creating room of a selected game type if the coroutine is not already running
             if (_creatingRoomCoroutineHolder != null) return;
             _roomSwitcher.ClosePanels();
-            _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRoom(SelectedMatchmakingType, () =>
+            _creatingRoomCoroutineHolder = StartCoroutine(_roomListingController.StartCreatingRoom(SelectedMatchmakingType, SelectedGameType, () =>
             {
                 _creatingRoomCoroutineHolder = null;
             }));
