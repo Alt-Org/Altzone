@@ -18,7 +18,7 @@ All [{BattleQCommands}](#page-concepts-commands-battle-qcommand) extend the [{Ba
 To make a new command, add a new class in @ref BattleCommands.cs file, which:
 - Inherits from @cref{Battle.QSimulation.Game,BattleCommand} class
 - Should be named **%Battle(commandname)QCommand**
-- Has a a <b>public override Type @ref %BattleCommandType => Type.(commandname)</b> property
+- Has a a <b>public override Type %BattleCommandType => Type.(commandname)</b> property
 - Can have a **public override void Serialize(Bitstream stream)** method which is required if the command carries data
 
 The command does not necessarily have to do anything itself, since it can be done in the part of the code where receiving the command is polled.

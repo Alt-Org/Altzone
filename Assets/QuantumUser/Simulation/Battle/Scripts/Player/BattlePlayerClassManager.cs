@@ -75,7 +75,7 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
-        /// <see cref="BattlePlayerClassManager.OnGameStart(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnGameStart</see> method
+        /// <see cref="BattlePlayerClassManager.OnGameStart(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef, bool)">OnGameStart</see> method
         /// when the game starts.<br/>
         /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
@@ -84,16 +84,18 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
+        /// <param name="selected">Is the character selected or not.</param>
         public virtual unsafe void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, bool selected) { }
 
         /// <summary>
         /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
-        /// <see cref="BattlePlayerClassManager.OnSpawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnSpawn</see> method
+        /// <see cref="BattlePlayerClassManager.OnSpawn">OnSpawn</see> method
         /// each time character is spawned.<br/>
         /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
+        /// <param name="spawnEventType">The type of "spawn" event.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
@@ -101,12 +103,13 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Called by the @cref{Battle.QSimulation.Player,BattlePlayerClassManager}
-        /// <see cref="BattlePlayerClassManager.OnDespawn(Frame, BattlePlayerManager.PlayerHandle, BattlePlayerDataQComponent*, EntityRef)">OnDespawn</see> method
+        /// <see cref="BattlePlayerClassManager.OnDespawn">OnDespawn</see> method
         /// each time character is despawned.<br/>
         /// Provides a hook for derived classes to implement character class specific simulation logic.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
+        /// <param name="despawnEventType">The type of "despawn" event.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
@@ -123,6 +126,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="playerCollisionData">Collision data related to the player character.</param>
+        /// <param name="selected">Is the character selected or not.</param>
         public virtual unsafe void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerCharacterCollisionData* playerCollisionData, bool selected) { }
 
         /// <summary>
@@ -136,6 +140,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
+        /// <param name="selected">Is the character selected or not.</param>
         public virtual unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData, bool selected) { }
 
         /// <summary>
@@ -195,6 +200,9 @@ namespace Battle.QSimulation.Player
             UseTestClass
         }
 
+        /// <summary>
+        /// Temporary enum for making both a flipper game test and the original behavior work.
+        /// </summary>
         public enum SpawnEventType
         {
             Spawn,
@@ -202,6 +210,9 @@ namespace Battle.QSimulation.Player
             SpawnSelect
         }
 
+        /// <summary>
+        /// Temporary enum for making both a flipper game test and the original behavior work.
+        /// </summary>
         public enum DespawnEventType
         {
             UnSelect,
@@ -339,6 +350,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
+        /// <param name="selected">Is the character selected or not.</param>
         public static void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, bool selected)
         {
             ReturnCode returnCode = GetClass(playerData->CharacterClass, out BattlePlayerClassBase playerClass);
@@ -353,6 +365,7 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
+        /// <param name="spawnEventType">The type of "spawn" event.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>
@@ -370,6 +383,7 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
+        /// <param name="despawnEventType">The type of "despawn" event.</param>
         /// <param name="playerHandle">Reference to the player handle.</param>
         /// <param name="playerData">Pointer to the player data.</param>
         /// <param name="playerEntity">Reference to the player entity.</param>

@@ -497,6 +497,7 @@ namespace Battle.QSimulation.Player
         #region Public - Static Methods - Spawn/Despawn
 
         /// <summary>
+        /// This documentation is not entirely up to date. Behavior varies depending on if <see cref="BattleParameters.IsTestFlipperGame"/> is on.<br/>
         /// Spawns a player character entity into the game. <br/>
         /// Verifies that the player is in the game and the character to be spawned is valid. <br/>
         /// Actual spawning handled by a separate private method.
@@ -505,6 +506,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="slot">The slot of the player for which the character is to be spawned.</param>
         /// <param name="characterNumber">The character number of the character to be spawned.</param>
+        /// <param name="select">Whether to set the spawned character as selected or not.</param>
         public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber, bool select = false)
         {
             BattlePlayerCharacterState unSelectedCharacterState = BattleParameters.GetIsTestFlipperGame(f) ? BattlePlayerCharacterState.InPlay : BattlePlayerCharacterState.OutOfPlay;
@@ -576,14 +578,15 @@ namespace Battle.QSimulation.Player
 
 
         /// <summary>
-        /// Despawns a player's active character entity from the game. <br/>
-        /// Verifies that the player has a character in play. <br/>
+        /// Despawns a player character entity from the game based on the given <paramref name="characterNumber"/>.<br/>
+        /// Verifies that the player has a character in play.<br/>
         /// If <paramref name="kill"/> is set to true, the character's state is marked as dead prior to despawning.<br/>
         /// Actual despawning handled by a separate private method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="slot">The slot of the player for which the character is to be despawned.</param>
+        /// <param name="characterNumber">Character number of the character being despawned.</param>
         /// <param name="kill">If true, marks the character as dead.</param>
         public static void DespawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber, bool kill = false)
         {
@@ -650,7 +653,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Spawns a player character entity into the game.
+        /// Spawns a player character entity into the game based on the given <paramref name="characterNumber"/>.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -717,11 +720,12 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Despawns a player's active character entity from the game.
+        /// Despawns a player character entity from the game based on the given <paramref name="characterNumber"/>.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">PlayerHandle of the player the character will be spawned for.</param>
+        /// <param name="characterNumber">Character number of the character being despawned.</param>
         private static void DespawnPlayer(Frame f, PlayerHandleInternal playerHandle, int characterNumber)
         {
             // get references

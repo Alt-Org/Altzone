@@ -369,8 +369,6 @@ namespace Battle.QSimulation.Player
         /// Data related to the current player character that is being processed.<br/>
         /// Is loaded for each player character that is being processed using
         /// @cref{Battle.QSimulation.Player.BattlePlayerQSystem.UpdateData,LoadPlayerCharacter}.
-        ///
-        ///
         private class UpdateData
         {
             /// @anchor BattlePlayerQSystem-UpdateData-CommonData
@@ -497,8 +495,6 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="updateData">Reference to <see cref="BattlePlayerQSystem.UpdateData"/>.</param>
         /// <param name="stackInputStorage">Temporary input storage for bots and abandoned players.</param>
-        ///
-        /// <returns>Pointer to the player's input.</returns>
         private void GetInput(Frame f, UpdateData updateData, Input* stackInputStorage)
         {
             InputData inputData = new()
@@ -672,8 +668,6 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="updateData">Reference to <see cref="BattlePlayerQSystem.UpdateData"/>.</param>
-        ///
-        /// <returns>True if all players on a team have given up.</returns>
         private void HandleGiveUp(Frame f, UpdateData updateData)
         {
             if (updateData.GiveUpTeam != BattleTeamNumber.NoTeam) return;
@@ -694,8 +688,6 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="updateData">Reference to <see cref="BattlePlayerQSystem.UpdateData"/>.</param>
         /// <param name="playerCharacterNumber">Character number of the character being swapped to.</param>
-        ///
-        /// <returns>True if character was swapped.</returns>
         private void HandleCharacterSwapping(Frame f, UpdateData updateData, int playerCharacterNumber)
         {
             if (playerCharacterNumber == updateData.PlayerHandle.SelectedCharacterNumber) return;
@@ -770,6 +762,7 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="updateData">Reference to <see cref="BattlePlayerQSystem.UpdateData"/>.</param>
+        /// <param name="selected"></param>
         private void HandleCharacterUpdate(Frame f, UpdateData updateData, bool selected)
         {
             if (updateData.PlayerHasSwappedCharacter) selected = false;
