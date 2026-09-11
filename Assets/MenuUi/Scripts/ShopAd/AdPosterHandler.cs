@@ -19,6 +19,10 @@ public class AdPosterHandler : AltMonoBehaviour
     private ClanHeartColorSetter _adClanLogo;
     [SerializeField]
     private TextMeshProUGUI _adClanName;
+    [SerializeField]
+    protected TextMeshProUGUI _adText;
+    [SerializeField]
+    protected Image _adFurniture;
 
 
 
@@ -58,6 +62,9 @@ public class AdPosterHandler : AltMonoBehaviour
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
         if(_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
+        if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
+        _adText.font = data.TextFont; // Uusi lisäys (Perttu)
+        _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture); // Uusi lisäys (Perttu)
         _adClanLogo.SetHeartColors(pieceData);
         _adClanName.text = clanName;
     }
@@ -67,6 +74,9 @@ public class AdPosterHandler : AltMonoBehaviour
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
+        if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
+        _adText.font = data.TextFont; // Uusi lisäys (Perttu)
+        _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture); // Uusi lisäys (Perttu)
         _adClanName.text = clanName;
     }
 

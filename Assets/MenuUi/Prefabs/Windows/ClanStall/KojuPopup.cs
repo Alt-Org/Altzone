@@ -11,10 +11,16 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Button denyButton;
     [SerializeField] private Button increasePriceButton;
     [SerializeField] private Button decreasePriceButton;
+    [SerializeField] private Button removeButton; // Uusi lisäys (Perttu)
+    [SerializeField] private Image confirmImage; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject denyButtonGO; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject removeButtonGO; // Uusi lisäys (Perttu)
 
     [Header("Price UI")]
     [SerializeField] private TMP_InputField priceInput;
     [SerializeField] private TMP_Text kojuPriceText;
+    [SerializeField] private GameObject inputBar; // Uusi lisäys (Perttu)
+    [SerializeField] private TMP_Text removeKojuPriceText; // Uusi lisäys (Perttu)
 
     [Header("Info UI")]
     [SerializeField] private TMP_Text nameText;
@@ -25,10 +31,15 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text artistNameText;
+    [SerializeField] private Image removeIconImage; // Uusi lisäys (Perttu)
+    [SerializeField] private TMP_Text removeNameText; // Uusi lisäys (Perttu)
+    [SerializeField] private TMP_Text removeSetNameText; // Uusi lisäys (Perttu)
 
     [Header("Panels")]
     [SerializeField] private GameObject infoObject;
     [SerializeField] private GameObject removePopup;
+    [SerializeField] private GameObject kojuPanel; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject furnitureTray; // Uusi lisäys (Perttu)
 
     [Header("Remove Confirmation")]
     [SerializeField] private Button removeConfirmButton;
@@ -37,6 +48,7 @@ public class KojuPopup : MonoBehaviour
     [Header("Backgrounds")]
     [SerializeField] private Image infoBoxBackground;
     [SerializeField] private Image removePopupBackground;
+    [SerializeField] private TMP_Text chooseText; // Uusi lisäys (Perttu)
 
     [Header("Rarity Color Reference")]
     [SerializeField] private RarityColourReference rarityColourReference;
@@ -106,6 +118,35 @@ public class KojuPopup : MonoBehaviour
         {
             infoBoxBackground.color = rarityColor;
         }
+
+        // uusi lisäys(perttu)
+        if (iconImage.enabled == false)
+        {
+            iconImage.enabled = true;
+        }
+        if (!inputBar.active)
+        {
+            inputBar.SetActive(true);
+        }
+        if (confirmButton.enabled == false)
+        {
+            confirmButton.enabled = true;
+            confirmImage.color = new Vector4(255f, 255f, 255f, 1f);
+        }
+        if (chooseText.enabled == true)
+        {
+            chooseText.enabled = false;
+        }
+        if (itemMover.assignedSlot != null)
+        {
+            if (!removeButtonGO.active)
+            {
+                removeButtonGO.SetActive(true);
+                removeButton.onClick.AddListener(() => OpenRemovePopup(currentCard));
+            }
+            if (kojuPanel.active) { kojuPanel.SetActive(false); }
+            //if (!furnitureTray.active) { furnitureTray.SetActive(true); }
+        }
     }
 
     // Opens the popup in removal confirmation mode
@@ -120,6 +161,24 @@ public class KojuPopup : MonoBehaviour
         {
             Color rarityColor = cardUI.GetRarityColor();
             removePopupBackground.color = rarityColor;
+        }
+
+        // Uusi lisäys (Perttu)
+        if (cardUI != null && removeIconImage != null && removeKojuPriceText != null)
+        {
+            Sprite cardIconImage = cardUI.GetIcon();
+            removeIconImage.sprite = cardIconImage;
+            float cardPrice = cardUI.GetValue();
+            removeKojuPriceText.text = cardPrice.ToString();
+        }
+
+        // Uusi lisäys (Perttu)
+        if (cardUI != null && removeNameText != null && removeSetNameText != null)
+        {
+            string cardNameText = cardUI.GetNameText();
+            removeNameText.text = cardNameText;
+            string cardSetNameText = cardUI.GetSetNameText();
+            removeSetNameText.text = cardSetNameText;
         }
 
         removePopup.SetActive(true);
@@ -176,7 +235,7 @@ public class KojuPopup : MonoBehaviour
         gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
 
         // Moves the item, see ItemMover.cs
-        itemMover?.ExecuteMove();
+        if (itemMover.assignedSlot == null) { itemMover?.ExecuteMove(); } // Uusi lisäys (Perttu)
         Close();
     }
 
@@ -190,6 +249,14 @@ public class KojuPopup : MonoBehaviour
     // Called when pressing the cancel button
     private void Close()
     {
+        // Uusi lisäys (Perttu)
+        iconImage.enabled = false;
+        inputBar.SetActive(false);
+        confirmButton.enabled = false;
+        confirmImage.color = new Vector4(255f, 255f, 255f, 0.2f);
+        chooseText.enabled = true;
+        removeButtonGO.SetActive(false);
+
         currentCard = null;
         furnitureData = null;
         itemMover = null;
@@ -197,6 +264,13 @@ public class KojuPopup : MonoBehaviour
         infoObject.SetActive(false);
         removePopup.SetActive(false);
         gameObject.SetActive(false);
+
+        // Uusi lisäys (Perttu)
+        if (kojuPanel != null)
+        {
+            kojuPanel.SetActive(true);
+            furnitureTray.SetActive(false);
+        }
     }
 
     public void ToggleInfo(GameObject target)
