@@ -22,8 +22,8 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
     [SerializeField] private GameObject _contentPrefab;
     private List<RectTransform> _uniqueGameObjectsAtRight = new();
     [Space]
-    [SerializeField] private float _smartItemLeftStrenghtMultiplier = 0f;
-    [SerializeField] private float _smartItemRightStrenghtMultiplier = 2f;
+    [SerializeField] private float _smartItemLeftStrengthMultiplier = 0f;
+    [SerializeField] private float _smartItemRightStrengthMultiplier = 2f;
     [Tooltip("Use to prevent pop in of the items.")]
     [SerializeField] private int _extraSmartListItems = 1;
     [SerializeField] private float _ignoreRemainingVelocityTriggerTime = 0.1f;
@@ -78,9 +78,11 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     private void Awake()
     {
-        // Called when furniture edit mode pressed - meaning this gets called after Setup() (OK)
-        if (_smartListItems.Count == 0) CreatePool();
-
+        if (_smartListItems.Count == 0)
+        {
+            CreatePool();
+            Debug.Log("CreatePool() call source 1 ---------------------------------------------------------");
+        } 
         _contentStartAnchoredPosition = _content.anchoredPosition;
     }
 
@@ -146,16 +148,18 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
     #region Data
     public void Setup<T>(List<T> data)
     {
-        if (_smartListItems.Count == 0) CreatePool(); // because Awake() is not called yet, causing _smartListItems to be disabled --------------------
-
+        if (_smartListItems.Count == 0)
+        {
+            CreatePool(); // Awake() is not called yet (where this should be called), causing _smartListItems to be disabled --------------------
+            Debug.Log("CreatePool() call source 2 ---------------------------------------------------------");
+        } 
+        
         if (!isActiveAndEnabled)
         {
             // When furniture tray loaded, smart list always disabled
-            Debug.Log("(!isActiveAndEnabled) in smarthorizontal ----------------------------------------------------------------------");
         }
         if (_buildOnEnable)
         {
-            Debug.Log("(_buildOnEnable) in smarthorizontal --------------------------------------------------------------------------");
             _buildOnEnable = true;
             return;
         }
@@ -243,9 +247,6 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
             }
         }
 
-        // T is FurnitureListObject and data is a list of FurnitureListObjects -------------------
-        // _smartListItems are FurnitureTraySlots which have FurnitureTraySlotHandler -----------------------
-
         //Set all generated smart items.
         for (int i = 0; i < _smartListItems.Count; i++)
         {
@@ -268,6 +269,8 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     private void CreatePool()
     {
+        float _size_ratio = 0.0f; // Tries to mimic the size ratio of the prefab
+
         //Create first SmartListItem to calculate how many of it can fit inside based on the width + padding.
         if (_smartListItems.Count == 0)
         {
@@ -275,19 +278,28 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
             if (!firstSmartListItem.SelfRectTransform) firstSmartListItem.SetSelfRectTransform();
 
+            _size_ratio = firstSmartListItem.SelfRectTransform.sizeDelta.x / firstSmartListItem.SelfRectTransform.sizeDelta.y; // ----------
+
             _smartListItemLocalWidthWithPadding = firstSmartListItem.SelfRectTransform.rect.width + _horizontalPadding;
-            firstSmartListItem.SelfRectTransform.sizeDelta = new Vector2(
-                firstSmartListItem.SelfRectTransform.sizeDelta.x, _content.rect.height);
+            
+            // Set the size of the first smart list item
+            firstSmartListItem.SelfRectTransform.sizeDelta = new Vector2( // ------------------------------
+                _content.rect.height * _size_ratio, _content.rect.height); // ------------------------------
 
             firstSmartListItem.ClearData();
             _smartListItems.Add(firstSmartListItem);
         }
         else
         {
+            // Set the padding of all smart list items based on the first one
             _smartListItemLocalWidthWithPadding = _smartListItems[0].SelfRectTransform.rect.width + _horizontalPadding;
         }
 
         _amountToFillContentList = Mathf.CeilToInt(_content.rect.width / _smartListItemLocalWidthWithPadding) + _extraSmartListItems;
+
+        //_smartListItemLocalWidthWithPadding value changes when called the first and second time in Setup() where the second call gives correct value of 5
+        Debug.Log("_content.text.width: " + _content.rect.width + " / _smartListItemLocalWidthWithPadding: " + _smartListItemLocalWidthWithPadding + "---------------");
+        Debug.Log(_amountToFillContentList + "----------------------------------------------------"); // why does it think 8 can fit into the scroll?
 
         if (_amountToFillContentList <= _smartListItems.Count) return;
 
@@ -300,8 +312,9 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
             if (!smartListItem.SelfRectTransform) smartListItem.SetSelfRectTransform();
 
-            smartListItem.SelfRectTransform.sizeDelta = new Vector2(
-                smartListItem.SelfRectTransform.sizeDelta.x, _content.rect.height);
+            // Set the size of all the other slots
+            smartListItem.SelfRectTransform.sizeDelta = new Vector2( // ------------------------------
+                _content.rect.height * _size_ratio, _content.rect.height); // ------------------------------
 
             smartListItem.ClearData(); // does nothing?? what is it even clearing in a fresh prefab? (OK)
             _smartListItems.Add(smartListItem);
@@ -414,13 +427,13 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
     private float GetLeftItemEdgeLocalPositionX()
     {
         if (_uniqueGameObjectsAtLeft.Count != 0)
-            return _uniqueGameObjectsAtLeft[0].localPosition.x - HalfWidth(_uniqueGameObjectsAtLeft[0]) * _smartItemLeftStrenghtMultiplier;
+            return _uniqueGameObjectsAtLeft[0].localPosition.x - HalfWidth(_uniqueGameObjectsAtLeft[0]) * _smartItemLeftStrengthMultiplier;
 
         if (_smartListItems.Count != 0)
-            return _smartListItems[0].SelfRectTransform.localPosition.x - HalfWidth(_smartListItems[0].SelfRectTransform) * _smartItemLeftStrenghtMultiplier;
+            return _smartListItems[0].SelfRectTransform.localPosition.x - HalfWidth(_smartListItems[0].SelfRectTransform) * _smartItemLeftStrengthMultiplier;
 
         if (_uniqueGameObjectsAtRight.Count != 0)
-            return _uniqueGameObjectsAtRight[0].localPosition.x - HalfWidth(_uniqueGameObjectsAtRight[0]) * _smartItemLeftStrenghtMultiplier;
+            return _uniqueGameObjectsAtRight[0].localPosition.x - HalfWidth(_uniqueGameObjectsAtRight[0]) * _smartItemLeftStrengthMultiplier;
 
         return 0f;
     }

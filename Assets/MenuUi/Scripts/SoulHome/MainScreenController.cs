@@ -65,14 +65,14 @@ namespace MenuUI.Scripts.SoulHome
             if (!_rotated)
             {
                 //GetTray().GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().rect.width * 0.8f - 50, GetTray().GetComponent<RectTransform>().sizeDelta.y);
-                GetTrayHandler().SetTrayContentSize();
-                GetTrayHandler().GetComponent<ResizeCollider>().Resize();
+                //GetTrayHandler().SetTrayContentSize(); // ---------------------
+                //GetTrayHandler().GetComponent<ResizeCollider>().Resize(); // --------------------
             }
             else
             {
                 //GetTray().GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().rect.width * 0.2f - 50, GetTray().GetComponent<RectTransform>().sizeDelta.y);
-                GetTrayHandler().SetTrayContentSize();
-                GetTrayHandler().GetComponent<ResizeCollider>().Resize();
+                //GetTrayHandler().SetTrayContentSize(); // ---------------------
+                //GetTrayHandler().GetComponent<ResizeCollider>().Resize(); // --------------------
             }
             if (!_soulHomeController.CheckInteractableStatus()) return;
 
@@ -184,8 +184,8 @@ namespace MenuUI.Scripts.SoulHome
                     if (hit2.collider.gameObject.CompareTag("SoulHomeScreen"))
                     {
                         soulHomeHit = true;
-                        GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement();
-                        GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false;
+                        //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement(); // ------------
+                        //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false; // ------------
                         if (_tempSelectedFurnitureTray != null || _selectedFurnitureTray != null)
                         {
                             if (_tempSelectedFurnitureTray != null)
@@ -231,7 +231,7 @@ namespace MenuUI.Scripts.SoulHome
                     if (hit2.collider.gameObject.CompareTag("FurnitureTray"))
                     {
                         trayHit = true;
-                        GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true;
+                        //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true; // -------------------
                         if (_selectedFurnitureTray == null)
                         {
                             if (_soulHomeTower.SelectedFurniture != null)
@@ -293,8 +293,8 @@ namespace MenuUI.Scripts.SoulHome
                 }
                 if (!trayHit)
                 {
-                    GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement();
-                    GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false;
+                    //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement(); // --------------------
+                    //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false; // --------------------
                     if (_selectedFurnitureTray != null && _selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
 
                 }
@@ -311,7 +311,7 @@ namespace MenuUI.Scripts.SoulHome
                         //else Destroy(_selectedFurnitureTray);
                     }
                     //_selectedFurnitureTray = null;
-                    GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true;
+                    //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true; // -------------------
 
                     /*if (_soulHomeTower.SelectedFurniture != null)
                     {

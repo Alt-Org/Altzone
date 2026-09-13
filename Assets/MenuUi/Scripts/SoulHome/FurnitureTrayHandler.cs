@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace MenuUI.Scripts.SoulHome
 {
-    public class FurnitureTrayHandler : SmartHorizontalObjectList //MonoBehaviour
+    public class FurnitureTrayHandler : MonoBehaviour
     {
         [SerializeField]
         private GameObject _traySlotObject;
@@ -71,6 +71,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 FillSelectionButtonList(list);
                 _smartList.OnNewDataRequested += UpdateButtonHandlerData;
+                _trayContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0); // Reset FurnitureTray position
                 return;
             }
             else if (_category == 2) { // Should display favorites
@@ -78,7 +79,7 @@ namespace MenuUI.Scripts.SoulHome
                 return;
             }
 
-            foreach (var _furnitureListObject in list.List)
+            foreach (var _furnitureListObject in list.List) // Adds all furniture objects that match the category to a new list
             {
                 if (_furnitureListObject.GetListObjectType() == (FurniturePlacement)_category)
                 {
@@ -86,7 +87,8 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
             // TODO - need to clear existing slots
-            FillSelectionButtonList(filtered_list);
+            FillSelectionButtonList(filtered_list); // Replaces the existing slots with the filtered list
+            _trayContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0); // Reset FurnitureTray position
             _smartList.OnNewDataRequested += UpdateButtonHandlerData;
         }
 
@@ -308,7 +310,6 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SetTrayContentSize()
         {
-            /**/
             if (!_vertical)
             {
                 int childCount = _trayContent.transform.childCount;
