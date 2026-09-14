@@ -10,4 +10,6 @@ public class CharacterThumbnailHandler : MonoBehaviour
 
     public TextMeshProUGUI _nameText;
 
+    public AvatarLoader _avatarLoader;
+
 }

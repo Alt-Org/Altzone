@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
@@ -39,6 +40,10 @@ public class IntroCharacters : MonoBehaviour
 
             Image characterSprite = characterThumbnailHandler._characterSprite;
             characterSprite.sprite = avatarreference.GetCharacterSprite(classType); //set character sprite
+
+            AvatarData data = new(avatarreference.GetDefaultAvatar(classType));
+            AvatarVisualData visualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(data);
+            characterThumbnailHandler._avatarLoader.UpdateVisuals(visualData); //set avatar design
 
 
             TextMeshProUGUI nameSprite = characterThumbnailHandler._nameText; //find name-child
