@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7547750634235564004}
   - component: {fileID: 708941395597493192}
   m_Layer: 5
-  m_Name: Room name (1)
+  m_Name: GameType
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -259,6 +259,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _roomName: {fileID: 9209887669312282381}
+  _roomGameType: {fileID: 708941395597493192}
   _roomPlayerCount: {fileID: 8767638111158360799}
   _openStatusLockImage: {fileID: 2949993932622736737}
   _lockedSprite: {fileID: 21300000, guid: 5fefa1145a7743b4998c56f6626d87be, type: 3}
@@ -615,12 +616,12 @@ PrefabInstance:
     - target: {fileID: 8781344652289168645, guid: 0cecd4c09312a86458e040444e8a8283,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 432
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8781344652289168645, guid: 0cecd4c09312a86458e040444e8a8283,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 216
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
