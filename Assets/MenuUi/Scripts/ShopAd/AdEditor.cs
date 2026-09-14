@@ -17,16 +17,6 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private Image _borderImage;
     [SerializeField] private AdPosterHandler _adGraphicHandler;
 
-    [SerializeField] private Color orangeColor;
-    [SerializeField] private Color yellowColor;
-    [SerializeField] private Color lightGreenColor;
-    [SerializeField] private Color lightBlueColor;
-    [SerializeField] private Color blueColor;
-    [SerializeField] private Color purpleColor;
-    [SerializeField] private Color darkPinkColor;
-    [SerializeField] private Color redColor;
-    [SerializeField] private Color blackColor; // Uusi lisäys (Perttu)
-
     [SerializeField] private AdDecorationReference _borderReference;
     [Header("Frame Selectors")]
     [SerializeField] private Transform _borderSelectionContent;
@@ -87,6 +77,7 @@ public class AdEditor : AltMonoBehaviour
             furnitureObject.GetComponent<Image>().sprite = furniture.Image;
             float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
             furnitureObject.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
+            furnitureObject.GetComponent<AspectRatioFitter>().aspectMode = AspectRatioFitter.AspectMode.HeightControlsWidth;
             furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
             if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
         }
@@ -200,7 +191,7 @@ public class AdEditor : AltMonoBehaviour
         if(gameObject.activeSelf) gameObject.SetActive(false);
 
         // Uusi lisäys (Perttu)
-        if (!kojuPanel.active) { kojuPanel.SetActive(true); }
+        kojuPanel.SetActive(true);
     }
 
     //public void SaveAndCloseEditor()
