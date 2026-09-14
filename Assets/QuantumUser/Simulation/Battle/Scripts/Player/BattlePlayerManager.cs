@@ -75,6 +75,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
 
             PlayerHandleInternal.SetAllPlayStates(playerManagerData, BattlePlayerPlayState.NotInGame);
+            PlayerHandleInternal.SetAllCharacterNumbers(playerManagerData, -1);
             PlayerHandleInternal.SetAllPreviousCharacterPosition(playerManagerData, s_noPreviousPosition);
             playerManagerData->PlayerCount = 0;
 
@@ -381,6 +382,7 @@ namespace Battle.QSimulation.Player
                         TeamNumber             = teamNumber,
                         CharacterId            = playerCharacterId,
                         CharacterClass         = playerCharacterClass,
+                        CharacterNumber        = playerCharacterNumber,
 
                         // player's stats
                         Stats                  = battleBaseCharacters[playerCharacterNumber].Stats,
@@ -475,7 +477,7 @@ namespace Battle.QSimulation.Player
                     f.Events.BattlePlayerCharacterViewInit(playerCharacterEntity, playerSlot, playerData->CharacterId, playerData->CharacterClass, playerData->ShieldCount, BattleGridManager.GridScaleFactor);
 
                     // set playerManagerData for player character
-                    BattlePlayerCharacterState playerCharacterState = playerData->Stats.Defence > 0 ? BattlePlayerCharacterState.Alive : BattlePlayerCharacterState.Dead;
+                    BattlePlayerCharacterState playerCharacterState = playerData->Stats.Defence > 0 ? BattlePlayerCharacterState.OutOfPlay : BattlePlayerCharacterState.OutOfPlayDead;
                     playerHandle.SetCharacterState(playerCharacterNumber, playerCharacterState);
                 }
 
@@ -495,6 +497,7 @@ namespace Battle.QSimulation.Player
         #region Public - Static Methods - Spawn/Despawn
 
         /// <summary>
+        /// This documentation is not entirely up to date. Behavior varies depending on if <see cref="BattleParameters.IsTestFlipperGame"/> is on.<br/>
         /// Spawns a player character entity into the game. <br/>
         /// Verifies that the player is in the game and the character to be spawned is valid. <br/>
         /// Actual spawning handled by a separate private method.
@@ -503,8 +506,11 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="slot">The slot of the player for which the character is to be spawned.</param>
         /// <param name="characterNumber">The character number of the character to be spawned.</param>
-        public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber)
+        /// <param name="select">Whether to set the spawned character as selected or not.</param>
+        public static void SpawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber, bool select = false)
         {
+            BattlePlayerCharacterState unSelectedCharacterState = BattleParameters.GetIsTestFlipperGame(f) ? BattlePlayerCharacterState.InPlay : BattlePlayerCharacterState.OutOfPlay;
+
             PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
 
             if (playerHandle.PlayState.IsNotInGame())
@@ -519,27 +525,70 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
-            if (playerHandle.GetCharacterState(characterNumber) == BattlePlayerCharacterState.Dead)
+            if (playerHandle.GetCharacterState(characterNumber) == BattlePlayerCharacterState.OutOfPlayDead)
             {
                 s_debugLogger.LogFormat(f, "Player character {0} is dead and will not be spawned", characterNumber);
                 return;
             }
 
-            SpawnPlayer(f, playerHandle, characterNumber);
+            bool spawn = !(playerHandle.GetCharacterState(characterNumber) is BattlePlayerCharacterState.InPlay or BattlePlayerCharacterState.InPlaySelected);
+
+            BattlePlayerClassManager.SpawnEventType spawnEventType = BattlePlayerClassManager.SpawnEventType.Spawn;
+
+            if (spawn)
+            {
+                SpawnPlayer(f, playerHandle, characterNumber);
+            }
+            else
+            {
+                if (!select) return;
+            }
+
+            playerHandle.PlayState = BattlePlayerPlayState.InPlay;
+
+            if (select)
+            {
+                if (playerHandle.SelectedCharacterNumber != -1)
+                {
+                    playerHandle.SetCharacterState(playerHandle.SelectedCharacterNumber, unSelectedCharacterState);
+
+                    BattlePlayerEntityRef previousCharacterEntityRef = playerHandle.GetSelectedCharacterEntityRef(f);
+                    BattlePlayerDataQComponent* previousPlayerData = previousCharacterEntityRef.GetDataQComponent(f);
+
+                    BattlePlayerClassManager.OnDespawn(f, BattlePlayerClassManager.DespawnEventType.UnSelect, playerHandle.ConvertToPublic(), previousPlayerData, previousCharacterEntityRef);
+                }
+
+                playerHandle.SetSelectedCharacterNumber(characterNumber);
+                playerHandle.SetCharacterState(characterNumber, BattlePlayerCharacterState.InPlaySelected);
+
+                spawnEventType = spawn ? BattlePlayerClassManager.SpawnEventType.SpawnSelect : BattlePlayerClassManager.SpawnEventType.Select;
+
+                f.Events.BattleCharacterSelected(slot, characterNumber);
+            }
+            else
+            {
+                playerHandle.SetCharacterState(characterNumber, BattlePlayerCharacterState.InPlay);
+            }
+
+            BattlePlayerEntityRef characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber);
+            BattlePlayerDataQComponent* playerData = characterEntityRef.GetDataQComponent(f);
+
+            BattlePlayerClassManager.OnSpawn(f, spawnEventType, playerHandle.ConvertToPublic(), playerData, characterEntityRef);
         }
 
 
         /// <summary>
-        /// Despawns a player's active character entity from the game. <br/>
-        /// Verifies that the player has a character in play. <br/>
+        /// Despawns a player character entity from the game based on the given <paramref name="characterNumber"/>.<br/>
+        /// Verifies that the player has a character in play.<br/>
         /// If <paramref name="kill"/> is set to true, the character's state is marked as dead prior to despawning.<br/>
         /// Actual despawning handled by a separate private method.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="slot">The slot of the player for which the character is to be despawned.</param>
+        /// <param name="characterNumber">Character number of the character being despawned.</param>
         /// <param name="kill">If true, marks the character as dead.</param>
-        public static void DespawnPlayer(Frame f, BattlePlayerSlot slot, bool kill = false)
+        public static void DespawnPlayer(Frame f, BattlePlayerSlot slot, int characterNumber, bool kill = false)
         {
             PlayerHandleInternal playerHandle = PlayerHandleInternal.GetPlayerHandle(GetPlayerManagerData(f), slot);
 
@@ -549,8 +598,18 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
-            if (kill) playerHandle.SelectedCharacterState = BattlePlayerCharacterState.Dead;
-            DespawnPlayer(f, playerHandle);
+            bool selected = playerHandle.GetCharacterState(characterNumber) == BattlePlayerCharacterState.InPlaySelected;
+
+            DespawnPlayer(f, playerHandle, characterNumber);
+
+            playerHandle.SetCharacterState(characterNumber, kill ? BattlePlayerCharacterState.OutOfPlayDead : BattlePlayerCharacterState.OutOfPlay);
+
+            if (selected)
+            {
+                playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
+                playerHandle.UnsetSelectedCharacterNumber();
+                f.Events.BattleCharacterSelected(slot, playerHandle.SelectedCharacterNumber);
+            }
         }
 
         #endregion Public - Static Methods - Spawn/Despawn
@@ -567,7 +626,7 @@ namespace Battle.QSimulation.Player
         /// <summary>Debug overlay entry number for stats.</summary>
         private static int s_debugOverlayStats;
 
-        private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_SLOT_COUNT];
+        private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_CHARACTER_TOTAL_COUNT];
 
         private static readonly FPVector2 s_noPreviousPosition = FPVector2.MaxValue;
 
@@ -594,7 +653,7 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Spawns a player character entity into the game.
+        /// Spawns a player character entity into the game based on the given <paramref name="characterNumber"/>.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
@@ -605,11 +664,12 @@ namespace Battle.QSimulation.Player
             // get references
             BattlePlayerEntityRef       characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState: true);
             BattlePlayerDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
-            Transform2D*                characterTransform = characterEntityRef.GetTransform(f);
 
-            FPVector2 worldPosition = playerHandle.DefaultSpawnPosition;
+            FPVector2 worldPosition = BattleParameters.GetIsTestFlipperGame(f) ? playerHandle.GetCharacterDefaultSpawnPosition(characterNumber) : playerHandle.DefaultSpawnPosition;
 
-            switch (playerData->SpawnBehaviour)
+            BattlePlayerSpawnBehaviour spawnBehaviour = BattleParameters.GetIsTestFlipperGame(f) ? BattlePlayerSpawnBehaviour.DefaultPosition : playerData->SpawnBehaviour;
+
+            switch (spawnBehaviour)
             {
                 case BattlePlayerSpawnBehaviour.DefaultPosition:
                     break;
@@ -627,9 +687,9 @@ namespace Battle.QSimulation.Player
                     break;
             }
 
-            if (playerHandle.PlayState.IsInPlay())
+            if (playerHandle.PlayState.IsInPlay() && !BattleParameters.GetIsTestFlipperGame(f))
             {
-                DespawnPlayer(f, playerHandle);
+                DespawnPlayer(f, playerHandle, playerHandle.SelectedCharacterNumber);
             }
 
             s_debugLogger.LogFormat(f, "({0}) Spawning character number: {1}", playerData->Slot, characterNumber);
@@ -649,12 +709,6 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerMovementController.Teleport(f, playerData, characterEntityRef, worldPosition);
 
-            // update player handle
-            playerHandle.SetSelectedCharacterNumber(characterNumber);
-            playerHandle.PlayState = BattlePlayerPlayState.InPlay;
-
-            BattlePlayerClassManager.OnSpawn(f, playerHandle.ConvertToPublic(), playerData, characterEntityRef);
-
             // update debug overlay
             BattleDebugOverlayLink.SetEntries(playerData->Slot, s_debugOverlayStats, new object[]
             {
@@ -663,49 +717,39 @@ namespace Battle.QSimulation.Player
                 playerData->Stats.Attack,
                 playerData->Stats.Defence
             });
-
-            // update view
-            f.Events.BattleCharacterSelected(playerData->Slot, characterNumber);
-            f.Events.BattleViewSetRotationJoystickVisibility(!playerData->DisableRotation, playerData->Slot);
         }
 
         /// <summary>
-        /// Despawns a player's active character entity from the game.
+        /// Despawns a player character entity from the game based on the given <paramref name="characterNumber"/>.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">PlayerHandle of the player the character will be spawned for.</param>
-        private static void DespawnPlayer(Frame f, PlayerHandleInternal playerHandle)
+        /// <param name="characterNumber">Character number of the character being despawned.</param>
+        private static void DespawnPlayer(Frame f, PlayerHandleInternal playerHandle, int characterNumber)
         {
             // get references
-            BattlePlayerEntityRef       selectedCharacter = playerHandle.GetSelectedCharacterEntityRef(f, updateViewPlayState: true);
-            BattlePlayerDataQComponent* playerData        = selectedCharacter.GetDataQComponent(f);
-            Transform2D*                playerTransform   = f.Unsafe.GetPointer<Transform2D>(selectedCharacter);
+            BattlePlayerEntityRef       characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState: true);
+            BattlePlayerDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
+            Transform2D*                playerTransform    = f.Unsafe.GetPointer<Transform2D>(characterEntityRef);
 
-            s_debugLogger.LogFormat(f, "({0}) Despawning character number: {1}", playerData->Slot, playerHandle.SelectedCharacterNumber);
+            s_debugLogger.LogFormat(f, "({0}) Despawning character number: {1}", playerData->Slot, characterNumber);
 
-            playerHandle.SetPreviousCharacterPosition(playerHandle.SelectedCharacterNumber, playerTransform->Position);
+            playerHandle.SetPreviousCharacterPosition(characterNumber, playerTransform->Position);
 
-            BattlePlayerClassManager.OnDespawn(f, playerHandle.ConvertToPublic(), playerData, selectedCharacter);
+            BattlePlayerClassManager.OnDespawn(f, BattlePlayerClassManager.DespawnEventType.DespawnUnSelect, playerHandle.ConvertToPublic(), playerData, characterEntityRef);
 
-            BattleEntityManager.Return(f, playerHandle.CharacterEntityGroupID, playerHandle.SelectedCharacterNumber);
+            BattleEntityManager.Return(f, playerHandle.CharacterEntityGroupID, characterNumber);
 
             // return shield if attached
             if (playerData->AttachedShield.ERef != EntityRef.None)
             {
-                BattleEntityManager.Return(f, BattlePlayerShieldManager.Low_GetShieldEntityGroupID(f, playerData->Slot, playerHandle.SelectedCharacterNumber), playerData->AttachedShieldNumber);
+                BattleEntityManager.Return(f, BattlePlayerShieldManager.Low_GetShieldEntityGroupID(f, playerData->Slot, characterNumber), playerData->AttachedShieldNumber);
             }
 
             // update data
             playerData->PlayerRef = PlayerRef.None;
-            playerData->ViewPosition = selectedCharacter.GetTransform(f)->Position;
-
-            // update player handle
-            playerHandle.UnsetSelectedCharacterNumber();
-            playerHandle.PlayState = BattlePlayerPlayState.OutOfPlay;
-
-            // update view
-            f.Events.BattleCharacterSelected(playerData->Slot, -1);
+            playerData->ViewPosition = characterEntityRef.GetTransform(f)->Position;
         }
 
         private static void Error(Frame f, string messageformat, params object[] args)

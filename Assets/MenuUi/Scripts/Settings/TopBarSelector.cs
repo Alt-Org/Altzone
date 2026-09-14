@@ -22,8 +22,6 @@ public class TopBarSelector : MonoBehaviour
         }
     }
 
-    private static int s_topbar = 0;
-
     void Start()
     {
         SetPanel((int)SettingsCarrier.Instance.TopBarStyleSetting);
@@ -55,13 +53,13 @@ public class TopBarSelector : MonoBehaviour
 
     private void SetPanel(int index)
     {
-        s_topbar = CheckIndexRange(index);
+        int topbar = CheckIndexRange(index);
 
         foreach (GameObject go in _topBarList)
         {
             go.SetActive(false);
         }
-        _topBarList[s_topbar].SetActive(true);
+        _topBarList[topbar].SetActive(true);
     }
 
     public TopBarTargets GetTopBarTargets(SettingsCarrier.TopBarStyle style = SettingsCarrier.TopBarStyle.None)

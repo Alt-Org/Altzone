@@ -15,15 +15,16 @@ component BattlePlayerDataQComponent
     BattleTeamNumber           TeamNumber;
     BattlePlayerCharacterID    CharacterId;
     BattlePlayerCharacterClass CharacterClass;
+    int                        CharacterNumber;
 
     // Player's Stats
     BattlePlayerStats Stats;
 
     // Player's attributes
-    int  GridExtendTop;
-    int  GridExtendBottom;
-    bool DisableMovement;
-    bool DisableRotation;
+    int                        GridExtendTop;
+    int                        GridExtendBottom;
+    bool                       DisableMovement;
+    bool                       DisableRotation;
     BattlePlayerSpawnBehaviour SpawnBehaviour;
 
     // Player's current state related data
@@ -50,6 +51,7 @@ component BattlePlayerDataQComponent
 
     // Bot related data
     FP BotMovementCooldownSec;
+    FP BotCharacterSwapTimerSec;
 
     // View related data
     FPVector2 ViewPosition;
