@@ -11,6 +11,10 @@ namespace Altzone.Scripts.Store
     {
         public string _borderFrame;
         public string _backgroundColour;
+        public TMPro.TMP_FontAsset _textFont; // Uusi lisäys (Perttu)
+        public string _textColour; // Uusi lisäys (Perttu)
+        public string _furniture; // Uusi lisäys (Perttu)
+        public string _adText; // Uusi lisäys (Perttu)
 
         public string BorderFrame
         {
@@ -37,6 +41,58 @@ namespace Altzone.Scripts.Store
             }
         }
 
+        public TMPro.TMP_FontAsset TextFont // Uusi lisäys (Perttu)
+        {
+            get => _textFont;
+            set
+            {
+                if (value != null) _textFont = value;
+                else
+                {
+                    Debug.LogError($"Invalid font value: \"{value}\". Font not changed.");
+                }
+            }
+        }
+
+        public string TextColour // Uusi lisäys (Perttu)
+        {
+            get => _textColour;
+            set
+            {
+                if (ColorUtility.TryParseHtmlString(value, out Color colour)) _textColour = value;
+                else
+                {
+                    Debug.LogError($"Invalid colour value: \"{value}\". Text colour not changed.");
+                }
+            }
+        }
+
+        public string Furniture // Uusi lisäys (Perttu)
+        {
+            get => _furniture;
+            set
+            {
+                if (AdDecorationReference.Instance.GetFurnitureSprite(value) != null) _furniture = value;
+                else
+                {
+                    Debug.LogError($"Invalid furniture id: \"{value}\". Furniture not changed.");
+                }
+            }
+        }
+
+        public string AdText // Uusi lisäys (Perttu)
+        {
+            get => _adText;
+            set
+            {
+                if (value != null) _adText = value;
+                else
+                {
+                    Debug.LogError($"Invalid text value: \"{value}\". Text not changed.");
+                }
+            }
+        }
+
         public AdStoreObject(string border, string backgroundColour)
         {
             if (AdDecorationReference.Instance.GetBorderFrameSprite(border) != null) _borderFrame = border;
@@ -48,6 +104,17 @@ namespace Altzone.Scripts.Store
 
             if (ColorUtility.TryParseHtmlString(backgroundColour, out Color colour)) _backgroundColour = backgroundColour;
             else _backgroundColour = "#E35000";
+
+            // Uusi lisäys (Perttu)
+            //if (ColorUtility.TryParseHtmlString(adTextColour, out Color textColour)) _adTextColour = adTextColour;
+            //else _adTextColour = "#000000";
+
+            //if (AdDecorationReference.Instance.GetFurnitureSprite(furniture) != null) _furniture = furniture;
+            //else
+            //{
+            //    Debug.LogWarning($"Invalid furniture id: \"{border}\". Using the default furniture.");
+            //    _furniture = AdDecorationReference.Instance.FurnitureList[0].Name;
+            //}
         }
     }
 }
