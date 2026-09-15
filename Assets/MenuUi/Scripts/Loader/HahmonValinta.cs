@@ -33,6 +33,8 @@ public class HahmonValinta : AltMonoBehaviour
     [SerializeField] private Button lockInButton;
     [SerializeField] private CharacterData[] characterData;
     [SerializeField] private GameObject popupWindow; // Reference to the pop-up window panel
+    [SerializeField] private CharacterCreator _characterCreator; // Reference to the pop-up window panel
+
     [SerializeField] private TextLanguageSelectorCaller characterNameText; // Reference to the Text component for character name
     [SerializeField] private WindowNavigation _windowNavigation;
 
@@ -49,7 +51,7 @@ public class HahmonValinta : AltMonoBehaviour
         for (int i = 0; i < characterData.Length; i++)
         {
             int characterIndex = i;
-            characterData[i].characterButton.onClick.AddListener(() => CharacterSelected(characterData[characterIndex]));
+            characterData[i].characterButton.onClick.AddListener(() => OpenCharacterCreator((CharacterClassType)((((int)characterData[characterIndex].uniqueID)/100)*100)));
         }
 
     }
@@ -71,6 +73,17 @@ public class HahmonValinta : AltMonoBehaviour
             _playerData = playerData;
             //characters = playerData.BattleCharacters.ToList();
         });
+        _characterCreator.gameObject.SetActive(false);
+    }
+
+    private void OpenCharacterCreator(CharacterClassType data)
+    {
+        _characterCreator.SetCharacter(data);
+        // Activate the pop-up window
+        _characterCreator.gameObject.SetActive(true);
+
+        // Log the selected character's name
+        Debug.Log("Selected character: " + data.ToString());
     }
 
     void CharacterSelected(CharacterData data)

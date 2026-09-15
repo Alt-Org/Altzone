@@ -29,6 +29,7 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
+        private CharacterClassType _characterClassType;
 
         void Start()
         {
@@ -104,8 +105,12 @@ namespace MenuUi.Scripts.AvatarEditor
                 yield break;
 
             _currentPlayerData = playerData;
-            SetAllAvatarFeatures();
-            _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData.AvatarData));
+            if (playerData.SelectedCharacterId != 0)
+            {
+                _characterClassType = (CharacterClassType)((_currentPlayerData.SelectedCharacterId / 100) * 100);
+                SetAllAvatarFeatures();
+                _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData.AvatarData));
+            }
         }
 
         private IEnumerator SaveAvatarData()
@@ -156,7 +161,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (_currentPlayerData.AvatarData == null || !_currentPlayerData.AvatarData.Validate())
             {
                 Debug.LogError("AvatarData is null! Using default data.");
-                _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)((_currentPlayerData.SelectedCharacterId/100)*100)));
+                _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar(_characterClassType));
             }
             else
             {
@@ -167,10 +172,21 @@ namespace MenuUi.Scripts.AvatarEditor
             _categoryLoader.UpdateSlotImages();
         }
 
+        public void SetPresetAvatar(CharacterClassType characterClass)
+        {
+            _characterClassType = characterClass;
+
+            _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar(characterClass));
+
+            _featureSetter.SetLoadedFeatures(_playerAvatar);
+            _categoryLoader.UpdateSlotImages();
+            _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(AvatarReference.Instance.GetDefaultAvatar(characterClass))));
+        }
+
 
         private void SetDefaultAvatar()
         {
-            _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar((CharacterClassType)((_currentPlayerData.SelectedCharacterId / 100) * 100)));
+            _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar(_characterClassType));
             _featureSetter.SetLoadedFeatures(_playerAvatar);
         }
 
