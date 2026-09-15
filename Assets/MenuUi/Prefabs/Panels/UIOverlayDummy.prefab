@@ -961,6 +961,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8476621660179101015}
   - component: {fileID: 5006775795625372294}
+  - component: {fileID: 5684455195184246715}
   m_Layer: 5
   m_Name: UIOverlayDummy
   m_TagString: Untagged
@@ -998,6 +999,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6221160951982613882}
   m_CullTransparentMesh: 1
+--- !u!114 &5684455195184246715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6221160951982613882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42a142fdf00068c4f949ae385efab999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _overlayObject: {fileID: 0}
+  _allowedScene: {fileID: 0}
+  buttons: []
+  _topBar: {fileID: 0}
+  _bottomBar: {fileID: 0}
+  _chatBox: {fileID: 0}
+  _buttonsBar: {fileID: 0}
+  _onlineToggleButton: {fileID: 0}
 --- !u!1 &7132742679596476211
 GameObject:
   m_ObjectHideFlags: 0
