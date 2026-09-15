@@ -16,6 +16,8 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private Image _itemImage;
     [SerializeField] private Image _borderImage;
     [SerializeField] private AdPosterHandler _adGraphicHandler;
+    [SerializeField] private TMP_InputField _inputField; // Uusi lisäys (Perttu)
+    [SerializeField] private TextMeshProUGUI _adText; // Uusi lisäys (Perttu)
 
     [SerializeField] private AdDecorationReference _borderReference;
     [Header("Frame Selectors")]
@@ -118,6 +120,9 @@ public class AdEditor : AltMonoBehaviour
         _textColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _textColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
 
         StartCoroutine(SetFrameSelectionSize());
+
+        // Uusi lisäys (Perttu)
+        _inputField.onValueChanged.AddListener(delegate { ChangeText(_inputField.text); });
     }
 
     private IEnumerator SetFrameSelectionSize()
@@ -174,6 +179,7 @@ public class AdEditor : AltMonoBehaviour
     // Uusi lisäys (Perttu)
     public void ChangeTextColor(Color colour)
     {
+        //_inputField.GetComponentInChildren<TextMeshProUGUI>().color = colour;
         _adData.TextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
@@ -181,7 +187,15 @@ public class AdEditor : AltMonoBehaviour
     // Uusi lisäys (Perttu)
     public void ChangeTextFont(TMPro.TMP_FontAsset font)
     {
+        _inputField.fontAsset = font;
         _adData.TextFont = font;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        SaveAdData();
+    }
+    // Uusi lisäys (Perttu)
+    public void ChangeText(string text)
+    {
+        _adData.AdText = text;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
@@ -192,6 +206,8 @@ public class AdEditor : AltMonoBehaviour
 
         // Uusi lisäys (Perttu)
         kojuPanel.SetActive(true);
+        _inputField.enabled = false;
+        _adText.enabled = true;
     }
 
     //public void SaveAndCloseEditor()

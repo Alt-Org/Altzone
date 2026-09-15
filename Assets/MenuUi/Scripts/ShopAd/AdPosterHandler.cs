@@ -25,7 +25,6 @@ public class AdPosterHandler : AltMonoBehaviour
     protected Image _adFurniture;
 
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -65,6 +64,7 @@ public class AdPosterHandler : AltMonoBehaviour
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
         _adText.font = data.TextFont; // Uusi lisäys (Perttu)
         _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture); // Uusi lisäys (Perttu)
+        _adText.text = data.AdText; // Uusi lisäys (Perttu)
         _adClanLogo.SetHeartColors(pieceData);
         _adClanName.text = clanName;
     }
@@ -77,6 +77,7 @@ public class AdPosterHandler : AltMonoBehaviour
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
         _adText.font = data.TextFont; // Uusi lisäys (Perttu)
         _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture); // Uusi lisäys (Perttu)
+        //_adText.text = data.AdText; // Uusi lisäys (Perttu)
         _adClanName.text = clanName;
     }
 
