@@ -39,6 +39,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [Header("Save/reset popup")] [SerializeField]
         private SaveReset _saveReset;
 
+        [Header("Whether To Save Changes Popup")] [SerializeField]
+        private GameObject _whetherToSaveChangesPopup;
+
+        [Header("Whether To Save Changes Ok Button")] [SerializeField]
+        private Button _whetherToSaveChangesOkButton;
+
+        [Header("Whether To Save Changes Cancel Button")] [SerializeField]
+        private Button _whetherToSaveChangesCancelButton;
+
         [Header("BattleUi prefabs")] [SerializeField]
         private GameObject _editingComponent;
 
@@ -150,8 +159,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// </summary>
         public void ClosePopups()
         {
+            //OnCloseButtonClicked();
             _saveReset.CloseSaveResetPopup();
-            _optionsPopup.CloseOptionsPopup();
+            _optionsPopup.OnCloseButtonClicked();
+
             OnUiElementSelected(null);
         }
 
@@ -200,7 +211,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             ScaleEditor();
 
             // Close and save button listeners
-            _closeButton.onClick.AddListener(CloseEditor);
+            _closeButton.onClick.AddListener(WhetherToSaveChangesPopup);
             _saveButton.onClick.AddListener(SaveChanges);
 
             // Preview mode listeners
@@ -221,6 +232,24 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Options popup listeners
             _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsPopup);
+
+            //Whether To Save Changes listener
+            _whetherToSaveChangesOkButton.onClick.AddListener(() =>
+            {
+                Debug.Log($"[Save ok] Save");
+                SaveChanges();
+                _whetherToSaveChangesPopup.gameObject.SetActive(false);
+                _optionsPopup.OnCloseButtonClicked();
+            });
+
+            //Whether to Cancel Changes listener
+            _whetherToSaveChangesCancelButton.onClick.AddListener(() =>
+            {
+                Debug.Log($"[Save cancel] Cancel");
+                _whetherToSaveChangesPopup.gameObject.SetActive(false);
+                _optionsPopup.gameObject.SetActive(true);
+                OpenEditor();
+            });
         }
 
         private void OnDestroy()
@@ -243,6 +272,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Removing options button listeners
             _optionsButton.onClick.RemoveAllListeners();
+
+            //Removing Whether To Save Changes Button listeners
+            _whetherToSaveChangesOkButton.onClick.RemoveAllListeners();
+
+            //Removing Whether to Cancel Changes Button listener
+            _whetherToSaveChangesCancelButton.onClick.RemoveAllListeners();
         }
 
         private void OnDisable()
@@ -279,7 +314,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void OpenPreviewMode()
         {
             OnUiElementSelected(null);
-            _optionsPopup.CloseOptionsPopup();
+            _optionsPopup.OnCloseButtonClicked();
             _topButtonsRectTransform.gameObject.SetActive(false);
             _previewModeTouchDetector.gameObject.SetActive(true);
             EditorRectTransform.anchorMin = Vector2.zero;
@@ -348,6 +383,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             SetDefaultDataToUiElement(_instantiatedRotateJoystick);
 
             _unsavedChanges = !IsSavedDataSimilar();
+        }
+
+        private void WhetherToSaveChangesPopup()
+        {
+            Debug.Log("WhetherToSaveChangesPopup OPENED");
+            _optionsPopup.OnCloseButtonClicked();
+            _whetherToSaveChangesPopup.SetActive(true);
+
+            _whetherToSaveChangesPopup.transform.SetAsLastSibling();
         }
 
         private bool IsSavedDataSimilar(BattleUiElementType uiElementType = BattleUiElementType.None)
@@ -864,7 +908,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void OnUiElementSelected(BattleUiEditingComponent newSelectedEditingComponent)
         {
-            _optionsPopup.CloseOptionsPopup();
+            _optionsPopup.OnCloseButtonClicked();
             _grid.RemoveLineHighlight();
 
             if (_currentlySelectedEditingComponent != null &&

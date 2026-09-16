@@ -18,10 +18,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         [SerializeField] private Button _resetButton;
 
-        [Header("TopButtons")] [SerializeField]
-        private Button _closeButton;
+        [Header("TopButtons")]
+        // [SerializeField] private Button _closeButton;
+        [SerializeField]
+        private Button _saveButton;
 
-        [SerializeField] private Button _saveButton;
         [SerializeField] private Button _previewButton;
         [SerializeField] private Button _optionsButton;
 
@@ -100,14 +101,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _outsideFloorOkButton;
         [SerializeField] private Button _outsideFloorCancelButton;
 
-        [Header("Whether To Save Changes Popup")] [SerializeField]
-        private GameObject _whetherToSaveChangesPopup;
+        // [Header("Whether To Save Changes Popup")] [SerializeField]
+        // private GameObject _whetherToSaveChangesPopup;
 
-        [FormerlySerializedAs("_WhetherToSaveChangesOkButton")] [SerializeField]
-        private Button _whetherToSaveChangesOkButton;
+        // [FormerlySerializedAs("_WhetherToSaveChangesOkButton")] [SerializeField]
+        // private Button _whetherToSaveChangesOkButton;
 
-        [FormerlySerializedAs("_WhetherToSaveChangesCancelButton")] [SerializeField]
-        private Button _whetherToSaveChangesCancelButton;
+        // [FormerlySerializedAs("_WhetherToSaveChangesCancelButton")] [SerializeField]
+        // private Button _whetherToSaveChangesCancelButton;
 
         [Header("References")] [SerializeField]
         private BattleUiEditor _battleUiEditor;
@@ -132,7 +133,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void Awake()
         {
             _resetButton.onClick.AddListener(_saveReset.OnResetButtonClicked);
-            if (_closeButton != null) _closeButton.onClick.AddListener(CloseOptionsPopup);
+
+            //if (_closeButton != null) _closeButton.onClick.AddListener(CloseOptionsPopup);
 
             // Show grid toggle listener
             _showGridToggle.onValueChanged.AddListener((value) =>
@@ -346,20 +348,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SetOuterEdgeWithoutFloor(false);
             });
 
-            //Whether To Save Changes listeners
-            _whetherToSaveChangesOkButton.onClick.AddListener(() =>
-            {
-                //SaveChanges
-
-                _whetherToSaveChangesPopup.SetActive(false);
-                _optionsContents.SetActive(false);
-            });
-
-            _whetherToSaveChangesCancelButton.onClick.AddListener(() =>
-            {
-                _whetherToSaveChangesPopup.SetActive(false);
-                //_optionsContents.SetActive(true);
-            });
+            // //Whether To Save Changes listeners
+            // _whetherToSaveChangesOkButton.onClick.AddListener(() =>
+            // {
+            //     //SaveChanges
+            //
+            //     //_whetherToSaveChangesPopup.SetActive(false);
+            //     _optionsContents.SetActive(false);
+            // });
+            //
+            // _whetherToSaveChangesCancelButton.onClick.AddListener(() =>
+            // {
+            //     //_whetherToSaveChangesPopup.SetActive(false);
+            //     //_optionsContents.SetActive(true);
+            // });
 
             // Arena pos x listeners
             _arenaPosXSlider.onValueChanged.AddListener((value) =>
@@ -460,9 +462,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             bool outerEdgeWithoutFloor = SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor;
             _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(outerEdgeWithoutFloor);
             SetOuterEdgeWithoutFloor(outerEdgeWithoutFloor);
-
-            //Whether To Save Popup is set to off
-            _whetherToSaveChangesPopup.SetActive(false);
         }
 
         private void OnDestroy()
@@ -525,10 +524,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             //Removing Outside Floor Popup listeners
             _outsideFloorOkButton.onClick.RemoveAllListeners();
             _outsideFloorCancelButton.onClick.RemoveAllListeners();
-
-            //Removing Whether To Save Popup listeners
-            _whetherToSaveChangesOkButton.onClick.RemoveAllListeners();
-            _whetherToSaveChangesCancelButton.onClick.RemoveAllListeners();
         }
 
         private void UpdateInputSettings(BattleMovementInputType movementType, BattleRotationInputType rotationType)
@@ -643,21 +638,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(_instructionImageRow);
 
-            Debug.Log(
-                $"[IMAGE STATE] " +
-                $"Swipe={_swipeInstructionImage?.activeSelf}, " +
-                $"PointClick={_pointAndClickInstructionImage?.activeSelf}, " +
-                $"Joystick={_joystickInstructionImage?.activeSelf}, " +
-                $"Follow={_followPointerInstructionImage?.activeSelf}, " +
-                $"TwoFinger={_twoFingerRotationInstructionImage?.activeSelf}, " +
-                $"RotSwipe={_swipeRotationInstructionImage?.activeSelf}, " +
-                $"RotJoystick={_joystickRotationInstructionImage?.activeSelf}, " +
-                $"GyroSelf={_gyroscopeRotationInstructionImage?.activeSelf}, " +
-                $"GyroHierarchy={_gyroscopeRotationInstructionImage?.activeInHierarchy}, " +
-                $"Gyro={_gyroscopeRotationInstructionImage?.activeSelf}");
-
-            Debug.Log($"[INSTRUCTION] Move={movementType}, Rotation={rotationType}");
-
             // Setting visibility to joysticks
             if (_battleUiEditor._instantiatedMoveJoystick != null)
                 _battleUiEditor._instantiatedMoveJoystick.gameObject.SetActive(movementType ==
@@ -740,7 +720,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             if (_optionsContents.activeSelf)
             {
-                CloseOptionsPopup();
+                //CloseOptionsPopup();
             }
             else
             {
@@ -754,24 +734,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _optionsContents.SetActive(true);
         }
 
-        public void CloseOptionsPopup()
+        public void OnCloseButtonClicked()
         {
-            _whetherToSaveChangesPopup.SetActive(true);
+            _optionsContents.SetActive(false);
         }
 
         private void SetOuterEdgeWithoutFloor(bool enabled)
         {
             _arenaBackgroundBlackImage.SetActive(enabled);
         }
-
-        // private void WhetherToSaveChangesPopup()
-        // {
-        //     _optionsContents.SetActive(true);
-        // }
-        //
-        // public void OnCloseButtonClicked()
-        // {
-        //     _whetherToSaveChangesPopup.SetActive(true);
-        // }
     }
 }
