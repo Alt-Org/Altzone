@@ -34,7 +34,8 @@ namespace MenuUi.Scripts.UIScaling
         {
             if (_ignoreOverlayStatus) return;
             float bottomLine = CalculateBottomPanelHeight();
-            if (!value) bottomLine /= 2f;
+            if(!OverlayPanelCheck.Instance.BottomBarActive) bottomLine = 0;
+            else if (!value) bottomLine /= 2f;
             _bottomPanelRectTransfrom.anchorMax = new(1, bottomLine);
             _contentPanelRectTransfrom.anchorMin = new(0, bottomLine);
         }
@@ -43,6 +44,7 @@ namespace MenuUi.Scripts.UIScaling
             if (_ignoreOverlayStatus) return;
             float bottomLine = CalculateBottomPanelHeight();
             if (!value) bottomLine = 0;
+            else if (!OverlayPanelCheck.Instance.ChatActive) bottomLine /= 2f;
             _bottomPanelRectTransfrom.anchorMax = new(1, bottomLine);
             _contentPanelRectTransfrom.anchorMin = new(0, bottomLine);
         }
