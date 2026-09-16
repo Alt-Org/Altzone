@@ -16,11 +16,16 @@ public class IntroPresetHandler : MonoBehaviour
     [SerializeField] private TMP_Text _className;
     [SerializeField] private Toggle _toggle;
     [SerializeField] private GameObject _selectedSprite;
+    private CharacterClassType _classType = CharacterClassType.None;
 
-    public void SetPresetData(CharacterClassType classType, Action<bool> callback)
+    public CharacterClassType ClassType => _classType;
+
+    public void SetPresetData(CharacterClassType classType, Action<CharacterClassType> callback)
     {
-        _backgroundStoneImage.sprite = ClassReference.Instance.GetCharacter(classType);
-        _className.text = ClassReference.Instance.GetName(classType);
+        _classType = classType;
+        _backgroundStoneImage.sprite = AvatarReference.Instance.GetCharacterSprite(classType);
+        _className.text = AvatarReference.Instance.GetName(classType);
+        _className.color = AvatarReference.Instance.GetColour(classType);
         AvatarData data= new(AvatarReference.Instance.GetDefaultAvatar(classType));
         AvatarVisualData visualData= AvatarDesignLoader.Instance.CreateAvatarVisualData(data);
         _faceloader.UpdateVisuals(visualData);
@@ -29,7 +34,7 @@ public class IntroPresetHandler : MonoBehaviour
             if (value)
             {
                 _selectedSprite.SetActive(true);
-                callback(true);
+                callback(classType);
             }
             else
             {

@@ -78,9 +78,9 @@ public class HahmonValinta : AltMonoBehaviour
 
     private void OpenCharacterCreator(CharacterClassType data)
     {
-        _characterCreator.SetCharacter(data);
         // Activate the pop-up window
         _characterCreator.gameObject.SetActive(true);
+        _characterCreator.SetInitialSelectCharacter(data);
 
         // Log the selected character's name
         Debug.Log("Selected character: " + data.ToString());
