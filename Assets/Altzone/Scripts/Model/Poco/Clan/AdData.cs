@@ -105,6 +105,11 @@ namespace Altzone.Scripts.Store
             if (ColorUtility.TryParseHtmlString(backgroundColour, out Color colour)) _backgroundColour = backgroundColour;
             else _backgroundColour = "#E35000";
 
+            if (_adText == null) // Uusi lisäys (Perttu)
+            {
+                _adText = "Myyntikoju avattu!";
+            }
+
             // Uusi lisäys (Perttu)
             //if (ColorUtility.TryParseHtmlString(adTextColour, out Color textColour)) _adTextColour = adTextColour;
             //else _adTextColour = "#000000";

@@ -17,6 +17,7 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private Image _borderImage;
     [SerializeField] private AdPosterHandler _adGraphicHandler;
     [SerializeField] private TMP_InputField _inputField; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject _inputFieldHolder; // Uusi lisäys (Perttu)
     [SerializeField] private TextMeshProUGUI _adText; // Uusi lisäys (Perttu)
 
     [SerializeField] private AdDecorationReference _borderReference;
@@ -179,7 +180,7 @@ public class AdEditor : AltMonoBehaviour
     // Uusi lisäys (Perttu)
     public void ChangeTextColor(Color colour)
     {
-        //_inputField.GetComponentInChildren<TextMeshProUGUI>().color = colour;
+        _inputField.textComponent.color = colour;
         _adData.TextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
@@ -206,7 +207,7 @@ public class AdEditor : AltMonoBehaviour
 
         // Uusi lisäys (Perttu)
         kojuPanel.SetActive(true);
-        _inputField.enabled = false;
+        _inputFieldHolder.SetActive(false);
         _adText.enabled = true;
     }
 

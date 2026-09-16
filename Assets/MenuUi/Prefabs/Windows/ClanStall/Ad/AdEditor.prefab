@@ -1205,6 +1205,7 @@ MonoBehaviour:
   _borderImage: {fileID: 2481574173857755089}
   _adGraphicHandler: {fileID: 6378196027626622136}
   _inputField: {fileID: 8957738820764547955}
+  _inputFieldHolder: {fileID: 743531775180342338}
   _adText: {fileID: 3855614454605971468}
   _borderReference: {fileID: 11400000, guid: e527845925edf23418596bb0e6da8b5c, type: 2}
   _borderSelectionContent: {fileID: 3264556469795064128}
@@ -5252,12 +5253,12 @@ PrefabInstance:
     - target: {fileID: 2939696494699659817, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.8
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2939696494699659817, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.85
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2939696494699659817, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
         type: 3}
@@ -5598,6 +5599,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2734065135891761039}
   m_SourcePrefab: {fileID: 100100000, guid: b3cd90fae2bb6c74494dc4e34dcdec1d, type: 3}
+--- !u!1 &743531775180342338 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 20325095770412507, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
+    type: 3}
+  m_PrefabInstance: {fileID: 727819131801096601}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2481574173857755089 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2912115046961118792, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
