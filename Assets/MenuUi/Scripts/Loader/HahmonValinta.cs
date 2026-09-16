@@ -91,7 +91,7 @@ public class HahmonValinta : AltMonoBehaviour
         // 
         lockInButton.onClick.AddListener(()=>StartCoroutine(LockInCharacter(classType, avatar)));
 
-        _popupWindowHandler.UpdateImageAndText(classType);
+        _popupWindowHandler.UpdateImageAndText(classType, avatar);
         // Activate the pop-up window
         popupWindow.SetActive(true);
 

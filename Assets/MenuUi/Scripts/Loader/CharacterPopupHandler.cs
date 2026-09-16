@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using Altzone.Scripts.Model.Poco.Game;
-using Altzone.Scripts.ReferenceSheets;
 
 public class CharacterPopupHandler : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class CharacterPopupHandler : MonoBehaviour
     TextMeshProUGUI classChoiseText;
     [SerializeField]
     Image charaterImage;
+    [SerializeField]
+    AvatarLoader _charaterAvatar;
 
     [SerializeField]
     TextMeshProUGUI classIntroductionText;
@@ -25,7 +28,7 @@ public class CharacterPopupHandler : MonoBehaviour
 
     //function that changes the name and image
 
-    public void UpdateImageAndText(CharacterClassType classType)
+    public void UpdateImageAndText(CharacterClassType classType, AvatarData avatar)
     {                             
         AvatarReference reference = AvatarReference.Instance;
 
@@ -45,6 +48,8 @@ public class CharacterPopupHandler : MonoBehaviour
             */
 
             charaterImage.sprite = reference.GetCharacterSprite(classType); //show correct character sprite
+            AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(avatar);
+            _charaterAvatar.UpdateVisuals(avatarVisualData);
 
             classIntroductionText.text = reference.GetDescription(classType); //show correct description
 
