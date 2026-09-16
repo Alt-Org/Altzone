@@ -254,6 +254,7 @@ namespace Altzone.Scripts.Chat
                 {
                     Debug.LogWarning(JObject.Parse(json));
                     JToken middleresult = JObject.Parse(json)["message"];
+                    if (middleresult == null) return;
                     ServerChatMessage message = middleresult["message"].ToObject<ServerChatMessage>();
                     if (middleresult["event"].ToString().Equals("newMessage"))
                     {
