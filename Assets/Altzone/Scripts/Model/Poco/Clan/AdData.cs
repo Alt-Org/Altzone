@@ -15,6 +15,7 @@ namespace Altzone.Scripts.Store
         public string _textColour; // Uusi lisäys (Perttu)
         public string _furniture; // Uusi lisäys (Perttu)
         public string _adText; // Uusi lisäys (Perttu)
+        public bool _isAdText = true; // Uusi lisäys (Perttu)
 
         public string BorderFrame
         {
@@ -93,6 +94,15 @@ namespace Altzone.Scripts.Store
             }
         }
 
+        public bool IsAdText
+        {
+            get => _isAdText;
+            set
+            {
+                _isAdText = value;
+            }
+        }
+
         public AdStoreObject(string border, string backgroundColour)
         {
             if (AdDecorationReference.Instance.GetBorderFrameSprite(border) != null) _borderFrame = border;
@@ -105,7 +115,7 @@ namespace Altzone.Scripts.Store
             if (ColorUtility.TryParseHtmlString(backgroundColour, out Color colour)) _backgroundColour = backgroundColour;
             else _backgroundColour = "#E35000";
 
-            if (_adText == null) // Uusi lisäys (Perttu)
+            if (string.IsNullOrEmpty(_adText)) // Uusi lisäys (Perttu)
             {
                 _adText = "Myyntikoju avattu!";
             }

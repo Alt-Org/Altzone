@@ -23,6 +23,10 @@ public class AdPosterHandler : AltMonoBehaviour
     protected TextMeshProUGUI _adText;
     [SerializeField]
     protected Image _adFurniture;
+    [SerializeField]
+    private GameObject _adTextHolder;
+    [SerializeField]
+    private GameObject _inputFieldHolder;
 
 
     // Start is called before the first frame update
@@ -65,6 +69,8 @@ public class AdPosterHandler : AltMonoBehaviour
         _adText.font = data.TextFont; // Uusi lisäys (Perttu)
         _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture); // Uusi lisäys (Perttu)
         _adText.text = data.AdText; // Uusi lisäys (Perttu)
+        if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
+        if (data.IsAdText == false) _adTextHolder.SetActive(false); // Uusi lisäys (Perttu)
         _adClanLogo.SetHeartColors(pieceData);
         _adClanName.text = clanName;
     }
@@ -77,7 +83,9 @@ public class AdPosterHandler : AltMonoBehaviour
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
         _adText.font = data.TextFont; // Uusi lisäys (Perttu)
         _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture); // Uusi lisäys (Perttu)
-        //_adText.text = data.AdText; // Uusi lisäys (Perttu)
+        _adText.text = data.AdText; // Uusi lisäys (Perttu)
+        if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
+        if (data.IsAdText == false) _adTextHolder.SetActive(false); // Uusi lisäys (Perttu)
         _adClanName.text = clanName;
     }
 

@@ -18,7 +18,7 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private AdPosterHandler _adGraphicHandler;
     [SerializeField] private TMP_InputField _inputField; // Uusi lisäys (Perttu)
     [SerializeField] private GameObject _inputFieldHolder; // Uusi lisäys (Perttu)
-    [SerializeField] private TextMeshProUGUI _adText; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject _adTextHolder; // Uusi lisäys (Perttu)
 
     [SerializeField] private AdDecorationReference _borderReference;
     [Header("Frame Selectors")]
@@ -39,6 +39,9 @@ public class AdEditor : AltMonoBehaviour
     private AdStoreObject _adData;
     private string _posterName = null;
     private List<HeartPieceData> _heartPieceData = new();
+
+    //public bool _isAdText; // Uusi lisäys (Perttu)
+    //public bool IsAdText { set { _isAdText = value; } } // Uusi lisäys (Perttu)
 
 
     void Start()    
@@ -68,6 +71,7 @@ public class AdEditor : AltMonoBehaviour
                 _posterName = "Et ole klaanissa";
             }
             _adGraphicHandler.SetAdPoster(_adData, _posterName, _heartPieceData);
+            if (_adData._isAdText) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
         }));
 
 
@@ -201,6 +205,13 @@ public class AdEditor : AltMonoBehaviour
         SaveAdData();
     }
 
+    public void EnableText(bool enable)
+    {
+        _adData._isAdText = enable;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        SaveAdData();
+    }
+
     public void CloseEditor()
     {
         if(gameObject.activeSelf) gameObject.SetActive(false);
@@ -208,7 +219,8 @@ public class AdEditor : AltMonoBehaviour
         // Uusi lisäys (Perttu)
         kojuPanel.SetActive(true);
         _inputFieldHolder.SetActive(false);
-        _adText.enabled = true;
+        if (_adData._isAdText) _adTextHolder.SetActive(true);
+        if (!_adData._isAdText) _adTextHolder.SetActive(false);
     }
 
     //public void SaveAndCloseEditor()
