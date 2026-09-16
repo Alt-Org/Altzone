@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Config;
 using Altzone.Scripts;
-using System.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.Window;
 using Newtonsoft.Json.Linq;
@@ -33,6 +31,7 @@ public class HahmonValinta : AltMonoBehaviour
     [SerializeField] private Button lockInButton;
     [SerializeField] private CharacterData[] characterData;
     [SerializeField] private GameObject popupWindow; // Reference to the pop-up window panel
+    [SerializeField] private CharacterPopupHandler _popupWindowHandler;
     [SerializeField] private CharacterCreator _characterCreator; // Reference to the pop-up window panel
 
     [SerializeField] private TextLanguageSelectorCaller characterNameText; // Reference to the Text component for character name
@@ -80,43 +79,45 @@ public class HahmonValinta : AltMonoBehaviour
     {
         // Activate the pop-up window
         _characterCreator.gameObject.SetActive(true);
-        _characterCreator.SetInitialSelectCharacter(data);
+        _characterCreator.SetInitialSelectCharacter(data, CharacterSelected);
 
         // Log the selected character's name
         Debug.Log("Selected character: " + data.ToString());
     }
 
-    void CharacterSelected(CharacterData data)
+    void CharacterSelected(CharacterClassType classType, AvatarData avatar)
     {
         lockInButton.onClick.RemoveAllListeners();
         // 
-        lockInButton.onClick.AddListener(()=>StartCoroutine(LockInCharacter(data.uniqueID)));
+        lockInButton.onClick.AddListener(()=>StartCoroutine(LockInCharacter(classType, avatar)));
 
+        _popupWindowHandler.UpdateImageAndText(classType);
         // Activate the pop-up window
         popupWindow.SetActive(true);
 
         // Update the character name text
         //characterNameText.text = data.characterName;
-        characterNameText.SetText(SettingsCarrier.Instance.Language, new string[1] { ClassReference.Instance.GetName(CustomCharacter.GetClass(data.uniqueID))});
+        characterNameText.SetText(SettingsCarrier.Instance.Language, new string[1] { ClassReference.Instance.GetName(classType) });
 
         // Log the selected character's name
-        Debug.Log("Selected character: " + data.characterName);
+        Debug.Log("Selected character: " + classType);
     }
 
-    public IEnumerator LockInCharacter(CharacterID id)
+    public IEnumerator LockInCharacter(CharacterClassType id, AvatarData avatar)
     {
         lockInButton.interactable = false;
         // Check if a character is selected
-        if (id != CharacterID.None)
+        if (id != CharacterClassType.None)
         {
             // Log the selected character's information
             // Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
             bool callFinished = false;
             bool characterAdded = false;
             int i = 0;
-            if (ServerManager.Instance.Player.currentAvatarId is null or 0 || !Enum.IsDefined(typeof(CharacterID), ServerManager.Instance.Player.currentAvatarId))
+            if (ServerManager.Instance.Player.currentAvatarId is null or 0 || !Enum.IsDefined(typeof(CharacterClassType), ServerManager.Instance.Player.currentAvatarId))
             {
                 _playerData.SelectedCharacterId = (int)id;
+                _playerData.AvatarData = avatar;
 
                 string noCharacter = ((int)CharacterID.None).ToString();
                 _playerData.SelectedCharacterIds = new CustomCharacterListObject[3] { new(Id: CharacterID.None), new(Id: CharacterID.None), new(Id: CharacterID.None) };

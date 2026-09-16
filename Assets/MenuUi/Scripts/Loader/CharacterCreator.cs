@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Altzone.Scripts.Config.ScriptableObjects;
 using Altzone.Scripts.Model.Poco.Game;
-using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using UnityEngine;
 
@@ -41,11 +40,12 @@ public class CharacterCreator : MonoBehaviour
         _initialized = true;
     }
 
-    public void SetInitialSelectCharacter(CharacterClassType classType)
+    public void SetInitialSelectCharacter(CharacterClassType classType, Action<CharacterClassType, AvatarData> saveOverride)
     {
         if (!_initialized) Initialize();
         _presetButtons.FirstOrDefault(x => x.ClassType == classType)?.Toggle(true);
         _avatarEditor.SetPresetAvatar(classType);
+        _avatarEditor.SetSaveOverride(saveOverride);
     }
 
     public void SetCharacter(CharacterClassType classType)

@@ -30,6 +30,7 @@ namespace MenuUi.Scripts.AvatarEditor
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
         private CharacterClassType _characterClassType;
+        private Action<CharacterClassType, AvatarData> _saveOverride = null;
 
         void Start()
         {
@@ -38,7 +39,16 @@ namespace MenuUi.Scripts.AvatarEditor
 
             UpdateCellSizes();
 
-            _saveButton.onClick.AddListener(() => _popUpHandler.ShowPopUp());
+            _saveButton.onClick.AddListener(() =>
+            {
+                if(_saveOverride != null)
+                {
+                    AvatarData avatarData = FormatAvatarData(_playerAvatar);
+                    _saveOverride(_characterClassType, avatarData);
+                }
+                else
+                    _popUpHandler.ShowPopUp();
+            });
 
             _popUpHandler.AddConfirmButtonListener(() =>
             {
@@ -119,18 +129,7 @@ namespace MenuUi.Scripts.AvatarEditor
             PlayerData playerData = null;
             PlayerData savePlayerData = _currentPlayerData;
 
-            savePlayerData.AvatarData = new(_playerAvatar.Name,
-                null,
-                _playerAvatar.SkinColor,
-                null,
-                new Vector2(1, 1));
-
-            var features = Enum.GetValues(typeof(AvatarPiece));
-            foreach (AvatarPiece feature in features)
-            {
-                AssignPartToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartId(feature));
-                AssignColorToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartColor(feature));
-            }
+            savePlayerData.AvatarData = FormatAvatarData(_playerAvatar);
             StartCoroutine(SavePlayerData(savePlayerData, p => playerData = p));
             yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
 
@@ -188,11 +187,18 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar(_characterClassType));
             _featureSetter.SetLoadedFeatures(_playerAvatar);
+            _categoryLoader.UpdateSlotImages();
+            _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(AvatarReference.Instance.GetDefaultAvatar(_characterClassType))));
         }
 
         private void RevertAvatarChanges()
         {
             SetAllAvatarFeatures();
+        }
+
+        public void SetSaveOverride(Action<CharacterClassType, AvatarData> saveOverride)
+        {
+            _saveOverride = saveOverride;
         }
 
         private void AssignColorToPlayerData(AvatarData playerAvatarData, AvatarPiece feature, string color)
@@ -273,6 +279,25 @@ namespace MenuUi.Scripts.AvatarEditor
         public PlayerAvatar PlayerAvatar
         {
             get { return _playerAvatar; }
+        }
+
+        private AvatarData FormatAvatarData(PlayerAvatar playerAvatar)
+        {
+            if (playerAvatar == null) return null;
+
+            AvatarData avatarData = new(playerAvatar.Name,
+            null,
+            playerAvatar.SkinColor,
+            null,
+            new Vector2(1, 1));
+
+            var features = Enum.GetValues(typeof(AvatarPiece));
+            foreach (AvatarPiece feature in features)
+            {
+                AssignPartToPlayerData(avatarData, feature, playerAvatar.GetPartId(feature));
+                AssignColorToPlayerData(avatarData, feature, playerAvatar.GetPartColor(feature));
+            }
+            return avatarData;
         }
     }
 }

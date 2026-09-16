@@ -1657,6 +1657,7 @@ MonoBehaviour:
     characterName: "Albert \xC4lyp\xE4\xE4"
     characterButton: {fileID: 8775793629644080426}
   popupWindow: {fileID: 997590189480381226}
+  _popupWindowHandler: {fileID: 3752279736733220292}
   _characterCreator: {fileID: 4667032084028353748}
   characterNameText: {fileID: 8437176503476189942}
   _windowNavigation: {fileID: 5196176690083521224}
@@ -4043,7 +4044,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 66.8
+  m_fontSize: 76.5
   m_fontSizeBase: 150
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10675,7 +10676,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 53.45
+  m_fontSize: 69.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -19328,21 +19329,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3752279736733220292}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UpdateImageAndText
-      objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 4350458628713631727, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -19480,16 +19466,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3752279736733220292}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1620398727702090483, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
         type: 3}
@@ -20208,21 +20184,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3752279736733220292}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UpdateImageAndText
-      objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 4350458628713631727, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -20381,21 +20342,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3752279736733220292}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UpdateImageAndText
-      objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 6
-      objectReference: {fileID: 0}
     - target: {fileID: 4350458628713631727, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -20553,21 +20499,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3752279736733220292}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UpdateImageAndText
-      objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4350458628713631727, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
         type: 3}
@@ -20781,6 +20712,11 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 356340472212410240, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1759266517548660043, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
         type: 3}
       propertyPath: m_Name
@@ -20851,6 +20787,17 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4863881022707968690, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 01b040577cf3b2a48ad25c8781a315a5,
+        type: 3}
+    - target: {fileID: 6146661395156361099, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6479882166221217182, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -20869,6 +20816,46 @@ PrefabInstance:
     - target: {fileID: 6479882166221217182, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
         type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7062235089005473572, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7233694637734536355, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7233694637734536355, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.83
+      objectReference: {fileID: 0}
+    - target: {fileID: 7233694637734536355, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7233694637734536355, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7233694637734536355, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7233694637734536355, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7233694637734536355, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8017925920670622044, guid: 6fa23e2d39b769741bd9060aa3b2f2c0,
@@ -21776,21 +21763,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3752279736733220292}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UpdateImageAndText
-      objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 2527855686399652320, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
         type: 3}
       propertyPath: m_Type
@@ -22023,21 +21995,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 3752279736733220292}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: UpdateImageAndText
-      objectReference: {fileID: 0}
-    - target: {fileID: 1561703888508663506, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
-      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2527855686399652320, guid: 1cfa7456ec258ef46a7ffe5f44dd8596,
         type: 3}

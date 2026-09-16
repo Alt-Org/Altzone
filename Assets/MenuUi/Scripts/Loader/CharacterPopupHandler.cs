@@ -25,11 +25,8 @@ public class CharacterPopupHandler : MonoBehaviour
 
     //function that changes the name and image
 
-    public void UpdateImageAndText(int id)
-    {
-
-        CharacterClassType classType = (int)CharacterClassType.None;
-        classType = (CharacterClassType)(id * 100);                             // gets button id and connects it to correct class
+    public void UpdateImageAndText(CharacterClassType classType)
+    {                             
         AvatarReference reference = AvatarReference.Instance;
 
         if (classType is not CharacterClassType.None)
