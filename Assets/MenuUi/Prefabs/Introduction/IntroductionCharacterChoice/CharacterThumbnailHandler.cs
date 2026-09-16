@@ -12,4 +12,5 @@ public class CharacterThumbnailHandler : MonoBehaviour
 
     public AvatarLoader _avatarLoader;
 
+    public Button _selectButton;
 }

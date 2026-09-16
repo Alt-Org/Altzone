@@ -14,6 +14,8 @@ public class IntroCharacters : MonoBehaviour
 
     private List<int> characterIDs = new List<int>();
 
+    public delegate void InitialAvatarSelection(CharacterClassType classType);
+    public static event InitialAvatarSelection OnInitialAvatarSelection;
 
     void Start()
     {
@@ -23,18 +25,15 @@ public class IntroCharacters : MonoBehaviour
             characterIDs.Add(i);
         }
 
-
-        CharacterClassType classType;
         int j = 0;                     //for going through the classtype list
         AvatarReference avatarreference= AvatarReference.Instance;
         foreach (GameObject characterCard in characterCards)
         {
             j++;
 
-            classType = (CharacterClassType)characterIDs[j]; //get classtype from list
+            CharacterClassType classType = (CharacterClassType)characterIDs[j]; //get classtype from list
 
             characterCard.GetComponent<Image>().color = avatarreference.GetColour(classType); //change card color
-
 
             CharacterThumbnailHandler characterThumbnailHandler = characterCard.GetComponent<CharacterThumbnailHandler>(); // get correct thumbnailhandler 
 
@@ -50,7 +49,7 @@ public class IntroCharacters : MonoBehaviour
             nameSprite.text = avatarreference.GetName(classType); //set name sprite
             nameSprite.color = avatarreference.GetColour(classType);
 
-           
+            characterThumbnailHandler._selectButton.onClick.AddListener(() => { OnInitialAvatarSelection?.Invoke(classType); });
         }
     }
 

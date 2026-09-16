@@ -34,19 +34,6 @@ public class CharacterPopupHandler : MonoBehaviour
 
         if (classType is not CharacterClassType.None)
         {
-            //string cname = popupOptions[id].className;
-            /*
-            if (popupOptions[id].characterImage == null)
-            {
-                charaterImage.sprite = backupImage; //character image switching
-            }
-            else
-            {
-                charaterImage.sprite = popupOptions[id].characterImage;
-            }
-            //classChoiseText.text = $"Oletko varma että haluat edustaa {cname} suojelijaluokkaa pelaajien keskuudessa?"; //character name switching
-            */
-
             charaterImage.sprite = reference.GetCharacterSprite(classType); //show correct character sprite
             AvatarVisualData avatarVisualData = AvatarDesignLoader.Instance.CreateAvatarVisualData(avatar);
             _charaterAvatar.UpdateVisuals(avatarVisualData);

@@ -12,52 +12,33 @@ using System;
 using Altzone.Scripts.Language;
 using Altzone.Scripts.ReferenceSheets;
 
-[System.Serializable]
-public class CharacterData
-{
-    public CharacterID uniqueID;
-    public string characterName;
-    public Button characterButton;
-
-    public CharacterData(int id, string name)
-    {
-        uniqueID = (CharacterID)id;
-        characterName = name;
-    }
-}
-
 public class HahmonValinta : AltMonoBehaviour
 {
-    [SerializeField] private Button lockInButton;
-    [SerializeField] private CharacterData[] characterData;
-    [SerializeField] private GameObject popupWindow; // Reference to the pop-up window panel
+    [SerializeField] private Button _lockInButton;
     [SerializeField] private CharacterPopupHandler _popupWindowHandler;
     [SerializeField] private CharacterCreator _characterCreator; // Reference to the pop-up window panel
 
     [SerializeField] private TextLanguageSelectorCaller characterNameText; // Reference to the Text component for character name
     [SerializeField] private WindowNavigation _windowNavigation;
 
-    private int selectedCharacterIndex = -1;
     private PlayerData _playerData;
-    private List<BattleCharacter> characters;
 
     void Start()
     {
         // Initialize the pop-up window as inactive
-        popupWindow.SetActive(false);
+        _popupWindowHandler.gameObject.SetActive(false);
 
-        // Assign onClick events for character buttons
-        for (int i = 0; i < characterData.Length; i++)
-        {
-            int characterIndex = i;
-            characterData[i].characterButton.onClick.AddListener(() => OpenCharacterCreator((CharacterClassType)((((int)characterData[characterIndex].uniqueID)/100)*100)));
-        }
-
+        IntroCharacters.OnInitialAvatarSelection += OpenCharacterCreator;
     }
 
     private void OnEnable()
     {
         Load();
+    }
+
+    private void OnDestroy()
+    {
+        IntroCharacters.OnInitialAvatarSelection -= OpenCharacterCreator;
     }
 
     private void Load()
@@ -70,7 +51,6 @@ public class HahmonValinta : AltMonoBehaviour
         store.GetPlayerData(playerGuid, playerData =>
         {
             _playerData = playerData;
-            //characters = playerData.BattleCharacters.ToList();
         });
         _characterCreator.gameObject.SetActive(false);
     }
@@ -87,16 +67,15 @@ public class HahmonValinta : AltMonoBehaviour
 
     void CharacterSelected(CharacterClassType classType, AvatarData avatar)
     {
-        lockInButton.onClick.RemoveAllListeners();
+        _lockInButton.onClick.RemoveAllListeners();
         // 
-        lockInButton.onClick.AddListener(()=>StartCoroutine(LockInCharacter(classType, avatar)));
+        _lockInButton.onClick.AddListener(()=>StartCoroutine(LockInCharacter(classType, avatar)));
 
         _popupWindowHandler.UpdateImageAndText(classType, avatar);
         // Activate the pop-up window
-        popupWindow.SetActive(true);
+        _popupWindowHandler.gameObject.SetActive(true);
 
         // Update the character name text
-        //characterNameText.text = data.characterName;
         characterNameText.SetText(SettingsCarrier.Instance.Language, new string[1] { ClassReference.Instance.GetName(classType) });
 
         // Log the selected character's name
@@ -105,12 +84,11 @@ public class HahmonValinta : AltMonoBehaviour
 
     public IEnumerator LockInCharacter(CharacterClassType id, AvatarData avatar)
     {
-        lockInButton.interactable = false;
+        _lockInButton.interactable = false;
         // Check if a character is selected
         if (id != CharacterClassType.None)
         {
             // Log the selected character's information
-            // Debug.Log("Locked in character: " + characterData[selectedCharacterIndex].characterName);
             bool callFinished = false;
             bool characterAdded = false;
             int i = 0;
@@ -240,22 +218,18 @@ public class HahmonValinta : AltMonoBehaviour
                 }));
                 yield return new WaitUntil(() => callFinished3 == true);
 
-                // Reset the selected character index and disable the lock-in button
-                selectedCharacterIndex = -1;
-                lockInButton.interactable = false;
-
                 // Deactivate the pop-up window
-                popupWindow.SetActive(false);
+                _popupWindowHandler.gameObject.SetActive(false);
 
                 StartCoroutine(_windowNavigation.Navigate());
-                lockInButton.interactable = true;
+                _lockInButton.interactable = true;
                 yield break;
             }
             else
             {
                 Debug.LogWarning("Player already had starting characters set.");
                 StartCoroutine(_windowNavigation.Navigate());
-                lockInButton.interactable = true;
+                _lockInButton.interactable = true;
             }
 
         }
@@ -263,7 +237,7 @@ public class HahmonValinta : AltMonoBehaviour
         {
             // No character selected, log a message or handle the case as needed
             Debug.Log("No character selected.");
-            lockInButton.interactable = true;
+            _lockInButton.interactable = true;
         }
     }
 
