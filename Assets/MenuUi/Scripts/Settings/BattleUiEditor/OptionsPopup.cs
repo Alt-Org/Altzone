@@ -81,6 +81,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private TMP_InputField _arenaPosYInputField;
         [SerializeField] private Toggle _stoneWallToggle;
         [SerializeField] private Toggle _outerEdgeWithoutFloorToggle;
+        [SerializeField] private Button _infoImageButton;
 
         [Header("StoneWall Figure")] [SerializeField]
         private GameObject _stoneWallTopCharacterImage;
@@ -295,15 +296,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 {
                     if (value)
                     {
-                        _outsideFloorPopup.SetActive(true);
+                        _arenaBackgroundBlackImage.SetActive(true);
+                        SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor = true;
                     }
                     else
                     {
-                        SetOuterEdgeWithoutFloor(false);
-
+                        _arenaBackgroundBlackImage.SetActive(false);
                         SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor = false;
                     }
                 }
+            );
+
+            _infoImageButton.onClick.AddListener(() => { _outsideFloorPopup.SetActive(true); }
             );
 
             _arenaScaleSlider.onValueChanged.AddListener((value) =>
@@ -323,37 +327,18 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _outsideFloorOkButton.onClick.AddListener(() =>
             {
                 _outsideFloorPopup.SetActive(false);
-
+                _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(true);
                 SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor = true;
-
                 SetOuterEdgeWithoutFloor(true);
             });
 
             _outsideFloorCancelButton.onClick.AddListener(() =>
             {
                 _outsideFloorPopup.SetActive(false);
-
                 _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(false);
-
                 SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor = false;
-
                 SetOuterEdgeWithoutFloor(false);
             });
-
-            // //Whether To Save Changes listeners
-            // _whetherToSaveChangesOkButton.onClick.AddListener(() =>
-            // {
-            //     //SaveChanges
-            //
-            //     //_whetherToSaveChangesPopup.SetActive(false);
-            //     _optionsContents.SetActive(false);
-            // });
-            //
-            // _whetherToSaveChangesCancelButton.onClick.AddListener(() =>
-            // {
-            //     //_whetherToSaveChangesPopup.SetActive(false);
-            //     //_optionsContents.SetActive(true);
-            // });
 
             // Arena pos x listeners
             _arenaPosXSlider.onValueChanged.AddListener((value) =>
@@ -386,7 +371,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Start()
         {
-            Debug.Log("OPTIONS POPUP START");
             // Loading grid settings. Grid settings are saved locally from this script because they aren't accessed anywhere else.
             _gridColumnsSlider.value = PlayerPrefs.GetInt(GridColumnLinesKey, GridColumnLinesDefault);
             _gridRowsSlider.value = PlayerPrefs.GetInt(GridRowLinesKey, GridRowLinesDefault);
@@ -504,6 +488,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Removing arena options listeners
             _stoneWallToggle.onValueChanged.RemoveAllListeners();
             _outerEdgeWithoutFloorToggle.onValueChanged.RemoveAllListeners();
+            _infoImageButton.onClick.RemoveAllListeners();
 
             _arenaScaleSlider.onValueChanged.RemoveAllListeners();
             _arenaScaleInputField.onValueChanged.RemoveAllListeners();
