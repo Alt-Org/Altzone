@@ -238,7 +238,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 Debug.Log($"[Save ok] Save");
                 SaveChanges();
-                _whetherToSaveChangesPopup.gameObject.SetActive(false);
+                _whetherToSaveChangesPopup.SetActive(false);
                 _optionsPopup.OnCloseButtonClicked();
             });
 
@@ -246,9 +246,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _whetherToSaveChangesCancelButton.onClick.AddListener(() =>
             {
                 Debug.Log($"[Save cancel] Cancel");
-                _whetherToSaveChangesPopup.gameObject.SetActive(false);
-                _optionsPopup.gameObject.SetActive(true);
-                OpenEditor();
+                _whetherToSaveChangesPopup.SetActive(false);
+                _optionsPopup.OpenOptionsPopup();
+                //OpenEditor();
             });
         }
 
