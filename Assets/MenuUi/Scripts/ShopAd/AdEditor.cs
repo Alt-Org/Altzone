@@ -40,10 +40,6 @@ public class AdEditor : AltMonoBehaviour
     private string _posterName = null;
     private List<HeartPieceData> _heartPieceData = new();
 
-    //public bool _isAdText; // Uusi lisäys (Perttu)
-    //public bool IsAdText { set { _isAdText = value; } } // Uusi lisäys (Perttu)
-
-
     void Start()    
     {
         InitializeAd();
@@ -81,10 +77,9 @@ public class AdEditor : AltMonoBehaviour
         foreach (AdFurnitureObject furniture in furnitureList) // Uusi lisäys (Perttu)
         {
             GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
+            furnitureObject.GetComponent<Image>().preserveAspect = true;
             furnitureObject.GetComponent<Image>().sprite = furniture.Image;
             float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
-            furnitureObject.GetComponent<RectTransform>().sizeDelta = new(objectHeight * 0.625f, objectHeight);
-            furnitureObject.GetComponent<AspectRatioFitter>().aspectMode = AspectRatioFitter.AspectMode.HeightControlsWidth;
             furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
             if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
         }
@@ -174,38 +169,37 @@ public class AdEditor : AltMonoBehaviour
         SaveAdData();
     }
 
-    // Uusi lisäys (Perttu)
-    public void ChangeFurniture(AdFurnitureObject furniture)
+    public void ChangeFurniture(AdFurnitureObject furniture) // Uusi lisäys (Perttu)
     {
         _adData.Furniture = furniture.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
-    // Uusi lisäys (Perttu)
-    public void ChangeTextColor(Color colour)
+    
+    public void ChangeTextColor(Color colour) // Uusi lisäys (Perttu)
     {
         _inputField.textComponent.color = colour;
         _adData.TextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
-    // Uusi lisäys (Perttu)
-    public void ChangeTextFont(TMPro.TMP_FontAsset font)
+    
+    public void ChangeTextFont(TMPro.TMP_FontAsset font) // Uusi lisäys (Perttu)
     {
         _inputField.fontAsset = font;
         _adData.TextFont = font;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
-    // Uusi lisäys (Perttu)
-    public void ChangeText(string text)
+    
+    public void ChangeText(string text) // Uusi lisäys (Perttu)
     {
         _adData.AdText = text;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         SaveAdData();
     }
 
-    public void EnableText(bool enable)
+    public void EnableText(bool enable) // Uusi lisäys (Perttu)
     {
         _adData._isAdText = enable;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);

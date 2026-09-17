@@ -97,6 +97,7 @@ public class KojuSorting : MonoBehaviour
                 if (child.gameObject != slot.KojuEmptyVisual)  
                 {
                     cardInSlot = child.GetComponent<FurnitureCardUI>();
+
                     if (cardInSlot != null)
                     {
                         break;

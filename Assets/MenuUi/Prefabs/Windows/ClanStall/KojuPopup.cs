@@ -145,7 +145,6 @@ public class KojuPopup : MonoBehaviour
                 removeButton.onClick.AddListener(() => OpenRemovePopup(currentCard));
             }
             if (kojuPanel.active) { kojuPanel.SetActive(false); }
-            //if (!furnitureTray.active) { furnitureTray.SetActive(true); }
         }
     }
 
@@ -235,7 +234,7 @@ public class KojuPopup : MonoBehaviour
         gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
 
         // Moves the item, see ItemMover.cs
-        if (itemMover.assignedSlot == null) { itemMover?.ExecuteMove(); } // Uusi lisäys (Perttu)
+        if (itemMover.assignedSlot == null) { itemMover?.ExecuteMove(); }
         Close();
     }
 
