@@ -18,14 +18,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         [SerializeField] private Button _resetButton;
 
-        [Header("TopButtons")]
-        // [SerializeField] private Button _closeButton;
-        [SerializeField]
-        private Button _saveButton;
-
-        [SerializeField] private Button _previewButton;
-        [SerializeField] private Button _optionsButton;
-
         [Header("Grid options")] [SerializeField]
         private Toggle _showGridToggle;
 
@@ -410,7 +402,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _grid.SetColumnLines((int)_gridColumnsSlider.value);
             _grid.SetShow(_showGridToggle.isOn);
 
-            // Loading saved input settings
+            // Loading saved input settings for MovementOptions
             switch (SettingsCarrier.Instance.BattleMovementInput)
             {
                 case BattleMovementInputType.Swipe:
@@ -426,6 +418,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     _followPointerMovementToggle.SetIsOnWithoutNotify(true);
                     break;
             }
+
 
             UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput,
                 SettingsCarrier.Instance.BattleRotationInput);
