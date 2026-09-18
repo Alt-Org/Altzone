@@ -5,6 +5,7 @@ using MenuUi.Scripts.UIScaling;
 using MenuUi.Scripts.Window;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement.OrientationType;
@@ -47,6 +48,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         [Header("Whether To Save Changes Cancel Button")] [SerializeField]
         private Button _whetherToSaveChangesCancelButton;
+
+        [Header("UI Layout Saved Popup")] [SerializeField]
+        private GameObject _uiLayoutSavedPopup;
+
+        [SerializeField] private Button _uiLayoutSavedPopupButton;
 
         [Header("BattleUi prefabs")] [SerializeField]
         private GameObject _editingComponent;
@@ -97,6 +103,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             gameObject.SetActive(true);
             _optionsPopup.OpenOptionsPopup();
+            _uiLayoutSavedPopup.SetActive(false);
 
             // Instantiating Ui element prefabs
             if (_instantiatedTimer == null)
@@ -159,9 +166,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// </summary>
         public void ClosePopups()
         {
-            //OnCloseButtonClicked();
             _saveReset.CloseSaveResetPopup();
             _optionsPopup.OnCloseButtonClicked();
+
+            _uiLayoutSavedPopup.SetActive(false);
 
             OnUiElementSelected(null);
         }
@@ -212,7 +220,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Close and save button listeners
             _closeButton.onClick.AddListener(WhetherToSaveChangesPopup);
-            _saveButton.onClick.AddListener(SaveChanges);
+            _saveButton.onClick.AddListener(() =>
+            {
+                SaveChanges();
+                _optionsPopup.OnCloseButtonClicked();
+                _uiLayoutSavedPopup.SetActive(true);
+            });
 
             // Preview mode listeners
             _previewButton.onClick.AddListener(OpenPreviewMode);
@@ -250,6 +263,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _optionsPopup.OpenOptionsPopup();
                 //OpenEditor();
             });
+
+            //UILayoutSavedPopupButton listener
+            _uiLayoutSavedPopupButton.onClick.AddListener(() =>
+                {
+                    _uiLayoutSavedPopup.SetActive(false);
+                    _optionsPopup.OpenOptionsPopup();
+                }
+            );
         }
 
         private void OnDestroy()
@@ -278,6 +299,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             //Removing Whether to Cancel Changes Button listener
             _whetherToSaveChangesCancelButton.onClick.RemoveAllListeners();
+
+            //Removing UI Layout Saved Popup Button listener
+            _uiLayoutSavedPopupButton.onClick.RemoveAllListeners();
         }
 
         private void OnDisable()
