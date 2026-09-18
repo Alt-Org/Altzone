@@ -710,11 +710,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             _battleUiEditor.OnUiElementSelected(null);
             _optionsContents.SetActive(true);
+            _battleUiEditor.SetTopButtons(close: true, save: false, preview: false, options: true);
         }
 
         public void OnCloseButtonClicked()
         {
             _optionsContents.SetActive(false);
+            _battleUiEditor.SetTopButtons(true, true, true, true);
         }
 
         private void SetOuterEdgeWithoutFloor(bool enabled)

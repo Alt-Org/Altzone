@@ -225,6 +225,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SaveChanges();
                 _optionsPopup.OnCloseButtonClicked();
                 _uiLayoutSavedPopup.SetActive(true);
+                SetTopButtons(true, false, false, true);
             });
 
             // Preview mode listeners
@@ -981,6 +982,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 field.SetTextWithoutNotify(minValueString);
                 slider.SetValueWithoutNotify(slider.minValue);
             }
+        }
+
+        public void SetTopButtons(bool close, bool save, bool preview, bool options)
+        {
+            _closeButton.gameObject.SetActive(close);
+            _saveButton.gameObject.SetActive(save);
+            _previewButton.gameObject.SetActive(preview);
+            _optionsButton.gameObject.SetActive(options);
         }
 
 #if (UNITY_EDITOR)
