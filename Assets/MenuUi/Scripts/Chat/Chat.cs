@@ -169,23 +169,6 @@ public class Chat : AltMonoBehaviour
         OverlayPanelCheck.Instance.ToggleChat(true);
     }
 
-    private void Update()
-    {
-        // Tarkistaa kosketuksen ja valitsee viestin, jos sitä klikataan
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-        {
-            if (EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
-            {
-                GameObject touchedObject = EventSystem.current.currentSelectedGameObject;
-
-                if (touchedObject != null && touchedObject.CompareTag("ChatMessage"))
-                {
-                    Debug.Log("Touched UI object with the specified tag ChatMessage");
-                }
-            }
-        }
-    }
-
     private void OnDestroy()
     {
         ChatChannel.OnMessageHistoryReceived -= RefreshChat;
@@ -338,24 +321,7 @@ public class Chat : AltMonoBehaviour
 
         if (_inputField != null && !string.IsNullOrEmpty(_inputField.text) && _inputField.text.Trim().Length >= 3)
         {
-            string inputText = _inputField.text.Trim();
-            // Tarkistaa, onko syöte komento
-            if (inputText == _delete)
-            {
-                Debug.Log("Deleting last message...");
-                DeleteLastMessage();
-                _inputField.text = "";
-                return;
-            }
-            else if (inputText == _deleteAllMessages)
-            {
-                Debug.Log("Deleting last message...");
-                DeleteAllMessages();
-                _inputField.text = "";
-                return;
-            }
             ChatListener.Instance.SendMessage(_inputField.text, currentMood, ChatListener.Instance.ActiveChatChannel);
-            //DisplayMessage(_inputField.text, GetMessagePrefab(mood, true));
             _inputField.text = "";
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             if (_currentContent == _clanChatContent)
@@ -468,19 +434,6 @@ public class Chat : AltMonoBehaviour
         _currentScrollRect.verticalNormalizedPosition = 0f;
     }
 
-    // Lisää vuorovaikutuksen viestiin (klikkauksen)
-    public void AddMessageInteraction(GameObject message)
-    {
-        Button button = message.GetComponent<Button>();
-        if (button == null)
-        {
-            button = message.AddComponent<Button>();
-        }
-
-        //button.onClick.AddListener(() => SelectMessage(message));
-        button.onClick.AddListener(() => MinimizeOptions());
-    }
-
     // Valitsee viestin
     public void SelectMessage(MessageObjectHandler handler)
     {
@@ -497,45 +450,28 @@ public class Chat : AltMonoBehaviour
     }
 
     // Poistaa valitun viestin
-    public void DeleteChoseMessage()
+    public void DeleteChosenMessage(MessageObjectHandler selectedMessage)
     {
-        if (_selectedMessage != null)
+        if (selectedMessage != null && messagesByChat[_currentContent].Contains(selectedMessage))
         {
-            Debug.Log("Удаляем выбранное сообщение");
-            messagesByChat[_currentContent].Remove(_selectedMessage);
-            Destroy(_selectedMessage);
-            _selectedMessage = null;
+            Debug.Log("Deleting message");
+            messagesByChat[_currentContent].Remove(selectedMessage);
+            Destroy(selectedMessage);
+            if(selectedMessage == _selectedMessage)_selectedMessage = null;
 
             // Disable message interaction elements
-            _deleteButtons.SetActive(false);
             DisableReactionPanel();
         }
         else
         {
-            Debug.LogWarning("Сообщение для удаления не выбрано");
-        }
-    }
-
-    // Poistaa viimeisen viestin
-    public void DeleteLastMessage()
-    {
-        if (messagesByChat[_currentContent].Count > 0)
-        {
-            Debug.Log("viimeisimmän viestin poistaminen");
-            MessageObjectHandler lastMessage = messagesByChat[_currentContent][messagesByChat[_currentContent].Count - 1];
-            Destroy(lastMessage);
-            messagesByChat[_currentContent].RemoveAt(messagesByChat[_currentContent].Count - 1);
-        }
-        else
-        {
-            Debug.LogWarning("ei viestiä poistettavaksi");
+            Debug.LogWarning("Failed to find requsted message for deletion.");
         }
     }
 
     // Poistaa kaikki viestit aktiivisessa chatissa
     public void DeleteAllMessages()
     {
-        Debug.Log("poistaa kaikki viestit");
+        Debug.Log("Deleting all visible messages.");
         foreach (MessageObjectHandler message in messagesByChat[_currentContent])
         {
             Destroy(message.gameObject);
