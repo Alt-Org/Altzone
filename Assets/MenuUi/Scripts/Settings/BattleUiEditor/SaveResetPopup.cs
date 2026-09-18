@@ -34,8 +34,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             bool? resetChanges = null;
 
-            _okButton.onClick.AddListener(() => resetChanges = true);
-            _noButton.onClick.AddListener(() => resetChanges = false);
+            _okButton.onClick.AddListener(() =>
+            {
+                Debug.Log("Save Reset OK button clicked");
+                resetChanges = true;
+            });
+            _noButton.onClick.AddListener(() =>
+            {
+                Debug.Log("Save Reset No button clicked");
+                resetChanges = false;
+            });
 
             yield return new WaitUntil(() => resetChanges.HasValue || !_contents.activeSelf);
 

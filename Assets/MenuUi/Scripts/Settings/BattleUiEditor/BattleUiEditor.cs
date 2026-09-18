@@ -102,8 +102,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OpenEditor()
         {
             gameObject.SetActive(true);
-            _optionsPopup.OpenOptionsPopup();
+            _saveReset.CloseSaveResetPopup();
             _uiLayoutSavedPopup.SetActive(false);
+            _whetherToSaveChangesPopup.SetActive(false);
+            _optionsPopup.OpenOptionsPopup();
 
             // Instantiating Ui element prefabs
             if (_instantiatedTimer == null)
@@ -247,6 +249,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Options popup listeners
             _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsPopup);
 
+            Debug.Log("BattleUiEditor Awake");
             //Whether To Save Changes listener
             _whetherToSaveChangesOkButton.onClick.AddListener(() =>
             {
