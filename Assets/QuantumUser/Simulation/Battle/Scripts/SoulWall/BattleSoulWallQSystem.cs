@@ -128,7 +128,7 @@ namespace Battle.QSimulation.SoulWall
 
                 Transform2D* soulWallTransform = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->OtherEntityRef);
 
-                f.Events.BattleLastRowWallDestroyed(soulWallCollisionData->SoulWall->WallNumber, soulWallCollisionData->SoulWall->Team, battleLightrayRotation, battleLightrayColor, battleLightraySize);
+                f.Events.BattleLastRowWallDestroyed(soulWallCollisionData->SoulWall->Team, soulWallCollisionData->SoulWall->WallNumber);
             }
 
             f.Events.BattleStoneCharacterPlayHitAnimation(soulWallCollisionData->SoulWall->Team, projectileCollisionData->ProjectileEmotionCurrent);
