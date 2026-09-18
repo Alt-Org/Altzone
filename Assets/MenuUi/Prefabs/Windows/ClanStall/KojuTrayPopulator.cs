@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 using Altzone.Scripts;
+using Altzone.Scripts.ReferenceSheets; // Uusi lisäys (Perttu)
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
@@ -23,6 +24,11 @@ public class KojuTrayPopulator : MonoBehaviour
     [Header("Panel Warning")]
     [SerializeField] private GameObject panelFullWarningUI;
     private bool isWarningActive = false;
+
+    [Header("Ad Decoration Reference")]
+    [SerializeField] private AdDecorationReference _adDecReference; // Uusi lisäys (Perttu)
+    List<AdFurnitureObject> _furnitures = new(); // Uusi lisäys (Perttu)
+    AdFurnitureObject _adFurnitureObject = new AdFurnitureObject(); // Uusi lisäys (Perttu)
 
     private DataStore store;
     private PlayerData player;
@@ -243,6 +249,12 @@ public class KojuTrayPopulator : MonoBehaviour
         {
             movedFurnitureIds.Add(moved.Id.Trim());
             Debug.Log($"Furniture ID '{moved.Id}' marked as moved.");
+
+            // Uusi lisäys (Perttu)
+            _adFurnitureObject.Name = moved.Name;
+            _adFurnitureObject.Image = moved.Sprite;
+            _furnitures.Add(_adFurnitureObject);
+            _adDecReference._furnitureList = _furnitures;
         }
     }
 
@@ -253,6 +265,12 @@ public class KojuTrayPopulator : MonoBehaviour
         {
             movedFurnitureIds.Remove(returned.Id.Trim());
             Debug.Log($"Furniture ID '{returned.Id}' marked as returned to tray.");
+
+            // Uusi lisäys (Perttu)
+            _adFurnitureObject.Name = returned.Name;
+            _adFurnitureObject.Image = returned.Sprite;
+            _furnitures.Remove(_adFurnitureObject);
+            _adDecReference._furnitureList = _furnitures;
         }
     }
 

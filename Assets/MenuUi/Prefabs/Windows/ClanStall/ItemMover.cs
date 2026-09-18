@@ -1,5 +1,4 @@
 ﻿using System;
-//using Altzone.Scripts.ReferenceSheets; // Uusi lisäys (Perttu)
 using UnityEngine;
 using UnityEngine.UI;
 using MenuUi.Scripts.Storage;
@@ -8,8 +7,6 @@ using Altzone.Scripts;
 
 public class ItemMover : MonoBehaviour
 {
-    //[SerializeField] private AdDecorationReference _adDecReference; // Uusi lisäys (Perttu)
-
     private Transform trayParent;
     private Transform gridParent;
     public KojuItemSlot assignedSlot; // Uusi muokkaus (Perttu)
@@ -103,12 +100,6 @@ public class ItemMover : MonoBehaviour
                     // Notify trayPopulator this item was moved
                     OnItemMovedToPanel?.Invoke(currentFurniture);
 
-                    // Uusi lisäys (Perttu)
-                    //AdFurnitureObject adFurnitureObject = new AdFurnitureObject();
-                    //adFurnitureObject.Name = currentFurniture.Name;
-                    //adFurnitureObject.Image = currentFurniture.Sprite;
-                    //_adDecReference.FurnitureList.Add(adFurnitureObject);
-
                     return;
                 }
             }
@@ -160,5 +151,4 @@ public class ItemMover : MonoBehaviour
             }
         }
     }
-
 }

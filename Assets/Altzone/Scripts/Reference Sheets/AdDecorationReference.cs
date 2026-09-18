@@ -11,7 +11,7 @@ namespace Altzone.Scripts.ReferenceSheets
 
         [SerializeField] private List<AdBorderFrameObject> _frameList;
 
-        [SerializeField] private List<AdFurnitureObject> _furnitureList; // Uusi lisäys (Perttu)
+        [SerializeField] public List<AdFurnitureObject> _furnitureList; // Uusi lisäys (Perttu)
 
         [Header("Colours")]
         [SerializeField] private Color _orangeColor;
