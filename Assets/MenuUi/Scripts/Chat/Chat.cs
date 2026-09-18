@@ -109,8 +109,8 @@ public class Chat : AltMonoBehaviour
     public static event SelectedMessageChanged OnSelectedMessageChanged;
     private bool _reactionAvailable = false; //Katsoo jos textboxissa on tekstiä tai ei
     public static Chat instance;
-    public Mood currentMood = Mood.Neutral;
-    public Mood lasttimeMood = Mood.Neutral;
+    public Emotion currentMood = Emotion.Blank;
+    public Emotion lasttimeMood = Emotion.Blank;
     public GameObject _responsesData;
     private int ResponseOrder = 0;
 
@@ -178,7 +178,7 @@ public class Chat : AltMonoBehaviour
     private void AddResponses()
     {
         //If mood isnt selected mood, defaults to Happy
-        if (currentMood == Mood.Neutral) currentMood = Mood.Happy;
+        if (currentMood == Emotion.Blank) currentMood = Emotion.Joy;
 
         //Halts the progress if its the same mood so it wont reload already set same data
         if (lasttimeMood == currentMood)
@@ -247,27 +247,27 @@ public class Chat : AltMonoBehaviour
             // Check which message prefab should be used
             if(buttonUsed == _sendButtonSadness)
             {
-                currentMood = Mood.Sad;
+                currentMood = Emotion.Sorrow;
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Sadness);
             }
             else if (buttonUsed == _sendButtonAnger)
             {
-                currentMood = Mood.Angry;
+                currentMood = Emotion.Anger;
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Anger);
             }
             else if (buttonUsed == _sendButtonJoy)
             {
-                currentMood = Mood.Happy;
+                currentMood = Emotion.Joy;
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Joy);
             }
             else if (buttonUsed == _sendButtonPlayful)
             {
-                currentMood = Mood.Wink;
+                currentMood = Emotion.Playful;
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Playful);
             }
             else if (buttonUsed == _sendButtonLove)
             {
-                currentMood = Mood.Love;
+                currentMood = Emotion.Love;
                 gameObject.GetComponent<UseAllChatFeelings>().FeelingUsed(UseAllChatFeelings.Feeling.Love);
             }
             _miniMizeQuickMessage = false;
@@ -276,17 +276,17 @@ public class Chat : AltMonoBehaviour
         }
     }
 
-    private GameObject GetMessagePrefab(Mood mood, bool ownMsg)
+    private GameObject GetMessagePrefab(Emotion mood, bool ownMsg)
     {
         if (ownMsg)
         {
             return mood switch
             {
-                Mood.Love => _messagePrefabPink,
-                Mood.Happy => _messagePrefabYellow,
-                Mood.Sad => _messagePrefabBlue,
-                Mood.Wink => _messagePrefabOrange,
-                Mood.Angry => _messagePrefabRed,
+                Emotion.Love => _messagePrefabPink,
+                Emotion.Joy => _messagePrefabYellow,
+                Emotion.Sorrow => _messagePrefabBlue,
+                Emotion.Playful => _messagePrefabOrange,
+                Emotion.Anger => _messagePrefabRed,
                 _ => null,
             };
         }
@@ -294,11 +294,11 @@ public class Chat : AltMonoBehaviour
         {
             return mood switch
             {
-                Mood.Love => _otherMessages[4],
-                Mood.Happy => _otherMessages[2],
-                Mood.Sad => _otherMessages[0],
-                Mood.Wink => _otherMessages[3],
-                Mood.Angry => _otherMessages[1],
+                Emotion.Love => _otherMessages[4],
+                Emotion.Joy => _otherMessages[2],
+                Emotion.Sorrow => _otherMessages[0],
+                Emotion.Playful => _otherMessages[3],
+                Emotion.Anger => _otherMessages[1],
                 _ => null,
             };
         }
@@ -313,9 +313,9 @@ public class Chat : AltMonoBehaviour
         }
 
         //Incase user does not picks any Moods it will default to Happy instead
-        if (currentMood == Mood.Neutral)
+        if (currentMood == Emotion.Blank)
         {
-            currentMood = Mood.Happy;
+            currentMood = Emotion.Joy;
         }
 
 

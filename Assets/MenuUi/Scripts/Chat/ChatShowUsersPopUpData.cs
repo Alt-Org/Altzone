@@ -1,14 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
-using System;
-using Altzone.Scripts.Chat;
-using Altzone.Scripts.Model.Poco.Player;
-using static ServerChatMessage;
 using System.Linq;
+using Altzone.Scripts.Chat;
+using Altzone.Scripts.Common;
 using Altzone.Scripts.Language;
+using Altzone.Scripts.Model.Poco.Player;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using static ServerChatMessage;
 
 public class ChatShowUsersPopUpData : MonoBehaviour
 {
@@ -133,7 +134,15 @@ public class ChatShowUsersPopUpData : MonoBehaviour
             _currentMessage = message.Id;
         }
 
-        Mood mood = (Mood)Enum.Parse(typeof(Mood), Emoji.emoji);
+        Emotion mood = Emotion.Blank;
+        if (Emoji.emoji != null)
+            if (!Enum.TryParse(Emoji.emoji, out mood))
+            {
+                if (Enum.TryParse(Emoji.emoji, out Mood moodType))
+                {
+                    mood = (Emotion)moodType;
+                }
+            }
 
         _lineOrder++;
             //Gets sprite
@@ -328,7 +337,7 @@ public class UserReactionInfo
     public AvatarData _avatar;
     public string _name;
     public string _id;
-    public Mood _mood;
+    public Emotion _mood;
     public Sprite Emoji;
 
 }
