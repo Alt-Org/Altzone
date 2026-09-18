@@ -19,7 +19,14 @@ public class AdPosterHandler : AltMonoBehaviour
     private ClanHeartColorSetter _adClanLogo;
     [SerializeField]
     private TextMeshProUGUI _adClanName;
-
+    [SerializeField]
+    protected TextMeshProUGUI _adText;
+    [SerializeField]
+    protected Image _adFurniture;
+    [SerializeField]
+    private GameObject _adTextHolder;
+    [SerializeField]
+    private GameObject _inputFieldHolder;
 
 
     // Start is called before the first frame update
@@ -58,6 +65,12 @@ public class AdPosterHandler : AltMonoBehaviour
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
         if(_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
+        if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
+        _adText.font = data.TextFont; // Uusi lisäys (Perttu)
+        _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture); // Uusi lisäys (Perttu)
+        _adText.text = data.AdText; // Uusi lisäys (Perttu)
+        if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
+        if (data.IsAdText == false) _adTextHolder.SetActive(false); // Uusi lisäys (Perttu)
         _adClanLogo.SetHeartColors(pieceData);
         _adClanName.text = clanName;
     }
@@ -67,6 +80,12 @@ public class AdPosterHandler : AltMonoBehaviour
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
+        if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
+        _adText.font = data.TextFont; // Uusi lisäys (Perttu)
+        _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture); // Uusi lisäys (Perttu)
+        _adText.text = data.AdText; // Uusi lisäys (Perttu)
+        if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
+        if (data.IsAdText == false) _adTextHolder.SetActive(false); // Uusi lisäys (Perttu)
         _adClanName.text = clanName;
     }
 
