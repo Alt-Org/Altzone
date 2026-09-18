@@ -39,6 +39,7 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private GameObject infoObject;
     [SerializeField] private GameObject removePopup;
     [SerializeField] private GameObject kojuPanel; // Uusi lisäys (Perttu)
+    [SerializeField] private KojuSorting kojuContent; // Uusi lisäys (Perttu)
     [SerializeField] private GameObject furnitureTray; // Uusi lisäys (Perttu)
 
     [Header("Remove Confirmation")]
@@ -235,6 +236,7 @@ public class KojuPopup : MonoBehaviour
 
         // Moves the item, see ItemMover.cs
         if (itemMover.assignedSlot == null) { itemMover?.ExecuteMove(); }
+        kojuContent.OnKojuSort(); // Uusi lisäys (Perttu)
         Close();
     }
 
@@ -242,6 +244,7 @@ public class KojuPopup : MonoBehaviour
     private void ConfirmRemove()
     {
         itemMover?.ExecuteMove();
+        kojuContent.OnKojuSort(); // Uusi lisäys (Perttu)
         Close();
     }
 

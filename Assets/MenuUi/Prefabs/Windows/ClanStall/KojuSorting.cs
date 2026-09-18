@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+//using Altzone.Scripts.ReferenceSheets; // Uusi lisäys (Perttu)
 using TMPro;
 
 public class KojuSorting : MonoBehaviour
@@ -14,6 +15,8 @@ public class KojuSorting : MonoBehaviour
 
     [SerializeField] private Transform itemsParent;
     [SerializeField] private TMP_Text sortingText;
+
+    //[SerializeField] private AdDecorationReference _adDecReference; // Uusi lisäys (Perttu)
 
     private SortMode currentSortMode = SortMode.Nimi;
 
@@ -86,7 +89,7 @@ public class KojuSorting : MonoBehaviour
         if (slots.Length == 0) return;
 
         // Slot 0 is reserved and should be skipped from sorting due to the poster card occupying it
-        for (int i = 1; i < slots.Length; i++) 
+        for (int i = 1; i < slots.Length; i++)
         {
             var slot = slots[i];
 
@@ -144,6 +147,12 @@ public class KojuSorting : MonoBehaviour
             targetSlot.KojuEmptyVisual.SetActive(false);
 
             Debug.Log($"Moved card '{card.name}' to slot '{targetSlot.name}' at position {i + 1}");
+
+            // Uusi lisäys (Perttu)
+            //AdFurnitureObject adFurnitureObject = new AdFurnitureObject();
+            //adFurnitureObject.Name = card.GetNameText();
+            //adFurnitureObject.Image = card.GetIcon();
+            //_adDecReference._furnitureList.Add(adFurnitureObject);
         }
 
         // Show empty visuals for any remaining slots

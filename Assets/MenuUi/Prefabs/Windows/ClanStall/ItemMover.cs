@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using MenuUi.Scripts.Storage;
+using Altzone.Scripts.ReferenceSheets; // Uusi lisäys (Perttu)
 using Altzone.Scripts.Config;
 using Altzone.Scripts;
 
@@ -9,7 +10,7 @@ public class ItemMover : MonoBehaviour
 {
     private Transform trayParent;
     private Transform gridParent;
-    public KojuItemSlot assignedSlot; // Uusi muokkaus (Perttu)
+    public KojuItemSlot assignedSlot;
 
     private KojuPopup popup;
 
@@ -21,6 +22,8 @@ public class ItemMover : MonoBehaviour
 
     // Event to notify that this item was moved to panel
     public event Action<StorageFurniture> OnItemMovedToPanel;
+
+    [SerializeField] private AdDecorationReference _adDecReference; // Uusi lisäys (Perttu)
 
     void Start()
     {
@@ -100,6 +103,12 @@ public class ItemMover : MonoBehaviour
                     // Notify trayPopulator this item was moved
                     OnItemMovedToPanel?.Invoke(currentFurniture);
 
+                    // Uusi lisäys (Perttu)
+                    AdFurnitureObject adFurnitureObject = new AdFurnitureObject();
+                    adFurnitureObject.Name = currentFurniture.Name;
+                    adFurnitureObject.Image = currentFurniture.Sprite;
+                    _adDecReference._furnitureList.Add(adFurnitureObject);
+
                     return;
                 }
             }
@@ -122,6 +131,12 @@ public class ItemMover : MonoBehaviour
 
                 // Notify trayPopulator this item was returned
                 trayPopulator?.HandleItemReturnedToTray(currentFurniture);
+
+                // Uusi lisäys (Perttu)
+                AdFurnitureObject removableFurniture = _adDecReference._furnitureList.Find((x) => x.Name == currentFurniture.Name);
+                _adDecReference._furnitureList.Remove(removableFurniture);
+                _adDecReference._validatedFurnitureList.Remove(removableFurniture);
+                _adDecReference.FurnitureList.Remove(removableFurniture);
 
                 var store = Storefront.Get();
                 store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>
