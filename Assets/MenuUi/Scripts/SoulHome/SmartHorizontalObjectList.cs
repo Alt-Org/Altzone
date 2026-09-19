@@ -76,6 +76,8 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
         Right = 1
     }
 
+    public bool scroll_enabled { get; set; } = true; // -------------------
+
     private void Awake()
     {
         if (_smartListItems.Count == 0)
@@ -106,6 +108,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        Debug.Log("OnBeginDrag --------------------------");
         _pointerStartPosition = eventData.position;
         _previousUpdatePosition = eventData.position;
         _contentStartWorldPosition = _content.position;
@@ -119,6 +122,9 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!scroll_enabled) return; // -------------------
+        Debug.Log("OnDrag --------------------------");
+        
         _velocity = eventData.position.x - _previousUpdatePosition.x;
 
         if (Mathf.Abs(_velocity) > _anchoredVelocityLimit)
@@ -129,6 +135,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
         if (_outOfBoundDirection != HorizontalDirectionType.Neutral)
         {
+            Debug.Log("Neutral drag --------------------------");
             _pointerStartPosition = eventData.position;
             _contentStartWorldPosition = _content.position;
         }
@@ -138,6 +145,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        Debug.Log("OnEndDrag --------------------------");
         _pointerStartPosition = eventData.position;
         _contentStartWorldPosition = _content.position;
         _scrollDiffCompensation = 0f;
@@ -162,6 +170,17 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
         {
             _buildOnEnable = true;
             return;
+        }
+
+        if (data.Count == 0) // Hide smart list slots if list empty
+        {
+            for (int i = 0; i < _smartListItems.Count; i++)
+            {
+                _smartListItems[i].SetVisibility(false);
+            }
+            Debug.Log("Setup() data.Count == 0 --------------------------");
+            Clear(); 
+            return; 
         }
 
         if (!_locationHelper) CreateLocationHelper();
@@ -259,6 +278,10 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
             {
                 _smartListItems[smartIndex].SetVisibility(false);
                 continue;
+            }
+            else
+            {
+                _smartListItems[smartIndex].SetVisibility(true);
             }
             _smartListItems[smartIndex].SetData<T>(data[i]);
             smartPositionIndexesUsed++;

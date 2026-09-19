@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using Altzone.Scripts.Audio; // ----------------------
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MenuUI.Scripts.SoulHome
 {
     public class FurnitureTraySlotHandler : SmartListItem //IBeginDragHandler, IEndDragHandler // MonoBehaviour
     {
-        [SerializeField] // ----------------------
-        private SoulHomeFurnitureReference _furnitureRefrence; // ----------------------
+        [SerializeField]
+        private SoulHomeFurnitureReference _furnitureRefrence;
+        [SerializeField]
+        private GameObject _furnitureIconObject; // ----------------------
         [SerializeField]
         private TextMeshProUGUI _name;
         [SerializeField]
         private TextMeshProUGUI _amountField;
         private FurnitureListObject _furnitureList;
+        private GameObject trayFurniture;
         private int _savedCount = 0;
         public TextMeshProUGUI Name { get => _name; set => _name = value; }
         public FurnitureListObject FurnitureList { get => _furnitureList;
@@ -55,20 +59,23 @@ namespace MenuUI.Scripts.SoulHome
             return -1;
         }
 
-        public void UpdateFurniture() // ----------------------
+        public void UpdateFurniture()
         {
             if (_furnitureList == null) return;
-            _name.text = _furnitureList.Name; // ----------------------
+            //Destroy(trayFurniture); // ----------------------
+            _name.text = _furnitureList.Name;
             int value = _furnitureList.Count - _furnitureList.GetInRoomCount();
             if (value > 1)
                 _amountField.text = "x" + value.ToString();
             else
                 _amountField.text = "";
             GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(_furnitureList.Name);
-            GameObject trayFurniture = Instantiate(furnitureObject, SelfRectTransform.transform);
+            //trayFurniture = Instantiate(furnitureObject, SelfRectTransform.transform);
+            _furnitureIconObject.GetComponent<Image>().sprite = furnitureObject.GetComponent<Image>().sprite;
+            _furnitureIconObject.GetComponent<Image>().preserveAspect = true;
         }
 
-        public override void SetData<T1>(T1 data) // ----------------------
+        public override void SetData<T1>(T1 data)
         {
             if (!CheckClassType<T1, FurnitureListObject>(data, out FurnitureListObject furnitureData)) return;
             _furnitureList = furnitureData;

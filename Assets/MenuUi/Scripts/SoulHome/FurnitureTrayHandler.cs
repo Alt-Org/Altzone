@@ -66,16 +66,20 @@ namespace MenuUI.Scripts.SoulHome
             FurnitureList list = _controller.FurnitureList;
             if (list == null) return;
             FurnitureList filtered_list = new();
+            //FillSelectionButtonList(filtered_list); // Clear the existing slots before filtering
             
             if (_category == 1) // Should display all
             {
                 FillSelectionButtonList(list);
-                _smartList.OnNewDataRequested += UpdateButtonHandlerData;
                 _trayContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0); // Reset FurnitureTray position
+                _smartList.OnNewDataRequested += UpdateButtonHandlerData;
                 return;
             }
             else if (_category == 2) { // Should display favorites
                 // Favorites not implemented?
+                FillSelectionButtonList(filtered_list);
+                _trayContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0); // Reset FurnitureTray position
+                _smartList.OnNewDataRequested += UpdateButtonHandlerData;
                 return;
             }
 
@@ -86,7 +90,7 @@ namespace MenuUI.Scripts.SoulHome
                     filtered_list.List.Add(_furnitureListObject);
                 }
             }
-            // TODO - need to clear existing slots
+            // TODO - need to clear existing slots and reveal hidden slots
             FillSelectionButtonList(filtered_list); // Replaces the existing slots with the filtered list
             _trayContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0); // Reset FurnitureTray position
             _smartList.OnNewDataRequested += UpdateButtonHandlerData;
@@ -110,6 +114,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void AddFurnitureInitial(Furniture furniture)
         {
+            Debug.Log("AddFurnitureInitial --------------------------"); // ----------------------
             if (furniture == null) return;
 
             GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(furniture.Name);
@@ -130,6 +135,7 @@ namespace MenuUI.Scripts.SoulHome
         }
         public void AddFurnitureToTray(Furniture furniture)
         {
+            Debug.Log("AddFurnitureToTray --------------------------"); // ----------------------
             if (furniture == null) return;
             //Debug.LogWarning("Check");
             if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
@@ -163,6 +169,7 @@ namespace MenuUI.Scripts.SoulHome
                     return;
                 }
             }
+            _smartList.scroll_enabled = true; // ----------------------
         }
 
         public GameObject TakeFurnitureFromTray(string furnitureName)
@@ -180,6 +187,8 @@ namespace MenuUI.Scripts.SoulHome
                     {
                         if (furnitureInList.Position.Equals(new(-1, -1)))
                         {
+                            // an extra furnitur icon gets instantiated
+                            // make sure not to delete the furniture slot even if count 0
                             GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(furnitureInList.Name);
                             if (furnitureObject == null) return null;
                             GameObject newObject = Instantiate(furnitureObject, furnitureSlot.transform);
@@ -196,6 +205,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public bool RemoveFurnitureObject(GameObject trayFurniture)
         {
+            Debug.LogWarning("RemoveFurnitureObject --------------------------"); // ----------------------
             if(trayFurniture == null) return false;
 
             //return RemoveFurniture(trayFurniture.GetComponent<TrayFurniture>().Furniture);
