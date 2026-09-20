@@ -43,6 +43,11 @@ namespace MenuUI.Scripts.SoulHome
         private bool _trayOpen = false;
         private GameObject _selectedFurnitureTray = null;
         private GameObject _tempSelectedFurnitureTray = null;
+        private SmartHorizontalObjectList _trayGestureList;
+        private string _trayGestureFurnitureName;
+        private bool _trayFurnitureDragStarted;
+        private bool _uiOwnsPointer;
+        private readonly List<RaycastResult> _uiRaycastResults = new();
 
         internal bool TrayOpen { get => _trayOpen; set => _trayOpen = value; }
         internal GameObject SelectedFurnitureTray { get => _selectedFurnitureTray;}
@@ -74,7 +79,11 @@ namespace MenuUI.Scripts.SoulHome
                 //GetTrayHandler().SetTrayContentSize(); // ---------------------
                 //GetTrayHandler().GetComponent<ResizeCollider>().Resize(); // --------------------
             }
-            if (!_soulHomeController.CheckInteractableStatus()) return;
+            if (!_soulHomeController.CheckInteractableStatus())
+            {
+                CancelTrayGesture();
+                return;
+            }
 
             if (transform.Find("Screen").GetComponent<RectTransform>().rect.width != transform.Find("Screen").GetComponent<BoxCollider2D>().size.x || transform.Find("Screen").GetComponent<RectTransform>().rect.height != transform.Find("Screen").GetComponent<BoxCollider2D>().size.y)
             //if ((Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated) || (Screen.orientation == ScreenOrientation.Portrait && rotated))
@@ -86,6 +95,12 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             ClickState clickState = ClickStateHandler.GetClickState();
+            if (clickState == ClickState.None || Touch.activeTouches.Count > 1 ||
+                (Touch.activeTouches.Count == 1 && Touch.activeTouches[0].phase == UnityEngine.InputSystem.TouchPhase.Canceled))
+            {
+                CancelTrayGesture();
+                _uiOwnsPointer = true;
+            }
             if (clickState is not ClickState.None)
             {
                 //Debug.Log(Touch.activeFingers[0].screenPosition);
@@ -94,7 +109,6 @@ namespace MenuUI.Scripts.SoulHome
                 else if(ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll)
                 {
                     Debug.LogWarning("Scroll Test");
-                    Debug.LogWarning(Mouse.current.scroll.ReadValue());
                     float distance = ClickStateHandler.GetPinchDistance();
                     if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.TwoFingerOrScroll)
                     {
@@ -128,33 +142,78 @@ namespace MenuUI.Scripts.SoulHome
 
         private void OnDisable()
         {
+            CancelTrayGesture();
             _soulHomeTower.ResetChanges();
         }
 
-        private bool IsPointerOverUi(ClickState click) // ----------------------------------------------
+        private void CancelTrayGesture()
         {
-            if (!_hoverButtons.activeSelf) return false; // still does not fix the problem
-            /**/
-            if (EventSystem.current == null) return false;
-            // Mouse
-            if (click == ClickState.Start)
+            if (_trayGestureList != null) _trayGestureList.CancelGesture();
+            if (_trayFurnitureDragStarted)
             {
-                return EventSystem.current.IsPointerOverGameObject();
+                if (_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
+                else DeselectTrayFurniture();
             }
-            // Touch
-            foreach (var touch in Touch.activeTouches)
-            {
-                if (click == ClickState.Start)
-                    return EventSystem.current.IsPointerOverGameObject(touch.finger.index);
-            }
+            _trayGestureList = null;
+            _trayGestureFurnitureName = null;
+            _trayFurnitureDragStarted = false;
+        }
 
-            return false;
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus)
+            {
+                CancelTrayGesture();
+                _uiOwnsPointer = true;
+            }
+        }
+
+        private bool IsPointerOverUi()
+        {
+            if (EventSystem.current == null) return false;
+            var pointer = new PointerEventData(EventSystem.current)
+            {
+                position = ClickStateHandler.GetClickPosition()
+            };
+            _uiRaycastResults.Clear();
+            EventSystem.current.RaycastAll(pointer, _uiRaycastResults);
+            if (_uiRaycastResults.Count == 0) return false;
+            GameObject target = _uiRaycastResults[0].gameObject;
+            // Slot graphics are valid furniture targets, even if a slot has a Button.
+            return target.GetComponentInParent<FurnitureTraySlotHandler>() == null &&
+                target.GetComponentInParent<Selectable>() != null;
         }
 
         private void RayPoint(ClickState click)
         {
-            if (IsPointerOverUi(click)) // Check to stop clicks from both pressing hover buttons and moving furniture (in theory) ------------
-                return;
+            if (click == ClickState.Start)
+            {
+                CancelTrayGesture();
+                _uiOwnsPointer = IsPointerOverUi();
+            }
+            try
+            {
+                if (!_uiOwnsPointer) ProcessRayPoint(click);
+            }
+            finally
+            {
+                if (click == ClickState.End)
+                {
+                    if (_trayFurnitureDragStarted && _soulHomeTower.SelectedFurniture == null)
+                        DeselectTrayFurniture();
+                    // Keep the list's decision until its OnEndDrag has also run.
+                    _trayGestureList = null;
+                    _trayGestureFurnitureName = null;
+                    _trayFurnitureDragStarted = false;
+                    _uiOwnsPointer = false;
+                    if (_tempSelectedFurnitureTray != null) Destroy(_tempSelectedFurnitureTray);
+                    _tempSelectedFurnitureTray = null;
+                }
+            }
+        }
+
+        private void ProcessRayPoint(ClickState click)
+        {
 
             //Debug.Log(click);
             //Debug.Log(Screen.orientation);
@@ -179,9 +238,50 @@ namespace MenuUI.Scripts.SoulHome
             bool trayHit = false;
             if (!overlayHit)
             {
+                // Decide ownership before processing overlapping room/tray colliders.
+                if (click == ClickState.Start)
+                {
+                    foreach (RaycastHit2D trayTarget in hit)
+                    {
+                        if (!trayTarget.collider.CompareTag("FurnitureTray") &&
+                            !trayTarget.collider.CompareTag("FurnitureTrayItem")) continue;
+                        FurnitureTrayHandler tray = trayTarget.collider.GetComponentInParent<FurnitureTrayHandler>();
+                        if (tray == null || tray.SmartList == null) continue;
+                        _trayGestureList = tray.SmartList;
+                        var slot = trayTarget.collider.GetComponent<FurnitureTraySlotHandler>();
+                        if (slot != null && slot.FurnitureList != null)
+                        {
+                            _trayGestureFurnitureName = slot.FurnitureList.Name;
+                            break;
+                        }
+                    }
+                    if (_trayGestureList != null)
+                        _trayGestureList.BeginGesture(ClickStateHandler.GetClickPosition());
+                }
+
+                if (_trayGestureList != null)
+                {
+                    var intent = _trayGestureList.ResolveGesture(ClickStateHandler.GetClickPosition());
+                    if (intent != SmartHorizontalObjectList.DragIntent.Furniture ||
+                        _trayGestureFurnitureName == null) return;
+                    if (!_trayFurnitureDragStarted)
+                    {
+                        if (click == ClickState.End) return;
+                        _trayFurnitureDragStarted = true;
+                        if (_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
+                        RevealTrayItem();
+                        _selectedFurnitureTray = GetTrayHandler().TakeFurnitureFromTray(_trayGestureFurnitureName);
+                        if (_selectedFurnitureTray == null) return;
+                    }
+                }
+
+                // A room collider behind the tray must not also process this position.
+                foreach (RaycastHit2D trayTarget in hit)
+                    if (trayTarget.collider.CompareTag("FurnitureTray") ||
+                        trayTarget.collider.CompareTag("FurnitureTrayItem")) trayHit = true;
                 foreach (RaycastHit2D hit2 in hit)
                 {
-                    if (hit2.collider.gameObject.CompareTag("SoulHomeScreen"))
+                    if (!trayHit && hit2.collider.gameObject.CompareTag("SoulHomeScreen"))
                     {
                         soulHomeHit = true;
                         //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement(); // ------------
@@ -224,7 +324,7 @@ namespace MenuUI.Scripts.SoulHome
                             {
                                 //SetFurniture();
                             }
-                                if (_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
+                                if (_selectedFurnitureTray != null && _selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
                                 //_selectedFurnitureTray.transform.position = hit2.point;
                         }
                     }
@@ -278,11 +378,11 @@ namespace MenuUI.Scripts.SoulHome
                     }
                     if (hit2.collider.gameObject.CompareTag("FurnitureTrayItem"))
                     {
-                        if (click is ClickState.Start)
+                        if (click is ClickState.Start && _trayGestureList == null)
                         {
                             if(_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
                             RevealTrayItem();
-                            string furnitureName = hit2.collider.GetComponent<FurnitureTraySlotHandler>().FurnitureList.Name;
+                            string furnitureName = hit2.collider.GetComponent<FurnitureTraySlotHandler>().FurnitureList?.Name;
                             GameObject furnitureObject = GetTrayHandler().TakeFurnitureFromTray(furnitureName);
                             if(furnitureObject != null) _tempSelectedFurnitureTray = furnitureObject;
                             //_selectedFurnitureTray = _tempSelectedFurnitureTray;

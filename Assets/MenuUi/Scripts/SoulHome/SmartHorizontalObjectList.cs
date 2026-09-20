@@ -8,7 +8,7 @@ using Altzone.Scripts.Audio;
 /// <summary>
 /// Recycles a limited amount of gameobjects by moving and repurposing out of bounds gameobjects for the other end that is coming out of the invisible area.
 /// </summary>
-public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
     [SerializeField] private float _anchoredVelocityLimit = 100f;
     [SerializeField] private float _worldVelocityLimit = 100f;
@@ -60,6 +60,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
     private HorizontalDirectionType _outOfBoundDirection = HorizontalDirectionType.Neutral;
 
     private RectTransform _locationHelper;
+    private readonly Vector3[] _itemWorldCorners = new Vector3[4];
 
     private bool _buildOnEnable = false;
 
@@ -76,14 +77,73 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
         Right = 1
     }
 
-    public bool scroll_enabled { get; set; } = true; // -------------------
+    public enum DragIntent { Pending, Scroll, Furniture }
+    private Vector2 _gestureStartPosition;
+    private DragIntent _dragIntent;
+    private int? _dragPointerId;
+    private bool _scrollEnabled = true;
+
+    public bool scroll_enabled
+    {
+        get => _scrollEnabled;
+        set
+        {
+            _scrollEnabled = value;
+            if (!value) StopMovement();
+        }
+    }
+
+    // Shared by UI drag events and the controller's physics picking path.
+    public void BeginGesture(Vector2 position)
+    {
+        StopMovement();
+        _gestureStartPosition = position;
+        _dragIntent = DragIntent.Pending;
+    }
+
+    public DragIntent ResolveGesture(Vector2 position)
+    {
+        if (_dragIntent != DragIntent.Pending) return _dragIntent;
+        Vector2 delta = position - _gestureStartPosition;
+        float threshold = Mathf.Max(1, EventSystem.current != null ? EventSystem.current.pixelDragThreshold : 10);
+        if (delta.sqrMagnitude < threshold * threshold) return _dragIntent;
+        _dragIntent = Mathf.Abs(delta.x) >= Mathf.Abs(delta.y) ? DragIntent.Scroll : DragIntent.Furniture;
+        return _dragIntent;
+    }
+
+    public void StopMovement()
+    {
+        if (_velocityCoroutine != null) StopCoroutine(_velocityCoroutine);
+        _velocityCoroutine = null;
+        _velocity = 0f;
+        _averageVelocity = 0f;
+        _timeFromLastVelocityUpdate = float.NegativeInfinity;
+    }
+
+    public void CancelGesture()
+    {
+        StopMovement();
+        _dragPointerId = null;
+        // Ignore remaining drag events until the next press initializes a gesture.
+        _dragIntent = DragIntent.Furniture;
+    }
+
+    private void OnDisable()
+    {
+        CancelGesture();
+    }
+
+    public void OnInitializePotentialDrag(PointerEventData eventData)
+    {
+        if (eventData.button != PointerEventData.InputButton.Left || _dragPointerId.HasValue) return;
+        BeginGesture(eventData.pressPosition);
+    }
 
     private void Awake()
     {
         if (_smartListItems.Count == 0)
         {
             CreatePool();
-            Debug.Log("CreatePool() call source 1 ---------------------------------------------------------");
         } 
         _contentStartAnchoredPosition = _content.anchoredPosition;
     }
@@ -108,9 +168,10 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("OnBeginDrag --------------------------");
-        _pointerStartPosition = eventData.position;
-        _previousUpdatePosition = eventData.position;
+        if (!scroll_enabled || eventData.button != PointerEventData.InputButton.Left || _dragPointerId.HasValue) return;
+        _dragPointerId = eventData.pointerId;
+        _pointerStartPosition = eventData.pressPosition;
+        _previousUpdatePosition = eventData.pressPosition;
         _contentStartWorldPosition = _content.position;
         _scrollDiffCompensation = 0f;
 
@@ -122,8 +183,8 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!scroll_enabled) return; // -------------------
-        Debug.Log("OnDrag --------------------------");
+        if (!scroll_enabled || _dragPointerId != eventData.pointerId ||
+            ResolveGesture(eventData.position) != DragIntent.Scroll) return;
         
         _velocity = eventData.position.x - _previousUpdatePosition.x;
 
@@ -135,7 +196,6 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
         if (_outOfBoundDirection != HorizontalDirectionType.Neutral)
         {
-            Debug.Log("Neutral drag --------------------------");
             _pointerStartPosition = eventData.position;
             _contentStartWorldPosition = _content.position;
         }
@@ -145,21 +205,26 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("OnEndDrag --------------------------");
+        if (_dragPointerId != eventData.pointerId) return;
+        _dragPointerId = null;
         _pointerStartPosition = eventData.position;
         _contentStartWorldPosition = _content.position;
         _scrollDiffCompensation = 0f;
 
-        if (_ignoreRemainingVelocityTriggerTime > (Time.time - _timeFromLastVelocityUpdate)) _velocityCoroutine = StartCoroutine(HandleVelocity());
+        if (scroll_enabled && _dragIntent == DragIntent.Scroll &&
+            _ignoreRemainingVelocityTriggerTime > (Time.time - _timeFromLastVelocityUpdate))
+            _velocityCoroutine = StartCoroutine(HandleVelocity());
     }
 
     #region Data
     public void Setup<T>(List<T> data)
     {
+        StopMovement();
+        _outOfBoundDirection = HorizontalDirectionType.Neutral;
+        _scrollDiffCompensation = 0f;
         if (_smartListItems.Count == 0)
         {
             CreatePool(); // Awake() is not called yet (where this should be called), causing _smartListItems to be disabled --------------------
-            Debug.Log("CreatePool() call source 2 ---------------------------------------------------------");
         } 
         
         if (!isActiveAndEnabled)
@@ -174,11 +239,11 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
         if (data.Count == 0) // Hide smart list slots if list empty
         {
+            _contentListLenght = 0;
             for (int i = 0; i < _smartListItems.Count; i++)
             {
                 _smartListItems[i].SetVisibility(false);
             }
-            Debug.Log("Setup() data.Count == 0 --------------------------");
             Clear(); 
             return; 
         }
@@ -187,19 +252,17 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
         _contentListLenght = data.Count;
 
-        _viewportLeftAnchoredBorder = -HalfWidth(_viewport);
-        _viewportRightAnchoredBorder = HalfWidth(_viewport);
+        _viewportLeftAnchoredBorder = _viewport.rect.xMin;
+        _viewportRightAnchoredBorder = _viewport.rect.xMax;
 
-        _locationHelper.anchoredPosition = new Vector2(_viewportLeftAnchoredBorder, 0f);
-        _viewportLeftWorldBorder = _locationHelper.position.x;
+        _viewportLeftWorldBorder = _viewport.TransformPoint(new Vector3(_viewportLeftAnchoredBorder, 0f, 0f)).x;
 
-        _locationHelper.anchoredPosition = new Vector2(_viewportRightAnchoredBorder, 0f);
-        _viewportRightWorldBorder = _locationHelper.position.x;
-
-        _smartListLeftIndex = -_uniqueGameObjectsAtLeft.Count;
-        _smartListRightIndex = _smartListItems.Count - _extraSmartListItems - _uniqueGameObjectsAtLeft.Count;
+        _viewportRightWorldBorder = _viewport.TransformPoint(new Vector3(_viewportRightAnchoredBorder, 0f, 0f)).x;
 
         if (_smartListItems.Count != _contentListLenght) CreatePool();
+
+        _smartListLeftIndex = -_uniqueGameObjectsAtLeft.Count;
+        _smartListRightIndex = _smartListItems.Count - 1 - _uniqueGameObjectsAtLeft.Count;
 
         UpdateContents<T>(data);
 
@@ -219,7 +282,8 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     public void UpdateContent<T>(int index, T data)
     {
-        if (index < _smartListLeftIndex || index > _smartListRightIndex) return;
+        if (index < 0 || index >= _contentListLenght || _smartListItems.Count == 0 ||
+            index < _smartListLeftIndex || index > _smartListRightIndex) return;
 
         int smartIndex = index % _smartListItems.Count;
 
@@ -292,7 +356,8 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     private void CreatePool()
     {
-        float _size_ratio = 0.0f; // Tries to mimic the size ratio of the prefab
+        RectTransform prefabRect = _contentPrefab.GetComponent<RectTransform>();
+        float _size_ratio = prefabRect.sizeDelta.x / prefabRect.sizeDelta.y;
 
         //Create first SmartListItem to calculate how many of it can fit inside based on the width + padding.
         if (_smartListItems.Count == 0)
@@ -303,11 +368,11 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
             _size_ratio = firstSmartListItem.SelfRectTransform.sizeDelta.x / firstSmartListItem.SelfRectTransform.sizeDelta.y; // ----------
 
-            _smartListItemLocalWidthWithPadding = firstSmartListItem.SelfRectTransform.rect.width + _horizontalPadding;
-            
             // Set the size of the first smart list item
             firstSmartListItem.SelfRectTransform.sizeDelta = new Vector2( // ------------------------------
                 _content.rect.height * _size_ratio, _content.rect.height); // ------------------------------
+
+            _smartListItemLocalWidthWithPadding = firstSmartListItem.SelfRectTransform.rect.width + _horizontalPadding;
 
             firstSmartListItem.ClearData();
             _smartListItems.Add(firstSmartListItem);
@@ -318,11 +383,11 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
             _smartListItemLocalWidthWithPadding = _smartListItems[0].SelfRectTransform.rect.width + _horizontalPadding;
         }
 
-        _amountToFillContentList = Mathf.CeilToInt(_content.rect.width / _smartListItemLocalWidthWithPadding) + _extraSmartListItems;
-
-        //_smartListItemLocalWidthWithPadding value changes when called the first and second time in Setup() where the second call gives correct value of 5
-        Debug.Log("_content.text.width: " + _content.rect.width + " / _smartListItemLocalWidthWithPadding: " + _smartListItemLocalWidthWithPadding + "---------------");
-        Debug.Log(_amountToFillContentList + "----------------------------------------------------"); // why does it think 8 can fit into the scroll?
+        // One buffer slot is needed while slots at both viewport edges are partially visible.
+        Vector3 viewportLeft = _content.InverseTransformPoint(_viewport.TransformPoint(new Vector3(_viewport.rect.xMin, 0f, 0f)));
+        Vector3 viewportRight = _content.InverseTransformPoint(_viewport.TransformPoint(new Vector3(_viewport.rect.xMax, 0f, 0f)));
+        float visibleWidth = Mathf.Abs(viewportRight.x - viewportLeft.x);
+        _amountToFillContentList = Mathf.CeilToInt(visibleWidth / _smartListItemLocalWidthWithPadding) + Mathf.Max(1, _extraSmartListItems);
 
         if (_amountToFillContentList <= _smartListItems.Count) return;
 
@@ -351,7 +416,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
         float totalDistance = 0f;
         float timer = 0f;
 
-        while (timer < _slowdownTime)
+        while (scroll_enabled && timer < _slowdownTime)
         {
             totalDistance += Mathf.Lerp(_velocity, 0f, timer / _slowdownTime);
 
@@ -361,11 +426,16 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
         }
 
         _velocity = 0f;
+        _velocityCoroutine = null;
     }
 
     private void ScrollHandling(float distance) //TODO: Add elasticity.
     {
-        if (_smartListItems.Count > _contentListLenght) return; //Nothing or not enough content to scroll.
+        if (_contentListLenght <= 0) return;
+        float contentWidth = _contentListLenght * _smartListItemLocalWidthWithPadding - _horizontalPadding;
+        foreach (RectTransform item in _uniqueGameObjectsAtLeft) contentWidth += item.rect.width + _horizontalPadding;
+        foreach (RectTransform item in _uniqueGameObjectsAtRight) contentWidth += item.rect.width + _horizontalPadding;
+        if (contentWidth <= _viewport.rect.width) return;
 
         bool movementCheck = ((_outOfBoundDirection == HorizontalDirectionType.Left && _velocity > 0) ||
                               (_outOfBoundDirection == HorizontalDirectionType.Right && _velocity < 0));
@@ -391,7 +461,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
             }
 
         //Smart list items
-        foreach (SmartListItem smartListItem in _smartListItems) CheckSmartItemVisibility(smartListItem, anchoredDistance);
+        foreach (SmartListItem smartListItem in _smartListItems) CheckSmartItemVisibility(smartListItem);
     }
 
     /// <summary>
@@ -403,13 +473,13 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
         if ((_smartListLeftIndex * -1 - _uniqueGameObjectsAtLeft.Count <= 0 && _uniqueGameObjectsAtLeft.Count != 0 ||
              _uniqueGameObjectsAtLeft.Count == 0 && _smartListLeftIndex < 0) && _velocity > 0) //Over left check.
         {
-            float leftItemLeftEdge = GetLeftItemEdgeLocalPositionX() + anchoredDistance;
+            RectTransform leftItem = _uniqueGameObjectsAtLeft.Count > 0
+                ? _uniqueGameObjectsAtLeft[0] : _smartListItems[0].SelfRectTransform;
+            GetViewportEdges(leftItem, out float leftItemLeftEdge, out _);
 
             if (_viewportLeftAnchoredBorder > leftItemLeftEdge) return HorizontalDirectionType.Neutral;
 
-            float correction = (_viewportLeftWorldBorder - GetLeftItemWorldPositionX());
-
-            _content.position = new Vector2(_contentStartWorldPosition.x + worldDistance + correction, _content.position.y);
+            _content.position += _viewport.TransformVector(new Vector3(_viewportLeftAnchoredBorder - leftItemLeftEdge, 0f, 0f));
 
             return HorizontalDirectionType.Left;
         }
@@ -417,14 +487,11 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
         if ((_smartListRightIndex >= _contentListLenght + _uniqueGameObjectsAtRight.Count && _uniqueGameObjectsAtRight.Count != 0 ||
              _uniqueGameObjectsAtRight.Count == 0 && _smartListRightIndex >= _contentListLenght) && _velocity < 0) //Over right check.
         {
-            float rightItemRightEdge = GetRightItemEdgeLocalPositionX() + anchoredDistance;
+            GetViewportEdges(GetRightItemRectTransform(), out _, out float rightItemRightEdge);
 
             if (_viewportRightAnchoredBorder < rightItemRightEdge) return HorizontalDirectionType.Neutral;
 
-            float correction = GetRightItemWorldPositionX() - _viewportRightWorldBorder +
-                               _rightItemWorldWidthWithPadding - _horizontalPadding;
-
-            _content.position = new Vector2(_contentStartWorldPosition.x + worldDistance - correction, _content.position.y);
+            _content.position += _viewport.TransformVector(new Vector3(_viewportRightAnchoredBorder - rightItemRightEdge, 0f, 0f));
 
             return HorizontalDirectionType.Right;
         }
@@ -557,13 +624,12 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
         return 0f;
     }
 
-    private void CheckSmartItemVisibility(SmartListItem smartListItem, float anchoredDistance)
+    private void CheckSmartItemVisibility(SmartListItem smartListItem)
     {
         RectTransform rectTransform = smartListItem.SelfRectTransform;
 
         //Out of bounds calculations.
-        float smartItemBorderLeft = rectTransform.localPosition.x + anchoredDistance;
-        float smartItemBorderRight = rectTransform.localPosition.x + rectTransform.rect.width + anchoredDistance;
+        GetViewportEdges(rectTransform, out float smartItemBorderLeft, out float smartItemBorderRight);
 
         if (Mathf.Abs(_averageVelocity - _velocity) > _averageVelocityUpdateTreshold)
             _averageVelocity = Mathf.Lerp(_velocity, _averageVelocity, Time.deltaTime / _averageVelocityNormalizationTime);
@@ -607,6 +673,20 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     private static float HalfWidth(RectTransform rectTransform) { return rectTransform.rect.width * 0.5f; }
 
+    // Compare actual rectangle edges in viewport space, including anchors, pivots and scale.
+    private void GetViewportEdges(RectTransform item, out float left, out float right)
+    {
+        item.GetWorldCorners(_itemWorldCorners);
+        left = float.PositiveInfinity;
+        right = float.NegativeInfinity;
+        foreach (Vector3 corner in _itemWorldCorners)
+        {
+            float x = _viewport.InverseTransformPoint(corner).x;
+            left = Mathf.Min(left, x);
+            right = Mathf.Max(right, x);
+        }
+    }
+
     private static void SetAnchoredPosition(RectTransform rectTransform, float sizeWithPadding, int number = 1)
     {
         rectTransform.anchoredPosition = new Vector2(sizeWithPadding * number, rectTransform.anchoredPosition.y);
@@ -614,8 +694,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IBeginDragHandler, IEndD
 
     private HorizontalDirectionType OutOfBoundsHorizontalCheck(RectTransform rectTransform)
     {
-        float smartItemBorderLeft = rectTransform.localPosition.x;
-        float smartItemBorderRight = rectTransform.localPosition.x + rectTransform.rect.width;
+        GetViewportEdges(rectTransform, out float smartItemBorderLeft, out float smartItemBorderRight);
 
         bool overLeft = _viewportLeftAnchoredBorder > smartItemBorderRight && _velocity < 0;
         bool overRight = _viewportRightAnchoredBorder < smartItemBorderLeft && _velocity > 0;

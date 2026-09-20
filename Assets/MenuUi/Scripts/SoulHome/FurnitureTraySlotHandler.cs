@@ -82,8 +82,18 @@ namespace MenuUI.Scripts.SoulHome
             UpdateFurniture();
         }
 
+        public override void ClearData()
+        {
+            _furnitureList = null;
+            _savedCount = 0;
+            if (_name != null) _name.text = "";
+            if (_amountField != null) _amountField.text = "";
+            gameObject.SetActive(false);
+        }
+
         public void SaveCount()
         {
+            if (_furnitureList == null) return;
             _savedCount = _furnitureList.Count - _furnitureList.GetInRoomCount();
         }
     }
