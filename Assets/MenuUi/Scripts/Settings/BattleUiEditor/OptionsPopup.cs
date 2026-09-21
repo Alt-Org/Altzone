@@ -4,10 +4,12 @@ using UnityEngine.UI;
 using TMPro;
 using static MenuUi.Scripts.Settings.BattleUiEditor.BattleUiEditor;
 using Altzone.Scripts.BattleUiShared;
+using MenuUi.Scripts.UIScaling;
 using UnityEngine.Serialization;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
+
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
@@ -120,7 +122,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const int GridHueDefault = 33;
         private const int GridTransparencyDefault = 50;
 
-        private const float GameAspectRatio = 9f / 16f;
+        private const float GameAspectRatio = 9f / 19f;
 
 
         private void Awake()
@@ -639,7 +641,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void UpdateArena()
         {
-            float screenAspectRatio = Screen.width / (float)Screen.height;
+            //float screenAspectRatio = Screen.width / (float)Screen.height;
 
             // For some reason the editor has different aspect ratio calculated from rect size in local space than in world space because of the editor scaling
             // Getting editor corners in world space
@@ -655,26 +657,47 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Calculating a height for the editor from the world aspect ratio so that it works in calculations
             float editorAspectRatioHeight = EditorRect.width / editorWorldAspectRatio;
 
+            // Available area after unsafe area.
+            float unsafeAreaPercentage = PanelScaler.CalculateUnsafeAreaHeight();
+            float availableWidth = EditorRect.width;
+            float unsafeAreaHeight = editorAspectRatioHeight * unsafeAreaPercentage;
+            float availableHeight = editorAspectRatioHeight - unsafeAreaHeight;
+            float availableAspectRatio = availableWidth / availableHeight;
+
             // Calculating arena scale.
             // If phone aspect ratio is same or thinner than the game aspect ratio we calculate arena width and height based on
             // editor width, but if it's thicker we calculate based on height so that the arena won't overlap or be too small.
             float arenaWidth;
             float arenaHeight;
-            if (screenAspectRatio <= GameAspectRatio)
+
+            if (availableAspectRatio <= GameAspectRatio)
             {
-                arenaWidth = _arenaScaleSlider.value * 0.01f * EditorRect.width;
+                // Narrow screen
+                arenaWidth = _arenaScaleSlider.value * 0.01f * availableWidth;
                 arenaHeight = arenaWidth / GameAspectRatio;
             }
             else
             {
-                arenaHeight = _arenaScaleSlider.value * 0.01f * editorAspectRatioHeight;
+                // Wide screen
+                arenaHeight = _arenaScaleSlider.value * 0.01f * availableHeight;
                 arenaWidth = arenaHeight * GameAspectRatio;
             }
 
+            // if (screenAspectRatio <= GameAspectRatio)
+            // {
+            //     arenaWidth = _arenaScaleSlider.value * 0.01f * EditorRect.width;
+            //     arenaHeight = arenaWidth / GameAspectRatio;
+            // }
+            // else
+            // {
+            //     arenaHeight = _arenaScaleSlider.value * 0.01f * editorAspectRatioHeight;
+            //     arenaWidth = arenaHeight * GameAspectRatio;
+            // }
+
             // Calculating arena position
             Vector2 position = Vector2.zero;
-            position.x += _arenaPosXSlider.value * 0.01f * (EditorRect.width - arenaWidth);
-            position.y += (100f - _arenaPosYSlider.value) * 0.01f * (editorAspectRatioHeight - arenaHeight);
+            position.x = _arenaPosXSlider.value * 0.01f * (availableWidth - arenaWidth);
+            position.y = (100f - _arenaPosYSlider.value) * 0.01f * (availableHeight - arenaHeight);
 
             // Calculating arena anchors
             Vector2 anchorMin = Vector2.zero;
