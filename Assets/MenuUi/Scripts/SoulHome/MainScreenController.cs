@@ -28,13 +28,9 @@ namespace MenuUI.Scripts.SoulHome
         //[SerializeField]
         private GameObject _changeHandleButtonTray;
         [SerializeField]
-        private GameObject _verticalItemTray;
-        [SerializeField]
         private GameObject _horizontalItemTray;
         //[SerializeField]
         //private GameObject _furnitureButtons;
-
-        private bool _rotated = false;
 
         float _prevTapTime = 0;
         float _backDelay = 0;
@@ -67,18 +63,6 @@ namespace MenuUI.Scripts.SoulHome
             CheckTrayButtonStatus();
             //CheckHoverButtons();
             CheckFurnitureButtons();
-            if (!_rotated)
-            {
-                //GetTray().GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().rect.width * 0.8f - 50, GetTray().GetComponent<RectTransform>().sizeDelta.y);
-                //GetTrayHandler().SetTrayContentSize(); // ---------------------
-                //GetTrayHandler().GetComponent<ResizeCollider>().Resize(); // --------------------
-            }
-            else
-            {
-                //GetTray().GetComponent<RectTransform>().sizeDelta = new(GetComponent<RectTransform>().rect.width * 0.2f - 50, GetTray().GetComponent<RectTransform>().sizeDelta.y);
-                //GetTrayHandler().SetTrayContentSize(); // ---------------------
-                //GetTrayHandler().GetComponent<ResizeCollider>().Resize(); // --------------------
-            }
             if (!_soulHomeController.CheckInteractableStatus())
             {
                 CancelTrayGesture();
@@ -88,9 +72,7 @@ namespace MenuUI.Scripts.SoulHome
             if (transform.Find("Screen").GetComponent<RectTransform>().rect.width != transform.Find("Screen").GetComponent<BoxCollider2D>().size.x || transform.Find("Screen").GetComponent<RectTransform>().rect.height != transform.Find("Screen").GetComponent<BoxCollider2D>().size.y)
             //if ((Screen.orientation == ScreenOrientation.LandscapeLeft && !rotated) || (Screen.orientation == ScreenOrientation.Portrait && rotated))
             {
-                if(Screen.orientation is ScreenOrientation.LandscapeLeft) _rotated = true;
-                else if(Screen.orientation is ScreenOrientation.Portrait) _rotated = false;
-                StartCoroutine(ScreenRotation());
+                //StartCoroutine(ScreenRotation());
                 StartCoroutine(SetColliderSize());
             }
 
@@ -530,7 +512,6 @@ namespace MenuUI.Scripts.SoulHome
             }
             else
             {
-                if(!_rotated)
                 OverlayPanelCheck.Instance.ToggleBottomBar(true);
                 tray.SetActive(false);
                 _changeHandleButtonTray.SetActive(false);
@@ -543,12 +524,8 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (_soulHomeTower.EditingMode)
             {
-                if(!_rotated) _soulHomeController.FurnitureName.gameObject.SetActive(false);
-                else
-                {
-                    if (_soulHomeTower.SelectedFurniture != null) _soulHomeController.FurnitureName.gameObject.SetActive(true);
-                    else _soulHomeController.FurnitureName.gameObject.SetActive(false);
-                }
+                _soulHomeController.FurnitureName.gameObject.SetActive(false);
+
             }
             else
             {
@@ -562,29 +539,9 @@ namespace MenuUI.Scripts.SoulHome
             return GetTray().GetComponent<FurnitureTrayHandler>();
         }
 
-        private FurnitureTrayHandler GetVerticalTrayHandler()
-        {
-            return GetVerticalTray().GetComponent<FurnitureTrayHandler>();
-        }
-
-        private FurnitureTrayHandler GetHorizontalTrayHandler()
-        {
-            return GetHorizontalTray().GetComponent<FurnitureTrayHandler>();
-        }
-
         private GameObject GetTray()
         {
-            if (!_rotated) return GetHorizontalTray();
-            else return GetVerticalTray();
-        }
-
-        private GameObject GetVerticalTray()
-        {
-            return _verticalItemTray.gameObject;
-        }
-        private GameObject GetHorizontalTray()
-        {
-            return _horizontalItemTray.gameObject;
+            return _horizontalItemTray;
         }
 
         private void SetFurnitureButtons()
@@ -629,70 +586,12 @@ namespace MenuUI.Scripts.SoulHome
             }*/
         }
 
-        private void SetBottomButtons()
-        {
-
-            GameObject discardButton = _changeHandleButtonTray.transform.GetChild(0).gameObject;
-            GameObject saveButton = _changeHandleButtonTray.transform.GetChild(1).gameObject;
-
-            if (!_rotated)
-            {
-                discardButton.GetComponent<RectTransform>().anchorMax = new(0.45f, 0.8f);
-                discardButton.GetComponent<RectTransform>().anchorMin = new(0.1f, 0.2f);
-                discardButton.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-
-                saveButton.GetComponent<RectTransform>().anchorMax = new(0.9f, 0.8f);
-                saveButton.GetComponent<RectTransform>().anchorMin = new(0.55f, 0.2f);
-                saveButton.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            }
-            else
-            {
-                discardButton.GetComponent<RectTransform>().anchorMax = new(0.175f, 0.8f);
-                discardButton.GetComponent<RectTransform>().anchorMin = new(0.025f, 0.2f);
-                discardButton.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-
-                saveButton.GetComponent<RectTransform>().anchorMax = new(0.975f, 0.8f);
-                saveButton.GetComponent<RectTransform>().anchorMin = new(0.825f, 0.2f);
-                saveButton.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-
-            }
-        }
-
-        private void SetScreenSize()
-        {
-
-            GameObject screen = transform.Find("Screen").gameObject;
-
-            if (!_rotated)
-            {
-                screen.GetComponent<RectTransform>().anchorMax = new(1f, 1f);
-                screen.GetComponent<RectTransform>().anchorMin = new(0f, 0f);
-                screen.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            }
-            else
-            {
-                screen.GetComponent<RectTransform>().anchorMax = new(0.8f, 1f);
-                screen.GetComponent<RectTransform>().anchorMin = new(0.2f, 0f);
-                screen.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-
-            }
-        }
-
         public void SetFurnitureInfo()
         {
             GameObject furnitureInfo = _soulHomeController.FurnitureName.gameObject;
-            if (!_rotated)
-            {
-                furnitureInfo.GetComponent<RectTransform>().anchorMax = new(1f, 0.4f);
-                furnitureInfo.GetComponent<RectTransform>().anchorMin = new(0f, 0.3f);
-                furnitureInfo.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            }
-            else
-            {
-                furnitureInfo.GetComponent<RectTransform>().anchorMax = new(0.2f, 0.95f);
-                furnitureInfo.GetComponent<RectTransform>().anchorMin = new(0f, 0.85f);
-                furnitureInfo.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            }
+            furnitureInfo.GetComponent<RectTransform>().anchorMax = new(1f, 0.4f);
+            furnitureInfo.GetComponent<RectTransform>().anchorMin = new(0f, 0.3f);
+            furnitureInfo.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
         }
 
         public void SetFurniture()
@@ -733,18 +632,6 @@ namespace MenuUI.Scripts.SoulHome
             //_selectedFurnitureTray = null;
             if(_tempSelectedFurnitureTray != null && !_tempSelectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem"))Destroy(_tempSelectedFurnitureTray);
             _tempSelectedFurnitureTray = null;
-        }
-
-        private void SwitchTray( GameObject prevContent, GameObject newContent)
-        {
-            int childCount = prevContent.transform.childCount;
-
-            for (int i = 0; i < childCount; i++)
-            {
-                GameObject slotObject = prevContent.transform.GetChild(0).gameObject;
-                slotObject.transform.SetParent(newContent.transform);
-            }
-
         }
 
         public void HideTrayItem(GameObject trayFurniture)
@@ -825,44 +712,5 @@ namespace MenuUI.Scripts.SoulHome
             CheckHoverButtons(); // ----------------------------------------------
         }
 
-        public IEnumerator ScreenRotation()
-        {
-            yield return new WaitForEndOfFrame();
-            SetFurnitureButtons();
-            SetBottomButtons();
-            SetScreenSize();
-            SetFurnitureInfo();
-            if (_trayOpen)
-            {
-                if (_rotated)
-                {
-                    GetVerticalTray().SetActive(true);
-                    GetHorizontalTray().SetActive(false);
-                    ToggleTray(GetHorizontalTray());
-                }
-                else
-                {
-                    GetVerticalTray().SetActive(false);
-                    GetHorizontalTray().SetActive(true);
-                    ToggleTray(GetVerticalTray());
-                }
-                ToggleTray(GetTray());
-            }
-            GameObject verticalContent = GetVerticalTrayHandler().GetTrayContent();
-            GameObject horizontalContent = GetHorizontalTrayHandler().GetTrayContent();
-            if (_rotated)
-            {
-                OverlayPanelCheck.Instance.ToggleBottomBar(false);
-                SwitchTray(horizontalContent, verticalContent);
-            }
-            else
-            {
-                if(!_trayOpen) OverlayPanelCheck.Instance.ToggleBottomBar(true);
-                SwitchTray(verticalContent, horizontalContent);
-            }
-            GetTrayHandler().GetComponent<ResizeCollider>().Resize();
-            GetTrayHandler().SetTrayContentSize();
-            _soulHomeController.EditModeTrayResize();
-        }
     }
 }
