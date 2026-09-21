@@ -44,7 +44,6 @@ namespace MenuUI.Scripts.SoulHome
         private List<GameObject> _changedFurnitureList = new();
 
         private bool _startFinished = false;
-        private bool _rotated = false;
         private float _prevPinchDistance = 0;
 
         private GameObject _selectedFurniture;
@@ -90,7 +89,6 @@ namespace MenuUI.Scripts.SoulHome
         public GameObject TempSelectedFurniture { get => _tempSelectedFurniture;}
         public List<GameObject> ChangedFurnitureList { get => _changedFurnitureList; set => _changedFurnitureList = value; }
         public bool EditingMode { get => editingMode;}
-        public bool Rotated { get => _rotated;}
         public Bounds RoomBounds { get => _roomBounds; set {  _roomBounds = value; } }
 
         void OnEnable()
@@ -100,10 +98,9 @@ namespace MenuUI.Scripts.SoulHome
             {
                 StartCoroutine(RemoveLoadScreen());
                 _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-                HandleScreenRotation();
             }
             else StartCoroutine(StartActions());
-            _rotated = false;
+
         }
         void OnDisable()
         {
@@ -879,49 +876,6 @@ namespace MenuUI.Scripts.SoulHome
         {
             _selectedFurniture.GetComponent<FurnitureHandling>().RotateFurniture();
             PlaceFurnitureToCurrent(false);
-        }
-
-        private void HandleScreenRotation()
-        {
-            float newAspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-            if (_camera.aspect.Equals(newAspect)) return;
-            _camera.aspect = newAspect;
-
-            _camera.fieldOfView = 90;
-
-            /*if (SelectedRoom != null)
-                transform.position = new(transform.position.x, transform.position.y, -1 * GetCameraYDistance());
-            else
-                transform.position = new(transform.position.x, transform.position.y, -1 * GetCameraMaxDistance());*/
-
-            _maxCameraDistance = GetCameraMaxDistance();
-            _minCameraDistance = GetCameraMinDistance();
-            if(!_rotated)
-                transform.position = new(transform.position.x, transform.position.y, GetCameraXDistance());
-            else
-                transform.position = new(transform.position.x, transform.position.y, GetCameraYDistance());
-
-            ClampCameraDistance(0);
-
-            Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
-            float currentX = transform.position.x;
-            float currentY = transform.position.y;
-            float offsetX = Mathf.Abs(currentX - bl.x);
-            float offsetY = Mathf.Abs(currentY - bl.y);
-
-            float y;
-            if (cameraMinY + offsetY < cameraMaxY - offsetY)
-                y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
-            else
-                y = (cameraMinY + cameraMaxY) / 2;
-            float x;
-            if (cameraMinX + offsetX < cameraMaxX - offsetX)
-                x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
-            else
-                x = (cameraMinX+cameraMaxX)/2;
-            //Debug.Log("CurrentX:"+currentX+", CameraMinX:"+ cameraMinX + ", OffsetX:" + offsetX + ", CameraMaxX:" + cameraMaxX +", OffsetX:" + offsetX);
-            transform.position = new(x, y, transform.position.z);
-
         }
 
         public void SetCameraBounds()
