@@ -271,7 +271,7 @@ namespace MenuUi.Scripts.Login
                 return;
             }
 
-            if (!_registerAgeVerificationToggle.isOn)
+            if (!_registerAgeVerificationToggle.isOn || !_registerParentalAuthToggle.isOn)
             {
                 ShowMessage(ERROR_AGE_CONSENT_NOT_GRANTED, Color.red);
                 _registerAgeVerificationToggleError.gameObject.SetActive(true);
@@ -364,6 +364,64 @@ namespace MenuUi.Scripts.Login
 
         private void OpenPasswordHintPanel()
         {
+            ClearMessage();
+
+            string username = _registerUsernameInputField.text;
+            string password1 = _registerPasswordInputField.text;
+            string password2 = _registerPassword2InputField.text;
+
+            // Checks empty fields and password requirements
+            if (_registerUsernameInputField.text == string.Empty || _registerPasswordInputField.text == string.Empty || _registerPassword2InputField.text == string.Empty)
+            {
+                ShowMessage(ERROR_EMPTY_FIELD, Color.red);
+                if (_registerUsernameInputField.text == string.Empty) _registerUsernameInputFieldError.gameObject.SetActive(true);
+                else if(_registerPasswordInputField.text == string.Empty) _registerPasswordInputFieldError.gameObject.SetActive(true);
+                else if(_registerPassword2InputField.text == string.Empty) _registerPassword2InputFieldError.gameObject.SetActive(true);
+                return;
+            }
+
+            if (password1 != password2)
+            {
+                ShowMessage(ERROR_PASSWORD_MISMATCH, Color.red);
+                _registerPassword2InputFieldError.gameObject.SetActive(true);
+                return;
+            }
+
+            if (password1.Length < _passwordMinLength)
+            {
+                ShowMessage(ERROR_PASSWORD_TOO_SHORT, Color.red);
+                _registerPasswordInputFieldError.gameObject.SetActive(true);
+                return;
+            }
+
+            if (username.Length < _userNameMinLength)
+            {
+                ShowMessage(ERROR_USERNAME_TOO_SHORT, Color.red);
+                _registerUsernameInputFieldError.gameObject.SetActive(true);
+                return;
+            }
+
+            if (!_registerAgeVerificationToggle.isOn || !_registerParentalAuthToggle.isOn)
+            {
+                ShowMessage(ERROR_AGE_CONSENT_NOT_GRANTED, Color.red);
+                _registerAgeVerificationToggleError.gameObject.SetActive(true);
+                return;
+            }
+
+            if (!_privacyPolicyAuthToggle.isOn)
+            {
+                ShowMessage(ERROR_PRIVACY_CONCENT_NOT_GRANTED, Color.red);
+                _privacyPolicyToggleError.gameObject.SetActive(true);
+                return;
+            }
+
+            if (!_informationPolicyAuthToggle.isOn)
+            {
+                ShowMessage(ERROR_INFORMATION_CONCENT_NOT_GRANTED, Color.red);
+                _informationPolicyToggleError.gameObject.SetActive(true);
+                return;
+            }
+
             _passwordHintWindow.SetActive(true);
             _registerPasswordHintAnswerInputField.text = string.Empty;
             _registerPasswordHintInputField.text = string.Empty;
