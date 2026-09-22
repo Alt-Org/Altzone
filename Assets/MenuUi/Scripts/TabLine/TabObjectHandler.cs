@@ -12,9 +12,8 @@ public class TabObjectHandler : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _tabTextBlack;
     [SerializeField] private TextMeshProUGUI _tabTextWhite;
     [SerializeField] private Image _darkeningImage;
+    [SerializeField] private Image _lightBlueImage;
 
-    // private Color _tabColorActive = Color.gray;
-    // private Color _tabColorInactive = Color.white;
 
     private bool _active = true;
 
@@ -23,11 +22,14 @@ public class TabObjectHandler : MonoBehaviour
         if (_darkeningImage != null)
             _darkeningImage.gameObject.SetActive(_active);
 
-        if (_tabTextBlack != null)
-            _tabTextBlack.gameObject.SetActive(!_active);
-
         if (_tabTextWhite != null)
             _tabTextWhite.gameObject.SetActive(_active);
+
+        if (_lightBlueImage != null)
+            _lightBlueImage.gameObject.SetActive(!_active);
+
+        if (_tabTextBlack != null)
+            _tabTextBlack.gameObject.SetActive(!_active);
     }
 
     public (Sprite, Color) SetActiveVisuals(Sprite tablineImage, Color stripeColour)
@@ -37,11 +39,14 @@ public class TabObjectHandler : MonoBehaviour
         if (_darkeningImage != null)
             _darkeningImage.gameObject.SetActive(true);
 
-        if (_tabTextBlack != null)
-            _tabTextBlack.gameObject.SetActive(false);
-
         if (_tabTextWhite != null)
             _tabTextWhite.gameObject.SetActive(true);
+
+        if (_lightBlueImage != null)
+            _lightBlueImage.gameObject.SetActive(false);
+
+        if (_tabTextBlack != null)
+            _tabTextBlack.gameObject.SetActive(false);
 
         return (tablineImage, stripeColour);
     }
@@ -54,19 +59,19 @@ public class TabObjectHandler : MonoBehaviour
         if (_darkeningImage != null)
             _darkeningImage.gameObject.SetActive(false);
 
-        if (_tabTextBlack != null)
-            _tabTextBlack.gameObject.SetActive(true);
-
         if (_tabTextWhite != null)
             _tabTextWhite.gameObject.SetActive(false);
+
+        if (_lightBlueImage != null)
+            _lightBlueImage.gameObject.SetActive(true);
+
+        if (_tabTextBlack != null)
+            _tabTextBlack.gameObject.SetActive(true);
     }
 
 
     public void SetColour(Color activeColour, Color inactiveColour)
     {
-        // _tabColorActive = activeColour;
-        // _tabColorInactive = inactiveColour;
-
         if (_darkeningImage != null)
             _darkeningImage.color = activeColour;
 
