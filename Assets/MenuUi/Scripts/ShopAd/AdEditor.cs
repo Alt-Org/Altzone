@@ -24,8 +24,10 @@ public class AdEditor : AltMonoBehaviour
     [Header("Frame Selectors")]
     [SerializeField] private Transform _borderSelectionContent;
     [SerializeField] private Transform _furnitureSelectionContent; // Uusi lisäys (Perttu)
+    [SerializeField] private Transform _fontSelectionContent; // Uusi lisäys (Perttu)
     [SerializeField] private GameObject _borderFramePrefab;
     [SerializeField] private GameObject _furniturePrefab; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject _fontPrefab; // Uusi lisäys (Perttu)
     [SerializeField] private DailyTaskSelectButtons _dtSelectButtons;
     [Header("Colour Selectors")]
     [SerializeField] private Transform _backgroundColourSelectorContent;
@@ -73,6 +75,16 @@ public class AdEditor : AltMonoBehaviour
 
         List<AdBorderFrameObject> frameList = _borderReference.FrameList;
         List<AdFurnitureObject> furnitureList = _borderReference.FurnitureList; // Uusi lisäys (Perttu)
+        List<AdFontObject> fontList = _borderReference.FontList; // Uusi lisäys (Perttu)
+
+        foreach (AdFontObject font in fontList) // Uusi lisäys (Perttu)
+        {
+            GameObject fontObject = Instantiate(_fontPrefab, _fontSelectionContent);
+            fontObject.GetComponentInChildren<TextMeshProUGUI>().font = font.Font;
+            fontObject.GetComponent<Image>().preserveAspect = true;
+            float objectHeight = _fontSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            fontObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextFont(font.Font));
+        }
 
         foreach (AdFurnitureObject furniture in furnitureList) // Uusi lisäys (Perttu)
         {
@@ -159,21 +171,20 @@ public class AdEditor : AltMonoBehaviour
     {
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
+        //SaveAdData();
     }
 
     public void ChangeBorder(AdBorderFrameObject frame)
     {
         _adData.BorderFrame = frame.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
+        //SaveAdData();
     }
 
     public void ChangeFurniture(AdFurnitureObject furniture) // Uusi lisäys (Perttu)
     {
         _adData.Furniture = furniture.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
     }
     
     public void ChangeTextColor(Color colour) // Uusi lisäys (Perttu)
@@ -181,7 +192,6 @@ public class AdEditor : AltMonoBehaviour
         _inputField.textComponent.color = colour;
         _adData.TextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
     }
     
     public void ChangeTextFont(TMPro.TMP_FontAsset font) // Uusi lisäys (Perttu)
@@ -189,21 +199,18 @@ public class AdEditor : AltMonoBehaviour
         _inputField.fontAsset = font;
         _adData.TextFont = font;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
     }
     
     public void ChangeText(string text) // Uusi lisäys (Perttu)
     {
         _adData.AdText = text;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
     }
 
     public void EnableText(bool enable) // Uusi lisäys (Perttu)
     {
         _adData._isAdText = enable;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
     }
 
     public void CloseEditor()
@@ -217,9 +224,9 @@ public class AdEditor : AltMonoBehaviour
         if (!_adData._isAdText) _adTextHolder.SetActive(false);
     }
 
-    //public void SaveAndCloseEditor()
-    //{
-        
-    //    CloseEditor();
-    //}
+    public void SaveAndCloseEditor()
+    {
+        SaveAdData();
+        CloseEditor();
+    }
 }

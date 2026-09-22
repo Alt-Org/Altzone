@@ -236,7 +236,6 @@ public class KojuPopup : MonoBehaviour
 
         // Moves the item, see ItemMover.cs
         if (itemMover.assignedSlot == null) { itemMover?.ExecuteMove(); }
-        kojuContent.OnKojuSort(); // Uusi lisäys (Perttu)
         Close();
     }
 
@@ -244,7 +243,6 @@ public class KojuPopup : MonoBehaviour
     private void ConfirmRemove()
     {
         itemMover?.ExecuteMove();
-        kojuContent.OnKojuSort(); // Uusi lisäys (Perttu)
         Close();
     }
 

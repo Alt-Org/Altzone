@@ -135,8 +135,6 @@ public class ItemMover : MonoBehaviour
                 // Uusi lisäys (Perttu)
                 AdFurnitureObject removableFurniture = _adDecReference._furnitureList.Find((x) => x.Name == currentFurniture.Name);
                 _adDecReference._furnitureList.Remove(removableFurniture);
-                _adDecReference._validatedFurnitureList.Remove(removableFurniture);
-                _adDecReference.FurnitureList.Remove(removableFurniture);
 
                 var store = Storefront.Get();
                 store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>

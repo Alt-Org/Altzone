@@ -13,6 +13,8 @@ namespace Altzone.Scripts.ReferenceSheets
 
         [SerializeField] public List<AdFurnitureObject> _furnitureList; // Uusi lisäys (Perttu)
 
+        [SerializeField] public List<AdFontObject> _fontList; // Uusi lisäys (Perttu)
+
         [Header("Colours")]
         [SerializeField] private Color _orangeColor;
         [SerializeField] private Color _yellowColor;
@@ -28,6 +30,7 @@ namespace Altzone.Scripts.ReferenceSheets
 
         private List<AdBorderFrameObject> _validatedFrameList = null;
         public List<AdFurnitureObject> _validatedFurnitureList = null; // Uusi lisäys (Perttu)
+        public List<AdFontObject> _validatedFontList = null; // Uusi lisäys (Perttu)
         private static AdDecorationReference _instance = null;
         private static bool _hasInstance = false;
 
@@ -47,6 +50,16 @@ namespace Altzone.Scripts.ReferenceSheets
                 if (_validatedFurnitureList == null) ValidateFurniture();
                 ValidateFurniture();
                 return _validatedFurnitureList;
+            }
+        }
+
+        public List<AdFontObject> FontList // Uusi lisäys (Perttu)
+        {
+            get
+            {
+                if (_validatedFontList == null) ValidateFonts();
+                ValidateFonts();
+                return _validatedFontList;
             }
         }
 
@@ -206,6 +219,57 @@ namespace Altzone.Scripts.ReferenceSheets
             }
             return null;
         }
+
+        // Uusi lisäys (Perttu)
+        private void ValidateFonts()
+        {
+            HashSet<string> uniqueNames = new();
+            HashSet<TMPro.TMP_FontAsset> uniqueMap = new();
+
+            if (_validatedFontList != null && _validatedFontList.Count > 0) return;
+            List<AdFontObject> fonts = new();
+            foreach (AdFontObject font in _fontList)
+            {
+                if (!font.IsValid()) continue;
+
+                if (!uniqueNames.Add(font.Name))
+                {
+                    Debug.LogError($"duplicate font Name {font.Name}");
+                }
+                if (!uniqueMap.Add(font.Font))
+                {
+                    Debug.LogError($"duplicate font {font.Font}");
+                    continue;
+                }
+                fonts.Add(font);
+            }
+            _validatedFontList = fonts;
+        }
+        // Uusi lisäys (Perttu)
+        //public TMPro.TMP_FontAsset GetFontAsset(TMPro.TMP_FontAsset font)
+        //{
+        //    AdFontObject data = GetFont(font);
+        //    if (data == null) return null;
+        //    return data.Font;
+        //}
+        //// Uusi lisäys (Perttu)
+        //private AdFontObject GetFont(TMPro.TMP_FontAsset font)
+        //{
+        //    if (font == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    foreach (AdFontObject info in _fontList)
+        //    {
+        //        if (info.Name == name)
+        //        {
+        //            if (info.IsValid()) return info;
+        //            else return null;
+        //        }
+        //    }
+        //    return null;
+        //}
     }
 
     [Serializable]
@@ -232,6 +296,20 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             if (string.IsNullOrWhiteSpace(Name)) return false;
             if (Image == null) return false;
+            return true;
+        }
+    }
+
+    [Serializable]
+    public class AdFontObject // Uusi lisäys (Perttu)
+    {
+        public string Name;
+        public TMPro.TMP_FontAsset Font;
+
+        public bool IsValid()
+        {
+            if (string.IsNullOrWhiteSpace(Name)) return false;
+            if (Font == null) return false;
             return true;
         }
     }
