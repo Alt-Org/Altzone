@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Chat;
+using Altzone.Scripts.Common;
 using MenuUi.Scripts.AvatarEditor;
 using TMPro;
 using UnityEngine;
@@ -158,7 +159,18 @@ public class MessageObjectHandler : MonoBehaviour
     {
         //Gets the set data we need to get to import saved reactions
         MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
-        ChildsScript.AddReaction(EmojiId, (Mood)Enum.Parse(typeof(Mood), EmojiId.emoji), _id, ReactionsPanel, message);
+
+        Emotion emojiType = Emotion.Blank;
+        if (EmojiId.emoji != null)
+            if (!Enum.TryParse(EmojiId.emoji, out emojiType))
+            {
+                if (Enum.TryParse(EmojiId.emoji, out Mood mood))
+                {
+                    emojiType = (Emotion)mood;
+                }
+            }
+
+        ChildsScript.AddReaction(EmojiId, emojiType, _id, ReactionsPanel, message);
 
     }
 

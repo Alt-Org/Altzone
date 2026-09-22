@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Chat;
+using Altzone.Scripts.Common;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
@@ -22,33 +23,33 @@ namespace Altzone.Scripts.ReferenceSheets
         public List<ChatResponse> ChatResponseInfo => _chatResponseInfo; // Public accessor for _chatResponseInfo
         public List<MottoOptions> MottoOptionsInfo => _mottoOptionsInfo; // Public accessor for _mottoOptionsInfo
 
-        public List<ChatResponseObject> GetChatResponses(Mood mood)
+        public List<ChatResponseObject> GetChatResponses(Emotion mood)
         {
 
             List<ChatResponseObject> list = null;
             switch (mood)
             {
-                case Mood.Neutral:
+                case Emotion.Blank:
                     list = _defaultList.List;
                     break;
 
-                case Mood.Sad:
+                case Emotion.Sorrow:
                     list = _chatResponseInfo[0].List;
                     break;
 
-                case Mood.Angry:
+                case Emotion.Anger:
                     list = _chatResponseInfo[1].List;
                     break;
 
-                case Mood.Happy:
+                case Emotion.Joy:
                     list = _chatResponseInfo[2].List;
                     break;
 
-                case Mood.Wink:
+                case Emotion.Playful:
                     list = _chatResponseInfo[3].List;
                     break;
 
-                case Mood.Love:
+                case Emotion.Love:
                     list = _chatResponseInfo[4].List;
                     break;
             }
