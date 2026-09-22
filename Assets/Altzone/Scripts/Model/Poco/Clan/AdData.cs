@@ -121,10 +121,15 @@ namespace Altzone.Scripts.Store
             }
 
             // Uusi lisäys (Perttu)
-            //if (ColorUtility.TryParseHtmlString(adTextColour, out Color textColour)) _adTextColour = adTextColour;
-            //else _adTextColour = "#000000";
+            if (_textColour == null) _textColour = "#000000";
+            //if (ColorUtility.TryParseHtmlString(adTextColour, out Color textColour)) _textColour = adTextColour;
+            //else _textColour = "#000000";
 
             //if (AdDecorationReference.Instance.GetFurnitureSprite(furniture) != null) _furniture = furniture;
+            //else if (AdDecorationReference.Instance.FurnitureList == null)
+            //{
+
+            //}
             //else
             //{
             //    Debug.LogWarning($"Invalid furniture id: \"{border}\". Using the default furniture.");

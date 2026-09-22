@@ -25,12 +25,13 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Color _darkPinkColor;
         [SerializeField] private Color _redColor;
         [SerializeField] private Color _blackColor; // Uusi lisäys (Perttu)
+        [SerializeField] private Color _whiteColor; // Uusi lisäys (Perttu)
         private List<Color> _colourList;
         private List<Color> _textColourList; // Uusi lisäys (Perttu)
 
         private List<AdBorderFrameObject> _validatedFrameList = null;
         public List<AdFurnitureObject> _validatedFurnitureList = null; // Uusi lisäys (Perttu)
-        public List<AdFontObject> _validatedFontList = null; // Uusi lisäys (Perttu)
+        private List<AdFontObject> _validatedFontList = null; // Uusi lisäys (Perttu)
         private static AdDecorationReference _instance = null;
         private static bool _hasInstance = false;
 
@@ -70,6 +71,8 @@ namespace Altzone.Scripts.ReferenceSheets
                 if (_colourList == null || _colourList.Count == 0)
                 {
                     _colourList = new();
+                    _colourList.Add(_whiteColor);
+                    _colourList.Add(_blackColor);
                     _colourList.Add(_orangeColor);
                     _colourList.Add(_yellowColor);
                     _colourList.Add(_lightGreenColor);
@@ -90,7 +93,9 @@ namespace Altzone.Scripts.ReferenceSheets
                 if (_textColourList == null || _textColourList.Count == 0)
                 {
                     _textColourList = new();
+                    _textColourList.Add(_whiteColor);
                     _textColourList.Add(_blackColor);
+                    _textColourList.Add(_orangeColor);
                     _textColourList.Add(_yellowColor);
                     _textColourList.Add(_lightGreenColor);
                     _textColourList.Add(_lightBlueColor);

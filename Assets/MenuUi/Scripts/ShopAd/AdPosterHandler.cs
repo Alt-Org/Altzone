@@ -28,6 +28,9 @@ public class AdPosterHandler : AltMonoBehaviour
     [SerializeField]
     private GameObject _inputFieldHolder;
 
+    public Color chosenColor;
+    public Color chosenTextColor;
+
 
     // Start is called before the first frame update
     void Start()
@@ -66,6 +69,8 @@ public class AdPosterHandler : AltMonoBehaviour
         if(_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
+        chosenColor = _adBackground.color; // Uusi lisäys (Perttu)
+        chosenTextColor = _adText.color; // Uusi lisäys (Perttu)
         _adText.font = data.TextFont; // Uusi lisäys (Perttu)
         _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture); // Uusi lisäys (Perttu)
         _adText.text = data.AdText; // Uusi lisäys (Perttu)
