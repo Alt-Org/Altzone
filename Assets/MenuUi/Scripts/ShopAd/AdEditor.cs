@@ -33,6 +33,10 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private Transform _backgroundColourSelectorContent;
     [SerializeField] private Transform _textColourSelectorContent; // Uusi lisäys (Perttu)
     [SerializeField] private GameObject _backgroundColourSelectorPrefab;
+    private List<Color> colorList;
+    private List<Color> textColorList;
+    private Color chosenColor;
+    private Color chosenTextColor;
 
     // Uusi lisäys (Perttu)
     [Header("Panels")]
@@ -107,12 +111,37 @@ public class AdEditor : AltMonoBehaviour
         }
         if (_dtSelectButtons) _dtSelectButtons.RefreshListeners();
 
-        List<Color> colorList = _borderReference.ColourList;
-        List<Color> textColorList = _borderReference.TextColourList; // Uusi lisäys (Perttu)
+        GetColors();
+
+        StartCoroutine(SetFrameSelectionSize());
+
+        // Uusi lisäys (Perttu)
+        _inputField.onValueChanged.AddListener(delegate { ChangeText(_inputField.text); });
+    }
+
+    private void GetColors() // Uusi lisäys (Perttu)
+    {
+        if (_backgroundColourSelectorContent.transform.childCount > 0)
+        {
+            for (int i = 0; i < _backgroundColourSelectorContent.transform.childCount; i++)
+            {
+                Destroy(_backgroundColourSelectorContent.transform.GetChild(i).gameObject);
+            }
+        }
+        if (_textColourSelectorContent.transform.childCount > 0)
+        {
+            for (int i = 0; i < _textColourSelectorContent.transform.childCount; i++)
+            {
+                Destroy(_textColourSelectorContent.transform.GetChild(i).gameObject);
+            }
+        }
+
+        colorList = _borderReference.ColourList;
+        textColorList = _borderReference.TextColourList;
 
         foreach (Color colour in colorList)
         {
-            if (colour != _adGraphicHandler.chosenTextColor)
+            if (colour != chosenColor)
             {
                 GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
                 colourObject.GetComponent<Image>().color = colour;
@@ -124,23 +153,18 @@ public class AdEditor : AltMonoBehaviour
         _backgroundColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f; // rect.width -> rect.height (Perttu)
 
         // Uusi lisäys (Perttu)
-        foreach (Color colour in textColorList)
+        foreach (Color textcolour in textColorList)
         {
-            if (colour != _adGraphicHandler.chosenColor)
+            if (chosenTextColor != textcolour)
             {
                 GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _textColourSelectorContent);
-                colourObject.GetComponent<Image>().color = colour;
+                colourObject.GetComponent<Image>().color = textcolour;
                 float objectWidth = _textColourSelectorContent.GetComponent<RectTransform>().rect.width;
                 colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
-                colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextColor(colour));
+                colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextColor(textcolour));
             }
         }
         _textColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _textColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
-
-        StartCoroutine(SetFrameSelectionSize());
-
-        // Uusi lisäys (Perttu)
-        _inputField.onValueChanged.AddListener(delegate { ChangeText(_inputField.text); });
     }
 
     private IEnumerator SetFrameSelectionSize()
@@ -178,6 +202,8 @@ public class AdEditor : AltMonoBehaviour
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         //SaveAdData();
+        chosenTextColor = colour;
+        GetColors();
     }
 
     public void ChangeBorder(AdBorderFrameObject frame)
@@ -198,6 +224,8 @@ public class AdEditor : AltMonoBehaviour
         _inputField.textComponent.color = colour;
         _adData.TextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        chosenColor = colour;
+        GetColors();
     }
     
     public void ChangeTextFont(TMPro.TMP_FontAsset font) // Uusi lisäys (Perttu)
