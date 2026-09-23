@@ -63,12 +63,22 @@ public class AdPosterHandler : AltMonoBehaviour
     public void SetAdPoster(AdStoreObject data, string clanName, List<HeartPieceData> pieceData)
     {
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
-        if(_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
+        if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
+
+        // Uusi lisäys (Perttu)
+        if (data.Furniture == null) _adFurniture.enabled = false;
+        else
+        {
+            _adFurniture.enabled = true;
+            _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture);
+        }
+
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
+
         _adText.font = data.TextFont; // Uusi lisäys (Perttu)
-        _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture); // Uusi lisäys (Perttu)
         _adText.text = data.AdText; // Uusi lisäys (Perttu)
+
         if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
         if (data.IsAdText == false) _adTextHolder.SetActive(false); // Uusi lisäys (Perttu)
         _adClanLogo.SetHeartColors(pieceData);
@@ -79,11 +89,21 @@ public class AdPosterHandler : AltMonoBehaviour
     {
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
+
+        // Uusi lisäys (Perttu)
+        if (data.Furniture == null) _adFurniture.enabled = false;
+        else
+        {
+            _adFurniture.enabled = true;
+            _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture);
+        }
+
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
+
         _adText.font = data.TextFont; // Uusi lisäys (Perttu)
-        _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture); // Uusi lisäys (Perttu)
         _adText.text = data.AdText; // Uusi lisäys (Perttu)
+
         if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
         if (data.IsAdText == false) _adTextHolder.SetActive(false); // Uusi lisäys (Perttu)
         _adClanName.text = clanName;

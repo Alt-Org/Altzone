@@ -126,10 +126,6 @@ namespace Altzone.Scripts.Store
             //else _textColour = "#000000";
 
             //if (AdDecorationReference.Instance.GetFurnitureSprite(furniture) != null) _furniture = furniture;
-            //else if (AdDecorationReference.Instance.FurnitureList == null)
-            //{
-
-            //}
             //else
             //{
             //    Debug.LogWarning($"Invalid furniture id: \"{border}\". Using the default furniture.");

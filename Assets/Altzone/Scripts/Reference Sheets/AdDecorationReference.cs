@@ -250,31 +250,6 @@ namespace Altzone.Scripts.ReferenceSheets
             }
             _validatedFontList = fonts;
         }
-        // Uusi lisäys (Perttu)
-        //public TMPro.TMP_FontAsset GetFontAsset(TMPro.TMP_FontAsset font)
-        //{
-        //    AdFontObject data = GetFont(font);
-        //    if (data == null) return null;
-        //    return data.Font;
-        //}
-        //// Uusi lisäys (Perttu)
-        //private AdFontObject GetFont(TMPro.TMP_FontAsset font)
-        //{
-        //    if (font == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    foreach (AdFontObject info in _fontList)
-        //    {
-        //        if (info.Name == name)
-        //        {
-        //            if (info.IsValid()) return info;
-        //            else return null;
-        //        }
-        //    }
-        //    return null;
-        //}
     }
 
     [Serializable]
