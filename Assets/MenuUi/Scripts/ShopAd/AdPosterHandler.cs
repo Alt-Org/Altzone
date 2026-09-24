@@ -69,11 +69,13 @@ public class AdPosterHandler : AltMonoBehaviour
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
 
         // Uusi lisäys (Perttu)
-        if (data.Furniture == null) _adFurniture.enabled = false;
+        if (AdDecorationReference.Instance.FurnitureList.Count <= 0) _adFurniture.enabled = false;
         else
         {
             _adFurniture.enabled = true;
-            _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture);
+
+            if (data.Furniture == null) _adFurniture.sprite = AdDecorationReference.Instance.FurnitureList[0].Image;
+            else _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture);
         }
 
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
@@ -94,11 +96,13 @@ public class AdPosterHandler : AltMonoBehaviour
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
 
         // Uusi lisäys (Perttu)
-        if (data.Furniture == null) _adFurniture.enabled = false;
+        if (AdDecorationReference.Instance.FurnitureList.Count <= 0) _adFurniture.enabled = false;
         else
         {
             _adFurniture.enabled = true;
-            _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture);
+
+            if (data.Furniture == null) _adFurniture.sprite = AdDecorationReference.Instance.FurnitureList[0].Image;
+            else _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture);
         }
 
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;

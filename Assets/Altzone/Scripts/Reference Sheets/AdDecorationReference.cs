@@ -30,7 +30,7 @@ namespace Altzone.Scripts.ReferenceSheets
         private List<Color> _textColourList; // Uusi lisäys (Perttu)
 
         private List<AdBorderFrameObject> _validatedFrameList = null;
-        public List<AdFurnitureObject> _validatedFurnitureList = null; // Uusi lisäys (Perttu)
+        private List<AdFurnitureObject> _validatedFurnitureList = null; // Uusi lisäys (Perttu)
         private List<AdFontObject> _validatedFontList = null; // Uusi lisäys (Perttu)
         private static AdDecorationReference _instance = null;
         private static bool _hasInstance = false;
