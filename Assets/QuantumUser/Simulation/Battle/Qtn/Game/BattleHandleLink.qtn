@@ -15,11 +15,13 @@ component BattlePlayerLinkQComponent
 {
     BattlePlayerSlot Slot;
     EntityRef CharacterEntityRef;
+    PlayerEntityType Type;
 }
 
 component BattlePlayerCharacterShieldLinkQComponent
 {
     EntityRef ERef;
+    PlayerCharacterShieldEntityType Type;
 }
 
 component BattleProjectileLinkQComponent
