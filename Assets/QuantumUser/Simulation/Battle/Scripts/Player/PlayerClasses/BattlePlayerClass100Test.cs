@@ -38,7 +38,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntity">Entity reference for the player.</param>
         ///
         /// <returns>Default <see cref="Battle.QSimulation.Player.BattlePlayerClassManager.CreationParameters">CreationParameters</see></returns>
-        public override unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, EntityRef playerEntity)
         {
             GetClassData(f, playerEntity)->ClassState = BattlePlayerClass100State.Unused;
 
@@ -54,7 +54,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference to the player.</param>
         /// <param name="selected">Is the character selected or not.</param>
-        public override unsafe void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity, bool selected)
+        public override unsafe void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, EntityRef playerEntity, bool selected)
         {
             if (!BattleParameters.GetIsTestFlipperGame(f) && selected)
             {
@@ -74,7 +74,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle for the player.</param>
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
-        public override unsafe void OnSpawn(Frame f, BattlePlayerClassManager.SpawnEventType spawnEventType, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe void OnSpawn(Frame f, BattlePlayerClassManager.SpawnEventType spawnEventType, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, EntityRef playerEntity)
         {
             if (spawnEventType is BattlePlayerClassManager.SpawnEventType.Select or BattlePlayerClassManager.SpawnEventType.SpawnSelect)
             {
@@ -99,7 +99,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">Handle for the player.</param>
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
-        public override unsafe void OnDespawn(Frame f, BattlePlayerClassManager.DespawnEventType despawnEventType, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe void OnDespawn(Frame f, BattlePlayerClassManager.DespawnEventType despawnEventType, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, EntityRef playerEntity)
         {
             StateSetPlaced(f, playerData, GetClassData(f, playerEntity));
 
@@ -115,7 +115,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
         /// <param name="specialInput">Pointer to special input (unused)</param>
-        public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
+        public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
         {
             BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
 
@@ -170,7 +170,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="classData">Pointer to class 100 data.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe void StateSetPlaced(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerClass100DataQComponent* classData)
+        private unsafe void StateSetPlaced(Frame f, BattlePlayerCharacterDataQComponent* playerData, BattlePlayerClass100DataQComponent* classData)
         {
             playerData->DisableMovement = true;
             classData->ClassState       = BattlePlayerClass100State.Placed;
@@ -184,7 +184,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference to the player.</param>
         /// <param name="specialInput">Pointer to special input.</param>
-        private unsafe void HandleAiming(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
+        private unsafe void HandleAiming(Frame f, BattlePlayerCharacterDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
         {
             BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
             //BattleDebugLogger.WarningFormat(f, nameof(BattlePlayerClass100), "Joystick ( state: {0}, Direction: {1} )", specialInput->JoystickState, specialInput->JoystickValue);

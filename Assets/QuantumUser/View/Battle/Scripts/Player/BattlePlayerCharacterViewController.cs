@@ -627,7 +627,7 @@ namespace Battle.View.Player
         public override void OnUpdateView()
         {
             if (!_isInPlay) return;
-            BattlePlayerDataQComponent* playerData = PredictedFrame.Unsafe.GetPointer<BattlePlayerDataQComponent>(EntityRef);
+            BattlePlayerCharacterDataQComponent* playerData = PredictedFrame.Unsafe.GetPointer<BattlePlayerCharacterDataQComponent>(EntityRef);
             if (playerData->PlayerRef == PlayerRef.None) return;
 
             UpdateAnimation(playerData);
@@ -874,7 +874,7 @@ namespace Battle.View.Player
         /// Animations are tracked using @cref{Battle.View.Player.BattlePlayerCharacterViewController,AnimationState}.
         ///
         /// <param name="playerData">Pointer to the player's data component.</param>
-        private void UpdateAnimation(BattlePlayerDataQComponent* playerData)
+        private void UpdateAnimation(BattlePlayerCharacterDataQComponent* playerData)
         {
             Vector2 movementVector = playerData->ViewMovementVector.ToUnityVector2();
 

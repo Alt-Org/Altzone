@@ -112,7 +112,7 @@ namespace Battle.QSimulation.Diamond
 
             BattleDiamondCounterQSingleton* diamondCounter = f.Unsafe.GetPointerSingleton<BattleDiamondCounterQSingleton>();
 
-            BattlePlayerDataQComponent* playerData = null;
+            BattlePlayerCharacterDataQComponent* playerData = null;
 
             switch (playerHitbox->HitboxType)
             {

@@ -231,10 +231,10 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerShieldManagerDataQSingleton* shieldManagerData = GetPlayerShieldManagerData(f);
 
-            BattlePlayerShieldEntityRef       shieldNewEntityRef = GetShieldEntityRef(f, shieldManagerData, playerSlot, characterNumber, shieldNumber, updateViewPlayState: teleport);
-            BattlePlayerShieldDataQComponent* shieldNewData      = shieldNewEntityRef.GetDataQComponent(f);
-            BattlePlayerEntityRef             playerEntityRef    = shieldNewData->PlayerEntityRef;
-            BattlePlayerDataQComponent*       playerData         = playerEntityRef.GetDataQComponent(f);
+            BattlePlayerShieldEntityRef          shieldNewEntityRef = GetShieldEntityRef(f, shieldManagerData, playerSlot, characterNumber, shieldNumber, updateViewPlayState: teleport);
+            BattlePlayerShieldDataQComponent*    shieldNewData      = shieldNewEntityRef.GetDataQComponent(f);
+            BattlePlayerEntityRef                playerEntityRef    = shieldNewData->PlayerEntityRef;
+            BattlePlayerCharacterDataQComponent* playerData         = playerEntityRef.GetDataQComponent(f);
 
             if (playerData->AttachedShield.ERef != EntityRef.None)
             {
@@ -286,7 +286,7 @@ namespace Battle.QSimulation.Player
 
             s_debugLogger.LogFormat(f, DebugMessageShieldDetachFormat, playerSlot, shieldNumber, characterNumber);
 
-            BattlePlayerDataQComponent* playerData = shieldData->PlayerEntityRef.GetDataQComponent(f);
+            BattlePlayerCharacterDataQComponent* playerData = shieldData->PlayerEntityRef.GetDataQComponent(f);
 
             playerData->AttachedShield = BattlePlayerShieldEntityRef.None;
             shieldData->IsAttached     = false;
@@ -315,9 +315,9 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerShieldManagerDataQSingleton* shieldManagerData = GetPlayerShieldManagerData(f);
 
-            BattlePlayerShieldEntityRef       shieldEntityRef = GetShieldEntityRef(f, shieldManagerData, playerSlot, characterNumber, shieldNumber, updateViewPlayState: false);
-            BattlePlayerShieldDataQComponent* shieldData      = shieldEntityRef.GetDataQComponent(f);
-            BattlePlayerDataQComponent*       playerData      = shieldData->PlayerEntityRef.GetDataQComponent(f);
+            BattlePlayerShieldEntityRef          shieldEntityRef = GetShieldEntityRef(f, shieldManagerData, playerSlot, characterNumber, shieldNumber, updateViewPlayState: false);
+            BattlePlayerShieldDataQComponent*    shieldData      = shieldEntityRef.GetDataQComponent(f);
+            BattlePlayerCharacterDataQComponent* playerData      = shieldData->PlayerEntityRef.GetDataQComponent(f);
 
             if (playerData->AttachedShield.ERef == shieldEntityRef)
             {

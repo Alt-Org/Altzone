@@ -56,7 +56,7 @@ namespace Quantum
         /// </summary>
         /// <param name="f">Current simulation frame.</param>
         /// <returns>This entity's player data component's pointer</returns>
-        public readonly BattlePlayerDataQComponent* GetDataQComponent(Frame f) => f.Unsafe.GetPointer<BattlePlayerDataQComponent>(ERef);
+        public readonly BattlePlayerCharacterDataQComponent* GetDataQComponent(Frame f) => f.Unsafe.GetPointer<BattlePlayerCharacterDataQComponent>(ERef);
     }
 
     // Adds functionality to create entities from prototypes and retrieve transform and data components.

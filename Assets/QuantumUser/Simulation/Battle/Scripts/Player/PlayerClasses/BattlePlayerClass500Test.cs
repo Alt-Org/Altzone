@@ -25,7 +25,7 @@ namespace Battle.QSimulation.Player
         /// <summary>The BattlePlayerCharacterClass this class is for.</summary>
         public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Class500;
 
-        public override unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, EntityRef playerEntity)
         {
             BattleCompoundEntityQComponent* compoundEntityComponent = f.Unsafe.GetPointer<BattleCompoundEntityQComponent>(playerEntity);
 
@@ -53,7 +53,7 @@ namespace Battle.QSimulation.Player
             EntityRef                   projectileEntityRef   = projectileCollisionData->ProjectileEntityRef;
             BattleProjectileQComponent* projectile            = projectileCollisionData->Projectile;
             BattlePlayerEntityRef       playerEntityRef       = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef)->PlayerEntityRef;
-            BattlePlayerDataQComponent* playerData            = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntityRef);
+            BattlePlayerCharacterDataQComponent* playerData   = f.Unsafe.GetPointer<BattlePlayerCharacterDataQComponent>(playerEntityRef);
 
             int       row       = 0;
             FP        yOffset   = projectile->Radius + BattleGridManager.GridScaleFactor;

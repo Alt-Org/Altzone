@@ -5,9 +5,9 @@ enum BattlePlayerSpawnBehaviour
     PreviousCharactersPosition
 }
 
-//{ PlayerData
+//{ PlayerCharacterData
 
-component BattlePlayerDataQComponent
+component BattlePlayerCharacterDataQComponent
 {
     // Player's refs and IDs
     PlayerRef                  PlayerRef;
@@ -58,10 +58,10 @@ component BattlePlayerDataQComponent
     FPVector2 ViewMovementVector;
 }
 
-//} PlayerData
+//} PlayerCharacterData
 
-//{ PlayerDataTemplate
-component BattlePlayerDataTemplateQComponent
+//{ PlayerCharacterDataTemplate
+component BattlePlayerCharacterDataTemplateQComponent
 {
     int GridExtendTop;
     int GridExtendBottom;
@@ -73,4 +73,4 @@ component BattlePlayerDataTemplateQComponent
 
     BattlePlayerSpawnBehaviour SpawnBehaviour;
 }
-//} PlayerDataTemplate
+//} PlayerCharacterDataTemplate

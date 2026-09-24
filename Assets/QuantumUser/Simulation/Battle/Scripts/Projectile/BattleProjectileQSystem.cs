@@ -534,7 +534,7 @@ namespace Battle.QSimulation.Projectile
 
             if (projectile->EmotionCurrent == BattleEmotionState.Love) return false;
 
-            BattlePlayerDataQComponent* playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
+            BattlePlayerCharacterDataQComponent* playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
 

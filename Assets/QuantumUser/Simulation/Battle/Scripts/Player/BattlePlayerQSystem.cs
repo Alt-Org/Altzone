@@ -87,9 +87,9 @@ namespace Battle.QSimulation.Player
             BattlePlayerQSpec playerSpec = BattleQConfig.GetPlayerSpec(f);
 
             // get references
-            BattlePlayerEntityRef            playerEntityRef = (BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef;
-            BattlePlayerDataQComponent*      playerData      = playerEntityRef.GetDataQComponent(f);
-            BattlePlayerManager.PlayerHandle playerHandle    = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, playerData->Slot);
+            BattlePlayerEntityRef                playerEntityRef = (BattlePlayerEntityRef)playerCollisionData->PlayerCharacterHitbox->ParentEntityRef;
+            BattlePlayerCharacterDataQComponent* playerData      = playerEntityRef.GetDataQComponent(f);
+            BattlePlayerManager.PlayerHandle     playerHandle    = BattlePlayerManager.PlayerHandle.GetPlayerHandle(f, playerData->Slot);
 
             if (playerData->StunCooldown.IsRunning(f) || playerData->ShieldHitCooldown.IsRunning(f)) goto Exit;
 
@@ -158,8 +158,8 @@ namespace Battle.QSimulation.Player
 
             //{ hit
 
-            BattlePlayerShieldDataQComponent* playerShieldData  = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetDataQComponent(f);
-            BattlePlayerDataQComponent*       playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
+            BattlePlayerShieldDataQComponent*    playerShieldData  = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetDataQComponent(f);
+            BattlePlayerCharacterDataQComponent* playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
 
             int  characterNumber     = playerData->CharacterNumber;
             bool defenceUpdateVisual = false;
@@ -231,7 +231,7 @@ namespace Battle.QSimulation.Player
                 {
                     bool selected = characterNumber == playerHandle.SelectedCharacterNumber;
                     BattlePlayerEntityRef entityRef = playerHandle.GetCharacterEntityRef(f, characterNumber);
-                    BattlePlayerDataQComponent* playerData = entityRef.GetDataQComponent(f);
+                    BattlePlayerCharacterDataQComponent* playerData = entityRef.GetDataQComponent(f);
 
                     BattlePlayerClassManager.OnGameStart(f, playerHandle, playerData, entityRef, selected);
                 }
@@ -433,7 +433,7 @@ namespace Battle.QSimulation.Player
             /// </summary>
             ///
             /// Part of @ref BattlePlayerQSystem-UpdateData-CurrentPlayerCharacter "Current Player Character Properties"
-            public BattlePlayerDataQComponent* PlayerCharacterData { get; private set; }
+            public BattlePlayerCharacterDataQComponent* PlayerCharacterData { get; private set; }
 
             /// <summary>
             /// Pointer to current player character's Transform2D component.
@@ -799,7 +799,7 @@ namespace Battle.QSimulation.Player
             if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, updateData.PlayerCharacterData, updateData.PlayerCharacterEntityRef, updateData.PlayerCharacterTransform, input);
         }
 
-        private void AbilityActivate(Frame f, BattlePlayerDataQComponent* playerData, Transform2D* playerTransform)
+        private void AbilityActivate(Frame f, BattlePlayerCharacterDataQComponent* playerData, Transform2D* playerTransform)
         {
             //{ Ability test
             /*

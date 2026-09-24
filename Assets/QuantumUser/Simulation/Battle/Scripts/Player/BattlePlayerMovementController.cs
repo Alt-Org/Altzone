@@ -54,7 +54,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntityRef">Reference to player entity.</param>
         /// <param name="transform">Pointer to player's transform component.</param>
         /// <param name="input">Pointer to player's Quantum Input.</param>
-        public static void UpdateMovement(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, Transform2D* transform, Input* input)
+        public static void UpdateMovement(Frame f, BattlePlayerCharacterDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, Transform2D* transform, Input* input)
         {
             // get spec
             BattlePlayerQSpec spec = BattleQConfig.GetPlayerSpec(f);
@@ -208,7 +208,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerEntityRef">Reference to player entity.</param>
         /// <param name="playerTransform">Pointer to the player's transform2D component.</param>
         /// <param name="position">World position to move to.</param>
-        public static void Move(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, Transform2D* playerTransform, FPVector2 position)
+        public static void Move(Frame f, BattlePlayerCharacterDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, Transform2D* playerTransform, FPVector2 position)
         {
             playerData->ViewMovementVector = position - playerTransform->Position;
             BattleEntityManager.MoveCompound(f, playerEntityRef, position, playerData->RotationBaseRad);
@@ -224,7 +224,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="playerEntityRef">Reference to player entity.</param>
         /// <param name="position">New world position.</param>
-        public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, FPVector2 position)
+        public static void Teleport(Frame f, BattlePlayerCharacterDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, FPVector2 position)
         {
             playerData->ViewMovementVector = FPVector2.Zero;
             BattleEntityManager.TeleportCompound(f, playerEntityRef, position, playerData->RotationBaseRad);
@@ -245,7 +245,7 @@ namespace Battle.QSimulation.Player
         /// <param name="clampedPosition">The resulting clamped world position of the player.</param>
         ///
         /// <returns>True if the grid position changed from clamping, false if it remained the same.</returns>
-        private static bool ClampGridPosition(BattlePlayerDataQComponent* playerData, BattleGridPosition gridPosition, out FPVector2 clampedPosition)
+        private static bool ClampGridPosition(BattlePlayerCharacterDataQComponent* playerData, BattleGridPosition gridPosition, out FPVector2 clampedPosition)
         {
             BattleGridPosition clampedGridPosition;
 
@@ -286,7 +286,7 @@ namespace Battle.QSimulation.Player
         /// <param name="clampedPosition">The resulting clamped and snapped world position of the player.</param>
         ///
         /// <returns>True if the grid position changed from clamping, false if it remained the same.</returns>
-        private static bool ClampAndSnapWorldPosition(BattlePlayerDataQComponent* playerData, FPVector2 position, out FPVector2 clampedPosition)
+        private static bool ClampAndSnapWorldPosition(BattlePlayerCharacterDataQComponent* playerData, FPVector2 position, out FPVector2 clampedPosition)
         {
             BattleGridPosition gridPosition = BattleGridManager.WorldPositionToGridPosition(position);
 

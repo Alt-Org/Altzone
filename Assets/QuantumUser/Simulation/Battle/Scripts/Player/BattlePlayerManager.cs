@@ -284,8 +284,8 @@ namespace Battle.QSimulation.Player
                     BattleEntityManager.CompoundEntityTemplate playerCharacterEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(playerCharacterEntity, 1);
 
                     // get template data
-                    BattlePlayerDataTemplateQComponent* playerCharacterDataTemplate = f.Unsafe.GetPointer<BattlePlayerDataTemplateQComponent>(playerCharacterEntity);
-                    int playerHitboxListCharacterColliderTemplateCount              = f.TryResolveList(playerCharacterDataTemplate->Hitbox.ColliderTemplateList, out QList<BattlePlayerHitboxColliderTemplate> playerHitboxListCharacterColliderTemplate) ? playerHitboxListCharacterColliderTemplate.Count : 0;
+                    BattlePlayerCharacterDataTemplateQComponent* playerCharacterDataTemplate = f.Unsafe.GetPointer<BattlePlayerCharacterDataTemplateQComponent>(playerCharacterEntity);
+                    int playerHitboxListCharacterColliderTemplateCount                       = f.TryResolveList(playerCharacterDataTemplate->Hitbox.ColliderTemplateList, out QList<BattlePlayerHitboxColliderTemplate> playerHitboxListCharacterColliderTemplate) ? playerHitboxListCharacterColliderTemplate.Count : 0;
 
                     //{ set temp variables
 
@@ -374,7 +374,7 @@ namespace Battle.QSimulation.Player
 
                     //{ initialize playerData
 
-                    BattlePlayerDataQComponent playerData = new()
+                    BattlePlayerCharacterDataQComponent playerData = new()
                     {
                         // player's ref's and IDs
                         PlayerRef              = PlayerRef.None,
@@ -447,8 +447,8 @@ namespace Battle.QSimulation.Player
                     //} initialize playerData
 
                     // initialize entity
-                    f.Remove<BattlePlayerDataTemplateQComponent>(playerCharacterEntity);
-                    f.Add(playerCharacterEntity, playerData, out BattlePlayerDataQComponent* playerDataPtr);
+                    f.Remove<BattlePlayerCharacterDataTemplateQComponent>(playerCharacterEntity);
+                    f.Add(playerCharacterEntity, playerData, out BattlePlayerCharacterDataQComponent* playerDataPtr);
 
                     // save entity
                     playerCharacterEntityArray[playerCharacterNumber] = playerCharacterEntityTemplate;
@@ -462,8 +462,8 @@ namespace Battle.QSimulation.Player
 
                 for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
                 {
-                    BattlePlayerEntityRef       playerCharacterEntity = (BattlePlayerEntityRef)playerCharacterEntityArray[playerCharacterNumber].ParentEntityRef;
-                    BattlePlayerDataQComponent* playerData            = playerCharacterEntity.GetDataQComponent(f);
+                    BattlePlayerEntityRef                playerCharacterEntity = (BattlePlayerEntityRef)playerCharacterEntityArray[playerCharacterNumber].ParentEntityRef;
+                    BattlePlayerCharacterDataQComponent* playerData            = playerCharacterEntity.GetDataQComponent(f);
 
                     BattlePlayerClassManager.CreationParameters creationParameters = BattlePlayerClassManager.OnCreate(f, playerHandle.ConvertToPublic(), playerData, playerCharacterEntity);
 
@@ -552,8 +552,8 @@ namespace Battle.QSimulation.Player
                 {
                     playerHandle.SetCharacterState(playerHandle.SelectedCharacterNumber, unSelectedCharacterState);
 
-                    BattlePlayerEntityRef previousCharacterEntityRef = playerHandle.GetSelectedCharacterEntityRef(f);
-                    BattlePlayerDataQComponent* previousPlayerData = previousCharacterEntityRef.GetDataQComponent(f);
+                    BattlePlayerEntityRef previousCharacterEntityRef        = playerHandle.GetSelectedCharacterEntityRef(f);
+                    BattlePlayerCharacterDataQComponent* previousPlayerData = previousCharacterEntityRef.GetDataQComponent(f);
 
                     BattlePlayerClassManager.OnDespawn(f, BattlePlayerClassManager.DespawnEventType.UnSelect, playerHandle.ConvertToPublic(), previousPlayerData, previousCharacterEntityRef);
                 }
@@ -570,8 +570,8 @@ namespace Battle.QSimulation.Player
                 playerHandle.SetCharacterState(characterNumber, BattlePlayerCharacterState.InPlay);
             }
 
-            BattlePlayerEntityRef characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber);
-            BattlePlayerDataQComponent* playerData = characterEntityRef.GetDataQComponent(f);
+            BattlePlayerEntityRef characterEntityRef        = playerHandle.GetCharacterEntityRef(f, characterNumber);
+            BattlePlayerCharacterDataQComponent* playerData = characterEntityRef.GetDataQComponent(f);
 
             BattlePlayerClassManager.OnSpawn(f, spawnEventType, playerHandle.ConvertToPublic(), playerData, characterEntityRef);
         }
@@ -662,8 +662,8 @@ namespace Battle.QSimulation.Player
         private static void SpawnPlayer(Frame f, PlayerHandleInternal playerHandle, int characterNumber)
         {
             // get references
-            BattlePlayerEntityRef       characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState: true);
-            BattlePlayerDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
+            BattlePlayerEntityRef                characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState: true);
+            BattlePlayerCharacterDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
 
             FPVector2 worldPosition = BattleParameters.GetIsTestFlipperGame(f) ? playerHandle.GetCharacterDefaultSpawnPosition(characterNumber) : playerHandle.DefaultSpawnPosition;
 
@@ -729,9 +729,9 @@ namespace Battle.QSimulation.Player
         private static void DespawnPlayer(Frame f, PlayerHandleInternal playerHandle, int characterNumber)
         {
             // get references
-            BattlePlayerEntityRef       characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState: true);
-            BattlePlayerDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
-            Transform2D*                playerTransform    = f.Unsafe.GetPointer<Transform2D>(characterEntityRef);
+            BattlePlayerEntityRef                characterEntityRef = playerHandle.GetCharacterEntityRef(f, characterNumber, updateViewPlayState: true);
+            BattlePlayerCharacterDataQComponent* playerData         = characterEntityRef.GetDataQComponent(f);
+            Transform2D*                         playerTransform    = f.Unsafe.GetPointer<Transform2D>(characterEntityRef);
 
             s_debugLogger.LogFormat(f, "({0}) Despawning character number: {1}", playerData->Slot, characterNumber);
 

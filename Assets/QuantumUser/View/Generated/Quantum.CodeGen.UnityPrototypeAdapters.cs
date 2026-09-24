@@ -94,6 +94,75 @@ namespace Quantum.Prototypes.Unity {
     }
   }
   [System.SerializableAttribute()]
+  public unsafe partial class BattlePlayerCharacterDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerCharacterDataQComponentPrototype> {
+    public PlayerRef PlayerRef;
+    public Quantum.QEnum32<BattlePlayerSlot> Slot;
+    public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
+    public Quantum.QEnum32<BattlePlayerCharacterID> CharacterId;
+    public Quantum.QEnum32<BattlePlayerCharacterClass> CharacterClass;
+    public Int32 CharacterNumber;
+    public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
+    public Int32 GridExtendTop;
+    public Int32 GridExtendBottom;
+    public QBoolean DisableMovement;
+    public QBoolean DisableRotation;
+    public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
+    public QBoolean MovementEnabled;
+    public QBoolean RotationEnabled;
+    public FP CurrentDefence;
+    public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
+    public QBoolean HasTargetPosition;
+    public FPVector2 TargetPosition;
+    public FP RotationBaseRad;
+    public FP RotationOffsetRad;
+    public Int32 ShieldCount;
+    public Int32 AttachedShieldNumber;
+    public Quantum.Prototypes.Unity.BattlePlayerShieldEntityRefPrototype AttachedShield;
+    public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
+    public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
+    public FP BotMovementCooldownSec;
+    public FP BotCharacterSwapTimerSec;
+    public FPVector2 ViewPosition;
+    public FPVector2 ViewMovementVector;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerCharacterDataQComponentPrototype prototype);
+    public override Quantum.Prototypes.BattlePlayerCharacterDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattlePlayerCharacterDataQComponentPrototype();
+      converter.Convert(this.PlayerRef, out result.PlayerRef);
+      converter.Convert(this.Slot, out result.Slot);
+      converter.Convert(this.TeamNumber, out result.TeamNumber);
+      converter.Convert(this.CharacterId, out result.CharacterId);
+      converter.Convert(this.CharacterClass, out result.CharacterClass);
+      converter.Convert(this.CharacterNumber, out result.CharacterNumber);
+      converter.Convert(this.Stats, out result.Stats);
+      converter.Convert(this.GridExtendTop, out result.GridExtendTop);
+      converter.Convert(this.GridExtendBottom, out result.GridExtendBottom);
+      converter.Convert(this.DisableMovement, out result.DisableMovement);
+      converter.Convert(this.DisableRotation, out result.DisableRotation);
+      converter.Convert(this.SpawnBehaviour, out result.SpawnBehaviour);
+      converter.Convert(this.MovementEnabled, out result.MovementEnabled);
+      converter.Convert(this.RotationEnabled, out result.RotationEnabled);
+      converter.Convert(this.CurrentDefence, out result.CurrentDefence);
+      converter.Convert(this.StunCooldown, out result.StunCooldown);
+      converter.Convert(this.ShieldHitCooldown, out result.ShieldHitCooldown);
+      converter.Convert(this.HasTargetPosition, out result.HasTargetPosition);
+      converter.Convert(this.TargetPosition, out result.TargetPosition);
+      converter.Convert(this.RotationBaseRad, out result.RotationBaseRad);
+      converter.Convert(this.RotationOffsetRad, out result.RotationOffsetRad);
+      converter.Convert(this.ShieldCount, out result.ShieldCount);
+      converter.Convert(this.AttachedShieldNumber, out result.AttachedShieldNumber);
+      converter.Convert(this.AttachedShield, out result.AttachedShield);
+      converter.Convert(this.AbilityCooldownSec, out result.AbilityCooldownSec);
+      converter.Convert(this.AbilityActivateBufferSec, out result.AbilityActivateBufferSec);
+      converter.Convert(this.BotMovementCooldownSec, out result.BotMovementCooldownSec);
+      converter.Convert(this.BotCharacterSwapTimerSec, out result.BotCharacterSwapTimerSec);
+      converter.Convert(this.ViewPosition, out result.ViewPosition);
+      converter.Convert(this.ViewMovementVector, out result.ViewMovementVector);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerClass400DataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerClass400DataQComponentPrototype> {
     public FP RotationDurationFrames;
     [HideInInspector()]
@@ -145,75 +214,6 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.HoldMinTimer, out result.HoldMinTimer);
       converter.Convert(this.HoldMaxTimer, out result.HoldMaxTimer);
       converter.Convert(this.ReleaseBufferTimer, out result.ReleaseBufferTimer);
-      ConvertUser(converter, ref result);
-      return result;
-    }
-  }
-  [System.SerializableAttribute()]
-  public unsafe partial class BattlePlayerDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerDataQComponentPrototype> {
-    public PlayerRef PlayerRef;
-    public Quantum.QEnum32<BattlePlayerSlot> Slot;
-    public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
-    public Quantum.QEnum32<BattlePlayerCharacterID> CharacterId;
-    public Quantum.QEnum32<BattlePlayerCharacterClass> CharacterClass;
-    public Int32 CharacterNumber;
-    public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
-    public Int32 GridExtendTop;
-    public Int32 GridExtendBottom;
-    public QBoolean DisableMovement;
-    public QBoolean DisableRotation;
-    public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
-    public QBoolean MovementEnabled;
-    public QBoolean RotationEnabled;
-    public FP CurrentDefence;
-    public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
-    public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
-    public QBoolean HasTargetPosition;
-    public FPVector2 TargetPosition;
-    public FP RotationBaseRad;
-    public FP RotationOffsetRad;
-    public Int32 ShieldCount;
-    public Int32 AttachedShieldNumber;
-    public Quantum.Prototypes.Unity.BattlePlayerShieldEntityRefPrototype AttachedShield;
-    public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
-    public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
-    public FP BotMovementCooldownSec;
-    public FP BotCharacterSwapTimerSec;
-    public FPVector2 ViewPosition;
-    public FPVector2 ViewMovementVector;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
-    public override Quantum.Prototypes.BattlePlayerDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.BattlePlayerDataQComponentPrototype();
-      converter.Convert(this.PlayerRef, out result.PlayerRef);
-      converter.Convert(this.Slot, out result.Slot);
-      converter.Convert(this.TeamNumber, out result.TeamNumber);
-      converter.Convert(this.CharacterId, out result.CharacterId);
-      converter.Convert(this.CharacterClass, out result.CharacterClass);
-      converter.Convert(this.CharacterNumber, out result.CharacterNumber);
-      converter.Convert(this.Stats, out result.Stats);
-      converter.Convert(this.GridExtendTop, out result.GridExtendTop);
-      converter.Convert(this.GridExtendBottom, out result.GridExtendBottom);
-      converter.Convert(this.DisableMovement, out result.DisableMovement);
-      converter.Convert(this.DisableRotation, out result.DisableRotation);
-      converter.Convert(this.SpawnBehaviour, out result.SpawnBehaviour);
-      converter.Convert(this.MovementEnabled, out result.MovementEnabled);
-      converter.Convert(this.RotationEnabled, out result.RotationEnabled);
-      converter.Convert(this.CurrentDefence, out result.CurrentDefence);
-      converter.Convert(this.StunCooldown, out result.StunCooldown);
-      converter.Convert(this.ShieldHitCooldown, out result.ShieldHitCooldown);
-      converter.Convert(this.HasTargetPosition, out result.HasTargetPosition);
-      converter.Convert(this.TargetPosition, out result.TargetPosition);
-      converter.Convert(this.RotationBaseRad, out result.RotationBaseRad);
-      converter.Convert(this.RotationOffsetRad, out result.RotationOffsetRad);
-      converter.Convert(this.ShieldCount, out result.ShieldCount);
-      converter.Convert(this.AttachedShieldNumber, out result.AttachedShieldNumber);
-      converter.Convert(this.AttachedShield, out result.AttachedShield);
-      converter.Convert(this.AbilityCooldownSec, out result.AbilityCooldownSec);
-      converter.Convert(this.AbilityActivateBufferSec, out result.AbilityActivateBufferSec);
-      converter.Convert(this.BotMovementCooldownSec, out result.BotMovementCooldownSec);
-      converter.Convert(this.BotCharacterSwapTimerSec, out result.BotCharacterSwapTimerSec);
-      converter.Convert(this.ViewPosition, out result.ViewPosition);
-      converter.Convert(this.ViewMovementVector, out result.ViewMovementVector);
       ConvertUser(converter, ref result);
       return result;
     }

@@ -97,7 +97,7 @@ namespace Battle.QSimulation.Player
             bool hasCharacter = false;
 
             BattlePlayerEntityRef playerEntity;
-            BattlePlayerDataQComponent* playerData = null;
+            BattlePlayerCharacterDataQComponent* playerData = null;
 
             if (playerHandle.SelectedCharacterNumber != -1)
             {
