@@ -123,7 +123,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const int GridTransparencyDefault = 50;
 
         private const float GameAspectRatio = 9f / 19f;
-
+        private readonly Dictionary<Graphic, Color> _originalColors = new();
 
         private void Awake()
         {
@@ -745,6 +745,46 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void SetOuterEdgeWithoutFloor(bool enabled)
         {
             _arenaBackgroundBlackImage.SetActive(enabled);
+        }
+
+        public void HideExceptSlider(Transform activeSlider, Transform valueField)
+        {
+            _originalColors.Clear();
+
+            Graphic[] graphics = _optionsContents.GetComponentsInChildren<Graphic>(true);
+
+            foreach (Graphic graphic in graphics)
+            {
+                bool belongsToSLider = graphic.transform == activeSlider ||
+                                       graphic.transform.IsChildOf(activeSlider);
+
+                bool BelongsToValueField = graphic.transform == valueField ||
+                                           graphic.transform.IsChildOf(valueField);
+
+                if (belongsToSLider || BelongsToValueField)
+                {
+                    continue;
+                }
+
+                _originalColors[graphic] = graphic.color;
+
+                Color color = graphic.color;
+                color.a = 0f;
+                graphic.color = color;
+            }
+        }
+
+        public void RestoreAfterSliderDragging()
+        {
+            foreach (var item in _originalColors)
+            {
+                if (item.Key != null)
+                {
+                    item.Key.color = item.Value;
+                }
+            }
+
+            _originalColors.Clear();
         }
     }
 }
