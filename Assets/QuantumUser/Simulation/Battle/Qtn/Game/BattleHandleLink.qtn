@@ -1,0 +1,28 @@
+enum PlayerEntityType
+{
+    Character,
+    Hitbox,
+    Shield
+}
+
+enum PlayerCharacterShieldEntityType
+{
+    Shield,
+    Hitbox
+}
+
+component BattlePlayerLinkQComponent
+{
+    BattlePlayerSlot Slot;
+    EntityRef CharacterEntityRef;
+}
+
+component BattlePlayerCharacterShieldLinkQComponent
+{
+    EntityRef ERef;
+}
+
+component BattleProjectileLinkQComponent
+{
+    EntityRef ERef;
+}

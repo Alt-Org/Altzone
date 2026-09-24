@@ -28,8 +28,3 @@ component BattleProjectileQComponent
     FP SpeedMax;
     FP AttackMax;
 }
-
-component BattleProjectileTriggerQComponent
-{
-    EntityRef ProjectileEntityRef;
-}
