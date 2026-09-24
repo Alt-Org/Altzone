@@ -8,6 +8,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.MQTT;
 using MenuUi.Scripts.Login;
 using MenuUi.Scripts.Window;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 using UnityEngine;
 
 namespace MenuUi.Scripts.Loader
@@ -146,11 +147,29 @@ namespace MenuUi.Scripts.Loader
 
         private void MQTTEstablished(bool value)
         {
-            _mqttEstablished = true;
+            _mqttEstablished = value;
 
-            if (_clanFetched)
+            if (_mqttEstablished)
             {
-                LogInReady();
+                if (_clanFetched)
+                {
+                    LogInReady();
+                }
+            }
+            else
+            {
+                if (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
+                {
+                    PopupSignalBus.OnChangePopupInfoSignal("MQTT yhteyden luominen epäonnistui. Tämä johtaa siihen että osa tietojen muutosviesteistä ei tule läpi.");
+                    if (_clanFetched)
+                    {
+                        LogInReady();
+                    }
+                }
+                else
+                {
+                    PopupSignalBus.OnChangePopupInfoSignal("MQTT yhteyden luominen epäonnistui. Kokeile käynnistää peli uudelleen tai sitten ota yhteyttä kehittäjiin.");
+                }
             }
         }
 
