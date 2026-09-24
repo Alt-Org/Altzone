@@ -1,0 +1,17 @@
+struct BattlePlayerData
+{
+    PlayerRef PRef;
+    BattlePlayerSlot Slot;
+    BattleTeamNumber Team;
+    BattlePlayerPlayState PlayState;
+    bool IsBot;
+    bool IsAbandoned;
+    bool AllowCharacterSwapping;
+    bool PlayerGiveUpState;
+    FrameTimer RespawnTimer;
+
+    int SelectedCharacterNumber;
+    BattleEntityID CharacterEntityGroupID;
+    array<BattlePlayerCharacterState>[BATTLE_PLAYER_CHARACTER_COUNT] CharactersStates;
+    array<FPVector2>[BATTLE_PLAYER_CHARACTER_COUNT] CharacterPreviousPositions;
+}
