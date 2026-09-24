@@ -759,6 +759,23 @@ namespace Battle.QSimulation.Player
             f.Events.BattleDebugOnScreenMessage(message);
         }
 
+        private static BattlePlayerData GetPlayerData(Frame f, BattlePlayerSlot slot)
+        {
+            BattlePlayerManagerDataQSingleton* playerManagerData = GetPlayerManagerData(f);
+
+            int index = slot switch
+            {
+                BattlePlayerSlot.Slot1 => 0,
+                BattlePlayerSlot.Slot2 => 1,
+                BattlePlayerSlot.Slot3 => 2,
+                BattlePlayerSlot.Slot4 => 3,
+
+                _ => -1
+            };
+
+            return playerManagerData->PlayerArray[index];
+        }
+
         #endregion Private - Static Methods
 
         #endregion Private
