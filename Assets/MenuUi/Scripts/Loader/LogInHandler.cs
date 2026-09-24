@@ -36,6 +36,16 @@ namespace MenuUi.Scripts.Loader
         [SerializeField]
         private WindowNavigation _languageNavigation;
 
+        [Header("Error messages")]
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorFinnish;
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorEnglish;
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorFinnishDev;
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorEnglishDev;
+
         private string _currentAccessToken = null;
         private bool _clanFetched = false;
         private bool _mqttEstablished = false;
@@ -160,7 +170,9 @@ namespace MenuUi.Scripts.Loader
             {
                 if (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal("MQTT yhteyden luominen epäonnistui. Tämä johtaa siihen että osa tietojen muutosviesteistä ei tule läpi.");
+                    if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                        PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorFinnishDev);
+                    else PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorEnglishDev);
                     if (_clanFetched)
                     {
                         LogInReady();
@@ -168,7 +180,9 @@ namespace MenuUi.Scripts.Loader
                 }
                 else
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal("MQTT yhteyden luominen epäonnistui. Kokeile käynnistää peli uudelleen tai sitten ota yhteyttä kehittäjiin.");
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                        PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorFinnish);
+                    else PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorEnglish);
                 }
             }
         }
