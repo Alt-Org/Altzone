@@ -1787,19 +1787,23 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerCharacterShieldLinkQComponent : Quantum.IComponent {
-    public const Int32 SIZE = 8;
+    public const Int32 SIZE = 16;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
+    [FieldOffset(8)]
     public EntityRef ERef;
+    [FieldOffset(0)]
+    public PlayerCharacterShieldEntityType Type;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 6211;
         hash = hash * 31 + ERef.GetHashCode();
+        hash = hash * 31 + (Int32)Type;
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerCharacterShieldLinkQComponent*)ptr;
+        serializer.Stream.Serialize((Int32*)&p->Type);
         EntityRef.Serialize(&p->ERef, serializer);
     }
   }
@@ -2010,17 +2014,21 @@ namespace Quantum {
     public BattlePlayerSlot Slot;
     [FieldOffset(8)]
     public EntityRef CharacterEntityRef;
+    [FieldOffset(4)]
+    public PlayerEntityType Type;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 2939;
         hash = hash * 31 + (Int32)Slot;
         hash = hash * 31 + CharacterEntityRef.GetHashCode();
+        hash = hash * 31 + (Int32)Type;
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerLinkQComponent*)ptr;
         serializer.Stream.Serialize((Int32*)&p->Slot);
+        serializer.Stream.Serialize((Int32*)&p->Type);
         EntityRef.Serialize(&p->CharacterEntityRef, serializer);
     }
   }
