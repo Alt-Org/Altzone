@@ -28,6 +28,9 @@ public class AdPosterHandler : AltMonoBehaviour
     [SerializeField]
     private GameObject _inputFieldHolder;
 
+    //public Color currentColor;
+    //public Color currentTextColor;
+
 
     // Start is called before the first frame update
     void Start()

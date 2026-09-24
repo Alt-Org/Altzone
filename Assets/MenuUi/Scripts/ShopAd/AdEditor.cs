@@ -35,8 +35,8 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private GameObject _backgroundColourSelectorPrefab;
     private List<Color> colorList;
     private List<Color> textColorList;
-    private Color chosenColor;
-    private Color chosenTextColor;
+    [SerializeField] private Color currentColor;
+    [SerializeField] private Color currentTextColor;
 
     // Uusi lisäys (Perttu)
     [Header("Panels")]
@@ -141,7 +141,7 @@ public class AdEditor : AltMonoBehaviour
 
         foreach (Color colour in colorList)
         {
-            if (colour != chosenColor)
+            if (colour != currentTextColor)
             {
                 GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
                 colourObject.GetComponent<Image>().color = colour;
@@ -153,15 +153,15 @@ public class AdEditor : AltMonoBehaviour
         _backgroundColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f; // rect.width -> rect.height (Perttu)
 
         // Uusi lisäys (Perttu)
-        foreach (Color textcolour in textColorList)
+        foreach (Color textColour in textColorList)
         {
-            if (chosenTextColor != textcolour)
+            if (textColour != currentColor)
             {
                 GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _textColourSelectorContent);
-                colourObject.GetComponent<Image>().color = textcolour;
+                colourObject.GetComponent<Image>().color = textColour;
                 float objectWidth = _textColourSelectorContent.GetComponent<RectTransform>().rect.width;
                 colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
-                colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextColor(textcolour));
+                colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextColor(textColour));
             }
         }
         _textColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _textColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
@@ -202,7 +202,7 @@ public class AdEditor : AltMonoBehaviour
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         //SaveAdData();
-        chosenTextColor = colour;
+        currentColor = colour;
         GetColors();
     }
 
@@ -224,7 +224,7 @@ public class AdEditor : AltMonoBehaviour
         _inputField.textComponent.color = colour;
         _adData.TextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        chosenColor = colour;
+        currentTextColor = colour;
         GetColors();
     }
     
