@@ -451,8 +451,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: Hahmojen tila
-  _englishText: Character's state
+  _finnishText: Hahmojen Tila
+  _englishText: Character's State
 --- !u!1 &752355959107375341
 GameObject:
   m_ObjectHideFlags: 0
@@ -596,8 +596,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Sulautujat
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32005d68b7758e049915ea13427728e5, type: 2}
-  m_sharedMaterial: {fileID: 2893766061720350198, guid: 32005d68b7758e049915ea13427728e5,
+  m_fontAsset: {fileID: 11400000, guid: 7573fa126ddb0bd45846faa25129de46, type: 2}
+  m_sharedMaterial: {fileID: 4961577804787953164, guid: 7573fa126ddb0bd45846faa25129de46,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -3459,6 +3459,7 @@ GameObject:
   - component: {fileID: 2889269343052372605}
   - component: {fileID: 3775588790117728641}
   - component: {fileID: 4712483519621768040}
+  - component: {fileID: 4078535944817867658}
   m_Layer: 5
   m_Name: ConfirmButton
   m_TagString: Untagged
@@ -3568,6 +3569,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4078535944817867658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3752563159238008211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 4, y: -7}
+  m_UseGraphicAlpha: 0
 --- !u!1 &3770560236885104228
 GameObject:
   m_ObjectHideFlags: 0
@@ -3786,8 +3802,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Tottelijat
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32005d68b7758e049915ea13427728e5, type: 2}
-  m_sharedMaterial: {fileID: 2893766061720350198, guid: 32005d68b7758e049915ea13427728e5,
+  m_fontAsset: {fileID: 11400000, guid: 7573fa126ddb0bd45846faa25129de46, type: 2}
+  m_sharedMaterial: {fileID: 4961577804787953164, guid: 7573fa126ddb0bd45846faa25129de46,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -4261,8 +4277,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Tunnottomat
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32005d68b7758e049915ea13427728e5, type: 2}
-  m_sharedMaterial: {fileID: 2893766061720350198, guid: 32005d68b7758e049915ea13427728e5,
+  m_fontAsset: {fileID: 11400000, guid: 7573fa126ddb0bd45846faa25129de46, type: 2}
+  m_sharedMaterial: {fileID: 4961577804787953164, guid: 7573fa126ddb0bd45846faa25129de46,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -4561,8 +4577,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\xC4lyllist\xE4j\xE4t"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32005d68b7758e049915ea13427728e5, type: 2}
-  m_sharedMaterial: {fileID: 2893766061720350198, guid: 32005d68b7758e049915ea13427728e5,
+  m_fontAsset: {fileID: 11400000, guid: 7573fa126ddb0bd45846faa25129de46, type: 2}
+  m_sharedMaterial: {fileID: 4961577804787953164, guid: 7573fa126ddb0bd45846faa25129de46,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -5847,6 +5863,7 @@ GameObject:
   - component: {fileID: 550848409473097196}
   - component: {fileID: 1475357201807516943}
   - component: {fileID: 5010880491616311522}
+  - component: {fileID: 7233685495864908584}
   m_Layer: 5
   m_Name: CancelButton
   m_TagString: Untagged
@@ -5956,6 +5973,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7233685495864908584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6413027586188948995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 4, y: -7}
+  m_UseGraphicAlpha: 0
 --- !u!1 &6613497014511082961
 GameObject:
   m_ObjectHideFlags: 0
@@ -6876,8 +6908,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Peilaajat
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32005d68b7758e049915ea13427728e5, type: 2}
-  m_sharedMaterial: {fileID: 2893766061720350198, guid: 32005d68b7758e049915ea13427728e5,
+  m_fontAsset: {fileID: 11400000, guid: 7573fa126ddb0bd45846faa25129de46, type: 2}
+  m_sharedMaterial: {fileID: 4961577804787953164, guid: 7573fa126ddb0bd45846faa25129de46,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -7447,8 +7479,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Torjujat
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32005d68b7758e049915ea13427728e5, type: 2}
-  m_sharedMaterial: {fileID: 2893766061720350198, guid: 32005d68b7758e049915ea13427728e5,
+  m_fontAsset: {fileID: 11400000, guid: 7573fa126ddb0bd45846faa25129de46, type: 2}
+  m_sharedMaterial: {fileID: 4961577804787953164, guid: 7573fa126ddb0bd45846faa25129de46,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -8053,8 +8085,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "H\xE4m\xE4\xE4j\xE4t"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32005d68b7758e049915ea13427728e5, type: 2}
-  m_sharedMaterial: {fileID: 2893766061720350198, guid: 32005d68b7758e049915ea13427728e5,
+  m_fontAsset: {fileID: 11400000, guid: 7573fa126ddb0bd45846faa25129de46, type: 2}
+  m_sharedMaterial: {fileID: 4961577804787953164, guid: 7573fa126ddb0bd45846faa25129de46,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
