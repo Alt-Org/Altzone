@@ -850,6 +850,7 @@ MonoBehaviour:
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   currentTextColor: {r: 0, g: 0, b: 0, a: 1}
   kojuPanel: {fileID: 0}
+  previousText: {fileID: 3855614454605971468}
 --- !u!114 &4675585972277167548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1969,7 +1970,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8869476066704906533}
         m_TargetAssemblyTypeName: AdEditor, MainMenu
-        m_MethodName: CloseEditor
+        m_MethodName: CancelAndCloseEditor
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3535,6 +3536,18 @@ MonoBehaviour:
 --- !u!114 &3040230201476308825 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2317289914205736640, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
+    type: 3}
+  m_PrefabInstance: {fileID: 727819131801096601}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3855614454605971468 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4582517417214366101, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
     type: 3}
   m_PrefabInstance: {fileID: 727819131801096601}
   m_PrefabAsset: {fileID: 0}

@@ -44,6 +44,14 @@ public class AdEditor : AltMonoBehaviour
     private string _posterName = null;
     private List<HeartPieceData> _heartPieceData = new();
 
+    private string previousColor;
+    private string previousBorder;
+    private string previousFurniture;
+    private string previousTextColor;
+    private TMPro.TMP_FontAsset previousFont;
+    private string previousText;
+    private bool previousTextState;
+
     void Start()    
     {
         InitializeAd();
@@ -208,6 +216,7 @@ public class AdEditor : AltMonoBehaviour
 
     public void ChangeColor(Color colour)
     {
+        previousColor = _adData.BackgroundColour;
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         //SaveAdData();
@@ -217,6 +226,7 @@ public class AdEditor : AltMonoBehaviour
 
     public void ChangeBorder(AdBorderFrameObject frame)
     {
+        previousBorder = _adData.BorderFrame;
         _adData.BorderFrame = frame.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         //SaveAdData();
@@ -224,26 +234,29 @@ public class AdEditor : AltMonoBehaviour
 
     public void ChangeFurniture(AdFurnitureObject furniture) // Uusi lisäys (Perttu)
     {
+        previousFurniture = _adData.Furniture;
         _adData.Furniture = furniture.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
-    
+
     public void ChangeTextColor(Color colour) // Uusi lisäys (Perttu)
     {
+        previousTextColor = _adData.TextColour;
         _inputField.textComponent.color = colour;
         _adData.TextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         currentTextColor = colour;
         GetColors();
     }
-    
+
     public void ChangeTextFont(TMPro.TMP_FontAsset font) // Uusi lisäys (Perttu)
     {
+        previousFont = _adData.TextFont;
         _inputField.fontAsset = font;
         _adData.TextFont = font;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
-    
+
     public void ChangeText(string text) // Uusi lisäys (Perttu)
     {
         _adData.AdText = text;
@@ -252,25 +265,40 @@ public class AdEditor : AltMonoBehaviour
 
     public void EnableText(bool enable) // Uusi lisäys (Perttu)
     {
+        previousTextState = _adData._isAdText;
         _adData._isAdText = enable;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
 
     public void CloseEditor()
     {
-        if(gameObject.activeSelf) gameObject.SetActive(false);
-
         // Uusi lisäys (Perttu)
         EmptyFurnitureContent();
         kojuPanel.SetActive(true);
         _inputFieldHolder.SetActive(false);
         if (_adData._isAdText) _adTextHolder.SetActive(true);
         if (!_adData._isAdText) _adTextHolder.SetActive(false);
+
+        if (gameObject.activeSelf) gameObject.SetActive(false);
     }
 
-    public void SaveAndCloseEditor()
+    public void SaveAndCloseEditor() // Uusi lisäys (Perttu)
     {
         SaveAdData();
+        CloseEditor();
+    }
+
+    public void CancelAndCloseEditor() // Uusi lisäys (Perttu)
+    {
+        _adData.BackgroundColour = previousColor;
+        _adData.BorderFrame = previousBorder;
+        _adData.Furniture = previousFurniture;
+        _adData.TextColour = previousTextColor;
+        _adData.TextFont = previousFont;
+        //_adData.AdText = previousText;
+        _adData._isAdText = previousTextState;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+
         CloseEditor();
     }
 }
