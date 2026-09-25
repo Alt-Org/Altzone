@@ -60,8 +60,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _popup: {fileID: 7924851147898586591}
+  _background: {fileID: 3892225684226686691}
+  _textField: {fileID: 5684672646477620039}
   _textColour: {r: 1, g: 1, b: 1, a: 1}
-  _backgroundColour: {r: 0.011764706, g: 0.93333334, b: 0.9529412, a: 0.69803923}
+  _backgroundInfoColour: {r: 0.011764706, g: 0.93333334, b: 0.9529412, a: 0.69803923}
+  _backgroundErrorColour: {r: 0.990566, g: 0.19157171, b: 0.19157171, a: 0.69803923}
   _popupWaitDelay: 3
 --- !u!114 &3911664317475852780
 MonoBehaviour:

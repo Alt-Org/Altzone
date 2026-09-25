@@ -127,7 +127,7 @@ public class ClanSettings : AltMonoBehaviour
     [SerializeField] private Button _cancelConfirmDiscardButton;
 
     [Header("Popups")]
-    [SerializeField] private PopupController _errorPopup;
+    [SerializeField] private InfoPopupController _errorPopup;
     [SerializeField] private GameObject _cancelConfirmationPopup;
 
     [Header("Settings Popup")]

@@ -17,14 +17,20 @@ namespace MenuUI.Scripts
         }
     }
 
-    public class PopupController : MonoBehaviour
+    public class InfoPopupController : MonoBehaviour
     {
         [SerializeField]
         private GameObject _popup;
         [SerializeField]
+        private Image _background;
+        [SerializeField]
+        private TMP_Text _textField;
+        [SerializeField]
         private Color _textColour;
         [SerializeField]
-        private Color _backgroundColour;
+        private Color _backgroundInfoColour;
+        [SerializeField]
+        private Color _backgroundErrorColour;
         [SerializeField]
         private float _popupWaitDelay = 3f;
 
@@ -32,7 +38,7 @@ namespace MenuUI.Scripts
 
         void OnEnable()
         {
-            SignalBus.OnChangePopupInfo += ActivatePopUp;
+            SignalBus.OnChangePopupInfo += ActivateInfoPopUp;
         }
 
         private void Start()
@@ -43,35 +49,56 @@ namespace MenuUI.Scripts
         void OnDisable()
         {
             _popup.SetActive(false);
-            SignalBus.OnChangePopupInfo -= ActivatePopUp;
+            SignalBus.OnChangePopupInfo -= ActivateInfoPopUp;
         }
 
         public void Initialize()
         {
-            if (_popup is UnityEngine.Object obj)
-            {
-                if (!obj)
-                {
-                    _popup = transform.GetChild(0).gameObject;
-                }
-            }
-            else
-            {
-                if (_popup == null) _popup = transform.GetChild(0).gameObject;
-            }
+            if (!gameObject.activeSelf) gameObject.SetActive(true); //Make sure that this object is always active when called.
         }
-
-        public void ActivatePopUp(string popupText)
+        
+        public void ActivateInfoPopUp(string popupText)
         {
             Initialize();
             if (!transform.parent.gameObject.activeInHierarchy) return; //Check if the parent is active, if not this probably shouldn't activate.
             _popup.SetActive(true);
 
-            _popup.GetComponent<Image>().color = _backgroundColour;
+            _background.color = _backgroundInfoColour;
 
-            _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = popupText;
+            _textField.text = popupText;
 
-            _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = _textColour;
+            _textField.color = _textColour;
+
+
+
+            if (_runningCoroutine != null)
+            {
+                StopCoroutine(_runningCoroutine);
+                _runningCoroutine = null;
+            }
+
+            _runningCoroutine = FadePopup(callback =>
+            {
+                if (callback == true)
+                {
+                    _runningCoroutine = null;
+                }
+            });
+            StartCoroutine(_runningCoroutine);
+
+        }
+
+        public void ActivateErrorPopUp(string popupText)
+        {
+            Initialize();
+            if (!transform.parent.gameObject.activeInHierarchy) return; //Check if the parent is active, if not this probably shouldn't activate.
+            _popup.SetActive(true);
+
+            _background.color = _backgroundInfoColour;
+
+            _textField.text = popupText;
+
+            _textField.color = _textColour;
 
 
 
@@ -96,8 +123,8 @@ namespace MenuUI.Scripts
         {
             yield return new WaitForSeconds(_popupWaitDelay); ;
             callback(false);
-            Color tempColour = _popup.GetComponent<Image>().color;
-            Color tempTextColour = _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color;
+            Color tempColour = _background.color;
+            Color tempTextColour = _textField.color;
             float startAlpha = tempColour.a;
             float startTextAlpha = tempTextColour.a;
             float startTime = 1f;
@@ -105,9 +132,9 @@ namespace MenuUI.Scripts
             for (float time = startTime; time >= 0; time -= Time.deltaTime)
             {
                 tempColour.a = startAlpha * (time / startTime);
-                _popup.GetComponent<Image>().color = tempColour;
+                _background.color = tempColour;
                 tempTextColour.a = startTextAlpha * (time / startTime);
-                _popup.transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = tempTextColour;
+                _textField.color = tempTextColour;
                 yield return null;
                 callback(false);
             }

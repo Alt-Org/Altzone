@@ -21,7 +21,7 @@ namespace MenuUI.Scripts.Jukebox
         [SerializeField] private Button _addMusicInfoButton;
         [SerializeField] private GameObject _addMusicInfoPopup;
         [SerializeField] private JukeboxInfoPopupHandler _jukeboxInfoPopupHandler;
-        [SerializeField] private PopupController _jukeboxTextPopup;
+        [SerializeField] private InfoPopupController _jukeboxTextPopup;
         [SerializeField] private PopupButtonVisual _jukeboxButtonVisual; // for selection effects
 
         private Coroutine _diskSpinCoroutine;
@@ -76,7 +76,7 @@ namespace MenuUI.Scripts.Jukebox
                 JukeboxManager.Instance.OnMusicTrackInfoPressed -= OpenMusicTrackInfoPopup;
                 JukeboxManager.Instance.OnPreviewStart -= JukeboxPreviewPlaybackStart;
                 JukeboxManager.Instance.OnPreviewEnd -= JukeboxPreviewPlaybackEnd;
-                JukeboxManager.Instance.OnShowTextPopup -= _jukeboxTextPopup.ActivatePopUp;
+                JukeboxManager.Instance.OnShowTextPopup -= _jukeboxTextPopup.ActivateInfoPopUp;
             }
         }
 
@@ -105,7 +105,7 @@ namespace MenuUI.Scripts.Jukebox
             JukeboxManager.Instance.OnMusicTrackInfoPressed += OpenMusicTrackInfoPopup;
             JukeboxManager.Instance.OnPreviewStart += JukeboxPreviewPlaybackStart;
             JukeboxManager.Instance.OnPreviewEnd += JukeboxPreviewPlaybackEnd;
-            JukeboxManager.Instance.OnShowTextPopup += _jukeboxTextPopup.ActivatePopUp;
+            JukeboxManager.Instance.OnShowTextPopup += _jukeboxTextPopup.ActivateInfoPopUp;
 
             if (JukeboxManager.Instance.CurrentTrackQueueData != null)
             {

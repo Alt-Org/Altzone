@@ -67,7 +67,7 @@ public class ClanCreateNew : MonoBehaviour
     [SerializeField] private GameObject _ageWarningOutline;
     [SerializeField] private GameObject _languageWarningOutline;
     [SerializeField] private GameObject _valuesWarningOutline;
-    [SerializeField] private PopupController _warningPopup;
+    [SerializeField] private InfoPopupController _warningPopup;
 
     [Header("Buttons")]
     //[SerializeField] private Button _closeLanguageSelect;
@@ -596,7 +596,7 @@ public class ClanCreateNew : MonoBehaviour
         {
             if (clan == null)
             {
-                _warningPopup.ActivatePopUp(
+                _warningPopup.ActivateInfoPopUp(
                     "Klaanin luonti epäonnistui.\n" +
                     "Et voi luoda uutta klaania, jos olet jo klaanin jäsen. " +
                     "Poistu ensin nykyisestä klaanistasi ja yritä uudelleen."
@@ -647,19 +647,19 @@ public class ClanCreateNew : MonoBehaviour
         if (clanName == string.Empty)
         {
             _nameWarningOutline.SetActive(true);
-            _warningPopup.ActivatePopUp("Lisää klaanin nimi");
+            _warningPopup.ActivateInfoPopUp("Lisää klaanin nimi");
             validInputs = false;
         }
         else if (clanName.Trim().Length < 3)
         {
             _nameWarningOutline.SetActive(true);
-            _warningPopup.ActivatePopUp("Klaanin nimen pitää olla vähintään 3 merkkiä pitkä.");
+            _warningPopup.ActivateInfoPopUp("Klaanin nimen pitää olla vähintään 3 merkkiä pitkä.");
             validInputs = false;
         }
         else if (clanName.Trim().Length > 30)
         {
             _nameWarningOutline.SetActive(true);
-            _warningPopup.ActivatePopUp("Klaanin nimi saa olla maksimissaan 30 merkkiä pitkä.");
+            _warningPopup.ActivateInfoPopUp("Klaanin nimi saa olla maksimissaan 30 merkkiä pitkä.");
             validInputs = false;
         }
         else _nameWarningOutline.SetActive(false);
@@ -667,7 +667,7 @@ public class ClanCreateNew : MonoBehaviour
         if (!isOpen && password == string.Empty)
         {
             //_passwordWarningOutline.SetActive(true);
-            _warningPopup.ActivatePopUp("Lukituilla klaaneilla tulee olla salasana");
+            _warningPopup.ActivateInfoPopUp("Lukituilla klaaneilla tulee olla salasana");
             validInputs = false;
         }
         //else _passwordWarningOutline.SetActive(false);
@@ -675,7 +675,7 @@ public class ClanCreateNew : MonoBehaviour
         if (language == Language.None)
         {
             _languageWarningOutline.SetActive(true);
-            _warningPopup.ActivatePopUp("Valitse klaanin kieli");
+            _warningPopup.ActivateInfoPopUp("Valitse klaanin kieli");
             validInputs = false;
         }
         else _languageWarningOutline.SetActive(false);
@@ -683,7 +683,7 @@ public class ClanCreateNew : MonoBehaviour
         if (age == ClanAge.None)
         {
             _ageWarningOutline.SetActive(true);
-            _warningPopup.ActivatePopUp("Valitse klaanin ikäraja");
+            _warningPopup.ActivateInfoPopUp("Valitse klaanin ikäraja");
             validInputs = false;
         }
         else _ageWarningOutline.SetActive(false);
@@ -691,7 +691,7 @@ public class ClanCreateNew : MonoBehaviour
         if (values.Length < 3)
         {
             _valuesWarningOutline.SetActive(true);
-            _warningPopup.ActivatePopUp("Klaanille tulee olla valittuna 3 arvoa");
+            _warningPopup.ActivateInfoPopUp("Klaanille tulee olla valittuna 3 arvoa");
             validInputs = false;
         }
         else
@@ -730,7 +730,7 @@ public class ClanCreateNew : MonoBehaviour
         if (_clanPasswordField != null && string.IsNullOrWhiteSpace(_clanPasswordField.text))
         {
             if (_warningPopup != null)
-                _warningPopup.ActivatePopUp("Lisää klaanin salasana");
+                _warningPopup.ActivateInfoPopUp("Lisää klaanin salasana");
 
             /*if (_passwordWarningOutline != null)
                 _passwordWarningOutline.SetActive(true);*/
