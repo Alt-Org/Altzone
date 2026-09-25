@@ -8,6 +8,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.MQTT;
 using MenuUi.Scripts.Login;
 using MenuUi.Scripts.Window;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 using UnityEngine;
 
 namespace MenuUi.Scripts.Loader
@@ -34,6 +35,16 @@ namespace MenuUi.Scripts.Loader
         private WindowNavigation _introStoryNavigation;
         [SerializeField]
         private WindowNavigation _languageNavigation;
+
+        [Header("Error messages")]
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorFinnish;
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorEnglish;
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorFinnishDev;
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorEnglishDev;
 
         private string _currentAccessToken = null;
         private bool _clanFetched = false;
@@ -146,11 +157,33 @@ namespace MenuUi.Scripts.Loader
 
         private void MQTTEstablished(bool value)
         {
-            _mqttEstablished = true;
+            _mqttEstablished = value;
 
-            if (_clanFetched)
+            if (_mqttEstablished)
             {
-                LogInReady();
+                if (_clanFetched)
+                {
+                    LogInReady();
+                }
+            }
+            else
+            {
+                if (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
+                {
+                    if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                        PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorFinnishDev);
+                    else PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorEnglishDev);
+                    if (_clanFetched)
+                    {
+                        LogInReady();
+                    }
+                }
+                else
+                {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                        PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorFinnish);
+                    else PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorEnglish);
+                }
             }
         }
 
