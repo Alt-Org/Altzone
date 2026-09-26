@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Altzone.Scripts.Chat;
+using Altzone.Scripts.Common;
 using UnityEngine;
 using UnityEngine.UI;
 using static ServerChatMessage;
@@ -81,7 +82,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
         foreach (ReactionObject reaction in _reactionList)
         {
-            if (reaction.Sprite != null && reaction.Mood != Mood.None)
+            if (reaction.Sprite != null && reaction.Mood != Emotion.Blank)
             {
                 //_reactions.FirstOrDefault(x => x.);
                 GameObject reactionObject = Instantiate(_reactionObject, reactionPanel);
@@ -101,7 +102,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         foreach (Transform child in reactionPanel)
         {
             if (child.GetComponent<ReactionObjectHandler>() == null) continue;
-            Mood mood = child.GetComponent<ReactionObjectHandler>().Mood;
+            Emotion mood = child.GetComponent<ReactionObjectHandler>().Mood;
 
             foreach (var r in _reactionList)
             {
@@ -148,7 +149,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
             ReactionObjectHandler commonReaction = Instantiate(availableReactions[reactionIndex].gameObject, _commonReactionsPanel.transform).GetComponent<ReactionObjectHandler>();
             commonReaction.transform.SetSiblingIndex(index);
 
-            Mood mood = availableReactions[reactionIndex].GetComponent<ReactionObjectHandler>().Mood;
+            Emotion mood = availableReactions[reactionIndex].GetComponent<ReactionObjectHandler>().Mood;
 
             ReactionObject reactionData = _reactionList.FirstOrDefault(x => x.Mood == mood);
             if (reactionData != null)
@@ -177,7 +178,17 @@ public class MessageReactionsHandler : AltMonoBehaviour
         }
         foreach (ServerReactions reaction in reactions)
         {
-            AddReaction(reaction, (Mood)Enum.Parse(typeof(Mood), reaction.emoji), messageid, _reactionPaneldata.ReactionField, message);
+            Emotion emojiType = Emotion.Blank;
+            if (reaction.emoji != null)
+                if (!Enum.TryParse(reaction.emoji, out emojiType))
+                {
+                    if (Enum.TryParse(reaction.emoji, out Mood mood))
+                    {
+                        emojiType = (Emotion)mood;
+                    }
+                }
+
+            AddReaction(reaction, emojiType, messageid, _reactionPaneldata.ReactionField, message);
         }
 
         List<ChatReactionHandler> removableReactions = new();
@@ -204,7 +215,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// <summary>
     /// Adds the chosen reaction to the selected message.
     /// </summary>
-    public void AddReaction(ServerReactions reaction, Mood mood, string message_id, GameObject ReactionPanel, ChatMessage message)
+    public void AddReaction(ServerReactions reaction, Emotion mood, string message_id, GameObject ReactionPanel, ChatMessage message)
     {
 
         if (_selectedMessage != null)
@@ -407,11 +418,11 @@ public class MessageReactionsHandler : AltMonoBehaviour
     [Serializable]
     public class ReactionObject
     {
-        public delegate void SelectedStatusChanged(Mood mood, bool selected);
+        public delegate void SelectedStatusChanged(Emotion mood, bool selected);
         public event SelectedStatusChanged OnSelectedStatusChanged;
 
         public Sprite Sprite;
-        public Mood Mood;
+        public Emotion Mood;
         private bool _selected;
         public bool Selected { get => _selected;
             set

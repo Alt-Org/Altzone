@@ -110,25 +110,7 @@ namespace Battle.QSimulation.SoulWall
 
             if (soulWallCollisionData->SoulWall->Row == BattleSoulWallRow.Last)
             {
-                FP battleLightrayRotation = 0;
-                BattleLightrayColor battleLightrayColor = BattleLightrayColor.Red;
-                BattleLightraySize battleLightraySize = (BattleLightraySize)f.RNG->NextInclusive(0, 2);
-
-                switch (soulWallCollisionData->SoulWall->Team)
-                {
-                    case BattleTeamNumber.TeamAlpha:
-                        battleLightrayRotation = f.RNG->NextInclusive(-50, 50);
-                        battleLightrayColor = BattleLightrayColor.Red;
-                        break;
-                    case BattleTeamNumber.TeamBeta:
-                        battleLightrayRotation = f.RNG->NextInclusive(130, 220);
-                        battleLightrayColor = BattleLightrayColor.Blue;
-                        break;
-                }
-
-                Transform2D* soulWallTransform = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->OtherEntityRef);
-
-                f.Events.BattleLastRowWallDestroyed(soulWallCollisionData->SoulWall->WallNumber, soulWallCollisionData->SoulWall->Team, battleLightrayRotation, battleLightrayColor, battleLightraySize);
+                f.Events.BattleLastRowWallDestroyed(soulWallCollisionData->SoulWall->Team, soulWallCollisionData->SoulWall->WallNumber);
             }
 
             f.Events.BattleStoneCharacterPlayHitAnimation(soulWallCollisionData->SoulWall->Team, projectileCollisionData->ProjectileEmotionCurrent);

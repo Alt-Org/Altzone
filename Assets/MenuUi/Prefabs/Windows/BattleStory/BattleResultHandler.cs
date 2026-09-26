@@ -129,7 +129,7 @@ public class BattleResultHandler : MonoBehaviour
         _teamAlpha1PlayerPanel.SetActive(false);
         _teamBeta1PlayerPanel.SetActive(false);
 
-        if (info.GameType is GameType.Clan2v2)
+        if (info.MatchmakingType is MatchmakingType.Clan2v2)
         {
             _teamAlphaPanel.SetActive(true);
             _teamBetaPanel.SetActive(true);
