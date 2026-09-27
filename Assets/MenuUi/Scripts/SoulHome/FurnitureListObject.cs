@@ -36,7 +36,7 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
-        public FurniturePlacement GetListObjectType() // want to get FurniturePlacement for category sorting, but would need more references
+        public FurniturePlacement GetListObjectType()
         {
             if (_count == 0) return FurniturePlacement.FloorNonblock;
             else return _list[0].Place;

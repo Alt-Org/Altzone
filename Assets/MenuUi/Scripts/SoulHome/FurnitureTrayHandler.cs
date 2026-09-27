@@ -28,15 +28,24 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private bool _vertical = false;
 
-        [SerializeField] private SmartHorizontalObjectList _smartList; //-----------------
-        private List<FurnitureListObject> _furnitureListObjects = new(); //-----------------
+        [SerializeField] private SmartHorizontalObjectList _smartList;
+        private List<FurnitureListObject> _furnitureListObjects = new();
         [SerializeField] private GameObject _decorateModeButtons; //-----------------
+        [SerializeField] private FurnitureTrayCategoryButton _decorateModeSetsButton; //-----------------
+        
         [SerializeField] private GameObject _renovateModeButtons; //-----------------
         [SerializeField] private TextMeshProUGUI _categoryText; //-----------------
         [SerializeField] private TextMeshProUGUI _modeText; //-----------------
+        [SerializeField] private GameObject _setSelectButtonContainer; //-----------------
+        [SerializeField] private GameObject _setSelectButtonPrefab; //-----------------
+        [SerializeField] private StorageFurnitureReference _storageFurnitureReference; // needed for set info? -------------------------
         private bool _isOnDecorateMode = true; // ----------------
+        private bool _isTrayMinimized = false; // ----------------
 
-        private GameObject _previousCategoryButton = null; // -----------------
+        private string _currentSelectedSet; // -------------------
+        private int _currentSelectedCategory = 1; // shows all by default ------------------
+
+        private FurnitureTrayCategoryButton _previousCategoryButton = null; // -----------------
 
         public GameObject HiddenSlot { get => _hiddenSlot;}
         public List<GameObject> ChangedTrayItemList { get => _changedTrayItemList;}
@@ -46,6 +55,18 @@ namespace MenuUI.Scripts.SoulHome
         void Awake()
         {
             if(_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
+            foreach (FurnitureSetInfo setInfo in _storageFurnitureReference.Info)
+            {
+                GameObject _setSelectButton = Instantiate(_setSelectButtonPrefab, _setSelectButtonContainer.transform);
+                _setSelectButton.GetComponent<Image>().sprite = setInfo.SetFontName;
+                TextMeshProUGUI _setName = _setSelectButton.GetComponentInChildren<TextMeshProUGUI>();
+                _setName.text = setInfo.SetName;
+                _setSelectButton.GetComponent<Button>().onClick.AddListener(() => SelectSet(setInfo.SetName));
+
+                //create button and use set font image. call funtion using set name string as variable
+                // private void SetSelectedSet(String set) -> changes _currentSelectedSet and re-calls FilterTrayObjects()
+                // foreach furniture split name with "_" and check if it matches the set name.
+            }
         }
 
         private void OnEnable()
@@ -68,20 +89,34 @@ namespace MenuUI.Scripts.SoulHome
             FillSelectionButtonList(list); // ----------------
         }
 
-        public void FilterTrayObjects(int _category) // ------------------------------------
+        public void FilterTrayObjects(int _category)
         {
+            _currentSelectedCategory = _category;
             FurnitureList list = _controller.FurnitureList;
             if (list == null) return;
             FurnitureList filtered_list = new();
-            //FillSelectionButtonList(filtered_list); // Clear the existing slots before filtering
             
             if (_category == 0) _categoryText.text = "Lattia";
-            else if (_category == 1) // Should display sets (sets not implemented?)
+            else if (_category == 1) // Displays all
             {
-                // currently shows all items
+                if (_currentSelectedSet != null) // if has a set filter active
+                {
+                    foreach (var _furnitureListObject in list.List)
+                    {
+                        string[] nameParts = _furnitureListObject.Name.Split('_'); // get set name from furniture name
+                        if (nameParts[1] == _currentSelectedSet)
+                        {
+                            filtered_list.List.Add(_furnitureListObject);
+                        }
+                    }
+                    FillSelectionButtonList(filtered_list); // Replaces the existing slots with the filtered list
+                    _trayContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0); // Reset FurnitureTray position
+                    return;
+                }
+                // else will show all sets
                 FillSelectionButtonList(list);
                 _trayContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0); // Reset FurnitureTray position
-                _categoryText.text = "Sarjat";
+                _categoryText.text = "Koko sarja";
                 return;
             }
             else if (_category == 2) { // Should display special - or frames on renovate mode
@@ -101,18 +136,67 @@ namespace MenuUI.Scripts.SoulHome
             else if (_category == 3) _categoryText.text = "Katto";
             else if (_category == 4) _categoryText.text = "Seinät";
 
-            foreach (var _furnitureListObject in list.List) // Adds all furniture objects that match the category to a new list
+            if (_currentSelectedSet != null) // if has a set filter active // all
             {
-                if (_furnitureListObject.GetListObjectType() == (FurniturePlacement)_category)
+                foreach (var _furnitureListObject in list.List)
                 {
-                    filtered_list.List.Add(_furnitureListObject);
+                    string[] nameParts = _furnitureListObject.Name.Split('_'); // get set name from furniture name
+                    if (_furnitureListObject.GetListObjectType() == (FurniturePlacement)_category && nameParts[1] == _currentSelectedSet)
+                    {
+                        filtered_list.List.Add(_furnitureListObject);
+                    }
                 }
             }
+            else
+            {
+                foreach (var _furnitureListObject in list.List) // Adds all furniture objects that match the category to a new list
+                {
+                    if (_furnitureListObject.GetListObjectType() == (FurniturePlacement)_category)
+                    {
+                        filtered_list.List.Add(_furnitureListObject);
+                    }
+                }
+            }
+            
             FillSelectionButtonList(filtered_list); // Replaces the existing slots with the filtered list
             _trayContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0); // Reset FurnitureTray position
         }
+        
+        public void SelectSet(string set) // ----------------------------
+        {
+            if (set == "")
+            {
+               _currentSelectedSet = null; 
+               _decorateModeSetsButton.UnSelect();
+            }
+            
+            else
+            {
+                _currentSelectedSet = set;
+                _decorateModeSetsButton.Select(); // if set filter active, make the button "Selected"
+            }
+            
+            FilterTrayObjects(_currentSelectedCategory);
+            // TODO - "select" the all filter button. If current selected set, also "select" sets button
+        }
 
-         private void FillSelectionButtonList(FurnitureList furnitureList) // ----------------------
+        public void ToggleMinimizeTray() // ---------------------------
+        {
+            if (!_isTrayMinimized)
+            {
+                RectTransform rect = GetComponent<RectTransform>();
+                rect.offsetMax = new Vector2(rect.offsetMax.x, -400f); // not ideal if screen size or resolution can change??
+                _isTrayMinimized = true;
+            }
+            else
+            {
+                RectTransform rect = GetComponent<RectTransform>();
+                rect.offsetMax = new Vector2(rect.offsetMax.x, 0f);
+                _isTrayMinimized = false;
+            }
+        }
+
+         private void FillSelectionButtonList(FurnitureList furnitureList)
         {
             _smartList.OnNewDataRequested -= UpdateButtonHandlerData;
             _smartList.OnNewDataRequested += UpdateButtonHandlerData;
@@ -122,10 +206,10 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _furnitureListObjects.Add(listObject);
             }
-            _smartList.Setup<FurnitureListObject>(_furnitureListObjects);
+            _smartList.Setup<FurnitureListObject>(_furnitureListObjects); // Some slots randomly get hidden even if they have data
         }
 
-        private void UpdateButtonHandlerData(int targetIndex) // ----------------------
+        private void UpdateButtonHandlerData(int targetIndex)
         {
             if (targetIndex < 0 || targetIndex >= _furnitureListObjects.Count) return;
             _smartList.UpdateContent<FurnitureListObject>(targetIndex, _furnitureListObjects[targetIndex]);
@@ -373,16 +457,12 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
-        public void CategoryButtonClicked(GameObject button) // sets button and child icon color
+        public void CategoryButtonClicked(FurnitureTrayCategoryButton button) // sets button and child icon color
         {
             if (button == null) return;
-            if (_previousCategoryButton != null)
-            {
-                _previousCategoryButton.transform.GetChild(0).GetComponent<Image>().color = new Color32(111, 198, 222, 255); // light blue
-            }
+            if (_previousCategoryButton != null) _previousCategoryButton.UnSelect();
             _previousCategoryButton = button;
-            _previousCategoryButton.transform.GetChild(0).GetComponent<Image>().color = new Color32(255, 255, 255, 255); // white
-            button.GetComponent<Button>().Select();
+            button.Select();
         }
 
         public void ModeButtonClicked(GameObject _modeButton)
@@ -395,7 +475,7 @@ namespace MenuUI.Scripts.SoulHome
                 _modeButton.transform.GetChild(1).gameObject.SetActive(false);
                 _decorateModeButtons.SetActive(true);
                 _renovateModeButtons.SetActive(false);
-                CategoryButtonClicked(_renovateModeButtons.transform.GetChild(0).gameObject);
+                CategoryButtonClicked(_decorateModeButtons.transform.GetChild(0).GetComponent<FurnitureTrayCategoryButton>());
                 // TODO - FillSelectionButtonList() with renovate sets category filter
             }
             else
@@ -406,7 +486,7 @@ namespace MenuUI.Scripts.SoulHome
                 _modeButton.transform.GetChild(1).gameObject.SetActive(true);
                 _decorateModeButtons.SetActive(false);
                 _renovateModeButtons.SetActive(true);
-                CategoryButtonClicked(_decorateModeButtons.transform.GetChild(0).gameObject);
+                CategoryButtonClicked(_renovateModeButtons.transform.GetChild(0).GetComponent<FurnitureTrayCategoryButton>());
                 // TODO - FillSelectionButtonList() with decorate sets category filter
             }
             //_isOnDecorateMode = !_isOnDecorateMode;

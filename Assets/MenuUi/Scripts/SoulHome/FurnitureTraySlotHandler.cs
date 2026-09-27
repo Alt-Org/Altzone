@@ -1,24 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio; // ----------------------
+using Altzone.Scripts.ReferenceSheets; // -------------------
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace MenuUI.Scripts.SoulHome
 {
-    public class FurnitureTraySlotHandler : SmartListItem //IBeginDragHandler, IEndDragHandler // MonoBehaviour
+    public class FurnitureTraySlotHandler : SmartListItem
     {
         [SerializeField]
-        private SoulHomeFurnitureReference _furnitureRefrence;
+        private SoulHomeFurnitureReference _furnitureReference;
         [SerializeField]
-        private GameObject _furnitureIconObject; // ----------------------
+        private StorageFurnitureReference _storageFurnitureReference; // -------------------------
+        [SerializeField]
+        private GameObject _furnitureIconObject;
+        [SerializeField]
+        private Image _furnitureBackground; // non-default background object-------------------------
+        [SerializeField]
+        private Image _furnitureSetFont; // set "font" object-------------------------
         [SerializeField]
         private TextMeshProUGUI _name;
         [SerializeField]
         private TextMeshProUGUI _amountField;
         private FurnitureListObject _furnitureList;
-        private GameObject trayFurniture;
+        //private GameObject trayFurniture;
         private int _savedCount = 0;
         public TextMeshProUGUI Name { get => _name; set => _name = value; }
         public FurnitureListObject FurnitureList { get => _furnitureList;
@@ -62,17 +69,42 @@ namespace MenuUI.Scripts.SoulHome
         public void UpdateFurniture()
         {
             if (_furnitureList == null) return;
-            //Destroy(trayFurniture); // ----------------------
-            _name.text = _furnitureList.Name;
+            string[] nameParts = _furnitureList.Name.Split('_');
+            _name.text = nameParts[0]; //_furnitureList.Name;
             int value = _furnitureList.Count - _furnitureList.GetInRoomCount();
             if (value > 1)
                 _amountField.text = "x" + value.ToString();
             else
                 _amountField.text = "";
-            GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(_furnitureList.Name);
-            //trayFurniture = Instantiate(furnitureObject, SelfRectTransform.transform);
+            GameObject furnitureObject = _furnitureReference.GetSoulHomeTrayFurnitureObject(_furnitureList.Name);
             _furnitureIconObject.GetComponent<Image>().sprite = furnitureObject.GetComponent<Image>().sprite;
             _furnitureIconObject.GetComponent<Image>().preserveAspect = true;
+
+            FurnitureInfo furnitureSetInfo = _storageFurnitureReference.GetFurnitureInfo(_furnitureList.Name);
+
+            if (furnitureSetInfo.SetPosterBackground == null)
+            {
+                _furnitureBackground.sprite = null;
+                _furnitureBackground.gameObject.SetActive(false);
+            }
+            else
+            {
+               _furnitureBackground.sprite = furnitureSetInfo.SetPosterBackground;
+               _furnitureBackground.gameObject.SetActive(true);
+            }
+
+            if (furnitureSetInfo.SetFontName == null)
+            {
+                _furnitureSetFont.sprite = null;
+                _furnitureSetFont.gameObject.SetActive(false);
+            }
+            else
+            {
+                _furnitureSetFont.sprite = furnitureSetInfo.SetFontName;
+                _furnitureSetFont.preserveAspect = true;
+                _furnitureSetFont.gameObject.SetActive(true);
+            }
+            
         }
 
         public override void SetData<T1>(T1 data)

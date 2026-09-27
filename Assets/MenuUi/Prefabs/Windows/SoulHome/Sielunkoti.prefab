@@ -1316,6 +1316,7 @@ GameObject:
   - component: {fileID: 4528317579020625470}
   - component: {fileID: 104567035745375387}
   - component: {fileID: 8047206327467527780}
+  - component: {fileID: 1582846547700576352}
   m_Layer: 5
   m_Name: CeilingCategoryButton
   m_TagString: Untagged
@@ -1405,7 +1406,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 0.6039216, g: 0.8784314, b: 0.95686275, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1442,13 +1443,30 @@ MonoBehaviour:
         m_MethodName: CategoryButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 845901103908948317}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 1582846547700576352}
+          m_ObjectArgumentAssemblyTypeName: FurnitureTrayCategoryButton, MainMenu
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1582846547700576352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 845901103908948317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a090b059149c054a8331761a7168ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonImageObject: {fileID: 104567035745375387}
+  _iconImageObject: {fileID: 4953074195923032830}
+  _defaultColour: {r: 1, g: 1, b: 1, a: 1}
+  _defaultIconColour: {r: 0.43529412, g: 0.7764706, b: 0.87058824, a: 255}
+  _selectedButtonColour: {r: 0.6039216, g: 0.8784314, b: 0.95686275, a: 1}
 --- !u!1 &1006398360393150266
 GameObject:
   m_ObjectHideFlags: 0
@@ -1919,7 +1937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.43529412, g: 0.7764706, b: 0.87058824, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2303,7 +2321,6 @@ MonoBehaviour:
   _camera: {fileID: 2055968341869898131}
   _hoverButtons: {fileID: 4685726316003798928}
   _changeHandleButtonTray: {fileID: 4786222756856371447}
-  _verticalItemTray: {fileID: 8835563532395335141}
   _horizontalItemTray: {fileID: 8238237563156778947}
 --- !u!114 &7260528578692763022
 MonoBehaviour:
@@ -2818,9 +2835,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7681122712900677425}
-        m_TargetAssemblyTypeName: MenuUI.Scripts.SoulHome.SoulHomeController, MainMenu
-        m_MethodName: EditModeToggle
+      - m_Target: {fileID: 4788480834664309421}
+        m_TargetAssemblyTypeName: MenuUI.Scripts.SoulHome.FurnitureTrayHandler, MainMenu
+        m_MethodName: ToggleMinimizeTray
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2907,6 +2924,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 0
+--- !u!1 &2020610938480864273
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5967187571357051012}
+  - component: {fileID: 6416473053667862198}
+  m_Layer: 5
+  m_Name: SetSelectMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &5967187571357051012
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020610938480864273}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8482519941331659966}
+  - {fileID: 3367425310697003716}
+  m_Father: {fileID: 7881249154744821562}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.3, y: 1.5}
+  m_AnchorMax: {x: 0.7, y: 2}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &6416473053667862198
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020610938480864273}
+  m_CullTransparentMesh: 1
 --- !u!1 &2061613448844869758
 GameObject:
   m_ObjectHideFlags: 0
@@ -2938,6 +3001,69 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8074220389004737258}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2377203322684753309
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8482519941331659966}
+  - component: {fileID: 4627376716728383248}
+  m_Layer: 5
+  m_Name: SetSelectButtonContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8482519941331659966
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377203322684753309}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6136978627830818451}
+  m_Father: {fileID: 5967187571357051012}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4627376716728383248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377203322684753309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 10
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &2407595408599678743
 GameObject:
   m_ObjectHideFlags: 0
@@ -5035,8 +5161,8 @@ MonoBehaviour:
         m_MethodName: CategoryButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 5917261275321913972}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 1330357974575541278}
+          m_ObjectArgumentAssemblyTypeName: FurnitureTrayCategoryButton, MainMenu
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -5696,7 +5822,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.43529412, g: 0.7764706, b: 0.87058824, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5771,7 +5897,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.43529412, g: 0.7764706, b: 0.87058824, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -5846,7 +5972,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.43529412, g: 0.7764706, b: 0.87058824, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7057,7 +7183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.43529412, g: 0.7764706, b: 0.87058824, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -7287,6 +7413,7 @@ GameObject:
   - component: {fileID: 8797859465513186444}
   - component: {fileID: 3436698963846471255}
   - component: {fileID: 6721934936578513809}
+  - component: {fileID: 1330357974575541278}
   m_Layer: 5
   m_Name: FloorCategoryButton
   m_TagString: Untagged
@@ -7376,7 +7503,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 0.6039216, g: 0.8784314, b: 0.95686275, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -7413,13 +7540,30 @@ MonoBehaviour:
         m_MethodName: CategoryButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 5900668141753735451}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 1330357974575541278}
+          m_ObjectArgumentAssemblyTypeName: FurnitureTrayCategoryButton, MainMenu
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1330357974575541278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5900668141753735451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a090b059149c054a8331761a7168ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonImageObject: {fileID: 3436698963846471255}
+  _iconImageObject: {fileID: 4121065094516719446}
+  _defaultColour: {r: 1, g: 1, b: 1, a: 1}
+  _defaultIconColour: {r: 0.43529412, g: 0.7764706, b: 0.87058824, a: 255}
+  _selectedButtonColour: {r: 0.6039216, g: 0.8784314, b: 0.95686275, a: 1}
 --- !u!1 &5917261275321913972
 GameObject:
   m_ObjectHideFlags: 0
@@ -7432,6 +7576,7 @@ GameObject:
   - component: {fileID: 6973766076374290352}
   - component: {fileID: 4179545973548210173}
   - component: {fileID: 4527668840355447658}
+  - component: {fileID: 5390811437057965811}
   m_Layer: 5
   m_Name: SetCategoryButton
   m_TagString: Untagged
@@ -7521,7 +7666,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 0.6039216, g: 0.8784314, b: 0.95686275, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -7541,30 +7686,35 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4788480834664309421}
-        m_TargetAssemblyTypeName: MenuUI.Scripts.SoulHome.FurnitureTrayHandler, MainMenu
-        m_MethodName: FilterTrayObjects
-        m_Mode: 3
+      - m_Target: {fileID: 2020610938480864273}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 4788480834664309421}
-        m_TargetAssemblyTypeName: MenuUI.Scripts.SoulHome.FurnitureTrayHandler, MainMenu
-        m_MethodName: CategoryButtonClicked
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 5917261275321913972}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &5390811437057965811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5917261275321913972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a090b059149c054a8331761a7168ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonImageObject: {fileID: 4179545973548210173}
+  _iconImageObject: {fileID: 6735824314460603685}
+  _defaultColour: {r: 1, g: 1, b: 1, a: 1}
+  _defaultIconColour: {r: 0.43529412, g: 0.7764706, b: 0.87058824, a: 255}
+  _selectedButtonColour: {r: 0.6039216, g: 0.8784314, b: 0.95686275, a: 1}
 --- !u!1 &5930528690625020380
 GameObject:
   m_ObjectHideFlags: 0
@@ -8459,7 +8609,7 @@ MonoBehaviour:
     type: 3}
   _smartItemLeftStrengthMultiplier: 0
   _smartItemRightStrengthMultiplier: 0
-  _extraSmartListItems: 0
+  _extraSmartListItems: 2
   _ignoreRemainingVelocityTriggerTime: 0.1
   _horizontalPadding: 20
 --- !u!1 &6605544782673391840
@@ -8567,6 +8717,138 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
+--- !u!1 &6734202709291967833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3367425310697003716}
+  - component: {fileID: 3052316651871975270}
+  - component: {fileID: 6554950865104851293}
+  - component: {fileID: 1665998834778808595}
+  m_Layer: 5
+  m_Name: CloseButton
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3367425310697003716
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6734202709291967833}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5967187571357051012}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 1, y: 1}
+--- !u!114 &3052316651871975270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6734202709291967833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6554950865104851293
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6734202709291967833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 3052316651871975270}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2020610938480864273}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!222 &1665998834778808595
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6734202709291967833}
+  m_CullTransparentMesh: 1
 --- !u!1 &6807557839141204680
 GameObject:
   m_ObjectHideFlags: 0
@@ -9209,6 +9491,7 @@ GameObject:
   - component: {fileID: 6625020476306308141}
   - component: {fileID: 3309661696091170615}
   - component: {fileID: 6610144537161966851}
+  - component: {fileID: 158163845155981677}
   m_Layer: 5
   m_Name: WallCategoryButton
   m_TagString: Untagged
@@ -9298,7 +9581,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 0.6039216, g: 0.8784314, b: 0.95686275, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -9335,13 +9618,30 @@ MonoBehaviour:
         m_MethodName: CategoryButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 8007972602250220353}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 158163845155981677}
+          m_ObjectArgumentAssemblyTypeName: FurnitureTrayCategoryButton, MainMenu
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &158163845155981677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007972602250220353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a090b059149c054a8331761a7168ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonImageObject: {fileID: 3309661696091170615}
+  _iconImageObject: {fileID: 8076933541245217481}
+  _defaultColour: {r: 1, g: 1, b: 1, a: 1}
+  _defaultIconColour: {r: 0.43529412, g: 0.7764706, b: 0.87058824, a: 255}
+  _selectedButtonColour: {r: 0.6039216, g: 0.8784314, b: 0.95686275, a: 1}
 --- !u!1 &8036485378169908257
 GameObject:
   m_ObjectHideFlags: 0
@@ -10136,6 +10436,7 @@ RectTransform:
   - {fileID: 4774092094330941624}
   - {fileID: 763274007331600193}
   - {fileID: 7641748414179229095}
+  - {fileID: 5967187571357051012}
   m_Father: {fileID: 3439542427004423801}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -10209,9 +10510,15 @@ MonoBehaviour:
   _vertical: 0
   _smartList: {fileID: 6485862742330189966}
   _decorateModeButtons: {fileID: 4790838015827528833}
+  _decorateModeSetsButton: {fileID: 5390811437057965811}
   _renovateModeButtons: {fileID: 3765333995325055822}
   _categoryText: {fileID: 4010855161763277141}
   _modeText: {fileID: 862068078741148870}
+  _setSelectButtonContainer: {fileID: 2377203322684753309}
+  _setSelectButtonPrefab: {fileID: 1925708391222051457, guid: 2a48365377b241b459c9d1f52829021e,
+    type: 3}
+  _storageFurnitureReference: {fileID: 11400000, guid: f3234f639b53fbb43ac862d3033a3142,
+    type: 2}
 --- !u!114 &1967409196646239748
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10931,6 +11238,7 @@ GameObject:
   - component: {fileID: 4404773066876718320}
   - component: {fileID: 2446007626280038437}
   - component: {fileID: 4755141855085972837}
+  - component: {fileID: 7717807948953948224}
   m_Layer: 5
   m_Name: SpecialCategoryButton
   m_TagString: Untagged
@@ -11020,7 +11328,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_SelectedColor: {r: 0.6039216, g: 0.8784314, b: 0.95686275, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -11057,13 +11365,30 @@ MonoBehaviour:
         m_MethodName: CategoryButtonClicked
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 8494182984608223561}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 7717807948953948224}
+          m_ObjectArgumentAssemblyTypeName: FurnitureTrayCategoryButton, MainMenu
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7717807948953948224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8494182984608223561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a090b059149c054a8331761a7168ab2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _buttonImageObject: {fileID: 2446007626280038437}
+  _iconImageObject: {fileID: 3295611252111446631}
+  _defaultColour: {r: 1, g: 1, b: 1, a: 1}
+  _defaultIconColour: {r: 0.43529412, g: 0.7764706, b: 0.87058824, a: 255}
+  _selectedButtonColour: {r: 0.6039216, g: 0.8784314, b: 0.95686275, a: 1}
 --- !u!1 &8552958138356055988
 GameObject:
   m_ObjectHideFlags: 0
@@ -11522,9 +11847,13 @@ MonoBehaviour:
   _vertical: 1
   _smartList: {fileID: 0}
   _decorateModeButtons: {fileID: 0}
+  _decorateModeSetsButton: {fileID: 0}
   _renovateModeButtons: {fileID: 0}
   _categoryText: {fileID: 0}
   _modeText: {fileID: 0}
+  _setSelectButtonContainer: {fileID: 0}
+  _setSelectButtonPrefab: {fileID: 0}
+  _storageFurnitureReference: {fileID: 0}
 --- !u!114 &4697328121706057684
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12060,6 +12389,170 @@ MonoBehaviour:
 
     Muokkaustila'
   _englishText: "Open Modification \nmode"
+--- !u!1001 &3383207474919423858
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 8482519941331659966}
+    m_Modifications:
+    - target: {fileID: 1925708391222051457, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_Name
+      value: SetSelectButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 5800493389452627604, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_text
+      value: Show all
+      objectReference: {fileID: 0}
+    - target: {fileID: 8099934510586217139, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8099934510586217139, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8099934510586217139, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4788480834664309421}
+    - target: {fileID: 8099934510586217139, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8099934510586217139, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectSet
+      objectReference: {fileID: 0}
+    - target: {fileID: 8099934510586217139, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MenuUI.Scripts.SoulHome.FurnitureTrayHandler, MainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 8099934510586217139, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 432
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 70.35834
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 216
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -35.17917
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2a48365377b241b459c9d1f52829021e, type: 3}
+--- !u!224 &6136978627830818451 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8924301343670245857, guid: 2a48365377b241b459c9d1f52829021e,
+    type: 3}
+  m_PrefabInstance: {fileID: 3383207474919423858}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3602100914122171532
 PrefabInstance:
   m_ObjectHideFlags: 0
