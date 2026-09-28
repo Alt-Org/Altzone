@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Altzone.Scripts.Chat;
+using Altzone.Scripts.Common;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.AvatarEditor;
 using TMPro;
@@ -14,7 +15,7 @@ public class UsersReactionData : MonoBehaviour
     private string _userID;
     private string _userName;
     [SerializeField] private TextMeshProUGUI _userNameText;
-    private Mood mood;
+    private Emotion mood;
     [SerializeField] private Image _reaction;
     // Start is called before the first frame update
     public void SetReactionInfo(AvatarData Avatar, string UserName, string userID, Sprite image)

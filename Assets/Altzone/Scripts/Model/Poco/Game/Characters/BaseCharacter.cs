@@ -249,12 +249,12 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return level switch
             {
-                 1 =>  10,
-                 2 =>  12,
-                 3 =>  14,
-                 4 =>  16,
-                 5 =>  18,
-                 6 =>  20,
+                 1 =>  1,
+                 2 =>  2,
+                 3 =>  4,
+                 4 =>  6,
+                 5 =>  8,
+                 6 => 10,
 
                 _ => -1,
             };

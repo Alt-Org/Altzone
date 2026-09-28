@@ -414,7 +414,12 @@ namespace Altzone.Scripts.Audio
 
             SettingsCarrier carrier = SettingsCarrier.Instance;
 
-            bool jukeboxHasActiveTrack = JukeboxManager.Instance.CurrentTrackQueueData != null || JukeboxManager.Instance.TrackPreviewActive;
+            JukeboxManager jukeBox= JukeboxManager.Instance;
+            bool jukeboxHasActiveTrack = false;
+            if (jukeBox != null)
+            {
+                jukeboxHasActiveTrack = JukeboxManager.Instance?.CurrentTrackQueueData != null || JukeboxManager.Instance.TrackPreviewActive;
+            }
 
             bool jukeboxAreaPermissionOk = (
                 _jukeboxWindowOpen

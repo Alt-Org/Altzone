@@ -128,10 +128,10 @@ namespace Battle.View.Player
                 FeetStanding = 20,
 
                 /// <summary>Index: 21</summary>
-                FeetRunningLeft = 21,
+                FeetRunning1 = 21,
 
                 /// <summary>Index: 22</summary>
-                FeetRunningRight = 22,
+                FeetRunning2 = 22,
 
                 /// <summary>Index: 24</summary>
                 HandsShieldDown1 = 24,
@@ -158,16 +158,16 @@ namespace Battle.View.Player
                 ShieldUp4 = 35,
 
                 /// <summary>Index: 36</summary>
-                ShieldUpHit1 = 36,
+                SpecialElementUp1 = 36,
 
                 /// <summary>Index: 37</summary>
-                ShieldUpHit2 = 37,
+                SpecialElementUp2 = 37,
 
                 /// <summary>Index: 38</summary>
-                ShieldUpHit3 = 38,
+                SpecialElementUp3 = 38,
 
                 /// <summary>Index: 39</summary>
-                ShieldUpHit4 = 39,
+                SpecialElementUp4 = 39,
 
                 /// <summary>Index: 40</summary>
                 ShieldDown1 = 40,
@@ -182,16 +182,16 @@ namespace Battle.View.Player
                 ShieldDown4 = 43,
 
                 /// <summary>Index: 44</summary>
-                ShieldDownHit1 = 44,
+                SpecialElementDown1 = 44,
 
                 /// <summary>Index: 45</summary>
-                ShieldDownHit2 = 45,
+                SpecialElementDown2 = 45,
 
                 /// <summary>Index: 46</summary>
-                ShieldDownHit3 = 46,
+                SpecialElementDown3 = 46,
 
                 /// <summary>Index: 47</summary>
-                ShieldDownHit4 = 47,
+                SpecialElementDown4 = 47,
 
                 /// <summary>Index: 48</summary>
                 HeadJoy = 48,
@@ -335,6 +335,21 @@ namespace Battle.View.Player
         [Tooltip("The amount of stun flashes")]
         [SerializeField] private int _stunFlashAmount;
 
+        /// <summary>[SerializeField] The duration in seconds of a single breathing animation cycle.</summary>
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        [Tooltip("The duration in seconds of a single breathing animation cycle")]
+        [SerializeField] private float _animationBreathingIntervalSec;
+
+        /// <summary>[SerializeField] The size multiplier for the breathing animation.</summary>
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        [Tooltip("The size multiplier for the breathing animation")]
+        [SerializeField] private float _animationBreathingSizeMultiplier;
+
+        /// <summary>[SerializeField] The duration in seconds of a single running animation cycle.</summary>
+        /// Part of @ref BattlePlayerCharacterViewController-SerializeFields "SerializeFields"
+        [Tooltip("The duration in seconds of a single running animation cycle")]
+        [SerializeField] private float _animationRunningIntervalSec;
+
         //} settings
 
         #endregion SerializeFields
@@ -476,8 +491,8 @@ namespace Battle.View.Player
             BattleDebugLogger.DevAssertFormat(nameof(BattlePlayerCharacterViewController),
                 sprite.EnumValue is
                     SpriteSheetMap.Enum.FeetStanding or
-                    SpriteSheetMap.Enum.FeetRunningLeft or
-                    SpriteSheetMap.Enum.FeetRunningRight,
+                    SpriteSheetMap.Enum.FeetRunning1 or
+                    SpriteSheetMap.Enum.FeetRunning2,
                 "{0} Sprite is not a feet sprite", sprite
             );
             _bodypartSpriteRenderers[3].sprite = _spriteSheet.GetSprite(sprite);
@@ -511,6 +526,8 @@ namespace Battle.View.Player
 
             float scale = (float)e.ModelScale;
             transform.localScale = new Vector3(scale, scale, scale);
+
+            _normalScale = transform.localScale;
 
             _teamNumber = BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot);
 
@@ -602,8 +619,8 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Public method that is called when the view should update.<br/>
-        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to adjust the player character model's position.<br/>
-        /// Handles setting feet sprite based on movement direction.
+        /// Calls <see cref="UpdateAnimation">UpdateAnimation</see> to play the breathing and running animations.<br/
+        /// Calls <see cref="UpdateModelPositionAdjustment">UpdateModelPositionAdjustment</see> to adjust the player character model's position.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
@@ -613,20 +630,7 @@ namespace Battle.View.Player
             BattlePlayerDataQComponent* playerData = PredictedFrame.Unsafe.GetPointer<BattlePlayerDataQComponent>(EntityRef);
             if (playerData->PlayerRef == PlayerRef.None) return;
 
-            Vector2 movementVector = playerData->ViewMovementVector.ToUnityVector2();
-
-            if (movementVector == Vector2.zero)
-            {
-                SetFeetSprite(SpriteSheetMap.Enum.FeetStanding);
-            }
-            else if (movementVector.x < 0)
-            {
-                SetFeetSprite(SpriteSheetMap.Enum.FeetRunningLeft);
-            }
-            else
-            {
-                SetFeetSprite(SpriteSheetMap.Enum.FeetRunningRight);
-            }
+            UpdateAnimation(playerData);
 
             Vector3 viewPosition = playerData->ViewPosition.ToUnityVector3();
 
@@ -673,6 +677,36 @@ namespace Battle.View.Player
 
         /// @}
 
+        /// <summary>Enum used to define player animation states.</summary>
+        private enum AnimationState
+        {
+            /// <summary>
+            /// %Player is idle, playing the idle breathing animation.<br/>
+            /// Condition: player is not moving.
+            /// </summary>
+            Idle,
+            /// <summary>
+            /// %Player is running, playing the running animation.<br/>
+            /// Condition: player is moving.
+            /// </summary>
+            Running,
+            /// <summary>
+            /// %Player is stunned, playing the stun animation.<br/>
+            /// Condition: player is stunned.<br/>
+            /// Blocking: blocks other states until
+            /// in <see cref="Battle.View.Player.BattlePlayerCharacterViewController.AnimationState.StunEnd">StunEnd</see>
+            /// state.
+            /// </summary>
+            Stun,
+            /// <summary>
+            /// %Player is no longer stunned, transitioning to the next state.<br/>
+            /// Condition: player is no longer
+            /// in <see cref="Battle.View.Player.BattlePlayerCharacterViewController.AnimationState.Stun">Stun</see>
+            /// state.
+            /// </summary>
+            StunEnd
+        }
+
         /// <summary>This classes %BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
@@ -706,6 +740,15 @@ namespace Battle.View.Player
         ///
         /// See [{Player Teams}](#page-concepts-player-slots-teams) for more info.
         private BattleTeamNumber _teamNumber;
+
+        /// <summary>Current animation state.</summary>
+        private AnimationState _animationState;
+
+        /// <summary>Timer used for animations.</summary>
+        private float _animationTimer;
+
+        /// <summary>Normal scale of the gameobject.</summary>
+        private Vector3 _normalScale;
 
         /// @anchor BattlePlayerCharacterViewController-Private-GameflowMethods
         /// @name Private Gameflow Methods
@@ -796,7 +839,7 @@ namespace Battle.View.Player
         }
 
         /// <summary>
-        /// Handler method for <see cref="Quantum.EventBattleShieldChangeState">EventBattleShieldChangeState</see> QuantumEvent.<br/>
+        /// Handler method for <see cref="Quantum.EventBattleShieldChangeState">EventBattleShieldChangeState</see> QuantumEvent.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
@@ -825,6 +868,47 @@ namespace Battle.View.Player
         /// @{
 
         /// <summary>
+        /// Private method for playing the breathing and running animations.
+        /// </summary>
+        ///
+        /// Animations are tracked using @cref{Battle.View.Player.BattlePlayerCharacterViewController,AnimationState}.
+        ///
+        /// <param name="playerData">Pointer to the player's data component.</param>
+        private void UpdateAnimation(BattlePlayerDataQComponent* playerData)
+        {
+            Vector2 movementVector = playerData->ViewMovementVector.ToUnityVector2();
+
+            if (_animationState == AnimationState.Stun) goto Exit;
+
+            if (movementVector == Vector2.zero)
+            {
+                // idle state
+
+                float t = AnimationStep(_animationBreathingIntervalSec, reset: _animationState != AnimationState.Idle);
+
+                float sizeMultiplier = 1f + (_animationBreathingSizeMultiplier - 1f) * (MathF.Sin((t + 0.75f) * (MathF.PI * 2.0f)) + 1f) * 0.5f;
+                transform.localScale = (_normalScale * sizeMultiplier);
+
+                _animationState = AnimationState.Idle;
+            }
+            else
+            {
+                // running state
+
+                float t = AnimationStep(_animationRunningIntervalSec, reset: _animationState != AnimationState.Running);
+
+                SpriteSheetMap sprite = (int)(t * 2f) == 0 ? SpriteSheetMap.Enum.FeetRunning1 : SpriteSheetMap.Enum.FeetRunning2;
+                SetFeetSprite(sprite);
+
+                _animationState = AnimationState.Running;
+            }
+
+        Exit:
+            if (_animationState != AnimationState.Idle) transform.localScale = _normalScale;
+            if (_animationState != AnimationState.Running) SetFeetSprite(SpriteSheetMap.Enum.FeetStanding);
+        }
+
+        /// <summary>
         /// Private helper method for adjusting the player character model's position based on <paramref name="position"/>.
         /// </summary>
         ///
@@ -847,6 +931,8 @@ namespace Battle.View.Player
         /// Coroutine which plays the stun flash animation.
         /// </summary>
         ///
+        /// Animations are tracked using @cref{Battle.View.Player.BattlePlayerCharacterViewController,AnimationState}.
+        ///
         /// <param name="stunDurationSec">Duration of the stun.</param>
         /// <param name="emotion">Emotion state during the stun.</param>
         /// <param name="teamNumber">Team number of the player.</param>
@@ -856,6 +942,8 @@ namespace Battle.View.Player
         private IEnumerator StunCoroutine(float stunDurationSec, BattleEmotionState emotion, BattleTeamNumber teamNumber, int shieldNumber)
         {
             //{ set stun sprites
+
+            _animationState = AnimationState.Stun;
 
             SpriteSheetMap sprite = emotion switch
             {
@@ -873,6 +961,9 @@ namespace Battle.View.Player
             SetHeadSprite(sprite);
 
             SetHandSprite(SpriteSheetMap.Enum.HandsScared);
+
+            _bodypartSpriteRenderers[SpriteRendererFeetIndex].enabled = false;
+            _bodypartSpriteRenderers[SpriteRendererBodyIndex].enabled = false;
 
             if (_shieldAttached)
             {
@@ -916,14 +1007,19 @@ namespace Battle.View.Player
             {
                 SetHandOnShieldSprite(teamNumber, shieldNumber);
                 BattlePlayerShieldViewController.ShieldSide shieldSide = BattleGameViewController.LocalPlayerTeam == teamNumber ? BattlePlayerShieldViewController.ShieldSide.Top : BattlePlayerShieldViewController.ShieldSide.Bottom;
-                _playerShieldViewControllers[shieldNumber].SetShieldSprite(shieldNumber, shieldSide, isHit: false);
+                _playerShieldViewControllers[shieldNumber].SetShieldSprite(shieldNumber, shieldSide);
             }
             else
             {
                 SetHandSprite(SpriteSheetMap.Enum.HandsNoShield);
             }
 
+            _bodypartSpriteRenderers[SpriteRendererFeetIndex].enabled = true;
+            _bodypartSpriteRenderers[SpriteRendererBodyIndex].enabled = true;
+
             //} reset sprites
+
+            _animationState = AnimationState.StunEnd;
         }
 
         /// <summary>
@@ -939,6 +1035,29 @@ namespace Battle.View.Player
             int index = startIndex + shieldNumber;
 
             SetHandSprite(SpriteSheetMap.FromInt(index));
+        }
+
+        /// <summary>
+        /// Private helper method for playing looping animations.<br/>
+        /// Called every animation step.
+        /// </summary>
+        ///
+        /// Advances the @cref{Battle.View.Player.BattlePlayerCharacterViewController,_animationTimer}
+        /// and calculates the current normalized time of the looping animation based on @a interval,
+        /// ranging from 0 to 1 and resetting to 0 after each completed cycle.<br/>
+        ///
+        /// The animation loop can be force @a reset,
+        /// which is recommended when changing animations.
+        ///
+        /// <param name="interval">The interval in seconds of the current looping animation.</param>
+        /// <param name="reset">Whether to force reset the animation loop or not.</param>
+        ///
+        /// <returns>Normalized looped animation time.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private float AnimationStep(float interval, bool reset)
+        {
+            _animationTimer = reset ? 0 : (_animationTimer + Time.deltaTime) % interval;
+            return _animationTimer / interval;
         }
 
         /// @}

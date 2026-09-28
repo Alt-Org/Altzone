@@ -7,6 +7,7 @@ using MenuUi.Scripts.UIScaling;
 using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
 using Altzone.Scripts.ModelV2;
+using System.Collections;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -27,6 +28,8 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private BlinkingFrame[] _blinkingFrames;
 
+        [SerializeField] private bool _inDefenceGalleryView;
+
         //[SerializeField] private Button _removeCharacterButton;
 
 
@@ -36,12 +39,24 @@ namespace MenuUi.Scripts.CharacterGallery
         private bool _openedFromLoadout = false;
         private int _currentLoadoutIndex = -1;
 
+
+        [SerializeField] private Button _leftArrow;
+        [SerializeField] private Button _rightArrow;
+
+        [SerializeField] private List<Button> _dotsList = new List<Button>();
+
+        [SerializeField] private int _currentLoadOut = 1;
+        private int _amountOfLoadouts = 3;
+
+        [SerializeField] private LoadoutRowController _loadoutController;
+
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>();
             if (_swipe) _swipe.OnCurrentPageChanged += ClosePopup;
 
-            if (_popup.activeSelf) _popup.SetActive(false);
+            if (_inDefenceGalleryView) _popup.SetActive(true);
+            else if (_popup.activeSelf) _popup.SetActive(false);
 
             _galleryView.OnGalleryCharactersSet += SetCharacters;
             _galleryView.OnFilterChanged += HandleFilterChanged;
@@ -54,10 +69,21 @@ namespace MenuUi.Scripts.CharacterGallery
                 _selectedCharacterSlots[i].OnSlotPressed += HandleSlotPressed;
             }
 
+            _amountOfLoadouts = _dotsList.Count;
+            if (_leftArrow) _leftArrow.onClick.AddListener(PressArrowLeft);
+            if (_rightArrow) _rightArrow.onClick.AddListener(PressArrowRight);
+
             //if (_removeCharacterButton != null)
             //{
             //    _removeCharacterButton.onClick.AddListener(RemoveActiveSlotCharacter);
             //}
+
+            if (_inDefenceGalleryView)
+            {
+                _charactersUpdated = false;
+
+                SetActiveSlot(-1);
+            }
 
         }
 
@@ -115,7 +141,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             StopAllBlinking();
 
-            _popup.SetActive(false);
+            if (!_inDefenceGalleryView) _popup.SetActive(false);
             _openedFromLoadout = false;
             _currentLoadoutIndex = -1;
             if (_charactersUpdated) SignalBus.OnReloadCharacterGalleryRequestedSignal();
@@ -183,6 +209,12 @@ namespace MenuUi.Scripts.CharacterGallery
             CharacterSlot characterSlot = pressedSlot as CharacterSlot;
             if (characterSlot == null) return;
 
+            if (_activeSlotIndex < 0 && _inDefenceGalleryView)
+            {
+                SignalBus.OnDefenceGalleryStatPopupRequestedSignal(characterSlot.Id);
+                return;
+            }
+            SelectedCharacterEditingSlot prevSlot = null;
             // If clicked character is already selected, remove it from its slot
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
@@ -192,7 +224,13 @@ namespace MenuUi.Scripts.CharacterGallery
                
                     RemoveCharacterFromSpecificSlot(i);
                     RefreshGalleryUsedVisuals();
-                    return;
+                    if (_activeSlotIndex == i)
+                    {
+                        SetActiveSlot(_selectedCharacterSlots[i].SlotIndex);
+                        return;
+                    }
+                    prevSlot = _selectedCharacterSlots[i];
+                    break;
                 }
             }
 
@@ -208,6 +246,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 //    targetSlot.SelectedCharacter.OriginalSlot.gameObject.SetActive(true);
                 //}
 
+                if (prevSlot != null) prevSlot.SelectedCharacter = targetSlot.SelectedCharacter;
                 targetSlot.SelectedCharacter = null;
 
                 // Clear battle-style visuals when removing old selection
@@ -216,10 +255,12 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 if (_openedFromLoadout)
                 {
+                    if(prevSlot != null) SignalBus.OnLoadoutDefenceCharacterChangedSignal(prevSlot.SelectedCharacter.Id, prevSlot.SlotIndex, _currentLoadoutIndex);
                     SignalBus.OnLoadoutDefenceCharacterChangedSignal(CharacterID.None, targetSlot.SlotIndex, _currentLoadoutIndex);
                 }
                 else
                 {
+                    if (prevSlot != null) SignalBus.OnSelectedDefenceCharacterChangedSignal(prevSlot.SelectedCharacter.Id, prevSlot.SlotIndex);
                     SignalBus.OnSelectedDefenceCharacterChangedSignal(CharacterID.None, targetSlot.SlotIndex);
                 }
 
@@ -233,6 +274,11 @@ namespace MenuUi.Scripts.CharacterGallery
                 var proto = PlayerCharacterPrototypes.GetCharacter(((int)characterSlot.Character.Id).ToString());
                 targetSlot.BattleView.SetInfo(proto.GalleryHeadImage, characterSlot.Character.Id);
             }
+            if (prevSlot && prevSlot.BattleView != null)
+            {
+                var proto = PlayerCharacterPrototypes.GetCharacter(((int)prevSlot.SelectedCharacter.Id).ToString());
+                prevSlot.BattleView.SetInfo(proto.GalleryHeadImage, prevSlot.SelectedCharacter.Id);
+            }
 
             if (_openedFromLoadout)
             {
@@ -245,7 +291,22 @@ namespace MenuUi.Scripts.CharacterGallery
 
             _charactersUpdated = true;
 
-            SetActiveSlot((_activeSlotIndex + 1) % _selectedCharacterSlots.Length);
+            if (_inDefenceGalleryView) { int checkingvalue = -1;
+
+                for (int i = _activeSlotIndex; i < _selectedCharacterSlots.Length; ++i)
+                {
+                    if (_selectedCharacterSlots[i].SelectedCharacter == null) checkingvalue = i;
+                }
+
+                if (checkingvalue == -1)
+                    for (int i = 0; i < _activeSlotIndex; i++)
+                    {
+                        if (_selectedCharacterSlots[i].SelectedCharacter == null) checkingvalue = i;
+                    }
+
+                SetActiveSlot(checkingvalue);
+            }
+            else SetActiveSlot((_activeSlotIndex + 1) % _selectedCharacterSlots.Length);
 
             RefreshGalleryUsedVisuals();
         }
@@ -270,7 +331,6 @@ namespace MenuUi.Scripts.CharacterGallery
             if (!gameObject.activeInHierarchy) return;
             _openedFromLoadout = false;
             _currentLoadoutIndex = -1;
-            Debug.LogWarning("Test");
             OpenPopup();
         }
 
@@ -286,7 +346,7 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             if (!_popup.activeInHierarchy) return;
 
-            _activeSlotIndex = Mathf.Clamp(index, 0, _selectedCharacterSlots.Length - 1);
+            _activeSlotIndex = Mathf.Clamp(index, -1, _selectedCharacterSlots.Length - 1);
 
             if (_blinkingFrames == null || _blinkingFrames.Length == 0) return;
 
@@ -410,6 +470,51 @@ namespace MenuUi.Scripts.CharacterGallery
             }
 
             _charactersUpdated = true;
+        }
+
+
+
+        /// <summary>
+        /// Rotates the selected loadout backwards once
+        /// </summary>
+        public void PressArrowLeft()
+        {
+            if (_currentLoadOut > 1)
+            {  _currentLoadOut--;  }
+            else
+            {  _currentLoadOut = _amountOfLoadouts;  }
+
+            ChangeDots();
+
+            _loadoutController.ChangeLoadOutInGallery(_currentLoadOut);
+        }
+
+        /// <summary>
+        /// Rotates the selected loadout forwards once
+        /// </summary>
+        public void PressArrowRight()
+        {
+            if (_currentLoadOut < _amountOfLoadouts)
+            {  _currentLoadOut++;  }
+            else
+            {  _currentLoadOut = 1;  }
+
+            ChangeDots();
+
+            _loadoutController.ChangeLoadOutInGallery(_currentLoadOut);
+        }
+
+        /// <summary>
+        /// Update the dots under loadout
+        /// </summary>
+        private void ChangeDots()
+        {
+            foreach (Button dot in _dotsList)
+            {
+                dot.interactable = false;
+            }
+            Debug.Log(_currentLoadOut - 1);
+            _dotsList[_currentLoadOut - 1].interactable = true;
         }
     }
 }

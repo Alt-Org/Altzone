@@ -161,19 +161,27 @@ namespace Altzone.Scripts.MQTT
             }
             finally
             {
-                //if (_client != null && _client.IsConnected)
+                if (_client != null && _client.IsConnected)
                 //OnMQTTConnectionEstablished?.Invoke(true);
-                while (true)
+                if (string.IsNullOrEmpty(ServerManager.Instance.Player.clan_id))
                 {
-                    if (ServerManager.Instance.Clan != null)
-                    {
-                        Debug.Log($"Clan Found: Starting subscription.");
-                        SubscribeToClanNotifications();
-                        break;
-                    }
-                    Debug.LogWarning($"Clan not found: Trying again.");
-                    await Task.Delay(1000);
+                    OnMQTTConnectionEstablished?.Invoke(true);
                 }
+                else
+                {
+                    while (true)
+                    {
+                        if (ServerManager.Instance.Clan != null)
+                        {
+                            Debug.Log($"Clan Found: Starting subscription.");
+                            SubscribeToClanNotifications();
+                            break;
+                        }
+                        Debug.LogWarning($"Clan not found: Trying again.");
+                        await Task.Delay(1000);
+                    }
+                }
+                else OnMQTTConnectionEstablished?.Invoke(false);
             }
         }
 
@@ -185,7 +193,6 @@ namespace Altzone.Scripts.MQTT
             Task matchmaking = SubscribeToMatchmaking();
 
             List<Task> tasks = new List<Task> { voting, dailyTask, jukeBox, matchmaking };
-
             while (tasks.Count > 0)
             {
                 Task finishedTask = await Task.WhenAny(tasks);

@@ -63,20 +63,21 @@ namespace Battle.View.SoulWall
         /// @}
 
         /// <summary>
-        /// Destroys (deactivates) the character part which corresponds to the wall number and team.
+        /// Destroys (deactivates) the part of a stone character that is associated with a %SoulWall segment and belongs to a team based on
+        /// <paramref name="team"/> and <paramref name="wallNumber"/>.
         /// </summary>
         ///
-        /// <param name="wallNumber">The wall number which to destroy.</param>
-        /// <param name="team">The BattleTeamNumber which character part to destroy.</param>
-        public void DestroyCharacterPart(int wallNumber, BattleTeamNumber team)
+        /// <param name="team">Team number of the team that the desired stone character belongs to.</param>
+        /// <param name="wallNumber">The wall number corresponding to the desired stone character part.</param>
+        public void DestroyCharacterPart(BattleTeamNumber team, int wallNumber)
         {
             switch (team)
             {
                 case BattleTeamNumber.TeamAlpha:
-                    _bottomCharacterParts[wallNumber].gameObject.SetActive(false);
+                    _bottomCharacterParts[wallNumber].SetActive(false);
                     break;
                 case BattleTeamNumber.TeamBeta:
-                    _topCharacterParts[wallNumber].gameObject.SetActive(false);
+                    _topCharacterParts[wallNumber].SetActive(false);
                     break;
             }
         }

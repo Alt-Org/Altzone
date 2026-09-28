@@ -66,15 +66,18 @@ namespace MenuUI.Scripts.Jukebox
         {
             StopJukeboxVisuals();
 
-            JukeboxManager.Instance.OnSetSongInfo -= SetSongInfo;
-            JukeboxManager.Instance.OnStopJukeboxVisuals -= StopJukeboxVisuals;
-            JukeboxManager.Instance.OnClearJukeboxVisuals -= ClearJukeboxVisuals;
-            JukeboxManager.Instance.OnJukeboxMute -= SetMuteImage;
-            MusicHandler.Instance.OnVolumeChange -= MainDiskIndicatorControl;
-            JukeboxManager.Instance.OnMusicTrackInfoPressed -= OpenMusicTrackInfoPopup;
-            JukeboxManager.Instance.OnPreviewStart -= JukeboxPreviewPlaybackStart;
-            JukeboxManager.Instance.OnPreviewEnd -= JukeboxPreviewPlaybackEnd;
-            JukeboxManager.Instance.OnShowTextPopup -= _jukeboxTextPopup.ActivatePopUp;
+            if (JukeboxManager.Instance && MusicHandler.Instance)
+            {
+                JukeboxManager.Instance.OnSetSongInfo -= SetSongInfo;
+                JukeboxManager.Instance.OnStopJukeboxVisuals -= StopJukeboxVisuals;
+                JukeboxManager.Instance.OnClearJukeboxVisuals -= ClearJukeboxVisuals;
+                JukeboxManager.Instance.OnJukeboxMute -= SetMuteImage;
+                MusicHandler.Instance.OnVolumeChange -= MainDiskIndicatorControl;
+                JukeboxManager.Instance.OnMusicTrackInfoPressed -= OpenMusicTrackInfoPopup;
+                JukeboxManager.Instance.OnPreviewStart -= JukeboxPreviewPlaybackStart;
+                JukeboxManager.Instance.OnPreviewEnd -= JukeboxPreviewPlaybackEnd;
+                JukeboxManager.Instance.OnShowTextPopup -= _jukeboxTextPopup.ActivatePopUp;
+            }
         }
 
         private void Setup()

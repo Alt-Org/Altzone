@@ -49,12 +49,16 @@ namespace MenuUi.Scripts.Window
             }
             else
             {
-                if(gameObject.tag is "OverlayPanel") Instance = this;
-                else Destroy(gameObject);
+                if (gameObject.tag is "OverlayPanel") Instance = this;
+                else
+                {
+                    Destroy(gameObject);
+                    return;
+                }
                 UpdateButtonContent();
             }
 
-            if (_overlayObject == null) _overlayObject = transform.Find("UIOverlayPanel").GetComponent<GameObject>();
+            if (_overlayObject == null) _overlayObject = transform.gameObject;
             _chatActive = true;
             buttons[2].transform.localScale = Vector3.one * 1.2f;
             //buttons[2].interactable = false;
@@ -63,13 +67,6 @@ namespace MenuUi.Scripts.Window
 
         private void OnEnable()
         {
-            GameObject panel= GameObject.FindWithTag("OverlayPanel");
-            if (panel != gameObject && panel ? true : SceneManager.GetActiveScene().name != _allowedScene.SceneName) //If OverlayPanel can be found, return, otherwise check if this panel is allowed to be set active.
-            {
-                return;
-            }
-            else _overlayObject.SetActive(true);
-
             if (Instance == this)
                 UpdateButtonContent();
 
