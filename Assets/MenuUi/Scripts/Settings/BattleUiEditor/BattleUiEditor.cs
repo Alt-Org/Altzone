@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement.OrientationType;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
 {

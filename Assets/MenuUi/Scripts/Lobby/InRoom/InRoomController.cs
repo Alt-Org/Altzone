@@ -12,12 +12,10 @@ using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby.InLobby;
 using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
-using MQTTnet.Diagnostics;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 using Random = UnityEngine.Random;
 using SignalBus = MenuUi.Scripts.Signals.SignalBus;
 
@@ -221,7 +219,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     }
                     else
                     {
-                        OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, ($"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
+                        OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
                         RestoreStartButton();
                     }
                     break;

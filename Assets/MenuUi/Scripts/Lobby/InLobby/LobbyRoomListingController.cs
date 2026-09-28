@@ -17,7 +17,6 @@ using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 using ReasonType = Altzone.Scripts.Lobby.LobbyManager.GetKickedEvent.ReasonType;
 
 namespace MenuUi.Scripts.Lobby.InLobby

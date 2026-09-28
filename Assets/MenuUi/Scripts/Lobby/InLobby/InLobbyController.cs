@@ -11,7 +11,6 @@ using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Signals
 {

@@ -10,7 +10,6 @@ using MenuUi.Scripts.Login;
 using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
 using UnityEngine;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Loader
 {

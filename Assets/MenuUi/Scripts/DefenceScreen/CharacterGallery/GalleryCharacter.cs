@@ -7,7 +7,6 @@ using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
