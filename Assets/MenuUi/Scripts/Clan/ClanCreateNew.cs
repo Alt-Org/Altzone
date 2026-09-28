@@ -596,7 +596,7 @@ public class ClanCreateNew : MonoBehaviour
         {
             if (clan == null)
             {
-                _warningPopup.ActivateInfoPopUp(
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning,
                     "Klaanin luonti epäonnistui.\n" +
                     "Et voi luoda uutta klaania, jos olet jo klaanin jäsen. " +
                     "Poistu ensin nykyisestä klaanistasi ja yritä uudelleen."
@@ -647,19 +647,19 @@ public class ClanCreateNew : MonoBehaviour
         if (clanName == string.Empty)
         {
             _nameWarningOutline.SetActive(true);
-            _warningPopup.ActivateInfoPopUp("Lisää klaanin nimi");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning,"Lisää klaanin nimi");
             validInputs = false;
         }
         else if (clanName.Trim().Length < 3)
         {
             _nameWarningOutline.SetActive(true);
-            _warningPopup.ActivateInfoPopUp("Klaanin nimen pitää olla vähintään 3 merkkiä pitkä.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning,"Klaanin nimen pitää olla vähintään 3 merkkiä pitkä.");
             validInputs = false;
         }
         else if (clanName.Trim().Length > 30)
         {
             _nameWarningOutline.SetActive(true);
-            _warningPopup.ActivateInfoPopUp("Klaanin nimi saa olla maksimissaan 30 merkkiä pitkä.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning,"Klaanin nimi saa olla maksimissaan 30 merkkiä pitkä.");
             validInputs = false;
         }
         else _nameWarningOutline.SetActive(false);
@@ -667,7 +667,7 @@ public class ClanCreateNew : MonoBehaviour
         if (!isOpen && password == string.Empty)
         {
             //_passwordWarningOutline.SetActive(true);
-            _warningPopup.ActivateInfoPopUp("Lukituilla klaaneilla tulee olla salasana");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning,"Lukituilla klaaneilla tulee olla salasana");
             validInputs = false;
         }
         //else _passwordWarningOutline.SetActive(false);
@@ -675,7 +675,7 @@ public class ClanCreateNew : MonoBehaviour
         if (language == Language.None)
         {
             _languageWarningOutline.SetActive(true);
-            _warningPopup.ActivateInfoPopUp("Valitse klaanin kieli");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning,"Valitse klaanin kieli");
             validInputs = false;
         }
         else _languageWarningOutline.SetActive(false);
@@ -683,7 +683,7 @@ public class ClanCreateNew : MonoBehaviour
         if (age == ClanAge.None)
         {
             _ageWarningOutline.SetActive(true);
-            _warningPopup.ActivateInfoPopUp("Valitse klaanin ikäraja");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning,"Valitse klaanin ikäraja");
             validInputs = false;
         }
         else _ageWarningOutline.SetActive(false);
@@ -691,7 +691,7 @@ public class ClanCreateNew : MonoBehaviour
         if (values.Length < 3)
         {
             _valuesWarningOutline.SetActive(true);
-            _warningPopup.ActivateInfoPopUp("Klaanille tulee olla valittuna 3 arvoa");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning,"Klaanille tulee olla valittuna 3 arvoa");
             validInputs = false;
         }
         else
@@ -730,7 +730,7 @@ public class ClanCreateNew : MonoBehaviour
         if (_clanPasswordField != null && string.IsNullOrWhiteSpace(_clanPasswordField.text))
         {
             if (_warningPopup != null)
-                _warningPopup.ActivateInfoPopUp("Lisää klaanin salasana");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning,"Lisää klaanin salasana");
 
             /*if (_passwordWarningOutline != null)
                 _passwordWarningOutline.SetActive(true);*/

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using MenuUi.Scripts.Window;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,13 @@ namespace MenuUI.Scripts
         {
             OnChangePopupInfo?.Invoke(message);
         }
+    }
+
+    public enum InfoLevel
+    {
+        Info = 0,
+        Warning = 1,
+        Error = 2
     }
 
     public class InfoPopupController : MonoBehaviour
@@ -38,7 +46,7 @@ namespace MenuUI.Scripts
 
         void OnEnable()
         {
-            SignalBus.OnChangePopupInfo += ActivateInfoPopUp;
+            OverlayPanelCheck.OnChangePopupInfo += ActivatePopUp;
         }
 
         private void Start()
@@ -49,14 +57,34 @@ namespace MenuUI.Scripts
         void OnDisable()
         {
             _popup.SetActive(false);
-            SignalBus.OnChangePopupInfo -= ActivateInfoPopUp;
+            OverlayPanelCheck.OnChangePopupInfo -= ActivatePopUp;
         }
 
         public void Initialize()
         {
             if (!gameObject.activeSelf) gameObject.SetActive(true); //Make sure that this object is always active when called.
         }
-        
+
+        public void ActivatePopUp(InfoLevel level, string popupText)
+        {
+            switch (level)
+            {
+                case InfoLevel.Info:
+                    ActivateInfoPopUp(popupText);
+                    break;
+                case InfoLevel.Warning:
+                    ActivateInfoPopUp(popupText);
+                    break;
+                case InfoLevel.Error:
+                    ActivateErrorPopUp(popupText);
+                    break;
+                default:
+                    ActivateInfoPopUp(popupText);
+                    break;
+            }
+        }
+
+
         public void ActivateInfoPopUp(string popupText)
         {
             Initialize();
