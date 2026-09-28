@@ -1,9 +1,11 @@
 using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby.InLobby;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using MenuUi.Scripts.Lobby.InLobby;
 using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Lobby
@@ -204,7 +206,7 @@ namespace MenuUi.Scripts.Lobby
 
         private void OnFailedToStartMatchmakingGame()
         {
-            PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin aloittamisessa, lopetetaan pelin etsiminen.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Virhe pelin aloittamisessa, lopetetaan pelin etsiminen.");
         }
     }
 }

@@ -1,4 +1,6 @@
 using Altzone.Scripts.Model.Poco.Game;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,14 +54,14 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
             if (_controller.IsCurrentCharacterLocked())
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Et voi muokata lukittua hahmoa.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Et voi muokata lukittua hahmoa.");
                 ClosePopUp();
                 return;
             }
 
             if (_controller.GetCurrentCharacterClass() == CharacterClassType.Obedient) // obedient characters can't be modified
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Tottelijoita ei voi muokata.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Tottelijoita ei voi muokata.");
                 ClosePopUp();
                 return;
             }

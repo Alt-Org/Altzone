@@ -8,16 +8,6 @@ using UnityEngine.UI;
 
 namespace MenuUI.Scripts
 {
-    public static partial class SignalBus
-    {
-        public delegate void ChangePopupInfo(string message);
-        public static event ChangePopupInfo OnChangePopupInfo;
-        public static void OnChangePopupInfoSignal(string message)
-        {
-            OnChangePopupInfo?.Invoke(message);
-        }
-    }
-
     public enum InfoLevel
     {
         Info = 0,

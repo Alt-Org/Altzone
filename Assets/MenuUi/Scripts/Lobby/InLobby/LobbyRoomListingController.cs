@@ -2,25 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-
-using Prg.Scripts.Common.PubSub;
-
+using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Common.Photon;
 using Altzone.Scripts.Lobby;
-using Photon.Client;
-using ReasonType = Altzone.Scripts.Lobby.LobbyManager.GetKickedEvent.ReasonType;
-
-using MenuUi.Scripts.Lobby.CreateRoom;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
-using MenuUi.Scripts.Signals;
 using Altzone.Scripts.Lobby.Wrappers;
-using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Player;
+using MenuUi.Scripts.Lobby.CreateRoom;
+using MenuUi.Scripts.Signals;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
+using Photon.Client;
+using Prg.Scripts.Common.PubSub;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
+using ReasonType = Altzone.Scripts.Lobby.LobbyManager.GetKickedEvent.ReasonType;
 
 namespace MenuUi.Scripts.Lobby.InLobby
 {
@@ -187,7 +185,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 if (string.IsNullOrWhiteSpace(_createRoomCustom.RoomPassword))
                 {
                     _pendingJoinIntent = JoinIntent.None;
-                    PopupSignalBus.OnChangePopupInfoSignal("Lisää salasana ennen yksityisen huoneen luontia.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Lisää salasana ennen yksityisen huoneen luontia.");
                     return;
                 }
 
@@ -296,7 +294,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 var currentRoom = PhotonRealtimeClient.LobbyCurrentRoom;
                 if (currentRoom != null && string.Equals(currentRoom.Name, roomName, StringComparison.Ordinal))
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal("Olet jo tässä huoneessa.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Olet jo tässä huoneessa.");
                 }
                 else
                 {
@@ -329,7 +327,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                             }
                             else
                             {
-                                PopupSignalBus.OnChangePopupInfoSignal("Salasana on väärin.");
+                                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Salasana on väärin.");
                             }
                             _passwordPopup.ClosePopup();
                         }));
@@ -400,7 +398,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             if (creatingTextActive) _creatingRoomText.SetActive(false);
             _pendingJoinIntent = JoinIntent.None;
-            PopupSignalBus.OnChangePopupInfoSignal("Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
         }
 
         private bool ShouldRejoinQueueAfterJoinFailed(short returnCode, string message, out MatchmakingType queueGameType)
@@ -470,7 +468,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 if (!PhotonRealtimeClient.InLobby)
                 {
                     Debug.LogWarning($"RejoinQueueWhenLobbyReady: not in lobby, skip queue rejoin for {gameType}");
-                    PopupSignalBus.OnChangePopupInfoSignal("Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
                     yield break;
                 }
 
@@ -495,14 +493,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 catch (Exception ex)
                 {
                     Debug.LogWarning($"RejoinQueueWhenLobbyReady: JoinOrCreateQueueRoom threw: {ex.Message}");
-                    PopupSignalBus.OnChangePopupInfoSignal("Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
                     yield break;
                 }
 
                 if (!joined)
                 {
                     Debug.LogWarning($"RejoinQueueWhenLobbyReady: JoinOrCreateQueueRoom returned false for {gameType}");
-                    PopupSignalBus.OnChangePopupInfoSignal("Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
                 }
             }
             finally
@@ -644,7 +642,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void HandleClanMemberDisconnected()
         {
-            PopupSignalBus.OnChangePopupInfoSignal("Pelin etsiminen lopetetaan. Klaanin jäsen sulki pelin.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Pelin etsiminen lopetetaan. Klaanin jäsen sulki pelin.");
         }
 
         private void HandleKickedOutOfRoom(ReasonType reason)
@@ -652,11 +650,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             switch (reason)
             {
                 case ReasonType.FullRoom:
-                    PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin etsimisessä, huone on täysi.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Virhe pelin etsimisessä, huone on täysi.");
                     //CreateCustomRoom();
                     break;
                 case ReasonType.RoomLeader:
-                    PopupSignalBus.OnChangePopupInfoSignal("Huoneen johtaja poisti sinut huoneesta.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Huoneen johtaja poisti sinut huoneesta.");
                     //CreateCustomRoom();
                     break;
             }

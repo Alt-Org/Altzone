@@ -8,8 +8,9 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.MQTT;
 using MenuUi.Scripts.Login;
 using MenuUi.Scripts.Window;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
+using MenuUI.Scripts;
 using UnityEngine;
+using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Loader
 {
@@ -171,8 +172,8 @@ namespace MenuUi.Scripts.Loader
                 if (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                 {
                     if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
-                        PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorFinnishDev);
-                    else PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorEnglishDev);
+                        OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorFinnishDev);
+                    else OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorEnglishDev);
                     if (_clanFetched)
                     {
                         LogInReady();
@@ -181,8 +182,8 @@ namespace MenuUi.Scripts.Loader
                 else
                 {
                     if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
-                        PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorFinnish);
-                    else PopupSignalBus.OnChangePopupInfoSignal(_mqttErrorEnglish);
+                        OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorFinnish);
+                    else OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorEnglish);
                 }
             }
         }

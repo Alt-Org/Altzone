@@ -409,21 +409,21 @@ public class ClanSettings : AltMonoBehaviour
 
         if (_selectedValues == null || _selectedValues.Count != 3)
         {
-            SignalBus.OnChangePopupInfoSignal("Klaanilla täytyy olla tasan 3 arvoa.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Klaanilla täytyy olla tasan 3 arvoa.");
             _saveButton.interactable = true;
             return;
         }
 
         if (_currentClanData == null)
         {
-            SignalBus.OnChangePopupInfoSignal("Klaanin tietoja ei löytynyt.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Klaanin tietoja ei löytynyt.");
             _saveButton.interactable = true;
             return;
         }
 
         if (!CanCurrentPlayerEditClan(_currentClanData))
         {
-            SignalBus.OnChangePopupInfoSignal("Vain klaanin johtaja voi muokata klaanin asetuksia.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Vain klaanin johtaja voi muokata klaanin asetuksia.");
             _saveButton.interactable = true;
             return;
         }
@@ -468,7 +468,7 @@ public class ClanSettings : AltMonoBehaviour
             }
             else
             {
-                SignalBus.OnChangePopupInfoSignal("Asetusten tallentaminen ei onnistunut.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Asetusten tallentaminen ei onnistunut.");
             }
         }));
     }
@@ -1009,7 +1009,7 @@ public class ClanSettings : AltMonoBehaviour
 
         if (string.IsNullOrWhiteSpace(password))
         {
-            SignalBus.OnChangePopupInfoSignal("Lisää klaanille salasana.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Lisää klaanille salasana.");
             return;
         }
 
@@ -1101,7 +1101,7 @@ public class ClanSettings : AltMonoBehaviour
     {
         if (_valueSelection.SelectedValues.Count != 3)
         {
-            SignalBus.OnChangePopupInfoSignal("Valitse klaanille tasan 3 arvoa.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Valitse klaanille tasan 3 arvoa.");
             return;
         }
 
