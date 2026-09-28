@@ -6804,6 +6804,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8476621660179101015}
     m_Modifications:
+    - target: {fileID: 2885089420539440841, guid: 1d314de295f7c93438ca4a88ff2b25c5,
+        type: 3}
+      propertyPath: _backgroundInfoColour.a
+      value: 0.9019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 2885089420539440841, guid: 1d314de295f7c93438ca4a88ff2b25c5,
+        type: 3}
+      propertyPath: _backgroundErrorColour.a
+      value: 0.9019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 2885089420539440841, guid: 1d314de295f7c93438ca4a88ff2b25c5,
+        type: 3}
+      propertyPath: _backgroundWarningColour.a
+      value: 0.9019608
+      objectReference: {fileID: 0}
     - target: {fileID: 3946514060450755888, guid: 1d314de295f7c93438ca4a88ff2b25c5,
         type: 3}
       propertyPath: m_Pivot.x
