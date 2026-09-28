@@ -52,7 +52,7 @@ namespace MenuUI.Scripts
             OverlayPanelCheck.OnChangePopupInfo -= ActivatePopUp;
         }
 
-        public void Initialize()
+        private void Initialize()
         {
             if (!gameObject.activeSelf) gameObject.SetActive(true); //Make sure that this object is always active when called.
         }
@@ -96,21 +96,21 @@ namespace MenuUI.Scripts
         }
 
 
-        public void ActivateInfoPopUp(string popupText)
+        private void ActivateInfoPopUp(string popupText)
         {
             _background.color = _backgroundInfoColour;
             _textField.text = popupText;
             _textField.color = _textColour;
         }
 
-        public void ActivateWarningPopUp(string popupText)
+        private void ActivateWarningPopUp(string popupText)
         {
             _background.color = _backgroundWarningColour;
             _textField.text = popupText;
             _textField.color = _textColour;
         }
 
-        public void ActivateErrorPopUp(string popupText)
+        private void ActivateErrorPopUp(string popupText)
         {
             _background.color = _backgroundErrorColour;
             _textField.text = popupText;
