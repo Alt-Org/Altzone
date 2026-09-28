@@ -28,6 +28,8 @@ namespace MenuUI.Scripts
         [SerializeField]
         private Color _backgroundInfoColour;
         [SerializeField]
+        private Color _backgroundWarningColour;
+        [SerializeField]
         private Color _backgroundErrorColour;
         [SerializeField]
         private float _popupWaitDelay = 3f;
@@ -57,13 +59,17 @@ namespace MenuUI.Scripts
 
         public void ActivatePopUp(InfoLevel level, string popupText)
         {
+            Initialize();
+            if (!transform.parent.gameObject.activeInHierarchy) return; //Check if the parent is active, if not this probably shouldn't activate.
+            _popup.SetActive(true);
+
             switch (level)
             {
                 case InfoLevel.Info:
                     ActivateInfoPopUp(popupText);
                     break;
                 case InfoLevel.Warning:
-                    ActivateInfoPopUp(popupText);
+                    ActivateWarningPopUp(popupText);
                     break;
                 case InfoLevel.Error:
                     ActivateErrorPopUp(popupText);
@@ -72,69 +78,43 @@ namespace MenuUI.Scripts
                     ActivateInfoPopUp(popupText);
                     break;
             }
+
+            if (_runningCoroutine != null)
+            {
+                StopCoroutine(_runningCoroutine);
+                _runningCoroutine = null;
+            }
+
+            _runningCoroutine = FadePopup(callback =>
+            {
+                if (callback == true)
+                {
+                    _runningCoroutine = null;
+                }
+            });
+            StartCoroutine(_runningCoroutine);
         }
 
 
         public void ActivateInfoPopUp(string popupText)
         {
-            Initialize();
-            if (!transform.parent.gameObject.activeInHierarchy) return; //Check if the parent is active, if not this probably shouldn't activate.
-            _popup.SetActive(true);
-
             _background.color = _backgroundInfoColour;
-
             _textField.text = popupText;
-
             _textField.color = _textColour;
+        }
 
-
-
-            if (_runningCoroutine != null)
-            {
-                StopCoroutine(_runningCoroutine);
-                _runningCoroutine = null;
-            }
-
-            _runningCoroutine = FadePopup(callback =>
-            {
-                if (callback == true)
-                {
-                    _runningCoroutine = null;
-                }
-            });
-            StartCoroutine(_runningCoroutine);
-
+        public void ActivateWarningPopUp(string popupText)
+        {
+            _background.color = _backgroundWarningColour;
+            _textField.text = popupText;
+            _textField.color = _textColour;
         }
 
         public void ActivateErrorPopUp(string popupText)
         {
-            Initialize();
-            if (!transform.parent.gameObject.activeInHierarchy) return; //Check if the parent is active, if not this probably shouldn't activate.
-            _popup.SetActive(true);
-
-            _background.color = _backgroundInfoColour;
-
+            _background.color = _backgroundErrorColour;
             _textField.text = popupText;
-
             _textField.color = _textColour;
-
-
-
-            if (_runningCoroutine != null)
-            {
-                StopCoroutine(_runningCoroutine);
-                _runningCoroutine = null;
-            }
-
-            _runningCoroutine = FadePopup(callback =>
-            {
-                if (callback == true)
-                {
-                    _runningCoroutine = null;
-                }
-            });
-            StartCoroutine(_runningCoroutine);
-
         }
 
         private IEnumerator FadePopup(Action<bool> callback)
