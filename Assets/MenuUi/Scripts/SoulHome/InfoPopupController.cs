@@ -79,6 +79,10 @@ namespace MenuUI.Scripts
                     break;
             }
 
+            Vector2 vector = _textField.GetPreferredValues(popupText, GetComponent<RectTransform>().rect.width, Screen.height);
+            float boxHeight = Mathf.Max(vector.y, _textField.fontSizeMax*2+40);
+            _popup.GetComponent<RectTransform>().sizeDelta = new Vector2(GetComponent<RectTransform>().sizeDelta.x, boxHeight);
+
             if (_runningCoroutine != null)
             {
                 StopCoroutine(_runningCoroutine);
