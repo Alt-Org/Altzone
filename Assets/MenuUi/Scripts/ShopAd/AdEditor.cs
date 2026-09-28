@@ -57,6 +57,11 @@ public class AdEditor : AltMonoBehaviour
         InitializeAd();
     }
 
+    private void OnEnable() // Uusi lisäys (Perttu)
+    {
+        GetFurniture();
+    }
+
     private void OnDisable()
     {
        CloseEditor();
@@ -84,7 +89,6 @@ public class AdEditor : AltMonoBehaviour
 
 
         List<AdBorderFrameObject> frameList = _borderReference.FrameList;
-        List<AdFurnitureObject> furnitureList = _borderReference.FurnitureList; // Uusi lisäys (Perttu)
         List<AdFontObject> fontList = _borderReference.FontList; // Uusi lisäys (Perttu)
 
         foreach (AdFontObject font in fontList) // Uusi lisäys (Perttu)
@@ -94,17 +98,6 @@ public class AdEditor : AltMonoBehaviour
             fontObject.GetComponent<Image>().preserveAspect = true;
             float objectHeight = _fontSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
             fontObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextFont(font.Font));
-        }
-
-        //EmptyFurnitureContent(); // Uusi lisäys (Perttu)
-        foreach (AdFurnitureObject furniture in furnitureList) // Uusi lisäys (Perttu)
-        {
-            GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
-            furnitureObject.GetComponent<Image>().preserveAspect = true;
-            furnitureObject.GetComponent<Image>().sprite = furniture.Image;
-            float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
-            furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
-            if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
         }
 
         foreach (AdBorderFrameObject frame in frameList)
@@ -173,7 +166,7 @@ public class AdEditor : AltMonoBehaviour
         _textColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _textColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
     }
 
-    private void EmptyFurnitureContent() // Uusi lisäys (Perttu)
+    private void GetFurniture() // Uusi lisäys (Perttu)
     {
         if (_furnitureSelectionContent.transform.childCount > 0)
         {
@@ -181,6 +174,18 @@ public class AdEditor : AltMonoBehaviour
             {
                 Destroy(_furnitureSelectionContent.transform.GetChild(i).gameObject);
             }
+        }
+
+        List<AdFurnitureObject> furnitureList = _borderReference.FurnitureList; // Uusi lisäys (Perttu)
+
+        foreach (AdFurnitureObject furniture in furnitureList) // Uusi lisäys (Perttu)
+        {
+            GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
+            furnitureObject.GetComponent<Image>().preserveAspect = true;
+            furnitureObject.GetComponent<Image>().sprite = furniture.Image;
+            float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
+            if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
         }
     }
 
@@ -273,7 +278,6 @@ public class AdEditor : AltMonoBehaviour
     public void CloseEditor()
     {
         // Uusi lisäys (Perttu)
-        EmptyFurnitureContent();
         kojuPanel.SetActive(true);
         _inputFieldHolder.SetActive(false);
         if (_adData._isAdText) _adTextHolder.SetActive(true);
