@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 
@@ -19,27 +20,6 @@ namespace Altzone.Scripts.ReferenceSheets
         public List<ChatResponseObject> List { get => _list; }
     }
 
-    public enum ResponseType
-    {
-        NeedCompany,
-        NewGame,
-        ComingToPlay,
-        WantToPlay,
-        Yes,
-        No,
-        Online,
-        Leaving,
-        Busy,
-        WinningStreak,
-        LosingStreak,
-        Discord,
-        Lonely,
-        GoodGame,
-        BadGame,
-        SkillIssue,
-        SkillIssue2,
-        Funny
-    }
 
     [Serializable]
     public class ChatResponseObject
@@ -47,6 +27,5 @@ namespace Altzone.Scripts.ReferenceSheets
         public ResponseType ResponseId;
         public string Response;
     }
-
 
 }
