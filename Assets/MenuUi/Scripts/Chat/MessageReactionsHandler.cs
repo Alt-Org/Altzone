@@ -43,6 +43,9 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     private string _pLayerId; ///Used for <see cref="ListReset"/>
 
+    public delegate void OpenReactionsPopup(MessageReactionsHandler ReactionHandler, ChatMessage message, List<ServerReactions> reactions);
+    public static event OpenReactionsPopup OnOpenReactionsPopup;
+
     void Start()
     {
         //For "AddReactions"
@@ -203,13 +206,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
         {
             RemoveReaction(removableReactions[i]);
         }
-
-            //Used for "ChatShowUserPopUpData"
-            if (_reactionPopup.gameObject.activeSelf)
-        {
-            _reactionPopup.ReactionFieldCopyUpdate(_reactionPaneldata.ReactionField, this, message);
-        }
-
     }
 
     /// <summary>
@@ -339,8 +335,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         //Gets needed data for ChatShowUserPopUpData1
         _reactionPopup.gameObject.SetActive(true);
 
-        //Changes the reactions object sizes
-        _reactionPopup.ReactionFieldCopyUpdate(_reactionPaneldata.ReactionField, this, message);
+        OnOpenReactionsPopup?.Invoke(this, message, _reactionData);
 
         foreach (var reactionData in _reactionData)
         {

@@ -11,8 +11,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using static ServerChatMessage;
 
-public class ChatShowUsersPopUpData : MonoBehaviour
+public class ChatShowUsersPopUpData : AltMonoBehaviour
 {
+    [SerializeField] private GameObject _panel;
+
     [Header("Buttons")]
     [SerializeField] private Button[] _closeButtons;
     [SerializeField] private Button _closeAllReactionButton;
@@ -20,7 +22,6 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
     [Header("For Copied Reactions")]
     [SerializeField] private Transform _reactionFieldLocation;
-    private GameObject _copiedReactionField;
     [SerializeField] private Transform _popUpAllReactions;
     [SerializeField] private ScrollRect _scrollRect;
 
@@ -33,9 +34,12 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     [Header("Reactions")]
     [SerializeField] private TextMeshProUGUI _reactionAmounText;
     [SerializeField] private List<ReactionObject> _reactionList;
+    private List<ReactionObjectHandler> _reactions = new();
+    [SerializeField] private GameObject _reactionObject;
     [SerializeField] private GameObject _allReactions;
     [SerializeField] private GameObject _selectedReaction;
     [SerializeField] private GameObject _noReactions;
+
 
     [Header("List Order")]
     [SerializeField] private Sprite[] _sprites;
@@ -45,6 +49,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
     [SerializeField] private TextLanguageSelectorCaller _textLanguageSelectorCaller;
 
+    private List<ChatReactionHandler> _reactionHandlers = new();
     private string _currentMessage;
     private int _lineOrder = 0;    //Whats the newest and the oldest reaction set
     private int _currentOrder = 1; //What type of order we are on the list
@@ -70,8 +75,8 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         _userInfo.Clear();
 
-        Destroy(_copiedReactionField);
-        _copiedReactionField = null;
+        //Destroy(_copiedReactionField);
+        //_copiedReactionField = null;
         _scrollRect.content = null;
         _currentMessage = null;
         gameObject.SetActive(false);
@@ -83,6 +88,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     {
         Reactiontext();
         ListOrderSystem(_currentOrder);
+        MessageReactionsHandler.OnOpenReactionsPopup += ReactionFieldCopyUpdate;
     }
 
 
@@ -90,6 +96,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     private void OnDisable()
     {
         ClosePopup();
+        MessageReactionsHandler.OnOpenReactionsPopup -= ReactionFieldCopyUpdate;
     }
 
 
@@ -123,6 +130,8 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
     public void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
     {
+        if (!_panel.activeInHierarchy) return;
+
         //Checks if it's on a correct Message section
         if (_currentMessage != null)
         {
@@ -157,7 +166,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
         Reactiontext();
         ListOrderSystem(_currentOrder);
 
-        if (_copiedReactionField.transform.childCount > 0)
+        if (_reactionFieldLocation.childCount > 0)
         {
             _noReactions.SetActive(false);
         }
@@ -167,6 +176,8 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     //removes the userData
     public void RemoveUserReaction(string Userid, ChatMessage message)
     {
+        if (!_panel.activeInHierarchy) return;
+
         //Checks if it's on a correct Message section
         if (_currentMessage != null)
         {
@@ -190,7 +201,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
 
         Reactiontext();
 
-        if(_copiedReactionField.transform.childCount == 0)
+        if(_reactionFieldLocation.childCount == 0)
         {
             _noReactions.SetActive(true);
         }
@@ -207,7 +218,7 @@ public class ChatShowUsersPopUpData : MonoBehaviour
     }
 
     //Copies the Reaction
-    public void ReactionFieldCopyUpdate(GameObject ReactionField, MessageReactionsHandler ReactionHandler, ChatMessage message)
+    public void ReactionFieldCopyUpdate(MessageReactionsHandler ReactionHandler, ChatMessage message, List<ServerReactions> reactions)
     {
 
         //Checks if it's on a correct Message section
@@ -217,15 +228,66 @@ public class ChatShowUsersPopUpData : MonoBehaviour
                 return;
         }
 
+        _panel.SetActive(true);
 
-        Destroy(_copiedReactionField);
+        foreach (Transform t in _reactionFieldLocation)
+        {
+            Destroy(t.gameObject);
+        }
 
-        _copiedReactionField = Instantiate(ReactionField, _reactionFieldLocation);
+        foreach (ServerReactions reaction in reactions)
+        {
+            Emotion emojiType = Emotion.Blank;
+            if (reaction.emoji != null)
+                if (!Enum.TryParse(reaction.emoji, out emojiType))
+                {
+                    if (Enum.TryParse(reaction.emoji, out Mood mood))
+                    {
+                        emojiType = (Emotion)mood;
+                    }
+                }
 
-        _scrollRect.content = _copiedReactionField.GetComponent<RectTransform>();
+            Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == emojiType)?.Sprite;
+            int i = _reactionList.FindIndex(m => m.Sprite == reactionSprite);
+
+            // Checks if chosen reaction is already added to the selected message. If so, deletes it.
+            foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+            {
+                if (addedReaction.Mood == emojiType)
+                {
+                    addedReaction.AddReaction(reaction);
+                    StartCoroutine(GetPlayerData(player =>
+                    {
+                        if (player != null)
+
+                            if (player.Id == reaction.sender_id)
+                            {
+
+                                _reactionList[i].Selected = true;
+
+                                addedReaction.Select();
+
+                            }
+                    }));
+                    return;
+
+                }
+            }
+            // Creates a reaction with the needed info and adds it to the selected message.
+            GameObject newReaction = Instantiate(_reactionObject, _reactionFieldLocation);
+
+            ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
+            chatReactionHandler.SetReactionInfo(reactionSprite, message.Id, emojiType);
+            chatReactionHandler.AddReaction(reaction);
+            _reactionHandlers.Add(chatReactionHandler);
+            AddUsersReaction(message, reaction);
+            //chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
+        }
+
+        _scrollRect.content = _reactionFieldLocation.GetComponent<RectTransform>();
 
         //Changes the reactions object sizes
-        foreach (RectTransform child in _copiedReactionField.transform)
+        foreach (RectTransform child in _reactionFieldLocation)
         {
             ContentSizeFitter childFitter = child.GetComponent<ContentSizeFitter>();
             childFitter.enabled = false;
