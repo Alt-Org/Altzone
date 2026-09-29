@@ -42,7 +42,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     private string _pLayerId; ///Used for <see cref="ListReset"/>
 
-    public delegate void OpenReactionsPopup(MessageReactionsHandler ReactionHandler, ChatMessage message, List<ServerReactions> reactions);
+    public delegate void OpenReactionsPopup(ChatMessage message, List<ServerReactions> reactions);
     public static event OpenReactionsPopup OnOpenReactionsPopup;
 
     void Start()
@@ -77,7 +77,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
         //ReactionObjectHandler.OnReactionPressed -= AddReaction;
     }
 
-    public void GenarateReactionObjects(Transform reactionPanel)
+    private void GenarateReactionObjects(Transform reactionPanel)
     {
         _reactions.Clear();
         foreach (Transform reaction in reactionPanel)
@@ -224,11 +224,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
             //Adds the data for reaction popup
             _reactionData.Add(reaction);
 
-            /*if (_reactionPopup.gameObject.activeSelf)
-            {
-                _reactionPopup.AddUsersReaction(message, reaction); 
-            }*/
-
             HorizontalLayoutGroup reactionsFields = ReactionPanel.GetComponent<HorizontalLayoutGroup>();
 
             Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == mood)?.Sprite;
@@ -305,7 +300,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// Toggles the added reactions as selected and unselected.
     /// </summary>
     /// <param name="reactionHandler"></param>
-    public void ToggleReaction(ChatReactionHandler reactionHandler)
+    private void ToggleReaction(ChatReactionHandler reactionHandler)
     {
 
 
@@ -330,18 +325,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private void ShowUsers(ChatMessage message)
     {
 
-        /*if (_reactionPopup.gameObject.activeSelf)
-            return;
-
-        //Gets needed data for ChatShowUserPopUpData1
-        _reactionPopup.gameObject.SetActive(true);*/
-
-        OnOpenReactionsPopup?.Invoke(this, message, _reactionData);
-
-        /*foreach (var reactionData in _reactionData)
-        {
-            _reactionPopup.AddUsersReaction(message, reactionData);
-        }*/
+        OnOpenReactionsPopup?.Invoke(message, _reactionData);
 
         _longClick = true;
 

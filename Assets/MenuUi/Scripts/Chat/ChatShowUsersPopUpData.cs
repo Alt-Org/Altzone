@@ -34,7 +34,6 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
     [Header("Reactions")]
     [SerializeField] private TextMeshProUGUI _reactionAmounText;
     [SerializeField] private List<ReactionObject> _reactionList;
-    private List<ReactionObjectHandler> _reactions = new();
     [SerializeField] private GameObject _reactionObject;
     [SerializeField] private GameObject _allReactions;
     [SerializeField] private GameObject _selectedReaction;
@@ -50,6 +49,7 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
     [SerializeField] private TextLanguageSelectorCaller _textLanguageSelectorCaller;
 
     private List<ChatReactionHandler> _reactionHandlers = new();
+    private List<ReactionObjectHandler> _reactions = new();
     private string _currentMessage;
     private int _lineOrder = 0;    //Whats the newest and the oldest reaction set
     private int _currentOrder = 1; //What type of order we are on the list
@@ -179,6 +179,7 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
             }
             Destroy(handler.gameObject);
         }
+        UpdateReactionStatus(_popUpAllReactions);
     }
 
     private void AddReaction(ServerReactions reaction, ChatMessage message)
@@ -236,7 +237,7 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
     }
 
 
-    public void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
+    private void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
     {
         if (!_panel.activeInHierarchy) return;
 
@@ -282,7 +283,7 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
     }
 
     //removes the userData
-    public void RemoveUserReaction(string Userid, ChatMessage message)
+    private void RemoveUserReaction(string Userid, ChatMessage message)
     {
         if (!_panel.activeInHierarchy) return;
 
@@ -326,7 +327,7 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
     }
 
     //Copies the Reaction
-    public void ReactionFieldCopyUpdate(MessageReactionsHandler ReactionHandler, ChatMessage message, List<ServerReactions> reactions)
+    private void ReactionFieldCopyUpdate(ChatMessage message, List<ServerReactions> reactions)
     {
 
         //Checks if it's on a correct Message section
@@ -366,7 +367,7 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
 
             child.sizeDelta = new Vector2(150, 110);
         }*/
-        ReactionHandler.GenarateReactionObjects(_popUpAllReactions);
+        GenarateReactionObjects(_popUpAllReactions);
 
     }
 
@@ -444,6 +445,44 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
         for (int i = 0; i < _userInfo.Count; i++) {
 
             _userInfo[i].UserDataObj.transform.SetSiblingIndex(i);
+        }
+    }
+
+    private void GenarateReactionObjects(Transform reactionPanel)
+    {
+        _reactions.Clear();
+        foreach (Transform reaction in reactionPanel)
+        {
+            Destroy(reaction.gameObject);
+        }
+        foreach (ReactionObject reaction in _reactionList)
+        {
+            if (reaction.Sprite != null && reaction.Mood != Emotion.Blank)
+            {
+                GameObject reactionObject = Instantiate(_reactionObject, reactionPanel);
+                if (!reactionObject.TryGetComponent(out ReactionObjectHandler handler))
+                {
+                    handler = reactionObject.AddComponent<ReactionObjectHandler>();
+                }
+                handler.SetInfo(reaction, _currentMessage);
+                _reactions.Add(handler);
+            }
+        }
+        UpdateReactionStatus(reactionPanel);
+    }
+
+    private void UpdateReactionStatus(Transform reactionPanel)
+    {
+        foreach (Transform child in reactionPanel)
+        {
+            if (child.GetComponent<ReactionObjectHandler>() == null) continue;
+            Emotion mood = child.GetComponent<ReactionObjectHandler>().Mood;
+
+            foreach (var r in _reactionList)
+            {
+                if (mood == r.Mood)
+                    child.gameObject.SetActive(!r.Selected);
+            }
         }
     }
 
