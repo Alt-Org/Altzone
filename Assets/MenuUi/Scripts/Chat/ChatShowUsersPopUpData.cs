@@ -337,6 +337,13 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
 
         _panel.SetActive(true);
 
+        List<UserReactionInfo> info = new(_userInfo);
+
+        foreach (var i in info)
+        {
+            RemoveUserReaction(i._id, message);
+        }
+
         foreach (Transform t in _reactionFieldLocation)
         {
             Destroy(t.gameObject);
