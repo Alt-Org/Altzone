@@ -2029,14 +2029,15 @@ public class ServerManager : MonoBehaviour
 
     #region Battle
 
-    public IEnumerator MatchmakingCreateRoom(GameType gameType, Action<bool> callback, string RoomId = "", int teamSize = 2, bool allowBots = true, string automaticInvite = null)
+    public IEnumerator MatchmakingCreateRoom(MatchmakingType matchmakingType, GameType gameType, Action<bool> callback, string RoomId = "", int teamSize = 2, bool allowBots = true, string automaticInvite = null)
     {
         object invite = automaticInvite != null ? (automaticInvite.ToUpper().Equals("CLAN") ? new { type = "CLAN" } : new { type = "PLAYER", playerId = automaticInvite }) : null;
 
         string body = JObject.FromObject(
             new
             {
-                matchType = gameType,
+                matchType = matchmakingType,
+                gameType = (int)gameType,
                 roomId = string.IsNullOrEmpty(RoomId) ? Guid.NewGuid().ToString(): RoomId,
                 teamSize = teamSize,
                 allowBots = allowBots,

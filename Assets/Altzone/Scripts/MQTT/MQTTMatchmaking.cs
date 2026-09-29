@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Player;
 
 namespace Altzone.Scripts.MQTT
@@ -8,6 +9,7 @@ namespace Altzone.Scripts.MQTT
     public class MQTTMatchRoomData
     {
         public string id { get; set; }
+        public MatchType matchType { get; set; }
         public MatchType matchType { get; set; }
         public InviteStatus status { get; set; }
         public string ownerPlayerId { get; set; }
@@ -41,7 +43,7 @@ namespace Altzone.Scripts.MQTT
     {
         public string id { get; set; }
         public MatchType matchType { get; set; }
-        public MatchStatus status { get; set; }
+        public int gameType { get; set; }
         public int teamSize { get; set; }
         public List<MQTTMatchTeams> teams { get; set; }
         public string startedAt { get; set; }
@@ -51,9 +53,9 @@ namespace Altzone.Scripts.MQTT
 
     public enum MatchType
     {
-        RANDOM,
-        CLAN,
-        CUSTOM
+        RANDOM = MatchmakingType.Random2v2,
+        CLAN = MatchmakingType.Clan2v2,
+        CUSTOM = MatchmakingType.Custom
     }
 
     public enum InviteStatus
