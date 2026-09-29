@@ -82,7 +82,8 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
         //_copiedReactionField = null;
         _scrollRect.content = null;
         _currentMessage = null;
-        gameObject.SetActive(false);
+        _panel.SetActive(false);
+        _reactionHandlers.Clear();
         _lineOrder = 0; 
         _currentOrder = 1; 
     }
@@ -348,6 +349,7 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
         {
             Destroy(t.gameObject);
         }
+        _reactionHandlers.Clear();
 
         foreach (ServerReactions reaction in reactions)
         {
