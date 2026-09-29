@@ -122,7 +122,7 @@ namespace Altzone.Scripts.Store
             }
 
             if (ColorUtility.TryParseHtmlString(backgroundColour, out Color colour)) _backgroundColour = backgroundColour;
-            else _backgroundColour = "#E35000";
+            else _backgroundColour = "#FFFFFF";
 
             if (string.IsNullOrEmpty(_adText)) // Uusi lisäys (Perttu)
             {

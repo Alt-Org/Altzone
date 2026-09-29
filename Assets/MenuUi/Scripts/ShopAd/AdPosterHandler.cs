@@ -77,10 +77,8 @@ public class AdPosterHandler : AltMonoBehaviour
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
 
-        if (data.TextFont == null) data.TextFont = _adText.font;
+        if (!data.TextFont) data.TextFont = _adText.font; // Uusi lisäys (Perttu)
         _adText.font = data.TextFont; // Uusi lisäys (Perttu)
-
-        if (string.IsNullOrEmpty(data.AdText)) data.AdText = "Myyntikoju avattu!";
         _adText.text = data.AdText; // Uusi lisäys (Perttu)
 
         if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
@@ -107,6 +105,7 @@ public class AdPosterHandler : AltMonoBehaviour
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
 
+        if (!data.TextFont) data.TextFont = _adText.font; // Uusi lisäys (Perttu)
         _adText.font = data.TextFont; // Uusi lisäys (Perttu)
         _adText.text = data.AdText; // Uusi lisäys (Perttu)
 

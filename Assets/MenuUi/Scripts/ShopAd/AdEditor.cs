@@ -49,7 +49,6 @@ public class AdEditor : AltMonoBehaviour
     private bool furnitureChanged = false;
     private bool textColorChanged = false;
     private bool fontChanged = false;
-    private bool textChanged = false;
     private bool textStateChanged = false;
 
     void Start()    
@@ -60,6 +59,9 @@ public class AdEditor : AltMonoBehaviour
     private void OnEnable() // Uusi lisäys (Perttu)
     {
         GetFurniture();
+        GetColors();
+
+        if (_adData != null) _adData.previousText = _adData.AdText;
     }
 
     private void OnDisable()
@@ -85,8 +87,8 @@ public class AdEditor : AltMonoBehaviour
             }
             _adGraphicHandler.SetAdPoster(_adData, _posterName, _heartPieceData);
             if (_adData._isAdText) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
+            _adData.previousText = _adData.AdText; // Uusi lisäys (Perttu)
         }));
-
 
         List<AdBorderFrameObject> frameList = _borderReference.FrameList;
         List<AdFontObject> fontList = _borderReference.FontList; // Uusi lisäys (Perttu)
@@ -110,8 +112,6 @@ public class AdEditor : AltMonoBehaviour
             if(_dtSelectButtons)_dtSelectButtons.AddButton(new(frameObject.GetComponent<Button>(), frameObject.GetComponent<Image>()));
         }
         if (_dtSelectButtons) _dtSelectButtons.RefreshListeners();
-
-        GetColors(); // Uusi lisäys (Perttu)
 
         StartCoroutine(SetFrameSelectionSize());
 
@@ -229,7 +229,6 @@ public class AdEditor : AltMonoBehaviour
 
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        //SaveAdData();
         currentColor = colour;
         GetColors();
     }
@@ -244,7 +243,6 @@ public class AdEditor : AltMonoBehaviour
 
         _adData.BorderFrame = frame.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        //SaveAdData();
     }
 
     public void ChangeFurniture(AdFurnitureObject furniture) // Uusi lisäys (Perttu)
@@ -281,7 +279,6 @@ public class AdEditor : AltMonoBehaviour
             _adData.previousFont = _adData.TextFont;
             fontChanged = true;
         }
-        Debug.Log(_adData.previousFont);
 
         _inputField.fontAsset = font;
         _adData.TextFont = font;
@@ -290,12 +287,6 @@ public class AdEditor : AltMonoBehaviour
 
     public void ChangeText(string text) // Uusi lisäys (Perttu)
     {
-        if (!textChanged)
-        {
-            _adData.previousText = _adData.AdText;
-            textChanged = true;
-        }
-
         _adData.AdText = text;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
@@ -328,7 +319,6 @@ public class AdEditor : AltMonoBehaviour
         furnitureChanged = false;
         textColorChanged = false;
         fontChanged = false;
-        textChanged = false;
         textStateChanged = false;
     }
 
@@ -345,8 +335,8 @@ public class AdEditor : AltMonoBehaviour
 
         if (!string.IsNullOrEmpty(_adData.previousBorder)) _adData.BorderFrame = _adData.previousBorder;
         if (!string.IsNullOrEmpty(_adData.previousFurniture)) _adData.Furniture = _adData.previousFurniture;
-        if (!string.IsNullOrEmpty(_adData.previousTextColor)) _adData.TextColour = _adData.previousTextColor;
 
+        if (!string.IsNullOrEmpty(_adData.previousTextColor)) _adData.TextColour = _adData.previousTextColor;
         if (ColorUtility.TryParseHtmlString(_adData.previousTextColor, out Color textColor)) currentTextColor = textColor;
         _inputField.textComponent.color = currentTextColor;
 
@@ -356,10 +346,14 @@ public class AdEditor : AltMonoBehaviour
             _inputField.fontAsset = _adData.previousFont;
         }
 
-        if (!string.IsNullOrEmpty(_adData.previousText)) _adData.AdText = _adData.previousText;
+        if (!string.IsNullOrEmpty(_adData.previousText))
+        {
+            _adData.AdText = _adData.previousText;
+            _inputField.textComponent.SetText(_adData.previousText);
+        }
         _adData._isAdText = _adData.previousTextState;
-        _adGraphicHandler.SetAdPoster(_adData, _posterName);
 
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
         CloseEditor();
     }
 }
