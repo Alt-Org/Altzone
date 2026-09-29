@@ -44,7 +44,6 @@ public class Chat : AltMonoBehaviour
     [SerializeField] private GameObject _allReactions;
 
     [Header("Chat Reactions")]
-    [SerializeField] private CharacterResponseList _chatResponseList;
     [SerializeField] private GameObject _chatResponseContent;
 
     [Header("Prefab")]
@@ -183,7 +182,7 @@ public class Chat : AltMonoBehaviour
         //Changes message to set mood message if user switches 
         if (_inputField.text != "")
         {
-            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(_currentMood);
+            List<ChatResponseObject> messageList = CharacterResponseList.Instance.GetChatResponses(_currentMood);
             ChatResponseObject convertedResponse = messageList[_responseIndex];
             string textFromButton = convertedResponse.Response;
 
@@ -193,7 +192,7 @@ public class Chat : AltMonoBehaviour
         StartCoroutine(GetPlayerData(data =>
         {
 
-            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(_currentMood);
+            List<ChatResponseObject> messageList = CharacterResponseList.Instance.GetChatResponses(_currentMood);
             //List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
             foreach (ChatResponseObject message in messageList)
             {
@@ -327,7 +326,7 @@ public class Chat : AltMonoBehaviour
     {
         if (message != null)
         {
-            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(_currentMood);        
+            List<ChatResponseObject> messageList = CharacterResponseList.Instance.GetChatResponses(_currentMood);        
             ChatResponseObject convertedResponse = messageList.FirstOrDefault(c => c.ResponseId == message.ResponseId);
             string textFromButton = convertedResponse.Response;
             _responseIndex = (int)convertedResponse.ResponseId;

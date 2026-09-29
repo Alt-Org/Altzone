@@ -28,5 +28,4 @@ namespace Altzone.Scripts.ReferenceSheets
         public string Response;
     }
 
-
 }
