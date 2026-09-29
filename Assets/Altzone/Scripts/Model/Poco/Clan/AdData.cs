@@ -17,6 +17,15 @@ namespace Altzone.Scripts.Store
         public string _adText; // Uusi lisäys (Perttu)
         public bool _isAdText = true; // Uusi lisäys (Perttu)
 
+        // Uusi lisäys (Perttu)
+        public string previousColor;
+        public string previousBorder;
+        public string previousFurniture;
+        public string previousTextColor;
+        public TMPro.TMP_FontAsset previousFont;
+        public string previousText;
+        public bool previousTextState = true;
+
         public string BorderFrame
         {
             get => _borderFrame;

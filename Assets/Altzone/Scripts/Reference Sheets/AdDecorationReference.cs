@@ -38,7 +38,6 @@ namespace Altzone.Scripts.ReferenceSheets
         public List<AdBorderFrameObject> FrameList {
             get
             {
-                if (_validatedFrameList == null) ValidateFrames();
                 ValidateFrames();
                 return _validatedFrameList;
             }
@@ -48,7 +47,6 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             get
             {
-                if (_validatedFurnitureList == null) ValidateFurniture();
                 ValidateFurniture();
                 return _validatedFurnitureList;
             }
@@ -58,7 +56,6 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             get
             {
-                if (_validatedFontList == null) ValidateFonts();
                 ValidateFonts();
                 return _validatedFontList;
             }

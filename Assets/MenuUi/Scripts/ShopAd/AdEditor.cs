@@ -44,14 +44,6 @@ public class AdEditor : AltMonoBehaviour
     private string _posterName = null;
     private List<HeartPieceData> _heartPieceData = new();
 
-    private string previousColor;
-    private string previousBorder;
-    private string previousFurniture;
-    private string previousTextColor;
-    private TMPro.TMP_FontAsset previousFont;
-    private string previousText;
-    private bool previousTextState;
-
     private bool colorChanged = false;
     private bool borderChanged = false;
     private bool furnitureChanged = false;
@@ -231,10 +223,10 @@ public class AdEditor : AltMonoBehaviour
     {
         if (!colorChanged)
         {
-            previousColor = _adData.BackgroundColour;
+            _adData.previousColor = _adData.BackgroundColour;
             colorChanged = true;
         }
-        
+
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         //SaveAdData();
@@ -246,10 +238,10 @@ public class AdEditor : AltMonoBehaviour
     {
         if (!borderChanged)
         {
-            previousBorder = _adData.BorderFrame;
+            _adData.previousBorder = _adData.BorderFrame;
             borderChanged = true;
         }
-        
+
         _adData.BorderFrame = frame.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         //SaveAdData();
@@ -259,10 +251,10 @@ public class AdEditor : AltMonoBehaviour
     {
         if (!furnitureChanged)
         {
-            previousFurniture = _adData.Furniture;
+            _adData.previousFurniture = _adData.Furniture;
             furnitureChanged = true;
         }
-        
+
         _adData.Furniture = furniture.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
@@ -271,10 +263,10 @@ public class AdEditor : AltMonoBehaviour
     {
         if (!textColorChanged)
         {
-            previousTextColor = _adData.TextColour;
+            _adData.previousTextColor = _adData.TextColour;
             textColorChanged = true;
         }
-        
+
         _inputField.textComponent.color = colour;
         _adData.TextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
@@ -286,10 +278,11 @@ public class AdEditor : AltMonoBehaviour
     {
         if (!fontChanged)
         {
-            previousFont = _adData.TextFont;
+            _adData.previousFont = _adData.TextFont;
             fontChanged = true;
         }
-        
+        Debug.Log(_adData.previousFont);
+
         _inputField.fontAsset = font;
         _adData.TextFont = font;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
@@ -299,7 +292,7 @@ public class AdEditor : AltMonoBehaviour
     {
         if (!textChanged)
         {
-            previousText = _adData.AdText;
+            _adData.previousText = _adData.AdText;
             textChanged = true;
         }
 
@@ -311,10 +304,10 @@ public class AdEditor : AltMonoBehaviour
     {
         if (!textStateChanged)
         {
-            previousTextState = _adData._isAdText;
+            _adData.previousTextState = _adData._isAdText;
             textStateChanged = true;
         }
-        
+
         _adData._isAdText = enable;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
@@ -347,13 +340,24 @@ public class AdEditor : AltMonoBehaviour
 
     public void CancelAndCloseEditor() // Uusi lisäys (Perttu)
     {
-        _adData.BackgroundColour = previousColor;
-        _adData.BorderFrame = previousBorder;
-        _adData.Furniture = previousFurniture;
-        _adData.TextColour = previousTextColor;
-        _adData.TextFont = previousFont;
-        _adData.AdText = previousText;
-        _adData._isAdText = previousTextState;
+        if (!string.IsNullOrEmpty(_adData.previousColor)) _adData.BackgroundColour = _adData.previousColor;
+        if (ColorUtility.TryParseHtmlString(_adData.previousColor, out Color color)) currentColor = color;
+
+        if (!string.IsNullOrEmpty(_adData.previousBorder)) _adData.BorderFrame = _adData.previousBorder;
+        if (!string.IsNullOrEmpty(_adData.previousFurniture)) _adData.Furniture = _adData.previousFurniture;
+        if (!string.IsNullOrEmpty(_adData.previousTextColor)) _adData.TextColour = _adData.previousTextColor;
+
+        if (ColorUtility.TryParseHtmlString(_adData.previousTextColor, out Color textColor)) currentTextColor = textColor;
+        _inputField.textComponent.color = currentTextColor;
+
+        if (_adData.previousFont)
+        {
+            _adData.TextFont = _adData.previousFont;
+            _inputField.fontAsset = _adData.previousFont;
+        }
+
+        if (!string.IsNullOrEmpty(_adData.previousText)) _adData.AdText = _adData.previousText;
+        _adData._isAdText = _adData.previousTextState;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
 
         CloseEditor();
