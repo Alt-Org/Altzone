@@ -10,12 +10,12 @@ using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby.InLobby;
-using MQTTnet.Diagnostics;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 using Random = UnityEngine.Random;
 using SignalBus = MenuUi.Scripts.Signals.SignalBus;
 
@@ -163,14 +163,14 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
                     if (!PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
                     {
-                        PopupSignalBus.OnChangePopupInfoSignal("Vain huoneen johtaja voi aloittaa matchmakingin.");
+                        OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Vain huoneen johtaja voi aloittaa matchmakingin.");
                         RestoreStartButton();
                         return;
                     }
 
                     if (PhotonLobbyRoom.CountRealPlayers() != PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
                     {
-                        PopupSignalBus.OnChangePopupInfoSignal($"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
+                        OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
                         RestoreStartButton();
                         return;
                     }
@@ -219,7 +219,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     }
                     else
                     {
-                        PopupSignalBus.OnChangePopupInfoSignal($"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
+                        OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Huoneessa pitää olla {PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers} pelaajaa.");
                         RestoreStartButton();
                     }
                     break;
@@ -255,7 +255,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             if (!PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Vain huoneen johtaja voi lähettää kutsun.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Vain huoneen johtaja voi lähettää kutsun.");
                 yield break;
             }
 
@@ -264,14 +264,14 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             if (candidates == null || candidates.Count == 0)
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Ei sopivia online-pelaajia kutsuttavaksi.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info, "Ei sopivia online-pelaajia kutsuttavaksi.");
                 yield break;
             }
 
             EnsureInviteSelectorPanel();
             if (_inviteSelectorPanel == null)
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Kutsulistaa ei voitu avata. Yrita uudelleen.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Kutsulistaa ei voitu avata. Yrita uudelleen.");
                 yield break;
             }
 
@@ -286,7 +286,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 () =>
                 {
                         SetInviteButtonInteractable(true);
-                    PopupSignalBus.OnChangePopupInfoSignal("Kutsun lähetys peruttu.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Kutsun lähetys peruttu.");
                 });
         }
 
@@ -338,7 +338,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             if (onlinePlayer == null || string.IsNullOrEmpty(onlinePlayer._id))
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Virheellinen kutsuttava pelaaja.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Virheellinen kutsuttava pelaaja.");
                 return;
             }
 
@@ -347,7 +347,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return;
             }
 
-            PopupSignalBus.OnChangePopupInfoSignal($"Kutsu lähetetty pelaajalle {GetOnlinePlayerDisplayName(onlinePlayer)}.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info, $"Kutsu lähetetty pelaajalle {GetOnlinePlayerDisplayName(onlinePlayer)}.");
         }
 
         private bool TrySendInviteToUserId(string invitedUserId)
@@ -359,13 +359,13 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             if (!PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Vain huoneen johtaja voi lähettää kutsun.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Vain huoneen johtaja voi lähettää kutsun.");
                 return false;
             }
 
             if (string.IsNullOrEmpty(invitedUserId))
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Sopivaa kutsuttavaa online-pelaajaa ei löytynyt.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Sopivaa kutsuttavaa online-pelaajaa ei löytynyt.");
                 return false;
             }
 
@@ -375,7 +375,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             if (string.IsNullOrEmpty(localUserId) || invitedUserId == localUserId) return false;
             if (IsPlayerAlreadyInCurrentRoom(invitedUserId))
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Valittu pelaaja on jo huoneessa.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Valittu pelaaja on jo huoneessa.");
                 return false;
             }
 
@@ -383,7 +383,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             string currentInvitedUserId = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
             if (inviteState == PhotonBattleRoom.PremadeInviteStatePending && currentInvitedUserId == invitedUserId)
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Kutsu on jo lähetetty tälle pelaajalle.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info, "Kutsu on jo lähetetty tälle pelaajalle.");
                 return false;
             }
 
