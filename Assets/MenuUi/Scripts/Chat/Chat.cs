@@ -99,12 +99,9 @@ public class Chat : AltMonoBehaviour
     [SerializeField] private GameObject _inputArea;
     [SerializeField] private GameObject _inputAreaArrow;
 
-    public ChatShowUsersPopUpData ChatShowUsersPopUpData;
-
     public delegate void SelectedMessageChanged(MessageObjectHandler handler);
     public static event SelectedMessageChanged OnSelectedMessageChanged;
     private bool _reactionAvailable = false; //Katsoo jos textboxissa on tekstiä tai ei
-    public static Chat instance;
     private Emotion _currentMood = Emotion.Blank;
     private Emotion _lasttimeMood = Emotion.Blank;
     private int _responseIndex = 0;
@@ -123,8 +120,6 @@ public class Chat : AltMonoBehaviour
 
     private void Start()
     {
-        instance = this;
-
         ChatChannel.OnMessageHistoryReceived += RefreshChat;
         ChatChannel.OnMessageReceived += DisplayMessage;
 

@@ -37,7 +37,6 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     private List<int> _commonReactions = new();
     private bool _longClick = false;
-    private ChatShowUsersPopUpData _reactionPopup = Chat.instance?.ChatShowUsersPopUpData;
 
     [SerializeField] public List<ServerReactions> _reactionData = new List<ServerReactions>(); //Used for addings data to ChatShowUserPopUpData
 
@@ -223,10 +222,10 @@ public class MessageReactionsHandler : AltMonoBehaviour
             //Adds the data for reaction popup
             _reactionData.Add(reaction);
 
-            if (_reactionPopup.gameObject.activeSelf)
+            /*if (_reactionPopup.gameObject.activeSelf)
             {
                 _reactionPopup.AddUsersReaction(message, reaction); 
-            }
+            }*/
 
             HorizontalLayoutGroup reactionsFields = ReactionPanel.GetComponent<HorizontalLayoutGroup>();
 
@@ -329,18 +328,18 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private void ShowUsers(ChatMessage message)
     {
 
-        if (_reactionPopup.gameObject.activeSelf)
+        /*if (_reactionPopup.gameObject.activeSelf)
             return;
 
         //Gets needed data for ChatShowUserPopUpData1
-        _reactionPopup.gameObject.SetActive(true);
+        _reactionPopup.gameObject.SetActive(true);*/
 
         OnOpenReactionsPopup?.Invoke(this, message, _reactionData);
 
-        foreach (var reactionData in _reactionData)
+        /*foreach (var reactionData in _reactionData)
         {
             _reactionPopup.AddUsersReaction(message, reactionData);
-        }
+        }*/
 
         _longClick = true;
 
@@ -352,13 +351,13 @@ public class MessageReactionsHandler : AltMonoBehaviour
     private void ResetReactionPopUpData(ChatMessage message)
     {
         //Empties the data
-        if (_reactionPopup.gameObject.activeSelf)
+        /*if (_reactionPopup.gameObject.activeSelf)
         {
             foreach (var i in _reactionData)
             {
                 _reactionPopup.RemoveUserReaction(i.sender_id, message);
             }
-        }
+        }*/
 
         _reactionData.Clear();
 
