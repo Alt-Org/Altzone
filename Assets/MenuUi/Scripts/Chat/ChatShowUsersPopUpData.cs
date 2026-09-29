@@ -54,6 +54,9 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
     private int _lineOrder = 0;    //Whats the newest and the oldest reaction set
     private int _currentOrder = 1; //What type of order we are on the list
 
+    public delegate void ToggleReaction(ChatReactionHandler handler);
+    public static event ToggleReaction OnToggleReaction;
+
     private void Start()
     {
         _closeAllReactionButton.onClick.AddListener(LayoutButton);
@@ -89,6 +92,7 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
         Reactiontext();
         ListOrderSystem(_currentOrder);
         MessageReactionsHandler.OnOpenReactionsPopup += ReactionFieldCopyUpdate;
+        ChatChannel.OnReactionReceived += UpdateReactions;
     }
 
 
@@ -97,6 +101,7 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
     {
         ClosePopup();
         MessageReactionsHandler.OnOpenReactionsPopup -= ReactionFieldCopyUpdate;
+        ChatChannel.OnReactionReceived -= UpdateReactions;
     }
 
 
@@ -126,6 +131,108 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
 
     }
 
+    private void UpdateReactions(ChatChannelType chatChannelType, ChatMessage message)
+    {
+        if (chatChannelType != ChatListener.Instance.ActiveChatChannel) return;
+        if (message.Id == null || _currentMessage != message.Id) return;
+
+        foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+        {
+            addedReaction.ResetReactions();
+        }
+
+        List<UserReactionInfo> info = new(_userInfo);
+
+        foreach (var i in info)
+        {
+            RemoveUserReaction(i._id, message);
+        }
+
+        foreach (ServerReactions reaction in message.Reactions)
+        {
+            AddReaction(reaction, message);
+        }
+
+        List<ChatReactionHandler> removableReactions = new();
+        foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+        {
+            if (addedReaction.Count <= 0)
+            {
+                removableReactions.Add(addedReaction);
+            }
+        }
+        for (int i = removableReactions.Count - 1; i >= 0; i--)
+        {
+            ChatReactionHandler handler= removableReactions[i];
+            handler.transform.SetParent(null);
+            _reactionHandlers.Remove(handler);
+
+            foreach (var j in _reactionList)
+            {
+                if (j.Mood == handler.Mood)
+                {
+                    //Resets the reactions selections list back to zero
+                    j.Selected = false;
+
+                }
+            }
+            Destroy(handler.gameObject);
+        }
+    }
+
+    private void AddReaction(ServerReactions reaction, ChatMessage message)
+    {
+        Emotion emojiType = Emotion.Blank;
+        if (reaction.emoji != null)
+            if (!Enum.TryParse(reaction.emoji, out emojiType))
+            {
+                if (Enum.TryParse(reaction.emoji, out Mood mood))
+                {
+                    emojiType = (Emotion)mood;
+                }
+            }
+
+        Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == emojiType)?.Sprite;
+        int i = _reactionList.FindIndex(m => m.Sprite == reactionSprite);
+
+        // Checks if chosen reaction is already added to the selected message. If so, deletes it.
+        foreach (ChatReactionHandler addedReaction in _reactionHandlers)
+        {
+            if (addedReaction.Mood == emojiType)
+            {
+                addedReaction.AddReaction(reaction);
+                StartCoroutine(GetPlayerData(player =>
+                {
+                    if (player != null)
+
+                        if (player.Id == reaction.sender_id)
+                        {
+
+                            _reactionList[i].Selected = true;
+
+                            addedReaction.Select();
+
+                        }
+                }));
+                return;
+
+            }
+        }
+        // Creates a reaction with the needed info and adds it to the selected message.
+        GameObject newReaction = Instantiate(_reactionObject, _reactionFieldLocation);
+
+        ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
+        chatReactionHandler.SetReactionInfo(reactionSprite, message.Id, emojiType);
+        chatReactionHandler.AddReaction(reaction);
+        _reactionHandlers.Add(chatReactionHandler);
+        AddUsersReaction(message, reaction);
+        chatReactionHandler.Button.onClick.AddListener(() => OnToggleReaction?.Invoke(chatReactionHandler));
+
+        ContentSizeFitter childFitter = chatReactionHandler.GetComponent<ContentSizeFitter>();
+        childFitter.enabled = false;
+
+        chatReactionHandler.GetComponent<RectTransform>().sizeDelta = new Vector2(150, 110);
+    }
 
 
     public void AddUsersReaction(ChatMessage message, ServerReactions Emoji)
@@ -237,75 +344,19 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
 
         foreach (ServerReactions reaction in reactions)
         {
-            Emotion emojiType = Emotion.Blank;
-            if (reaction.emoji != null)
-                if (!Enum.TryParse(reaction.emoji, out emojiType))
-                {
-                    if (Enum.TryParse(reaction.emoji, out Mood mood))
-                    {
-                        emojiType = (Emotion)mood;
-                    }
-                }
-
-            Sprite reactionSprite = _reactionList.FirstOrDefault(x => x.Mood == emojiType)?.Sprite;
-            int i = _reactionList.FindIndex(m => m.Sprite == reactionSprite);
-
-            // Checks if chosen reaction is already added to the selected message. If so, deletes it.
-            foreach (ChatReactionHandler addedReaction in _reactionHandlers)
-            {
-                if (addedReaction.Mood == emojiType)
-                {
-                    addedReaction.AddReaction(reaction);
-                    StartCoroutine(GetPlayerData(player =>
-                    {
-                        if (player != null)
-
-                            if (player.Id == reaction.sender_id)
-                            {
-
-                                _reactionList[i].Selected = true;
-
-                                addedReaction.Select();
-
-                            }
-                    }));
-                    return;
-
-                }
-            }
-            // Creates a reaction with the needed info and adds it to the selected message.
-            GameObject newReaction = Instantiate(_reactionObject, _reactionFieldLocation);
-
-            ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
-            chatReactionHandler.SetReactionInfo(reactionSprite, message.Id, emojiType);
-            chatReactionHandler.AddReaction(reaction);
-            _reactionHandlers.Add(chatReactionHandler);
-            AddUsersReaction(message, reaction);
-            //chatReactionHandler.Button.onClick.AddListener(() => ToggleReaction(chatReactionHandler));
+            AddReaction(reaction, message);
         }
 
         _scrollRect.content = _reactionFieldLocation.GetComponent<RectTransform>();
 
-        //Changes the reactions object sizes
+        /*//Changes the reactions object sizes
         foreach (RectTransform child in _reactionFieldLocation)
         {
             ContentSizeFitter childFitter = child.GetComponent<ContentSizeFitter>();
             childFitter.enabled = false;
 
             child.sizeDelta = new Vector2(150, 110);
-
-            ChatReactionHandler Childhandler = child.GetComponent<ChatReactionHandler>();
-
-            //Adds the toggle system to the copied button to direct the data to its original place
-            foreach (ChatReactionHandler i in ReactionHandler.ReactionHandlers)
-            {
-                if(Childhandler.Mood == i.Mood)
-                {
-                    Childhandler.Button.onClick.AddListener(() => ReactionHandler.ToggleReaction(i));
-                }
-            }
-
-        }
+        }*/
         ReactionHandler.GenarateReactionObjects(_popUpAllReactions);
 
     }

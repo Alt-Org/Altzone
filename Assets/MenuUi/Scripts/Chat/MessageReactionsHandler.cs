@@ -56,6 +56,8 @@ public class MessageReactionsHandler : AltMonoBehaviour
             GetComponent<MessageReactionResize>().UpdateSize();
         }));
 
+        ChatShowUsersPopUpData.OnToggleReaction += ToggleReaction;
+
         StartCoroutine(GetPlayerData(player =>
         {
             _pLayerId = player.Id;
@@ -71,7 +73,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
 
     private void OnDestroy()
     {
-
+        ChatShowUsersPopUpData.OnToggleReaction -= ToggleReaction;
         //ReactionObjectHandler.OnReactionPressed -= AddReaction;
     }
 
