@@ -307,7 +307,7 @@ public class Chat : AltMonoBehaviour
 
         if (_inputField != null && !string.IsNullOrEmpty(_inputField.text) && _inputField.text.Trim().Length >= 3)
         {
-            ChatListener.Instance.SendMessage(_inputField.text, _currentMood, ChatListener.Instance.ActiveChatChannel);
+            ChatListener.Instance.SendMessage(_inputField.text, (ResponseType)_responseIndex, _currentMood, ChatListener.Instance.ActiveChatChannel);
             _inputField.text = "";
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             if (_currentContent == _clanChatContent)
