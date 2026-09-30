@@ -39,10 +39,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [SerializeField] private Button _inviteOnlinePlayerButton;
         [SerializeField] private InRoomInviteSelectorPanel _inviteSelectorPanel;
 
-        private Coroutine _inviteLifecycleHolder;
         private bool _inviteRequestInFlight;
-        private const float InviteLifecycleTickSeconds = 1f;
-        private const long InviteExpirationSeconds = 60;
         private Coroutine _customRoomTimeoutHolder;
         private const float CustomRoomTimeoutSeconds = 300f;
 
@@ -90,15 +87,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     break;
             }
 
-            if (InLobbyController.SelectedMatchmakingType == MatchmakingType.FriendLobby)
-            {
-                StartInviteLifecycleMonitoring();
-            }
-            else
-            {
-                StopInviteLifecycleMonitoring();
-            }
-
             if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Custom)
             {
                 StopCustomRoomTimeoutMonitoring();
@@ -110,7 +98,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // premade target-mode selector removed until prefab wiring is fixed
             if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.RemoveListener(OnInviteOnlinePlayerButtonPressed);
             if (_inviteSelectorPanel != null) _inviteSelectorPanel.HideSilently();
-            StopInviteLifecycleMonitoring();
             StopCustomRoomTimeoutMonitoring();
             _startGameButton.onClick.RemoveAllListeners();
             _backButton.onClick.RemoveAllListeners();
@@ -119,7 +106,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void OnDisable()
         {
             if (_inviteSelectorPanel != null) _inviteSelectorPanel.HideSilently();
-            StopInviteLifecycleMonitoring();
             StopCustomRoomTimeoutMonitoring();
         }
 
@@ -197,7 +183,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, GetPlayerName(localUserId));
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, teammateUserId);
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, GetPlayerName(teammateUserId));
-                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
                     this.Publish(new LobbyManager.StartMatchmakingEvent(targetGameType, true));
                     break;
 
@@ -401,31 +386,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 : "Kutsun lähetys epaonnistui. Yrita uudelleen.");
         }
 
-        private void MarkPremadeInviteAccepted(string invitedUserId, string name)
-        {
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, invitedUserId);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, name);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
-
-            if (PhotonRealtimeClient.LobbyCurrentRoom.PlayerCount >= PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
-            {
-                PhotonRealtimeClient.LobbyCurrentRoom.IsOpen = false;
-            }
-        }
-
-        private void ExpirePremadeInvite()
-        {
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateExpired);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
-
-            try { PhotonRealtimeClient.LobbyCurrentRoom.ClearExpectedUsers(); }
-            catch (Exception ex) { Debug.LogWarning($"InviteLifecycleRoutine: failed to clear expected users on expiry: {ex.Message}"); }
-        }
-
         private void SetInviteButtonInteractable(bool interactable)
         {
             if (_inviteOnlinePlayerButton != null)
@@ -476,27 +436,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             if (onlinePlayer == null) return "Tuntematon";
             if (!string.IsNullOrWhiteSpace(onlinePlayer.name)) return onlinePlayer.name;
             return string.IsNullOrEmpty(onlinePlayer._id) ? "Tuntematon" : onlinePlayer._id;
-        }
-
-        private void StartInviteLifecycleMonitoring()
-        {
-            if (_inviteLifecycleHolder != null)
-            {
-                return;
-            }
-
-            _inviteLifecycleHolder = StartCoroutine(InviteLifecycleRoutine());
-        }
-
-        private void StopInviteLifecycleMonitoring()
-        {
-            if (_inviteLifecycleHolder == null)
-            {
-                return;
-            }
-
-            StopCoroutine(_inviteLifecycleHolder);
-            _inviteLifecycleHolder = null;
         }
 
         private void StartCustomRoomTimeoutMonitoring()
@@ -575,103 +514,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             finally
             {
                 _customRoomTimeoutHolder = null;
-            }
-        }
-
-        private IEnumerator InviteLifecycleRoutine()
-        {
-            WaitForSecondsRealtime delay = new(InviteLifecycleTickSeconds);
-
-            while (true)
-            {
-                if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
-                {
-                    yield return delay;
-                    continue;
-                }
-
-                var localLobbyPlayer = PhotonRealtimeClient.LocalLobbyPlayer;
-                if (localLobbyPlayer == null || !localLobbyPlayer.IsMasterClient)
-                {
-                    yield return delay;
-                    continue;
-                }
-
-                MatchmakingType roomGameType = MatchmakingType.FriendLobby;
-                bool failedToReadRoomGameType = false;
-                try
-                {
-                    roomGameType = (MatchmakingType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey);
-                }
-                catch
-                {
-                    failedToReadRoomGameType = true;
-                }
-
-                if (failedToReadRoomGameType)
-                {
-                    yield return delay;
-                    continue;
-                }
-
-                if (roomGameType != MatchmakingType.FriendLobby)
-                {
-                    yield return delay;
-                    continue;
-                }
-
-                int inviteState = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
-                if (inviteState != PhotonBattleRoom.PremadeInviteStatePending)
-                {
-                    yield return delay;
-                    continue;
-                }
-
-                string invitedUserId = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
-                if (string.IsNullOrEmpty(invitedUserId))
-                {
-                    yield return delay;
-                    continue;
-                }
-
-                if (IsPlayerAlreadyInCurrentRoom(invitedUserId))
-                {
-                    string invitedPlayerName = GetPlayerName(invitedUserId);
-                    MarkPremadeInviteAccepted(invitedUserId, invitedPlayerName);
-                    yield return delay;
-                    continue;
-                }
-
-                long inviteTimestampMilliseconds = 0;
-                try
-                {
-                    if (PhotonRealtimeClient.LobbyCurrentRoom.CustomProperties != null
-                        && PhotonRealtimeClient.LobbyCurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeInviteTimestampKey))
-                    {
-                        inviteTimestampMilliseconds = Convert.ToInt64(PhotonRealtimeClient.LobbyCurrentRoom.CustomProperties[PhotonBattleRoom.PremadeInviteTimestampKey]);
-                    }
-                }
-                catch
-                {
-                    inviteTimestampMilliseconds = 0;
-                }
-
-                long nowMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                if (inviteTimestampMilliseconds <= 0)
-                {
-                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, nowMilliseconds);
-                    yield return delay;
-                    continue;
-                }
-
-                if (nowMilliseconds - inviteTimestampMilliseconds >= InviteExpirationSeconds * 1000L)
-                {
-                    ExpirePremadeInvite();
-                    yield return delay;
-                    continue;
-                }
-
-                yield return delay;
             }
         }
 

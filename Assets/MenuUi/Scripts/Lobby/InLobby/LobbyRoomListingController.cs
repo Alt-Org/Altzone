@@ -207,6 +207,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             if (!roomRegistered)
             {
+                InLobbyController.ConsumePendingFriendLobbyInvitePlayer();
                 Debug.LogWarning("CreateFriendLobbyRoom: server rejected room creation.");
                 PopupSignalBus.OnChangePopupInfoSignal("Friend Lobby -huoneen luonti epaonnistui. Yrita uudelleen.");
                 yield break;
@@ -214,6 +215,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             if (!PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(targetMatchmakingType, gameType, roomId: serverRoomId))
             {
+                InLobbyController.ConsumePendingFriendLobbyInvitePlayer();
                 Debug.LogWarning($"CreateFriendLobbyRoom: Photon room creation failed to start for server room '{serverRoomId}'.");
                 yield return StartCoroutine(ServerManager.Instance.MatchmakingLeaveRoom());
                 PopupSignalBus.OnChangePopupInfoSignal("Friend Lobby -huoneen luonti epaonnistui. Yrita uudelleen.");
@@ -394,7 +396,26 @@ namespace MenuUi.Scripts.Lobby.InLobby
             var player = PhotonRealtimeClient.LocalLobbyPlayer;
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonRealtimeClient.NickName}'");
+            string shortcutInvitePlayerId = InLobbyController.ConsumePendingFriendLobbyInvitePlayer();
+            if (!string.IsNullOrEmpty(shortcutInvitePlayerId))
+            {
+                StartCoroutine(SendShortcutInvite(shortcutInvitePlayerId));
+            }
             this.Publish(new LobbyManager.StartRoomEvent());
+        }
+
+        private IEnumerator SendShortcutInvite(string playerId)
+        {
+            bool inviteSent = false;
+            if (ServerManager.Instance != null)
+            {
+                yield return StartCoroutine(ServerManager.Instance.MatchmakingSendInviteToPlayer(playerId, success => inviteSent = success));
+            }
+
+            if (!inviteSent)
+            {
+                PopupSignalBus.OnChangePopupInfoSignal("Kutsun lähetys epaonnistui. Yrita uudelleen Friend Lobby -huoneessa.");
+            }
         }
 
         private void HandleMatchmakingRoomEntered(bool isLeader)

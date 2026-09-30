@@ -27,7 +27,6 @@ namespace Altzone.Scripts.MQTT
     public class MQTTMatchInvite
     {
         public string id { get; set; }
-        public string roomId { get; set; }
         public MatchType matchType { get; set; }
         public InviteStatus status { get; set; }
         public MQTTMatchPlayers ownerPlayer{ get; set; }

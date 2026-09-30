@@ -397,39 +397,25 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
         else if (_friend != null) invitedUserId = _friend._id;
         if (string.IsNullOrEmpty(invitedUserId)) yield break;
 
-        bool result = false;
         try
         {
-            result = PhotonRealtimeClient.SendPremadeInvite(invitedUserId);
+            ClanData clan = null;
+            string clanId = ServerManager.Instance.Player.clan_id;
+            if (!string.IsNullOrEmpty(clanId))
+            {
+                Storefront.Get().GetClanData(clanId, data => clan = data);
+            }
+
+            bool isClanMember = clan?.Members?.Find(member => member.Id == invitedUserId) != null;
+            MatchmakingType targetMatchmakingType = isClanMember ? MatchmakingType.Clan2v2 : MatchmakingType.Random2v2;
+
+            InLobbyController.SetPendingFriendLobbyInvitePlayer(invitedUserId);
+            SignalBus.OnBattlePopupRequestedSignal(MatchmakingType.FriendLobby, targetMatchmakingType);
+            OnPlayerPanelCloseRequested?.Invoke();
         }
         catch (Exception ex)
         {
-            Debug.LogWarning($"InviteSelectedPlayerRoutine: exception while sending invite: {ex.Message}");
-        }
-
-        if (!result)
-        {
-            Debug.LogWarning($"InviteSelectedPlayerRoutine: invite failed to send to {invitedUserId}");
-        }
-        else
-        {
-            // Open the battle popup for Friend Lobby so the in-room waiting panel appears
-            try
-            {
-                ClanData clan = null;
-                Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, data => clan = data);
-                List<ClanMember>members = clan.Members;
-                if (members.Find((m) => m.Id == Player._id) == null) 
-                    SignalBus.OnBattlePopupRequestedSignal(MatchmakingType.FriendLobby, MatchmakingType.Random2v2);
-                else
-                    SignalBus.OnBattlePopupRequestedSignal(MatchmakingType.FriendLobby, MatchmakingType.Clan2v2);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning($"InviteSelectedPlayerRoutine: failed to open battle popup: {ex.Message}");
-            }
-
-            OnPlayerPanelCloseRequested?.Invoke();
+            Debug.LogWarning($"InviteSelectedPlayerRoutine: failed to open Friend Lobby: {ex.Message}");
         }
 
         yield break;

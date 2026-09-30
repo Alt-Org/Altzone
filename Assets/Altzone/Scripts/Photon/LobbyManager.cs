@@ -158,21 +158,12 @@ namespace Altzone.Scripts.Lobby
         private Player _premadeTeammateUserPlayer = null;
         private string _premadeTeammateUserId = string.Empty;
         private string _premadeTeammateUserName = string.Empty;
-        private string _lastAutoInviteRoomName = string.Empty;
-        private float _lastAutoInviteJoinTime = -100f;
-        private string _pendingInRoomInviteRoomName = string.Empty;
-        private string _pendingAcceptedInRoomInviteRoomName = string.Empty;
-        private float _pendingAcceptedInRoomInviteStartTime = -100f;
-        private readonly Dictionary<string, float> _declinedInRoomInviteUntil = new();
+        private string _pendingFriendLobbyJoinRoomName = string.Empty;
         private readonly Dictionary<string, float> _queuePendingLeaderUntil = new(StringComparer.Ordinal);
         private readonly Dictionary<string, float> _queuePendingExpectedUserUntil = new(StringComparer.Ordinal);
         // Record first-seen timestamps for users observed in a matchmaking room to
         // detect very recent joins and avoid splitting transient duo joins.
         private readonly Dictionary<string, float> _queuePlayerFirstSeenAt = new(StringComparer.Ordinal);
-        private const float InRoomInvitePromptThrottleSeconds = 5f;
-        private const float InRoomInviteDeclineCooldownSeconds = 30f;
-        private const float InRoomInviteValiditySeconds = 60f;
-        private const float InRoomInviteJoinTimeoutSeconds = 12f;
 
         private List<FriendInfo> _friendList;
 
@@ -357,11 +348,8 @@ namespace Altzone.Scripts.Lobby
         public delegate void KickedOutOfTheRoom(GetKickedEvent.ReasonType reason);
         public static event KickedOutOfTheRoom OnKickedOutOfTheRoom;
 
-        public delegate void InRoomInviteReceived(InRoomInviteInfo inviteInfo);
-        public static event InRoomInviteReceived OnInRoomInviteReceived;
-
-        public delegate void InRoomInviteJoinFailed(string roomName, short returnCode, string message);
-        public static event InRoomInviteJoinFailed OnInRoomInviteJoinFailed;
+        public delegate void FriendLobbyJoinFailed(string roomName, short returnCode, string message);
+        public static event FriendLobbyJoinFailed OnFriendLobbyJoinFailed;
 
         #endregion
 
@@ -437,51 +425,17 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
-        public void AcceptInRoomInvite(string roomName)
+        public bool JoinFriendLobbyRoom(string roomName)
         {
-            if (string.IsNullOrEmpty(roomName)) return;
-            if (!PhotonRealtimeClient.InLobby || PhotonRealtimeClient.InRoom) return;
+            if (string.IsNullOrEmpty(roomName) || !PhotonRealtimeClient.InLobby || PhotonRealtimeClient.InRoom) return false;
 
-            string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId;
-            if (string.IsNullOrEmpty(localUserId)) return;
+            _pendingFriendLobbyJoinRoomName = roomName;
+            Debug.Log($"JoinFriendLobbyRoom: joining server-invited room '{roomName}'.");
+            if (PhotonRealtimeClient.JoinRoom(roomName)) return true;
 
-            _pendingInRoomInviteRoomName = string.Empty;
-            _pendingAcceptedInRoomInviteRoomName = roomName;
-            _pendingAcceptedInRoomInviteStartTime = Time.time;
-            _lastAutoInviteRoomName = roomName;
-            _lastAutoInviteJoinTime = Time.time;
-            Debug.Log($"AcceptInRoomInvite: joining room '{roomName}'.");
-            PhotonRealtimeClient.JoinRoom(roomName, new[] { localUserId });
-        }
-
-        public void DeclineInRoomInvite(string roomName)
-        {
-            if (string.IsNullOrEmpty(roomName)) return;
-
-            _declinedInRoomInviteUntil[roomName] = Time.time + InRoomInviteDeclineCooldownSeconds;
-            if (_pendingInRoomInviteRoomName == roomName)
-            {
-                _pendingInRoomInviteRoomName = string.Empty;
-            }
-            if (_pendingAcceptedInRoomInviteRoomName == roomName)
-            {
-                _pendingAcceptedInRoomInviteRoomName = string.Empty;
-                _pendingAcceptedInRoomInviteStartTime = -100f;
-            }
-            Debug.Log($"DeclineInRoomInvite: declined room '{roomName}'.");
-        }
-
-        private bool IsInRoomInviteDeclinedRecently(string roomName)
-        {
-            if (!_declinedInRoomInviteUntil.TryGetValue(roomName, out float until)) return false;
-
-            if (Time.time > until)
-            {
-                _declinedInRoomInviteUntil.Remove(roomName);
-                return false;
-            }
-
-            return true;
+            _pendingFriendLobbyJoinRoomName = string.Empty;
+            OnFriendLobbyJoinFailed?.Invoke(roomName, -1, "join operation could not be started");
+            return false;
         }
 
         private IEnumerator FormMatchFromQueue(string[] selected, int roomGameTypeInt, string clanName, string clanId, int soulhomeRank)
@@ -819,7 +773,6 @@ namespace Altzone.Scripts.Lobby
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, premadeUsername1);
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, premadeUserId2);
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, premadeUsername2);
-                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
 
                                     // Keep runtime fields in sync for any downstream logic that still checks them.
                                     _isPremadeMatchmakingFlow = true;
@@ -1131,7 +1084,6 @@ namespace Altzone.Scripts.Lobby
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, GetPlayerName(premadeUserId2));
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
                                     PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, localUsername);
-                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
 
                                     _isPremadeMatchmakingFlow = true;
                                     if (localUserId == premadeUserId1)
@@ -1356,7 +1308,6 @@ namespace Altzone.Scripts.Lobby
                     room.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, string.Empty);
-                    room.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
 
                     // Clear the flattened duo pairs array
                     room.SetCustomProperty(QueueDuoPairsKey, new string[0]);
@@ -2203,7 +2154,6 @@ namespace Altzone.Scripts.Lobby
                     room.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, string.Empty);
                     room.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, string.Empty);
-                    room.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
                 }
                 catch (Exception ex)
                 {
@@ -4267,7 +4217,6 @@ namespace Altzone.Scripts.Lobby
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, localUsername);
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, _premadeTeammateUserId);
                         PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, _premadeTeammateUserName);
-                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
                     }
                     catch (Exception ex)
                     {
@@ -6031,7 +5980,6 @@ namespace Altzone.Scripts.Lobby
                             currentRoom2.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
                             currentRoom2.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, string.Empty);
                             currentRoom2.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, string.Empty);
-                            currentRoom2.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
                         }
                     }
                 }
@@ -7713,9 +7661,7 @@ namespace Altzone.Scripts.Lobby
             _matchHasStartedInCurrentRoom = false;
             _countdownActive = false;
             _lastCountdownStartTime = -100f;
-            _pendingInRoomInviteRoomName = string.Empty;
-            _pendingAcceptedInRoomInviteRoomName = string.Empty;
-            _pendingAcceptedInRoomInviteStartTime = -100f;
+            _pendingFriendLobbyJoinRoomName = string.Empty;
 
             // Correlate OnJoinedRoom to any outstanding join attempt and mark it succeeded.
             try
@@ -7768,23 +7714,6 @@ namespace Altzone.Scripts.Lobby
                 }
             }
             catch { }
-
-            try
-            {
-                if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties != null
-                    && PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.MatchmakingKey)
-                    && (MatchmakingType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey) == MatchmakingType.FriendLobby)
-                {
-                    string invitedUserId = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
-                    if (!string.IsNullOrEmpty(invitedUserId) && invitedUserId == PhotonRealtimeClient.LocalPlayer.UserId)
-                    {
-                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
-                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, invitedUserId);
-                        PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, PhotonRealtimeClient.LocalPlayer.NickName);
-                    }
-                }
-            }
-            catch (Exception ex) { Debug.LogWarning($"OnJoinedRoom: failed to update FriendLobby invite state: {ex.Message}"); }
 
             if (PhotonRealtimeClient.InMatchmakingRoom)
             {
@@ -7974,11 +7903,7 @@ namespace Altzone.Scripts.Lobby
             _matchHasStartedInCurrentRoom = false;
             _countdownActive = false;
             _lastCountdownStartTime = -100f;
-            _pendingInRoomInviteRoomName = string.Empty;
-            _pendingAcceptedInRoomInviteRoomName = string.Empty;
-            _pendingAcceptedInRoomInviteStartTime = -100f;
-            _lastAutoInviteRoomName = string.Empty;
-            _lastAutoInviteJoinTime = -100f;
+            _pendingFriendLobbyJoinRoomName = string.Empty;
             _queuePendingExpectedUserUntil.Clear();
             _queuePendingLeaderUntil.Clear();
             CurrentRooms = null;
@@ -8072,122 +7997,7 @@ namespace Altzone.Scripts.Lobby
 
             CurrentRooms = lobbyRoomList.AsReadOnly();
 
-            if (!string.IsNullOrEmpty(_pendingAcceptedInRoomInviteRoomName)
-                && !PhotonRealtimeClient.InRoom
-                && _pendingAcceptedInRoomInviteStartTime > 0f
-                && Time.time - _pendingAcceptedInRoomInviteStartTime > InRoomInviteJoinTimeoutSeconds)
-            {
-                string timedOutRoomName = _pendingAcceptedInRoomInviteRoomName;
-                _pendingAcceptedInRoomInviteRoomName = string.Empty;
-                _pendingAcceptedInRoomInviteStartTime = -100f;
-                Debug.LogWarning($"Accepted InRoom invite join timed out for room '{timedOutRoomName}'.");
-                OnInRoomInviteJoinFailed?.Invoke(timedOutRoomName, -1, "timeout");
-            }
-
             LobbyOnRoomListUpdate?.Invoke(lobbyRoomList);
-            TryAutoJoinInRoomInvite(lobbyRoomList);
-        }
-
-        private void TryAutoJoinInRoomInvite(List<LobbyRoomInfo> roomList)
-        {
-            if (roomList == null || roomList.Count == 0) return;
-            if (!PhotonRealtimeClient.InLobby || PhotonRealtimeClient.InRoom) return;
-
-            string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId;
-            if (string.IsNullOrEmpty(localUserId)) return;
-
-            if (!string.IsNullOrEmpty(_pendingInRoomInviteRoomName)
-                && roomList.All(room => room == null || room.RemovedFromList || room.Name != _pendingInRoomInviteRoomName))
-            {
-                _pendingInRoomInviteRoomName = string.Empty;
-            }
-
-            foreach (LobbyRoomInfo room in roomList)
-            {
-                if (room == null || room.RemovedFromList || !room.IsOpen || room.CustomProperties == null) continue;
-                if (!room.CustomProperties.ContainsKey(PhotonBattleRoom.MatchmakingKey)) continue;
-
-                MatchmakingType gameType;
-                try { gameType = (MatchmakingType)room.CustomProperties[PhotonBattleRoom.MatchmakingKey]; }
-                catch { continue; }
-
-                if (gameType != MatchmakingType.FriendLobby) continue;
-
-                string invitedUserId = room.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeInvitedUserIdKey)
-                    ? room.CustomProperties[PhotonBattleRoom.PremadeInvitedUserIdKey]?.ToString()
-                    : string.Empty;
-                if (invitedUserId != localUserId) continue;
-
-                int inviteState = PhotonBattleRoom.PremadeInviteStateNone;
-                if (room.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeInviteStateKey))
-                {
-                    try { inviteState = Convert.ToInt32(room.CustomProperties[PhotonBattleRoom.PremadeInviteStateKey]); }
-                    catch { inviteState = PhotonBattleRoom.PremadeInviteStateNone; }
-                }
-                if (inviteState != PhotonBattleRoom.PremadeInviteStatePending) continue;
-
-                long inviteTimestampMilliseconds = 0;
-                if (room.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeInviteTimestampKey))
-                {
-                    try { inviteTimestampMilliseconds = Convert.ToInt64(room.CustomProperties[PhotonBattleRoom.PremadeInviteTimestampKey]); }
-                    catch { inviteTimestampMilliseconds = 0; }
-                }
-
-                if (inviteTimestampMilliseconds > 0)
-                {
-                    long nowMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                    if (nowMilliseconds - inviteTimestampMilliseconds > (long)(InRoomInviteValiditySeconds * 1000f))
-                    {
-                        continue;
-                    }
-                }
-
-                if (IsInRoomInviteDeclinedRecently(room.Name)) continue;
-                if (_pendingInRoomInviteRoomName == room.Name) continue;
-
-                if (_lastAutoInviteRoomName == room.Name && Time.time - _lastAutoInviteJoinTime < InRoomInvitePromptThrottleSeconds)
-                {
-                    continue;
-                }
-
-                string leaderUserId = room.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeLeaderUserIdKey)
-                    ? room.CustomProperties[PhotonBattleRoom.PremadeLeaderUserIdKey]?.ToString()
-                    : string.Empty;
-
-                string leaderUserName = room.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeLeaderUsernameKey)
-                    ? room.CustomProperties[PhotonBattleRoom.PremadeLeaderUsernameKey]?.ToString()
-                    : string.Empty;
-
-                MatchmakingType targetGameType = MatchmakingType.Random2v2;
-                if (room.CustomProperties.ContainsKey(PhotonBattleRoom.PremadeTargetGameTypeKey))
-                {
-                    try { targetGameType = (MatchmakingType)Convert.ToInt32(room.CustomProperties[PhotonBattleRoom.PremadeTargetGameTypeKey]); }
-                    catch { targetGameType = MatchmakingType.Random2v2; }
-                }
-
-                InRoomInviteReceived inviteReceivedHandler = OnInRoomInviteReceived;
-                _lastAutoInviteRoomName = room.Name;
-                _lastAutoInviteJoinTime = Time.time;
-
-                if (inviteReceivedHandler == null)
-                {
-                    Debug.LogWarning($"Detected pending FriendLobby invite to room '{room.Name}', but no UI listener is active yet. Will retry shortly.");
-                    break;
-                }
-
-                _pendingInRoomInviteRoomName = room.Name;
-                Debug.Log($"Detected pending FriendLobby invite to room '{room.Name}', requesting decision from UI.");
-                try
-                {
-                    inviteReceivedHandler.Invoke(new InRoomInviteInfo(room.Name, leaderUserId, leaderUserName, invitedUserId, targetGameType));
-                }
-                catch (Exception ex)
-                {
-                    _pendingInRoomInviteRoomName = string.Empty;
-                    Debug.LogError($"TryAutoJoinInRoomInvite: invite UI callback failed for room '{room.Name}': {ex.Message}");
-                }
-                break;
-            }
         }
 
         public void OnLeftLobby()
@@ -8211,8 +8021,8 @@ namespace Altzone.Scripts.Lobby
             // Correlate this failure to the most recent join attempt
             try { _joinAttemptTracker.MarkJoinAttemptFailure(0, returnCode, message); } catch { }
 
-            bool failedInviteAcceptJoin = !string.IsNullOrEmpty(_pendingAcceptedInRoomInviteRoomName);
-            string failedInviteRoomName = _pendingAcceptedInRoomInviteRoomName;
+            bool failedFriendLobbyJoin = !string.IsNullOrEmpty(_pendingFriendLobbyJoinRoomName);
+            string failedFriendLobbyRoomName = _pendingFriendLobbyJoinRoomName;
 
             bool isGameFull = false;
             try
@@ -8225,7 +8035,7 @@ namespace Altzone.Scripts.Lobby
             }
             if (!isGameFull && returnCode == 32765) isGameFull = true;
 
-            if (isGameFull && !failedInviteAcceptJoin)
+            if (isGameFull && !failedFriendLobbyJoin)
             {
                 _joinFailureAutoRequeueInFlight = true;
             }
@@ -8234,12 +8044,11 @@ namespace Altzone.Scripts.Lobby
             {
                 LobbyOnJoinRoomFailed?.Invoke(returnCode, message);
 
-                if (failedInviteAcceptJoin)
+                if (failedFriendLobbyJoin)
                 {
-                    _pendingAcceptedInRoomInviteRoomName = string.Empty;
-                    _pendingAcceptedInRoomInviteStartTime = -100f;
-                    Debug.LogWarning($"JoinRoomFailed during accepted InRoom invite join. Room='{failedInviteRoomName}', code={returnCode}, msg={message}");
-                    OnInRoomInviteJoinFailed?.Invoke(failedInviteRoomName, returnCode, message);
+                    _pendingFriendLobbyJoinRoomName = string.Empty;
+                    Debug.LogWarning($"JoinRoomFailed for server-invited Friend Lobby. Room='{failedFriendLobbyRoomName}', code={returnCode}, msg={message}");
+                    OnFriendLobbyJoinFailed?.Invoke(failedFriendLobbyRoomName, returnCode, message);
                     return;
                 }
 
@@ -8863,27 +8672,6 @@ namespace Altzone.Scripts.Lobby
             int playerCount = room.PlayerCount;
             int botCount = PhotonBattleRoom.GetBotCount();
 
-            try
-            {
-                if (room != null && room.CustomProperties != null && room.CustomProperties.ContainsKey(PhotonBattleRoom.MatchmakingKey)
-                    && (MatchmakingType)room.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey) == MatchmakingType.FriendLobby)
-                {
-                    string invitedUserId = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
-                    if (!string.IsNullOrEmpty(invitedUserId) && newPlayer != null && newPlayer.UserId == invitedUserId)
-                    {
-                        room.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
-                        room.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, invitedUserId);
-                        room.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, newPlayer.NickName);
-                    }
-
-                    if (PhotonRealtimeClient.LocalPlayer.IsMasterClient && room.PlayerCount >= room.MaxPlayers)
-                    {
-                        room.IsOpen = false;
-                    }
-                }
-            }
-            catch (Exception ex) { Debug.LogWarning($"OnPlayerEnteredRoom: failed to update FriendLobby premade state: {ex.Message}"); }
-
             // Queue match formation is centralized in QueueTimerCoroutine.
             try
             {
@@ -9358,29 +9146,6 @@ namespace Altzone.Scripts.Lobby
             public override string ToString()
             {
                 return $"{nameof(SelectedGameType)}: {SelectedGameType}, {nameof(IsPremadeInRoom)}: {IsPremadeInRoom}";
-            }
-        }
-
-        public class InRoomInviteInfo
-        {
-            public readonly string RoomName;
-            public readonly string LeaderUserId;
-            public readonly string LeaderUserName;
-            public readonly string InvitedUserId;
-            public readonly MatchmakingType TargetGameType;
-
-            public InRoomInviteInfo(string roomName, string leaderUserId, string leaderUsername, string invitedUserId, MatchmakingType targetGameType)
-            {
-                RoomName = roomName;
-                LeaderUserId = leaderUserId;
-                LeaderUserName = leaderUsername;
-                InvitedUserId = invitedUserId;
-                TargetGameType = targetGameType;
-            }
-
-            public override string ToString()
-            {
-                return $"{nameof(RoomName)}: {RoomName}, {nameof(LeaderUserId)}: {LeaderUserId}, {nameof(InvitedUserId)}: {InvitedUserId}, {nameof(TargetGameType)}: {TargetGameType}";
             }
         }
 
