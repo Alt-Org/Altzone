@@ -34,6 +34,7 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
     [Header("Reactions")]
     [SerializeField] private TextMeshProUGUI _reactionAmounText;
     [SerializeField] private List<ReactionObject> _reactionList;
+    [SerializeField] private GameObject _addedReactionPrefab;
     [SerializeField] private GameObject _reactionObject;
     [SerializeField] private GameObject _allReactions;
     [SerializeField] private GameObject _selectedReaction;
@@ -221,7 +222,7 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
             }
         }
         // Creates a reaction with the needed info and adds it to the selected message.
-        GameObject newReaction = Instantiate(_reactionObject, _reactionFieldLocation);
+        GameObject newReaction = Instantiate(_addedReactionPrefab, _reactionFieldLocation);
 
         ChatReactionHandler chatReactionHandler = newReaction.GetComponentInChildren<ChatReactionHandler>();
         chatReactionHandler.SetReactionInfo(reactionSprite, message.Id, emojiType);

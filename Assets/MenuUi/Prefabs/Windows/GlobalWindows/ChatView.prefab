@@ -6260,16 +6260,18 @@ MonoBehaviour:
   _reactionAmounText: {fileID: 1480503946665984614}
   _reactionList:
   - Sprite: {fileID: 21300000, guid: 97d495bb5e2207e47b120d397738ae7f, type: 3}
-    Mood: 1
-  - Sprite: {fileID: 21300000, guid: 92e5938343a26954ea59ab52cfb79ebd, type: 3}
-    Mood: 6
-  - Sprite: {fileID: 21300000, guid: f28d68859cc20634394867033e704894, type: 3}
     Mood: 0
-  - Sprite: {fileID: 21300000, guid: 96f5e2572d2d8fc4bbbc6b8bc655afee, type: 3}
-    Mood: 5
-  - Sprite: {fileID: 21300000, guid: 1f86dd00cd4636342a04a6f6ba1b990a, type: 3}
+  - Sprite: {fileID: 21300000, guid: 92e5938343a26954ea59ab52cfb79ebd, type: 3}
     Mood: 3
-  _reactionObject: {fileID: 180403975915856165, guid: cfe1da6a4c8a1c74094d8e0cf3ce5df8,
+  - Sprite: {fileID: 21300000, guid: f28d68859cc20634394867033e704894, type: 3}
+    Mood: 1
+  - Sprite: {fileID: 21300000, guid: 96f5e2572d2d8fc4bbbc6b8bc655afee, type: 3}
+    Mood: 2
+  - Sprite: {fileID: 21300000, guid: 1f86dd00cd4636342a04a6f6ba1b990a, type: 3}
+    Mood: 4
+  _addedReactionPrefab: {fileID: 180403975915856165, guid: cfe1da6a4c8a1c74094d8e0cf3ce5df8,
+    type: 3}
+  _reactionObject: {fileID: 7645454467474436397, guid: d360a481996e56b458ef77575cef6216,
     type: 3}
   _allReactions: {fileID: 7575259912955991635}
   _selectedReaction: {fileID: 3062161777963099109}
@@ -7598,7 +7600,6 @@ MonoBehaviour:
   _tablineScript: {fileID: 7120743843305630683}
   _inputArea: {fileID: 1983480450410086116}
   _inputAreaArrow: {fileID: 8800692130466575762}
-  ChatShowUsersPopUpData: {fileID: 3137927778324403408}
 --- !u!114 &1176563068381732146
 MonoBehaviour:
   m_ObjectHideFlags: 0
