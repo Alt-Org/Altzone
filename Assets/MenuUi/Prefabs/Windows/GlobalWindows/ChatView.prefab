@@ -340,7 +340,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 388.8, y: -235.24913}
+  m_AnchoredPosition: {x: 388.8, y: -242.32304}
   m_SizeDelta: {x: 700, y: 110}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8012900771599692130
@@ -1486,7 +1486,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1227929686882608006
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3754,7 +3754,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 388.8, y: -342.74915}
+  m_AnchoredPosition: {x: 388.8, y: -349.82306}
   m_SizeDelta: {x: 700, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7912668250702345692
@@ -6182,7 +6182,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7875240332609218175
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6192,7 +6192,7 @@ RectTransform:
   m_GameObject: {fileID: 5763485112562100175}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.96000004, y: 0.96000004, z: 0.96000004}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1227929686882608006}
@@ -6243,6 +6243,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477b38ea3c6f9974491f82799fbc1307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _panel: {fileID: 1423439972840220769}
   _closeButtons:
   - {fileID: 2943311908611794494}
   - {fileID: 7477148938460072697}
@@ -6259,15 +6260,19 @@ MonoBehaviour:
   _reactionAmounText: {fileID: 1480503946665984614}
   _reactionList:
   - Sprite: {fileID: 21300000, guid: 97d495bb5e2207e47b120d397738ae7f, type: 3}
-    Mood: 1
-  - Sprite: {fileID: 21300000, guid: 92e5938343a26954ea59ab52cfb79ebd, type: 3}
-    Mood: 6
-  - Sprite: {fileID: 21300000, guid: f28d68859cc20634394867033e704894, type: 3}
     Mood: 0
-  - Sprite: {fileID: 21300000, guid: 96f5e2572d2d8fc4bbbc6b8bc655afee, type: 3}
-    Mood: 5
-  - Sprite: {fileID: 21300000, guid: 1f86dd00cd4636342a04a6f6ba1b990a, type: 3}
+  - Sprite: {fileID: 21300000, guid: 92e5938343a26954ea59ab52cfb79ebd, type: 3}
     Mood: 3
+  - Sprite: {fileID: 21300000, guid: f28d68859cc20634394867033e704894, type: 3}
+    Mood: 1
+  - Sprite: {fileID: 21300000, guid: 96f5e2572d2d8fc4bbbc6b8bc655afee, type: 3}
+    Mood: 2
+  - Sprite: {fileID: 21300000, guid: 1f86dd00cd4636342a04a6f6ba1b990a, type: 3}
+    Mood: 4
+  _addedReactionPrefab: {fileID: 180403975915856165, guid: cfe1da6a4c8a1c74094d8e0cf3ce5df8,
+    type: 3}
+  _reactionObject: {fileID: 7645454467474436397, guid: d360a481996e56b458ef77575cef6216,
+    type: 3}
   _allReactions: {fileID: 7575259912955991635}
   _selectedReaction: {fileID: 3062161777963099109}
   _noReactions: {fileID: 8829262437161837364}
@@ -7168,7 +7173,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 388.8, y: -695.24915}
+  m_AnchoredPosition: {x: 388.8, y: -702.32306}
   m_SizeDelta: {x: 700, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2828838990348605202
@@ -7555,11 +7560,9 @@ MonoBehaviour:
   _sendButtonLove: {fileID: 8678484190465885865}
   _sendButton: {fileID: 4136632975230872408}
   _inputField: {fileID: 189633976828316623}
-  _deleteButtons: {fileID: 0}
   _addReactionsPanel: {fileID: 6132093213275908080}
   _commonReactions: {fileID: 1908627713028673014}
   _allReactions: {fileID: 8188821779799061194}
-  _chatResponseList: {fileID: 11400000, guid: 0c97ef5ec4dd42d49854c48853a3e90c, type: 2}
   _chatResponseContent: {fileID: 1228178274405547610}
   _messagePrefabBlue: {fileID: 7813850563740083507, guid: d582a219bf930ee4093612026545fa88,
     type: 3}
@@ -7573,12 +7576,6 @@ MonoBehaviour:
     type: 3}
   _quickMessagePrefab: {fileID: 7096046977997727650, guid: d021202948771ba4493627b0aaf31381,
     type: 3}
-  _otherMessages:
-  - {fileID: 8217879514780230744, guid: e932d89290432014b909e707579a5d7a, type: 3}
-  - {fileID: 2696820703535655745, guid: db52a4c0ccc01d44089fd4dbbd490d3c, type: 3}
-  - {fileID: 2375818775052191214, guid: dd9d5773069d6204889520f78f87242e, type: 3}
-  - {fileID: 7020398855225994992, guid: 2128500f85a8a7842919c146bca9e917, type: 3}
-  - {fileID: 1376478990624868928, guid: 6a848584d13a00f478e398abfa7b5b44, type: 3}
   _otherMessagePrefabBlue: {fileID: 8217879514780230744, guid: e932d89290432014b909e707579a5d7a,
     type: 3}
   _otherMessagePrefabRed: {fileID: 2696820703535655745, guid: db52a4c0ccc01d44089fd4dbbd490d3c,
@@ -7603,12 +7600,6 @@ MonoBehaviour:
   _tablineScript: {fileID: 7120743843305630683}
   _inputArea: {fileID: 1983480450410086116}
   _inputAreaArrow: {fileID: 8800692130466575762}
-  ShowUsersPopUp: {fileID: 5763485112562100175}
-  ChatShowUsersPopUpData: {fileID: 3137927778324403408}
-  currentMood: 2
-  lasttimeMood: 2
-  _responsesData: {fileID: 1228178274405547610}
-  _chatType: 0
 --- !u!114 &1176563068381732146
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8050,7 +8041,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 388.8, y: -73.27413}
+  m_AnchoredPosition: {x: 388.8, y: -80.348045}
   m_SizeDelta: {x: 700, y: 113.95}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1685783836498216917
@@ -9165,7 +9156,7 @@ PrefabInstance:
     - target: {fileID: 2300524914144210914, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4897486333446758923, guid: 76aa8b7d736fa8e44955cce276908e74,
         type: 3}

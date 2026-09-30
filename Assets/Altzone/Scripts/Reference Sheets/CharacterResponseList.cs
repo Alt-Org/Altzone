@@ -23,6 +23,22 @@ namespace Altzone.Scripts.ReferenceSheets
         public List<ChatResponse> ChatResponseInfo => _chatResponseInfo; // Public accessor for _chatResponseInfo
         public List<MottoOptions> MottoOptionsInfo => _mottoOptionsInfo; // Public accessor for _mottoOptionsInfo
 
+        private static CharacterResponseList _instance;
+        private static bool _hasInstance;
+
+        public static CharacterResponseList Instance
+        {
+            get
+            {
+                if (!_hasInstance)
+                {
+                    _instance = Resources.Load<CharacterResponseList>(nameof(CharacterResponseList));
+                    _hasInstance = _instance != null;
+                }
+                return _instance;
+            }
+        }
+
         public List<ChatResponseObject> GetChatResponses(Emotion mood)
         {
 
