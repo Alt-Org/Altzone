@@ -302,7 +302,7 @@ public class MessageReactionsHandler : AltMonoBehaviour
     /// <param name="reactionHandler"></param>
     private void ToggleReaction(ChatReactionHandler reactionHandler)
     {
-
+        if (reactionHandler.MessageID != _selectedMessage.Id) return;
 
         ChatListener.Instance.SendReaction(!reactionHandler.Selected ? reactionHandler.Mood.ToString() : string.Empty, reactionHandler.MessageID, ChatListener.Instance.ActiveChatChannel);
         if (!_longClick)
