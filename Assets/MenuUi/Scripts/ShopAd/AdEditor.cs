@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Store;
+using MenuUi.Scripts.Storage;
 
 public class AdEditor : AltMonoBehaviour
 {
@@ -51,6 +52,10 @@ public class AdEditor : AltMonoBehaviour
     private bool fontChanged = false;
     private bool textStateChanged = false;
 
+    private List<StorageFurniture> furnitureList;
+    private static AdEditor _instance;
+    private static bool _hasInstance;
+
     void Start()    
     {
         InitializeAd();
@@ -67,6 +72,48 @@ public class AdEditor : AltMonoBehaviour
     private void OnDisable()
     {
        CloseEditor();
+    }
+
+    //public class AdFurnitureObject
+    //{
+    //    public string Name;
+    //    public Sprite Image;
+    //    public string Id;
+
+    //    public AdFurnitureObject(string name, string id, Sprite image)
+    //    {
+    //        Name = name;
+    //        Id = id;
+    //        Image = image;
+    //    }
+
+    //    public bool IsValid()
+    //    {
+    //        if (string.IsNullOrWhiteSpace(Name)) return false;
+    //        if (Image == null) return false;
+    //        return true;
+    //    }
+    //}
+
+    public List<StorageFurniture> FurnitureList
+    {
+        get
+        {
+            return furnitureList;
+        }
+    }
+
+    public static AdEditor Instance
+    {
+        get
+        {
+            if (!_hasInstance)
+            {
+                _instance = Resources.Load<AdEditor>(nameof(AdEditor));
+                _hasInstance = _instance != null;
+            }
+            return _instance;
+        }
     }
 
     private void InitializeAd()
@@ -176,13 +223,11 @@ public class AdEditor : AltMonoBehaviour
             }
         }
 
-        List<AdFurnitureObject> furnitureList = _borderReference.FurnitureList; // Uusi lisäys (Perttu)
-
-        foreach (AdFurnitureObject furniture in furnitureList) // Uusi lisäys (Perttu)
+        foreach (StorageFurniture furniture in furnitureList) // Uusi lisäys (Perttu)
         {
             GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
             furnitureObject.GetComponent<Image>().preserveAspect = true;
-            furnitureObject.GetComponent<Image>().sprite = furniture.Image;
+            furnitureObject.GetComponent<Image>().sprite = furniture.Sprite;
             float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
             furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
             if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
@@ -245,7 +290,7 @@ public class AdEditor : AltMonoBehaviour
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
 
-    public void ChangeFurniture(AdFurnitureObject furniture) // Uusi lisäys (Perttu)
+    public void ChangeFurniture(StorageFurniture furniture) // Uusi lisäys (Perttu)
     {
         if (!furnitureChanged)
         {

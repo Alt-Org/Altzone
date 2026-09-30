@@ -82,11 +82,11 @@ namespace Altzone.Scripts.Store
             get => _furniture;
             set
             {
-                if (AdDecorationReference.Instance.GetFurnitureSprite(value) != null) _furniture = value;
-                else
-                {
-                    Debug.LogError($"Invalid furniture id: \"{value}\". Furniture not changed.");
-                }
+                //if (AdDecorationReference.Instance.GetFurnitureSprite(value) != null) _furniture = value;
+                //else
+                //{
+                //    Debug.LogError($"Invalid furniture id: \"{value}\". Furniture not changed.");
+                //}
             }
         }
 
