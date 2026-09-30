@@ -40,6 +40,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [SerializeField] private InRoomInviteSelectorPanel _inviteSelectorPanel;
 
         private Coroutine _inviteLifecycleHolder;
+        private bool _inviteRequestInFlight;
         private const float InviteLifecycleTickSeconds = 1f;
         private const long InviteExpirationSeconds = 60;
         private Coroutine _customRoomTimeoutHolder;
@@ -342,79 +343,62 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return;
             }
 
-            if (!TrySendInviteToUserId(onlinePlayer._id))
-            {
-                return;
-            }
-
-            PopupSignalBus.OnChangePopupInfoSignal($"Kutsu lähetetty pelaajalle {GetOnlinePlayerDisplayName(onlinePlayer)}.");
+            StartCoroutine(SendServerInviteToOnlinePlayer(onlinePlayer));
         }
 
-        private bool TrySendInviteToUserId(string invitedUserId)
+        private IEnumerator SendServerInviteToOnlinePlayer(ServerOnlinePlayer onlinePlayer)
         {
+            if (_inviteRequestInFlight) yield break;
+
+            string invitedUserId = onlinePlayer._id;
             if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
             {
-                return false;
+                yield break;
             }
 
             if (!PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
             {
                 PopupSignalBus.OnChangePopupInfoSignal("Vain huoneen johtaja voi lähettää kutsun.");
-                return false;
+                yield break;
             }
 
             if (string.IsNullOrEmpty(invitedUserId))
             {
                 PopupSignalBus.OnChangePopupInfoSignal("Sopivaa kutsuttavaa online-pelaajaa ei löytynyt.");
-                return false;
+                yield break;
             }
 
             string localUserId = GetLocalUserId();
-            string localUsername = PhotonRealtimeClient.LocalLobbyPlayer?.NickName;
 
-            if (string.IsNullOrEmpty(localUserId) || invitedUserId == localUserId) return false;
+            if (string.IsNullOrEmpty(localUserId) || invitedUserId == localUserId) yield break;
             if (IsPlayerAlreadyInCurrentRoom(invitedUserId))
             {
                 PopupSignalBus.OnChangePopupInfoSignal("Valittu pelaaja on jo huoneessa.");
-                return false;
+                yield break;
             }
 
-            int inviteState = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
-            string currentInvitedUserId = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
-            if (inviteState == PhotonBattleRoom.PremadeInviteStatePending && currentInvitedUserId == invitedUserId)
+            if (ServerManager.Instance == null)
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Kutsu on jo lähetetty tälle pelaajalle.");
-                return false;
+                PopupSignalBus.OnChangePopupInfoSignal("Kutsun lähetys epaonnistui. Yrita uudelleen.");
+                yield break;
             }
 
-            ApplyPendingPremadeInviteSelection(invitedUserId, localUserId, localUsername, InLobbyController.SelectedPremadeTargetMatchmakingType);
-
+            _inviteRequestInFlight = true;
+            SetInviteButtonInteractable(false);
+            bool inviteSent = false;
             try
             {
-                PhotonRealtimeClient.LobbyCurrentRoom.ClearExpectedUsers();
-                PhotonRealtimeClient.LobbyCurrentRoom.SetExpectedUsers(new[] { invitedUserId });
+                yield return StartCoroutine(ServerManager.Instance.MatchmakingSendInviteToPlayer(invitedUserId, success => inviteSent = success));
             }
-            catch (Exception ex)
+            finally
             {
-                Debug.LogWarning($"TrySendInviteToUserId: failed to set expected users: {ex.Message}");
+                _inviteRequestInFlight = false;
+                SetInviteButtonInteractable(true);
             }
 
-            return true;
-        }
-
-        private void ApplyPendingPremadeInviteSelection(string invitedUserId, string localUserId, string localUsername, MatchmakingType targetGameType)
-        {
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, localUsername);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, invitedUserId);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStatePending);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, localUsername);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
-            PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
+            PopupSignalBus.OnChangePopupInfoSignal(inviteSent
+                ? $"Kutsu lähetetty pelaajalle {GetOnlinePlayerDisplayName(onlinePlayer)}."
+                : "Kutsun lähetys epaonnistui. Yrita uudelleen.");
         }
 
         private void MarkPremadeInviteAccepted(string invitedUserId, string name)

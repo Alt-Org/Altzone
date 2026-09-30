@@ -5,6 +5,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Lobby;
+using Altzone.Scripts.MQTT;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using MenuUi.Scripts.Signals;
@@ -88,6 +89,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
             LobbyManager.OnInRoomInviteReceived += OnInRoomInviteReceived;
             LobbyManager.OnInRoomInviteJoinFailed += OnInRoomInviteJoinFailed;
+            MQTTManager.OnMatchmakingInviteReceived += OnServerMatchmakingInviteReceived;
             // Register runtime popup reference for other components to find (safe to set here because serialized field is available in Awake)
             OnPopupContentsInstanceAssigned?.Invoke(PopupContentsInstance);
         }
@@ -105,6 +107,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             LobbyManager.OnMatchmakingStopped -= OnMatchmakingStopped;
             LobbyManager.OnInRoomInviteReceived -= OnInRoomInviteReceived;
             LobbyManager.OnInRoomInviteJoinFailed -= OnInRoomInviteJoinFailed;
+            MQTTManager.OnMatchmakingInviteReceived -= OnServerMatchmakingInviteReceived;
             if (PopupContentsInstance == _popupContents)
             {
                 OnPopupContentsInstanceAssigned?.Invoke(null);
@@ -371,6 +374,38 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 LobbyManager.Instance?.DeclineInRoomInvite(inviteInfo.RoomName);
                 PopupSignalBus.OnChangePopupInfoSignal("Friend Lobby -kutsu saatu, mutta vahvistusikkunaa ei voitu avata. Kutsu hylättiin turvallisuussyista.");
             }
+        }
+
+        private void OnServerMatchmakingInviteReceived(MQTTMatchInvite invite)
+        {
+            if (invite == null) return;
+
+            string roomId = string.IsNullOrWhiteSpace(invite.roomId) ? invite.id : invite.roomId;
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                Debug.LogWarning("OnServerMatchmakingInviteReceived: invite did not contain a room id.");
+                return;
+            }
+
+            MatchmakingType targetGameType = invite.matchType switch
+            {
+                MatchType.CLAN => MatchmakingType.Clan2v2,
+                MatchType.RANDOM => MatchmakingType.Random2v2,
+                _ => MatchmakingType.Random2v2
+            };
+
+            MQTTMatchPlayers inviter = invite.senderPlayer ?? invite.ownerPlayer;
+            string inviterUserId = inviter?.playerId ?? string.Empty;
+            string inviterName = inviter?.name ?? inviterUserId;
+            string localUserId = ServerManager.Instance?.Player?._id ?? string.Empty;
+
+            SetPremadeTargetGameType(targetGameType);
+            OnInRoomInviteReceived(new LobbyManager.InRoomInviteInfo(
+                roomId,
+                inviterUserId,
+                inviterName,
+                localUserId,
+                targetGameType));
         }
 
         private void OpenBattlePopupForInviteAccept()

@@ -897,9 +897,11 @@ public static class PhotonRealtimeClient
         );
     }
 
-    public static bool CreateInRoomPremadeLobbyRoom(MatchmakingType matchmakingType= MatchmakingType.None, GameType gameType = GameType.BattlePingPong, string[] expectedUsers = null)
+    public static bool CreateInRoomPremadeLobbyRoom(MatchmakingType matchmakingType = MatchmakingType.None, GameType gameType = GameType.BattlePingPong, string[] expectedUsers = null, string roomId = null)
     {
-        string roomName = $"FriendLobby_{LocalPlayer.UserId}_{matchmakingType}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        string roomName = string.IsNullOrWhiteSpace(roomId)
+            ? $"FriendLobby_{LocalPlayer.UserId}_{matchmakingType}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}"
+            : roomId;
         RoomOptions roomOptions = GetRoomOptions(
             lobbyType: MatchmakingType.FriendLobby,
             matchmakingType: matchmakingType,

@@ -7962,6 +7962,14 @@ namespace Altzone.Scripts.Lobby
 
         public void OnLeftRoom() // IMatchmakingCallbacks
         {
+            if (ServerManager.Instance != null && ServerManager.Instance.HasActiveMatchmakingRoom)
+            {
+                StartCoroutine(ServerManager.Instance.MatchmakingLeaveRoom(success =>
+                {
+                    if (!success) Debug.LogWarning("OnLeftRoom: failed to leave the active server matchmaking room.");
+                }));
+            }
+
             _gamePlayedOut = false;
             _matchHasStartedInCurrentRoom = false;
             _countdownActive = false;
