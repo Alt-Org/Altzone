@@ -31,6 +31,28 @@ namespace Altzone.Scripts.Chat
         Angry = Emotion.Anger,
         None
     }
+
+    public enum ResponseType
+    {
+        NeedCompany,
+        NewGame,
+        ComingToPlay,
+        WantToPlay,
+        Yes,
+        No,
+        Online,
+        Leaving,
+        Busy,
+        WinningStreak,
+        LosingStreak,
+        Discord,
+        Lonely,
+        GoodGame,
+        BadGame,
+        SkillIssue,
+        SkillIssue2,
+        Funny
+    }
     /// <summary>
     /// ChatListener is the main class handling interaction between server WebSocket, our own server for chat history and the game.
     /// </summary>
@@ -275,7 +297,7 @@ namespace Altzone.Scripts.Chat
             }
         }
 
-        public async void SendMessage(string message, Emotion emotion, ChatChannelType channel)
+        public async void SendMessage(string message, ResponseType responseType, Emotion emotion, ChatChannelType channel)
         {
             if (_socket == null) Debug.LogError("Socket is null");
             if (_socket.State == WebSocketState.Open)
@@ -290,7 +312,8 @@ namespace Altzone.Scripts.Chat
                     data = new
                     {
                         content = message,
-                        feeling = emotion.ToString()
+                        responseType = responseType.ToString(),
+                        emotion = (int)emotion
                     }
                 }).ToString();
 
