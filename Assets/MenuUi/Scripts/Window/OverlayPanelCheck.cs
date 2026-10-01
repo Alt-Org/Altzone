@@ -49,6 +49,7 @@ namespace MenuUi.Scripts.Window
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
+                return;
             }
             else
             {
