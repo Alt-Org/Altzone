@@ -13,14 +13,14 @@ namespace Altzone.Scripts.Store
         public string _backgroundColour;
         public TMPro.TMP_FontAsset _textFont; // Uusi lisäys (Perttu)
         public string _textColour; // Uusi lisäys (Perttu)
-        public string _furniture; // Uusi lisäys (Perttu)
+        public Sprite _furniture; // Uusi lisäys (Perttu)
         public string _adText; // Uusi lisäys (Perttu)
         public bool _isAdText = true; // Uusi lisäys (Perttu)
 
         // Uusi lisäys (Perttu)
         public string previousColor;
         public string previousBorder;
-        public string previousFurniture;
+        public Sprite previousFurniture;
         public string previousTextColor;
         public TMPro.TMP_FontAsset previousFont;
         public string previousText;
@@ -77,16 +77,16 @@ namespace Altzone.Scripts.Store
             }
         }
 
-        public string Furniture // Uusi lisäys (Perttu)
+        public Sprite Furniture // Uusi lisäys (Perttu)
         {
             get => _furniture;
             set
             {
-                //if (AdDecorationReference.Instance.GetFurnitureSprite(value) != null) _furniture = value;
-                //else
-                //{
-                //    Debug.LogError($"Invalid furniture id: \"{value}\". Furniture not changed.");
-                //}
+                if (value != null) _furniture = value;
+                else
+                {
+                    Debug.LogError($"Invalid furniture id: \"{value}\". Furniture not changed.");
+                }
             }
         }
 

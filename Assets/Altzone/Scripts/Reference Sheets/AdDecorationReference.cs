@@ -184,7 +184,7 @@ namespace Altzone.Scripts.ReferenceSheets
         //    List<AdFurnitureObject> furnitures = new();
         //    foreach (GameFurniture furniture in _furnitureList)
         //    {
-        //        //if (!furniture.IsValid()) continue;
+        //        if (!furniture.IsValid()) continue;
 
         //        if (!uniqueNames.Add(furniture.Name))
         //        {

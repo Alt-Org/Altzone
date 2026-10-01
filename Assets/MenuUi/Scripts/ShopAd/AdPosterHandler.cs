@@ -28,6 +28,10 @@ public class AdPosterHandler : AltMonoBehaviour
     [SerializeField]
     private GameObject _inputFieldHolder;
 
+    //[SerializeField]
+    //private AdEditor _adEditor;
+    private AdEditor adEditor = new AdEditor();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,13 +69,13 @@ public class AdPosterHandler : AltMonoBehaviour
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
 
         // Uusi lisäys (Perttu)
-        if (AdEditor.Instance.FurnitureList.Count <= 0) _adFurniture.enabled = false;
+        if (adEditor.FurnitureList.Count <= 0) _adFurniture.enabled = false;
         else
         {
             _adFurniture.enabled = true;
 
-            if (data.Furniture == null) _adFurniture.sprite = AdEditor.Instance.FurnitureList[0].Sprite;
-            //else _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture);
+            if (data.Furniture == null) _adFurniture.sprite = adEditor.FurnitureList[0].Image;
+            else _adFurniture.sprite = data.Furniture;
         }
 
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
@@ -93,13 +97,13 @@ public class AdPosterHandler : AltMonoBehaviour
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
 
         // Uusi lisäys (Perttu)
-        if (AdEditor.Instance.FurnitureList.Count <= 0) _adFurniture.enabled = false;
+        if (adEditor.FurnitureList.Count <= 0) _adFurniture.enabled = false;
         else
         {
             _adFurniture.enabled = true;
 
-            if (data.Furniture == null) _adFurniture.sprite = AdEditor.Instance.FurnitureList[0].Sprite;
-            //else _adFurniture.sprite = AdDecorationReference.Instance.GetFurnitureSprite(data.Furniture);
+            if (data.Furniture == null) _adFurniture.sprite = adEditor.FurnitureList[0].Image;
+            else _adFurniture.sprite = data.Furniture;
         }
 
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;

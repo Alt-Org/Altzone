@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,9 +53,10 @@ public class AdEditor : AltMonoBehaviour
     private bool fontChanged = false;
     private bool textStateChanged = false;
 
-    private List<StorageFurniture> furnitureList;
-    private static AdEditor _instance;
-    private static bool _hasInstance;
+    private List<GameFurniture> furnitureList;
+    private List<AdFurnitureObject> _validatedFurnitureList = null; // Uusi lisäys (Perttu)
+    //private static AdEditor _instance = null;
+    //private static bool _hasInstance;
 
     void Start()    
     {
@@ -74,47 +76,77 @@ public class AdEditor : AltMonoBehaviour
        CloseEditor();
     }
 
-    //public class AdFurnitureObject
+    public List<AdFurnitureObject> FurnitureList
+    {
+        get
+        {
+            ValidateFurniture();
+            return _validatedFurnitureList;
+        }
+    }
+
+    private void ValidateFurniture()
+    {
+        HashSet<string> uniqueNames = new();
+        HashSet<Sprite> uniqueMap = new();
+
+        if (_validatedFurnitureList != null && _validatedFurnitureList.Count > 0) return;
+
+        furnitureList = StorageFurnitureReference.Instance.GetAllGameFurniture();
+
+        List<AdFurnitureObject> furnitures = new();
+        foreach (GameFurniture furniture in furnitureList)
+        {
+            //if (!furniture.IsValid()) continue;
+
+            if (!uniqueNames.Add(furniture.Name))
+            {
+                Debug.LogError($"duplicate furniture Name {furniture.Name}");
+            }
+            if (!uniqueMap.Add(furniture.FurnitureInfo.Image))
+            {
+                Debug.LogError($"duplicate furniture Image {furniture.FurnitureInfo.Image}");
+                continue;
+            }
+            AdFurnitureObject furnitureObj = new AdFurnitureObject(furniture.Name, furniture.Id, furniture.FurnitureInfo.Image);
+            furnitures.Add(furnitureObj);
+        }
+        _validatedFurnitureList = furnitures;
+    }
+
+    public class AdFurnitureObject
+    {
+        public string Name;
+        public Sprite Image;
+        public string Id;
+
+        public AdFurnitureObject(string name, string id, Sprite image)
+        {
+            Name = name;
+            Id = id;
+            Image = image;
+        }
+
+        public bool IsValid()
+        {
+            if (string.IsNullOrWhiteSpace(Name)) return false;
+            if (Image == null) return false;
+            return true;
+        }
+    }
+
+    //public static AdEditor Instance
     //{
-    //    public string Name;
-    //    public Sprite Image;
-    //    public string Id;
-
-    //    public AdFurnitureObject(string name, string id, Sprite image)
+    //    get
     //    {
-    //        Name = name;
-    //        Id = id;
-    //        Image = image;
-    //    }
-
-    //    public bool IsValid()
-    //    {
-    //        if (string.IsNullOrWhiteSpace(Name)) return false;
-    //        if (Image == null) return false;
-    //        return true;
+    //        if (!_hasInstance)
+    //        {
+    //            _instance = Resources.Load<AdEditor>(nameof(AdEditor));
+    //            _hasInstance = _instance != null;
+    //        }
+    //        return _instance;
     //    }
     //}
-
-    public List<StorageFurniture> FurnitureList
-    {
-        get
-        {
-            return furnitureList;
-        }
-    }
-
-    public static AdEditor Instance
-    {
-        get
-        {
-            if (!_hasInstance)
-            {
-                _instance = Resources.Load<AdEditor>(nameof(AdEditor));
-                _hasInstance = _instance != null;
-            }
-            return _instance;
-        }
-    }
 
     private void InitializeAd()
     {
@@ -223,11 +255,11 @@ public class AdEditor : AltMonoBehaviour
             }
         }
 
-        foreach (StorageFurniture furniture in furnitureList) // Uusi lisäys (Perttu)
+        foreach (AdFurnitureObject furniture in _validatedFurnitureList) // Uusi lisäys (Perttu)
         {
             GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
             furnitureObject.GetComponent<Image>().preserveAspect = true;
-            furnitureObject.GetComponent<Image>().sprite = furniture.Sprite;
+            furnitureObject.GetComponent<Image>().sprite = furniture.Image;
             float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
             furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
             if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
@@ -290,7 +322,7 @@ public class AdEditor : AltMonoBehaviour
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
 
-    public void ChangeFurniture(StorageFurniture furniture) // Uusi lisäys (Perttu)
+    public void ChangeFurniture(AdFurnitureObject furniture) // Uusi lisäys (Perttu)
     {
         if (!furnitureChanged)
         {
@@ -298,7 +330,7 @@ public class AdEditor : AltMonoBehaviour
             furnitureChanged = true;
         }
 
-        _adData.Furniture = furniture.Name;
+        _adData.Furniture = furniture.Image;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
 
@@ -379,7 +411,7 @@ public class AdEditor : AltMonoBehaviour
         if (ColorUtility.TryParseHtmlString(_adData.previousColor, out Color color)) currentColor = color;
 
         if (!string.IsNullOrEmpty(_adData.previousBorder)) _adData.BorderFrame = _adData.previousBorder;
-        if (!string.IsNullOrEmpty(_adData.previousFurniture)) _adData.Furniture = _adData.previousFurniture;
+        if (!_adData.previousFurniture) _adData.Furniture = _adData.previousFurniture;
 
         if (!string.IsNullOrEmpty(_adData.previousTextColor)) _adData.TextColour = _adData.previousTextColor;
         if (ColorUtility.TryParseHtmlString(_adData.previousTextColor, out Color textColor)) currentTextColor = textColor;
