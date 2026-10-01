@@ -657,11 +657,16 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Calculating a height for the editor from the world aspect ratio so that it works in calculations
             float editorAspectRatioHeight = EditorRect.width / editorWorldAspectRatio;
 
-            // Available area after unsafe area.
-            float unsafeAreaPercentage = PanelScaler.CalculateUnsafeAreaHeight();
+            // // Available area after unsafe area.
+            // float unsafeAreaPercentage = PanelScaler.CalculateUnsafeAreaHeight();
+            // float availableWidth = EditorRect.width;
+            // float unsafeAreaHeight = editorAspectRatioHeight * unsafeAreaPercentage;
+            // float availableHeight = editorAspectRatioHeight - unsafeAreaHeight;
+            // float availableAspectRatio = availableWidth / availableHeight;
+
+            // Available editor area
             float availableWidth = EditorRect.width;
-            float unsafeAreaHeight = editorAspectRatioHeight * unsafeAreaPercentage;
-            float availableHeight = editorAspectRatioHeight - unsafeAreaHeight;
+            float availableHeight = editorAspectRatioHeight;
             float availableAspectRatio = availableWidth / availableHeight;
 
             // Calculating arena scale.
@@ -715,6 +720,27 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             _arenaImage.offsetMin = Vector2.zero;
             _arenaImage.offsetMax = Vector2.zero;
+
+            //Setting StonewallCharacters anchors
+            RectTransform stoneWallTopCharacter =
+                _stoneWallTopCharacterImage.GetComponent<RectTransform>();
+
+            RectTransform stoneWallBottomCharacter =
+                _stoneWallBottomCharacterImage.GetComponent<RectTransform>();
+
+            // Top follows arena top edge
+            stoneWallTopCharacter.anchorMin =
+                new Vector2(anchorMin.x, anchorMax.y);
+
+            stoneWallTopCharacter.anchorMax =
+                new Vector2(anchorMax.x, anchorMax.y);
+
+            // Bottom follows arena bottom edge
+            stoneWallBottomCharacter.anchorMin =
+                new Vector2(anchorMin.x, anchorMin.y);
+
+            stoneWallBottomCharacter.anchorMax =
+                new Vector2(anchorMax.x, anchorMin.y);
         }
 
         public void ToggleOptionsPopup()

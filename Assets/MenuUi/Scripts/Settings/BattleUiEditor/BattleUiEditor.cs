@@ -214,11 +214,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             // Assign static editor rect variables
             EditorRectTransform = _editorRectTransform;
-            EditorRect = EditorRectTransform.rect;
             s_uiElementsHolder = _uiElementsHolder;
 
             // Scale editor to account for unsafe area
             ScaleEditor();
+
+            //
+            Canvas.ForceUpdateCanvases();
+            EditorRect = EditorRectTransform.rect;
 
             // Close and save button listeners
             _closeButton.onClick.AddListener(WhetherToSaveChangesPopup);
@@ -320,11 +323,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Calculating max y anchor for the editor
             float anchorMaxY = 1 - TopButtonsHeight - unsafeAreaHeight;
 
-            // Calculating editor aspect ratio and size
-            float editorAspectRatio = (float)Screen.width / Screen.height;
-            //float editorAspectRatio = 9f / 19f;
-            float editorHeight = Screen.height * anchorMaxY;
-            float editorWidth = editorHeight * editorAspectRatio;
+            // // Calculating editor aspect ratio and size
+            // float editorAspectRatio = (float)Screen.width / Screen.height;
+            // //float editorAspectRatio = 9f / 19f;
+            // float editorHeight = Screen.height * anchorMaxY;
+            // float editorWidth = editorHeight * editorAspectRatio;
+            float editorWidth = Screen.width * anchorMaxY;
 
             // Calculating x anchors
             float widthAnchorValue = editorWidth / Screen.width;
@@ -338,6 +342,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Setting top button anchors
             _topButtonsRectTransform.anchorMin = new(0, anchorMaxY);
             _topButtonsRectTransform.anchorMax = new(1, 1 - unsafeAreaHeight);
+
+            Canvas.ForceUpdateCanvases();
+
+            Debug.Log(
+                $"[ScaleEditor] " +
+                $"Screen={Screen.width}x{Screen.height}, " +
+                $"unsafe={unsafeAreaHeight}, " +
+                $"anchorMaxY={anchorMaxY}, " +
+                $"anchorX={anchorMinX:F3}-{anchorMaxX:F3}, " +
+                $"Rect={EditorRectTransform.rect.width:F1}x{EditorRectTransform.rect.height:F1}"
+            );
         }
 
         private void OpenPreviewMode()
