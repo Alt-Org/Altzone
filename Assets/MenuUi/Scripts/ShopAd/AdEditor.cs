@@ -83,14 +83,14 @@ public class AdEditor : AltMonoBehaviour
 
             List<AdFurnitureObject> furnitures = _validatedFurnitureList;
 
-            for (int i = 0; i < furnitures.Count; i++)
+            if (_furnitureList != null && _furnitureList.Count > 0)
             {
-                if (_furnitureList != null && _furnitureList.Count > 0)
+                for (int i = 0; i < furnitures.Count; i++)
                 {
                     if (!_furnitureList.Contains(furnitures[i])) furnitures.Remove(furnitures[i]);
                 }
-                else furnitures.Remove(furnitures[i]);
             }
+            else furnitures = null;
             return furnitures;
         }
     }
@@ -266,14 +266,21 @@ public class AdEditor : AltMonoBehaviour
             }
         }
 
-        foreach (AdFurnitureObject furniture in FurnitureList)
+        if (FurnitureList == null || FurnitureList.Count <= 0)
         {
-            GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
-            furnitureObject.GetComponent<Image>().preserveAspect = true;
-            furnitureObject.GetComponent<Image>().sprite = furniture.Image;
-            float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
-            furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
-            if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
+            return;
+        }
+        else
+        {
+            foreach (AdFurnitureObject furniture in FurnitureList)
+            {
+                GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
+                furnitureObject.GetComponent<Image>().preserveAspect = true;
+                furnitureObject.GetComponent<Image>().sprite = furniture.Image;
+                float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+                furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
+                if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
+            }
         }
     }
 

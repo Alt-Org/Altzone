@@ -25,10 +25,6 @@ public class ItemMover : MonoBehaviour
     public event Action<StorageFurniture> OnItemMovedToPanel;
 
     private AdEditor adEditor = new AdEditor();
-    //private GameFurniture gameFurniture;
-
-
-    //[SerializeField] private AdDecorationReference _adDecReference; // Uusi lisäys (Perttu)
 
     void Start()
     {
@@ -97,8 +93,6 @@ public class ItemMover : MonoBehaviour
             // Move from tray to panel
             foreach (var slot in panelSlots)
             {
-                //if (slot.transform.GetSiblingIndex() == 0) continue; // Skips the slot meant for the poster card
-
                 if (!slot.IsOccupied)
                 {
                     assignedSlot = slot;
@@ -110,7 +104,6 @@ public class ItemMover : MonoBehaviour
 
                     // Uusi lisäys (Perttu)
                     AdEditor.AdFurnitureObject adFurnitureObject = new AdEditor.AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
-                    //adEditor.FurnitureList.Add(adFurnitureObject);
                     adEditor.AddFurniture(adFurnitureObject);
 
                     return;
@@ -138,7 +131,6 @@ public class ItemMover : MonoBehaviour
 
                 // Uusi lisäys (Perttu)
                 AdEditor.AdFurnitureObject removableFurniture = adEditor.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
-                //adEditor._furnitureList.Remove(removableFurniture);
                 adEditor.RemoveFurniture(removableFurniture);
 
                 var store = Storefront.Get();

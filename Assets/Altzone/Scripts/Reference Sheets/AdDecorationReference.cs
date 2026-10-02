@@ -12,8 +12,6 @@ namespace Altzone.Scripts.ReferenceSheets
 
         [SerializeField] private List<AdBorderFrameObject> _frameList;
 
-        //private List<GameFurniture> _furnitureList; // Uusi lisäys (Perttu)
-
         [SerializeField] public List<AdFontObject> _fontList; // Uusi lisäys (Perttu)
 
         [Header("Colours")]
@@ -31,7 +29,6 @@ namespace Altzone.Scripts.ReferenceSheets
         private List<Color> _textColourList; // Uusi lisäys (Perttu)
 
         private List<AdBorderFrameObject> _validatedFrameList = null;
-        //private List<AdFurnitureObject> _validatedFurnitureList = null; // Uusi lisäys (Perttu)
         private List<AdFontObject> _validatedFontList = null; // Uusi lisäys (Perttu)
         private static AdDecorationReference _instance = null;
         private static bool _hasInstance = false;
@@ -43,15 +40,6 @@ namespace Altzone.Scripts.ReferenceSheets
                 return _validatedFrameList;
             }
         } // Public accessor for _info
-
-        //public List<AdFurnitureObject> FurnitureList // Uusi lisäys (Perttu)
-        //{
-        //    get
-        //    {
-        //        if (_validatedFurnitureList == null || _validatedFurnitureList.Count == 0) ValidateFurniture();
-        //        return _validatedFurnitureList;
-        //    }
-        //}
 
         public List<AdFontObject> FontList // Uusi lisäys (Perttu)
         {
@@ -172,61 +160,6 @@ namespace Altzone.Scripts.ReferenceSheets
         }
 
         // Uusi lisäys (Perttu)
-        //private void ValidateFurniture()
-        //{
-        //    HashSet<string> uniqueNames = new();
-        //    HashSet<Sprite> uniqueMap = new();
-
-        //    if (_validatedFurnitureList != null && _validatedFurnitureList.Count > 0) return;
-
-        //    _furnitureList = StorageFurnitureReference.Instance.GetAllGameFurniture();
-
-        //    List<AdFurnitureObject> furnitures = new();
-        //    foreach (GameFurniture furniture in _furnitureList)
-        //    {
-        //        if (!furniture.IsValid()) continue;
-
-        //        if (!uniqueNames.Add(furniture.Name))
-        //        {
-        //            Debug.LogError($"duplicate furniture Name {furniture.Name}");
-        //        }
-        //        if (!uniqueMap.Add(furniture.FurnitureInfo.Image))
-        //        {
-        //            Debug.LogError($"duplicate furniture Image {furniture.Image}");
-        //            continue;
-        //        }
-        //        furnitures.Add(furniture);
-        //    }
-        //    _validatedFurnitureList = furnitures;
-        //}
-        //// Uusi lisäys (Perttu)
-        //public Sprite GetFurnitureSprite(string name)
-        //{
-        //    AdFurnitureObject data = GetFurniture(name);
-        //    if (data == null) return null;
-        //    return data.Image;
-        //}
-        //// Uusi lisäys (Perttu)
-        //private AdFurnitureObject GetFurniture(string name)
-        //{
-        //    //Debug.LogWarning($"Full name: {name}");
-        //    if (string.IsNullOrWhiteSpace(name))
-        //    {
-        //        return null;
-        //    }
-
-        //    foreach (AdFurnitureObject info in _furnitureList)
-        //    {
-        //        if (info.Name == name)
-        //        {
-        //            if (info.IsValid()) return info;
-        //            else return null;
-        //        }
-        //    }
-        //    return null;
-        //}
-
-        // Uusi lisäys (Perttu)
         private void ValidateFonts()
         {
             HashSet<string> uniqueNames = new();
@@ -266,26 +199,6 @@ namespace Altzone.Scripts.ReferenceSheets
             return true;
         }
     }
-
-    //[Serializable]
-    //public class AdFurnitureObject // Uusi lisäys (Perttu)
-    //{
-    //    public string Name;
-    //    public Sprite Image;
-
-    //    public AdFurnitureObject(GameFurniture)
-    //    {
-    //        name = fir
-    //    }
-
-
-    //    public bool IsValid()
-    //    {
-    //        if (string.IsNullOrWhiteSpace(Name)) return false;
-    //        if (Image == null) return false;
-    //        return true;
-    //    }
-    //}
 
     [Serializable]
     public class AdFontObject // Uusi lisäys (Perttu)
