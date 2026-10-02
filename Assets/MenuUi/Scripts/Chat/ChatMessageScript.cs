@@ -14,7 +14,7 @@ public class ChatMessageScript : MonoBehaviour
     public RectTransform panel;
     [SerializeField] private VerticalLayoutGroup _messageVerticalLayoutGroup;
 
-    public float _BackgroundPadding = 30f; // Korkeus, jonka verran tausta kasvaa jokaisen lisärivin myötä.
+    [SerializeField] private float _textMargins = 40f; // Korkeus, jonka verran tausta kasvaa jokaisen lisärivin myötä.
 
     private float _lastLineCount = 0; // Tallentaa viimeksi lasketun rivim��r�n.
     private float _initialHeight; // Alkuper�inen taustan korkeus, joka asetetaan alussa.
@@ -32,22 +32,19 @@ public class ChatMessageScript : MonoBehaviour
         }
     }
 
-    public void MessageSetHeight()
+    public float MessageSetHeight()
     {
         // Dynaamisesti muuttaa taustan korkeutta ja paneelia tekstin rivim��r�n mukaan.
         if (textBackground != null && messageText != null)
         {
             float lineCount = messageText.textInfo.lineCount; // Haetaan nykyinen rivim��r� tekstist�.
+            float currentHeight = textBackground.sizeDelta.y;
 
             if (lineCount != _lastLineCount)
             {
-                //Old version
-                //float newHeight = _initialHeight + (lineCount - 1) * heightStep;
-
-
                 /// This is more better as prefferedHeight will take the height it needs to fit in with the text and
-                /// _BackgroundPadding is for padding so that textBackground wouldn't be too short
-                float newHeight = Mathf.Max(110f, messageText.preferredHeight + _BackgroundPadding);
+                /// _textMargins is for the intended size of the margins so that text wouldn't end up too close to the edges.
+                float newHeight = Mathf.Max(110f, messageText.preferredHeight + _textMargins);
 
 
                 //Changes the message text position when there's more text
@@ -60,10 +57,7 @@ public class ChatMessageScript : MonoBehaviour
                 textBackground.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(textBackground.parent.GetComponent<RectTransform>().sizeDelta.x, newHeight);
                 _lastLineCount = lineCount;
 
-
-                _messageHandler._baseMessageBankerSize = new Vector2(_messageHandler._baseMessageSize.sizeDelta.x, newHeight);
-
-                _messageHandler.SizeCall();
+                return newHeight;
                 ///Old Line Incase needed
                 //float originalSpacing = _messageVerticalLayoutGroup.spacing;
                 //float newSpacing = originalSpacing * 0.2f * (lineCount - 1);
@@ -71,6 +65,8 @@ public class ChatMessageScript : MonoBehaviour
 
                 ///Uskoisin että me voidaan vaan käyttää verticallayouttia vaan
             }
+            return currentHeight;
         }
+        return 0;
     }
 }

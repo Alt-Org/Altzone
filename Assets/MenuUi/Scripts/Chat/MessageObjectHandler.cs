@@ -22,14 +22,11 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private GameObject _reactionsPanel;
 
     [Header("Base Message")]
-    public Vector2 _baseMessageBankerSize;
     public RectTransform _baseMessageSize;
     [SerializeField] private ChatMessageScript backgroundSize;
     [SerializeField] private GameObject reactionField;
-    public Vector2 reactionFieldVector;
     public GameObject _reactionSize;
     public GameObject _expandedReactionSize;
-    [SerializeField] private Vector2 _vectorReactionSize;
 
 
 
@@ -43,39 +40,44 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private GameObject ReactionObject;
     public string Id { get => _id;}
 
+    public delegate void RequestCanvasUpdate();
+    public static event RequestCanvasUpdate OnRequestCanvasUpdate;
+
     // Start is called before the first frame update
     void Start()
     {
-        reactionFieldVector = reactionField.transform.position;
         _button.onClick.AddListener(SetMessageActive);
         _image = _button.GetComponent<Image>();
         Chat.OnSelectedMessageChanged += SetMessageInactive;
-        ChatChannel.OnReactionReceived += UpdateReactions;
-
-        _vectorReactionSize = new Vector2(_baseMessageSize.sizeDelta.x, _baseMessageSize.sizeDelta.y + _expandedReactionSize.GetComponent<RectTransform>().sizeDelta.y);
-        
+        ChatChannel.OnReactionReceived += UpdateReactions;      
     }
 
     ///Changes the Basemessages size
     public void SizeCall()
     {
+        float textboxHeight = backgroundSize.MessageSetHeight();
+        float headerSize = 60;
         //adds extra size if there reactions have been put or not
         float extraPadding;
         if (reactionField.transform.childCount > 0)
-            extraPadding = 65;
+            extraPadding = reactionField.GetComponent<RectTransform>().rect.height;
         else
         {
             extraPadding = 0f;
         }
-            
+
         //Checks if reaction panel is active and checks which reaction pannel is on
         if (_reactionSize.activeSelf)
-                _baseMessageSize.sizeDelta = new Vector2(_vectorReactionSize.x, Mathf.Max(150, _baseMessageBankerSize.y + _vectorReactionSize.y));
+        {
+            float reactionBoxSize= _reactionSize.GetComponent<RectTransform>().rect.height;
+            _baseMessageSize.sizeDelta = new Vector2(_baseMessageSize.rect.width, Mathf.Max(150, textboxHeight + headerSize+ reactionBoxSize));
+        }
 
         //reverts back to orignal
         else
-        _baseMessageSize.sizeDelta = new Vector2(_baseMessageBankerSize.x, Mathf.Max(150, _baseMessageBankerSize.y + extraPadding));
+            _baseMessageSize.sizeDelta = new Vector2(_baseMessageSize.rect.width, Mathf.Max(150, textboxHeight + headerSize + extraPadding));
 
+        OnRequestCanvasUpdate?.Invoke();
     }
 
     private void OnDestroy()

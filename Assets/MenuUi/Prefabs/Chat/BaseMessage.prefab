@@ -135,7 +135,7 @@ MonoBehaviour:
   messageText: {fileID: 7173626627776896434}
   panel: {fileID: 3363965265471710657}
   _messageVerticalLayoutGroup: {fileID: 0}
-  _BackgroundPadding: 50
+  _textMargins: 40
   _messageHandler: {fileID: 5786829121231365026}
 --- !u!114 &797248425732977057
 MonoBehaviour:
@@ -796,14 +796,11 @@ MonoBehaviour:
   _button: {fileID: 797248425732977057}
   _addReactionsControls: {fileID: 7076273800822203925}
   _reactionsPanel: {fileID: 7999296891796925201}
-  _baseMessageBankerSize: {x: 0, y: 0}
   _baseMessageSize: {fileID: 3363965265471710657}
   backgroundSize: {fileID: 2103742428301501262}
   reactionField: {fileID: 7999296891796925201}
-  reactionFieldVector: {x: 0, y: 0}
   _reactionSize: {fileID: 7076273800822203925}
   _expandedReactionSize: {fileID: 2120552747243295916}
-  _vectorReactionSize: {x: 0, y: 0}
   _extraimage: {fileID: 4113781336069744164}
   ReactionObject: {fileID: 4166022280338014614}
 --- !u!1 &5430342635638520100
