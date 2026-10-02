@@ -53,10 +53,9 @@ public class AdEditor : AltMonoBehaviour
     private bool fontChanged = false;
     private bool textStateChanged = false;
 
-    private List<GameFurniture> furnitureList;
-    private List<AdFurnitureObject> _validatedFurnitureList = null; // Uusi lisäys (Perttu)
-    //private static AdEditor _instance = null;
-    //private static bool _hasInstance;
+    private List<GameFurniture> _allFurnitureList;
+    private List<AdFurnitureObject> _validatedFurnitureList = null;
+    private List<AdFurnitureObject> _furnitureList = null;
 
     void Start()    
     {
@@ -81,27 +80,52 @@ public class AdEditor : AltMonoBehaviour
         get
         {
             ValidateFurniture();
-            return _validatedFurnitureList;
+
+            List<AdFurnitureObject> furnitures = _validatedFurnitureList;
+
+            for (int i = 0; i < furnitures.Count; i++)
+            {
+                if (_furnitureList != null && _furnitureList.Count > 0)
+                {
+                    if (!_furnitureList.Contains(furnitures[i])) furnitures.Remove(furnitures[i]);
+                }
+                else furnitures.Remove(furnitures[i]);
+            }
+            return furnitures;
         }
+    }
+
+    public void AddFurniture(AdFurnitureObject kojuFurniture)
+    {
+        _furnitureList.Add(kojuFurniture);
+    }
+    public void RemoveFurniture(AdFurnitureObject kojuFurniture)
+    {
+        _furnitureList.Remove(kojuFurniture);
     }
 
     private void ValidateFurniture()
     {
         HashSet<string> uniqueNames = new();
+        HashSet<string> uniqueIds = new();
         HashSet<Sprite> uniqueMap = new();
 
         if (_validatedFurnitureList != null && _validatedFurnitureList.Count > 0) return;
 
-        furnitureList = StorageFurnitureReference.Instance.GetAllGameFurniture();
+        _allFurnitureList = StorageFurnitureReference.Instance.GetAllGameFurniture();
 
         List<AdFurnitureObject> furnitures = new();
-        foreach (GameFurniture furniture in furnitureList)
+        foreach (GameFurniture furniture in _allFurnitureList)
         {
             //if (!furniture.IsValid()) continue;
 
             if (!uniqueNames.Add(furniture.Name))
             {
                 Debug.LogError($"duplicate furniture Name {furniture.Name}");
+            }
+            if (!uniqueIds.Add(furniture.Id))
+            {
+                Debug.LogError($"duplicate furniture Id {furniture.Id}");
             }
             if (!uniqueMap.Add(furniture.FurnitureInfo.Image))
             {
@@ -127,26 +151,13 @@ public class AdEditor : AltMonoBehaviour
             Image = image;
         }
 
-        public bool IsValid()
-        {
-            if (string.IsNullOrWhiteSpace(Name)) return false;
-            if (Image == null) return false;
-            return true;
-        }
+        //public bool IsValid()
+        //{
+        //    if (string.IsNullOrWhiteSpace(Name)) return false;
+        //    if (Image == null) return false;
+        //    return true;
+        //}
     }
-
-    //public static AdEditor Instance
-    //{
-    //    get
-    //    {
-    //        if (!_hasInstance)
-    //        {
-    //            _instance = Resources.Load<AdEditor>(nameof(AdEditor));
-    //            _hasInstance = _instance != null;
-    //        }
-    //        return _instance;
-    //    }
-    //}
 
     private void InitializeAd()
     {
@@ -255,7 +266,7 @@ public class AdEditor : AltMonoBehaviour
             }
         }
 
-        foreach (AdFurnitureObject furniture in _validatedFurnitureList) // Uusi lisäys (Perttu)
+        foreach (AdFurnitureObject furniture in FurnitureList)
         {
             GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
             furnitureObject.GetComponent<Image>().preserveAspect = true;

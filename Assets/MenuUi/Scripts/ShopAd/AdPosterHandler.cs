@@ -30,7 +30,7 @@ public class AdPosterHandler : AltMonoBehaviour
 
     //[SerializeField]
     //private AdEditor _adEditor;
-    private AdEditor adEditor = new AdEditor();
+    private AdEditor _adEditor = new AdEditor();
 
     // Start is called before the first frame update
     void Start()
@@ -69,12 +69,12 @@ public class AdPosterHandler : AltMonoBehaviour
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
 
         // Uusi lisäys (Perttu)
-        if (adEditor.FurnitureList.Count <= 0) _adFurniture.enabled = false;
+        if (_adEditor.FurnitureList.Count <= 0) _adFurniture.enabled = false;
         else
         {
             _adFurniture.enabled = true;
 
-            if (data.Furniture == null) _adFurniture.sprite = adEditor.FurnitureList[0].Image;
+            if (data.Furniture == null) _adFurniture.sprite = _adEditor.FurnitureList[0].Image;
             else _adFurniture.sprite = data.Furniture;
         }
 
@@ -97,12 +97,12 @@ public class AdPosterHandler : AltMonoBehaviour
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
 
         // Uusi lisäys (Perttu)
-        if (adEditor.FurnitureList.Count <= 0) _adFurniture.enabled = false;
+        if (_adEditor.FurnitureList.Count <= 0) _adFurniture.enabled = false;
         else
         {
             _adFurniture.enabled = true;
 
-            if (data.Furniture == null) _adFurniture.sprite = adEditor.FurnitureList[0].Image;
+            if (data.Furniture == null) _adFurniture.sprite = _adEditor.FurnitureList[0].Image;
             else _adFurniture.sprite = data.Furniture;
         }
 
