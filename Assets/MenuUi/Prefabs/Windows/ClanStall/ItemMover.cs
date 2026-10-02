@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using MenuUi.Scripts.Storage;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets; // Uusi lisäys (Perttu)
 using Altzone.Scripts.Config;
 using Altzone.Scripts;
 
@@ -9,7 +11,7 @@ public class ItemMover : MonoBehaviour
 {
     private Transform trayParent;
     private Transform gridParent;
-    private KojuItemSlot assignedSlot;
+    public KojuItemSlot assignedSlot;
 
     private KojuPopup popup;
 
@@ -21,6 +23,8 @@ public class ItemMover : MonoBehaviour
 
     // Event to notify that this item was moved to panel
     public event Action<StorageFurniture> OnItemMovedToPanel;
+
+    private AdEditor adEditor = new AdEditor();
 
     void Start()
     {
@@ -56,7 +60,8 @@ public class ItemMover : MonoBehaviour
     {
         if (assignedSlot != null)
         {
-            popup?.OpenRemovePopup(gameObject);
+            //popup?.OpenRemovePopup(gameObject);
+            popup?.Open(gameObject); // Uusi muokkaus (Perttu)
         }
         else if (HasFreeSlot())
         {
@@ -88,8 +93,6 @@ public class ItemMover : MonoBehaviour
             // Move from tray to panel
             foreach (var slot in panelSlots)
             {
-                if (slot.transform.GetSiblingIndex() == 0) continue; // Skips the slot meant for the poster card
-
                 if (!slot.IsOccupied)
                 {
                     assignedSlot = slot;
@@ -98,6 +101,11 @@ public class ItemMover : MonoBehaviour
 
                     // Notify trayPopulator this item was moved
                     OnItemMovedToPanel?.Invoke(currentFurniture);
+
+                    // Uusi lisäys (Perttu)
+                    AdEditor.AdFurnitureObject adFurnitureObject = new AdEditor.AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
+                    adEditor.AddFurniture(adFurnitureObject);
+
                     return;
                 }
             }
@@ -120,6 +128,10 @@ public class ItemMover : MonoBehaviour
 
                 // Notify trayPopulator this item was returned
                 trayPopulator?.HandleItemReturnedToTray(currentFurniture);
+
+                // Uusi lisäys (Perttu)
+                AdEditor.AdFurnitureObject removableFurniture = adEditor.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
+                adEditor.RemoveFurniture(removableFurniture);
 
                 var store = Storefront.Get();
                 store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>
@@ -149,5 +161,4 @@ public class ItemMover : MonoBehaviour
             }
         }
     }
-
 }

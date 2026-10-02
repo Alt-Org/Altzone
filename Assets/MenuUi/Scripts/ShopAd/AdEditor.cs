@@ -2,52 +2,161 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Store;
+using MenuUi.Scripts.Storage;
 
 public class AdEditor : AltMonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI clanNameText;
 
     [SerializeField] private Image _backgroundImage;
-    [SerializeField] private Image _effectImage;
+    //[SerializeField] private Image _effectImage;
     [SerializeField] private Image _itemImage;
     [SerializeField] private Image _borderImage;
     [SerializeField] private AdPosterHandler _adGraphicHandler;
-
-    [SerializeField] private Color orangeColor;
-    [SerializeField] private Color yellowColor;
-    [SerializeField] private Color lightGreenColor;
-    [SerializeField] private Color lightBlueColor;
-    [SerializeField] private Color blueColor;
-    [SerializeField] private Color purpleColor;
-    [SerializeField] private Color darkPinkColor;
-    [SerializeField] private Color redColor;
+    [SerializeField] private TMP_InputField _inputField; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject _inputFieldHolder; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject _adTextHolder; // Uusi lisäys (Perttu)
 
     [SerializeField] private AdDecorationReference _borderReference;
     [Header("Frame Selectors")]
     [SerializeField] private Transform _borderSelectionContent;
+    [SerializeField] private Transform _furnitureSelectionContent; // Uusi lisäys (Perttu)
+    [SerializeField] private Transform _fontSelectionContent; // Uusi lisäys (Perttu)
     [SerializeField] private GameObject _borderFramePrefab;
+    [SerializeField] private GameObject _furniturePrefab; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject _fontPrefab; // Uusi lisäys (Perttu)
     [SerializeField] private DailyTaskSelectButtons _dtSelectButtons;
     [Header("Colour Selectors")]
     [SerializeField] private Transform _backgroundColourSelectorContent;
+    [SerializeField] private Transform _textColourSelectorContent; // Uusi lisäys (Perttu)
     [SerializeField] private GameObject _backgroundColourSelectorPrefab;
+    [SerializeField] private Color currentColor; // Uusi lisäys (Perttu)
+    [SerializeField] private Color currentTextColor; // Uusi lisäys (Perttu)
+
+    // Uusi lisäys (Perttu)
+    [Header("Panels")]
+    [SerializeField] private GameObject kojuPanel;
 
     private AdStoreObject _adData;
     private string _posterName = null;
     private List<HeartPieceData> _heartPieceData = new();
 
+    private bool colorChanged = false;
+    private bool borderChanged = false;
+    private bool furnitureChanged = false;
+    private bool textColorChanged = false;
+    private bool fontChanged = false;
+    private bool textStateChanged = false;
+
+    private List<GameFurniture> _allFurnitureList;
+    private List<AdFurnitureObject> _validatedFurnitureList = null;
+    private List<AdFurnitureObject> _furnitureList = null;
 
     void Start()    
     {
         InitializeAd();
     }
 
+    private void OnEnable() // Uusi lisäys (Perttu)
+    {
+        GetFurniture();
+        GetColors();
+
+        if (_adData != null) _adData.previousText = _adData.AdText;
+    }
+
     private void OnDisable()
     {
        CloseEditor();
+    }
+
+    public List<AdFurnitureObject> FurnitureList
+    {
+        get
+        {
+            ValidateFurniture();
+
+            List<AdFurnitureObject> furnitures = _validatedFurnitureList;
+
+            if (_furnitureList != null && _furnitureList.Count > 0)
+            {
+                for (int i = 0; i < furnitures.Count; i++)
+                {
+                    if (!_furnitureList.Contains(furnitures[i])) furnitures.Remove(furnitures[i]);
+                }
+            }
+            else furnitures = null;
+            return furnitures;
+        }
+    }
+
+    public void AddFurniture(AdFurnitureObject kojuFurniture)
+    {
+        _furnitureList.Add(kojuFurniture);
+    }
+    public void RemoveFurniture(AdFurnitureObject kojuFurniture)
+    {
+        _furnitureList.Remove(kojuFurniture);
+    }
+
+    private void ValidateFurniture()
+    {
+        HashSet<string> uniqueNames = new();
+        HashSet<string> uniqueIds = new();
+        HashSet<Sprite> uniqueMap = new();
+
+        if (_validatedFurnitureList != null && _validatedFurnitureList.Count > 0) return;
+
+        _allFurnitureList = StorageFurnitureReference.Instance.GetAllGameFurniture();
+
+        List<AdFurnitureObject> furnitures = new();
+        foreach (GameFurniture furniture in _allFurnitureList)
+        {
+            //if (!furniture.IsValid()) continue;
+
+            if (!uniqueNames.Add(furniture.Name))
+            {
+                Debug.LogError($"duplicate furniture Name {furniture.Name}");
+            }
+            if (!uniqueIds.Add(furniture.Id))
+            {
+                Debug.LogError($"duplicate furniture Id {furniture.Id}");
+            }
+            if (!uniqueMap.Add(furniture.FurnitureInfo.Image))
+            {
+                Debug.LogError($"duplicate furniture Image {furniture.FurnitureInfo.Image}");
+                continue;
+            }
+            AdFurnitureObject furnitureObj = new AdFurnitureObject(furniture.Name, furniture.Id, furniture.FurnitureInfo.Image);
+            furnitures.Add(furnitureObj);
+        }
+        _validatedFurnitureList = furnitures;
+    }
+
+    public class AdFurnitureObject
+    {
+        public string Name;
+        public Sprite Image;
+        public string Id;
+
+        public AdFurnitureObject(string name, string id, Sprite image)
+        {
+            Name = name;
+            Id = id;
+            Image = image;
+        }
+
+        //public bool IsValid()
+        //{
+        //    if (string.IsNullOrWhiteSpace(Name)) return false;
+        //    if (Image == null) return false;
+        //    return true;
+        //}
     }
 
     private void InitializeAd()
@@ -67,10 +176,21 @@ public class AdEditor : AltMonoBehaviour
                 _posterName = "Et ole klaanissa";
             }
             _adGraphicHandler.SetAdPoster(_adData, _posterName, _heartPieceData);
+            if (_adData._isAdText) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
+            _adData.previousText = _adData.AdText; // Uusi lisäys (Perttu)
         }));
 
-
         List<AdBorderFrameObject> frameList = _borderReference.FrameList;
+        List<AdFontObject> fontList = _borderReference.FontList; // Uusi lisäys (Perttu)
+
+        foreach (AdFontObject font in fontList) // Uusi lisäys (Perttu)
+        {
+            GameObject fontObject = Instantiate(_fontPrefab, _fontSelectionContent);
+            fontObject.GetComponentInChildren<TextMeshProUGUI>().font = font.Font;
+            fontObject.GetComponent<Image>().preserveAspect = true;
+            float objectHeight = _fontSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            fontObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextFont(font.Font));
+        }
 
         foreach (AdBorderFrameObject frame in frameList)
         {
@@ -83,19 +203,85 @@ public class AdEditor : AltMonoBehaviour
         }
         if (_dtSelectButtons) _dtSelectButtons.RefreshListeners();
 
+        StartCoroutine(SetFrameSelectionSize());
+
+        _inputField.onValueChanged.AddListener(delegate { ChangeText(_inputField.text); }); // Uusi lisäys (Perttu)
+    }
+
+    private void GetColors() // Uusi lisäys (Perttu)
+    {
+        if (_backgroundColourSelectorContent.transform.childCount > 0)
+        {
+            for (int i = 0; i < _backgroundColourSelectorContent.transform.childCount; i++)
+            {
+                Destroy(_backgroundColourSelectorContent.transform.GetChild(i).gameObject);
+            }
+        }
+        if (_textColourSelectorContent.transform.childCount > 0)
+        {
+            for (int i = 0; i < _textColourSelectorContent.transform.childCount; i++)
+            {
+                Destroy(_textColourSelectorContent.transform.GetChild(i).gameObject);
+            }
+        }
+
         List<Color> colorList = _borderReference.ColourList;
+        List<Color> textColorList = _borderReference.TextColourList;
 
         foreach (Color colour in colorList)
         {
-            GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
-            colourObject.GetComponent<Image>().color = colour;
-            float objectWidth = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width;
-            colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
-            colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeColor(colour));
+            if (colour != currentTextColor)
+            {
+                GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
+                colourObject.GetComponent<Image>().color = colour;
+                float objectWidth = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width;
+                colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
+                colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeColor(colour));
+            }
         }
-        _backgroundColourSelectorContent.GetComponent<VerticalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width * 0.1f;
+        _backgroundColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f; // rect.width -> rect.height (Perttu)
 
-        StartCoroutine(SetFrameSelectionSize());
+        // Uusi lisäys (Perttu)
+        foreach (Color textColour in textColorList)
+        {
+            if (textColour != currentColor)
+            {
+                GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _textColourSelectorContent);
+                colourObject.GetComponent<Image>().color = textColour;
+                float objectWidth = _textColourSelectorContent.GetComponent<RectTransform>().rect.width;
+                colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
+                colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextColor(textColour));
+            }
+        }
+        _textColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _textColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
+    }
+
+    private void GetFurniture() // Uusi lisäys (Perttu)
+    {
+        if (_furnitureSelectionContent.transform.childCount > 0)
+        {
+            for (int i = 0; i < _furnitureSelectionContent.transform.childCount; i++)
+            {
+                Destroy(_furnitureSelectionContent.transform.GetChild(i).gameObject);
+            }
+        }
+
+        if (FurnitureList == null || FurnitureList.Count <= 0)
+        {
+            return;
+        }
+        else
+        {
+            foreach (AdFurnitureObject furniture in FurnitureList)
+            {
+                GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
+                furnitureObject.GetComponent<Image>().preserveAspect = true;
+                furnitureObject.GetComponent<Image>().sprite = furniture.Image;
+                float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+                furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
+                if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
+            }
+        }
     }
 
     private IEnumerator SetFrameSelectionSize()
@@ -123,27 +309,146 @@ public class AdEditor : AltMonoBehaviour
         }));
     }
 
-    void BringToFront(Transform folder)
-    {
-        folder.SetAsLastSibling();
-    }
+    //void BringToFront(Transform folder)
+    //{
+    //    folder.SetAsLastSibling();
+    //}
 
     public void ChangeColor(Color colour)
     {
+        if (!colorChanged)
+        {
+            _adData.previousColor = _adData.BackgroundColour;
+            colorChanged = true;
+        }
+
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
+        currentColor = colour;
+        GetColors();
     }
 
     public void ChangeBorder(AdBorderFrameObject frame)
     {
+        if (!borderChanged)
+        {
+            _adData.previousBorder = _adData.BorderFrame;
+            borderChanged = true;
+        }
+
         _adData.BorderFrame = frame.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
+    }
+
+    public void ChangeFurniture(AdFurnitureObject furniture) // Uusi lisäys (Perttu)
+    {
+        if (!furnitureChanged)
+        {
+            _adData.previousFurniture = _adData.Furniture;
+            furnitureChanged = true;
+        }
+
+        _adData.Furniture = furniture.Image;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+    }
+
+    public void ChangeTextColor(Color colour) // Uusi lisäys (Perttu)
+    {
+        if (!textColorChanged)
+        {
+            _adData.previousTextColor = _adData.TextColour;
+            textColorChanged = true;
+        }
+
+        _inputField.textComponent.color = colour;
+        _adData.TextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        currentTextColor = colour;
+        GetColors();
+    }
+
+    public void ChangeTextFont(TMPro.TMP_FontAsset font) // Uusi lisäys (Perttu)
+    {
+        if (!fontChanged)
+        {
+            _adData.previousFont = _adData.TextFont;
+            fontChanged = true;
+        }
+
+        _inputField.fontAsset = font;
+        _adData.TextFont = font;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+    }
+
+    public void ChangeText(string text) // Uusi lisäys (Perttu)
+    {
+        _adData.AdText = text;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+    }
+
+    public void EnableText(bool enable) // Uusi lisäys (Perttu)
+    {
+        if (!textStateChanged)
+        {
+            _adData.previousTextState = _adData._isAdText;
+            textStateChanged = true;
+        }
+
+        _adData._isAdText = enable;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
 
     public void CloseEditor()
     {
-        if(gameObject.activeSelf) gameObject.SetActive(false);
+        // Uusi lisäys (Perttu)
+        kojuPanel.SetActive(true);
+        _inputFieldHolder.SetActive(false);
+        if (_adData._isAdText) _adTextHolder.SetActive(true);
+        if (!_adData._isAdText) _adTextHolder.SetActive(false);
+
+        if (gameObject.activeSelf) gameObject.SetActive(false);
+
+        // Uusi lisäys (Perttu)
+        colorChanged = false;
+        borderChanged = false;
+        furnitureChanged = false;
+        textColorChanged = false;
+        fontChanged = false;
+        textStateChanged = false;
+    }
+
+    public void SaveAndCloseEditor() // Uusi lisäys (Perttu)
+    {
+        SaveAdData();
+        CloseEditor();
+    }
+
+    public void CancelAndCloseEditor() // Uusi lisäys (Perttu)
+    {
+        if (!string.IsNullOrEmpty(_adData.previousColor)) _adData.BackgroundColour = _adData.previousColor;
+        if (ColorUtility.TryParseHtmlString(_adData.previousColor, out Color color)) currentColor = color;
+
+        if (!string.IsNullOrEmpty(_adData.previousBorder)) _adData.BorderFrame = _adData.previousBorder;
+        if (!_adData.previousFurniture) _adData.Furniture = _adData.previousFurniture;
+
+        if (!string.IsNullOrEmpty(_adData.previousTextColor)) _adData.TextColour = _adData.previousTextColor;
+        if (ColorUtility.TryParseHtmlString(_adData.previousTextColor, out Color textColor)) currentTextColor = textColor;
+        _inputField.textComponent.color = currentTextColor;
+
+        if (_adData.previousFont)
+        {
+            _adData.TextFont = _adData.previousFont;
+            _inputField.fontAsset = _adData.previousFont;
+        }
+
+        if (!string.IsNullOrEmpty(_adData.previousText))
+        {
+            _adData.AdText = _adData.previousText;
+            _inputField.textComponent.SetText(_adData.previousText);
+        }
+        _adData._isAdText = _adData.previousTextState;
+
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        CloseEditor();
     }
 }
