@@ -89,6 +89,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private GameObject _stoneWallTopCharacterImage;
 
         [SerializeField] private GameObject _stoneWallBottomCharacterImage;
+        [SerializeField] private RectTransform _stoneWallTopCharacterRect;
+        [SerializeField] private RectTransform _stoneWallBottomCharacterRect;
 
         [Header("Outer Edge Without Floor")] [SerializeField]
         private GameObject _outsideFloorPopup;
@@ -641,8 +643,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void UpdateArena()
         {
-            //float screenAspectRatio = Screen.width / (float)Screen.height;
-
             // For some reason the editor has different aspect ratio calculated from rect size in local space than in world space because of the editor scaling
             // Getting editor corners in world space
             Vector3[] editorCorners = new Vector3[4];
@@ -656,13 +656,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Calculating a height for the editor from the world aspect ratio so that it works in calculations
             float editorAspectRatioHeight = EditorRect.width / editorWorldAspectRatio;
-
-            // // Available area after unsafe area.
-            // float unsafeAreaPercentage = PanelScaler.CalculateUnsafeAreaHeight();
-            // float availableWidth = EditorRect.width;
-            // float unsafeAreaHeight = editorAspectRatioHeight * unsafeAreaPercentage;
-            // float availableHeight = editorAspectRatioHeight - unsafeAreaHeight;
-            // float availableAspectRatio = availableWidth / availableHeight;
 
             // Available editor area
             float availableWidth = EditorRect.width;
@@ -688,17 +681,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 arenaWidth = arenaHeight * GameAspectRatio;
             }
 
-            // if (screenAspectRatio <= GameAspectRatio)
-            // {
-            //     arenaWidth = _arenaScaleSlider.value * 0.01f * EditorRect.width;
-            //     arenaHeight = arenaWidth / GameAspectRatio;
-            // }
-            // else
-            // {
-            //     arenaHeight = _arenaScaleSlider.value * 0.01f * editorAspectRatioHeight;
-            //     arenaWidth = arenaHeight * GameAspectRatio;
-            // }
-
             // Calculating arena position
             Vector2 position = Vector2.zero;
             position.x = _arenaPosXSlider.value * 0.01f * (availableWidth - arenaWidth);
@@ -721,26 +703,41 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaImage.offsetMin = Vector2.zero;
             _arenaImage.offsetMax = Vector2.zero;
 
-            //Setting StonewallCharacters anchors
-            RectTransform stoneWallTopCharacter =
-                _stoneWallTopCharacterImage.GetComponent<RectTransform>();
+            // Stone wall characters
 
-            RectTransform stoneWallBottomCharacter =
-                _stoneWallBottomCharacterImage.GetComponent<RectTransform>();
+            float stoneScale = arenaWidth / 1080f;
 
-            // Top follows arena top edge
-            stoneWallTopCharacter.anchorMin =
-                new Vector2(anchorMin.x, anchorMax.y);
+            float arenaCenterX =
+                (_arenaImage.anchorMin.x + _arenaImage.anchorMax.x) * 0.5f;
 
-            stoneWallTopCharacter.anchorMax =
-                new Vector2(anchorMax.x, anchorMax.y);
+            // Top stone
+            _stoneWallTopCharacterRect.pivot = new Vector2(0.5f, 1f);
 
-            // Bottom follows arena bottom edge
-            stoneWallBottomCharacter.anchorMin =
-                new Vector2(anchorMin.x, anchorMin.y);
+            _stoneWallTopCharacterRect.anchorMin =
+                new Vector2(arenaCenterX, _arenaImage.anchorMax.y);
 
-            stoneWallBottomCharacter.anchorMax =
-                new Vector2(anchorMax.x, anchorMin.y);
+            _stoneWallTopCharacterRect.anchorMax =
+                new Vector2(arenaCenterX, _arenaImage.anchorMax.y);
+
+            _stoneWallTopCharacterRect.anchoredPosition = Vector2.zero;
+
+            // Bottom stone
+            _stoneWallBottomCharacterRect.pivot = new Vector2(0.5f, 1f);
+
+            _stoneWallBottomCharacterRect.anchorMin =
+                new Vector2(arenaCenterX, _arenaImage.anchorMin.y);
+
+            _stoneWallBottomCharacterRect.anchorMax =
+                new Vector2(arenaCenterX, _arenaImage.anchorMin.y);
+
+            _stoneWallBottomCharacterRect.anchoredPosition = Vector2.zero;
+
+            // Scale
+            _stoneWallTopCharacterRect.localScale =
+                new Vector3(stoneScale, stoneScale * 0.8f, 1f);
+
+            _stoneWallBottomCharacterRect.localScale =
+                new Vector3(stoneScale, stoneScale * 0.8f, 1f);
         }
 
         public void ToggleOptionsPopup()
