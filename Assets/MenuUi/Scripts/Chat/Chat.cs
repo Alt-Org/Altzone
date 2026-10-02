@@ -38,11 +38,6 @@ public class Chat : AltMonoBehaviour
     [Header("InputField")]
     [SerializeField] private TMP_InputField _inputField;
 
-    [Header("Add reactions UI")]
-    [SerializeField] private GameObject _addReactionsPanel;
-    [SerializeField] private GameObject _commonReactions;
-    [SerializeField] private GameObject _allReactions;
-
     [Header("Chat Reactions")]
     [SerializeField] private GameObject _chatResponseContent;
 
@@ -439,8 +434,6 @@ public class Chat : AltMonoBehaviour
             Destroy(selectedMessage);
             if(selectedMessage == _selectedMessage)_selectedMessage = null;
 
-            // Disable message interaction elements
-            DisableReactionPanel();
         }
         else
         {
@@ -458,8 +451,6 @@ public class Chat : AltMonoBehaviour
         }
 
         _messagesByChat[_currentContent].Clear();
-
-        DisableReactionPanel();
     }
 
     // Aktivoi globaalin chatin
@@ -598,21 +589,6 @@ public class Chat : AltMonoBehaviour
 
         VerticalLayoutGroup currentLayout = _currentContent.GetComponentInChildren<VerticalLayoutGroup>();
         LayoutRebuilder.ForceRebuildLayoutImmediate(currentLayout.GetComponent<RectTransform>());
-    }
-
-
-    private void DisableReactionPanel()
-    {
-        _commonReactions.SetActive(true);
-        _allReactions.SetActive(false);
-        _addReactionsPanel.SetActive(false);
-    }    
-
-    public void OpenUsersWhoAddedReactionPanel()
-    {
-        _addReactionsPanel.SetActive(true);
-        _commonReactions.SetActive(false);
-        _allReactions.SetActive(false);
     }
 
 }

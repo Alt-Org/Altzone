@@ -144,16 +144,6 @@ public class SettingEditor : MonoBehaviour
         }
     }
 
-    public void SetFPSButtons()
-    {
-        if (Application.targetFrameRate == (int)Screen.currentResolution.refreshRateRatio.value)
-            fpsButtons[0].isOn = true;
-        else if (Application.targetFrameRate == 60)
-            fpsButtons[1].isOn = true;
-        else if (Application.targetFrameRate == 30)
-            fpsButtons[2].isOn = true;
-    }
-
     private float RoundToTwoDecimals(float toRound)
     {
         // Rounding the volume to two decimals so that we dont get extremely specific volumes. aka: 57.2124865223% volume
