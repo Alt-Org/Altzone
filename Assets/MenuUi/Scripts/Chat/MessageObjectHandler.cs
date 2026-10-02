@@ -22,22 +22,20 @@ public class MessageObjectHandler : MonoBehaviour
     [SerializeField] private GameObject _reactionsPanel;
 
     [Header("Base Message")]
-    public RectTransform _baseMessageSize;
-    [SerializeField] private ChatMessageScript backgroundSize;
-    [SerializeField] private GameObject reactionField;
-    public GameObject _reactionSize;
-    public GameObject _expandedReactionSize;
-
-
+    [SerializeField] private RectTransform _baseMessageSize;
+    [SerializeField] private ChatMessageScript _backgroundSize;
+    [SerializeField] private GameObject _reactionField;
+    [SerializeField] private GameObject _reactionSize;
+    [SerializeField] private GameObject _expandedReactionSize;
+    [SerializeField] private GameObject _reactionObject;
 
     private string _id;
     private Image _image;
     [SerializeField] private Image _extraimage;
+
     private Action<MessageObjectHandler> _selectMessageAction;
 
     public GameObject ReactionsPanel { get => _reactionsPanel;}
-
-    [SerializeField] private GameObject ReactionObject;
     public string Id { get => _id;}
 
     public delegate void RequestCanvasUpdate();
@@ -55,27 +53,28 @@ public class MessageObjectHandler : MonoBehaviour
     ///Changes the Basemessages size
     public void SizeCall()
     {
-        float textboxHeight = backgroundSize.MessageSetHeight();
+        float textboxHeight = _backgroundSize.MessageSetHeight();
         float headerSize = 60;
+
         //adds extra size if there reactions have been put or not
-        float extraPadding;
-        if (reactionField.transform.childCount > 0)
-            extraPadding = reactionField.GetComponent<RectTransform>().rect.height;
+        float reactionAreaSize;
+        if (_reactionField.transform.childCount > 0)
+            reactionAreaSize = _reactionField.GetComponent<RectTransform>().rect.height;
         else
         {
-            extraPadding = 0f;
+            reactionAreaSize = 0f;
         }
 
         //Checks if reaction panel is active and checks which reaction pannel is on
         if (_reactionSize.activeSelf)
         {
-            float reactionBoxSize= _reactionSize.GetComponent<RectTransform>().rect.height;
-            _baseMessageSize.sizeDelta = new Vector2(_baseMessageSize.rect.width, Mathf.Max(150, textboxHeight + headerSize+ reactionBoxSize));
+            float newReactionSelectorSize= _reactionSize.GetComponent<RectTransform>().rect.height;
+            _baseMessageSize.sizeDelta = new Vector2(_baseMessageSize.rect.width, Mathf.Max(150, textboxHeight + headerSize+ newReactionSelectorSize));
         }
 
         //reverts back to orignal
         else
-            _baseMessageSize.sizeDelta = new Vector2(_baseMessageSize.rect.width, Mathf.Max(150, textboxHeight + headerSize + extraPadding));
+            _baseMessageSize.sizeDelta = new Vector2(_baseMessageSize.rect.width, Mathf.Max(150, textboxHeight + headerSize + reactionAreaSize));
 
         OnRequestCanvasUpdate?.Invoke();
     }
@@ -160,7 +159,7 @@ public class MessageObjectHandler : MonoBehaviour
     public void ReactionChatCall(ServerReactions EmojiId, ChatMessage message)
     {
         //Gets the set data we need to get to import saved reactions
-        MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
+        MessageReactionsHandler ChildsScript = _reactionObject.GetComponent<MessageReactionsHandler>();
 
         Emotion emojiType = Emotion.Blank;
         if (EmojiId.emoji != null)
@@ -182,7 +181,7 @@ public class MessageObjectHandler : MonoBehaviour
         if (message.Id == null || _id != message.Id) return;
 
         //Gets the set data we need to get to import saved reactions
-        MessageReactionsHandler ChildsScript = ReactionObject.GetComponent<MessageReactionsHandler>();
+        MessageReactionsHandler ChildsScript = _reactionObject.GetComponent<MessageReactionsHandler>();
 
         ChildsScript.UpdateReactions(message.Reactions, _id, message);
         

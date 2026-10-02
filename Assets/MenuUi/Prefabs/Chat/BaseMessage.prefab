@@ -131,12 +131,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e06a5982d3144f5469f1cae7b56c5756, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textBackground: {fileID: 1355985985701982470}
-  messageText: {fileID: 7173626627776896434}
-  panel: {fileID: 3363965265471710657}
-  _messageVerticalLayoutGroup: {fileID: 0}
+  _textBackground: {fileID: 1355985985701982470}
+  _messageText: {fileID: 7173626627776896434}
   _textMargins: 40
-  _messageHandler: {fileID: 5786829121231365026}
 --- !u!114 &797248425732977057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -797,12 +794,12 @@ MonoBehaviour:
   _addReactionsControls: {fileID: 7076273800822203925}
   _reactionsPanel: {fileID: 7999296891796925201}
   _baseMessageSize: {fileID: 3363965265471710657}
-  backgroundSize: {fileID: 2103742428301501262}
-  reactionField: {fileID: 7999296891796925201}
+  _backgroundSize: {fileID: 2103742428301501262}
+  _reactionField: {fileID: 7999296891796925201}
   _reactionSize: {fileID: 7076273800822203925}
   _expandedReactionSize: {fileID: 2120552747243295916}
+  _reactionObject: {fileID: 4166022280338014614}
   _extraimage: {fileID: 4113781336069744164}
-  ReactionObject: {fileID: 4166022280338014614}
 --- !u!1 &5430342635638520100
 GameObject:
   m_ObjectHideFlags: 0
