@@ -5630,6 +5630,7 @@ GameObject:
   - component: {fileID: 1546297255487655690}
   - component: {fileID: 8319290689800808375}
   - component: {fileID: 1498153250889042925}
+  - component: {fileID: 3421170841332090954}
   m_Layer: 5
   m_Name: JoiningDate
   m_TagString: Untagged
@@ -5776,6 +5777,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &3421170841332090954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611863736877956715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 'Liittynyt: {0}'
+  _englishText: 'Joined: {0}'
 --- !u!1 &2612167088037225030
 GameObject:
   m_ObjectHideFlags: 0
@@ -11569,6 +11584,7 @@ MonoBehaviour:
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0
+  Interactable: 1
 --- !u!1 &5551974595852505667
 GameObject:
   m_ObjectHideFlags: 0
@@ -19163,6 +19179,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 138983387084199929, guid: 71a38dbc9d18bd44f9de8793036dbead,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 138983387084199929, guid: 71a38dbc9d18bd44f9de8793036dbead,
+        type: 3}
       propertyPath: _setOwnClanHeart
       value: 1
       objectReference: {fileID: 0}
@@ -19445,6 +19466,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ClanHeart
+      objectReference: {fileID: 0}
+    - target: {fileID: 5490945982148460650, guid: 71a38dbc9d18bd44f9de8793036dbead,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5656563543629351072, guid: 71a38dbc9d18bd44f9de8793036dbead,
         type: 3}
