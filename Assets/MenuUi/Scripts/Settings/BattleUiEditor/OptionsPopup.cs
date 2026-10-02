@@ -770,7 +770,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaBackgroundBlackImage.SetActive(enabled);
         }
 
-        public void HideExceptSlider(Transform activeSlider, Transform valueField)
+        public void HideExceptSlider(Transform activeSlider, Transform valueField, Transform title)
         {
             _originalColors.Clear();
 
@@ -784,7 +784,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 bool BelongsToValueField = graphic.transform == valueField ||
                                            graphic.transform.IsChildOf(valueField);
 
-                if (belongsToSLider || BelongsToValueField)
+                bool BelongsToTitle = graphic.transform == title ||
+                                      graphic.transform.IsChildOf(title);
+
+                if (belongsToSLider || BelongsToValueField || BelongsToTitle)
                 {
                     continue;
                 }

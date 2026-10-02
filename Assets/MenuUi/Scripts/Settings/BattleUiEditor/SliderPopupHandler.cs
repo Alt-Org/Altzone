@@ -10,10 +10,11 @@ public class SliderPopupHnadler : MonoBehaviour, IPointerDownHandler, IPointerUp
 {
     [SerializeField] private OptionsPopup _optionsPopup;
     [SerializeField] private Transform _valueField;
+    [SerializeField] private Transform _title;
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        _optionsPopup.HideExceptSlider(transform, _valueField);
+        _optionsPopup.HideExceptSlider(transform, _valueField, _title);
     }
 
     public void OnPointerUp(PointerEventData eventData)
