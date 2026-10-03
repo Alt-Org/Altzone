@@ -5628,6 +5628,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2163250216465530593}
   - component: {fileID: 1546297255487655690}
+  - component: {fileID: 108560525974386580}
   - component: {fileID: 8319290689800808375}
   - component: {fileID: 1498153250889042925}
   m_Layer: 5
@@ -5664,6 +5665,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2611863736877956715}
   m_CullTransparentMesh: 1
+--- !u!114 &108560525974386580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611863736877956715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99bef45c2704bb147a99ddcb380f3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 'Liittynyt: {0}'
+  _englishText: 'Joined: {0}'
 --- !u!114 &8319290689800808375
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8622,6 +8637,7 @@ MonoBehaviour:
   _playerName: {fileID: 952240367200605646}
   _playerPlayStyleText: {fileID: 3452508308506089641}
   _playerClanNameText: {fileID: 1710663326011082443}
+  _joiningDateText: {fileID: 108560525974386580}
   _rolesErrorMessage: {fileID: 5829319517813943822}
   _LosesText: {fileID: 2518418120557608704}
   _WinsText: {fileID: 3874926736005044309}
@@ -11569,6 +11585,7 @@ MonoBehaviour:
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0
+  Interactable: 1
 --- !u!1 &5551974595852505667
 GameObject:
   m_ObjectHideFlags: 0
