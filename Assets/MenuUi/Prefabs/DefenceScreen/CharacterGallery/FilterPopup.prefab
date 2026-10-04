@@ -1411,11 +1411,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8534483971450454183}
   toggleTransition: 1
   graphic: {fileID: 3318926182991809376}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 2978696801870285875}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &1390107289478795748
 GameObject:
   m_ObjectHideFlags: 0
@@ -1568,6 +1568,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7782932227310654748}
+  - component: {fileID: 2978696801870285875}
   m_Layer: 5
   m_Name: ConsciousToggles
   m_TagString: Untagged
@@ -1597,6 +1598,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2978696801870285875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647698473729621973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AllowSwitchOff: 1
 --- !u!1 &1706906486141946452
 GameObject:
   m_ObjectHideFlags: 0
@@ -6866,11 +6880,11 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5386962388167085890}
   toggleTransition: 1
   graphic: {fileID: 2877960731395876595}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 2978696801870285875}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &7056912250806611192
 GameObject:
   m_ObjectHideFlags: 0
