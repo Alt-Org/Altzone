@@ -36,6 +36,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private GameObject _renovateModeButtons; //-----------------
         [SerializeField] private TextMeshProUGUI _categoryText; //-----------------
         [SerializeField] private TextMeshProUGUI _modeText; //-----------------
+        [SerializeField] private GameObject _setSelectMenu; //-----------------
         [SerializeField] private GameObject _setSelectButtonContainer; //-----------------
         [SerializeField] private GameObject _setSelectButtonPrefab; //-----------------
         [SerializeField] private StorageFurnitureReference _storageFurnitureReference; // needed for set info? -------------------------
@@ -55,17 +56,13 @@ namespace MenuUI.Scripts.SoulHome
         void Awake()
         {
             if(_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
-            foreach (FurnitureSetInfo setInfo in _storageFurnitureReference.Info)
+            foreach (FurnitureSetInfo setInfo in _storageFurnitureReference.Info) // creates a set filter button for each set
             {
                 GameObject _setSelectButton = Instantiate(_setSelectButtonPrefab, _setSelectButtonContainer.transform);
                 _setSelectButton.GetComponent<Image>().sprite = setInfo.SetFontName;
                 TextMeshProUGUI _setName = _setSelectButton.GetComponentInChildren<TextMeshProUGUI>();
                 _setName.text = setInfo.SetName;
                 _setSelectButton.GetComponent<Button>().onClick.AddListener(() => SelectSet(setInfo.SetName));
-
-                //create button and use set font image. call funtion using set name string as variable
-                // private void SetSelectedSet(String set) -> changes _currentSelectedSet and re-calls FilterTrayObjects()
-                // foreach furniture split name with "_" and check if it matches the set name.
             }
         }
 
@@ -99,6 +96,7 @@ namespace MenuUI.Scripts.SoulHome
             if (_category == 0) _categoryText.text = "Lattia";
             else if (_category == 1) // Displays all
             {
+                _categoryText.text = "Kaikki";
                 if (_currentSelectedSet != null) // if has a set filter active
                 {
                     foreach (var _furnitureListObject in list.List)
@@ -116,7 +114,6 @@ namespace MenuUI.Scripts.SoulHome
                 // else will show all sets
                 FillSelectionButtonList(list);
                 _trayContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0); // Reset FurnitureTray position
-                _categoryText.text = "Koko sarja";
                 return;
             }
             else if (_category == 2) { // Should display special - or frames on renovate mode
@@ -167,7 +164,7 @@ namespace MenuUI.Scripts.SoulHome
             if (set == "")
             {
                _currentSelectedSet = null; 
-               _decorateModeSetsButton.UnSelect();
+               _decorateModeSetsButton.DeSelect();
             }
             
             else
@@ -177,7 +174,8 @@ namespace MenuUI.Scripts.SoulHome
             }
             
             FilterTrayObjects(_currentSelectedCategory);
-            // TODO - "select" the all filter button. If current selected set, also "select" sets button
+            _setSelectMenu.SetActive(false);
+            _setSelectMenu.GetComponentInChildren<ScrollRect>().verticalNormalizedPosition = 1f; // reset scroll to the top
         }
 
         public void ToggleMinimizeTray() // ---------------------------
@@ -185,14 +183,18 @@ namespace MenuUI.Scripts.SoulHome
             if (!_isTrayMinimized)
             {
                 RectTransform rect = GetComponent<RectTransform>();
-                rect.offsetMax = new Vector2(rect.offsetMax.x, -400f); // not ideal if screen size or resolution can change??
+                //rect.offsetMax = new Vector2(rect.offsetMax.x, -400f); // not ideal if screen size or resolution can change??
                 _isTrayMinimized = true;
+
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 100f); // 100f
             }
             else
             {
                 RectTransform rect = GetComponent<RectTransform>();
-                rect.offsetMax = new Vector2(rect.offsetMax.x, 0f);
+                //rect.offsetMax = new Vector2(rect.offsetMax.x, 0f);
                 _isTrayMinimized = false;
+
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 462);
             }
         }
 
@@ -460,7 +462,7 @@ namespace MenuUI.Scripts.SoulHome
         public void CategoryButtonClicked(FurnitureTrayCategoryButton button) // sets button and child icon color
         {
             if (button == null) return;
-            if (_previousCategoryButton != null) _previousCategoryButton.UnSelect();
+            if (_previousCategoryButton != null) _previousCategoryButton.DeSelect();
             _previousCategoryButton = button;
             button.Select();
         }
@@ -489,7 +491,6 @@ namespace MenuUI.Scripts.SoulHome
                 CategoryButtonClicked(_renovateModeButtons.transform.GetChild(0).GetComponent<FurnitureTrayCategoryButton>());
                 // TODO - FillSelectionButtonList() with decorate sets category filter
             }
-            //_isOnDecorateMode = !_isOnDecorateMode;
         }
     }
 }

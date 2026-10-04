@@ -16,17 +16,15 @@ public class FurnitureTrayCategoryButton : MonoBehaviour
 
     public void Select()
     {
-        if (_buttonImageObject == null) return;
-        _buttonImageObject.color = _selectedButtonColour;
-        _iconImageObject.color = _defaultColour;
+        if (_buttonImageObject != null) _buttonImageObject.color = _selectedButtonColour;
+        if (_iconImageObject != null)_iconImageObject.color = _defaultColour;
         _isSelected = true;
 
     }
-    public void UnSelect()
+    public void DeSelect()
     {
-        if (_buttonImageObject == null) return;
-        _buttonImageObject.color = _defaultColour;
-        _iconImageObject.color = _defaultIconColour;
+        if (_buttonImageObject != null) _buttonImageObject.color = _defaultColour;
+        if (_iconImageObject != null) _iconImageObject.color = _defaultIconColour;
         _isSelected = false;
     }
 }

@@ -479,10 +479,10 @@ namespace MenuUI.Scripts.SoulHome
                 //if(!_rotated)tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.8f, tray.transform.localPosition.y);
                 //else tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.2f + tray.transform.Find("EditButton").GetComponent<RectTransform>().rect.width, tray.transform.localPosition.y);
                 _trayOpen = true;
-                RectTransform furnitureRectTransform = tray.transform.Find("TopButtons").transform.Find("ModeButton").GetComponent<RectTransform>();
+                ///RectTransform furnitureRectTransform = tray.transform.Find("TopButtons").transform.Find("ModeButton").GetComponent<RectTransform>();
                 //RectTransform furnitureRectTransform = tray.transform.Find("CategoryButton").GetComponent<RectTransform>(); // original -----------------
-                furnitureRectTransform.sizeDelta = new(width *0.2f, furnitureRectTransform.sizeDelta.y);
-                furnitureRectTransform.gameObject.SetActive(true);
+                ///furnitureRectTransform.sizeDelta = new(width *0.2f, furnitureRectTransform.sizeDelta.y);
+                ///furnitureRectTransform.gameObject.SetActive(true);
                 //RectTransform trapRectTransform = tray.transform.Find("TrapButton").GetComponent<RectTransform>();
                 //trapRectTransform.sizeDelta = new(width * 0.2f, trapRectTransform.sizeDelta.y);
                 //trapRectTransform.gameObject.SetActive(true);
