@@ -31,6 +31,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
     [SerializeField] private int _horizontalPadding = 10;
 
     private readonly List<SmartListItem> _smartListItems = new();
+    private readonly List<SmartListItem> _recyclingOrder = new();
 
     private int _contentListLenght = -1;
     private int _smartListRightIndex = -1;
@@ -42,9 +43,6 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
     private float _viewportLeftWorldBorder = 0f;
 
     private float _velocity = 0f;
-    private float _averageVelocity = 0f;
-    private const float _averageVelocityNormalizationTime = 3f;
-    private const float _averageVelocityUpdateTreshold = 0.1f;
     private float _scrollDiffCompensation = 0f;
     private Coroutine _velocityCoroutine;
     private Vector2 _previousUpdatePosition;
@@ -116,7 +114,6 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
         if (_velocityCoroutine != null) StopCoroutine(_velocityCoroutine);
         _velocityCoroutine = null;
         _velocity = 0f;
-        _averageVelocity = 0f;
         _timeFromLastVelocityUpdate = float.NegativeInfinity;
     }
 
@@ -460,8 +457,29 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
                 CheckUniqueItemVisibility(_uniqueGameObjectsAtLeft, i, HorizontalDirectionType.Left);
             }
 
-        //Smart list items
-        foreach (SmartListItem smartListItem in _smartListItems) CheckSmartItemVisibility(smartListItem);
+        RecycleSmartItems();
+    }
+
+    private void RecycleSmartItems()
+    {
+        if (_velocity == 0f || _smartListItemLocalWidthWithPadding <= 0f) return;
+
+        // Pool order is the data-index modulo mapping used by UpdateContent: never sort it.
+        // Process the outgoing edge first, so the slot moved is also the slot receiving data.
+        bool recycled;
+        do
+        {
+            _recyclingOrder.Clear();
+            _recyclingOrder.AddRange(_smartListItems);
+            _recyclingOrder.Sort((a, b) => _velocity < 0f
+                ? a.SelfRectTransform.anchoredPosition.x.CompareTo(b.SelfRectTransform.anchoredPosition.x)
+                : b.SelfRectTransform.anchoredPosition.x.CompareTo(a.SelfRectTransform.anchoredPosition.x));
+
+            recycled = false;
+            foreach (SmartListItem item in _recyclingOrder)
+                recycled |= CheckSmartItemVisibility(item);
+            // A single frame can move farther than one whole pool width.
+        } while (recycled);
     }
 
     /// <summary>
@@ -624,23 +642,20 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
         return 0f;
     }
 
-    private void CheckSmartItemVisibility(SmartListItem smartListItem)
+    private bool CheckSmartItemVisibility(SmartListItem smartListItem)
     {
         RectTransform rectTransform = smartListItem.SelfRectTransform;
 
         //Out of bounds calculations.
         GetViewportEdges(rectTransform, out float smartItemBorderLeft, out float smartItemBorderRight);
 
-        if (Mathf.Abs(_averageVelocity - _velocity) > _averageVelocityUpdateTreshold)
-            _averageVelocity = Mathf.Lerp(_velocity, _averageVelocity, Time.deltaTime / _averageVelocityNormalizationTime);
-
-        bool overLeft = _viewportLeftAnchoredBorder > smartItemBorderRight && _averageVelocity < 0f;
-        bool overRight = _viewportRightAnchoredBorder < smartItemBorderLeft && _averageVelocity > 0f;
+        bool overLeft = _viewportLeftAnchoredBorder > smartItemBorderRight && _velocity < 0f;
+        bool overRight = _viewportRightAnchoredBorder < smartItemBorderLeft && _velocity > 0f;
         bool outOfBounds = (overLeft || overRight);
         bool outOfRange = ((overLeft && _smartListRightIndex >= _contentListLenght) ||
                            (overRight && _smartListLeftIndex < 0));
 
-        if (!outOfBounds || outOfRange) return;
+        if (!outOfBounds || outOfRange) return false;
 
         //Move item to opposite end.
         HorizontalDirectionType outOfBoundsDirection =
@@ -660,6 +675,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
             OnNewDataRequested?.Invoke(targetIndex);
         else
             smartListItem.ClearData();
+        return true;
     }
 
     private void UpdateEdgeIndexes(HorizontalDirectionType outOfBoundsDirection)
