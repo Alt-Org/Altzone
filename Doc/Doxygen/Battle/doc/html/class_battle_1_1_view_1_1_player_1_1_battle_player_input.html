@@ -110,30 +110,42 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct containing data related to player movement input.  <a href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html#details">More...</a><br /></td></tr>
 <tr class="memitem:RotationInputInfo" id="r_RotationInputInfo"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_rotation_input_info.html">RotationInputInfo</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct containing data related to player rotation input.  <a href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_rotation_input_info.html#details">More...</a><br /></td></tr>
+<tr class="memitem:Queued" id="r_Queued"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_queued.html">Queued</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct containing input data that is queued for next time <a class="el" href="namespace_quantum.html" title="Quantum&#39;s Build-in Namespace.   Contains Quantum&#39;s own code and Battle Simulation code that is genera...">Quantum</a> polls input.  <a href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_queued.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr id="pub-methods-0" class="groupHeader"><td colspan="2"><div class="groupHeader">Input methods</div></td></tr>
-<tr><td colspan="2" class="ititle"><div class="groupText"><p><a class="el" href="struct_quantum_1_1_input.html" title="A Quantum input struct that defines the player input data that is used in the game.">Input</a> methods are called by <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html" title="Game view QuantumCallbacks class🡵.  Initializes Battle UI elements, and controls their visibility and...">BattleGameViewController</a> when the player gives a UI input. These methods shouldn't be called any other way. </p>
+<tr id="pub-methods-0" class="groupHeader"><td colspan="2"><div class="groupHeader">Command input methods</div></td></tr>
+<tr><td colspan="2" class="ititle"><div class="groupText"><p>Command input methods are called by <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html" title="Battle.View.Game.BattleGameViewController">BattleGameViewController</a> when the player gives a UI input. These methods shouldn't be called any other way.<br  />
+ These inputs are sent to Quantum as commands. </p>
 </div></td></tr>
-<tr class="memitem:af650fbe02ca3509b7f88ae0ad117797c" id="r_af650fbe02ca3509b7f88ae0ad117797c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#af650fbe02ca3509b7f88ae0ad117797c">OnJoystickMovement</a> (Vector2 input)</td></tr>
-<tr class="memdesc:af650fbe02ca3509b7f88ae0ad117797c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the player interacts with the movement joystick.  <br /></td></tr>
-<tr class="memitem:a739d0f225c8d379c6a23000bea4c4011" id="r_a739d0f225c8d379c6a23000bea4c4011"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a739d0f225c8d379c6a23000bea4c4011">OnJoystickRotation</a> (float input)</td></tr>
-<tr class="memdesc:a739d0f225c8d379c6a23000bea4c4011"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the player interacts with the rotation joystick.  <br /></td></tr>
-<tr class="memitem:a5852c549916347477056a90489388e7e" id="r_a5852c549916347477056a90489388e7e"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a5852c549916347477056a90489388e7e">OnCharacterSelected</a> (int characterNumber)</td></tr>
-<tr class="memdesc:a5852c549916347477056a90489388e7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the player presses one of the character selection buttons.  <br /></td></tr>
-<tr class="memitem:aee7ecb004c06a90fea2b5413114d4f3c" id="r_aee7ecb004c06a90fea2b5413114d4f3c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#aee7ecb004c06a90fea2b5413114d4f3c">OnGiveUp</a> ()</td></tr>
-<tr class="memdesc:aee7ecb004c06a90fea2b5413114d4f3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the player presses the give up button.  <br /></td></tr>
+<tr class="memitem:a0b8dd48fc46bcba161256a2a9de2c326" id="r_a0b8dd48fc46bcba161256a2a9de2c326"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a0b8dd48fc46bcba161256a2a9de2c326">CommandSendGiveUp</a> ()</td></tr>
+<tr class="memdesc:a0b8dd48fc46bcba161256a2a9de2c326"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the player presses give up button.  <br /></td></tr>
+<tr class="memitem:aed72f4acfc4f00a75057a8cb1d7d5975" id="r_aed72f4acfc4f00a75057a8cb1d7d5975"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#aed72f4acfc4f00a75057a8cb1d7d5975">CommandSendSwapCharacter</a> (int characterNumber)</td></tr>
+<tr class="memdesc:aed72f4acfc4f00a75057a8cb1d7d5975"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the player presses character swap button.  <br /></td></tr>
+<tr class="memitem:a962d245d69e6d6f4bb0f6214e6a3a96a" id="r_a962d245d69e6d6f4bb0f6214e6a3a96a"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a962d245d69e6d6f4bb0f6214e6a3a96a">CommandSendActivateAbility</a> ()</td></tr>
+<tr class="memdesc:a962d245d69e6d6f4bb0f6214e6a3a96a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the player activates ability.  <br /></td></tr>
+<tr id="pub-methods-1" class="groupHeader"><td colspan="2"><div class="groupHeader">Queued input methods</div></td></tr>
+<tr><td colspan="2" class="ititle"><div class="groupText"><p><a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_queued.html" title="Struct containing input data that is queued for next time Quantum polls input.">Queued</a> input methods are called by <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html" title="Battle.View.Game.BattleGameViewController">BattleGameViewController</a> when the player gives a UI input. These methods shouldn't be called any other way.<br  />
+ These inputs are queued for next time that Quantum polls input. </p>
+</div></td></tr>
+<tr class="memitem:a4db63fbdb222f80ac41e59874da4663f" id="r_a4db63fbdb222f80ac41e59874da4663f"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a4db63fbdb222f80ac41e59874da4663f">QueueJoystickMovement</a> (<a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a> state, Vector2 value)</td></tr>
+<tr class="memdesc:a4db63fbdb222f80ac41e59874da4663f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the player interacts with the movement joystick.  <br /></td></tr>
+<tr class="memitem:aeb6fc649471ffa30819a14f0fe26ab80" id="r_aeb6fc649471ffa30819a14f0fe26ab80"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#aeb6fc649471ffa30819a14f0fe26ab80">QueueJoystickRotation</a> (<a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a> state, float value)</td></tr>
+<tr class="memdesc:aeb6fc649471ffa30819a14f0fe26ab80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the player interacts with the rotation joystick.  <br /></td></tr>
+<tr class="memitem:a92d4b7ca8e8f1b34e79a5eb649872fae" id="r_a92d4b7ca8e8f1b34e79a5eb649872fae"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a92d4b7ca8e8f1b34e79a5eb649872fae">QueueJoystickSpecial</a> (<a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a> state, Vector2 value)</td></tr>
+<tr class="memdesc:a92d4b7ca8e8f1b34e79a5eb649872fae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when player interacts with the special joystick.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
+<tr id="pri-methods-0" class="groupHeader"><td colspan="2"><div class="groupHeader"></div></td></tr>
 <tr class="memitem:a0a39dfd0563cb3fb972c5a75bacc51fa" id="r_a0a39dfd0563cb3fb972c5a75bacc51fa"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a0a39dfd0563cb3fb972c5a75bacc51fa">OnEnable</a> ()</td></tr>
 <tr class="memdesc:a0a39dfd0563cb3fb972c5a75bacc51fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves data from SettingsCarrier to private variables. <br  />
  Saves a reference to the play device's gyroscope if there is one. <br  />
  Subscribes to QuantumCallBack.  <br /></td></tr>
 <tr class="memitem:a42097a6ff71df956fe7c8228e0d76ac1" id="r_a42097a6ff71df956fe7c8228e0d76ac1"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a42097a6ff71df956fe7c8228e0d76ac1">PollInput</a> (CallbackPollInput callback)</td></tr>
 <tr class="memdesc:a42097a6ff71df956fe7c8228e0d76ac1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles polling player input for <a class="el" href="namespace_quantum.html" title="Quantum&#39;s Build-in Namespace.   Contains Quantum&#39;s own code and Battle Simulation code that is genera...">Quantum</a>.  <br /></td></tr>
-<tr id="pri-methods-0" class="groupHeader"><td colspan="2"><div class="groupHeader">Input reading methods</div></td></tr>
+<tr id="pri-methods-1" class="groupHeader"><td colspan="2"><div class="groupHeader">Input reading methods</div></td></tr>
 <tr><td colspan="2" class="ititle"><div class="groupText"><p>Helper methods for reading player input data. </p>
 </div></td></tr>
 <tr class="memitem:ae17cd5c75df81b46413cab5e0d54b13a" id="r_ae17cd5c75df81b46413cab5e0d54b13a"><td class="memItemLeft"><a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html">MovementInputInfo</a>&#160;</td><td class="memItemRight"><a class="el" href="#ae17cd5c75df81b46413cab5e0d54b13a">GetMovementInput</a> (bool mouseDown, bool mouseClick, Vector3 unityPosition, FP deltaTime)</td></tr>
@@ -148,6 +160,8 @@ Private Attributes</h2></td></tr>
 <tr id="pri-attribs-0" class="groupHeader"><td colspan="2"><div class="groupHeader">State variables</div></td></tr>
 <tr><td colspan="2" class="ititle"><div class="groupText"><p>Variables related to current input states. </p>
 </div></td></tr>
+<tr class="memitem:a70f2afad93e244a3350ddf2a329e4eec" id="r_a70f2afad93e244a3350ddf2a329e4eec"><td class="memItemLeft"><a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_queued.html">Queued</a>&#160;</td><td class="memItemRight"><a class="el" href="#a70f2afad93e244a3350ddf2a329e4eec">_queued</a></td></tr>
+<tr class="memdesc:a70f2afad93e244a3350ddf2a329e4eec"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="struct_quantum_1_1_input.html" title="A Quantum input struct that defines the player input data that is used in the game.">Input</a> data that is queued for next time <a class="el" href="namespace_quantum.html" title="Quantum&#39;s Build-in Namespace.   Contains Quantum&#39;s own code and Battle Simulation code that is genera...">Quantum</a> polls input. <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_queued.html">More</a>.  <br /></td></tr>
 <tr class="memitem:a15f4432c1ed1ec78ed0cfd85ac572c6c" id="r_a15f4432c1ed1ec78ed0cfd85ac572c6c"><td class="memItemLeft">float&#160;</td><td class="memItemRight"><a class="el" href="#a15f4432c1ed1ec78ed0cfd85ac572c6c">_previousTime</a></td></tr>
 <tr class="memdesc:a15f4432c1ed1ec78ed0cfd85ac572c6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saved time from previous frame.  <br /></td></tr>
 <tr class="memitem:a57f60365bda05aac52afb24ef7c1bfbc" id="r_a57f60365bda05aac52afb24ef7c1bfbc"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a57f60365bda05aac52afb24ef7c1bfbc">_mouseDownPrevious</a></td></tr>
@@ -158,18 +172,10 @@ Private Attributes</h2></td></tr>
 <tr class="memdesc:a90cbb286e049caac6e01be9c6072a4b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial saved vector when rotation input is first detected.  <br /></td></tr>
 <tr class="memitem:abe5a1cd8c3ca7aad04e068628bb7ecce" id="r_abe5a1cd8c3ca7aad04e068628bb7ecce"><td class="memItemLeft">Vector3&#160;</td><td class="memItemRight"><a class="el" href="#abe5a1cd8c3ca7aad04e068628bb7ecce">_movementStartVector</a></td></tr>
 <tr class="memdesc:abe5a1cd8c3ca7aad04e068628bb7ecce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial saved vector when movement input is first detected.  <br /></td></tr>
-<tr class="memitem:a19c25fe72ec10b0ea0d9e0fd25f7e51c" id="r_a19c25fe72ec10b0ea0d9e0fd25f7e51c"><td class="memItemLeft">Vector2&#160;</td><td class="memItemRight"><a class="el" href="#a19c25fe72ec10b0ea0d9e0fd25f7e51c">_joystickMovementVector</a></td></tr>
-<tr class="memdesc:a19c25fe72ec10b0ea0d9e0fd25f7e51c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The vector received from the movement joystick.  <br /></td></tr>
-<tr class="memitem:ace289170e7fc1d6e3ef2c481256b833f" id="r_ace289170e7fc1d6e3ef2c481256b833f"><td class="memItemLeft">float&#160;</td><td class="memItemRight"><a class="el" href="#ace289170e7fc1d6e3ef2c481256b833f">_joystickRotationValue</a></td></tr>
-<tr class="memdesc:ace289170e7fc1d6e3ef2c481256b833f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The float value received from the rotation joystick.  <br /></td></tr>
 <tr class="memitem:a5bfc3294fa777d8f5d47b4023eb9e683" id="r_a5bfc3294fa777d8f5d47b4023eb9e683"><td class="memItemLeft">Vector3&#160;</td><td class="memItemRight"><a class="el" href="#a5bfc3294fa777d8f5d47b4023eb9e683">_lastTapPosition</a></td></tr>
 <tr class="memdesc:a5bfc3294fa777d8f5d47b4023eb9e683"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saved world position of the previous tap position used for double tap input validating.  <br /></td></tr>
 <tr class="memitem:a9113516b069dc4a43fd16f99da9e5621" id="r_a9113516b069dc4a43fd16f99da9e5621"><td class="memItemLeft">float&#160;</td><td class="memItemRight"><a class="el" href="#a9113516b069dc4a43fd16f99da9e5621">_lastTapTime</a></td></tr>
 <tr class="memdesc:a9113516b069dc4a43fd16f99da9e5621"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saved time stamp of the previous tap.  <br /></td></tr>
-<tr class="memitem:a10fd5ef103bf2cf776dc3564321e5b9a" id="r_a10fd5ef103bf2cf776dc3564321e5b9a"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a10fd5ef103bf2cf776dc3564321e5b9a">_characterNumber</a> = -1</td></tr>
-<tr class="memdesc:a10fd5ef103bf2cf776dc3564321e5b9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saved character number from character swapping input.  <br /></td></tr>
-<tr class="memitem:a1bf10d2d2bf54319fca6183ec6c832d7" id="r_a1bf10d2d2bf54319fca6183ec6c832d7"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a1bf10d2d2bf54319fca6183ec6c832d7">_onGiveUp</a> = false</td></tr>
-<tr class="memdesc:a1bf10d2d2bf54319fca6183ec6c832d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Give up button state.  <br /></td></tr>
 <tr class="memitem:a781d6c9eda21ec6eb6d90be0b7e3cdf9" id="r_a781d6c9eda21ec6eb6d90be0b7e3cdf9"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a781d6c9eda21ec6eb6d90be0b7e3cdf9">_blockScreenInput</a> = false</td></tr>
 <tr class="memdesc:a781d6c9eda21ec6eb6d90be0b7e3cdf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bool to block screen input.  <br /></td></tr>
 <tr class="memitem:a828379feaa6941f3e7f1ee2f00143daa" id="r_a828379feaa6941f3e7f1ee2f00143daa"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a828379feaa6941f3e7f1ee2f00143daa">_inputDebugNumber</a></td></tr>
@@ -204,6 +210,101 @@ Private Attributes</h2></td></tr>
 <p>See <a class="el" href="page-concepts-player.html#page-concepts-player-input" title="Player Input">{PlayerInput}</a> for more info.</p>
 <p><a class="el" href="page-concepts-player.html#page-concepts-player-overview" title="Overview">{Player Overview}</a> </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="a962d245d69e6d6f4bb0f6214e6a3a96a" name="a962d245d69e6d6f4bb0f6214e6a3a96a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a962d245d69e6d6f4bb0f6214e6a3a96a">&#9670;&#160;</a></span>CommandSendActivateAbility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.Player.BattlePlayerInput.CommandSendActivateAbility </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Called when the player activates ability. </p>
+
+<p class="reference">References <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a4cddc3983b141f0e477ae6d34a66e32f">Battle.View.Game.BattleGameViewController.QGame</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="#a42097a6ff71df956fe7c8228e0d76ac1">PollInput()</a>.</p>
+
+</div>
+</div>
+<a id="a0b8dd48fc46bcba161256a2a9de2c326" name="a0b8dd48fc46bcba161256a2a9de2c326"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b8dd48fc46bcba161256a2a9de2c326">&#9670;&#160;</a></span>CommandSendGiveUp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.Player.BattlePlayerInput.CommandSendGiveUp </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Called when the player presses give up button. </p>
+
+<p class="reference">References <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a4cddc3983b141f0e477ae6d34a66e32f">Battle.View.Game.BattleGameViewController.QGame</a>.</p>
+
+</div>
+</div>
+<a id="aed72f4acfc4f00a75057a8cb1d7d5975" name="aed72f4acfc4f00a75057a8cb1d7d5975"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed72f4acfc4f00a75057a8cb1d7d5975">&#9670;&#160;</a></span>CommandSendSwapCharacter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.Player.BattlePlayerInput.CommandSendSwapCharacter </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>characterNumber</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Called when the player presses character swap button. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">characterNumber</td><td>The character number of the character to swap to</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="reference">References <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a4cddc3983b141f0e477ae6d34a66e32f">Battle.View.Game.BattleGameViewController.QGame</a>.</p>
+
+</div>
+</div>
 <a id="a60c5a74d7724c64bfcd8a3b0681d1cb1" name="a60c5a74d7724c64bfcd8a3b0681d1cb1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a60c5a74d7724c64bfcd8a3b0681d1cb1">&#9670;&#160;</a></span>GetGyroValue()</h2>
 
@@ -283,7 +384,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="#a19c25fe72ec10b0ea0d9e0fd25f7e51c">_joystickMovementVector</a>, <a class="el" href="#a6fb42b1f50c580ed3b32a04d95f8e96d">_movementInputType</a>, <a class="el" href="#abe5a1cd8c3ca7aad04e068628bb7ecce">_movementStartVector</a>, <a class="el" href="#afbcafa57f904dfebefbcf4724a262600">_swipeMinDistance</a>, <a class="el" href="#a429de153ebaa93b87f90398fcc627166">_swipeMovementStarted</a>, <a class="el" href="#afea1a5ead11b4b3cbc6a21d44fe4e4af">_swipeSensitivity</a>, <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a56c2fafbe09c9d4a3815401e954acf98">Battle.View.Game.BattleGameViewController.LocalPlayerTeam</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#a28c7382447cacfc7d90880fb12a1eec2">Battle.QSimulation.Game.BattleGridManager.WorldXPositionToGridCol()</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#ac763a151040ae53c41cee3ecd64475d1">Battle.QSimulation.Game.BattleGridManager.WorldYPositionToGridRow()</a>.</p>
+<p class="reference">References <a class="el" href="#a6fb42b1f50c580ed3b32a04d95f8e96d">_movementInputType</a>, <a class="el" href="#abe5a1cd8c3ca7aad04e068628bb7ecce">_movementStartVector</a>, <a class="el" href="#a70f2afad93e244a3350ddf2a329e4eec">_queued</a>, <a class="el" href="#afbcafa57f904dfebefbcf4724a262600">_swipeMinDistance</a>, <a class="el" href="#a429de153ebaa93b87f90398fcc627166">_swipeMovementStarted</a>, <a class="el" href="#afea1a5ead11b4b3cbc6a21d44fe4e4af">_swipeSensitivity</a>, <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a56c2fafbe09c9d4a3815401e954acf98">Battle.View.Game.BattleGameViewController.LocalPlayerTeam</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#a28c7382447cacfc7d90880fb12a1eec2">Battle.QSimulation.Game.BattleGridManager.WorldXPositionToGridCol()</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#ac763a151040ae53c41cee3ecd64475d1">Battle.QSimulation.Game.BattleGridManager.WorldYPositionToGridRow()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a42097a6ff71df956fe7c8228e0d76ac1">PollInput()</a>.</p>
 
@@ -331,44 +432,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="#ad179cf23f007ba1741b73df245d0def2">_gyroMinAngle</a>, <a class="el" href="#ace289170e7fc1d6e3ef2c481256b833f">_joystickRotationValue</a>, <a class="el" href="#ab92130ff0d86ca5b5d57dfb928b64ec9">_rotationInputType</a>, <a class="el" href="#a90cbb286e049caac6e01be9c6072a4b5">_rotationStartVector</a>, <a class="el" href="#ab1163d05f0111773e6466ffff33ab80c">_swipeMaxDistance</a>, <a class="el" href="#afbcafa57f904dfebefbcf4724a262600">_swipeMinDistance</a>, <a class="el" href="#a60c5a74d7724c64bfcd8a3b0681d1cb1">GetGyroValue()</a>, and <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a56c2fafbe09c9d4a3815401e954acf98">Battle.View.Game.BattleGameViewController.LocalPlayerTeam</a>.</p>
+<p class="reference">References <a class="el" href="#ad179cf23f007ba1741b73df245d0def2">_gyroMinAngle</a>, <a class="el" href="#a70f2afad93e244a3350ddf2a329e4eec">_queued</a>, <a class="el" href="#ab92130ff0d86ca5b5d57dfb928b64ec9">_rotationInputType</a>, <a class="el" href="#a90cbb286e049caac6e01be9c6072a4b5">_rotationStartVector</a>, <a class="el" href="#ab1163d05f0111773e6466ffff33ab80c">_swipeMaxDistance</a>, <a class="el" href="#afbcafa57f904dfebefbcf4724a262600">_swipeMinDistance</a>, <a class="el" href="#a60c5a74d7724c64bfcd8a3b0681d1cb1">GetGyroValue()</a>, and <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a56c2fafbe09c9d4a3815401e954acf98">Battle.View.Game.BattleGameViewController.LocalPlayerTeam</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a42097a6ff71df956fe7c8228e0d76ac1">PollInput()</a>.</p>
-
-</div>
-</div>
-<a id="a5852c549916347477056a90489388e7e" name="a5852c549916347477056a90489388e7e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5852c549916347477056a90489388e7e">&#9670;&#160;</a></span>OnCharacterSelected()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Battle.View.Player.BattlePlayerInput.OnCharacterSelected </td>
-          <td>(</td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>characterNumber</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Called when the player presses one of the character selection buttons. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">characterNumber</td><td>The number of the character that was selected.</td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="reference">References <a class="el" href="#a10fd5ef103bf2cf776dc3564321e5b9a">_characterNumber</a>.</p>
 
 </div>
 </div>
@@ -403,105 +469,6 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aee7ecb004c06a90fea2b5413114d4f3c" name="aee7ecb004c06a90fea2b5413114d4f3c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aee7ecb004c06a90fea2b5413114d4f3c">&#9670;&#160;</a></span>OnGiveUp()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Battle.View.Player.BattlePlayerInput.OnGiveUp </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Called when the player presses the give up button. </p>
-
-<p class="reference">References <a class="el" href="#a1bf10d2d2bf54319fca6183ec6c832d7">_onGiveUp</a>.</p>
-
-</div>
-</div>
-<a id="af650fbe02ca3509b7f88ae0ad117797c" name="af650fbe02ca3509b7f88ae0ad117797c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af650fbe02ca3509b7f88ae0ad117797c">&#9670;&#160;</a></span>OnJoystickMovement()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Battle.View.Player.BattlePlayerInput.OnJoystickMovement </td>
-          <td>(</td>
-          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>input</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Called when the player interacts with the movement joystick. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">input</td><td>The input value of the movement joystick</td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="reference">References <a class="el" href="#a19c25fe72ec10b0ea0d9e0fd25f7e51c">_joystickMovementVector</a>.</p>
-
-</div>
-</div>
-<a id="a739d0f225c8d379c6a23000bea4c4011" name="a739d0f225c8d379c6a23000bea4c4011"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a739d0f225c8d379c6a23000bea4c4011">&#9670;&#160;</a></span>OnJoystickRotation()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Battle.View.Player.BattlePlayerInput.OnJoystickRotation </td>
-          <td>(</td>
-          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>input</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Called when the player interacts with the rotation joystick. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">input</td><td>The input value of the rotation joystick</td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="reference">References <a class="el" href="#ace289170e7fc1d6e3ef2c481256b833f">_joystickRotationValue</a>.</p>
-
-</div>
-</div>
 <a id="a42097a6ff71df956fe7c8228e0d76ac1" name="a42097a6ff71df956fe7c8228e0d76ac1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a42097a6ff71df956fe7c8228e0d76ac1">&#9670;&#160;</a></span>PollInput()</h2>
 
@@ -533,9 +500,123 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="#a781d6c9eda21ec6eb6d90be0b7e3cdf9">_blockScreenInput</a>, <a class="el" href="#a10fd5ef103bf2cf776dc3564321e5b9a">_characterNumber</a>, <a class="el" href="#a38dc3b60acc39b8c8ae3399acb69bef6">_debugLogger</a>, <a class="el" href="#a828379feaa6941f3e7f1ee2f00143daa">_inputDebugNumber</a>, <a class="el" href="#a5bfc3294fa777d8f5d47b4023eb9e683">_lastTapPosition</a>, <a class="el" href="#a9113516b069dc4a43fd16f99da9e5621">_lastTapTime</a>, <a class="el" href="#a57f60365bda05aac52afb24ef7c1bfbc">_mouseDownPrevious</a>, <a class="el" href="#a1bf10d2d2bf54319fca6183ec6c832d7">_onGiveUp</a>, <a class="el" href="#a15f4432c1ed1ec78ed0cfd85ac572c6c">_previousTime</a>, <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_camera.html#a3ee7493a96259af232fb72ff5acc8f87">Battle.View.Game.BattleCamera.Camera</a>, <a class="el" href="struct_quantum_1_1_input.html#aa911da25265ac8fce1490946aabc478c">Quantum.Input.DebugNumber</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_input_debug_utils.html#a8b76a39ec1933960e379ec12312fe8cd">Battle.QSimulation.BattleInputDebugUtils.GenerateDebugInfo()</a>, <a class="el" href="#ae17cd5c75df81b46413cab5e0d54b13a">GetMovementInput()</a>, <a class="el" href="#a0011bd1983581fc38d7ba20f99e0a313">GetRotationInput()</a>, <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a590f0ed4b6f979b425d6771c4ddb4dab">Battle.View.Game.BattleGameViewController.LocalPlayerSlot</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html#a4addcb11fe8ba9c4d715f5c2051e1f1f">Battle.View.Player.BattlePlayerInput.MovementInputInfo.MovementDirection</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html#adbb589044f44283f0763efaeb03f492b">Battle.View.Player.BattlePlayerInput.MovementInputInfo.MovementDirectionIsNormalized</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html#ab1f2b7a2dd9d7477ff4d6df86be7d30a">Battle.View.Player.BattlePlayerInput.MovementInputInfo.MovementInput</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html#ab0a22c8c22adaf2b280f01923400240f">Battle.View.Player.BattlePlayerInput.MovementInputInfo.MovementPositionMove</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html#a98b6508365460caa19d8cff421c16c13">Battle.View.Player.BattlePlayerInput.MovementInputInfo.MovementPositionTarget</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_battle_input_debug_utils_1_1_input_debug_info.html#afa256b6862d241e0ad269a27a4db22f3">Battle.QSimulation.BattleInputDebugUtils.InputDebugInfo.NotEmpty</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_rotation_input_info.html#aaa865eae4e70377f5df1d14efbbd3628">Battle.View.Player.BattlePlayerInput.RotationInputInfo.RotationInput</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_rotation_input_info.html#a9810b6ec75d32ba9113cf91c49264c83">Battle.View.Player.BattlePlayerInput.RotationInputInfo.RotationValue</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_battle_input_debug_utils_1_1_input_debug_info.html#a455d7ab256d6f4ada6dd6e1760d57153">Battle.QSimulation.BattleInputDebugUtils.InputDebugInfo.Struct</a>, and <a class="el" href="struct_battle_1_1_q_simulation_1_1_battle_input_debug_utils_1_1_input_debug_info.html#a287307bb47fe3973d7f75b401894495f">Battle.QSimulation.BattleInputDebugUtils.InputDebugInfo.Summary</a>.</p>
+<p class="reference">References <a class="el" href="#a781d6c9eda21ec6eb6d90be0b7e3cdf9">_blockScreenInput</a>, <a class="el" href="#a38dc3b60acc39b8c8ae3399acb69bef6">_debugLogger</a>, <a class="el" href="#a828379feaa6941f3e7f1ee2f00143daa">_inputDebugNumber</a>, <a class="el" href="#a5bfc3294fa777d8f5d47b4023eb9e683">_lastTapPosition</a>, <a class="el" href="#a9113516b069dc4a43fd16f99da9e5621">_lastTapTime</a>, <a class="el" href="#a57f60365bda05aac52afb24ef7c1bfbc">_mouseDownPrevious</a>, <a class="el" href="#a15f4432c1ed1ec78ed0cfd85ac572c6c">_previousTime</a>, <a class="el" href="#a70f2afad93e244a3350ddf2a329e4eec">_queued</a>, <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_camera.html#a3ee7493a96259af232fb72ff5acc8f87">Battle.View.Game.BattleCamera.Camera</a>, <a class="el" href="#a962d245d69e6d6f4bb0f6214e6a3a96a">CommandSendActivateAbility()</a>, <a class="el" href="struct_quantum_1_1_input.html#aa911da25265ac8fce1490946aabc478c">Quantum.Input.DebugNumber</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_input_debug_utils.html#a8b76a39ec1933960e379ec12312fe8cd">Battle.QSimulation.BattleInputDebugUtils.GenerateDebugInfo()</a>, <a class="el" href="#ae17cd5c75df81b46413cab5e0d54b13a">GetMovementInput()</a>, <a class="el" href="#a0011bd1983581fc38d7ba20f99e0a313">GetRotationInput()</a>, <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a590f0ed4b6f979b425d6771c4ddb4dab">Battle.View.Game.BattleGameViewController.LocalPlayerSlot</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html#adbb589044f44283f0763efaeb03f492b">Battle.View.Player.BattlePlayerInput.MovementInputInfo.MovementDirectionIsNormalized</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html#a9b5cd032abd66d69db3a7b464aae8b18">Battle.View.Player.BattlePlayerInput.MovementInputInfo.MovementGridPosition</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html#ab1f2b7a2dd9d7477ff4d6df86be7d30a">Battle.View.Player.BattlePlayerInput.MovementInputInfo.MovementInput</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html#abee3ec1b13eb9cce6a7f45b69d08907c">Battle.View.Player.BattlePlayerInput.MovementInputInfo.MovementVector</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_battle_input_debug_utils_1_1_input_debug_info.html#afa256b6862d241e0ad269a27a4db22f3">Battle.QSimulation.BattleInputDebugUtils.InputDebugInfo.NotEmpty</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_rotation_input_info.html#aaa865eae4e70377f5df1d14efbbd3628">Battle.View.Player.BattlePlayerInput.RotationInputInfo.RotationInput</a>, <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_rotation_input_info.html#a9810b6ec75d32ba9113cf91c49264c83">Battle.View.Player.BattlePlayerInput.RotationInputInfo.RotationValue</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_battle_input_debug_utils_1_1_input_debug_info.html#a455d7ab256d6f4ada6dd6e1760d57153">Battle.QSimulation.BattleInputDebugUtils.InputDebugInfo.Struct</a>, and <a class="el" href="struct_battle_1_1_q_simulation_1_1_battle_input_debug_utils_1_1_input_debug_info.html#a287307bb47fe3973d7f75b401894495f">Battle.QSimulation.BattleInputDebugUtils.InputDebugInfo.Summary</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a0a39dfd0563cb3fb972c5a75bacc51fa">OnEnable()</a>.</p>
+
+</div>
+</div>
+<a id="a4db63fbdb222f80ac41e59874da4663f" name="a4db63fbdb222f80ac41e59874da4663f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4db63fbdb222f80ac41e59874da4663f">&#9670;&#160;</a></span>QueueJoystickMovement()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.Player.BattlePlayerInput.QueueJoystickMovement </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a></td>          <td class="paramname"><span class="paramname"><em>state</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Called when the player interacts with the movement joystick. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">Quantum.BattleJoystickState</a> of the joystick. (unused)</td></tr>
+    <tr><td class="paramname">value</td><td>Value of the joystick as Vector2.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aeb6fc649471ffa30819a14f0fe26ab80" name="aeb6fc649471ffa30819a14f0fe26ab80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb6fc649471ffa30819a14f0fe26ab80">&#9670;&#160;</a></span>QueueJoystickRotation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.Player.BattlePlayerInput.QueueJoystickRotation </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a></td>          <td class="paramname"><span class="paramname"><em>state</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Called when the player interacts with the rotation joystick. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">Quantum.BattleJoystickState</a> of the joystick. (unused)</td></tr>
+    <tr><td class="paramname">value</td><td>Value of the joystick as float.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a92d4b7ca8e8f1b34e79a5eb649872fae" name="a92d4b7ca8e8f1b34e79a5eb649872fae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92d4b7ca8e8f1b34e79a5eb649872fae">&#9670;&#160;</a></span>QueueJoystickSpecial()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.Player.BattlePlayerInput.QueueJoystickSpecial </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a></td>          <td class="paramname"><span class="paramname"><em>state</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Called when player interacts with the special joystick. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">Quantum.BattleJoystickState</a> of the joystick.</td></tr>
+    <tr><td class="paramname">value</td><td>Value of the joystick as Vector2.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -589,32 +670,6 @@ Private Attributes</h2></td></tr>
 <p>Bool to block screen input. </p>
 
 <p class="reference">Referenced by <a class="el" href="#a42097a6ff71df956fe7c8228e0d76ac1">PollInput()</a>.</p>
-
-</div>
-</div>
-<a id="a10fd5ef103bf2cf776dc3564321e5b9a" name="a10fd5ef103bf2cf776dc3564321e5b9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10fd5ef103bf2cf776dc3564321e5b9a">&#9670;&#160;</a></span>_characterNumber</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int Battle.View.Player.BattlePlayerInput._characterNumber = -1</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Saved character number from character swapping input. </p>
-
-<p class="reference">Referenced by <a class="el" href="#a5852c549916347477056a90489388e7e">OnCharacterSelected()</a>, and <a class="el" href="#a42097a6ff71df956fe7c8228e0d76ac1">PollInput()</a>.</p>
 
 </div>
 </div>
@@ -693,58 +748,6 @@ Private Attributes</h2></td></tr>
 <p><a class="el" href="_battle_debug_logger_8cs.html#a0100be52d45f14348918ea69ec09f959">Debug</a> number for keeping track of inputs. </p>
 
 <p class="reference">Referenced by <a class="el" href="#a0a39dfd0563cb3fb972c5a75bacc51fa">OnEnable()</a>, and <a class="el" href="#a42097a6ff71df956fe7c8228e0d76ac1">PollInput()</a>.</p>
-
-</div>
-</div>
-<a id="a19c25fe72ec10b0ea0d9e0fd25f7e51c" name="a19c25fe72ec10b0ea0d9e0fd25f7e51c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19c25fe72ec10b0ea0d9e0fd25f7e51c">&#9670;&#160;</a></span>_joystickMovementVector</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">Vector2 Battle.View.Player.BattlePlayerInput._joystickMovementVector</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The vector received from the movement joystick. </p>
-
-<p class="reference">Referenced by <a class="el" href="#ae17cd5c75df81b46413cab5e0d54b13a">GetMovementInput()</a>, and <a class="el" href="#af650fbe02ca3509b7f88ae0ad117797c">OnJoystickMovement()</a>.</p>
-
-</div>
-</div>
-<a id="ace289170e7fc1d6e3ef2c481256b833f" name="ace289170e7fc1d6e3ef2c481256b833f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace289170e7fc1d6e3ef2c481256b833f">&#9670;&#160;</a></span>_joystickRotationValue</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float Battle.View.Player.BattlePlayerInput._joystickRotationValue</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>The float value received from the rotation joystick. </p>
-
-<p class="reference">Referenced by <a class="el" href="#a0011bd1983581fc38d7ba20f99e0a313">GetRotationInput()</a>, and <a class="el" href="#a739d0f225c8d379c6a23000bea4c4011">OnJoystickRotation()</a>.</p>
 
 </div>
 </div>
@@ -878,32 +881,6 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a1bf10d2d2bf54319fca6183ec6c832d7" name="a1bf10d2d2bf54319fca6183ec6c832d7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1bf10d2d2bf54319fca6183ec6c832d7">&#9670;&#160;</a></span>_onGiveUp</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool Battle.View.Player.BattlePlayerInput._onGiveUp = false</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Give up button state. </p>
-
-<p class="reference">Referenced by <a class="el" href="#aee7ecb004c06a90fea2b5413114d4f3c">OnGiveUp()</a>, and <a class="el" href="#a42097a6ff71df956fe7c8228e0d76ac1">PollInput()</a>.</p>
-
-</div>
-</div>
 <a id="a15f4432c1ed1ec78ed0cfd85ac572c6c" name="a15f4432c1ed1ec78ed0cfd85ac572c6c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a15f4432c1ed1ec78ed0cfd85ac572c6c">&#9670;&#160;</a></span>_previousTime</h2>
 
@@ -927,6 +904,32 @@ Private Attributes</h2></td></tr>
 <p>Saved time from previous frame. </p>
 
 <p class="reference">Referenced by <a class="el" href="#a42097a6ff71df956fe7c8228e0d76ac1">PollInput()</a>.</p>
+
+</div>
+</div>
+<a id="a70f2afad93e244a3350ddf2a329e4eec" name="a70f2afad93e244a3350ddf2a329e4eec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70f2afad93e244a3350ddf2a329e4eec">&#9670;&#160;</a></span>_queued</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_queued.html">Queued</a> Battle.View.Player.BattlePlayerInput._queued</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p><a class="el" href="struct_quantum_1_1_input.html" title="A Quantum input struct that defines the player input data that is used in the game.">Input</a> data that is queued for next time <a class="el" href="namespace_quantum.html" title="Quantum&#39;s Build-in Namespace.   Contains Quantum&#39;s own code and Battle Simulation code that is genera...">Quantum</a> polls input. <a class="el" href="struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_queued.html">More</a>. </p>
+
+<p class="reference">Referenced by <a class="el" href="#ae17cd5c75df81b46413cab5e0d54b13a">GetMovementInput()</a>, <a class="el" href="#a0011bd1983581fc38d7ba20f99e0a313">GetRotationInput()</a>, and <a class="el" href="#a42097a6ff71df956fe7c8228e0d76ac1">PollInput()</a>.</p>
 
 </div>
 </div>

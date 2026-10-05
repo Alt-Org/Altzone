@@ -5,6 +5,7 @@ var class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller =
     [ "OnActivate", "class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a4ea1f7811feb3a0429b422632a65d12b", null ],
     [ "QEventOnChangeEmotionState", "class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a785194bd3de48bbf9c2af5e23dc75208", null ],
     [ "QEventOnGameOver", "class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#aa2df17c74abf50752814848953ace3da", null ],
+    [ "QEventOnPlayStateUpdate", "class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#ac7b12d8189b2aa15db965731ef35c2e8", null ],
     [ "QEventOnProjectileChangeGlowStrength", "class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a7d495ba9abfaaaf7f408ccdbf260808a", null ],
     [ "QEventOnProjectileChangeSpeed", "class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a1a20ad8b12eac6af1daac0a9e64b2da5", null ],
     [ "Update", "class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a91800c2f2914f362eab01bbe8c7ad87c", null ],

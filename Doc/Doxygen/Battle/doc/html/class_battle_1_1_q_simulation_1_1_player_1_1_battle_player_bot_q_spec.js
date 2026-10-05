@@ -1,6 +1,8 @@
 var class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec =
 [
     [ "BotCharacterSelection", "class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#a63c760d211bc4aee8cb1c069293723fd", null ],
+    [ "CharacterSwapTimeSecMax", "class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#ab1a564a04ef8f3d51c1157dd05bd6f0d", null ],
+    [ "CharacterSwapTimeSecMin", "class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#aa74dfc46774ff79b4e75868bc1f2c81f", null ],
     [ "Inaccuracy", "class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#af3037636c7eea41b6b141b1d9fc21324", null ],
     [ "LookAheadTimeSec", "class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#a716ffa23ddc40b2903c04b6a17477c7d", null ],
     [ "MissClickChance", "class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#a2eeb433cb7bfd46d176ba986bbfc73fa", null ],
