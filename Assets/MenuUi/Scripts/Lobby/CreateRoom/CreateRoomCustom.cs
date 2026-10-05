@@ -18,6 +18,7 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         [SerializeField] private Button _createRoom;
         [SerializeField] private MapAndRoomNameSelector _mapAndRoomNameSelector;
         [SerializeField] private CustomBattleGameModeSelector _customBattleGameModeSelector;
+        [SerializeField] private PlayerCountSelector _playerCountSelector;
 
         public bool IsCustomRoomOptionsReady => _isInitialized;
         public string RoomName { get { return _mapAndRoomNameSelector?.SelectedEmotionalSituation?.SituationName ?? string.Empty; } }
@@ -56,6 +57,7 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         public Button CreateRoomButton { get { return _createRoom; } }
         public GameType SelectedCustomGameMode { get { return _customBattleGameModeSelector.SelectedGameMode; } }
         public int SelectedCustomGameModeIndex { get { return (int)_customBattleGameModeSelector.SelectedGameMode; } }
+        public int PlayerCount { get { return (int)_playerCountSelector.PlayerCount; } }
         public bool CanCreateRoom => !IsPrivate || !string.IsNullOrWhiteSpace(RoomPassword);
 
         public void InitializeCustomRoomOptions()

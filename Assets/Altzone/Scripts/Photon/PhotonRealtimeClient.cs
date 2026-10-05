@@ -673,7 +673,7 @@ public static class PhotonRealtimeClient
         }
     }
 
-    private static RoomOptions GetRoomOptions(MatchmakingType lobbyType, MatchmakingType matchmakingType = MatchmakingType.None, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", string clanId = "", int soulhomeRank = -1, int customGameMode = -1, bool showToFriends = false, bool showToClan = false, string leaderId = null)
+    private static RoomOptions GetRoomOptions(MatchmakingType lobbyType, MatchmakingType matchmakingType = MatchmakingType.None, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", string clanId = "", int soulhomeRank = -1, int customGameMode = -1, int playerCount = -1, bool showToFriends = false, bool showToClan = false, string leaderId = null)
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
@@ -711,28 +711,31 @@ public static class PhotonRealtimeClient
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeLeaderUsernameKey);
         }
 
-        int maxPlayers;
+        int maxPlayers = playerCount;
 
-        switch (lobbyType)
+        if (maxPlayers <= 0)
         {
-            default:
-            case MatchmakingType.Custom:
-                maxPlayers = 4;
-                break;
-            case MatchmakingType.Random2v2:
-            case MatchmakingType.Clan2v2:
-                if (isMatchmaking)
-                {
+            switch (lobbyType)
+            {
+                default:
+                case MatchmakingType.Custom:
                     maxPlayers = 4;
-                }
-                else
-                {
+                    break;
+                case MatchmakingType.Random2v2:
+                case MatchmakingType.Clan2v2:
+                    if (isMatchmaking)
+                    {
+                        maxPlayers = 4;
+                    }
+                    else
+                    {
+                        maxPlayers = 2;
+                    }
+                    break;
+                case MatchmakingType.FriendLobby:
                     maxPlayers = 2;
-                }
-                break;
-            case MatchmakingType.FriendLobby:
-                maxPlayers = 2;
-                break;
+                    break;
+            }
         }
         if (maxPlayers == 4)
         {
@@ -853,7 +856,7 @@ public static class PhotonRealtimeClient
         );
     }
 
-    public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null, int customGameMode = -1, bool showToFriends = false, bool showToClan = false, string displayName = null)
+    public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null, int customGameMode = -1, int playerCount = -1, bool showToFriends = false, bool showToClan = false, string displayName = null)
     {
         // Use provided displayName for lobby-visible name if given, otherwise fall back to the roomName
         string leaderId = null;
@@ -885,6 +888,7 @@ public static class PhotonRealtimeClient
             password: password,
             clanId: showToClan ? clanId : null,
             customGameMode: customGameMode,
+            playerCount: playerCount,
             showToFriends: showToFriends,
             showToClan: showToClan,
             leaderId: leaderId
