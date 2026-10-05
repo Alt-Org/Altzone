@@ -104,7 +104,7 @@ public class ItemMover : MonoBehaviour
 
                     // Uusi lisäys (Perttu)
                     AdEditor.AdFurnitureObject adFurnitureObject = new AdEditor.AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
-                    adEditor.AddFurniture(adFurnitureObject);
+                    //
 
                     return;
                 }
@@ -131,7 +131,7 @@ public class ItemMover : MonoBehaviour
 
                 // Uusi lisäys (Perttu)
                 AdEditor.AdFurnitureObject removableFurniture = adEditor.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
-                adEditor.RemoveFurniture(removableFurniture);
+                //
 
                 var store = Storefront.Get();
                 store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>

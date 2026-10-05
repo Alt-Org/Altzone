@@ -55,7 +55,6 @@ public class AdEditor : AltMonoBehaviour
 
     private List<GameFurniture> _allFurnitureList;
     private List<AdFurnitureObject> _validatedFurnitureList = null;
-    private List<AdFurnitureObject> _furnitureList = null;
 
     void Start()    
     {
@@ -83,25 +82,10 @@ public class AdEditor : AltMonoBehaviour
 
             List<AdFurnitureObject> furnitures = _validatedFurnitureList;
 
-            if (_furnitureList != null && _furnitureList.Count > 0)
-            {
-                for (int i = 0; i < furnitures.Count; i++)
-                {
-                    if (!_furnitureList.Contains(furnitures[i])) furnitures.Remove(furnitures[i]);
-                }
-            }
-            else furnitures = null;
+            //
+
             return furnitures;
         }
-    }
-
-    public void AddFurniture(AdFurnitureObject kojuFurniture)
-    {
-        _furnitureList.Add(kojuFurniture);
-    }
-    public void RemoveFurniture(AdFurnitureObject kojuFurniture)
-    {
-        _furnitureList.Remove(kojuFurniture);
     }
 
     private void ValidateFurniture()
