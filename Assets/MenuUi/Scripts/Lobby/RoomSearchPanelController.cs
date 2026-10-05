@@ -50,7 +50,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             ResetPanel(_content);
 
             if (!_noRoomText.gameObject.activeSelf) _noRoomText.gameObject.SetActive(true);
-
+            bool i = false;
             foreach(LobbyRoomInfo roomInfo in _roomsData)
             {
                 bool gameTypePropertyExist = roomInfo.CustomProperties.TryGetValue(PhotonBattleLobbyRoom.GameTypeKey, out int gameType);
@@ -60,14 +60,15 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     RoomSlot roomSlot = button.GetComponent<RoomSlot>();
                     if (roomSlot != null)
                     {
-                        UpdateButton(roomSlot, roomInfo, _onJoinRoom);
+                        UpdateButton(roomSlot, roomInfo, i, _onJoinRoom);
                     }
                     if (_noRoomText.gameObject.activeSelf) _noRoomText.gameObject.SetActive(false);
                 }
+                i = !i;
             }
         }
 
-        private void UpdateButton(RoomSlot slot, LobbyRoomInfo room, Action<string> onJoinRoom)
+        private void UpdateButton(RoomSlot slot, LobbyRoomInfo room, bool alternativeStyle, Action<string> onJoinRoom)
         {
             Button button = slot.transform.GetComponentInChildren<Button>();
 
@@ -78,7 +79,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 button.onClick.AddListener(() => onJoinRoom(room.Name));
             }
 
-            slot.SetInfo(room);
+            slot.SetInfo(room, alternativeStyle);
         }
 
         private static void ResetPanel(Transform parent)

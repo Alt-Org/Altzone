@@ -18,6 +18,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
         [SerializeField] private TMP_Text _roomGameType;
         [SerializeField] private TMP_Text _roomPlayerCount;
         [SerializeField] private Image _openStatusLockImage;
+        [SerializeField] private Image _backgroundImage;
+        [Header("GameObject references")]
+        [SerializeField] private Color _mainColour;
+        [SerializeField] private Color _alternativeColour;
         [Header("Sprite references")]
         [SerializeField] private Sprite _lockedSprite;
         [SerializeField] private Sprite _unlockedSprite;
@@ -27,8 +31,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
         /// Set visual elements for this room slot button.
         /// </summary>
         /// <param name="roomInfo">The room's info for this room slot button.</param>
-        public void SetInfo(LobbyRoomInfo roomInfo)
+        public void SetInfo(LobbyRoomInfo roomInfo, bool altColour)
         {
+            if (altColour) _backgroundImage.color = _alternativeColour;
+            else _backgroundImage.color = _mainColour;
+
             _roomName.text = roomInfo.Name;
             _roomPlayerCount.text = $"{roomInfo.PlayerCount}/4";
 
