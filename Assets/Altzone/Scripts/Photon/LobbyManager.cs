@@ -153,7 +153,7 @@ namespace Altzone.Scripts.Lobby
 
         // Timestamp of the last CancelGameStart handling (used to detect quick rejoins)
         private float _lastStartCancelTime = -100f;
-        private Player[] _teammates = null;
+        private Player[] _teammates = Array.Empty<Player>();
         private bool _isPremadeMatchmakingFlow = false;
         private Player _premadeTeammateUserPlayer = null;
         private string _premadeTeammateUserId = string.Empty;
@@ -971,7 +971,20 @@ namespace Altzone.Scripts.Lobby
 
         private string[] GetTeammateIds()
         {
-            return _teammates.Length > 0? _teammates.Select(p=> p.UserId).ToArray(): new string[0];
+            return _teammates?
+                .Where(player => player != null && !string.IsNullOrEmpty(player.UserId))
+                .Select(player => player.UserId)
+                .Distinct()
+                .ToArray() ?? Array.Empty<string>();
+        }
+
+        private void ResetPremadeMatchmakingState()
+        {
+            _teammates = Array.Empty<Player>();
+            _isPremadeMatchmakingFlow = false;
+            _premadeTeammateUserPlayer = null;
+            _premadeTeammateUserId = string.Empty;
+            _premadeTeammateUserName = string.Empty;
         }
 
         // AutoJoinLargestMatchmakingRoom removed: client-side opportunistic joining
@@ -3508,10 +3521,9 @@ namespace Altzone.Scripts.Lobby
             {
                 StopCoroutine(_matchmakingHolder);
                 _matchmakingHolder = null;
-                _teammates = null;
-                _premadeTeammateUserId = string.Empty;
-                _isPremadeMatchmakingFlow = false;
             }
+
+            ResetPremadeMatchmakingState();
 
             if (_autoJoinHolder != null)
             {
@@ -3885,7 +3897,10 @@ namespace Altzone.Scripts.Lobby
                     List<Player> expectedUsers = new();
                     foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
                     {
-                        if (player.Value.UserId != PhotonRealtimeClient.LocalPlayer.UserId)
+                        if (player.Value == null) continue;
+
+                        if (!string.IsNullOrEmpty(player.Value.UserId)
+                            && player.Value.UserId != PhotonRealtimeClient.LocalPlayer.UserId)
                         {
                             expectedUsers.Add(player.Value);
                         }
@@ -3905,20 +3920,32 @@ namespace Altzone.Scripts.Lobby
                         string resolvedPremadeTeammateUserId = string.Empty;
                         string resolvedPremadeTeammateUsername = string.Empty;
                         bool teammateFound = TryGetQueueLocalTeammateUserId(localUserId, out resolvedPremadeTeammateUserId, out resolvedPremadeTeammateUsername);
-                        if (!teammateFound || string.IsNullOrEmpty(resolvedPremadeTeammateUserId))
+
+                        if (teammateFound && !string.IsNullOrEmpty(resolvedPremadeTeammateUserId))
+                        {
+                            resolvedPremadeTeammateUserPlayer = expectedUsers.FirstOrDefault(player => player.UserId == resolvedPremadeTeammateUserId);
+                            if (resolvedPremadeTeammateUserPlayer == null)
+                            {
+                                teammateFound = false;
+                                resolvedPremadeTeammateUserId = string.Empty;
+                                resolvedPremadeTeammateUsername = string.Empty;
+                            }
+                        }
+
+                        if (!teammateFound)
                         {
                             if (!string.IsNullOrEmpty(_premadeTeammateUserId)
-                                && PhotonRealtimeClient.CurrentRoom?.Players?.Values.Any(p => p != null && p.UserId == _premadeTeammateUserId) == true)
+                                && expectedUsers.FirstOrDefault(player => player.UserId == _premadeTeammateUserId) is Player currentRoomTeammate)
                             {
-                                resolvedPremadeTeammateUserId = _premadeTeammateUserId;
-                                resolvedPremadeTeammateUsername = _premadeTeammateUserName;
-                                resolvedPremadeTeammateUserPlayer = _premadeTeammateUserPlayer;
+                                resolvedPremadeTeammateUserId = currentRoomTeammate.UserId;
+                                resolvedPremadeTeammateUsername = currentRoomTeammate.NickName;
+                                resolvedPremadeTeammateUserPlayer = currentRoomTeammate;
                             }
                             else
                             {
                                 Player[] visibleTeammates = expectedUsers
-                                    .Where(player => !string.IsNullOrEmpty(player.UserId))
-                                    .Distinct()
+                                    .GroupBy(player => player.UserId)
+                                    .Select(group => group.First())
                                     .ToArray();
 
                                 if (visibleTeammates.Length == 1)
@@ -3933,13 +3960,15 @@ namespace Altzone.Scripts.Lobby
                         _premadeTeammateUserId = resolvedPremadeTeammateUserId ?? string.Empty;
                         _premadeTeammateUserName = resolvedPremadeTeammateUsername ?? string.Empty;
                         _premadeTeammateUserPlayer = resolvedPremadeTeammateUserPlayer;
-                        _teammates = expectedUsers.Count() <= 0 || expectedUsers.Find(p => p.UserId == _premadeTeammateUserId) == null
+                        _teammates = resolvedPremadeTeammateUserPlayer == null
                             ? Array.Empty<Player>()
-                            : new[] { _premadeTeammateUserPlayer };
+                            : new[] { resolvedPremadeTeammateUserPlayer };
                     }
                     else
                     {
+                        _premadeTeammateUserPlayer = null;
                         _premadeTeammateUserId = string.Empty;
+                        _premadeTeammateUserName = string.Empty;
                     }
 
                     // Sending other players in the room the room change request, setting own leader id key as own userid to indicate being the leader
@@ -3955,7 +3984,7 @@ namespace Altzone.Scripts.Lobby
                             data = new()
                             {
                                 LeaderId = localUserId,
-                                ExpectedPlayers = _teammates.Select(p => p.UserId).ToArray(),
+                                ExpectedPlayers = GetTeammateIds(),
                                 RoomName = $"Queue_{gameType}"
                             };
                         }
@@ -4047,7 +4076,7 @@ namespace Altzone.Scripts.Lobby
                                 PhotonRealtimeClient.CurrentRoom.SetCustomProperty("qe", _teammates?.Length ?? 0);
                                 if (_teammates != null && _teammates.Length > 0)
                                 {
-                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty("eu", _teammates);
+                                    PhotonRealtimeClient.CurrentRoom.SetCustomProperty("eu", GetTeammateIds());
                                 }
                             }
                             catch (Exception ex)
@@ -4061,7 +4090,7 @@ namespace Altzone.Scripts.Lobby
                                 data = new()
                                 {
                                     LeaderId = localUserId,
-                                    ExpectedPlayers = _teammates.Select(p => p.UserId).ToArray(),
+                                    ExpectedPlayers = GetTeammateIds(),
                                     RoomName = queueRoomName
                                 };
 
@@ -7541,7 +7570,7 @@ namespace Altzone.Scripts.Lobby
 
                     if (ownClan == otherPlayerClan)
                     {
-                        _teammates = null;
+                        _teammates = Array.Empty<Player>();
                         StartCoroutine(LeaveMatchmaking());
                         OnClanMemberDisconnected?.Invoke();
                     }
@@ -7941,8 +7970,7 @@ namespace Altzone.Scripts.Lobby
 
             if (_matchmakingHolder == null && _followLeaderHolder == null)
             {
-                _isPremadeMatchmakingFlow = false;
-                _premadeTeammateUserId = string.Empty;
+                ResetPremadeMatchmakingState();
             }
 
             LobbyOnLeftRoom?.Invoke();
