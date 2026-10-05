@@ -11,7 +11,7 @@ public class ItemMover : MonoBehaviour
 {
     private Transform trayParent;
     private Transform gridParent;
-    public KojuItemSlot assignedSlot;
+    private KojuItemSlot assignedSlot;
 
     private KojuPopup popup;
 
@@ -24,7 +24,7 @@ public class ItemMover : MonoBehaviour
     // Event to notify that this item was moved to panel
     public event Action<StorageFurniture> OnItemMovedToPanel;
 
-    private AdEditor adEditor = new AdEditor();
+    [SerializeField] private AdEditor adEditor;
 
     void Start()
     {
@@ -85,6 +85,11 @@ public class ItemMover : MonoBehaviour
         return false;
     }
 
+    public KojuItemSlot AssignedSlot
+    {
+        get => assignedSlot;
+    }
+
     // Call when user confirms the moving of a furniture
     public void ExecuteMove()
     {
@@ -104,7 +109,8 @@ public class ItemMover : MonoBehaviour
 
                     // Uusi lisäys (Perttu)
                     AdEditor.AdFurnitureObject adFurnitureObject = new AdEditor.AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
-                    //
+                    adEditor.AddFurniture(adFurnitureObject);
+
 
                     return;
                 }
@@ -131,7 +137,7 @@ public class ItemMover : MonoBehaviour
 
                 // Uusi lisäys (Perttu)
                 AdEditor.AdFurnitureObject removableFurniture = adEditor.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
-                //
+                adEditor.RemoveFurniture(removableFurniture);
 
                 var store = Storefront.Get();
                 store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>

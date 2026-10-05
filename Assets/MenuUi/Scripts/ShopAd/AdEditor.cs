@@ -20,7 +20,7 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private AdPosterHandler _adGraphicHandler;
     [SerializeField] private TMP_InputField _inputField; // Uusi lisäys (Perttu)
     [SerializeField] private GameObject _inputFieldHolder; // Uusi lisäys (Perttu)
-    [SerializeField] private GameObject _adTextHolder; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject _adText; // Uusi lisäys (Perttu)
 
     [SerializeField] private AdDecorationReference _borderReference;
     [Header("Frame Selectors")]
@@ -53,8 +53,11 @@ public class AdEditor : AltMonoBehaviour
     private bool fontChanged = false;
     private bool textStateChanged = false;
 
-    private List<GameFurniture> _allFurnitureList;
-    private List<AdFurnitureObject> _validatedFurnitureList = null;
+    //private List<GameFurniture> _allFurnitureList;
+    //private List<AdFurnitureObject> _validatedFurnitureList = null;
+    private List<AdFurnitureObject> _furnitureList = null;
+    private static AdEditor _instance = null;
+    private static bool _hasInstance;
 
     void Start()    
     {
@@ -74,59 +77,90 @@ public class AdEditor : AltMonoBehaviour
        CloseEditor();
     }
 
+    public static AdEditor Instance
+    {
+        get
+        {
+            if (!_hasInstance)
+            {
+                _instance = Resources.Load<AdEditor>(nameof(AdEditor));
+                _hasInstance = _instance != null;
+            }
+            return _instance;
+        }
+    }
+
     public List<AdFurnitureObject> FurnitureList
     {
         get
         {
-            ValidateFurniture();
+            //ValidateFurniture();
 
-            List<AdFurnitureObject> furnitures = _validatedFurnitureList;
+            //List<AdFurnitureObject> furnitures = _validatedFurnitureList;
 
-            //
+            //if (_furnitureList != null && _furnitureList.Count > 0)
+            //{
+            //    for (int i = 0; i < furnitures.Count; i++)
+            //    {
+            //        if (!_furnitureList.Contains(furnitures[i])) furnitures.Remove(furnitures[i]);
+            //    }
+            //}
+            //else furnitures = null;
+            //return furnitures;
 
-            return furnitures;
+            return _furnitureList;
         }
     }
 
-    private void ValidateFurniture()
+    public void AddFurniture(AdFurnitureObject kojuFurniture)
     {
-        HashSet<string> uniqueNames = new();
-        HashSet<string> uniqueIds = new();
-        HashSet<Sprite> uniqueMap = new();
-
-        if (_validatedFurnitureList != null && _validatedFurnitureList.Count > 0) return;
-
-        _allFurnitureList = StorageFurnitureReference.Instance.GetAllGameFurniture();
-
-        List<AdFurnitureObject> furnitures = new();
-        foreach (GameFurniture furniture in _allFurnitureList)
-        {
-            //if (!furniture.IsValid()) continue;
-
-            if (!uniqueNames.Add(furniture.Name))
-            {
-                Debug.LogError($"duplicate furniture Name {furniture.Name}");
-            }
-            if (!uniqueIds.Add(furniture.Id))
-            {
-                Debug.LogError($"duplicate furniture Id {furniture.Id}");
-            }
-            if (!uniqueMap.Add(furniture.FurnitureInfo.Image))
-            {
-                Debug.LogError($"duplicate furniture Image {furniture.FurnitureInfo.Image}");
-                continue;
-            }
-            AdFurnitureObject furnitureObj = new AdFurnitureObject(furniture.Name, furniture.Id, furniture.FurnitureInfo.Image);
-            furnitures.Add(furnitureObj);
-        }
-        _validatedFurnitureList = furnitures;
+        if (_furnitureList == null) _furnitureList.Add(kojuFurniture); // object reference not set
+        else if (!_furnitureList.Contains(kojuFurniture)) _furnitureList.Add(kojuFurniture);
     }
+    public void RemoveFurniture(AdFurnitureObject kojuFurniture)
+    {
+        _furnitureList.Remove(kojuFurniture);
+    }
+
+    //private void ValidateFurniture()
+    //{
+    //    HashSet<string> uniqueNames = new();
+    //    HashSet<string> uniqueIds = new();
+    //    HashSet<Sprite> uniqueMap = new();
+
+    //    if (_validatedFurnitureList != null && _validatedFurnitureList.Count > 0) return;
+
+    //    _allFurnitureList = StorageFurnitureReference.Instance.GetAllGameFurniture();
+
+    //    List<AdFurnitureObject> furnitures = new();
+    //    foreach (GameFurniture furniture in _allFurnitureList)
+    //    {
+    //        //if (!furniture.IsValid()) continue;
+
+    //        if (!uniqueNames.Add(furniture.Name))
+    //        {
+    //            Debug.LogError($"duplicate furniture Name {furniture.Name}");
+    //        }
+    //        if (!uniqueIds.Add(furniture.Id))
+    //        {
+    //            Debug.LogError($"duplicate furniture Id {furniture.Id}");
+    //        }
+    //        if (!uniqueMap.Add(furniture.FurnitureInfo.Image))
+    //        {
+    //            Debug.LogError($"duplicate furniture Image {furniture.FurnitureInfo.Image}");
+    //            continue;
+    //        }
+    //        AdFurnitureObject furnitureObj = new AdFurnitureObject(furniture.Name, furniture.Id, furniture.FurnitureInfo.Image);
+    //        furnitures.Add(furnitureObj);
+    //    }
+    //    _validatedFurnitureList = furnitures;
+    //}
 
     public class AdFurnitureObject
     {
         public string Name;
-        public Sprite Image;
         public string Id;
+        public Sprite Image;
 
         public AdFurnitureObject(string name, string id, Sprite image)
         {
@@ -160,7 +194,7 @@ public class AdEditor : AltMonoBehaviour
                 _posterName = "Et ole klaanissa";
             }
             _adGraphicHandler.SetAdPoster(_adData, _posterName, _heartPieceData);
-            if (_adData._isAdText) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
+            if (_adData._isAdText) _adText.SetActive(true); // Uusi lisäys (Perttu)
             _adData.previousText = _adData.AdText; // Uusi lisäys (Perttu)
         }));
 
@@ -387,8 +421,8 @@ public class AdEditor : AltMonoBehaviour
         // Uusi lisäys (Perttu)
         kojuPanel.SetActive(true);
         _inputFieldHolder.SetActive(false);
-        if (_adData._isAdText) _adTextHolder.SetActive(true);
-        if (!_adData._isAdText) _adTextHolder.SetActive(false);
+        if (_adData._isAdText) _adText.SetActive(true);
+        if (!_adData._isAdText) _adText.SetActive(false);
 
         if (gameObject.activeSelf) gameObject.SetActive(false);
 

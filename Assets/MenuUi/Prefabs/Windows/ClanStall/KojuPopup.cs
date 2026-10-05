@@ -138,7 +138,7 @@ public class KojuPopup : MonoBehaviour
         {
             chooseText.enabled = false;
         }
-        if (itemMover.assignedSlot != null)
+        if (itemMover.AssignedSlot != null)
         {
             if (!removeButtonGO.active)
             {
@@ -235,7 +235,7 @@ public class KojuPopup : MonoBehaviour
         gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
 
         // Moves the item, see ItemMover.cs
-        if (itemMover.assignedSlot == null) { itemMover?.ExecuteMove(); }
+        if (itemMover.AssignedSlot == null) { itemMover?.ExecuteMove(); }
         Close();
     }
 

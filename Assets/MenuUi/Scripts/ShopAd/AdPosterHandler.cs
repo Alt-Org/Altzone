@@ -28,7 +28,7 @@ public class AdPosterHandler : AltMonoBehaviour
     [SerializeField]
     private GameObject _inputFieldHolder;
 
-    private AdEditor _adEditor = new AdEditor();
+    [SerializeField] public AdEditor _adEditor;
 
     // Start is called before the first frame update
     void Start()
@@ -67,7 +67,7 @@ public class AdPosterHandler : AltMonoBehaviour
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
 
         // Uusi lisäys (Perttu)
-        if (_adEditor.FurnitureList == null || _adEditor.FurnitureList.Count <= 0) _adFurniture.enabled = false;
+        if (_adEditor == null || _adEditor.FurnitureList == null || _adEditor.FurnitureList.Count <= 0) _adFurniture.enabled = false;
         else
         {
             _adFurniture.enabled = true;
@@ -95,7 +95,7 @@ public class AdPosterHandler : AltMonoBehaviour
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
 
         // Uusi lisäys (Perttu)
-        if (_adEditor.FurnitureList == null || _adEditor.FurnitureList.Count <= 0) _adFurniture.enabled = false;
+        if (_adEditor == null || _adEditor.FurnitureList == null || _adEditor.FurnitureList.Count <= 0) _adFurniture.enabled = false;
         else
         {
             _adFurniture.enabled = true;
