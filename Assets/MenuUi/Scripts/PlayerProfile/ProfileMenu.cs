@@ -389,40 +389,30 @@ public class ProfileMenu : AltMonoBehaviour
     }
 
     private void RefreshTodaysEmotionUI()
+{
+    if (_todaysEmotionImage == null || _playerData == null)
+        return;
+
+    List<DailyEmotion> emotions = _playerData._playerDataEmotions;
+
+    if (emotions == null || emotions.Count == 0)
     {
-        if (_todaysEmotionImage == null || _playerData == null)
-            return;
-
-        List<Emotion> emotions = _playerData.playerDataEmotionList;
-        if (emotions == null || emotions.Count == 0)
-        {
-            _todaysEmotionImage.sprite = _blankEmotionSprite;
-            return;
-        }
-
-        if (_playerData.EmotionSelectionDate.Equals(DateTime.MinValue))
-        {
-            _todaysEmotionImage.sprite = _blankEmotionSprite;
-            return;
-        }
-
-        /*if (!DateTime.TryParse(_playerData.emotionSelectorDate, out DateTime anchorDate))
-        {
-            _todaysEmotionImage.sprite = _blankEmotionSprite;
-            return;
-        }*/
-        
-        int dayOffset = (DateTime.Now.Date - _playerData.EmotionSelectionDate.Date).Days;
-
-        if (dayOffset < 0 || dayOffset >= emotions.Count)
-        {
-            _todaysEmotionImage.sprite = _blankEmotionSprite;
-            return;
-        }
-
-        Emotion todayEmotion = emotions[dayOffset];
-        _todaysEmotionImage.sprite = GetEmotionSprite(todayEmotion);
+        _todaysEmotionImage.sprite = _blankEmotionSprite;
+        return;
     }
+
+    DailyEmotion todayEntry = emotions.Find(
+        emotion => emotion.DateTime.ToLocalTime().Date == DateTime.Now.Date
+    );
+
+    if (todayEntry == null)
+    {
+        _todaysEmotionImage.sprite = _blankEmotionSprite;
+        return;
+    }
+
+    _todaysEmotionImage.sprite = GetEmotionSprite(todayEntry.Emotion);
+}
 
     private Sprite GetEmotionSprite(Emotion emotion)
     {
