@@ -18,6 +18,7 @@ public class InRoomPlayerSlot : MonoBehaviour
     [SerializeField] private Toggle _botButton;
     [SerializeField] private Toggle _readyToggle;
     [SerializeField] private TextLanguageSelectorCaller _playerName;
+    [SerializeField] private Image _masterClient;
 
     private int? _slotIndex = null;
     private string _playerId = null;
@@ -66,11 +67,13 @@ public class InRoomPlayerSlot : MonoBehaviour
                 _playerName.SetText("Avoin paikka");
             else
                 _playerName.SetText("Free slot");
+            _playerName.GetComponent<TMP_Text>().color = Color.white;
             _slotButton.GetComponent<Image>().sprite = _freePlayerSprite;
             _botButton.GetComponent<Image>().sprite = _botSprite;
             _botButton.gameObject.SetActive(true);
             _readyToggle.gameObject.SetActive(false);
             _botButton.SetIsOnWithoutNotify(false);
+            _masterClient.gameObject.SetActive(false);
             return;
         }
 
@@ -84,8 +87,9 @@ public class InRoomPlayerSlot : MonoBehaviour
         {
             _playerName.GetComponent<TMP_Text>().color = Color.white;
         }
-            _readyToggle.gameObject.SetActive(true);
+        _readyToggle.gameObject.SetActive(true);
         _botButton.SetIsOnWithoutNotify(false);
+        _masterClient.gameObject.SetActive(isMasterClient);
 
         if (selectedCharacterIds[0] == (int)CharacterID.None)
         {
@@ -112,11 +116,13 @@ public class InRoomPlayerSlot : MonoBehaviour
             _playerName.SetText("Botti");
         else
             _playerName.SetText("Bot");
+        _playerName.GetComponent<TMP_Text>().color = Color.white;
         _slotButton.GetComponent<Image>().sprite = _botSprite;
         _botButton.GetComponent<Image>().sprite = _freePlayerSprite;
         _botButton.gameObject.SetActive(true);
         _readyToggle.gameObject.SetActive(false);
         _botButton.SetIsOnWithoutNotify(true);
+        _masterClient.gameObject.SetActive(false);
     }
 
     private void ToggleBot(bool value)

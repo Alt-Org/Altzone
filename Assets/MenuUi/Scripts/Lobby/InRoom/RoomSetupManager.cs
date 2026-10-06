@@ -419,31 +419,34 @@ namespace MenuUi.Scripts.Lobby.InRoom
             int[] characters = player.GetCustomProperty(PlayerCharactersKey, new int[3]);
             int[] stats = player.GetCustomProperty(PlayerStatsKey, new int[15]);
 
+            bool isMasterClient = false;
+            if(player.UserId == PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).UserId) isMasterClient = true;
+
             switch (playerPosition)
             {
                 case PlayerPosition1:
                     if (!_interactablePlayerP1) { _captionPlayerP1 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP1 = false;
                     if (_captionPlayerP1 != null) _captionPlayerP1 = player.NickName;
-                    if (_player1Slot != null) _player1Slot.SetCharacters(player.UserId,player.NickName,characters, false);
+                    if (_player1Slot != null) _player1Slot.SetCharacters(player.UserId,player.NickName,characters, false, isMasterClient);
                     break;
                 case PlayerPosition2:
                     if (!_interactablePlayerP2) { _captionPlayerP2 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP2 = false;
                     if (_captionPlayerP2 != null) _captionPlayerP2 = player.NickName;
-                    if (_player2Slot != null) _player2Slot.SetCharacters(player.UserId, player.NickName, characters, false);
+                    if (_player2Slot != null) _player2Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
                     break;
                 case PlayerPosition3:
                     if (!_interactablePlayerP3) { _captionPlayerP3 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP3 = false;
                     if (_captionPlayerP3 != null) _captionPlayerP3 = player.NickName;
-                    if (_player3Slot != null) _player3Slot.SetCharacters(player.UserId, player.NickName, characters, false);
+                    if (_player3Slot != null) _player3Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
                     break;
                 case PlayerPosition4:
                     if (!_interactablePlayerP4) { _captionPlayerP4 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP4 = false;
                     if (_captionPlayerP4 != null) _captionPlayerP4 = player.NickName;
-                    if (_player4Slot != null) _player4Slot.SetCharacters(player.UserId, player.NickName, characters, false);
+                    if (_player4Slot != null) _player4Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
                     break;
             }
         }
@@ -466,31 +469,34 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 }
             });
 
+            bool isMasterClient = false;
+            if (player.UserId == PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).UserId) isMasterClient = true;
+
             switch (playerPosition)
             {
                 case PlayerPosition1:
                     if (!_interactablePlayerP1) { _captionPlayerP1 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP1 = false;
                     if (_captionPlayerP1 != null) _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
-                    if (_player1Slot != null) _player1Slot.SetCharacters(player.UserId, player.NickName, characters, true);
+                    if (_player1Slot != null) _player1Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
                     break;
                 case PlayerPosition2:
                     if (!_interactablePlayerP2) { _captionPlayerP2 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP2 = false;
                     if (_captionPlayerP2 != null) _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
-                    if (_player2Slot != null) _player2Slot.SetCharacters(player.UserId, player.NickName, characters, true);
+                    if (_player2Slot != null) _player2Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
                     break;
                 case PlayerPosition3:
                     if (!_interactablePlayerP3) { _captionPlayerP3 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP3 = false;
                     if (_captionPlayerP3 != null) _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
-                    if (_player3Slot != null) _player3Slot.SetCharacters(player.UserId, player.NickName, characters, true);
+                    if (_player3Slot != null) _player3Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
                     break;
                 case PlayerPosition4:
                     if (!_interactablePlayerP4) { _captionPlayerP4 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP4 = false;
                     if (_captionPlayerP4 != null) _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
-                    if (_player4Slot != null) _player4Slot.SetCharacters(player.UserId, player.NickName, characters, true);
+                    if (_player4Slot != null) _player4Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
                     break;
             }
         }
@@ -502,10 +508,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _interactablePlayerP3 = true;
             _interactablePlayerP4 = true;
 
-            _player1Slot.SetCharacters(null, null, null, false);
-            _player2Slot.SetCharacters(null, null, null, false);
-            _player3Slot.SetCharacters(null, null, null, false);
-            _player4Slot.SetCharacters(null, null, null, false);
+            _player1Slot.SetCharacters(null, null, null, false, false);
+            _player2Slot.SetCharacters(null, null, null, false, false);
+            _player3Slot.SetCharacters(null, null, null, false, false);
+            _player4Slot.SetCharacters(null, null, null, false, false);
         }
 
         private void SetFillBotToggle(bool value)

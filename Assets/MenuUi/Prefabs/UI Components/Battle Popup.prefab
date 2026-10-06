@@ -2938,7 +2938,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b91126f09cf60df4792d04e538c65f0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  positions: []
 --- !u!114 &2348637392482191973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6511,15 +6510,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b91126f09cf60df4792d04e538c65f0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  positions:
-  - _button: {fileID: 0}
-    _botToggle: {fileID: 0}
-  - _button: {fileID: 0}
-    _botToggle: {fileID: 0}
-  - _button: {fileID: 0}
-    _botToggle: {fileID: 0}
-  - _button: {fileID: 0}
-    _botToggle: {fileID: 0}
 --- !u!114 &2093242259483948008
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15451,6 +15441,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player4Slot
       objectReference: {fileID: 0}
+    - target: {fileID: 1771892860018240756, guid: eaf39bb1de5c2e5438a00c44b10460c7,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3699171479073558533, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_Pivot.x
@@ -18308,6 +18303,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player3Slot
       objectReference: {fileID: 0}
+    - target: {fileID: 1771892860018240756, guid: eaf39bb1de5c2e5438a00c44b10460c7,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3699171479073558533, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_Pivot.x
@@ -19348,6 +19348,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player2Slot
       objectReference: {fileID: 0}
+    - target: {fileID: 1771892860018240756, guid: eaf39bb1de5c2e5438a00c44b10460c7,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3699171479073558533, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_Pivot.x
@@ -20184,6 +20189,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player1Slot
+      objectReference: {fileID: 0}
+    - target: {fileID: 1771892860018240756, guid: eaf39bb1de5c2e5438a00c44b10460c7,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3699171479073558533, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
