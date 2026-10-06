@@ -1,14 +1,15 @@
-using Altzone.Scripts.Lobby;
+using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Lobby;
 using MenuUi.Scripts.Lobby;
 using MenuUi.Scripts.Lobby.CreateRoom;
+using MenuUi.Scripts.Lobby.InRoom;
+using MenuUi.Scripts.Lobby.SelectedCharacters;
 using MenuUi.Scripts.Signals;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System.Collections;
-using MenuUi.Scripts.Lobby.SelectedCharacters;
 
 /// <summary>
 /// Handles switching Battle Popup panels to a battle room and back to the main panel.
@@ -30,6 +31,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     {
         LobbyManager.OnMatchmakingRoomEntered += SwitchToMatchmakingPanel;
         SignalBus.OnCustomRoomSettingsRequested += OpenCustomRoomSettings;
+        InRoomController.OnLeaveRoom += ReturnToMain;
         WireMainPanelButtons();
         WireCreateRoomButtons();
     }
@@ -38,6 +40,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     {
         LobbyManager.OnMatchmakingRoomEntered -= SwitchToMatchmakingPanel;
         SignalBus.OnCustomRoomSettingsRequested -= OpenCustomRoomSettings;
+        InRoomController.OnLeaveRoom -= ReturnToMain;
     }
 
     public void SwitchRoom(MatchmakingType gameType)

@@ -45,12 +45,15 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private Coroutine _customRoomTimeoutHolder;
         private const float CustomRoomTimeoutSeconds = 300f;
 
+        public delegate void LeaveRoom();
+        public static event LeaveRoom OnLeaveRoom;
+
         private void Awake()
         {
             //buttons[0].onClick.AddListener(SetPlayerAsGuest);
             //buttons[1].onClick.AddListener(SetPlayerAsSpectator);
             _startGameButton.onClick.AddListener(StartPlaying);
-            _backButton.onClick.AddListener(GoBack);
+            _backButton.onClick.AddListener(() => StartCoroutine(GoBack()));
             // premade target-mode selector removed until prefab wiring is fixed
             if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.AddListener(OnInviteOnlinePlayerButtonPressed);
             //buttons[3].onClick.AddListener(StartRaidTest);
@@ -586,7 +589,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 }
 
                 Debug.Log($"Custom room timeout reached after {CustomRoomTimeoutSeconds}s, leaving room.");
-                GoBack();
+                yield return GoBack();
             }
             finally
             {
@@ -710,11 +713,13 @@ namespace MenuUi.Scripts.Lobby.InRoom
             }
         }
 
-        private void GoBack()
+        private IEnumerator GoBack()
         {
             Debug.Log($"leavingRoom");
             PhotonRealtimeClient.LeaveRoom();
-            if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Clan2v2) SignalBus.OnCloseBattlePopupRequestedSignal();
+            yield return new WaitUntil(() => !PhotonRealtimeClient.InRoom);
+            if (InLobbyController.SelectedMatchmakingType == MatchmakingType.Custom) OnLeaveRoom?.Invoke();
+            else if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Clan2v2) SignalBus.OnCloseBattlePopupRequestedSignal();
             //this.Publish(new LobbyManager.StartPlayingEvent());
         }
 
