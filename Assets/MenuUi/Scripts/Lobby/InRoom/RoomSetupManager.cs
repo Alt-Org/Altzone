@@ -12,6 +12,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby.SelectedCharacters;
 using MenuUi.Scripts.Signals;
+using Newtonsoft.Json.Linq;
 using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity;
 using TMPro;
@@ -29,6 +30,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
         private const string PlayerCharactersKey = PhotonLobbyRoom.PlayerPrefabIdsKey;
         private const string PlayerStatsKey = PhotonBattleRoom.PlayerStatsKey;
+        private const string PlayerReadyKey = PhotonBattleRoom.PlayerReadyKey;
 
         private const int PlayerPosition1 = PhotonBattleRoom.PlayerPosition1;
         private const int PlayerPosition2 = PhotonBattleRoom.PlayerPosition2;
@@ -418,6 +420,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             var playerPosition = player.GetCustomProperty(PlayerPositionKey, 0);
             int[] characters = player.GetCustomProperty(PlayerCharactersKey, new int[3]);
             int[] stats = player.GetCustomProperty(PlayerStatsKey, new int[15]);
+            bool ready = player.GetCustomProperty(PlayerReadyKey, false);
 
             bool isMasterClient = false;
             if(player.UserId == PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).UserId) isMasterClient = true;
@@ -428,25 +431,41 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (!_interactablePlayerP1) { _captionPlayerP1 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP1 = false;
                     if (_captionPlayerP1 != null) _captionPlayerP1 = player.NickName;
-                    if (_player1Slot != null) _player1Slot.SetCharacters(player.UserId,player.NickName,characters, false, isMasterClient);
+                    if (_player1Slot != null)
+                    {
+                        _player1Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
+                        _player1Slot.SetReadyState(ready);
+                    }
                     break;
                 case PlayerPosition2:
                     if (!_interactablePlayerP2) { _captionPlayerP2 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP2 = false;
                     if (_captionPlayerP2 != null) _captionPlayerP2 = player.NickName;
-                    if (_player2Slot != null) _player2Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
+                    if (_player2Slot != null)
+                    {
+                        _player2Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
+                        _player2Slot.SetReadyState(ready);
+                    }
                     break;
                 case PlayerPosition3:
                     if (!_interactablePlayerP3) { _captionPlayerP3 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP3 = false;
                     if (_captionPlayerP3 != null) _captionPlayerP3 = player.NickName;
-                    if (_player3Slot != null) _player3Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
+                    if (_player3Slot != null)
+                    {
+                        _player3Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
+                        _player3Slot.SetReadyState(ready);
+                    }
                     break;
                 case PlayerPosition4:
                     if (!_interactablePlayerP4) { _captionPlayerP4 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP4 = false;
                     if (_captionPlayerP4 != null) _captionPlayerP4 = player.NickName;
-                    if (_player4Slot != null) _player4Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
+                    if (_player4Slot != null)
+                    {
+                        _player4Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
+                        _player4Slot.SetReadyState(ready);
+                    }
                     break;
             }
         }
@@ -454,6 +473,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void CheckLocalPlayer(LobbyPlayer player)
         {
             var playerPosition = player.GetCustomProperty(PlayerPositionKey, 0);
+            bool ready = player.GetCustomProperty(PlayerReadyKey, false);
 
             // Master client can *only* start the game when in room as player!
             _interactableStartPlay = player.IsMasterClient && playerPosition >= PlayerPosition1 && playerPosition <= PlayerPosition4;
@@ -478,25 +498,41 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (!_interactablePlayerP1) { _captionPlayerP1 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP1 = false;
                     if (_captionPlayerP1 != null) _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
-                    if (_player1Slot != null) _player1Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                    if (_player1Slot != null)
+                    {
+                        _player1Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                        _player1Slot.SetReadyState(ready);
+                    }
                     break;
                 case PlayerPosition2:
                     if (!_interactablePlayerP2) { _captionPlayerP2 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP2 = false;
                     if (_captionPlayerP2 != null) _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
-                    if (_player2Slot != null) _player2Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                    if (_player2Slot != null)
+                    {
+                        _player2Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                        _player2Slot.SetReadyState(ready);
+                    }
                     break;
                 case PlayerPosition3:
                     if (!_interactablePlayerP3) { _captionPlayerP3 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP3 = false;
                     if (_captionPlayerP3 != null) _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
-                    if (_player3Slot != null) _player3Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                    if (_player3Slot != null)
+                    {
+                        _player3Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                        _player3Slot.SetReadyState(ready);
+                    }
                     break;
                 case PlayerPosition4:
                     if (!_interactablePlayerP4) { _captionPlayerP4 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP4 = false;
                     if (_captionPlayerP4 != null) _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
-                    if (_player4Slot != null) _player4Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                    if (_player4Slot != null)
+                    {
+                        _player4Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                        _player4Slot.SetReadyState(ready);
+                    }
                     break;
             }
         }

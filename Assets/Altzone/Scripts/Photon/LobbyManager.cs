@@ -3785,6 +3785,7 @@ namespace Altzone.Scripts.Lobby
             this.Subscribe<PlayerPosEvent>(OnPlayerPosEvent);
             this.Subscribe<BotToggleEvent>(OnBotToggleEvent);
             this.Subscribe<BotFillToggleEvent>(OnBotFillToggleEvent);
+            this.Subscribe<ReadyToggleEvent>(OnReadyToggleEvent);
             this.Subscribe<StartRoomEvent>(OnStartRoomEvent);
             this.Subscribe<StartPlayingEvent>(OnStartPlayingEvent);
             this.Subscribe<StartRaidTestEvent>(OnStartRaidTestEvent);
@@ -6920,6 +6921,11 @@ namespace Altzone.Scripts.Lobby
             StartCoroutine(SetBotFill(data.BotFillActive));
         }
 
+        private void OnReadyToggleEvent(ReadyToggleEvent data)
+        {
+            StartCoroutine(SetReady(data.PlayerPosition, data.Ready));
+        }
+
         private IEnumerator RequestPositionChange(int position)
         {
             try
@@ -7172,6 +7178,68 @@ namespace Altzone.Scripts.Lobby
                 {
                     Debug.LogWarning($"Failed to reserve the position {playerPosition}. This likely because somebody already is in this position.");
                 }
+            }
+
+            _playerPosChangeInProgress = false;
+            yield break;
+        }
+
+        private IEnumerator SetReady(int playerPosition, bool active)
+        {
+            yield return new WaitUntil(() => !_playerPosChangeInProgress);
+
+            _playerPosChangeInProgress = true;
+
+            Assert.IsTrue(PhotonLobbyRoom.IsValidGameplayPosOrGuest(playerPosition));
+
+            // Initializing hash tables for setting the new position as taken
+            string readyKey = PhotonBattleRoom.PlayerReadyKey;
+
+            LobbyPlayer player = PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LocalPlayer.ActorNumber);
+
+            string newPositionKey = PhotonBattleRoom.GetPositionKey(playerPosition);
+
+            string playerId = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(newPositionKey, string.Empty);
+
+            if(playerId != player.UserId)
+            {
+                Debug.LogWarning("Player is not in valid position.");
+                _playerPosChangeInProgress = false;
+                yield break;
+            }
+
+            LobbyPhotonHashtable newPosition;
+            LobbyPhotonHashtable expectedValue;
+
+            newPosition = new LobbyPhotonHashtable(new Dictionary<object, object> { { readyKey, active } });
+
+            if (player.HasCustomProperty(readyKey))
+                expectedValue = new LobbyPhotonHashtable(new Dictionary<object, object> { { readyKey, !active } }); // Expecting the new position to be empty
+            else
+                expectedValue = null; // Expecting the new position to be empty
+            if (player.SetCustomProperties(newPosition, expectedValue))
+            {
+                float timeout = Time.time + 1f;
+                bool success = false;
+                while (Time.time < timeout)
+                {
+                    // Checking if the position is set to have a Bot
+                    if (player.GetCustomProperty<bool>(readyKey) == active)
+                    {
+                        success = true;
+                        break;
+                    }
+                    yield return new WaitForSeconds(0.1f);
+                }
+
+                if (success)
+                {
+                    Debug.Log($"Set Player to Ready.");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"Something went wrong.");
             }
 
             _playerPosChangeInProgress = false;
@@ -9321,6 +9389,23 @@ namespace Altzone.Scripts.Lobby
             public override string ToString()
             {
                 return $"{nameof(BotFillActive)}: {BotFillActive}";
+            }
+        }
+
+        public class ReadyToggleEvent
+        {
+            public readonly int PlayerPosition;
+            public readonly bool Ready;
+
+            public ReadyToggleEvent(int playerPosition, bool value)
+            {
+                PlayerPosition = playerPosition;
+                Ready = value;
+            }
+
+            public override string ToString()
+            {
+                return $"{nameof(PlayerPosition)}: {PlayerPosition}, {nameof(Ready)}: {Ready}";
             }
         }
 

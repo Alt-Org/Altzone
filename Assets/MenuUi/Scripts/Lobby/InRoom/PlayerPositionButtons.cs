@@ -21,6 +21,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             InRoomPlayerSlot.OnSetPositon += SetPlayerPosition;
             InRoomPlayerSlot.OnSetBot += SetPositionBotToggle;
+            InRoomPlayerSlot.OnSetReady += SetReadyToggle;
         }
 
         private void SetPlayerPosition(int positionIndex)
@@ -41,6 +42,16 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 throw new UnityException($"invalid positionIndex: {positionIndex}");
             }
             this.Publish(new LobbyManager.BotToggleEvent(PositionMap[positionIndex], value));
+        }
+
+        private void SetReadyToggle(int positionIndex, bool value)
+        {
+            Debug.Log($"SetReadyToggle {positionIndex}:{value}");
+            if (positionIndex < 0 || positionIndex >= PositionMap.Length)
+            {
+                throw new UnityException($"invalid positionIndex: {positionIndex}");
+            }
+            this.Publish(new LobbyManager.ReadyToggleEvent(PositionMap[positionIndex], value));
         }
 
         [System.Serializable]

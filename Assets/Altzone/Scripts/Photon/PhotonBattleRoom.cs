@@ -31,6 +31,7 @@ namespace Altzone.Scripts.Battle.Photon
         public const string PlayerCharacterIdKey = "mk";
         public const string PlayerCharacterIdsKey = "ci";
         public const string PlayerStatsKey = "cs";
+        public const string PlayerReadyKey = "pr";
         public const string TeamAlphaNameKey = "tb";
         public const string TeamBetaNameKey = "tr";
         public const string TeamWinTypeKey = "wt";

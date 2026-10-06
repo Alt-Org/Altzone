@@ -80,6 +80,8 @@ MonoBehaviour:
   _slotButton: {fileID: 7262320063113948016}
   _botButton: {fileID: 2752990719051388738}
   _readyToggle: {fileID: 3532301647359066087}
+  _readyColor: {r: 0.32941177, g: 0.7843138, b: 0.31764707, a: 1}
+  _unreadyColor: {r: 1, g: 0.6313726, b: 0, a: 1}
   _playerName: {fileID: 495182699525825466}
   _masterClient: {fileID: 8124390785534408496}
 --- !u!1 &2495757492352349790
@@ -758,11 +760,11 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 0.6313726, b: 0, a: 1}
-    m_HighlightedColor: {r: 1, g: 0.6313726, b: 0, a: 1}
-    m_PressedColor: {r: 1, g: 0.6313726, b: 0, a: 1}
-    m_SelectedColor: {r: 1, g: 0.6313726, b: 0, a: 1}
-    m_DisabledColor: {r: 0.3019608, g: 0.31764707, b: 0.32941177, a: 0.5019608}
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:

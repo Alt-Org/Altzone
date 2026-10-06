@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
 using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
-using MenuUi.Scripts.Lobby.SelectedCharacters;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +14,8 @@ public class InRoomPlayerSlot : MonoBehaviour
     [SerializeField] private Button _slotButton;
     [SerializeField] private Toggle _botButton;
     [SerializeField] private Toggle _readyToggle;
+    [SerializeField] private Color _readyColor;
+    [SerializeField] private Color _unreadyColor;
     [SerializeField] private TextLanguageSelectorCaller _playerName;
     [SerializeField] private Image _masterClient;
 
@@ -24,6 +23,8 @@ public class InRoomPlayerSlot : MonoBehaviour
     private string _playerId = null;
 
     private const string BOT_ID = "Bot";
+
+    public string PlayerId { get => _playerId;}
 
     public delegate void SetPositon(int position);
     public static event SetPositon OnSetPositon;
@@ -72,6 +73,8 @@ public class InRoomPlayerSlot : MonoBehaviour
             _botButton.GetComponent<Image>().sprite = _botSprite;
             _botButton.gameObject.SetActive(true);
             _readyToggle.gameObject.SetActive(false);
+            _readyToggle.SetIsOnWithoutNotify(false);
+            _readyToggle.GetComponent<Image>().color = _unreadyColor;
             _botButton.SetIsOnWithoutNotify(false);
             _masterClient.gameObject.SetActive(false);
             return;
@@ -121,8 +124,16 @@ public class InRoomPlayerSlot : MonoBehaviour
         _botButton.GetComponent<Image>().sprite = _freePlayerSprite;
         _botButton.gameObject.SetActive(true);
         _readyToggle.gameObject.SetActive(false);
+        _readyToggle.SetIsOnWithoutNotify(false);
+        _readyToggle.GetComponent<Image>().color = _unreadyColor;
         _botButton.SetIsOnWithoutNotify(true);
         _masterClient.gameObject.SetActive(false);
+    }
+
+    public void SetReadyState(bool value)
+    {
+        _readyToggle.SetIsOnWithoutNotify(value);
+        _readyToggle.GetComponent<Image>().color = value ? _readyColor: _unreadyColor;
     }
 
     private void ToggleBot(bool value)
