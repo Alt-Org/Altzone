@@ -63,7 +63,24 @@ public class AdEditor : AltMonoBehaviour
         GetFurniture();
         GetColors();
 
-        if (_adData != null) _adData.previousText = _adData.AdText;
+        if (_adData != null)
+        {
+            _adData.previousColor = _adData.BackgroundColour;
+            _adData.previousBorder = _adData.BorderFrame;
+            _adData.previousFurniture = _adData.Furniture;
+            _adData.previousTextColor = _adData.TextColour;
+            _adData.previousFont = _adData.TextFont;
+            _adData.previousText = _adData.AdText;
+            _adData.previousTextState = _adData._isAdText;
+        }
+
+        _adText.SetActive(false);
+        if (_adData._isAdText)
+        {
+            _inputFieldHolder.SetActive(true);
+            _inputField.ActivateInputField();
+            _inputField.textComponent.SetText(_adData.previousText);
+        }
     }
 
     private void OnDisable()
@@ -117,6 +134,7 @@ public class AdEditor : AltMonoBehaviour
 
         StartCoroutine(SetFrameSelectionSize());
 
+        _inputField.ActivateInputField();
         _inputField.onValueChanged.AddListener(delegate { ChangeText(_inputField.text); }); // Uusi lisäys (Perttu)
     }
 
@@ -149,6 +167,13 @@ public class AdEditor : AltMonoBehaviour
                 float objectWidth = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width;
                 colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
                 colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeColor(colour));
+
+                if (colour == Color.black)
+                {
+                    ColorBlock colorBlock = colourObject.GetComponent<Button>().colors;
+                    colorBlock.pressedColor = new Color(0, 0, 0, 0.45f);
+                    colourObject.GetComponent<Button>().colors = colorBlock;
+                }
             }
         }
         _backgroundColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f; // rect.width -> rect.height (Perttu)
@@ -163,6 +188,13 @@ public class AdEditor : AltMonoBehaviour
                 float objectWidth = _textColourSelectorContent.GetComponent<RectTransform>().rect.width;
                 colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
                 colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextColor(textColour));
+
+                if (textColour == Color.black)
+                {
+                    ColorBlock colorBlock = colourObject.GetComponent<Button>().colors;
+                    colorBlock.pressedColor = new Color(0, 0, 0, 0.45f);
+                    colourObject.GetComponent<Button>().colors = colorBlock;
+                }
             }
         }
         _textColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _textColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
@@ -314,14 +346,6 @@ public class AdEditor : AltMonoBehaviour
         if (!_adData._isAdText) _adText.SetActive(false);
 
         if (gameObject.activeSelf) gameObject.SetActive(false);
-
-        // Uusi lisäys (Perttu)
-        colorChanged = false;
-        borderChanged = false;
-        furnitureChanged = false;
-        textColorChanged = false;
-        fontChanged = false;
-        textStateChanged = false;
     }
 
     public void SaveAndCloseEditor() // Uusi lisäys (Perttu)
@@ -348,11 +372,7 @@ public class AdEditor : AltMonoBehaviour
             _inputField.fontAsset = _adData.previousFont;
         }
 
-        if (!string.IsNullOrEmpty(_adData.previousText))
-        {
-            _adData.AdText = _adData.previousText;
-            _inputField.textComponent.SetText(_adData.previousText);
-        }
+        if (!string.IsNullOrEmpty(_adData.previousText)) _adData.AdText = _adData.previousText;
         _adData._isAdText = _adData.previousTextState;
 
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
