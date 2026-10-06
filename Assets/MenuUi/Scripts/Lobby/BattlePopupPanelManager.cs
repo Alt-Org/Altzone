@@ -144,6 +144,7 @@ public class BattlePopupPanelManager : MonoBehaviour
             }
             WireCreateRoomButtons();
             _createCustomRoom.SetActive(true);
+            _topPanel.SetActive(true);
         }
     }
 
@@ -228,9 +229,10 @@ public class BattlePopupPanelManager : MonoBehaviour
             case GameType.BattlePingPong:
             case GameType.BattleTestFlipperGame:
                 _custom2v2WaitingRoom.SetActive(true);
+                _topPanel.SetActive(false);
                 break;
             default:
-                _mainPanel.SetActive(true);
+                ShowMainPanel();
                 break;
         }
     }
@@ -247,7 +249,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     {
         foreach (Transform t in transform)
         {
-            if (ReferenceEquals(t.gameObject, _topPanel)) continue;
+            //if (ReferenceEquals(t.gameObject, _topPanel)) continue;
             if (ReferenceEquals(t.gameObject, _border)) continue;
             t.gameObject.SetActive(false);
         }
@@ -272,6 +274,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         }
 
         _mainPanel.SetActive(true);
+        _topPanel.SetActive(true);
 
         if (_refreshMainPanelHolder != null)
         {
