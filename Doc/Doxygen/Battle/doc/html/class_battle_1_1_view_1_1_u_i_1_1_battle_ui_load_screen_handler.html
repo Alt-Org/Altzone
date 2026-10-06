@@ -101,8 +101,8 @@ Inheritance diagram for Battle.View.UI.BattleUiLoadScreenHandler:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0479b03846063a0d346e3945d7026d70" id="r_a0479b03846063a0d346e3945d7026d70"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a0479b03846063a0d346e3945d7026d70">PlayerConnected</a> (<a class="el" href="namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096">BattlePlayerSlot</a> slot, int[] characterIds, int[] characterClasses)</td></tr>
-<tr class="memdesc:a0479b03846063a0d346e3945d7026d70"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the player which connected is part of the game, this method:<br  />
+<tr class="memitem:a73af78f19a2ffcce9dab2d2493fcb117" id="r_a73af78f19a2ffcce9dab2d2493fcb117"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a73af78f19a2ffcce9dab2d2493fcb117">PlayerConnected</a> (<a class="el" href="namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096">BattlePlayerSlot</a> slot, <a class="el" href="namespace_quantum.html#a9b74128cdd70fd3489f6529817bc82b2">BattlePlayerCharacterID</a>[] characterIds, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a>[] characterClasses)</td></tr>
+<tr class="memdesc:a73af78f19a2ffcce9dab2d2493fcb117"><td class="mdescLeft">&#160;</td><td class="mdescRight">If the player which connected is part of the game, this method:<br  />
  Enables the <a class="el" href="namespace_battle_1_1_view_1_1_u_i.html" title="Contains View Logic for Battle UI.">UI</a> element for that player on the loading screen.<br  />
  Calls the correct BattlePopupCharacterSlotController::SetCharacters method to set the character icons.<br  />
  Changes the alpha of the player name on the loading screen to indicate the player has connected.  <br /></td></tr>
@@ -155,8 +155,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a0479b03846063a0d346e3945d7026d70" name="a0479b03846063a0d346e3945d7026d70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0479b03846063a0d346e3945d7026d70">&#9670;&#160;</a></span>PlayerConnected()</h2>
+<a id="a73af78f19a2ffcce9dab2d2493fcb117" name="a73af78f19a2ffcce9dab2d2493fcb117"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73af78f19a2ffcce9dab2d2493fcb117">&#9670;&#160;</a></span>PlayerConnected()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -172,12 +172,12 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int[]</td>          <td class="paramname"><span class="paramname"><em>characterIds</em></span>, </td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#a9b74128cdd70fd3489f6529817bc82b2">BattlePlayerCharacterID</a>[]</td>          <td class="paramname"><span class="paramname"><em>characterIds</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int[]</td>          <td class="paramname"><span class="paramname"><em>characterClasses</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a>[]</td>          <td class="paramname"><span class="paramname"><em>characterClasses</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -268,7 +268,7 @@ Private Attributes</h2></td></tr>
 <p>[SerializeField] References to the character frame handlers which are used to set the correct <a class="el" href="namespace_battle_1_1_view_1_1_u_i.html" title="Contains View Logic for Battle UI.">UI</a> frame for each character icon. </p>
 <p><a class="el" href="#BattleUiLoadScreenHandler-SerializeFields" title="BattleUiLoadScreenHandler-SerializeFields">BattleUiLoadScreenHandler-SerializeFields</a> </p>
 
-<p class="reference">Referenced by <a class="el" href="#a0479b03846063a0d346e3945d7026d70">PlayerConnected()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a73af78f19a2ffcce9dab2d2493fcb117">PlayerConnected()</a>.</p>
 
 </div>
 </div>
@@ -295,7 +295,7 @@ Private Attributes</h2></td></tr>
 <p>[SerializeField] References to the character slot controllers which are used to show the connection status and selected characters of players in the game. </p>
 <p><a class="el" href="#BattleUiLoadScreenHandler-SerializeFields" title="BattleUiLoadScreenHandler-SerializeFields">BattleUiLoadScreenHandler-SerializeFields</a> </p>
 
-<p class="reference">Referenced by <a class="el" href="#a0479b03846063a0d346e3945d7026d70">PlayerConnected()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a73af78f19a2ffcce9dab2d2493fcb117">PlayerConnected()</a>.</p>
 
 </div>
 </div>
@@ -349,7 +349,7 @@ Private Attributes</h2></td></tr>
 <p>[SerializeField] References to the player name <a class="el" href="namespace_battle_1_1_view_1_1_u_i.html" title="Contains View Logic for Battle UI.">UI</a> elements. </p>
 <p><a class="el" href="#BattleUiLoadScreenHandler-SerializeFields" title="BattleUiLoadScreenHandler-SerializeFields">BattleUiLoadScreenHandler-SerializeFields</a> </p>
 
-<p class="reference">Referenced by <a class="el" href="#a0479b03846063a0d346e3945d7026d70">PlayerConnected()</a>, and <a class="el" href="#af7f1f6dc60dc5e99d41ec7321ccb6731">Show()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a73af78f19a2ffcce9dab2d2493fcb117">PlayerConnected()</a>, and <a class="el" href="#af7f1f6dc60dc5e99d41ec7321ccb6731">Show()</a>.</p>
 
 </div>
 </div>
