@@ -14,6 +14,8 @@ namespace Altzone.Scripts.ReferenceSheets
 
         [SerializeField] public List<AdFontObject> _fontList; // Uusi lisäys (Perttu)
 
+        private List<AdFurnitureObject> _furnitureList;
+
         [Header("Colours")]
         [SerializeField] private Color _orangeColor;
         [SerializeField] private Color _yellowColor;
@@ -47,6 +49,14 @@ namespace Altzone.Scripts.ReferenceSheets
             {
                 ValidateFonts();
                 return _validatedFontList;
+            }
+        }
+
+        public List<AdFurnitureObject> FurnitureList
+        {
+            get
+            {
+                return _furnitureList;
             }
         }
 
@@ -184,6 +194,15 @@ namespace Altzone.Scripts.ReferenceSheets
             }
             _validatedFontList = fonts;
         }
+
+        public void AddFurniture(AdFurnitureObject kojuFurniture)
+        {
+            if (!_furnitureList.Contains(kojuFurniture)) _furnitureList.Add(kojuFurniture);
+        }
+        public void RemoveFurniture(AdFurnitureObject kojuFurniture)
+        {
+            _furnitureList.Remove(kojuFurniture);
+        }
     }
 
     [Serializable]
@@ -210,6 +229,29 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             if (string.IsNullOrWhiteSpace(Name)) return false;
             if (Font == null) return false;
+            return true;
+        }
+    }
+
+    [Serializable]
+    public class AdFurnitureObject
+    {
+        public string Name;
+        public string Id;
+        public Sprite Image;
+
+        public AdFurnitureObject(string name, string id, Sprite image)
+        {
+            Name = name;
+            Id = id;
+            Image = image;
+        }
+
+        public bool IsValid()
+        {
+            if (string.IsNullOrWhiteSpace(Name)) return false;
+            if (string.IsNullOrWhiteSpace(Id)) return false;
+            if (Image == null) return false;
             return true;
         }
     }

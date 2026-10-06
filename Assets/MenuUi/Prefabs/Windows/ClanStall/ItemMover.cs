@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using MenuUi.Scripts.Storage;
@@ -24,7 +25,8 @@ public class ItemMover : MonoBehaviour
     // Event to notify that this item was moved to panel
     public event Action<StorageFurniture> OnItemMovedToPanel;
 
-    [SerializeField] private AdEditor adEditor;
+    //[SerializeField] private AdEditor adEditor;
+    [SerializeField] private AdDecorationReference _adDecReference;
 
     void Start()
     {
@@ -108,9 +110,8 @@ public class ItemMover : MonoBehaviour
                     OnItemMovedToPanel?.Invoke(currentFurniture);
 
                     // Uusi lisäys (Perttu)
-                    AdEditor.AdFurnitureObject adFurnitureObject = new AdEditor.AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
-                    adEditor.AddFurniture(adFurnitureObject);
-
+                    AdFurnitureObject adFurnitureObject = new AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
+                    _adDecReference.AddFurniture(adFurnitureObject);
 
                     return;
                 }
@@ -136,8 +137,8 @@ public class ItemMover : MonoBehaviour
                 trayPopulator?.HandleItemReturnedToTray(currentFurniture);
 
                 // Uusi lisäys (Perttu)
-                AdEditor.AdFurnitureObject removableFurniture = adEditor.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
-                adEditor.RemoveFurniture(removableFurniture);
+                AdFurnitureObject removableFurniture = _adDecReference.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
+                _adDecReference.RemoveFurniture(removableFurniture);
 
                 var store = Storefront.Get();
                 store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>

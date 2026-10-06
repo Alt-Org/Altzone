@@ -53,12 +53,6 @@ public class AdEditor : AltMonoBehaviour
     private bool fontChanged = false;
     private bool textStateChanged = false;
 
-    //private List<GameFurniture> _allFurnitureList;
-    //private List<AdFurnitureObject> _validatedFurnitureList = null;
-    private List<AdFurnitureObject> _furnitureList = null;
-    private static AdEditor _instance = null;
-    private static bool _hasInstance;
-
     void Start()    
     {
         InitializeAd();
@@ -75,106 +69,6 @@ public class AdEditor : AltMonoBehaviour
     private void OnDisable()
     {
        CloseEditor();
-    }
-
-    public static AdEditor Instance
-    {
-        get
-        {
-            if (!_hasInstance)
-            {
-                _instance = Resources.Load<AdEditor>(nameof(AdEditor));
-                _hasInstance = _instance != null;
-            }
-            return _instance;
-        }
-    }
-
-    public List<AdFurnitureObject> FurnitureList
-    {
-        get
-        {
-            //ValidateFurniture();
-
-            //List<AdFurnitureObject> furnitures = _validatedFurnitureList;
-
-            //if (_furnitureList != null && _furnitureList.Count > 0)
-            //{
-            //    for (int i = 0; i < furnitures.Count; i++)
-            //    {
-            //        if (!_furnitureList.Contains(furnitures[i])) furnitures.Remove(furnitures[i]);
-            //    }
-            //}
-            //else furnitures = null;
-            //return furnitures;
-
-            return _furnitureList;
-        }
-    }
-
-    public void AddFurniture(AdFurnitureObject kojuFurniture)
-    {
-        if (_furnitureList == null) _furnitureList.Add(kojuFurniture); // object reference not set
-        else if (!_furnitureList.Contains(kojuFurniture)) _furnitureList.Add(kojuFurniture);
-    }
-    public void RemoveFurniture(AdFurnitureObject kojuFurniture)
-    {
-        _furnitureList.Remove(kojuFurniture);
-    }
-
-    //private void ValidateFurniture()
-    //{
-    //    HashSet<string> uniqueNames = new();
-    //    HashSet<string> uniqueIds = new();
-    //    HashSet<Sprite> uniqueMap = new();
-
-    //    if (_validatedFurnitureList != null && _validatedFurnitureList.Count > 0) return;
-
-    //    _allFurnitureList = StorageFurnitureReference.Instance.GetAllGameFurniture();
-
-    //    List<AdFurnitureObject> furnitures = new();
-    //    foreach (GameFurniture furniture in _allFurnitureList)
-    //    {
-    //        //if (!furniture.IsValid()) continue;
-
-    //        if (!uniqueNames.Add(furniture.Name))
-    //        {
-    //            Debug.LogError($"duplicate furniture Name {furniture.Name}");
-    //        }
-    //        if (!uniqueIds.Add(furniture.Id))
-    //        {
-    //            Debug.LogError($"duplicate furniture Id {furniture.Id}");
-    //        }
-    //        if (!uniqueMap.Add(furniture.FurnitureInfo.Image))
-    //        {
-    //            Debug.LogError($"duplicate furniture Image {furniture.FurnitureInfo.Image}");
-    //            continue;
-    //        }
-    //        AdFurnitureObject furnitureObj = new AdFurnitureObject(furniture.Name, furniture.Id, furniture.FurnitureInfo.Image);
-    //        furnitures.Add(furnitureObj);
-    //    }
-    //    _validatedFurnitureList = furnitures;
-    //}
-
-    public class AdFurnitureObject
-    {
-        public string Name;
-        public string Id;
-        public Sprite Image;
-
-        public AdFurnitureObject(string name, string id, Sprite image)
-        {
-            Name = name;
-            Id = id;
-            Image = image;
-        }
-
-        //public bool IsValid()
-        //{
-        //    if (string.IsNullOrWhiteSpace(Name)) return false;
-        //    if (Image == null) return false;
-        //    return true;
-        //}
     }
 
     private void InitializeAd()
@@ -284,13 +178,13 @@ public class AdEditor : AltMonoBehaviour
             }
         }
 
-        if (FurnitureList == null || FurnitureList.Count <= 0)
+        if (_borderReference.FurnitureList == null || _borderReference.FurnitureList.Count <= 0)
         {
             return;
         }
         else
         {
-            foreach (AdFurnitureObject furniture in FurnitureList)
+            foreach (AdFurnitureObject furniture in _borderReference.FurnitureList)
             {
                 GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
                 furnitureObject.GetComponent<Image>().preserveAspect = true;
@@ -326,11 +220,6 @@ public class AdEditor : AltMonoBehaviour
             }));
         }));
     }
-
-    //void BringToFront(Transform folder)
-    //{
-    //    folder.SetAsLastSibling();
-    //}
 
     public void ChangeColor(Color colour)
     {
