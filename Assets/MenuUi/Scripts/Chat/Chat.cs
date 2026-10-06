@@ -38,11 +38,6 @@ public class Chat : AltMonoBehaviour
     [Header("InputField")]
     [SerializeField] private TMP_InputField _inputField;
 
-    [Header("Add reactions UI")]
-    [SerializeField] private GameObject _addReactionsPanel;
-    [SerializeField] private GameObject _commonReactions;
-    [SerializeField] private GameObject _allReactions;
-
     [Header("Chat Reactions")]
     [SerializeField] private GameObject _chatResponseContent;
 
@@ -122,6 +117,7 @@ public class Chat : AltMonoBehaviour
     {
         ChatChannel.OnMessageHistoryReceived += RefreshChat;
         ChatChannel.OnMessageReceived += DisplayMessage;
+        MessageObjectHandler.OnRequestCanvasUpdate += ForceUpdateCanvas;
 
         // Alustaa chatit ja asettaa kielichatin oletukseksi
         _currentContent = _clanChatContent;
@@ -163,6 +159,7 @@ public class Chat : AltMonoBehaviour
     {
         ChatChannel.OnMessageHistoryReceived -= RefreshChat;
         ChatChannel.OnMessageReceived -= DisplayMessage;
+        MessageObjectHandler.OnRequestCanvasUpdate -= ForceUpdateCanvas;
     }
 
     private void AddResponses()
@@ -401,7 +398,7 @@ public class Chat : AltMonoBehaviour
     private IEnumerator UpdateLayoutAndScroll(GameObject message, GameObject contentLayout)
     {
         yield return null;
-        message.GetComponentInChildren<ChatMessageScript>().MessageSetHeight();
+        message.GetComponent<MessageObjectHandler>().SizeCall();
 
         yield return null;
         Canvas.ForceUpdateCanvases();
@@ -412,6 +409,17 @@ public class Chat : AltMonoBehaviour
 
         yield return null;
         _currentScrollRect.verticalNormalizedPosition = 0f;
+    }
+
+    public void ForceUpdateCanvas() => StartCoroutine(ForceUpdateCanvasCoroutine());
+
+    public IEnumerator ForceUpdateCanvasCoroutine()
+    {
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+        yield return null;
+        RectTransform rectTransform = _currentContent.GetComponent<RectTransform>();
+        LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
     }
 
     // Valitsee viestin
@@ -439,8 +447,6 @@ public class Chat : AltMonoBehaviour
             Destroy(selectedMessage);
             if(selectedMessage == _selectedMessage)_selectedMessage = null;
 
-            // Disable message interaction elements
-            DisableReactionPanel();
         }
         else
         {
@@ -458,8 +464,6 @@ public class Chat : AltMonoBehaviour
         }
 
         _messagesByChat[_currentContent].Clear();
-
-        DisableReactionPanel();
     }
 
     // Aktivoi globaalin chatin
@@ -598,21 +602,6 @@ public class Chat : AltMonoBehaviour
 
         VerticalLayoutGroup currentLayout = _currentContent.GetComponentInChildren<VerticalLayoutGroup>();
         LayoutRebuilder.ForceRebuildLayoutImmediate(currentLayout.GetComponent<RectTransform>());
-    }
-
-
-    private void DisableReactionPanel()
-    {
-        _commonReactions.SetActive(true);
-        _allReactions.SetActive(false);
-        _addReactionsPanel.SetActive(false);
-    }    
-
-    public void OpenUsersWhoAddedReactionPanel()
-    {
-        _addReactionsPanel.SetActive(true);
-        _commonReactions.SetActive(false);
-        _allReactions.SetActive(false);
     }
 
 }

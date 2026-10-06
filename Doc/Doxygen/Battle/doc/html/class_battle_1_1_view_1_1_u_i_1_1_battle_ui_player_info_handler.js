@@ -5,7 +5,8 @@ var class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler =
       [ "LocalTeammate", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a9ead6cc9e39c94c3238e9e882cf14e7ca55b148244a4d91282d8bd003bbea5a6f", null ]
     ] ],
     [ "GetPlayerInfoComponent", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#adffc49354e93158e12e57f28f24dd84a", null ],
-    [ "SetInfo", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a56c787280eec875cfadc408f99143171", null ],
+    [ "MarkCharacterDead", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#af53b875bc29114a046c72fe821145433", null ],
+    [ "SetInfo", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a1a269ee13c09f0659448fc9790e9b27b", null ],
     [ "SetSelected", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a820282853369935ed055b7321b9ae3bf", null ],
     [ "SetShow", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a0fda21e84ea456cbc65ccde6d4fe8d3b", null ],
     [ "SetShowPlayer", "class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#aac620cf51d98083e54285be1b9acfa08", null ],
