@@ -8,15 +8,15 @@ using Altzone.Scripts.Model.Poco.Clan;
 public class RoleAssignmentPopup : MonoBehaviour
 {
     [Header("List Containers")] // Containers for lists
-    [SerializeField] private Transform memberListContainer; 
-    [SerializeField] private Transform roleListContainer;   
+    [SerializeField] private Transform memberListContainer;
+    [SerializeField] private Transform roleListContainer;
 
     [Header("Item Prefab")] // Item prefab that gets instantiated based on the amount of members and roles
-    [SerializeField] private GameObject listItemPrefab;     
+    [SerializeField] private GameObject listItemPrefab;
 
     [Header("Info Texts")] // Info texts regarding the selected member and the selected members current role in the popup
-    [SerializeField] private TMP_Text selectedMemberText;   
-    [SerializeField] private TMP_Text selectedRoleText;    
+    [SerializeField] private TMP_Text selectedMemberText;
+    [SerializeField] private TMP_Text selectedRoleText;
 
     private List<Button> memberButtons = new List<Button>();
     private List<Button> roleButtons = new List<Button>();
@@ -24,6 +24,20 @@ public class RoleAssignmentPopup : MonoBehaviour
     private ClanData clan;
     private ClanMember selectedMember;
     private ClanMemberRole? selectedRole;
+
+    // public enum PlayerRights
+    // {
+    //     CanEditHome,
+    //     CanEditClanData,
+    //     CanEditRights,
+    //     CanManagerRoles,
+    //     CanManageShop
+    // }
+
+    public void WhatRights(ClanMember targetMember, int targetRole)
+    {
+
+    }
 
     public void Initialize(ClanData clanData)
     {
@@ -77,7 +91,7 @@ public class RoleAssignmentPopup : MonoBehaviour
             var text = buttonObj.GetComponentInChildren<TMP_Text>();
             text.text = role.ToString();
 
-            int index = i; 
+            int index = i;
             button.onClick.AddListener(() => OnRoleSelected(index));
             roleButtons.Add(button);
         }

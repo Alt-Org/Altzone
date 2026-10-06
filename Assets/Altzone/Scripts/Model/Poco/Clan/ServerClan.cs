@@ -50,6 +50,15 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Named
     }
 
+    public enum PlayerRights
+    {
+        CanEditHome,
+        CanEditClanData,
+        CanEditRights,
+        CanManagerRoles,
+        CanManageShop
+    }
+
     [Serializable]
     public class ClanRoles
     {
@@ -66,6 +75,45 @@ namespace Altzone.Scripts.Model.Poco.Clan
             public bool edit_member_rights { get; set; }
             public bool manage_role { get; set; }
             public bool shop { get; set; }
+        }
+
+        public bool HasRights(PlayerRights right)
+        {
+            if (rights == null) return false;
+
+            return right switch
+            {
+                PlayerRights.CanEditHome => rights.edit_soulhome,
+                PlayerRights.CanEditClanData => rights.edit_clan_data,
+                PlayerRights.CanEditRights => rights.edit_member_rights,
+                PlayerRights.CanManagerRoles => rights.manage_role,
+                PlayerRights.CanManageShop => rights.shop,
+                _ => false
+            };
+        }
+
+        public void SetRights(PlayerRights right, bool value)
+        {
+            if (rights == null) rights = new ClanRights();
+
+            switch (right)
+            {
+                case PlayerRights.CanEditHome:
+                    rights.edit_soulhome = value;
+                    break;
+                case PlayerRights.CanEditClanData:
+                    rights.edit_clan_data = value;
+                    break;
+                case PlayerRights.CanEditRights:
+                    rights.edit_member_rights = value;
+                    break;
+                case PlayerRights.CanManagerRoles:
+                    rights.manage_role = value;
+                    break;
+                case PlayerRights.CanManageShop:
+                    rights.shop = value;
+                    break;
+            }
         }
     }
 }

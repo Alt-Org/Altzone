@@ -35,6 +35,7 @@ public class PollObject : MonoBehaviour
     [SerializeField] private Image TradeBackground;
     [SerializeField] private TextMeshProUGUI TradeText;
     [SerializeField] private TextMeshProUGUI Price;
+    [SerializeField] private GameObject PriceContainer;
 
     [Header("Poll Ended")]
     [SerializeField] private GameObject ResultObject;
@@ -303,6 +304,7 @@ public class PollObject : MonoBehaviour
     private void SetClanRoleData(ClanRolePollData clanRolePoll)
     {
         // avatarHandleGameObject.SetActive(true);
+        PriceContainer.gameObject.SetActive(false);
 
         string memberName = "Unknown";
         string roleName = "None";
@@ -335,6 +337,8 @@ public class PollObject : MonoBehaviour
             StartCoroutine(LoadAndApplyAvatar(targetMember));
         });
 
+        // So current solution is to just set rights to people, like editing and such
+
         if (PollDescriptionText != null)
         {
             string currentRoleText = string.IsNullOrEmpty(roleName) ? "None" : roleName;
@@ -351,6 +355,7 @@ public class PollObject : MonoBehaviour
             return;
         }
 
+        PriceContainer.gameObject.SetActive(true);
         Image.gameObject.SetActive(true);
         SetRibbonBackground.gameObject.SetActive(true);
         FurnitureInfo info = furniturePollData.Furniture.FurnitureInfo;

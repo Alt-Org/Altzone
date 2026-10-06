@@ -83,6 +83,28 @@ public class VoteManager : MonoBehaviour // Manages the display and interaction 
 
         bool ready = false;
 
+        // Remember to delete, test for seeing role rights
+        ClanData clanData = null;
+
+        Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, data =>
+        {
+            clanData = data;
+        });
+
+        string json = JsonUtility.ToJson(clanData, prettyPrint: true);
+        Debug.Log($"ServerClan Data:\n{json}");
+
+        foreach (var role in clanData.ClanRoles)
+        {
+            Debug.Log($"Role Name: {role.name}, Type: {role.clanRoleType}, ID: {role._id}");
+            if (role.rights != null)
+            {
+                Debug.Log($" -> Can Edit Home: {role.rights.edit_soulhome}");
+            }
+        }
+
+        // Ends here
+
         yield return StartCoroutine(ServerManager.Instance.GetClanVoteListFromServer(polls =>
         {
             Debug.Log("Server returned polls");
