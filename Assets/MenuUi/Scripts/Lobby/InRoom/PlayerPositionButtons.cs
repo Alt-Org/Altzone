@@ -11,7 +11,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
     /// </summary>
     public class PlayerPositionButtons : MonoBehaviour
     {
-        [SerializeField] private PlayerPos[] positions;
 
         private static readonly int[] PositionMap =
         {
@@ -20,12 +19,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void Start()
         {
-            for (var i = 0; i < positions.Length; ++i)
-            {
-                var capturedPositionIndex = i;
-                positions[i]._button.onClick.AddListener(() => SetPlayerPosition(capturedPositionIndex));
-                positions[i]._botToggle.onValueChanged.AddListener((value) => SetPositionBotToggle(capturedPositionIndex, value));
-            }
+            InRoomPlayerSlot.OnSetPositon += SetPlayerPosition;
+            InRoomPlayerSlot.OnSetBot += SetPositionBotToggle;
         }
 
         private void SetPlayerPosition(int positionIndex)

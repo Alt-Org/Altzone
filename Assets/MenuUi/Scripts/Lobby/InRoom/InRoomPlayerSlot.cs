@@ -6,6 +6,7 @@ using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
 using MenuUi.Scripts.Lobby.SelectedCharacters;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,7 +57,7 @@ public class InRoomPlayerSlot : MonoBehaviour
     /// </summary>
     /// <param name="selectedCharacterIds">The selected character ids to display.</param>
     /// <param name="stats">The stats for all three characters in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
-    public void SetCharacters(string playerId, string playerName, int[] selectedCharacterIds)
+    public void SetCharacters(string playerId, string playerName, int[] selectedCharacterIds, bool ownSlot, bool isMasterClient)
     {
         if (selectedCharacterIds == null)
         {
@@ -68,11 +69,23 @@ public class InRoomPlayerSlot : MonoBehaviour
             _slotButton.GetComponent<Image>().sprite = _freePlayerSprite;
             _botButton.GetComponent<Image>().sprite = _botSprite;
             _botButton.gameObject.SetActive(true);
+            _readyToggle.gameObject.SetActive(false);
+            _botButton.SetIsOnWithoutNotify(false);
             return;
         }
 
         _playerId = playerId;
         _playerName.SetText(playerName);
+        if (ownSlot)
+        {
+            _playerName.GetComponent<TMP_Text>().color = Color.blue;
+        }
+        else
+        {
+            _playerName.GetComponent<TMP_Text>().color = Color.white;
+        }
+            _readyToggle.gameObject.SetActive(true);
+        _botButton.SetIsOnWithoutNotify(false);
 
         if (selectedCharacterIds[0] == (int)CharacterID.None)
         {
@@ -102,7 +115,8 @@ public class InRoomPlayerSlot : MonoBehaviour
         _slotButton.GetComponent<Image>().sprite = _botSprite;
         _botButton.GetComponent<Image>().sprite = _freePlayerSprite;
         _botButton.gameObject.SetActive(true);
-
+        _readyToggle.gameObject.SetActive(false);
+        _botButton.SetIsOnWithoutNotify(true);
     }
 
     private void ToggleBot(bool value)
