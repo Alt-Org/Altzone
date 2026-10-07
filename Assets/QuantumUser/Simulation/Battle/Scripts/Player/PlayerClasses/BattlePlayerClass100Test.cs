@@ -37,12 +37,12 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
         ///
-        /// <returns>Default <see cref="Battle.QSimulation.Player.BattlePlayerClassManager.CreationParameters">CreationParameters</see></returns>
-        public override unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, EntityRef playerEntity)
+        /// <returns>Default <see cref="Battle.QSimulation.Player.BattlePlayerClassManager.SetupParameters">CreationParameters</see></returns>
+        public override unsafe BattlePlayerClassManager.SetupParameters OnCreate(Frame f, BattlePlayerHandle playerHandle)
         {
-            GetClassData(f, playerEntity)->ClassState = BattlePlayerClass100State.Unused;
+            GetClassData(f, playerHandle.LoadedCharacterEntityRef)->ClassState = BattlePlayerClass100State.Unused;
 
-            return BattlePlayerClassManager.CreationParameters.Default;
+            return BattlePlayerClassManager.SetupParameters.Default;
         }
 
         /// <summary>
@@ -54,12 +54,12 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference to the player.</param>
         /// <param name="selected">Is the character selected or not.</param>
-        public override unsafe void OnGameStart(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, EntityRef playerEntity, bool selected)
+        public override unsafe void OnGameStart(Frame f, BattlePlayerHandle playerHandle, bool selected)
         {
             if (!BattleParameters.GetIsTestFlipperGame(f) && selected)
             {
                 BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
-                BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
+                BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerHandle.LoadedCharacterEntityRef);
 
                 StateSetPlacement(f, spec, classData);
             }
@@ -72,21 +72,21 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="spawnEventType">The type of "spawn" event.</param>
         /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerCharacterData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
-        public override unsafe void OnSpawn(Frame f, BattlePlayerClassManager.SpawnEventType spawnEventType, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe void OnSpawn(Frame f, BattlePlayerClassManager.SpawnEventType spawnEventType, BattlePlayerHandle playerHandle)
         {
             if (spawnEventType is BattlePlayerClassManager.SpawnEventType.Select or BattlePlayerClassManager.SpawnEventType.SpawnSelect)
             {
                 BattlePlayerClass100QSpec spec                = BattleQConfig.GetBattlePlayerClass100Spec(f);
-                BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
+                BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerHandle.LoadedCharacterEntityRef);
 
                 if (BattleParameters.GetIsTestFlipperGame(f) && classData->ClassState == BattlePlayerClass100State.Unused)
                 {
                     StateSetPlacement(f, spec, classData);
                 }
 
-                f.Events.BattleSpecialJoystickVisibilityChange(playerData->Slot, true);
+                f.Events.BattleSpecialJoystickVisibilityChange(playerHandle.PlayerData.Slot, true);
             }
         }
 
@@ -97,13 +97,13 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="despawnEventType">The type of "despawn" event.</param>
         /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerCharacterData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
-        public override unsafe void OnDespawn(Frame f, BattlePlayerClassManager.DespawnEventType despawnEventType, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe void OnDespawn(Frame f, BattlePlayerClassManager.DespawnEventType despawnEventType, BattlePlayerHandle playerHandle)
         {
-            StateSetPlaced(f, playerData, GetClassData(f, playerEntity));
+            StateSetPlaced(f, playerHandle.LoadedCharacterData, GetClassData(f, playerHandle.LoadedCharacterEntityRef));
 
-            f.Events.BattleSpecialJoystickVisibilityChange(playerData->Slot, false);
+            f.Events.BattleSpecialJoystickVisibilityChange(playerHandle.PlayerData.Slot, false);
         }
 
         /// <summary>
@@ -112,12 +112,12 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerCharacterData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
         /// <param name="specialInput">Pointer to special input (unused)</param>
-        public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
+        public override unsafe void OnUpdate(Frame f, BattlePlayerHandle playerHandle, BattleSpecialInput* specialInput)
         {
-            BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
+            BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerHandle.LoadedCharacterEntityRef);
 
             switch (classData->ClassState)
             {
@@ -126,22 +126,22 @@ namespace Battle.QSimulation.Player
 
                 case BattlePlayerClass100State.Placement:
                     if (classData->PlacementTimer.IsRunning(f)) return;
-                    StateSetPlaced(f, playerData, classData);
+                    StateSetPlaced(f, playerHandle.LoadedCharacterData, classData);
                     break;
 
                 case BattlePlayerClass100State.Placed:
-                    switch (playerData->CharacterId)
+                    switch (playerHandle.LoadedCharacterData->Id)
                     {
                         case BattlePlayerCharacterID.Character101:
                         case BattlePlayerCharacterID.Character103:
                         case BattlePlayerCharacterID.Character105:
-                            HandleAiming(f, playerData, playerEntity, specialInput);
+                            HandleAiming(f, playerHandle, specialInput);
                             break;
 
                         case BattlePlayerCharacterID.Character102:
                         case BattlePlayerCharacterID.Character104:
                         case BattlePlayerCharacterID.Character106:
-                            HandleAutoAim(f, playerEntity, specialInput);
+                            HandleAutoAim(f, playerHandle, specialInput);
                             break;
                     }
                     break;
@@ -172,7 +172,7 @@ namespace Battle.QSimulation.Player
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe void StateSetPlaced(Frame f, BattlePlayerCharacterDataQComponent* playerData, BattlePlayerClass100DataQComponent* classData)
         {
-            playerData->DisableMovement = true;
+            playerData->AttributeDisableMovement = true;
             classData->ClassState       = BattlePlayerClass100State.Placed;
         }
 
@@ -184,19 +184,18 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference to the player.</param>
         /// <param name="specialInput">Pointer to special input.</param>
-        private unsafe void HandleAiming(Frame f, BattlePlayerCharacterDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
+        private unsafe void HandleAiming(Frame f, BattlePlayerHandle playerHandle, BattleSpecialInput* specialInput)
         {
             BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
             //BattleDebugLogger.WarningFormat(f, nameof(BattlePlayerClass100), "Joystick ( state: {0}, Direction: {1} )", specialInput->JoystickState, specialInput->JoystickValue);
 
-            Transform2D*                        playerTransform = f.Unsafe.GetPointer<Transform2D>(playerEntity);
-            BattlePlayerClass100DataQComponent* classData       = GetClassData(f, playerEntity);
+            BattlePlayerClass100DataQComponent* classData       = GetClassData(f, playerHandle.LoadedCharacterEntityRef);
 
             bool joystickDown         = specialInput->JoystickState != BattleJoystickState.Up;
             bool projectileOnCooldown = classData->CooldownTimer.IsRunning(f);
 
             // Update view
-            if (joystickDown && !projectileOnCooldown) f.Events.BattlePlayerClass100AimIndicatorUpdate(playerEntity, playerData->Slot, Show: true, specialInput->JoystickValue);
+            if (joystickDown && !projectileOnCooldown) f.Events.BattlePlayerClass100AimIndicatorUpdate(playerHandle.LoadedCharacterEntityRef, playerHandle.PlayerData.Slot, Show: true, specialInput->JoystickValue);
 
             // Exit if no changes in joystick state
             if (joystickDown == classData->JoystickDownPrevious) goto Exit;
@@ -211,7 +210,7 @@ namespace Battle.QSimulation.Player
                 // Handle joystick up
 
                 // Update view
-                f.Events.BattlePlayerClass100AimIndicatorUpdate(playerEntity, playerData->Slot, Show: false, FPVector2.Zero);
+                f.Events.BattlePlayerClass100AimIndicatorUpdate(playerHandle.LoadedCharacterEntityRef, playerHandle.PlayerData.Slot, Show: false, FPVector2.Zero);
 
                 // exit if projectile ability is on cooldown
                 if (projectileOnCooldown) goto Exit;
@@ -220,8 +219,8 @@ namespace Battle.QSimulation.Player
 
                 FPVector2 direction = isJoystickTap ? FPVector2.Up : classData->JoystickValuePrevious.Normalized;
 
-                if (playerData->TeamNumber == BattleTeamNumber.TeamBeta) direction = FPVector2.Rotate(direction, FP.Rad_180);
-                FPVector2 position = playerTransform->Position + direction * spec.ProjectileSpawnDistance;
+                if (playerHandle.PlayerData.Team == BattleTeamNumber.TeamBeta) direction = FPVector2.Rotate(direction, FP.Rad_180);
+                FPVector2 position = playerHandle.LoadedCharacterTransform->Position + direction * spec.ProjectileSpawnDistance;
                 BattlePlayerClass100ProjectileQSystem.Create(f, f.FindAsset(spec.ProjectileEntityPrototype), position, direction, spec.ProjectileSpeed);
 
                 // start projectile cooldown
@@ -240,16 +239,13 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerEntity">Entity reference to the player.</param>
         /// <param name="specialInput">Pointer to special input.</param>
-        private unsafe void HandleAutoAim(Frame f, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
+        private unsafe void HandleAutoAim(Frame f, BattlePlayerHandle playerHandle, BattleSpecialInput* specialInput)
         {
             BattlePlayerClass100QSpec spec = BattleQConfig.GetBattlePlayerClass100Spec(f);
 
-            Transform2D* playerTransform                  = f.Unsafe.GetPointer<Transform2D>(playerEntity);
-            BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerEntity);
+            BattlePlayerClass100DataQComponent* classData = GetClassData(f, playerHandle.LoadedCharacterEntityRef);
 
-            EntityRef projectileEntityRef          = BattleProjectileQSystem.GetProjectileEntityRef(f);
-            Transform2D* projectileTransform       = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
-            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
+            BattleProjectileHandle projectile = BattleProjectileQSystem.GetProjectileHandle(f);
 
             bool joystickDown = specialInput->JoystickState != BattleJoystickState.Up;
             bool projectileOnCooldown = classData->CooldownTimer.IsRunning(f);
@@ -271,9 +267,9 @@ namespace Battle.QSimulation.Player
 
                 bool isJoystickTap = classData->JoystickTimer.IsRunning(f) && classData->JoystickValuePrevious.Magnitude < spec.JoystickTapDistanceMax;
 
-                FPVector2 targetPosition = projectileTransform->Position;
-                FPVector2 targetVelocity = projectile->Direction * projectile->Speed;
-                FPVector2 playerPosition = playerTransform->Position;
+                FPVector2 targetPosition = projectile.Transform->Position;
+                FPVector2 targetVelocity = projectile.Data->Direction * projectile.Data->Speed;
+                FPVector2 playerPosition = playerHandle.LoadedCharacterTransform->Position;
                 FPVector2 direction      = (targetPosition - playerPosition).Normalized;
 
                 FP time = FP._2;
@@ -281,7 +277,7 @@ namespace Battle.QSimulation.Player
                 FPVector2 spawnPosition = playerPosition + direction * spec.ProjectileSpawnDistance;
                 FPVector2 targetRelativePosition = targetPosition - spawnPosition;
 
-                FP a = projectile->Speed * projectile->Speed - spec.ProjectileSpeed * spec.ProjectileSpeed;
+                FP a = projectile.Data->Speed * projectile.Data->Speed - spec.ProjectileSpeed * spec.ProjectileSpeed;
                 FP b = FPVector2.Dot(targetRelativePosition, targetVelocity) * FP._2;
                 FP c = targetRelativePosition.SqrMagnitude;
 
