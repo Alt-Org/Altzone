@@ -37,11 +37,17 @@ namespace MenuUi.Scripts.Lobby.InLobby
             else _backgroundImage.color = _mainColour;
 
             _roomName.text = roomInfo.Name;
-            _roomPlayerCount.text = $"{roomInfo.PlayerCount}/4";
+            if (altColour) _roomName.color = Color.black;
+            else _roomName.color = Color.white;
+                _roomPlayerCount.text = $"{roomInfo.PlayerCount}/4";
+            if (altColour) _roomPlayerCount.color = Color.black;
+            else _roomPlayerCount.color = Color.white;
 
-            if(roomInfo.CustomProperties.TryGetValue(PhotonBattleRoom.GameTypeKey, out int gameType))
+            if (roomInfo.CustomProperties.TryGetValue(PhotonBattleRoom.GameTypeKey, out int gameType))
             {
                 _roomGameType.text = ((GameType)gameType).GetString();
+                if (altColour) _roomGameType.color = Color.black;
+                else _roomGameType.color = Color.white;
             }
 
             bool hasPassword = roomInfo.CustomProperties.ContainsKey(PhotonBattleRoom.PasswordKey);
