@@ -365,8 +365,8 @@ namespace Battle.View.Game
             if (Utils.TryGetQuantumFrame(out Frame f))
             {
                 localPlayerRef = QGame.GetLocalPlayers()[0];
-                LocalPlayerSlot = BattlePlayerManager.PlayerHandle.GetSlot(f, localPlayerRef);
-                LocalPlayerTeam = BattlePlayerManager.PlayerHandle.GetTeamNumber(LocalPlayerSlot);
+                LocalPlayerSlot = BattlePlayerManager.GetSlot(f, localPlayerRef);
+                LocalPlayerTeam = BattlePlayerManager.GetTeam(LocalPlayerSlot);
             }
 
             BattleDebugOverlayLink.SetLocalPlayerSlot(LocalPlayerSlot);
@@ -401,7 +401,7 @@ namespace Battle.View.Game
             if (dataGiveUpButton != null) _uiController.GiveUpButtonHandler.MovableUiElement.SetData(dataGiveUpButton);
 
             RuntimePlayer localPlayerData = f.GetPlayerData(localPlayerRef);
-            RuntimePlayer localTeammateData = f.GetPlayerData(BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, LocalPlayerSlot).PlayerRef);
+            RuntimePlayer localTeammateData = f.GetPlayerData(BattlePlayerManager.GetPlayerData(f, BattlePlayerManager.GetTeammateSlot(LocalPlayerSlot)).PRef);
 
             // Setting local player info
             _uiController.PlayerInfoHandler.SetInfo(
