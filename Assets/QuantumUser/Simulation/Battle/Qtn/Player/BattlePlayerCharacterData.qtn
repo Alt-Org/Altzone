@@ -9,7 +9,6 @@ enum BattlePlayerSpawnBehaviour
 
 component BattlePlayerCharacterDataQComponent
 {
-    // Character's IDs
     int                        Number;
     BattlePlayerCharacterID    Id;
     BattlePlayerCharacterClass Class;
