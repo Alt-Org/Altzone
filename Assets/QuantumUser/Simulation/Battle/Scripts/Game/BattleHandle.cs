@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using Battle.QSimulation.Player;
+using Battle.QSimulation.Projectile;
 using Photon.Deterministic;
 using Quantum;
 
@@ -215,6 +215,17 @@ namespace Battle.QSimulation.Game
             handle.ERef      = link->ERef;
             handle.Data      = f.Unsafe.GetPointer<BattleProjectileQComponent>(link->ERef);
             handle.Transform = f.Unsafe.GetPointer<Transform2D>(link->ERef);
+
+            return handle;
+        }
+
+        public static BattleProjectileHandle Create(BattleProjectileQSystem.Filter filter)
+        {
+            BattleProjectileHandle handle = new();
+
+            handle.ERef      = filter.Entity;
+            handle.Data      = filter.Projectile;
+            handle.Transform = filter.Transform;
 
             return handle;
         }
