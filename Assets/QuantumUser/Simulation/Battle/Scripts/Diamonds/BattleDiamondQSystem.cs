@@ -43,13 +43,13 @@ namespace Battle.QSimulation.Diamond
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
-        /// <param name="soulWallCollisionData">Collision data related to the soul wall.</param>
-        public static void OnProjectileHitSoulWall(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.SoulWallCollisionData* soulWallCollisionData)
+        /// <param name="soulWall">Collision data related to the soul wall.</param>
+        public static void OnProjectileHitSoulWall(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleSoulWallQComponent* soulWall)
         {
-            if (projectileCollisionData->Projectile->IsHeld) return;
+            if (projectileCollisionData->Projectile.Data->IsHeld) return;
             BattleDiamondQSpec diamondSpec = BattleQConfig.GetDiamondSpec(f);
 
-            CreateDiamonds(f, f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->OtherEntityRef)->Position, soulWallCollisionData->SoulWall->Normal, diamondSpec);
+            CreateDiamonds(f, f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->OtherEntityRef)->Position, soulWall->Normal, diamondSpec);
         }
 
         /// <summary>
@@ -106,30 +106,18 @@ namespace Battle.QSimulation.Diamond
         /// <param name="diamondEntity">EntityRef of the diamond.</param>
         /// <param name="playerHitbox">Pointer to the playerHitbox component.</param>
         /// <param name="playerEntity">EntityRef of the player.</param>
-        public void BattleOnDiamondHitPlayer(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity)
+        public void BattleOnDiamondHitPlayer(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, EntityRef playerEntity)
         {
             if (diamond->IsTraveling) return;
 
             BattleDiamondCounterQSingleton* diamondCounter = f.Unsafe.GetPointerSingleton<BattleDiamondCounterQSingleton>();
 
-            BattlePlayerCharacterDataQComponent* playerData = null;
+            BattlePlayerHandle playerHandle = BattlePlayerHandle.Create(f, playerEntity);
 
-            switch (playerHitbox->HitboxType)
-            {
-                case BattlePlayerHitboxType.Character:
-                    playerData = ((BattlePlayerEntityRef)playerHitbox->ParentEntityRef).GetDataQComponent(f);
-                    break;
-
-                case BattlePlayerHitboxType.Shield:
-                    BattlePlayerShieldDataQComponent* shieldData = ((BattlePlayerShieldEntityRef)playerHitbox->ParentEntityRef).GetDataQComponent(f);
-                    playerData = shieldData->PlayerEntityRef.GetDataQComponent(f);
-                    break;
-            }
-
-            f.Events.BattlePlaySoundFxForPlayer(playerData->Slot, BattleSoundFX.DiamondPickUp);
+            f.Events.BattlePlaySoundFxForPlayer(playerHandle.PlayerData.Slot, BattleSoundFX.DiamondPickUp);
 
             // increase right team's diamondcounter
-            if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha) diamondCounter->AlphaDiamonds++;
+            if (playerHandle.PlayerData.Team == BattleTeamNumber.TeamAlpha) diamondCounter->AlphaDiamonds++;
             else diamondCounter->BetaDiamonds++;
 
             f.Destroy(diamondEntity);
