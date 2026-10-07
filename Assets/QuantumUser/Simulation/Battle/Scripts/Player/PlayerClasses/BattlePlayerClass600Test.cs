@@ -120,8 +120,6 @@ namespace Battle.QSimulation.Player
 
             BattleTeamNumber teamNumber = playerHandle.PlayerData.Team;
 
-            BattlePlayerShieldDataQComponent* shieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(playerHandle.LoadedCharacterData->AttachedShieldEntityRef);
-
             FPVector2 direction = FPVector2.Zero;
 
             switch (teamNumber)
