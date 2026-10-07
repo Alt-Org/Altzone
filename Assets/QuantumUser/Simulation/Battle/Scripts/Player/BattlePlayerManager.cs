@@ -841,7 +841,7 @@ namespace Battle.QSimulation.Player
             {
                 BattlePlayerCharacterShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
 
-                BattleEntityManager.Return(f, playerHandle.PlayerData.Low_Level.PlayerShieldEntityGroupIDs[playerHandle.PlayerData.SelectedCharacterNumber]);
+                BattleEntityManager.Return(f, playerHandle.PlayerData.Low_Level.ShieldEntityGroupIDs[playerHandle.PlayerData.SelectedCharacterNumber]);
             }
 
             // update data

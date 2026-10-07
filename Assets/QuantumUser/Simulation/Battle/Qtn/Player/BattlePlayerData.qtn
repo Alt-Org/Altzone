@@ -1,11 +1,12 @@
 struct BattlePlayerData
 {
-    PlayerRef             PRef;
-    BattlePlayerSlot      Slot;
-    BattleTeamNumber      Team;
+    PlayerRef        PRef;
+    BattlePlayerSlot Slot;
+    BattleTeamNumber Team;
+    bool             IsBot;
+    bool             IsAbandoned;
+
     BattlePlayerPlayState PlayState;
-    bool                  IsBot;
-    bool                  IsAbandoned;
 
     bool StateAllowCharacterSwapping;
     bool StatePlayerGiveUp;
@@ -15,5 +16,6 @@ struct BattlePlayerData
     int                                                  SelectedCharacterNumber;
     BattleEntityID                                       CharacterEntityGroupID;
     array<FPVector2>[BATTLE_PLAYER_CHARACTER_COUNT]      CharacterDefaultSpawnPositions;
-    array<BattleEntityID>[BATTLE_PLAYER_CHARACTER_COUNT] PlayerShieldEntityGroupIDs;
+
+    array<BattleEntityID>[BATTLE_PLAYER_CHARACTER_COUNT] ShieldEntityGroupIDs;
 }

@@ -491,9 +491,9 @@ namespace Quantum.Prototypes {
     public PlayerRef PRef;
     public Quantum.QEnum32<BattlePlayerSlot> Slot;
     public Quantum.QEnum32<BattleTeamNumber> Team;
-    public Quantum.QEnum32<BattlePlayerPlayState> PlayState;
     public QBoolean IsBot;
     public QBoolean IsAbandoned;
+    public Quantum.QEnum32<BattlePlayerPlayState> PlayState;
     public QBoolean StateAllowCharacterSwapping;
     public QBoolean StatePlayerGiveUp;
     public Quantum.Prototypes.FrameTimerPrototype RespawnTimer;
@@ -502,15 +502,15 @@ namespace Quantum.Prototypes {
     [ArrayLengthAttribute(3)]
     public FPVector2[] CharacterDefaultSpawnPositions = new FPVector2[3];
     [ArrayLengthAttribute(3)]
-    public Quantum.Prototypes.BattleEntityIDPrototype[] PlayerShieldEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[3];
+    public Quantum.Prototypes.BattleEntityIDPrototype[] ShieldEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[3];
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerData result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattlePlayerData result, in PrototypeMaterializationContext context = default) {
         result.PRef = this.PRef;
         result.Slot = this.Slot;
         result.Team = this.Team;
-        result.PlayState = this.PlayState;
         result.IsBot = this.IsBot;
         result.IsAbandoned = this.IsAbandoned;
+        result.PlayState = this.PlayState;
         result.StateAllowCharacterSwapping = this.StateAllowCharacterSwapping;
         result.StatePlayerGiveUp = this.StatePlayerGiveUp;
         this.RespawnTimer.Materialize(frame, ref result.RespawnTimer, in context);
@@ -519,8 +519,8 @@ namespace Quantum.Prototypes {
         for (int i = 0, count = PrototypeValidator.CheckLength(CharacterDefaultSpawnPositions, 3, in context); i < count; ++i) {
           *result.CharacterDefaultSpawnPositions.GetPointer(i) = this.CharacterDefaultSpawnPositions[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerShieldEntityGroupIDs, 3, in context); i < count; ++i) {
-          this.PlayerShieldEntityGroupIDs[i].Materialize(frame, ref *result.PlayerShieldEntityGroupIDs.GetPointer(i), in context);
+        for (int i = 0, count = PrototypeValidator.CheckLength(ShieldEntityGroupIDs, 3, in context); i < count; ++i) {
+          this.ShieldEntityGroupIDs[i].Materialize(frame, ref *result.ShieldEntityGroupIDs.GetPointer(i), in context);
         }
         MaterializeUser(frame, ref result, in context);
     }

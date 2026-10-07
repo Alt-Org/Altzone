@@ -1003,12 +1003,12 @@ namespace Quantum {
     public BattlePlayerSlot Slot;
     [FieldOffset(8)]
     public BattleTeamNumber Team;
-    [FieldOffset(0)]
-    public BattlePlayerPlayState PlayState;
     [FieldOffset(24)]
     public QBoolean IsBot;
     [FieldOffset(20)]
     public QBoolean IsAbandoned;
+    [FieldOffset(0)]
+    public BattlePlayerPlayState PlayState;
     [FieldOffset(28)]
     public QBoolean StateAllowCharacterSwapping;
     [FieldOffset(32)]
@@ -1024,15 +1024,15 @@ namespace Quantum {
     private fixed Byte _CharacterDefaultSpawnPositions_[48];
     [FieldOffset(44)]
     [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 3)]
-    private fixed Byte _PlayerShieldEntityGroupIDs_[24];
+    private fixed Byte _ShieldEntityGroupIDs_[24];
     public FixedArray<FPVector2> CharacterDefaultSpawnPositions {
       get {
         fixed (byte* p = _CharacterDefaultSpawnPositions_) { return new FixedArray<FPVector2>(p, 16, 3); }
       }
     }
-    public FixedArray<BattleEntityID> PlayerShieldEntityGroupIDs {
+    public FixedArray<BattleEntityID> ShieldEntityGroupIDs {
       get {
-        fixed (byte* p = _PlayerShieldEntityGroupIDs_) { return new FixedArray<BattleEntityID>(p, 8, 3); }
+        fixed (byte* p = _ShieldEntityGroupIDs_) { return new FixedArray<BattleEntityID>(p, 8, 3); }
       }
     }
     public override Int32 GetHashCode() {
@@ -1041,16 +1041,16 @@ namespace Quantum {
         hash = hash * 31 + PRef.GetHashCode();
         hash = hash * 31 + (Int32)Slot;
         hash = hash * 31 + (Int32)Team;
-        hash = hash * 31 + (Int32)PlayState;
         hash = hash * 31 + IsBot.GetHashCode();
         hash = hash * 31 + IsAbandoned.GetHashCode();
+        hash = hash * 31 + (Int32)PlayState;
         hash = hash * 31 + StateAllowCharacterSwapping.GetHashCode();
         hash = hash * 31 + StatePlayerGiveUp.GetHashCode();
         hash = hash * 31 + RespawnTimer.GetHashCode();
         hash = hash * 31 + SelectedCharacterNumber.GetHashCode();
         hash = hash * 31 + CharacterEntityGroupID.GetHashCode();
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CharacterDefaultSpawnPositions);
-        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerShieldEntityGroupIDs);
+        hash = hash * 31 + HashCodeUtils.GetArrayHashCode(ShieldEntityGroupIDs);
         return hash;
       }
     }
@@ -1066,7 +1066,7 @@ namespace Quantum {
         QBoolean.Serialize(&p->StateAllowCharacterSwapping, serializer);
         QBoolean.Serialize(&p->StatePlayerGiveUp, serializer);
         Quantum.BattleEntityID.Serialize(&p->CharacterEntityGroupID, serializer);
-        FixedArray.Serialize(p->PlayerShieldEntityGroupIDs, serializer, Statics.SerializeBattleEntityID);
+        FixedArray.Serialize(p->ShieldEntityGroupIDs, serializer, Statics.SerializeBattleEntityID);
         FrameTimer.Serialize(&p->RespawnTimer, serializer);
         FixedArray.Serialize(p->CharacterDefaultSpawnPositions, serializer, Statics.SerializeFPVector2);
     }

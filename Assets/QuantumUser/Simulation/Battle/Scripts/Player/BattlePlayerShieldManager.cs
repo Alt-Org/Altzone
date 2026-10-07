@@ -177,7 +177,7 @@ namespace Battle.QSimulation.Player
 
             BattleEntityID shieldEntityGroupID = BattleEntityManager.RegisterCompound(f, shieldEntities);
 
-            playerData.Low_Level.PlayerShieldEntityGroupIDs[playerCharacterNumber] = shieldEntityGroupID;
+            playerData.Low_Level.ShieldEntityGroupIDs[playerCharacterNumber] = shieldEntityGroupID;
 
             return shieldEntities.Length;
         }
@@ -456,7 +456,7 @@ namespace Battle.QSimulation.Player
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattlePlayerCharacterShieldHandle GetShield(Frame f, BattlePlayerData.Ref playerData, int characterNumber, int shieldNumber, bool updateViewPlayState)
         {
-            BattleEntityID shieldGroupID = playerData.Low_Level.PlayerShieldEntityGroupIDs[characterNumber];
+            BattleEntityID shieldGroupID = playerData.Low_Level.ShieldEntityGroupIDs[characterNumber];
             return BattlePlayerCharacterShieldHandle.Create(f, BattleEntityManager.Get(f, shieldGroupID, shieldNumber, updateViewPlayState));
         }
 
@@ -479,7 +479,7 @@ namespace Battle.QSimulation.Player
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void ReturnShieldEntityRef(Frame f, BattlePlayerData.Ref playerData, int characterNumber, int shieldNumber)
         {
-            BattleEntityID shieldGroupID = playerData.Low_Level.PlayerShieldEntityGroupIDs[characterNumber];
+            BattleEntityID shieldGroupID = playerData.Low_Level.ShieldEntityGroupIDs[characterNumber];
             BattleEntityManager.Return(f, shieldGroupID, shieldNumber);
         }
 
