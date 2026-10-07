@@ -89,7 +89,7 @@ namespace Battle.QSimulation.Game
             if (gameSession->State != BattleGameState.GameOver)
             {
                 Debug.LogWarningFormat("Player: {0} has disconnected", playerRef);
-                BattlePlayerManager.MarkAbandoned(f, playerRef);
+                BattlePlayerManager.MarkPlayerAbandoned(f, playerRef);
             }
         }
 
@@ -228,7 +228,7 @@ namespace Battle.QSimulation.Game
             BattleSoulWallQSpec soulWallSpec = BattleQConfig.GetSoulWallSpec(f);
 
             BattleSoulWallQSystem.CreateSoulWalls(f, battleArenaSpec, soulWallSpec);
-            BattlePlayerManager.CreatePlayers(f);
+            BattlePlayerManager.CreatePlayerCharacters(f);
             BattleProjectileQSystem.CreateProjectile(f);
 
             BattlePlayerQSystem.SpawnPlayers(f);
