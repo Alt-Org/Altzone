@@ -467,7 +467,7 @@ namespace Battle.QSimulation.Projectile
         /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="shieldCollisionData">Collision data related to the shield.</param>
         /// <param name="normal">The direction in which the projectile should be sent.</param>
-        private static bool ProjectileHitPlayerShield(Frame f, ProjectileCollisionData* projectileCollisionData, out FPVector2 normal)
+        private static bool ProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, out FPVector2 normal)
         {
             BattlePlayerHandle                playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
             BattlePlayerCharacterShieldHandle shieldHandle = BattlePlayerCharacterShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);

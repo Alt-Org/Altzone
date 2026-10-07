@@ -6,6 +6,7 @@
 //#define DEBUG_PLAYER_STAT_OVERRIDE
 
 // System usings
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 // Unity usings
