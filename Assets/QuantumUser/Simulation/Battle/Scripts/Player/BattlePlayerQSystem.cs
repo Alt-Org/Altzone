@@ -749,14 +749,14 @@ namespace Battle.QSimulation.Player
 
             if (!updateData.PlayerHandle.LoadedCharacterData->AbilityCooldownSec.IsRunning(f) && updateData.PlayerHandle.LoadedCharacterData->AbilityActivateBufferSec.IsRunning(f))
             {
-                AbilityActivate(f, updateData.PlayerHandle.LoadedCharacterData, updateData.PlayerHandle.LoadedCharacterTransform);
+                AbilityActivate(f, updateData.PlayerHandle);
                 updateMovement = false;
             }
 
             if (updateMovement) BattlePlayerMovementController.UpdateMovement(f, updateData.PlayerHandle, input);
         }
 
-        private void AbilityActivate(Frame f, BattlePlayerCharacterDataQComponent* playerData, Transform2D* playerTransform)
+        private void AbilityActivate(Frame f, BattlePlayerHandle playerHandle)
         {
             //{ Ability test
             /*
@@ -782,7 +782,7 @@ namespace Battle.QSimulation.Player
             */
             //} Ability test
 
-            playerData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
+            playerHandle.LoadedCharacterData->AbilityCooldownSec = FrameTimer.FromSeconds(f, FP._3);
         }
     }
 }
