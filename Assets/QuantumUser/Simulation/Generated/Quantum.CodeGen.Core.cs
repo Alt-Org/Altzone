@@ -2115,22 +2115,6 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct BattlePlayerShieldManagerDataQSingleton : Quantum.IComponentSingleton {
-    public const Int32 SIZE = 4;
-    public const Int32 ALIGNMENT = 4;
-    [FieldOffset(0)]
-    private fixed Byte _alignment_padding_[4];
-    public override Int32 GetHashCode() {
-      unchecked { 
-        var hash = 5279;
-        return hash;
-      }
-    }
-    public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (BattlePlayerShieldManagerDataQSingleton*)ptr;
-    }
-  }
-  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattleProjectileLinkQComponent : Quantum.IComponent {
     public const Int32 SIZE = 8;
     public const Int32 ALIGNMENT = 8;
@@ -2400,8 +2384,6 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Quantum.BattlePlayerShieldDataQComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattlePlayerShieldDataTemplateQComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattlePlayerShieldDataTemplateQComponent>();
-      BuildSignalsArrayOnComponentAdded<Quantum.BattlePlayerShieldManagerDataQSingleton>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.BattlePlayerShieldManagerDataQSingleton>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleProjectileLinkQComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleProjectileLinkQComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleProjectileQComponent>();
@@ -2574,7 +2556,6 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattlePlayerShieldDataQComponent), Quantum.BattlePlayerShieldDataQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerShieldDataTemplateQComponent), Quantum.BattlePlayerShieldDataTemplateQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerShieldEntityRef), Quantum.BattlePlayerShieldEntityRef.SIZE);
-      typeRegistry.Register(typeof(Quantum.BattlePlayerShieldManagerDataQSingleton), Quantum.BattlePlayerShieldManagerDataQSingleton.SIZE);
       typeRegistry.Register(typeof(Quantum.BattlePlayerSlot), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerSpawnBehaviour), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerStats), Quantum.BattlePlayerStats.SIZE);
@@ -2670,7 +2651,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 26)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 25)
         .AddBuiltInComponents()
         .Add<Quantum.BattleArenaBorderQComponent>(Quantum.BattleArenaBorderQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleCollisionColliderQComponent>(Quantum.BattleCollisionColliderQComponent.Serialize, null, null, ComponentFlags.None)
@@ -2693,7 +2674,6 @@ namespace Quantum {
         .Add<Quantum.BattlePlayerManagerDataQSingleton>(Quantum.BattlePlayerManagerDataQSingleton.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.BattlePlayerShieldDataQComponent>(Quantum.BattlePlayerShieldDataQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattlePlayerShieldDataTemplateQComponent>(Quantum.BattlePlayerShieldDataTemplateQComponent.Serialize, null, Quantum.BattlePlayerShieldDataTemplateQComponent.OnRemoved, ComponentFlags.None)
-        .Add<Quantum.BattlePlayerShieldManagerDataQSingleton>(Quantum.BattlePlayerShieldManagerDataQSingleton.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.BattleProjectileLinkQComponent>(Quantum.BattleProjectileLinkQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleProjectileQComponent>(Quantum.BattleProjectileQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattleProjectileSystemDataQSingleton>(Quantum.BattleProjectileSystemDataQSingleton.Serialize, null, null, ComponentFlags.Singleton)

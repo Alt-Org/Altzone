@@ -682,21 +682,6 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerShieldManagerDataQSingleton))]
-  public unsafe partial class BattlePlayerShieldManagerDataQSingletonPrototype : ComponentPrototype<Quantum.BattlePlayerShieldManagerDataQSingleton> {
-    [HideInInspector()]
-    public Int32 _empty_prototype_dummy_field_;
-    partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerShieldManagerDataQSingleton result, in PrototypeMaterializationContext context);
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.BattlePlayerShieldManagerDataQSingleton component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.BattlePlayerShieldManagerDataQSingleton result, in PrototypeMaterializationContext context = default) {
-        MaterializeUser(frame, ref result, in context);
-    }
-  }
-  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerStats))]
   public unsafe partial class BattlePlayerStatsPrototype : StructPrototype {
     public FP Speed;
