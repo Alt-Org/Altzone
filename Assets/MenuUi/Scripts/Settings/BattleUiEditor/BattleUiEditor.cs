@@ -321,38 +321,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float unsafeAreaHeight = PanelScaler.CalculateUnsafeAreaHeight();
 
             // Calculating max y anchor for the editor
-            float anchorMaxY = 1 - TopButtonsHeight - unsafeAreaHeight;
-
-            // // Calculating editor aspect ratio and size
-            // float editorAspectRatio = (float)Screen.width / Screen.height;
-            // //float editorAspectRatio = 9f / 19f;
-            // float editorHeight = Screen.height * anchorMaxY;
-            // float editorWidth = editorHeight * editorAspectRatio;
-            float editorWidth = Screen.width * anchorMaxY;
-
-            // Calculating x anchors
-            float widthAnchorValue = editorWidth / Screen.width;
-            float anchorMinX = (1 - widthAnchorValue) * 0.5f;
-            float anchorMaxX = widthAnchorValue + anchorMinX;
+            float anchorMaxY = 1f - unsafeAreaHeight;
 
             // Setting editor anchors
-            EditorRectTransform.anchorMin = new(anchorMinX, 0);
-            EditorRectTransform.anchorMax = new(anchorMaxX, anchorMaxY);
+            EditorRectTransform.anchorMin = new(0f, 0f);
+            EditorRectTransform.anchorMax = new(1f, anchorMaxY);
 
             // Setting top button anchors
-            _topButtonsRectTransform.anchorMin = new(0, anchorMaxY);
-            _topButtonsRectTransform.anchorMax = new(1, 1 - unsafeAreaHeight);
+            _topButtonsRectTransform.anchorMin = new(0f, anchorMaxY - TopButtonsHeight);
+            _topButtonsRectTransform.anchorMax = new(1f, anchorMaxY);
 
             Canvas.ForceUpdateCanvases();
-
-            Debug.Log(
-                $"[ScaleEditor] " +
-                $"Screen={Screen.width}x{Screen.height}, " +
-                $"unsafe={unsafeAreaHeight}, " +
-                $"anchorMaxY={anchorMaxY}, " +
-                $"anchorX={anchorMinX:F3}-{anchorMaxX:F3}, " +
-                $"Rect={EditorRectTransform.rect.width:F1}x{EditorRectTransform.rect.height:F1}"
-            );
         }
 
         private void OpenPreviewMode()

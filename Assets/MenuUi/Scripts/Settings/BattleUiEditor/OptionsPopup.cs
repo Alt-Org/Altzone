@@ -129,6 +129,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Awake()
         {
+            float unsafeAreaHeight = PanelScaler.CalculateUnsafeAreaHeight();
+
+            EditorRectTransform.offsetMin = Vector2.zero;
+            EditorRectTransform.offsetMax = Vector2.zero;
+
             _resetButton.onClick.AddListener(_saveReset.OnResetButtonClicked);
 
             //if (_closeButton != null) _closeButton.onClick.AddListener(CloseOptionsPopup);
@@ -662,11 +667,24 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float availableHeight = editorAspectRatioHeight;
             float availableAspectRatio = availableWidth / availableHeight;
 
+            Debug.Log(
+                $"Screen: {Screen.width} x {Screen.height}, " +
+                $"EditorRect: {EditorRect.width} x {EditorRect.height}, " +
+                $"availableWidth: {availableWidth}, " +
+                $"availableHeight: {availableHeight}, " +
+                $"Scale: {_arenaScaleSlider.value}"
+            );
+
             // Calculating arena scale.
             // If phone aspect ratio is same or thinner than the game aspect ratio we calculate arena width and height based on
             // editor width, but if it's thicker we calculate based on height so that the arena won't overlap or be too small.
             float arenaWidth;
             float arenaHeight;
+
+            Debug.Log(
+                $"availableAspectRatio={availableAspectRatio:F4}, " +
+                $"GameAspectRatio={GameAspectRatio:F4}"
+            );
 
             if (availableAspectRatio <= GameAspectRatio)
             {
@@ -680,6 +698,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 arenaHeight = _arenaScaleSlider.value * 0.01f * availableHeight;
                 arenaWidth = arenaHeight * GameAspectRatio;
             }
+
+            Debug.Log(
+                $"arenaWidth={arenaWidth:F1}, " +
+                $"availableWidth={availableWidth:F1}, " +
+                $"arenaHeight={arenaHeight:F1}, " +
+                $"availableHeight={availableHeight:F1}"
+            );
 
             // Calculating arena position
             Vector2 position = Vector2.zero;
