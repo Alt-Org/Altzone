@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Lobby;
 using MenuUi.Scripts.ReferenceSheets;
+using MenuUi.Scripts.Signals;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ public class CharacterConfirmPanelHandler : MonoBehaviour
     [SerializeField] private Image _battleLogoImage;
     [SerializeField] private TMP_Text _matchmakingLabel;
     [SerializeField] private Button _lockCharactersButton;
+    [SerializeField] private Button _closeWindow;
 
     private MatchmakingType _gameType = MatchmakingType.None;
 
@@ -20,6 +22,7 @@ public class CharacterConfirmPanelHandler : MonoBehaviour
     private void Start()
     {
         _lockCharactersButton.onClick.AddListener(LockCharactersCall);
+        _closeWindow.onClick.AddListener(() => SignalBus.OnCloseBattlePopupRequestedSignal());
     }
 
     public void SetInfo(MatchmakingType gameType)
