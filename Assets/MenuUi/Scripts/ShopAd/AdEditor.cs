@@ -72,15 +72,14 @@ public class AdEditor : AltMonoBehaviour
             _adData.previousFont = _adData.TextFont;
             _adData.previousText = _adData.AdText;
             _adData.previousTextState = _adData._isAdText;
-        }
 
-        _adText.SetActive(false);
-        if (_adData._isAdText)
-        {
-            _inputFieldHolder.SetActive(true);
-            _inputField.ActivateInputField();
-            _inputField.textComponent.SetText(_adData.previousText);
+            if (_adData._isAdText)
+            {
+                _inputFieldHolder.SetActive(true);
+                _inputField.text = _adData.previousText;
+            }
         }
+        _adText.SetActive(false);
     }
 
     private void OnDisable()
@@ -134,7 +133,7 @@ public class AdEditor : AltMonoBehaviour
 
         StartCoroutine(SetFrameSelectionSize());
 
-        _inputField.ActivateInputField();
+        _inputFieldHolder.SetActive(true);
         _inputField.onValueChanged.AddListener(delegate { ChangeText(_inputField.text); }); // Uusi lisäys (Perttu)
     }
 
