@@ -34,22 +34,19 @@ namespace Battle.QSimulation.Player
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         /// <param name="selected">Is the character selected or not.</param>
-        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData, bool selected)
+        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, bool selected)
         {
-            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
+            BattlePlayerCharacterShieldHandle shieldHandle = BattlePlayerCharacterShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
 
-            if (projectileCollisionData->Projectile->IsHeld) return;
-            if (projectileCollisionData->Projectile->EmotionCurrent == BattleEmotionState.Love) return;
-            if (shieldCollisionData->IsLoveProjectileCollision) return;
+            if (projectileCollisionData->Projectile.Data->IsHeld) return;
+            if (projectileCollisionData->Projectile.Data->EmotionCurrent == BattleEmotionState.Love) return;
+            if (projectileCollisionData->IsLoveProjectileCollision) return;
 
-            Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntityRef);
-            Transform2D* transformShield = ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetTransform(f);
+            FPVector2 normal = projectileCollisionData->Projectile.Transform->Position - shieldHandle.ShieldTransform->Position;
+            FPVector2 direction = FPVector2.Reflect(projectileCollisionData->Projectile.Data->Direction, normal).Normalized;
 
-            FPVector2 normal = transformProjectile->Position - transformShield->Position;
-            FPVector2 direction = FPVector2.Reflect(projectileCollisionData->Projectile->Direction, normal).Normalized;
-
-            BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->ProjectileEntityRef, projectileCollisionData->OtherEntityRef, normal, shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset);
-            BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile, direction, BattleProjectileQSystem.SpeedChange.Increment);
+            BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->OtherEntityRef, normal, shieldHandle.CollidedHitboxComponent->CollisionMinOffset);
+            BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile.Data, direction, BattleProjectileQSystem.SpeedChange.Increment);
         }
     }
 }
