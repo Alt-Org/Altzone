@@ -1,40 +1,112 @@
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using Battle.QSimulation.Player;
+using Photon.Deterministic;
 using Quantum;
 
 namespace Battle.QSimulation.Game
 {
+    public struct BattleManageEntityHandle
+    {
+        public EntityRef ERef;
+
+        public static implicit operator EntityRef(BattleManageEntityHandle manageEntityRef) => manageEntityRef.ERef;
+    }
+
     public unsafe struct BattlePlayerHandle
     {
-        public static BattlePlayerHandle Create(BattlePlayerSlot slot)
+        public static BattlePlayerHandle Create(Frame f, BattlePlayerSlot slot)
         {
             BattlePlayerHandle handle = new();
-            handle.SetPlayerData(slot);
+            handle.PlayerData = BattlePlayerManager.GetPlayerData(f, slot);
+            return handle;
+        }
+
+        public static BattlePlayerHandle Create(BattlePlayerData.Ref playerData)
+        {
+            BattlePlayerHandle handle = new();
+            handle.PlayerData = playerData;
+            return handle;
+        }
+
+        public static BattlePlayerHandle Create(Frame f, EntityRef entityRef)
+        {
+            BattlePlayerLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerLinkQComponent>(entityRef);
+
+            BattlePlayerHandle handle = new();
+
+            handle.PlayerData = BattlePlayerManager.GetPlayerData(f, link->Slot);
+            handle.SetCharacter(f, link->CharacterEntityRef);
+
+            if (link->Type == PlayerEntityType.Hitbox) handle.SetHitbox(f, entityRef);
 
             return handle;
         }
 
-        public static BattlePlayerHandle Create(Frame f, EntityRef entity)
+        public static void CreateLink(Frame f, BattlePlayerSlot slot, EntityRef characterEntityRef, PlayerEntityType type, EntityRef entity)
         {
-            BattlePlayerHandle handle = new();
+            BattlePlayerLinkQComponent playerLink = new()
+            {
+                CharacterEntityRef = characterEntityRef,
+                Slot = slot,
+                Type = type
+            };
 
-            BattlePlayerLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerLinkQComponent>(entity);
-
-            handle.SetPlayerData(link->Slot);
-            handle.SetPlayerCharacter(f, link->CharacterEntityRef);
-            if (link->Type == PlayerEntityType.Hitbox) handle.SetPlayerHitbox(f, entity);
-
-            return handle;
+            f.Add(entity, playerLink);
         }
 
-        public void LoadPlayerCharacter(Frame f, EntityRef entity)
+        public readonly bool PlayerHasSelectedCharacter => PlayerData.SelectedCharacterNumber != BattlePlayerData.NoSelectedCharacter;
+
+        public readonly bool HandleHasCharacterLoaded => LoadedCharacterEntityRef != EntityRef.None;
+
+        public readonly bool LoadedCharacterIsSelected => LoadedCharacterData->Number == PlayerData.SelectedCharacterNumber;
+
+        public readonly bool LoadedCharacterHasShieldAttached => LoadedCharacterData->AttachedShieldEntityRef != EntityRef.None;
+
+        public readonly bool HandleHasCollidedHitbox => CollidedHitboxEntityRef != EntityRef.None;
+
+        public BattlePlayerData.Ref PlayerData { get; private set; }
+
+        public EntityRef LoadedCharacterEntityRef { get; private set; }
+
+        public BattlePlayerCharacterDataQComponent* LoadedCharacterData { get; private set; }
+
+        public Transform2D* LoadedCharacterTransform { get; private set; }
+
+        public EntityRef CollidedHitboxEntityRef { get; private set; }
+
+        public BattlePlayerHitboxQComponent* CollidedHitboxComponent { get; private set; }
+
+        public Transform2D* CollidedHitboxTransform { get; private set; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsValidCharacterNumber(int characterNumber)
+        {
+            return BattlePlayerData.IsValidCharacterNumber(characterNumber);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsValidShieldNumber(int characterNumber, int shieldNumber)
+        {
+            BattlePlayerData.DevAssertIsValidCharacterNumber(nameof(BattlePlayerHandle), characterNumber);
+            return shieldNumber >= 0 && LoadedCharacterData->ShieldCount < shieldNumber;
+        }
+
+        public void LoadCharacter(Frame f, int characterNumber)
+        {
+            BattlePlayerData.DevAssertIsValidCharacterNumber(nameof(BattlePlayerHandle), characterNumber);
+            SetCharacter(f, (BattlePlayerEntityRef)BattleEntityManager.Get(f, PlayerData.Low_Level.CharacterEntityGroupID, characterNumber));
+        }
+
+        public void LoadCharacter(Frame f, EntityRef entity)
         {
             BattlePlayerLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerLinkQComponent>(entity);
 
-            SetPlayerCharacter(f, link->CharacterEntityRef);
+            SetCharacter(f, link->CharacterEntityRef);
 
             if (link->Type == PlayerEntityType.Hitbox)
             {
-                SetPlayerHitbox(f, entity);
+                SetHitbox(f, entity);
             }
             else
             {
@@ -42,44 +114,38 @@ namespace Battle.QSimulation.Game
             }
         }
 
-        public BattlePlayerData* playerData {  get; private set; }
-
-        public EntityRef characterEntityRef { get; private set; }
-
-        public BattlePlayerCharacterDataQComponent* playerCharacterData { get; private set; }
-
-        public Transform2D* characterTransform { get; private set; }
-
-        public EntityRef hitboxEntityRef { get; private set; }
-
-        public BattlePlayerHitboxQComponent* hitboxComponent { get; private set; }
-
-        public Transform2D* hitboxTransform { get; private set; }
-
-        private void SetPlayerData(BattlePlayerSlot slot)
+        public BattlePlayerHandle LoadCharacterCopy(Frame f, int characterNumber)
         {
-
+            BattlePlayerData.DevAssertIsValidCharacterNumber(nameof(BattlePlayerHandle), characterNumber);
+            BattlePlayerHandle copy = Create(PlayerData);
+            copy.LoadCharacter(f, characterNumber);
+            return copy;
         }
 
-        private void SetPlayerCharacter(Frame f, EntityRef entity)
+        public BattlePlayerCharacterShieldHandle GetLoadedCharacterAttachedShield(Frame f)
         {
-            characterEntityRef  = entity;
-            playerCharacterData = f.Unsafe.GetPointer<BattlePlayerCharacterDataQComponent>(entity);
-            characterTransform  = f.Unsafe.GetPointer<Transform2D>(entity);
+            return BattlePlayerCharacterShieldHandle.Create(f, LoadedCharacterData->AttachedShieldEntityRef);
         }
 
-        private void SetPlayerHitbox(Frame f, EntityRef entity)
+        private void SetCharacter(Frame f, EntityRef entity)
         {
-            hitboxEntityRef = entity;
-            hitboxComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(entity);
-            hitboxTransform = f.Unsafe.GetPointer<Transform2D>(entity);
+            LoadedCharacterEntityRef  = entity;
+            LoadedCharacterData = f.Unsafe.GetPointer<BattlePlayerCharacterDataQComponent>(entity);
+            LoadedCharacterTransform  = f.Unsafe.GetPointer<Transform2D>(entity);
+        }
+
+        private void SetHitbox(Frame f, EntityRef entity)
+        {
+            CollidedHitboxEntityRef = entity;
+            CollidedHitboxComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(entity);
+            CollidedHitboxTransform = f.Unsafe.GetPointer<Transform2D>(entity);
         }
 
         private void UnsetHitbox()
         {
-            hitboxEntityRef = EntityRef.None;
-            hitboxComponent = null;
-            hitboxTransform = null;
+            CollidedHitboxEntityRef = EntityRef.None;
+            CollidedHitboxComponent = null;
+            CollidedHitboxTransform = null;
         }
     }
 
@@ -98,30 +164,43 @@ namespace Battle.QSimulation.Game
             return handle;
         }
 
-        public EntityRef shieldEntityRef {  get; private set; }
+        public static void CreateLink(Frame f, EntityRef shieldEntityRef, PlayerCharacterShieldEntityType type, EntityRef entity)
+        {
+            BattlePlayerCharacterShieldLinkQComponent shieldLink = new()
+            {
+                ERef = shieldEntityRef,
+                Type = type,
+            };
 
-        public BattlePlayerShieldDataQComponent* shieldData { get; private set; }
+            f.Add(entity, shieldLink);
+        }
 
-        public Transform2D* shieldTransform { get; private set; }
+        public readonly bool HandleHasCollidedHitbox => CollidedHitboxEntityRef != EntityRef.None;
 
-        public EntityRef shieldHitboxEntityRef { get; private set; }
+        public EntityRef ShieldEntityRef {  get; private set; }
 
-        public BattlePlayerHitboxQComponent* shieldHitboxComponent { get; private set; }
+        public BattlePlayerShieldDataQComponent* ShieldData { get; private set; }
 
-        public Transform2D* shieldHitboxTransform { get; private set; }
+        public Transform2D* ShieldTransform { get; private set; }
+
+        public EntityRef CollidedHitboxEntityRef { get; private set; }
+
+        public BattlePlayerHitboxQComponent* CollidedHitboxComponent { get; private set; }
+
+        public Transform2D* CollidedHitboxTransform { get; private set; }
 
         private void SetShield(Frame f, EntityRef entity)
         {
-            shieldEntityRef = entity;
-            shieldData      = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(entity);
-            shieldTransform = f.Unsafe.GetPointer<Transform2D>(entity);
+            ShieldEntityRef = entity;
+            ShieldData      = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(entity);
+            ShieldTransform = f.Unsafe.GetPointer<Transform2D>(entity);
         }
 
         private void SetHitbox(Frame f, EntityRef entity)
         {
-            shieldHitboxEntityRef = entity;
-            shieldHitboxComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(entity);
-            shieldHitboxTransform = f.Unsafe.GetPointer<Transform2D>(entity);
+            CollidedHitboxEntityRef = entity;
+            CollidedHitboxComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(entity);
+            CollidedHitboxTransform = f.Unsafe.GetPointer<Transform2D>(entity);
         }
     }
 
@@ -133,17 +212,82 @@ namespace Battle.QSimulation.Game
 
             BattleProjectileLinkQComponent* link = f.Unsafe.GetPointer<BattleProjectileLinkQComponent>(entity);
 
-            handle.ERef       = link->ERef;
-            handle.projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(link->ERef);
-            handle.transform  = f.Unsafe.GetPointer<Transform2D>(link->ERef);
+            handle.ERef      = link->ERef;
+            handle.Data      = f.Unsafe.GetPointer<BattleProjectileQComponent>(link->ERef);
+            handle.Transform = f.Unsafe.GetPointer<Transform2D>(link->ERef);
 
             return handle;
         }
 
+        public static void CreateLink(Frame f, EntityRef projectileEntity, EntityRef entity)
+        {
+            BattleProjectileLinkQComponent projectileLink = new()
+            {
+                ERef = projectileEntity
+            };
+
+            f.Add(entity, projectileLink);
+        }
+
         public EntityRef ERef { get; private set; }
 
-        public BattleProjectileQComponent* projectile {  get; private set; }
+        public BattleProjectileQComponent* Data {  get; private set; }
 
-        public Transform2D* transform { get; private set; }
+        public Transform2D* Transform { get; private set; }
+
+        /// <summary>
+        /// Sets a specific collision flag for the current frame.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="flag">Collision flag to set.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void SetCollisionFlag(Frame f, BattleProjectileCollisionFlags flag)
+        {
+            BattleProjectileCollisionFlags flags = Data->CollisionFlags[f.Number % 2];
+            Data->CollisionFlags[f.Number % 2] = flags.SetFlag(flag);
+        }
+
+        /// <summary>
+        /// Sets whether the projectile is currently held.
+        /// </summary>
+        ///
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="isHeld">True/False : held / not held.</param>
+        public void SetHeld(bool isHeld)
+        {
+            Data->IsHeld = isHeld;
+        }
+
+        /// <summary>
+        /// Sets the emotion state of the projectile and triggers the corresponding event.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="emotion">The new emotion state to assign to the projectile.</param>
+        public void SetEmotion(Frame f, BattleEmotionState emotion)
+        {
+            if (emotion != BattleEmotionState.Love)
+            {
+                Data->EmotionBase = emotion;
+            }
+            Data->EmotionCurrent = emotion;
+            f.Events.BattleChangeEmotionState(Data->EmotionCurrent);
+        }
+
+        /// <summary>
+        /// Sets the attack value of the projectile and updates its glow strength.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectile">Pointer to the projectile component.</param>
+        /// <param name="attack">The new attack value to assign to the projectile.</param>
+        public void SetAttack(Frame f, FP attack)
+        {
+            Data->Attack = attack;
+            f.Events.BattleProjectileChangeGlowStrength(Data->Attack / Data->AttackMax);
+        }
     }
 }

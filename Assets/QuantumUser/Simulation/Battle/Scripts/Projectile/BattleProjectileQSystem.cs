@@ -67,61 +67,6 @@ namespace Battle.QSimulation.Projectile
         public static bool IsCollisionFlagSet(Frame f, BattleProjectileQComponent* projectile, BattleProjectileCollisionFlags flag) => projectile->CollisionFlags[f.Number % 2].IsFlagSet(flag);
 
         /// <summary>
-        /// Sets a specific collision flag for the current frame.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="flag">Collision flag to set.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SetCollisionFlag(Frame f, BattleProjectileQComponent* projectile, BattleProjectileCollisionFlags flag)
-        {
-            BattleProjectileCollisionFlags flags = projectile->CollisionFlags[f.Number % 2];
-            projectile->CollisionFlags[f.Number % 2] = flags.SetFlag(flag);
-        }
-
-        /// <summary>
-        /// Sets whether the projectile is currently held.
-        /// </summary>
-        ///
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="isHeld">True/False : held / not held.</param>
-        public static void SetHeld(BattleProjectileQComponent* projectile, bool isHeld)
-        {
-            projectile->IsHeld = isHeld;
-        }
-
-        /// <summary>
-        /// Sets the emotion state of the projectile and triggers the corresponding event.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="emotion">The new emotion state to assign to the projectile.</param>
-        public static void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
-        {
-            if (emotion != BattleEmotionState.Love)
-            {
-                projectile->EmotionBase = emotion;
-            }
-            projectile->EmotionCurrent = emotion;
-            f.Events.BattleChangeEmotionState(projectile->EmotionCurrent);
-        }
-
-        /// <summary>
-        /// Sets the attack value of the projectile and updates its glow strength.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="attack">The new attack value to assign to the projectile.</param>
-        public static void SetAttack(Frame f, BattleProjectileQComponent* projectile, FP attack)
-        {
-            projectile->Attack = attack;
-            f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
-        }
-
-        /// <summary>
         /// Gets the projectile's EntityRef.
         /// </summary>
         ///
