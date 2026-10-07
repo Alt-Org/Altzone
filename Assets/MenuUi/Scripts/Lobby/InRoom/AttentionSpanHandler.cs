@@ -10,16 +10,19 @@ public class AttentionSpanHandler : MonoBehaviour
     [SerializeField] private GameObject _borders;
     [SerializeField] private RectTransform _animationContent;
     [SerializeField] private GameObject _tutorialSelection;
+    [SerializeField] private GameObject _turningTutorial;
     [SerializeField] private Animator _animation;
     [SerializeField] private AnimationClip _animationClip;
     [SerializeField] private Image _image;
     [SerializeField] private RectTransform _topSection;
 
+    [SerializeField] private Button _turningTutorialButton;
     [SerializeField] private Button _closeButton;
 
     private void Start()
     {
         _closeButton.onClick.AddListener(ClosePanel);
+        _turningTutorialButton.onClick.AddListener(OpenTurningTutorial);
     }
 
     private void OnEnable()
@@ -40,6 +43,7 @@ public class AttentionSpanHandler : MonoBehaviour
         _panel.SetActive(true);
         _animationContent.gameObject.SetActive(true);
         _tutorialSelection.SetActive(false);
+        _turningTutorial.SetActive(false);
         StartCoroutine(PlayAnimation());
     }
 
@@ -53,7 +57,7 @@ public class AttentionSpanHandler : MonoBehaviour
         float time = SetAnimation();
         yield return new WaitForSeconds(time);
         _animationContent.gameObject.SetActive(false);
-        _tutorialSelection.SetActive(true);
+        OpenTutorialSelection();
     }
 
     private float SetAnimation()
@@ -73,5 +77,17 @@ public class AttentionSpanHandler : MonoBehaviour
 
         _animation.Play(animationClip.name);
         return animationClip.length;
+    }
+
+    private void OpenTutorialSelection()
+    {
+        _tutorialSelection.SetActive(true);
+        _turningTutorial.SetActive(false);
+    }
+
+    private void OpenTurningTutorial()
+    {
+        _tutorialSelection.SetActive(false);
+        _turningTutorial.SetActive(true);
     }
 }
