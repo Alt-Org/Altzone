@@ -20,12 +20,9 @@ namespace Quantum
     // Main struct documentation in qtn-BattleEntityID.dox
     public partial struct BattleEntityID
     {
-        /// <summary>
-        /// Implicit cast to <c>int</c> implementation.
-        /// </summary>
-        ///
-        /// <param name="id">The BattleEntityID to cast to <c>int</c>.</param>
-        public static implicit operator int(BattleEntityID id) => id.Int;
+        public const int NoneValue = 0;
+
+        public static BattleEntityID None { get => new() { Int = NoneValue }; }
     }
 }
 
@@ -166,9 +163,11 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             QList<EntityRef> entityList = f.ResolveList(entityManagerData->RegisteredEntities);
 
-            BattleEntityID id = new() { Int = entityList.Count };
+            BattleEntityID id = AssignID(entityList);
+            int listIndex = GetListIndex(id);
+
             entityList.Add(entityRef);
-            Return(f, entityManagerData, entityRef, id);
+            Return(f, entityManagerData, entityRef, id, listIndex);
 
             return id;
         }
@@ -194,14 +193,14 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             QList<EntityRef> entityList = f.ResolveList(entityManagerData->RegisteredEntities);
 
-            BattleEntityID id = new() { Int = entityList.Count };
-            BattleEntityID offsetId = id;
+            BattleEntityID id = AssignID(entityList);
+            int listIndex = GetListIndex(id);
 
             for (int i = 0; i < entityRefs.Length; i++)
             {
                 entityList.Add(entityRefs[i]);
-                Return(f, entityManagerData, entityRefs[i], offsetId);
-                offsetId.Int++;
+                Return(f, entityManagerData, entityRefs[i], id, listIndex);
+                listIndex++;
             }
 
             return id;
@@ -232,15 +231,14 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             QList<EntityRef> entityList = f.ResolveList(entityManagerData->RegisteredEntities);
 
-            BattleEntityID id = new() { Int = entityList.Count, IsCompound = true };
-            BattleEntityID offsetId = id;
+            BattleEntityID id = AssignID(entityList, isCompound: true);
+            int listIndex = GetListIndex(id);
 
             MakeCompound(f, template);
 
             EntityRef entityRef = template.ParentEntityRef;
             entityList.Add(entityRef);
-            Return(f, entityManagerData, entityRef, offsetId);
-            offsetId.Int++;
+            Return(f, entityManagerData, entityRef, id, listIndex);
 
             return id;
         }
@@ -271,8 +269,8 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             QList<EntityRef> entityList = f.ResolveList(entityManagerData->RegisteredEntities);
 
-            BattleEntityID id = new() { Int = entityList.Count, IsCompound = true };
-            BattleEntityID offsetId = id;
+            BattleEntityID id = AssignID(entityList, isCompound: true);
+            int listIndex = GetListIndex(id);
 
             for (int i = 0; i < templates.Length; i++)
             {
@@ -282,8 +280,8 @@ namespace Battle.QSimulation.Game
 
                 EntityRef entityRef = template.ParentEntityRef;
                 entityList.Add(entityRef);
-                Return(f, entityManagerData, entityRef, offsetId);
-                offsetId.Int++;
+                Return(f, entityManagerData, entityRef, id, listIndex);
+                listIndex++;
             }
 
             return id;
@@ -316,11 +314,14 @@ namespace Battle.QSimulation.Game
         /// <returns>EntityRef for retrieved entity.</returns>
         public static EntityRef Get(Frame f, BattleEntityID id, bool updateViewPlayState = false)
         {
+            DevAssertValidEntityID(id, context: nameof(Get));
+
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
+            int listIndex = GetListIndex(id);
 
-            if (updateViewPlayState) f.Events.BattlePlayStateUpdate(entityList[id], IsInPlay: true);
+            if (updateViewPlayState) f.Events.BattlePlayStateUpdate(entityList[listIndex], IsInPlay: true);
 
-            return entityList[id];
+            return entityList[listIndex];
         }
 
         /// <summary>
@@ -343,13 +344,14 @@ namespace Battle.QSimulation.Game
         /// <returns>EntityRef for retrieved entity.</returns>
         public static EntityRef Get(Frame f, BattleEntityID id, int offset, bool updateViewPlayState = false)
         {
+            DevAssertValidEntityID(id, context: nameof(Get));
+
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
+            int listIndex = GetListIndex(id, offset);
 
-            id.Int += offset;
+            if (updateViewPlayState) f.Events.BattlePlayStateUpdate(entityList[listIndex], IsInPlay: true);
 
-            if (updateViewPlayState) f.Events.BattlePlayStateUpdate(entityList[id], IsInPlay: true);
-
-            return entityList[id];
+            return entityList[listIndex];
         }
 
         /// <summary>
@@ -367,10 +369,14 @@ namespace Battle.QSimulation.Game
         /// <param name="id">Entity ID of the entity to return.</param>
         public static void Return(Frame f, BattleEntityID id)
         {
-            BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
-            EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[id];
+            DevAssertValidEntityID(id, context: nameof(Return));
 
-            Return(f, entityManagerData, entityRef, id);
+            int listIndex = GetListIndex(id);
+
+            BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
+            EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[listIndex];
+
+            Return(f, entityManagerData, entityRef, id, listIndex);
         }
 
         /// <summary>
@@ -390,12 +396,14 @@ namespace Battle.QSimulation.Game
         /// <param name="offset">Offset of the desired entity within the group.</param>
         public static void Return(Frame f, BattleEntityID id, int offset)
         {
-            id.Int += offset;
+            DevAssertValidEntityID(id, context: nameof(Return));
+
+            int listIndex = GetListIndex(id, offset);
 
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
-            EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[id];
+            EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[listIndex];
 
-            Return(f, entityManagerData, entityRef, id);
+            Return(f, entityManagerData, entityRef, id, listIndex);
         }
 
         #endregion Public Get/Return Methods
@@ -577,10 +585,10 @@ namespace Battle.QSimulation.Game
         /// <param name="entityRef">The entity to return.</param>
         /// <param name="id">Entity ID of the entity to return.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Return(Frame f, BattleEntityManagerDataQSingleton* entityManagerData, EntityRef entityRef, BattleEntityID id)
+        private static void Return(Frame f, BattleEntityManagerDataQSingleton* entityManagerData, EntityRef entityRef, BattleEntityID id, int listIndex)
         {
             BattleGridPosition entityGridPosition = entityManagerData->EntityOffscreenPositionOffset;
-            entityGridPosition.Row -= id * entityManagerData->EntitySpacing;
+            entityGridPosition.Row -= listIndex * entityManagerData->EntitySpacing;
 
             FPVector2 entityGridToWorldPosition = BattleGridManager.GridPositionToWorldPosition(entityGridPosition);
 
@@ -607,6 +615,26 @@ namespace Battle.QSimulation.Game
         private static FPVector2 CalculateWorldPosition(FPVector2 parentPosition, FP parentRotation, FPVector2 offset)
         {
             return FPVector2.Rotate(offset, parentRotation) + parentPosition;
+        }
+
+        private static BattleEntityID AssignID(QList<EntityRef> entityList, bool isCompound = false)
+        {
+            return new() { Int = entityList.Count + 1, IsCompound = isCompound };
+        }
+
+        private static int GetListIndex(BattleEntityID id)
+        {
+            return id.Int - 1;
+        }
+
+        private static int GetListIndex(BattleEntityID id, int offset)
+        {
+            return id.Int + offset - 1;
+        }
+
+        private static void DevAssertValidEntityID(BattleEntityID id, string context)
+        {
+            s_debugLogger.DevAssertFormat(id.Int != BattleEntityID.NoneValue, "Invalid ID, Can not {0} none EntityID", context);
         }
         #endregion Private Methods
     }
