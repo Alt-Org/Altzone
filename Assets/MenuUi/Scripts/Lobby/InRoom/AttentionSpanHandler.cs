@@ -9,9 +9,9 @@ public class AttentionSpanHandler : MonoBehaviour
     [SerializeField] private GameObject _panel;
     [SerializeField] private GameObject _borders;
     [SerializeField] private RectTransform _animationContent;
-    [SerializeField] private TMP_Text _text1;
-    [SerializeField] private TMP_Text _text2;
+    [SerializeField] private GameObject _tutorialSelection;
     [SerializeField] private Animator _animation;
+    [SerializeField] private AnimationClip _animationClip;
     [SerializeField] private Image _image;
     [SerializeField] private RectTransform _topSection;
 
@@ -39,10 +39,39 @@ public class AttentionSpanHandler : MonoBehaviour
     {
         _panel.SetActive(true);
         _animationContent.gameObject.SetActive(true);
+        _tutorialSelection.SetActive(false);
+        StartCoroutine(PlayAnimation());
     }
 
     private void ClosePanel()
     {
         _panel.SetActive(false);
+    }
+
+    private IEnumerator PlayAnimation()
+    {
+        float time = SetAnimation();
+        yield return new WaitForSeconds(time);
+        _animationContent.gameObject.SetActive(false);
+        _tutorialSelection.SetActive(true);
+    }
+
+    private float SetAnimation()
+    {
+        AnimationClip animationClip = null;
+
+        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+        {
+            animationClip = _animationClip;
+        }
+        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+        {
+            animationClip = _animationClip;
+        }
+        
+        if (animationClip == null) return 0;
+
+        _animation.Play(animationClip.name);
+        return animationClip.length;
     }
 }
