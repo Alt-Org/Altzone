@@ -1,5 +1,5 @@
 // other signals
-signal BattleOnDiamondHitPlayer(BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattlePlayerHitboxQComponent* playerHitbox, EntityRef playerEntity);
+signal BattleOnDiamondHitPlayer(BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, EntityRef playerEntity);
 
 signal BattleOnDiamondHitArenaBorder(BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity);
 
