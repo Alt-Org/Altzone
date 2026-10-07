@@ -5808,9 +5808,9 @@ namespace Altzone.Scripts.Lobby
             }
 
             // Creating back the non-matchmaking room which the teammates can join (only for Clan2v2)
-            switch (matchmakingRoomGameType)
+            /*switch (matchmakingRoomGameType)
             {
-                case MatchmakingType.Clan2v2:
+                case MatchmakingType.FriendLobby:
                 {
                     string clanName = PhotonRealtimeClient.LocalLobbyPlayer?.GetCustomProperty(PhotonBattleRoom.ClanNameKey, "");
                     string clanId = PhotonRealtimeClient.LocalLobbyPlayer?.GetCustomProperty(PhotonBattleRoom.ClanIdKey, "");
@@ -5818,7 +5818,7 @@ namespace Altzone.Scripts.Lobby
                     PhotonRealtimeClient.CreateClan2v2LobbyRoom(clanName, clanId, soulhomeRank, GetTeammateIds());
                     break;
                 }
-            }
+            }*/
         }
         #endregion
 
