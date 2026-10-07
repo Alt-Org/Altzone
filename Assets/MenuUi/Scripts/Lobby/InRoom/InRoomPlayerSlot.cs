@@ -21,7 +21,7 @@ public class InRoomPlayerSlot : MonoBehaviour
     [SerializeField] private bool _customRoom;
 
     private int? _slotIndex = null;
-    private string _playerId = null;
+    private string _playerId = "null";
     private bool _isOwn = false;
 
     private const string BOT_ID = "Bot";
@@ -66,6 +66,7 @@ public class InRoomPlayerSlot : MonoBehaviour
     /// <param name="stats">The stats for all three characters in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
     public void SetCharacters(string playerId, string playerName, int[] selectedCharacterIds, bool ownSlot, bool isMasterClient)
     {
+        if (_playerId == playerId) return;
         if (selectedCharacterIds == null)
         {
             _playerId = string.Empty;
@@ -122,6 +123,7 @@ public class InRoomPlayerSlot : MonoBehaviour
     /// <param name="selectedCharacterIds">The selected character ids to display.</param>
     public void SetBotCharacters()
     {
+        if (_playerId == BOT_ID) return;
         _playerId = BOT_ID;
         if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
             _playerName.SetText("Botti");
@@ -141,8 +143,12 @@ public class InRoomPlayerSlot : MonoBehaviour
 
     public void SetReadyState(bool value)
     {
+        bool oldValue = _readyToggle.isOn;
+        Debug.LogWarning(oldValue);
         _readyToggle.SetIsOnWithoutNotify(value);
         _readyToggle.GetComponent<Image>().color = value ? _readyColor: _unreadyColor;
+        Debug.LogWarning(oldValue);
+        if (oldValue == value) return;
         if (_isOwn && value)
         {
             OnActivateReadyPanel?.Invoke();
@@ -184,6 +190,7 @@ public class InRoomPlayerSlot : MonoBehaviour
         }
         if (!string.IsNullOrEmpty(_playerId))
         {
+            _readyToggle.SetIsOnWithoutNotify(!value);
             OnSetReady?.Invoke((int)_slotIndex, value);
         }
     }

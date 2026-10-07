@@ -74,6 +74,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private string _captionPlayerP3;
         private string _captionPlayerP4;
 
+        private bool _player1SlotInUse = false;
+        private bool _player2SlotInUse = false;
+        private bool _player3SlotInUse = false;
+        private bool _player4SlotInUse = false;
+
         private Coroutine _onEnableCoroutineHolder = null;
 
         PlayerRole currentRole = PlayerRole.Player;
@@ -297,21 +302,25 @@ namespace MenuUi.Scripts.Lobby.InRoom
             if (botActive1)
             {
                 _player1Slot.SetBotCharacters();
+                _player1SlotInUse = true;
             }
             bool botActive2 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition2);
             if (botActive2)
             {
                 _player2Slot.SetBotCharacters();
+                _player2SlotInUse = true;
             }
             bool botActive3 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition3);
             if (botActive3)
             {
                 _player3Slot.SetBotCharacters();
+                _player3SlotInUse = true;
             }
             bool botActive4 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition4);
             if (botActive4)
             {
                 _player4Slot.SetBotCharacters();
+                _player4SlotInUse = true;
             }
 
 
@@ -327,6 +336,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             // Setting start game button interactable status
             if (_buttonStartPlay != null) _buttonStartPlay.interactable = _interactableStartPlay;
+
+            if (_player1Slot && !_player1SlotInUse) _player1Slot.SetCharacters(null, null, null, false, false);
+            if (_player2Slot && !_player2SlotInUse) _player2Slot.SetCharacters(null, null, null, false, false);
+            if (_player3Slot && !_player3SlotInUse) _player3Slot.SetCharacters(null, null, null, false, false);
+            if (_player4Slot && !_player4SlotInUse) _player4Slot.SetCharacters(null, null, null, false, false);
 
             // Setting team text
             SetTeamText();
@@ -435,6 +449,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     {
                         _player1Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
                         _player1Slot.SetReadyState(ready);
+                        _player1SlotInUse = true;
                     }
                     break;
                 case PlayerPosition2:
@@ -445,6 +460,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     {
                         _player2Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
                         _player2Slot.SetReadyState(ready);
+                        _player2SlotInUse = true;
                     }
                     break;
                 case PlayerPosition3:
@@ -455,6 +471,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     {
                         _player3Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
                         _player3Slot.SetReadyState(ready);
+                        _player3SlotInUse = true;
                     }
                     break;
                 case PlayerPosition4:
@@ -465,6 +482,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     {
                         _player4Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
                         _player4Slot.SetReadyState(ready);
+                        _player4SlotInUse = true;
                     }
                     break;
             }
@@ -502,6 +520,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     {
                         _player1Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
                         _player1Slot.SetReadyState(ready);
+                        _player1SlotInUse = true;
                     }
                     break;
                 case PlayerPosition2:
@@ -512,6 +531,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     {
                         _player2Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
                         _player2Slot.SetReadyState(ready);
+                        _player2SlotInUse = true;
                     }
                     break;
                 case PlayerPosition3:
@@ -522,6 +542,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     {
                         _player3Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
                         _player3Slot.SetReadyState(ready);
+                        _player3SlotInUse = true;
                     }
                     break;
                 case PlayerPosition4:
@@ -532,6 +553,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     {
                         _player4Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
                         _player4Slot.SetReadyState(ready);
+                        _player4SlotInUse = true;
                     }
                     break;
             }
@@ -544,10 +566,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _interactablePlayerP3 = true;
             _interactablePlayerP4 = true;
 
-            if (_player1Slot) _player1Slot.SetCharacters(null, null, null, false, false);
-            if (_player2Slot) _player2Slot.SetCharacters(null, null, null, false, false);
-            if (_player3Slot) _player3Slot.SetCharacters(null, null, null, false, false);
-            if (_player4Slot) _player4Slot.SetCharacters(null, null, null, false, false);
+            _player1SlotInUse = false;
+            _player2SlotInUse = false;
+            _player3SlotInUse = false;
+            _player4SlotInUse = false;
         }
 
         private void SetFillBotToggle(bool value)
@@ -593,6 +615,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _firstOnEnable = true;
 
             ResetState();
+
+            if (_player1Slot && !_player1SlotInUse) _player1Slot.SetCharacters(null, null, null, false, false);
+            if (_player2Slot && !_player2SlotInUse) _player2Slot.SetCharacters(null, null, null, false, false);
+            if (_player3Slot && !_player3SlotInUse) _player3Slot.SetCharacters(null, null, null, false, false);
+            if (_player4Slot && !_player4SlotInUse) _player4Slot.SetCharacters(null, null, null, false, false);
         }
     }
 }
