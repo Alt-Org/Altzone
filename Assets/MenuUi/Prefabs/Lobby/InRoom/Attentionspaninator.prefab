@@ -592,6 +592,7 @@ GameObject:
   - component: {fileID: 283785858228243198}
   - component: {fileID: 4385552819043678672}
   - component: {fileID: 2310388256827717030}
+  - component: {fileID: 3166563212509673670}
   m_Layer: 5
   m_Name: TurningTutorial
   m_TagString: Untagged
@@ -659,6 +660,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3166563212509673670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1771147506369887864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cfeb8005016bba40a48962165878e1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _shield: {fileID: 8468089883566274991}
+  _panel: {fileID: 1771147506369887864}
 --- !u!1 &2016057859738212210
 GameObject:
   m_ObjectHideFlags: 0
