@@ -74,19 +74,42 @@ namespace MenuUi.Scripts.Login
 
         private VersionType _versionType = VersionType.None;
 
-        private const string REGISTERING_SUCCESS = "Rekisteröinti onnistui!";
-        private const string ERROR_DEFAULT = "Jotain meni pieleen!";
-        private const string ERROR_EMPTY_FIELD = "Kentät eivät voi olla tyhjiä!";
-        private const string ERROR_PASSWORD_MISMATCH = "Salasananat eivät täsmää!";
-        private const string ERROR_USERNAME_TOO_SHORT = "Käyttäjänimen täytyy olla vähintään 3 merkkiä pitkä!";
-        private const string ERROR_PASSWORD_TOO_SHORT = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
-        private const string ERROR_PRIVACY_CONCENT_NOT_GRANTED = "Et ole hyväksynyt tietosuojaselostetta.";
-        private const string ERROR_AGE_CONSENT_NOT_GRANTED = "Et ole vahvistanut olevasi yli 13-vuotias tai että sinulla on huoltajan lupa pelata peliä";
-        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED = "Et ole antanut lupaa tietojen käyttää pelin hallinnoinnnissa.";
-        private const string ERROR400 = "Validointivirhe!";
-        private const string ERROR401 = "Virheellinen käyttäjänimi tai salasana!";
-        private const string ERROR409 = "Käyttäjätili on jo olemassa!";
-        private const string ERROR500 = "Serverivirhe!";
+        private const string REGISTERING_SUCCESS_FI = "Rekisteröinti onnistui!";
+        private const string REGISTERING_SUCCESS_EN = "Registration successful!";
+        private const string ERROR_DEFAULT =_FI "Jotain meni pieleen!";
+        private const string ERROR_DEFAULT = _EN "something went wrong.";
+        private const string ERROR_EMPTY_FIELD =_FI "Kentät eivät voi olla tyhjiä!";
+        private const string ERROR_EMPTY_FIELD = _EN "The fields cannot be empty!";
+        private const string ERROR_PASSWORD_MISMATCH_FI = "Salasananat eivät täsmää!";
+        private const string ERROR_PASSWORD_MISMATCH_EN = "Passwords do not match!";
+        private const string ERROR_USERNAME_TOO_SHORT_FI = "Käyttäjänimen täytyy olla vähintään 3 merkkiä pitkä!";
+        private const string ERROR_USERNAME_TOO_SHORT_EN = "The username must be at least 3 characters long!";
+        private const string ERROR_PASSWORD_TOO_SHORT_FI = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
+        private const string ERROR_PASSWORD_TOO_SHORT_EN = "The password must be at least 5 characters long!";
+        private const string ERROR_PRIVACY_CONCENT_NOT_GRANTED_FI = "Et ole hyväksynyt tietosuojaselostetta.";
+        private const string ERROR_PRIVACY_CONCENT_NOT_GRANTED_EN= "You have not accepted the privacy policy.";
+        private const string ERROR_AGE_CONSENT_NOT_GRANTED_FI = "Et ole vahvistanut olevasi yli 13-vuotias tai että sinulla on huoltajan lupa pelata peliä";
+        private const string ERROR_AGE_CONSENT_NOT_GRANTED_EN = "You have not confirmed that you are over 13 years of age or that you have a guardian's permission to play the game";
+        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED_FI = "Et ole antanut lupaa tietojen käyttää pelin hallinnoinnnissa.";
+        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED_EN = "You have not granted permission to use the data for game management."
+        private const string ERROR400_FI = "Validointivirhe!";
+        private const string ERROR400_EN = "Validation error!";
+        private const string ERROR401_FI = "Virheellinen käyttäjänimi tai salasana!";
+        private const string ERROR401_EN = "Invalid username or password!";
+        private const string ERROR409_FI = "Käyttäjätili on jo olemassa!";
+        private const string ERROR409_EN = "The user account already exists!";
+        private const string ERROR500_FI = "Serverivirhe!";
+        private const string ERROR500_EN = "Server error!";
+
+        public static string REGISTERING_SUCCESS
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return REGISTERING_SUCCESS_FI;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return REGISTERING_SUCCESS_EN;
+                else return REGISTERING_SUCCESS_FI;
+            }
+        }
 
         private void OnEnable()
         {
@@ -360,6 +383,27 @@ namespace MenuUi.Scripts.Login
 
                 _registerButton.interactable = true;
             }));
+        }
+        private void Register(){
+
+            if (_registerAgeVerificationToggle.isOn && !_registerParentalAuthToggle.isOn)
+            {
+                return;
+            }
+
+
+        }
+
+        private void Openregister()
+        {
+            _registerWindow.SetActive(true);
+            _signInWindow.SetActive(false);
+        }
+
+        private void closeregister()
+        {
+            _registerWindow.SetActive(false);
+            _signInWindow.SetActive(true);
         }
 
         private void OpenPasswordHintPanel()
