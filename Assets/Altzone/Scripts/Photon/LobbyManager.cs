@@ -9116,7 +9116,22 @@ namespace Altzone.Scripts.Lobby
             }
             catch { }
         }
-        public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged) { LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged)); }
+        public void OnRoomPropertiesUpdate(PhotonHashtable propertiesThatChanged)
+        {
+            if (PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                bool isCustomRoom = false;
+                try
+                {
+                    if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties != null
+                            && PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.MatchmakingKey))
+                        isCustomRoom = (MatchmakingType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey) == MatchmakingType.Custom;
+                    if (isCustomRoom) QueueCustomBattleStartCheck();
+                }
+                catch { }
+            }
+            LobbyOnRoomPropertiesUpdate?.Invoke(new(propertiesThatChanged));
+        }
         public void OnPlayerPropertiesUpdate(Player targetPlayer, PhotonHashtable changedProps)
         {
             if (PhotonRealtimeClient.LocalPlayer.IsMasterClient && changedProps.ContainsKey(PhotonBattleRoom.PlayerReadyKey))
@@ -9124,8 +9139,6 @@ namespace Altzone.Scripts.Lobby
                 bool isCustomRoom = false;
                 try
                 {
-                    if (targetPlayer.GetCustomProperty(PhotonBattleRoom.PlayerReadyKey, false)) ;
-
                     if (PhotonRealtimeClient.CurrentRoom != null && PhotonRealtimeClient.CurrentRoom.CustomProperties != null
                             && PhotonRealtimeClient.CurrentRoom.CustomProperties.ContainsKey(PhotonBattleRoom.MatchmakingKey))
                         isCustomRoom = (MatchmakingType)PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey) == MatchmakingType.Custom;
