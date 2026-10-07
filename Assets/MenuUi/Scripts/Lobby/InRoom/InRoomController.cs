@@ -35,7 +35,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private TMP_Text _noticeText;
         [SerializeField] private TMP_Text _sendInviteToFriendText;
-        
+        [SerializeField] private AttentionSpanHandler _readyPanel;
+
         [SerializeField] private Button _inviteOnlinePlayerButton;
         [SerializeField] private InRoomInviteSelectorPanel _inviteSelectorPanel;
 
@@ -57,6 +58,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // premade target-mode selector removed until prefab wiring is fixed
             if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.AddListener(OnInviteOnlinePlayerButtonPressed);
             //buttons[3].onClick.AddListener(StartRaidTest);
+            InRoomPlayerSlot.OnActivateReadyPanel += OpenReadyPanel;
         }
 
         private void OnEnable()
@@ -116,6 +118,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             StopCustomRoomTimeoutMonitoring();
             _startGameButton.onClick.RemoveAllListeners();
             _backButton.onClick.RemoveAllListeners();
+            InRoomPlayerSlot.OnActivateReadyPanel -= OpenReadyPanel;
         }
 
         private void OnDisable()
@@ -242,6 +245,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType));
                     break;
             }
+        }
+
+        private void OpenReadyPanel()
+        {
+            _readyPanel.OpenPanel();
         }
 
         // Premade target selector UI path temporarily removed.

@@ -22,6 +22,7 @@ public class InRoomPlayerSlot : MonoBehaviour
 
     private int? _slotIndex = null;
     private string _playerId = null;
+    private bool _isOwn = false;
 
     private const string BOT_ID = "Bot";
 
@@ -35,6 +36,9 @@ public class InRoomPlayerSlot : MonoBehaviour
 
     public delegate void SetReady(int position, bool value);
     public static event SetReady OnSetReady;
+
+    public delegate void ActivateReadyPanel();
+    public static event ActivateReadyPanel OnActivateReadyPanel;
 
     private void Start()
     {
@@ -70,6 +74,7 @@ public class InRoomPlayerSlot : MonoBehaviour
             else
                 _playerName.SetText("Free slot");
             _playerName.GetComponent<TMP_Text>().color = Color.white;
+            _isOwn = false;
             _slotButton.GetComponent<Image>().sprite = _freePlayerSprite;
             _botButton.GetComponent<Image>().sprite = _botSprite;
             if(_customRoom) _botButton.gameObject.SetActive(true);
@@ -82,6 +87,7 @@ public class InRoomPlayerSlot : MonoBehaviour
             return;
         }
 
+        _isOwn = ownSlot;
         _playerId = playerId;
         _playerName.SetText(playerName);
         if (ownSlot)
@@ -122,6 +128,7 @@ public class InRoomPlayerSlot : MonoBehaviour
         else
             _playerName.SetText("Bot");
         _playerName.GetComponent<TMP_Text>().color = Color.white;
+        _isOwn = false;
         _slotButton.GetComponent<Image>().sprite = _botSprite;
         _botButton.GetComponent<Image>().sprite = _freePlayerSprite;
         _botButton.gameObject.SetActive(true);
@@ -136,6 +143,10 @@ public class InRoomPlayerSlot : MonoBehaviour
     {
         _readyToggle.SetIsOnWithoutNotify(value);
         _readyToggle.GetComponent<Image>().color = value ? _readyColor: _unreadyColor;
+        if (_isOwn && value)
+        {
+            OnActivateReadyPanel?.Invoke();
+        }
     }
 
     private void ToggleBot(bool value)
