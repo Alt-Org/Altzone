@@ -268,30 +268,28 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerCharacterDataQComponent))]
   public unsafe class BattlePlayerCharacterDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerCharacterDataQComponent> {
-    public PlayerRef PlayerRef;
-    public Quantum.QEnum32<BattlePlayerSlot> Slot;
-    public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
-    public Quantum.QEnum32<BattlePlayerCharacterID> CharacterId;
-    public Quantum.QEnum32<BattlePlayerCharacterClass> CharacterClass;
-    public Int32 CharacterNumber;
+    public Int32 Number;
+    public Quantum.QEnum32<BattlePlayerCharacterID> Id;
+    public Quantum.QEnum32<BattlePlayerCharacterClass> Class;
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
-    public Int32 GridExtendTop;
-    public Int32 GridExtendBottom;
-    public QBoolean DisableMovement;
-    public QBoolean DisableRotation;
-    public Quantum.QEnum32<BattlePlayerSpawnBehaviour> SpawnBehaviour;
-    public QBoolean MovementEnabled;
-    public QBoolean RotationEnabled;
-    public FP CurrentDefence;
-    public Quantum.Prototypes.FrameTimerPrototype StunCooldown;
-    public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
-    public QBoolean HasTargetPosition;
-    public FPVector2 TargetPosition;
-    public FP RotationBaseRad;
-    public FP RotationOffsetRad;
+    public Int32 AttributeGridExtendTop;
+    public Int32 AttributeGridExtendBottom;
+    public QBoolean AttributeDisableMovement;
+    public QBoolean AttributeDisableRotation;
+    public Quantum.QEnum32<BattlePlayerSpawnBehaviour> AttributeSpawnBehaviour;
+    public Quantum.QEnum32<BattlePlayerCharacterState> State;
+    public QBoolean StateMovementEnabled;
+    public QBoolean StateRotationEnabled;
+    public FP StateDefenceValue;
+    public Quantum.Prototypes.FrameTimerPrototype StateStunCooldown;
+    public Quantum.Prototypes.FrameTimerPrototype StateShieldHitCooldown;
+    public QBoolean MovementHasTargetPosition;
+    public FPVector2 MovementTargetPosition;
+    public FP MovementRotationBaseRad;
+    public FP MovementRotationOffsetRad;
+    public FPVector2 MovementPreviousInPlayPosition;
     public Int32 ShieldCount;
-    public Int32 AttachedShieldNumber;
-    public Quantum.Prototypes.BattlePlayerShieldEntityRefPrototype AttachedShield;
+    public MapEntityId AttachedShieldEntityRef;
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
     public FP BotMovementCooldownSec;
@@ -304,30 +302,28 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerCharacterDataQComponent result, in PrototypeMaterializationContext context = default) {
-        result.PlayerRef = this.PlayerRef;
-        result.Slot = this.Slot;
-        result.TeamNumber = this.TeamNumber;
-        result.CharacterId = this.CharacterId;
-        result.CharacterClass = this.CharacterClass;
-        result.CharacterNumber = this.CharacterNumber;
+        result.Number = this.Number;
+        result.Id = this.Id;
+        result.Class = this.Class;
         this.Stats.Materialize(frame, ref result.Stats, in context);
-        result.GridExtendTop = this.GridExtendTop;
-        result.GridExtendBottom = this.GridExtendBottom;
-        result.DisableMovement = this.DisableMovement;
-        result.DisableRotation = this.DisableRotation;
-        result.SpawnBehaviour = this.SpawnBehaviour;
-        result.MovementEnabled = this.MovementEnabled;
-        result.RotationEnabled = this.RotationEnabled;
-        result.CurrentDefence = this.CurrentDefence;
-        this.StunCooldown.Materialize(frame, ref result.StunCooldown, in context);
-        this.ShieldHitCooldown.Materialize(frame, ref result.ShieldHitCooldown, in context);
-        result.HasTargetPosition = this.HasTargetPosition;
-        result.TargetPosition = this.TargetPosition;
-        result.RotationBaseRad = this.RotationBaseRad;
-        result.RotationOffsetRad = this.RotationOffsetRad;
+        result.AttributeGridExtendTop = this.AttributeGridExtendTop;
+        result.AttributeGridExtendBottom = this.AttributeGridExtendBottom;
+        result.AttributeDisableMovement = this.AttributeDisableMovement;
+        result.AttributeDisableRotation = this.AttributeDisableRotation;
+        result.AttributeSpawnBehaviour = this.AttributeSpawnBehaviour;
+        result.State = this.State;
+        result.StateMovementEnabled = this.StateMovementEnabled;
+        result.StateRotationEnabled = this.StateRotationEnabled;
+        result.StateDefenceValue = this.StateDefenceValue;
+        this.StateStunCooldown.Materialize(frame, ref result.StateStunCooldown, in context);
+        this.StateShieldHitCooldown.Materialize(frame, ref result.StateShieldHitCooldown, in context);
+        result.MovementHasTargetPosition = this.MovementHasTargetPosition;
+        result.MovementTargetPosition = this.MovementTargetPosition;
+        result.MovementRotationBaseRad = this.MovementRotationBaseRad;
+        result.MovementRotationOffsetRad = this.MovementRotationOffsetRad;
+        result.MovementPreviousInPlayPosition = this.MovementPreviousInPlayPosition;
         result.ShieldCount = this.ShieldCount;
-        result.AttachedShieldNumber = this.AttachedShieldNumber;
-        this.AttachedShield.Materialize(frame, ref result.AttachedShield, in context);
+        PrototypeValidator.FindMapEntity(this.AttachedShieldEntityRef, in context, out result.AttachedShieldEntityRef);
         this.AbilityCooldownSec.Materialize(frame, ref result.AbilityCooldownSec, in context);
         this.AbilityActivateBufferSec.Materialize(frame, ref result.AbilityActivateBufferSec, in context);
         result.BotMovementCooldownSec = this.BotMovementCooldownSec;
@@ -498,15 +494,15 @@ namespace Quantum.Prototypes {
     public Quantum.QEnum32<BattlePlayerPlayState> PlayState;
     public QBoolean IsBot;
     public QBoolean IsAbandoned;
-    public QBoolean AllowCharacterSwapping;
-    public QBoolean PlayerGiveUpState;
+    public QBoolean StateAllowCharacterSwapping;
+    public QBoolean StatePlayerGiveUp;
     public Quantum.Prototypes.FrameTimerPrototype RespawnTimer;
     public Int32 SelectedCharacterNumber;
     public Quantum.Prototypes.BattleEntityIDPrototype CharacterEntityGroupID;
     [ArrayLengthAttribute(3)]
-    public Quantum.QEnum32<BattlePlayerCharacterState>[] CharactersStates = new Quantum.QEnum32<BattlePlayerCharacterState>[3];
+    public FPVector2[] CharacterDefaultSpawnPositions = new FPVector2[3];
     [ArrayLengthAttribute(3)]
-    public FPVector2[] CharacterPreviousPositions = new FPVector2[3];
+    public Quantum.Prototypes.BattleEntityIDPrototype[] PlayerShieldEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[3];
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerData result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattlePlayerData result, in PrototypeMaterializationContext context = default) {
         result.PRef = this.PRef;
@@ -515,16 +511,16 @@ namespace Quantum.Prototypes {
         result.PlayState = this.PlayState;
         result.IsBot = this.IsBot;
         result.IsAbandoned = this.IsAbandoned;
-        result.AllowCharacterSwapping = this.AllowCharacterSwapping;
-        result.PlayerGiveUpState = this.PlayerGiveUpState;
+        result.StateAllowCharacterSwapping = this.StateAllowCharacterSwapping;
+        result.StatePlayerGiveUp = this.StatePlayerGiveUp;
         this.RespawnTimer.Materialize(frame, ref result.RespawnTimer, in context);
         result.SelectedCharacterNumber = this.SelectedCharacterNumber;
         this.CharacterEntityGroupID.Materialize(frame, ref result.CharacterEntityGroupID, in context);
-        for (int i = 0, count = PrototypeValidator.CheckLength(CharactersStates, 3, in context); i < count; ++i) {
-          *result.CharactersStates.GetPointer(i) = this.CharactersStates[i];
+        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterDefaultSpawnPositions, 3, in context); i < count; ++i) {
+          *result.CharacterDefaultSpawnPositions.GetPointer(i) = this.CharacterDefaultSpawnPositions[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterPreviousPositions, 3, in context); i < count; ++i) {
-          *result.CharacterPreviousPositions.GetPointer(i) = this.CharacterPreviousPositions[i];
+        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerShieldEntityGroupIDs, 3, in context); i < count; ++i) {
+          this.PlayerShieldEntityGroupIDs[i].Materialize(frame, ref *result.PlayerShieldEntityGroupIDs.GetPointer(i), in context);
         }
         MaterializeUser(frame, ref result, in context);
     }
@@ -617,27 +613,7 @@ namespace Quantum.Prototypes {
   public unsafe partial class BattlePlayerManagerDataQSingletonPrototype : ComponentPrototype<Quantum.BattlePlayerManagerDataQSingleton> {
     public Int32 PlayerCount;
     [ArrayLengthAttribute(4)]
-    public PlayerRef[] PlayerRefs = new PlayerRef[4];
-    [ArrayLengthAttribute(4)]
-    public Quantum.QEnum32<BattlePlayerPlayState>[] PlayStates = new Quantum.QEnum32<BattlePlayerPlayState>[4];
-    [ArrayLengthAttribute(4)]
-    public QBoolean[] IsBotStates = new QBoolean[4];
-    [ArrayLengthAttribute(4)]
-    public QBoolean[] IsAbandonedStates = new QBoolean[4];
-    [ArrayLengthAttribute(4)]
-    public QBoolean[] AllowCharacterSwappingStates = new QBoolean[4];
-    [ArrayLengthAttribute(4)]
-    public QBoolean[] PlayerGiveUpStates = new QBoolean[4];
-    [ArrayLengthAttribute(4)]
-    public Quantum.Prototypes.FrameTimerPrototype[] RespawnTimers = new Quantum.Prototypes.FrameTimerPrototype[4];
-    [ArrayLengthAttribute(4)]
-    public Int32[] CharacterSelectedNumbers = new Int32[4];
-    [ArrayLengthAttribute(4)]
-    public Quantum.Prototypes.BattleEntityIDPrototype[] CharacterEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[4];
-    [ArrayLengthAttribute(12)]
-    public Quantum.QEnum32<BattlePlayerCharacterState>[] CharactersAllStates = new Quantum.QEnum32<BattlePlayerCharacterState>[12];
-    [ArrayLengthAttribute(12)]
-    public FPVector2[] CharacterAllPreviousPositions = new FPVector2[12];
+    public Quantum.Prototypes.BattlePlayerDataPrototype[] PlayerArray = new Quantum.Prototypes.BattlePlayerDataPrototype[4];
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerManagerDataQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerManagerDataQSingleton component = default;
@@ -646,38 +622,8 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerManagerDataQSingleton result, in PrototypeMaterializationContext context = default) {
         result.PlayerCount = this.PlayerCount;
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerRefs, 4, in context); i < count; ++i) {
-          *result.PlayerRefs.GetPointer(i) = this.PlayerRefs[i];
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayStates, 4, in context); i < count; ++i) {
-          *result.PlayStates.GetPointer(i) = this.PlayStates[i];
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(IsBotStates, 4, in context); i < count; ++i) {
-          *result.IsBotStates.GetPointer(i) = this.IsBotStates[i];
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(IsAbandonedStates, 4, in context); i < count; ++i) {
-          *result.IsAbandonedStates.GetPointer(i) = this.IsAbandonedStates[i];
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(AllowCharacterSwappingStates, 4, in context); i < count; ++i) {
-          *result.AllowCharacterSwappingStates.GetPointer(i) = this.AllowCharacterSwappingStates[i];
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerGiveUpStates, 4, in context); i < count; ++i) {
-          *result.PlayerGiveUpStates.GetPointer(i) = this.PlayerGiveUpStates[i];
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(RespawnTimers, 4, in context); i < count; ++i) {
-          this.RespawnTimers[i].Materialize(frame, ref *result.RespawnTimers.GetPointer(i), in context);
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterSelectedNumbers, 4, in context); i < count; ++i) {
-          result.CharacterSelectedNumbers[i] = this.CharacterSelectedNumbers[i];
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterEntityGroupIDs, 4, in context); i < count; ++i) {
-          this.CharacterEntityGroupIDs[i].Materialize(frame, ref *result.CharacterEntityGroupIDs.GetPointer(i), in context);
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(CharactersAllStates, 12, in context); i < count; ++i) {
-          *result.CharactersAllStates.GetPointer(i) = this.CharactersAllStates[i];
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterAllPreviousPositions, 12, in context); i < count; ++i) {
-          *result.CharacterAllPreviousPositions.GetPointer(i) = this.CharacterAllPreviousPositions[i];
+        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerArray, 4, in context); i < count; ++i) {
+          this.PlayerArray[i].Materialize(frame, ref *result.PlayerArray.GetPointer(i), in context);
         }
         MaterializeUser(frame, ref result, in context);
     }
@@ -738,10 +684,8 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerShieldManagerDataQSingleton))]
   public unsafe partial class BattlePlayerShieldManagerDataQSingletonPrototype : ComponentPrototype<Quantum.BattlePlayerShieldManagerDataQSingleton> {
-    [ArrayLengthAttribute(12)]
-    public Int32[] PlayerShieldCounts = new Int32[12];
-    [ArrayLengthAttribute(12)]
-    public Quantum.Prototypes.BattleEntityIDPrototype[] PlayerShieldEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[12];
+    [HideInInspector()]
+    public Int32 _empty_prototype_dummy_field_;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerShieldManagerDataQSingleton result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerShieldManagerDataQSingleton component = default;
@@ -749,12 +693,6 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerShieldManagerDataQSingleton result, in PrototypeMaterializationContext context = default) {
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerShieldCounts, 12, in context); i < count; ++i) {
-          result.PlayerShieldCounts[i] = this.PlayerShieldCounts[i];
-        }
-        for (int i = 0, count = PrototypeValidator.CheckLength(PlayerShieldEntityGroupIDs, 12, in context); i < count; ++i) {
-          this.PlayerShieldEntityGroupIDs[i].Materialize(frame, ref *result.PlayerShieldEntityGroupIDs.GetPointer(i), in context);
-        }
         MaterializeUser(frame, ref result, in context);
     }
   }
