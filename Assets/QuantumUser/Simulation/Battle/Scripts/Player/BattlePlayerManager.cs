@@ -723,7 +723,7 @@ namespace Battle.QSimulation.Player
 
             // initialize entity
             f.Remove<BattlePlayerCharacterDataTemplateQComponent>(parameters.PlayerCharacterEntityTemplate.ParentEntityRef);
-            f.Add(parameters.PlayerCharacterEntityTemplate.ParentEntityRef, playerCharacterData, out BattlePlayerCharacterDataQComponent* playerDataPtr);
+            f.Add(parameters.PlayerCharacterEntityTemplate.ParentEntityRef, playerCharacterData);
 
             BattlePlayerHandle.CreateLink(f, playerData.Slot, parameters.PlayerCharacterEntityTemplate.ParentEntityRef, PlayerEntityType.Character, parameters.PlayerCharacterEntityTemplate.ParentEntityRef);
         }
