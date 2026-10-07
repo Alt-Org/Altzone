@@ -7223,7 +7223,7 @@ namespace Altzone.Scripts.Lobby
                         Room room = PhotonRealtimeClient.CurrentRoom;
                         int playerCount = room.PlayerCount;
                         int botCount = PhotonBattleRoom.GetBotCount();
-                        if (playerCount + botCount >= room.MaxPlayers) PhotonRealtimeClient.CloseRoom();
+                        if (playerCount + botCount >= room.MaxPlayers && PhotonRealtimeClient.CurrentRoom.IsOpen) PhotonRealtimeClient.CloseRoom();
                     }
                 }
                 else
