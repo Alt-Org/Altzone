@@ -140,31 +140,31 @@ public class ItemMover : MonoBehaviour
                 AdFurnitureObject removableFurniture = _adDecReference.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
                 _adDecReference.RemoveFurniture(removableFurniture);
 
-                var store = Storefront.Get();
-                store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>
-                {
-                    if (player != null && !string.IsNullOrEmpty(player.ClanId))
-                    {
-                        store.GetClanData(player.ClanId, clan =>
-                        {
-                            if (clan != null)
-                            {
-                                store.SaveClanData(clan, saved =>
-                                {
-                                    Debug.Log("Clan data saved after moving item back to tray.");
-                                });
-                            }
-                            else
-                            {
-                                Debug.LogWarning("Clan data not found for saving.");
-                            }
-                        });
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Player data or ClanId missing for saving clan data.");
-                    }
-                });
+                //var store = Storefront.Get();
+                //store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>
+                //{
+                //    if (player != null && !string.IsNullOrEmpty(player.ClanId))
+                //    {
+                //        store.GetClanData(player.ClanId, clan =>
+                //        {
+                //            if (clan != null)
+                //            {
+                //                store.SaveClanData(clan, saved =>
+                //                {
+                //                    Debug.Log("Clan data saved after moving item back to tray.");
+                //                });
+                //            }
+                //            else
+                //            {
+                //                Debug.LogWarning("Clan data not found for saving.");
+                //            }
+                //        });
+                //    }
+                //    else
+                //    {
+                //        Debug.LogWarning("Player data or ClanId missing for saving clan data.");
+                //    }
+                //});
             }
         }
     }
