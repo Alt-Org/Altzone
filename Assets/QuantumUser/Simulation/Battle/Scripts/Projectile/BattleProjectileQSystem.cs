@@ -259,20 +259,18 @@ namespace Battle.QSimulation.Projectile
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
-            // unpack filter
-            BattleProjectileQComponent* projectile = filter.Projectile;
-            Transform2D* transform = filter.Transform;
-            projectile->Position = transform->Position;
+            BattleProjectileHandle projectileHandle = BattleProjectileHandle.Create(filter);
+            projectileHandle.Data->Position = projectileHandle.Transform->Position;
 
-            if (!projectile->IsHeld)
+            if (!projectileHandle.Data->IsHeld)
             {
                 // move the projectile
-                FPVector2 newPosition = transform->Position + projectile->Direction * (projectile->Speed * f.DeltaTime);
+                FPVector2 newPosition = projectileHandle.Transform->Position + projectileHandle.Data->Direction * (projectileHandle.Data->Speed * f.DeltaTime);
                 BattleEntityManager.MoveCompound(f, GetProjectileHandle(f).ERef, newPosition, FP._0);
             }
 
             // reset CollisionFlags for next frame
-            projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
+            projectileHandle.Data->CollisionFlags[(f.Number + 1) % 2 ] = 0;
         }
 
         /// <summary>
