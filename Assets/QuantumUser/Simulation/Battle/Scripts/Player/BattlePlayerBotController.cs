@@ -85,7 +85,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerHandle">The player handle of the bot.</param>
         ///
         /// <returns><see cref="BotInputData"/> struct, which contains the generated inputs.</returns>
-        public static BotInputData GetBotInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
+        public static BotInputData GetBotInput(Frame f, BattlePlayerHandle playerHandle)
         {
             BotInputData botInputData = new();
 
@@ -96,21 +96,15 @@ namespace Battle.QSimulation.Player
 
             bool hasCharacter = false;
 
-            BattlePlayerEntityRef playerEntity;
-            BattlePlayerCharacterDataQComponent* playerData = null;
-
-            if (playerHandle.SelectedCharacterNumber != -1)
+            if (playerHandle.PlayerData.SelectedCharacterNumber != -1)
             {
-                playerEntity = playerHandle.GetSelectedCharacterEntityRef(f);
-                playerData = playerEntity.GetDataQComponent(f);
-
                 hasCharacter = true;
             }
 
             //{ non-character logic
 
             // behavior: gives up when teammate gives up
-            if (BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerHandle.Slot).GiveUpState && !playerHandle.GiveUpState)
+            if (BattlePlayerManager.GetPlayerData(f, BattlePlayerManager.GetTeammateSlot(playerHandle.PlayerData.Slot)).StatePlayerGiveUp && !playerHandle.PlayerData.StatePlayerGiveUp)
             {
                 botInputData.CommandType = BattleCommand.Type.GiveUp;
                 botInputData.CommandData = new BattleGiveUpQCommand();
@@ -118,17 +112,17 @@ namespace Battle.QSimulation.Player
             }
 
             // behavior: selects a random character on random intervals or if none is selected
-            if (hasCharacter && playerData->BotCharacterSwapTimerSec > FP._0)
+            if (hasCharacter && playerHandle.LoadedCharacterData->BotCharacterSwapTimerSec > FP._0)
             {
-                playerData->BotCharacterSwapTimerSec -= f.DeltaTime;
+                playerHandle.LoadedCharacterData->BotCharacterSwapTimerSec -= f.DeltaTime;
             }
             else
             {
                 int nextCharacter = hasCharacter
-                    ? (playerHandle.SelectedCharacterNumber + f.RNG->NextInclusive(1, Constants.BATTLE_PLAYER_CHARACTER_COUNT - 1)) % Constants.BATTLE_PLAYER_CHARACTER_COUNT
+                    ? (playerHandle.PlayerData.SelectedCharacterNumber + f.RNG->NextInclusive(1, Constants.BATTLE_PLAYER_CHARACTER_COUNT - 1)) % Constants.BATTLE_PLAYER_CHARACTER_COUNT
                     : f.RNG->NextInclusive(0, Constants.BATTLE_PLAYER_CHARACTER_COUNT - 1);
 
-                playerHandle.GetCharacterEntityRef(f, nextCharacter).GetDataQComponent(f)->BotCharacterSwapTimerSec =
+                playerHandle.LoadCharacterCopy(f, nextCharacter).LoadedCharacterData->BotCharacterSwapTimerSec =
                     f.RNG->NextInclusive(playerBotSpec.CharacterSwapTimeSecMin, playerBotSpec.CharacterSwapTimeSecMax);
 
                 botInputData.CommandType = BattleCommand.Type.SwapCharacter;
@@ -146,9 +140,9 @@ namespace Battle.QSimulation.Player
             // - intentional movement: predicts and intercepts the projectile, with some inaccuracy based on BattlePlayerBotQSpec.Inaccuracy.
             // - misclick: performs a random movement.
 
-            if (playerData->BotMovementCooldownSec > FP._0)
+            if (playerHandle.LoadedCharacterData->BotMovementCooldownSec > FP._0)
             {
-                playerData->BotMovementCooldownSec -= f.DeltaTime;
+                playerHandle.LoadedCharacterData->BotMovementCooldownSec -= f.DeltaTime;
             }
             else
             {
@@ -157,12 +151,12 @@ namespace Battle.QSimulation.Player
 
             if (movementInput != BattleMovementInputType.None)
             {
-                playerData->BotMovementCooldownSec = f.RNG->NextInclusive(playerBotSpec.MovementCooldownSecMin, playerBotSpec.MovementCooldownSecMax);
+                playerHandle.LoadedCharacterData->BotMovementCooldownSec = f.RNG->NextInclusive(playerBotSpec.MovementCooldownSecMin, playerBotSpec.MovementCooldownSecMax);
                 ComponentFilter<BattleProjectileQComponent> projectiles = f.Filter<BattleProjectileQComponent>();
                 if (projectiles.NextUnsafe(out EntityRef projectileEntity, out BattleProjectileQComponent* projectile))
                 {
                     FPVector2 projectileDirection = projectile->Direction;
-                    if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? projectileDirection.Y > 0 : projectileDirection.Y < 0) return botInputData;
+                    if (playerHandle.PlayerData.Team == BattleTeamNumber.TeamAlpha ? projectileDirection.Y > 0 : projectileDirection.Y < 0) return botInputData;
                     FPVector2 projectilePosition = projectile->Position;
                     FP predictionTimeSec = playerBotSpec.LookAheadTimeSec;
 
@@ -184,7 +178,7 @@ namespace Battle.QSimulation.Player
                         int playfieldStart;
                         int playfieldEnd;
 
-                        if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
+                        if (playerHandle.PlayerData.Team == BattleTeamNumber.TeamAlpha)
                         {
                             playfieldStart = BattleGridManager.TeamAlphaFieldStart;
                             playfieldEnd = BattleGridManager.TeamAlphaFieldEnd;
@@ -205,20 +199,20 @@ namespace Battle.QSimulation.Player
                     // clamp the TargetPosition inside sidebounds
                     predictedGridPosition.Col = Mathf.Clamp(predictedGridPosition.Col, 0, BattleGridManager.Columns - 1);
 
-                    if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
+                    if (playerHandle.PlayerData.Team == BattleTeamNumber.TeamAlpha)
                     {
                         predictedGridPosition.Row = Mathf.Clamp(
                             predictedGridPosition.Row,
-                            BattleGridManager.TeamAlphaFieldStart + playerData->GridExtendBottom,
-                            BattleGridManager.TeamAlphaFieldEnd - playerData->GridExtendTop
+                            BattleGridManager.TeamAlphaFieldStart + playerHandle.LoadedCharacterData->AttributeGridExtendBottom,
+                            BattleGridManager.TeamAlphaFieldEnd - playerHandle.LoadedCharacterData->AttributeGridExtendTop
                         );
                     }
                     else
                     {
                         predictedGridPosition.Row = Mathf.Clamp(
                             predictedGridPosition.Row,
-                            BattleGridManager.TeamBetaFieldStart + playerData->GridExtendBottom,
-                            BattleGridManager.TeamBetaFieldEnd - playerData->GridExtendTop
+                            BattleGridManager.TeamBetaFieldStart + playerHandle.LoadedCharacterData->AttributeGridExtendBottom,
+                            BattleGridManager.TeamBetaFieldEnd - playerHandle.LoadedCharacterData->AttributeGridExtendTop
                         );
                     }
                 }
