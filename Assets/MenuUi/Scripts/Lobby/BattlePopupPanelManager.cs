@@ -19,6 +19,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject _topPanel;
     [SerializeField] private GameObject _border;
+    [SerializeField] private GameObject _characterConfirmPanel;
     [SerializeField] private GameObject _mainPanel;
     [SerializeField] private GameObject _createCustomRoom;
     [SerializeField] private GameObject _custom2v2WaitingRoom;
@@ -32,6 +33,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         LobbyManager.OnMatchmakingRoomEntered += SwitchToMatchmakingPanel;
         SignalBus.OnCustomRoomSettingsRequested += OpenCustomRoomSettings;
         InRoomController.OnLeaveRoom += ReturnToMain;
+        CharacterConfirmPanelHandler.OnLockCharacters += SwitchRoom;
         WireMainPanelButtons();
         WireCreateRoomButtons();
     }
@@ -41,6 +43,14 @@ public class BattlePopupPanelManager : MonoBehaviour
         LobbyManager.OnMatchmakingRoomEntered -= SwitchToMatchmakingPanel;
         SignalBus.OnCustomRoomSettingsRequested -= OpenCustomRoomSettings;
         InRoomController.OnLeaveRoom -= ReturnToMain;
+        CharacterConfirmPanelHandler.OnLockCharacters -= SwitchRoom;
+    }
+
+    public void OpenConfirmWindow(MatchmakingType gameType)
+    {
+        ClosePanels();
+        _characterConfirmPanel.SetActive(true);
+        _characterConfirmPanel.GetComponent<CharacterConfirmPanelHandler>().SetInfo(gameType);
     }
 
     public void SwitchRoom(MatchmakingType gameType)

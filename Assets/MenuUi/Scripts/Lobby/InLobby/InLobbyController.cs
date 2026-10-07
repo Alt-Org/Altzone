@@ -196,7 +196,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
                     SelectedMatchmakingType = matchmakingType;
                     SelectedGameType = gameType;
-                    _roomSwitcher.SwitchRoom(matchmakingType);
+                    _roomSwitcher.OpenConfirmWindow(matchmakingType);
                     return;
                 case MatchmakingType.Clan2v2:
                 case MatchmakingType.Random2v2:
