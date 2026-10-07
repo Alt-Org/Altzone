@@ -18,6 +18,7 @@ public class InRoomPlayerSlot : MonoBehaviour
     [SerializeField] private Color _unreadyColor;
     [SerializeField] private TextLanguageSelectorCaller _playerName;
     [SerializeField] private Image _masterClient;
+    [SerializeField] private bool _customRoom;
 
     private int? _slotIndex = null;
     private string _playerId = null;
@@ -71,7 +72,8 @@ public class InRoomPlayerSlot : MonoBehaviour
             _playerName.GetComponent<TMP_Text>().color = Color.white;
             _slotButton.GetComponent<Image>().sprite = _freePlayerSprite;
             _botButton.GetComponent<Image>().sprite = _botSprite;
-            _botButton.gameObject.SetActive(true);
+            if(_customRoom) _botButton.gameObject.SetActive(true);
+            else _botButton.gameObject.SetActive(false);
             _readyToggle.gameObject.SetActive(false);
             _readyToggle.SetIsOnWithoutNotify(false);
             _readyToggle.GetComponent<Image>().color = _unreadyColor;
@@ -90,7 +92,7 @@ public class InRoomPlayerSlot : MonoBehaviour
         {
             _playerName.GetComponent<TMP_Text>().color = Color.white;
         }
-        _readyToggle.gameObject.SetActive(true);
+        if (_customRoom) _readyToggle.gameObject.SetActive(true);
         _botButton.SetIsOnWithoutNotify(false);
         _masterClient.gameObject.SetActive(isMasterClient);
 

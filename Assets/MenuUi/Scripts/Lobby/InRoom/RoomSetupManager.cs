@@ -164,10 +164,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 yield break;
             }
 
-            _player1Slot.Initialize(0);
-            _player2Slot.Initialize(1);
-            _player3Slot.Initialize(2);
-            _player4Slot.Initialize(3);
+            if (_player1Slot) _player1Slot.Initialize(0);
+            if (_player2Slot) _player2Slot.Initialize(1);
+            if (_player3Slot) _player3Slot.Initialize(2);
+            if (_player4Slot) _player4Slot.Initialize(3);
 
             // Setting photon nickname from playerdata name
             PhotonRealtimeClient.NickName = playerData.Name;
@@ -544,10 +544,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _interactablePlayerP3 = true;
             _interactablePlayerP4 = true;
 
-            _player1Slot.SetCharacters(null, null, null, false, false);
-            _player2Slot.SetCharacters(null, null, null, false, false);
-            _player3Slot.SetCharacters(null, null, null, false, false);
-            _player4Slot.SetCharacters(null, null, null, false, false);
+            if (_player1Slot) _player1Slot.SetCharacters(null, null, null, false, false);
+            if (_player2Slot) _player2Slot.SetCharacters(null, null, null, false, false);
+            if (_player3Slot) _player3Slot.SetCharacters(null, null, null, false, false);
+            if (_player4Slot) _player4Slot.SetCharacters(null, null, null, false, false);
         }
 
         private void SetFillBotToggle(bool value)

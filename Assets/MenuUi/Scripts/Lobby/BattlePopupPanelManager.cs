@@ -100,6 +100,7 @@ public class BattlePopupPanelManager : MonoBehaviour
                 else
                 {
                     _clanAndRandom2v2WaitingRoom.SetActive(true);
+                    _topPanel.SetActive(true);
                     // Start a short delayed check to catch race where matchmaking join finishes shortly after popup opens
                     try
                     {
@@ -246,6 +247,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         ClosePanels();
         _matchmakingPanel.SetCancelButton(isLeader);
         _matchmakingPanel.gameObject.SetActive(true);
+        _topPanel.SetActive(true);
     }
 
     public void ClosePanels()
