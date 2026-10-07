@@ -36,47 +36,45 @@ namespace Battle.QSimulation.Player
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         /// <param name="selected">Is the character selected or not.</param>
-        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData, bool selected)
+        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, bool selected)
         {
-            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
+            BattlePlayerHandle                playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
+            BattlePlayerCharacterShieldHandle shieldHandle = BattlePlayerCharacterShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
 
-            if (projectileCollisionData->Projectile->IsHeld) return;
+            if (projectileCollisionData->Projectile.Data->IsHeld) return;
 
-            bool grab = playerShieldData->IsAttached && !projectileCollisionData->Projectile->IsPassed;
+            bool grab = shieldHandle.ShieldData->IsAttached && !projectileCollisionData->Projectile.Data->IsPassed;
             BattlePlayerClass400DataQComponent* data = null;
 
             if (grab)
             {
-                data = GetClassData(f, ((BattlePlayerShieldEntityRef)shieldCollisionData->PlayerShieldHitbox->ParentEntityRef).GetDataQComponent(f)->PlayerEntityRef);
-                BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerShieldData->PlayerEntityRef.GetDataQComponent(f)->Slot);
-                if (!teammateHandle.PlayState.IsInPlay()) grab = false;
+                data = GetClassData(f, playerHandle.LoadedCharacterEntityRef);
+                BattlePlayerData.Ref teammateData = BattlePlayerManager.GetPlayerData(f, BattlePlayerManager.GetTeammateSlot(playerHandle.PlayerData.Slot));
+                if (!teammateData.PlayState.IsInPlay()) grab = false;
             }
             if (grab)
             {
-                Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
-                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(projectileCollisionData->ProjectileEntityRef);
 
-                FPVector2 toProjectile = transformProjectile->Position - transformPlayer->Position;
+                FPVector2 toProjectile = projectileCollisionData->Projectile.Transform->Position - playerHandle.LoadedCharacterTransform->Position;
 
-                BattleProjectileQSystem.SetHeld(projectileCollisionData->Projectile, true);
+                projectileCollisionData->Projectile.SetHeld(true);
                 data->IsHoldingProjectile = true;
-                data->HeldProjectileEntity = projectileCollisionData->ProjectileEntityRef;
+                data->HeldProjectileEntity = projectileCollisionData->Projectile.ERef;
                 data->HeldProjectileAngleRadians = FPVector2.RadiansSigned(FPVector2.Up, toProjectile);
-                data->HeldProjectileDistance = shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset + projectileCollisionData->Projectile->Radius;
+                data->HeldProjectileDistance = shieldHandle.CollidedHitboxComponent->CollisionMinOffset + projectileCollisionData->Projectile.Data->Radius;
                 data->HoldStartFrame = f.Number;
             }
             else
             {
                 BattleProjectileQSystem.HandleIntersection(f,
                     projectileCollisionData->Projectile,
-                    projectileCollisionData->ProjectileEntityRef,
                     projectileCollisionData->OtherEntityRef,
-                    shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f),
-                    shieldCollisionData->PlayerShieldHitbox->CollisionMinOffset
+                    shieldHandle.CollidedHitboxComponent->CalculateNormal(f),
+                    shieldHandle.CollidedHitboxComponent->CollisionMinOffset
                 );
                 BattleProjectileQSystem.UpdateVelocity(f,
-                    projectileCollisionData->Projectile,
-                    shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f),
+                    projectileCollisionData->Projectile.Data,
+                    shieldHandle.CollidedHitboxComponent->CalculateNormal(f),
                     BattleProjectileQSystem.SpeedChange.Increment
                 );
             }
@@ -88,34 +86,30 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerData">Pointer to player data.</param>
+        /// <param name="playerCharacterData">Pointer to player data.</param>
         /// <param name="playerEntity">Entity reference for the player.</param>
         /// <param name="specialInput">Pointer to special input (unused)</param>
-        public override unsafe void OnUpdate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerCharacterDataQComponent* playerData, BattlePlayerEntityRef playerEntity, BattleSpecialInput* specialInput)
+        public override unsafe void OnUpdate(Frame f, BattlePlayerHandle playerHandle, BattleSpecialInput* specialInput)
         {
-            BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
+            BattlePlayerClass400DataQComponent* data = GetClassData(f, playerHandle.LoadedCharacterEntityRef);
             if (!data->IsHoldingProjectile) return;
 
             if (!BattleParameters.GetIsTestFlipperGame(f))
             {
-                playerHandle.AllowCharacterSwapping = false;
+                playerHandle.PlayerData.Low_Level.StateAllowCharacterSwapping = false;
             }
 
-            BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
-            if (teammateHandle.PlayState.IsOutOfPlay()) return;
+            BattlePlayerHandle teammateHandle = BattlePlayerHandle.Create(f, BattlePlayerManager.GetTeammateSlot(playerHandle.PlayerData.Slot));
 
-            EntityRef teammateEntity = teammateHandle.GetSelectedCharacterEntityRef(f);
+            if (teammateHandle.PlayerData.PlayState.IsOutOfPlay()) return;
 
-            if (teammateHandle.PlayState.IsInPlay())
+            if (teammateHandle.PlayerData.PlayState.IsInPlay())
             {
-                BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(data->HeldProjectileEntity);
-                Transform2D* transformProjectile = f.Unsafe.GetPointer<Transform2D>(data->HeldProjectileEntity);
-                Transform2D* transformPlayer = f.Unsafe.GetPointer<Transform2D>(playerEntity);
-                Transform2D* transformTeammate = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
-                FPVector2 targetPosition = transformTeammate->Position;
-                targetPosition.Y += (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FP._4 : -FP._4) * BattleGridManager.GridScaleFactor;
+                BattleProjectileHandle projectile = BattleProjectileQSystem.GetProjectileHandle(f);
+                FPVector2 targetPosition = teammateHandle.LoadedCharacterTransform->Position;
+                targetPosition.Y += (playerHandle.PlayerData.Team == BattleTeamNumber.TeamAlpha ? FP._4 : -FP._4) * BattleGridManager.GridScaleFactor;
 
-                FPVector2 toTeammate = targetPosition - transformPlayer->Position;
+                FPVector2 toTeammate = targetPosition - playerHandle.LoadedCharacterTransform->Position;
                 FP angleTeammate = FPVector2.RadiansSigned(FPVector2.Up, toTeammate);
 
                 FP rotationTime = (f.Number - data->HoldStartFrame) / data->RotationDurationFrames;
@@ -123,17 +117,17 @@ namespace Battle.QSimulation.Player
 
                 FPVector2 newDirection = FPVector2.Rotate(FPVector2.Up, newAngle);
 
-                BattleEntityManager.MoveCompound(f, data->HeldProjectileEntity, transformPlayer->Position + newDirection * data->HeldProjectileDistance, FP._0);
+                BattleEntityManager.MoveCompound(f, data->HeldProjectileEntity, playerHandle.LoadedCharacterTransform->Position + newDirection * data->HeldProjectileDistance, FP._0);
 
                 if (newAngle == angleTeammate)
                 {
-                    BattleProjectileQSystem.UpdateVelocity(f, projectile, newDirection, BattleProjectileQSystem.SpeedChange.Increment, passed: true);
-                    BattleProjectileQSystem.SetHeld(projectile, false);
+                    BattleProjectileQSystem.UpdateVelocity(f, projectile.Data, newDirection, BattleProjectileQSystem.SpeedChange.Increment, passed: true);
+                    BattleProjectileQSystem.GetProjectileHandle(f).SetHeld(false);
                     data->IsHoldingProjectile = false;
 
                     if (!BattleParameters.GetIsTestFlipperGame(f))
                     {
-                        playerHandle.AllowCharacterSwapping = true;
+                        playerHandle.PlayerData.Low_Level.StateAllowCharacterSwapping = true;
                     }
                 }
             }
