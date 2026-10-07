@@ -7291,7 +7291,7 @@ namespace Altzone.Scripts.Lobby
 
             string playerId = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(newPositionKey, string.Empty);
 
-            if(playerId != player.UserId)
+            if(playerId != player.UserId && active)
             {
                 Debug.LogWarning("Player is not in valid position.");
                 _playerPosChangeInProgress = false;

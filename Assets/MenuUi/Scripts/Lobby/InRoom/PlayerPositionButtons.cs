@@ -31,6 +31,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             {
                 throw new UnityException($"invalid positionIndex: {positionIndex}");
             }
+            this.Publish(new LobbyManager.ReadyToggleEvent(PositionMap[positionIndex], false));
             this.Publish(new LobbyManager.PlayerPosEvent(PositionMap[positionIndex]));
         }
 
