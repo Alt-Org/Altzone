@@ -101,18 +101,17 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="arenaCollisionData">Collision data related to the arena.</param>
+        /// <param name="arenaBorder">Collision data related to the arena.</param>
         /// <param name="playerClass100ProjectileCollisionData">Collision data related to the class 100 projectile.</param>
         public static void OnProjectileHitArenaBorder(
             Frame f,
-            BattleCollisionQSystem.ArenaBorderCollisionData* arenaCollisionData,
+            BattleArenaBorderQComponent* arenaBorder,
             BattleCollisionQSystem.PlayerClass100ProjectileCollisionData* playerClass100ProjectileCollisionData
         )
         {
             BattlePlayerClass100ProjectileQComponent* playerClass100Projectile          = playerClass100ProjectileCollisionData->Projectile;
             EntityRef                                 playerClass100ProjectileEntityRef = playerClass100ProjectileCollisionData->ProjectileEntityRef;
             EntityRef                                 arenaBorderEntityRef              = playerClass100ProjectileCollisionData->OtherEntityRef;
-            BattleArenaBorderQComponent*              arenaBorder                       = arenaCollisionData->ArenaBorder;
 
             FPVector2 normal      = arenaBorder->Normal;
             FP collisionMinOffset = arenaBorder->CollisionMinOffset;

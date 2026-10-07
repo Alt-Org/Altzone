@@ -102,25 +102,25 @@ namespace Battle.QSimulation.SoulWall
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
-        /// <param name="soulWallCollisionData">Collision data related to the soul wall.</param>
-        public static void OnProjectileHitSoulWall(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.SoulWallCollisionData* soulWallCollisionData)
+        /// <param name="soulWall">Collision data related to the soul wall.</param>
+        public static void OnProjectileHitSoulWall(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleSoulWallQComponent* soulWall)
         {
-            if (projectileCollisionData->Projectile->IsHeld) return;
+            if (projectileCollisionData->Projectile.Data->IsHeld) return;
             s_debugLogger.Log(f, "Soul wall hit");
 
-            if (soulWallCollisionData->SoulWall->Row == BattleSoulWallRow.Last)
+            if (soulWall->Row == BattleSoulWallRow.Last)
             {
-                f.Events.BattleLastRowWallDestroyed(soulWallCollisionData->SoulWall->Team, soulWallCollisionData->SoulWall->WallNumber);
+                f.Events.BattleLastRowWallDestroyed(soulWall->Team, soulWall->WallNumber);
             }
 
-            f.Events.BattleStoneCharacterPlayHitAnimation(soulWallCollisionData->SoulWall->Team, projectileCollisionData->ProjectileEmotionCurrent);
+            f.Events.BattleStoneCharacterPlayHitAnimation(soulWall->Team, projectileCollisionData->ProjectileEmotionCurrent);
 
 
             // Destroy the SoulWall entity
             f.Events.BattlePlaySoundFxForAll(BattleSoundFX.SoulWallBroken);
             f.Destroy(projectileCollisionData->OtherEntityRef);
 
-            BattleProjectileQSystem.SetCollisionFlag(f, projectileCollisionData->Projectile, BattleProjectileCollisionFlags.SoulWall);
+            projectileCollisionData->Projectile.SetCollisionFlag(f, BattleProjectileCollisionFlags.SoulWall);
         }
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
