@@ -5,9 +5,13 @@
 ///
 /// @bigtext{Filled with data from @ref BattleArenaQSpec.asset "BattleArenaQSpec" data asset.}
 
+// System usings
+using System;
+
 // Quantum usings
 using Quantum;
 using Photon.Deterministic;
+
 
 namespace Battle.QSimulation.Game
 {
@@ -20,6 +24,12 @@ namespace Battle.QSimulation.Game
     /// @bigtext{Filled with data from @ref BattleArenaQSpec.asset "BattleArenaQSpec" data asset.}
     public class BattleArenaQSpec : AssetObject
     {
+        [Serializable]
+        public struct Player
+        {
+            public BattleGridPosition[] DefaultCharacterSpawnPositions;
+        }
+
         /// <value>Width of the playable arena in world units.</value>
         public FP WorldWidth;
         /// <value>Height of the playable arena in world units.</value>
@@ -38,5 +48,7 @@ namespace Battle.QSimulation.Game
         public BattleSoulWallTemplate[] SoulWallTeamAlphaTemplates;
         /// <value><see cref="Quantum.BattleSoulWallTemplate">Templates defining SoulWall segments</see> for Team Beta.</value>
         public BattleSoulWallTemplate[] SoulWallTeamBetaTemplates;
+
+        public Player[] Players;
     }
 }
