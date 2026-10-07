@@ -224,12 +224,16 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="playerEntityRef">Reference to player entity.</param>
         /// <param name="position">New world position.</param>
-        public static void Teleport(Frame f, BattlePlayerCharacterDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, FPVector2 position)
+        public static void Teleport(Frame f, BattlePlayerHandle playerHandle)
         {
-            playerData->ViewMovementVector = FPVector2.Zero;
-            BattleEntityManager.TeleportCompound(f, playerEntityRef, position, playerData->MovementRotationBaseRad);
-            if (playerData->AttachedShieldEntityRef == EntityRef.None) return;
-            BattleEntityManager.TeleportCompound(f, playerData->AttachedShieldEntityRef, position, playerData->MovementRotationBaseRad + playerData->MovementRotationOffsetRad);
+            playerHandle.LoadedCharacterData->ViewMovementVector = FPVector2.Zero;
+            BattleEntityManager.TeleportCompound(f, playerHandle.LoadedCharacterEntityRef, playerHandle.LoadedCharacterTransform->Position, playerHandle.LoadedCharacterData->MovementRotationBaseRad);
+            if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == EntityRef.None) return;
+            BattleEntityManager.TeleportCompound(f,
+                playerHandle.LoadedCharacterData->AttachedShieldEntityRef,
+                playerHandle.LoadedCharacterTransform->Position,
+                playerHandle.LoadedCharacterData->MovementRotationBaseRad + playerHandle.LoadedCharacterData->MovementRotationOffsetRad
+            );
         }
 
         /// <summary>This classes BattleDebugLogger instance.</summary>

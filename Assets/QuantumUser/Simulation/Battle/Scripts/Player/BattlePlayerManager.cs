@@ -805,7 +805,7 @@ namespace Battle.QSimulation.Player
                 f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityRef, playerHandle.PlayerData.Team, ShieldAttached: true, shieldHandle.ShieldData->ShieldNumber);
             }
 
-            BattlePlayerMovementController.Teleport(f, playerHandle.LoadedCharacterData, (BattlePlayerEntityRef)playerHandle.LoadedCharacterEntityRef, worldPosition);
+            BattlePlayerMovementController.Teleport(f, playerHandle);
 
             // update debug overlay
             BattleDebugOverlayLink.SetEntries(playerHandle.PlayerData.Slot, s_debugOverlayStats, new object[]
