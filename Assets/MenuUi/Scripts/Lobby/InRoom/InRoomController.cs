@@ -727,7 +727,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             PhotonRealtimeClient.LeaveRoom();
             yield return new WaitUntil(() => !PhotonRealtimeClient.InRoom);
             if (InLobbyController.SelectedMatchmakingType == MatchmakingType.Custom) OnLeaveRoom?.Invoke();
-            else if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Clan2v2) SignalBus.OnCloseBattlePopupRequestedSignal();
+            else SignalBus.OnCloseBattlePopupRequestedSignal();
             //this.Publish(new LobbyManager.StartPlayingEvent());
         }
 
