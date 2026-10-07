@@ -98,15 +98,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [SerializeField] private Button _outsideFloorOkButton;
         [SerializeField] private Button _outsideFloorCancelButton;
 
-        // [Header("Whether To Save Changes Popup")] [SerializeField]
-        // private GameObject _whetherToSaveChangesPopup;
-
-        // [FormerlySerializedAs("_WhetherToSaveChangesOkButton")] [SerializeField]
-        // private Button _whetherToSaveChangesOkButton;
-
-        // [FormerlySerializedAs("_WhetherToSaveChangesCancelButton")] [SerializeField]
-        // private Button _whetherToSaveChangesCancelButton;
-
         [Header("References")] [SerializeField]
         private BattleUiEditor _battleUiEditor;
 
@@ -135,8 +126,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             EditorRectTransform.offsetMax = Vector2.zero;
 
             _resetButton.onClick.AddListener(_saveReset.OnResetButtonClicked);
-
-            //if (_closeButton != null) _closeButton.onClick.AddListener(CloseOptionsPopup);
 
             // Show grid toggle listener
             _showGridToggle.onValueChanged.AddListener((value) =>
@@ -210,10 +199,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             });
             _joystickMovementToggle.onValueChanged.AddListener((value) =>
             {
-                Debug.Log($"[MOVE JOYSTICK TOGGLE] value = {value}");
                 if (value)
                     UpdateInputSettings(BattleMovementInputType.Joystick, BattleRotationInputType.Joystick);
-                //UpdateInputSettings(BattleMovementInputType.Joystick, SettingsCarrier.Instance.BattleRotationInput);
             });
             _followPointerMovementToggle.onValueChanged.AddListener((value) =>
             {
@@ -667,24 +654,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float availableHeight = editorAspectRatioHeight;
             float availableAspectRatio = availableWidth / availableHeight;
 
-            Debug.Log(
-                $"Screen: {Screen.width} x {Screen.height}, " +
-                $"EditorRect: {EditorRect.width} x {EditorRect.height}, " +
-                $"availableWidth: {availableWidth}, " +
-                $"availableHeight: {availableHeight}, " +
-                $"Scale: {_arenaScaleSlider.value}"
-            );
-
             // Calculating arena scale.
             // If phone aspect ratio is same or thinner than the game aspect ratio we calculate arena width and height based on
             // editor width, but if it's thicker we calculate based on height so that the arena won't overlap or be too small.
             float arenaWidth;
             float arenaHeight;
-
-            Debug.Log(
-                $"availableAspectRatio={availableAspectRatio:F4}, " +
-                $"GameAspectRatio={GameAspectRatio:F4}"
-            );
 
             if (availableAspectRatio <= GameAspectRatio)
             {
@@ -698,13 +672,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 arenaHeight = _arenaScaleSlider.value * 0.01f * availableHeight;
                 arenaWidth = arenaHeight * GameAspectRatio;
             }
-
-            Debug.Log(
-                $"arenaWidth={arenaWidth:F1}, " +
-                $"availableWidth={availableWidth:F1}, " +
-                $"arenaHeight={arenaHeight:F1}, " +
-                $"availableHeight={availableHeight:F1}"
-            );
 
             // Calculating arena position
             Vector2 position = Vector2.zero;
@@ -729,8 +696,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaImage.offsetMax = Vector2.zero;
 
             // Stone wall characters
-
-            float stoneScale = arenaWidth / 1080f;
 
             float arenaCenterX =
                 (_arenaImage.anchorMin.x + _arenaImage.anchorMax.x) * 0.5f;
@@ -758,11 +723,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _stoneWallBottomCharacterRect.anchoredPosition = Vector2.zero;
 
             // Scale
-            _stoneWallTopCharacterRect.localScale =
-                new Vector3(stoneScale, stoneScale * 0.8f, 1f);
+            _stoneWallTopCharacterRect.localScale = Vector3.one;
+            _stoneWallBottomCharacterRect.localScale = Vector3.one;
 
-            _stoneWallBottomCharacterRect.localScale =
-                new Vector3(stoneScale, stoneScale * 0.8f, 1f);
+            _stoneWallTopCharacterRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, arenaWidth);
+            _stoneWallBottomCharacterRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, arenaWidth);
         }
 
         public void ToggleOptionsPopup()

@@ -252,11 +252,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Options popup listeners
             _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsPopup);
 
-            Debug.Log("BattleUiEditor Awake");
             //Whether To Save Changes listener
             _whetherToSaveChangesOkButton.onClick.AddListener(() =>
             {
-                Debug.Log($"[Save ok] Save");
                 SaveChanges();
                 _whetherToSaveChangesPopup.SetActive(false);
                 _optionsPopup.OnCloseButtonClicked();
@@ -265,7 +263,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             //Whether to Cancel Changes listener
             _whetherToSaveChangesCancelButton.onClick.AddListener(() =>
             {
-                Debug.Log($"[Save cancel] Cancel");
                 _whetherToSaveChangesPopup.SetActive(false);
                 _optionsPopup.OpenOptionsPopup();
                 //OpenEditor();
@@ -410,7 +407,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void WhetherToSaveChangesPopup()
         {
-            Debug.Log("WhetherToSaveChangesPopup OPENED");
             _optionsPopup.OnCloseButtonClicked();
             _whetherToSaveChangesPopup.SetActive(true);
 
@@ -878,16 +874,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             );
 
             (anchorMin, anchorMax) = CalculateAnchors(size, pos);
-
-            Debug.Log(
-                $"DEFAULT {uiElementType}: " +
-                $"anchorMin={anchorMin}, " +
-                $"anchorMax={anchorMax}, " +
-                $"orientation={orientation}, " +
-                $"flipH={isFlippedHorizontally}, " +
-                $"flipV={isFlippedVertically}, " +
-                $"handleSize={handleSize}"
-            );
 
             return new(uiElementType, anchorMin, anchorMax, 0, orientation, isFlippedHorizontally, isFlippedVertically,
                 handleSize);
