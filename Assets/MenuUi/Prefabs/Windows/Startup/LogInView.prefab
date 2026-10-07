@@ -3809,6 +3809,14 @@ MonoBehaviour:
   _mainMenuNavigation: {fileID: 2727449428120969771}
   _introStoryNavigation: {fileID: 5196934159664300046}
   _languageNavigation: {fileID: 6758182562076590787}
+  _mqttErrorFinnish: "MQTT yhteyden luominen ep\xE4onnistui. Kokeile k\xE4ynnist\xE4\xE4
+    peli uudelleen tai sitten ota yhteytt\xE4 kehitt\xE4jiin."
+  _mqttErrorEnglish: Establishing MQTT connection failed. Try to reboot the game
+    and if that doesn't work, contact the developers.
+  _mqttErrorFinnishDev: "MQTT yhteyden luominen ep\xE4onnistui. T\xE4m\xE4 johtaa
+    siihen ett\xE4 osa tietojen muutosviesteist\xE4 ei tule l\xE4pi."
+  _mqttErrorEnglishDev: Establishing MQTT connection failed. This causes that some
+    of the updates messages from server fail to be received.
 --- !u!1 &8949180959048940521
 GameObject:
   m_ObjectHideFlags: 0

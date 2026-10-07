@@ -1,14 +1,12 @@
-using UnityEngine;
-using UnityEngine.UI;
-
-using TMPro;
-
 using Altzone.Scripts.Model.Poco.Game;
-
+using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.DefenceScreen.CharacterGallery;
 using MenuUi.Scripts.Signals;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
-using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -106,7 +104,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
                 else
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal("Tätä hahmoa ei ole vielä lisätty pelipalvelimelle.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Tätä hahmoa ei ole vielä lisätty pelipalvelimelle.");
                     _addCharacterButton.gameObject.SetActive(false);
                 }
 

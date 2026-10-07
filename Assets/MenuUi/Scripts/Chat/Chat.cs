@@ -38,13 +38,7 @@ public class Chat : AltMonoBehaviour
     [Header("InputField")]
     [SerializeField] private TMP_InputField _inputField;
 
-    [Header("Add reactions UI")]
-    [SerializeField] private GameObject _addReactionsPanel;
-    [SerializeField] private GameObject _commonReactions;
-    [SerializeField] private GameObject _allReactions;
-
     [Header("Chat Reactions")]
-    [SerializeField] private CharacterResponseList _chatResponseList;
     [SerializeField] private GameObject _chatResponseContent;
 
     [Header("Prefab")]
@@ -100,12 +94,9 @@ public class Chat : AltMonoBehaviour
     [SerializeField] private GameObject _inputArea;
     [SerializeField] private GameObject _inputAreaArrow;
 
-    public ChatShowUsersPopUpData ChatShowUsersPopUpData;
-
     public delegate void SelectedMessageChanged(MessageObjectHandler handler);
     public static event SelectedMessageChanged OnSelectedMessageChanged;
     private bool _reactionAvailable = false; //Katsoo jos textboxissa on tekstiä tai ei
-    public static Chat instance;
     private Emotion _currentMood = Emotion.Blank;
     private Emotion _lasttimeMood = Emotion.Blank;
     private int _responseIndex = 0;
@@ -124,10 +115,9 @@ public class Chat : AltMonoBehaviour
 
     private void Start()
     {
-        instance = this;
-
         ChatChannel.OnMessageHistoryReceived += RefreshChat;
         ChatChannel.OnMessageReceived += DisplayMessage;
+        MessageObjectHandler.OnRequestCanvasUpdate += ForceUpdateCanvas;
 
         // Alustaa chatit ja asettaa kielichatin oletukseksi
         _currentContent = _clanChatContent;
@@ -169,6 +159,7 @@ public class Chat : AltMonoBehaviour
     {
         ChatChannel.OnMessageHistoryReceived -= RefreshChat;
         ChatChannel.OnMessageReceived -= DisplayMessage;
+        MessageObjectHandler.OnRequestCanvasUpdate -= ForceUpdateCanvas;
     }
 
     private void AddResponses()
@@ -183,7 +174,7 @@ public class Chat : AltMonoBehaviour
         //Changes message to set mood message if user switches 
         if (_inputField.text != "")
         {
-            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(_currentMood);
+            List<ChatResponseObject> messageList = CharacterResponseList.Instance.GetChatResponses(_currentMood);
             ChatResponseObject convertedResponse = messageList[_responseIndex];
             string textFromButton = convertedResponse.Response;
 
@@ -193,7 +184,7 @@ public class Chat : AltMonoBehaviour
         StartCoroutine(GetPlayerData(data =>
         {
 
-            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(_currentMood);
+            List<ChatResponseObject> messageList = CharacterResponseList.Instance.GetChatResponses(_currentMood);
             //List<string> messageList = _chatResponseList.GetChatResponses((CharacterClassType)((data.SelectedCharacterId / 100) * 100));
             foreach (ChatResponseObject message in messageList)
             {
@@ -307,7 +298,7 @@ public class Chat : AltMonoBehaviour
 
         if (_inputField != null && !string.IsNullOrEmpty(_inputField.text) && _inputField.text.Trim().Length >= 3)
         {
-            ChatListener.Instance.SendMessage(_inputField.text, _currentMood, ChatListener.Instance.ActiveChatChannel);
+            ChatListener.Instance.SendMessage(_inputField.text, (ResponseType)_responseIndex, _currentMood, ChatListener.Instance.ActiveChatChannel);
             _inputField.text = "";
             GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
             if (_currentContent == _clanChatContent)
@@ -327,7 +318,7 @@ public class Chat : AltMonoBehaviour
     {
         if (message != null)
         {
-            List<ChatResponseObject> messageList = _chatResponseList.GetChatResponses(_currentMood);        
+            List<ChatResponseObject> messageList = CharacterResponseList.Instance.GetChatResponses(_currentMood);        
             ChatResponseObject convertedResponse = messageList.FirstOrDefault(c => c.ResponseId == message.ResponseId);
             string textFromButton = convertedResponse.Response;
             _responseIndex = (int)convertedResponse.ResponseId;
@@ -407,7 +398,7 @@ public class Chat : AltMonoBehaviour
     private IEnumerator UpdateLayoutAndScroll(GameObject message, GameObject contentLayout)
     {
         yield return null;
-        message.GetComponentInChildren<ChatMessageScript>().MessageSetHeight();
+        message.GetComponent<MessageObjectHandler>().SizeCall();
 
         yield return null;
         Canvas.ForceUpdateCanvases();
@@ -418,6 +409,17 @@ public class Chat : AltMonoBehaviour
 
         yield return null;
         _currentScrollRect.verticalNormalizedPosition = 0f;
+    }
+
+    public void ForceUpdateCanvas() => StartCoroutine(ForceUpdateCanvasCoroutine());
+
+    public IEnumerator ForceUpdateCanvasCoroutine()
+    {
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+        yield return null;
+        RectTransform rectTransform = _currentContent.GetComponent<RectTransform>();
+        LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
     }
 
     // Valitsee viestin
@@ -445,8 +447,6 @@ public class Chat : AltMonoBehaviour
             Destroy(selectedMessage);
             if(selectedMessage == _selectedMessage)_selectedMessage = null;
 
-            // Disable message interaction elements
-            DisableReactionPanel();
         }
         else
         {
@@ -464,8 +464,6 @@ public class Chat : AltMonoBehaviour
         }
 
         _messagesByChat[_currentContent].Clear();
-
-        DisableReactionPanel();
     }
 
     // Aktivoi globaalin chatin
@@ -604,21 +602,6 @@ public class Chat : AltMonoBehaviour
 
         VerticalLayoutGroup currentLayout = _currentContent.GetComponentInChildren<VerticalLayoutGroup>();
         LayoutRebuilder.ForceRebuildLayoutImmediate(currentLayout.GetComponent<RectTransform>());
-    }
-
-
-    private void DisableReactionPanel()
-    {
-        _commonReactions.SetActive(true);
-        _allReactions.SetActive(false);
-        _addReactionsPanel.SetActive(false);
-    }    
-
-    public void OpenUsersWhoAddedReactionPanel()
-    {
-        _addReactionsPanel.SetActive(true);
-        _commonReactions.SetActive(false);
-        _allReactions.SetActive(false);
     }
 
 }

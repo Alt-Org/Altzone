@@ -105,16 +105,18 @@ Inheritance diagram for Battle.View.UI.BattleUiCharacterButtonComponent:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af2ce69118aeb4ee4491453c213c7acf7" id="r_af2ce69118aeb4ee4491453c213c7acf7"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#af2ce69118aeb4ee4491453c213c7acf7">SetCharacterIcon</a> (int characterId)</td></tr>
-<tr class="memdesc:af2ce69118aeb4ee4491453c213c7acf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the character image from PlayerCharacterPrototype to <a class="el" href="#abe89aa95c1fb312404431ee5f5dca6be" title="[SerializeField] Reference to the character image of the character button.">_characterImage</a>.  <br /></td></tr>
+<tr class="memitem:aa5219c4b7aa2ec745d3ebdb4f59baadc" id="r_aa5219c4b7aa2ec745d3ebdb4f59baadc"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#aa5219c4b7aa2ec745d3ebdb4f59baadc">SetCharacterIcon</a> (<a class="el" href="namespace_quantum.html#a9b74128cdd70fd3489f6529817bc82b2">BattlePlayerCharacterID</a> characterId)</td></tr>
+<tr class="memdesc:aa5219c4b7aa2ec745d3ebdb4f59baadc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the character image from PlayerCharacterPrototype to <a class="el" href="#abe89aa95c1fb312404431ee5f5dca6be" title="[SerializeField] Reference to the character image of the character button.">_characterImage</a>.  <br /></td></tr>
 <tr class="memitem:a066b9a7a9c74079f162f7a4ea9fd806a" id="r_a066b9a7a9c74079f162f7a4ea9fd806a"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a066b9a7a9c74079f162f7a4ea9fd806a">SetSelected</a> (bool selected)</td></tr>
 <tr class="memdesc:a066b9a7a9c74079f162f7a4ea9fd806a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the selected character indicator for this character button active or inactive.  <br /></td></tr>
 <tr class="memitem:a3b1028768d640a100740aee5f8c7d4eb" id="r_a3b1028768d640a100740aee5f8c7d4eb"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a3b1028768d640a100740aee5f8c7d4eb">SetDamageFill</a> (float percentage)</td></tr>
 <tr class="memdesc:a3b1028768d640a100740aee5f8c7d4eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the damage fill variables to start updating damage fill to the updated percentage.  <br /></td></tr>
+<tr class="memitem:a253c7bf18a1f781c8efca4e2641d53a7" id="r_a253c7bf18a1f781c8efca4e2641d53a7"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a253c7bf18a1f781c8efca4e2641d53a7">SetDeathImage</a> ()</td></tr>
+<tr class="memdesc:a253c7bf18a1f781c8efca4e2641d53a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the death image gameobject to active.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
-<tr class="memitem:aabcff99537ca01c5a20aa0f5bddf8fd0" id="r_aabcff99537ca01c5a20aa0f5bddf8fd0"><td class="memItemLeft">Button&#160;</td><td class="memItemRight"><a class="el" href="#aabcff99537ca01c5a20aa0f5bddf8fd0">ButtonComponent</a><code> [get]</code></td></tr>
+<tr class="memitem:aabcff99537ca01c5a20aa0f5bddf8fd0" id="r_aabcff99537ca01c5a20aa0f5bddf8fd0"><td class="memItemLeft"><a class="el" href="_battle_ui_character_button_component_8cs.html#ae0a15c07b75b70d4c3de2671d2c9f0f4">Button</a>&#160;</td><td class="memItemRight"><a class="el" href="#aabcff99537ca01c5a20aa0f5bddf8fd0">ButtonComponent</a><code> [get]</code></td></tr>
 <tr class="memdesc:aabcff99537ca01c5a20aa0f5bddf8fd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public getter for <a class="el" href="#ac0c9f86df5f36d160ff700f46ff21076" title="[SerializeField] Reference to the button component of the character button.">_button</a>. <br /></td></tr>
 <tr class="memitem:a0b3d46f977c0b401358b40bd8e222a53" id="r_a0b3d46f977c0b401358b40bd8e222a53"><td class="memItemLeft"><a class="el" href="class_on_pointer_down_button.html">OnPointerDownButton</a>&#160;</td><td class="memItemRight"><a class="el" href="#a0b3d46f977c0b401358b40bd8e222a53">EventSender</a><code> [get]</code></td></tr>
 <tr class="memdesc:a0b3d46f977c0b401358b40bd8e222a53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public getter for <a class="el" href="#a1c3a5719fa1b1d4573931b9ca2d6d410" title="[SerializeField] Reference OnPointerDownButton event sender.">_eventSender</a>. <br /></td></tr>
@@ -137,7 +139,7 @@ Private Attributes</h2></td></tr>
 <tr id="pri-attribs-0" class="groupHeader"><td colspan="2"><div class="groupHeader">SerializeField variables</div></td></tr>
 <tr><td colspan="2" class="ititle"><div class="groupText"><p><a class="anchor" id="BattleUiCharacterButtonComponent-SerializeFields"></a> <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields🡵</a> are serialized variables exposed to the Unity editor. </p>
 </div></td></tr>
-<tr class="memitem:ac0c9f86df5f36d160ff700f46ff21076" id="r_ac0c9f86df5f36d160ff700f46ff21076"><td class="memItemLeft">Button&#160;</td><td class="memItemRight"><a class="el" href="#ac0c9f86df5f36d160ff700f46ff21076">_button</a></td></tr>
+<tr class="memitem:ac0c9f86df5f36d160ff700f46ff21076" id="r_ac0c9f86df5f36d160ff700f46ff21076"><td class="memItemLeft"><a class="el" href="_battle_ui_character_button_component_8cs.html#ae0a15c07b75b70d4c3de2671d2c9f0f4">Button</a>&#160;</td><td class="memItemRight"><a class="el" href="#ac0c9f86df5f36d160ff700f46ff21076">_button</a></td></tr>
 <tr class="memdesc:ac0c9f86df5f36d160ff700f46ff21076"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SerializeField] Reference to the button component of the character button.  <br /></td></tr>
 <tr class="memitem:a1c3a5719fa1b1d4573931b9ca2d6d410" id="r_a1c3a5719fa1b1d4573931b9ca2d6d410"><td class="memItemLeft"><a class="el" href="class_on_pointer_down_button.html">OnPointerDownButton</a>&#160;</td><td class="memItemRight"><a class="el" href="#a1c3a5719fa1b1d4573931b9ca2d6d410">_eventSender</a></td></tr>
 <tr class="memdesc:a1c3a5719fa1b1d4573931b9ca2d6d410"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SerializeField] Reference <a class="el" href="class_on_pointer_down_button.html" title="OnPointerDownButton Unity MonoBehaviour script🡵.  Helper class which handles invoking a UnityEvent on...">OnPointerDownButton</a> event sender.  <br /></td></tr>
@@ -147,6 +149,8 @@ Private Attributes</h2></td></tr>
 <tr class="memdesc:acead4cd0166bf696fb5218164be9c843"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SerializeField] Reference to the selected character indicator of the character button.  <br /></td></tr>
 <tr class="memitem:a16d860c449e512e550fd153fa649f20d" id="r_a16d860c449e512e550fd153fa649f20d"><td class="memItemLeft">Image&#160;</td><td class="memItemRight"><a class="el" href="#a16d860c449e512e550fd153fa649f20d">_damageFill</a></td></tr>
 <tr class="memdesc:a16d860c449e512e550fd153fa649f20d"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SerializeField] Reference to the damage fill image of the character button. It is used to display the character's current Hp.  <br /></td></tr>
+<tr class="memitem:a3e10df8a50912ab67b49bb3ed3a57d1b" id="r_a3e10df8a50912ab67b49bb3ed3a57d1b"><td class="memItemLeft">GameObject&#160;</td><td class="memItemRight"><a class="el" href="#a3e10df8a50912ab67b49bb3ed3a57d1b">_deathImage</a></td></tr>
+<tr class="memdesc:a3e10df8a50912ab67b49bb3ed3a57d1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SerializeField] Reference to the dead character image of the character button. It is used to display an image on top of the character button to indicate the character is dead.  <br /></td></tr>
 <tr class="memitem:ac3554eabc551d7c95bba0172aaf51f03" id="r_ac3554eabc551d7c95bba0172aaf51f03"><td class="memItemLeft">float&#160;</td><td class="memItemRight"><a class="el" href="#ac3554eabc551d7c95bba0172aaf51f03">_damageFillAnimationDuration</a> = 0.5f</td></tr>
 <tr class="memdesc:ac3554eabc551d7c95bba0172aaf51f03"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SerializeField] The duration for damage fill animation.  <br /></td></tr>
 </table>
@@ -183,8 +187,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af2ce69118aeb4ee4491453c213c7acf7" name="af2ce69118aeb4ee4491453c213c7acf7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af2ce69118aeb4ee4491453c213c7acf7">&#9670;&#160;</a></span>SetCharacterIcon()</h2>
+<a id="aa5219c4b7aa2ec745d3ebdb4f59baadc" name="aa5219c4b7aa2ec745d3ebdb4f59baadc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5219c4b7aa2ec745d3ebdb4f59baadc">&#9670;&#160;</a></span>SetCharacterIcon()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -195,7 +199,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">void Battle.View.UI.BattleUiCharacterButtonComponent.SetCharacterIcon </td>
           <td>(</td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>characterId</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#a9b74128cdd70fd3489f6529817bc82b2">BattlePlayerCharacterID</a></td>          <td class="paramname"><span class="paramname"><em>characterId</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -214,7 +218,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">Referenced by <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a56c787280eec875cfadc408f99143171">Battle.View.UI.BattleUiPlayerInfoHandler.SetInfo()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a1a269ee13c09f0659448fc9790e9b27b">Battle.View.UI.BattleUiPlayerInfoHandler.SetInfo()</a>.</p>
 
 </div>
 </div>
@@ -251,7 +255,38 @@ Private Attributes</h2></td></tr>
 
 <p class="reference">References <a class="el" href="#a16d860c449e512e550fd153fa649f20d">_damageFill</a>, <a class="el" href="#ae65ed973c630dc52eb913593ece32d47">_startDamageFillAmount</a>, <a class="el" href="#a0a1a9f147ee7982eb664b905687a67ba">_t</a>, and <a class="el" href="#a510aa6ab137ddf211dcccc347a255d0e">_targetDamageFillAmount</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a56c787280eec875cfadc408f99143171">Battle.View.UI.BattleUiPlayerInfoHandler.SetInfo()</a>, and <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a59ef1f837271022bf497ec0aaea0f698">Battle.View.UI.BattleUiPlayerInfoHandler.UpdateDefenceVisual()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#af53b875bc29114a046c72fe821145433">Battle.View.UI.BattleUiPlayerInfoHandler.MarkCharacterDead()</a>, <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a1a269ee13c09f0659448fc9790e9b27b">Battle.View.UI.BattleUiPlayerInfoHandler.SetInfo()</a>, and <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a59ef1f837271022bf497ec0aaea0f698">Battle.View.UI.BattleUiPlayerInfoHandler.UpdateDefenceVisual()</a>.</p>
+
+</div>
+</div>
+<a id="a253c7bf18a1f781c8efca4e2641d53a7" name="a253c7bf18a1f781c8efca4e2641d53a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a253c7bf18a1f781c8efca4e2641d53a7">&#9670;&#160;</a></span>SetDeathImage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.UI.BattleUiCharacterButtonComponent.SetDeathImage </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the death image gameobject to active. </p>
+
+<p class="reference">References <a class="el" href="#a3e10df8a50912ab67b49bb3ed3a57d1b">_deathImage</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#af53b875bc29114a046c72fe821145433">Battle.View.UI.BattleUiPlayerInfoHandler.MarkCharacterDead()</a>.</p>
 
 </div>
 </div>
@@ -332,7 +367,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Button Battle.View.UI.BattleUiCharacterButtonComponent._button</td>
+          <td class="memname"><a class="el" href="_battle_ui_character_button_component_8cs.html#ae0a15c07b75b70d4c3de2671d2c9f0f4">Button</a> Battle.View.UI.BattleUiCharacterButtonComponent._button</td>
         </tr>
       </table>
   </td>
@@ -423,6 +458,33 @@ Private Attributes</h2></td></tr>
 <p><a class="el" href="#BattleUiCharacterButtonComponent-SerializeFields" title="BattleUiCharacterButtonComponent-SerializeFields">BattleUiCharacterButtonComponent-SerializeFields</a> </p>
 
 <p class="reference">Referenced by <a class="el" href="#af67c2de842d1b66e189bf725372f9ae2">Update()</a>.</p>
+
+</div>
+</div>
+<a id="a3e10df8a50912ab67b49bb3ed3a57d1b" name="a3e10df8a50912ab67b49bb3ed3a57d1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e10df8a50912ab67b49bb3ed3a57d1b">&#9670;&#160;</a></span>_deathImage</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">GameObject Battle.View.UI.BattleUiCharacterButtonComponent._deathImage</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>[SerializeField] Reference to the dead character image of the character button. It is used to display an image on top of the character button to indicate the character is dead. </p>
+<p><a class="el" href="#BattleUiCharacterButtonComponent-SerializeFields" title="BattleUiCharacterButtonComponent-SerializeFields">BattleUiCharacterButtonComponent-SerializeFields</a> </p>
+
+<p class="reference">Referenced by <a class="el" href="#a253c7bf18a1f781c8efca4e2641d53a7">SetDeathImage()</a>.</p>
 
 </div>
 </div>
@@ -567,7 +629,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Button Battle.View.UI.BattleUiCharacterButtonComponent.ButtonComponent</td>
+          <td class="memname"><a class="el" href="_battle_ui_character_button_component_8cs.html#ae0a15c07b75b70d4c3de2671d2c9f0f4">Button</a> Battle.View.UI.BattleUiCharacterButtonComponent.ButtonComponent</td>
         </tr>
       </table>
   </td>
@@ -579,7 +641,7 @@ Private Attributes</h2></td></tr>
 
 <p>Public getter for <a class="el" href="#ac0c9f86df5f36d160ff700f46ff21076" title="[SerializeField] Reference to the button component of the character button.">_button</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="#a297e09bd307c97cb6742a211b198c878">OnDisable()</a>, and <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a56c787280eec875cfadc408f99143171">Battle.View.UI.BattleUiPlayerInfoHandler.SetInfo()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a297e09bd307c97cb6742a211b198c878">OnDisable()</a>, and <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a1a269ee13c09f0659448fc9790e9b27b">Battle.View.UI.BattleUiPlayerInfoHandler.SetInfo()</a>.</p>
 
 </div>
 </div>
@@ -605,7 +667,7 @@ Private Attributes</h2></td></tr>
 
 <p>Public getter for <a class="el" href="#a1c3a5719fa1b1d4573931b9ca2d6d410" title="[SerializeField] Reference OnPointerDownButton event sender.">_eventSender</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="#a297e09bd307c97cb6742a211b198c878">OnDisable()</a>, and <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a56c787280eec875cfadc408f99143171">Battle.View.UI.BattleUiPlayerInfoHandler.SetInfo()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a297e09bd307c97cb6742a211b198c878">OnDisable()</a>, and <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a1a269ee13c09f0659448fc9790e9b27b">Battle.View.UI.BattleUiPlayerInfoHandler.SetInfo()</a>.</p>
 
 </div>
 </div>

@@ -155,7 +155,7 @@ namespace Altzone.Scripts.MQTT
             }
             finally
             {
-                //if (_client != null && _client.IsConnected)
+                if (_client != null && _client.IsConnected)
                 //OnMQTTConnectionEstablished?.Invoke(true);
                 if (string.IsNullOrEmpty(ServerManager.Instance.Player.clan_id))
                 {
@@ -175,6 +175,7 @@ namespace Altzone.Scripts.MQTT
                         await Task.Delay(1000);
                     }
                 }
+                else OnMQTTConnectionEstablished?.Invoke(false);
             }
         }
 

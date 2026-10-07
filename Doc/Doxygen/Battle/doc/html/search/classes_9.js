@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['movementinputinfo_0',['MovementInputInfo',['../struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_movement_input_info.html',1,'Battle::View::Player::BattlePlayerInput']]]
+  ['lightray_0',['Lightray',['../struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html',1,'Battle::View::Effect::BattleLightrayEffectViewController']]]
 ];
