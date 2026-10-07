@@ -529,7 +529,7 @@ namespace Battle.View.Player
 
             _normalScale = transform.localScale;
 
-            _teamNumber = BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot);
+            _teamNumber = BattlePlayerManager.GetPlayerData(_, e.Slot).Team;
 
             if (_teamNumber == BattleGameViewController.LocalPlayerTeam)
             {
@@ -627,12 +627,11 @@ namespace Battle.View.Player
         public override void OnUpdateView()
         {
             if (!_isInPlay) return;
-            BattlePlayerCharacterDataQComponent* playerData = PredictedFrame.Unsafe.GetPointer<BattlePlayerCharacterDataQComponent>(EntityRef);
-            if (playerData->PlayerRef == PlayerRef.None) return;
+            BattlePlayerHandle playerHandle = BattlePlayerHandle.Create(PredictedFrame, EntityRef);
 
-            UpdateAnimation(playerData);
+            UpdateAnimation(playerHandle.LoadedCharacterData);
 
-            Vector3 viewPosition = playerData->ViewPosition.ToUnityVector3();
+            Vector3 viewPosition = playerHandle.LoadedCharacterData->ViewPosition.ToUnityVector3();
 
             UpdateModelPositionAdjustment(&viewPosition);
 

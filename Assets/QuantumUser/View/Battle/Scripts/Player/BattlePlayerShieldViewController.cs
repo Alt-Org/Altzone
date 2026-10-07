@@ -208,7 +208,7 @@ namespace Battle.View.Player
             transform.localScale = new Vector3(scale, scale, scale);
             _shieldHitParticle.transform.localScale = new Vector3(scale, scale, scale);
 
-            if (BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot) == BattleGameViewController.LocalPlayerTeam)
+            if (BattlePlayerManager.GetPlayerData(_, e.Slot).Team == BattleGameViewController.LocalPlayerTeam)
             {
                 _shieldSpriteGameObject = _shieldGameObjects[0];
                 _shieldSpriteGameObject.SetActive(true);
