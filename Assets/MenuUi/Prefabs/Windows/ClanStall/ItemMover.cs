@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using MenuUi.Scripts.Storage;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets; // Uusi lisäys (Perttu)
 using Altzone.Scripts.Config;
 using Altzone.Scripts;
 
@@ -21,6 +24,9 @@ public class ItemMover : MonoBehaviour
 
     // Event to notify that this item was moved to panel
     public event Action<StorageFurniture> OnItemMovedToPanel;
+
+    //[SerializeField] private AdEditor adEditor;
+    [SerializeField] private AdDecorationReference _adDecReference;
 
     void Start()
     {
@@ -56,7 +62,8 @@ public class ItemMover : MonoBehaviour
     {
         if (assignedSlot != null)
         {
-            popup?.OpenRemovePopup(gameObject);
+            //popup?.OpenRemovePopup(gameObject);
+            popup?.Open(gameObject); // Uusi muokkaus (Perttu)
         }
         else if (HasFreeSlot())
         {
@@ -80,6 +87,11 @@ public class ItemMover : MonoBehaviour
         return false;
     }
 
+    public KojuItemSlot AssignedSlot
+    {
+        get => assignedSlot;
+    }
+
     // Call when user confirms the moving of a furniture
     public void ExecuteMove()
     {
@@ -88,8 +100,6 @@ public class ItemMover : MonoBehaviour
             // Move from tray to panel
             foreach (var slot in panelSlots)
             {
-                if (slot.transform.GetSiblingIndex() == 0) continue; // Skips the slot meant for the poster card
-
                 if (!slot.IsOccupied)
                 {
                     assignedSlot = slot;
@@ -98,6 +108,11 @@ public class ItemMover : MonoBehaviour
 
                     // Notify trayPopulator this item was moved
                     OnItemMovedToPanel?.Invoke(currentFurniture);
+
+                    // Uusi lisäys (Perttu)
+                    AdFurnitureObject adFurnitureObject = new AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
+                    _adDecReference.AddFurniture(adFurnitureObject);
+
                     return;
                 }
             }
@@ -121,33 +136,36 @@ public class ItemMover : MonoBehaviour
                 // Notify trayPopulator this item was returned
                 trayPopulator?.HandleItemReturnedToTray(currentFurniture);
 
-                var store = Storefront.Get();
-                store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>
-                {
-                    if (player != null && !string.IsNullOrEmpty(player.ClanId))
-                    {
-                        store.GetClanData(player.ClanId, clan =>
-                        {
-                            if (clan != null)
-                            {
-                                store.SaveClanData(clan, saved =>
-                                {
-                                    Debug.Log("Clan data saved after moving item back to tray.");
-                                });
-                            }
-                            else
-                            {
-                                Debug.LogWarning("Clan data not found for saving.");
-                            }
-                        });
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Player data or ClanId missing for saving clan data.");
-                    }
-                });
+                // Uusi lisäys (Perttu)
+                AdFurnitureObject removableFurniture = _adDecReference.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
+                _adDecReference.RemoveFurniture(removableFurniture);
+
+                //var store = Storefront.Get();
+                //store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>
+                //{
+                //    if (player != null && !string.IsNullOrEmpty(player.ClanId))
+                //    {
+                //        store.GetClanData(player.ClanId, clan =>
+                //        {
+                //            if (clan != null)
+                //            {
+                //                store.SaveClanData(clan, saved =>
+                //                {
+                //                    Debug.Log("Clan data saved after moving item back to tray.");
+                //                });
+                //            }
+                //            else
+                //            {
+                //                Debug.LogWarning("Clan data not found for saving.");
+                //            }
+                //        });
+                //    }
+                //    else
+                //    {
+                //        Debug.LogWarning("Player data or ClanId missing for saving clan data.");
+                //    }
+                //});
             }
         }
     }
-
 }
