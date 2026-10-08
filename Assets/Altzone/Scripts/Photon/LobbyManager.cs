@@ -6867,6 +6867,12 @@ namespace Altzone.Scripts.Lobby
             bool pos2Set = false;
             bool pos3Set = false;
             bool pos4Set = false;
+            if (PhotonRealtimeClient.CurrentRoom.MaxPlayers == 2)
+            {
+                pos2Set = true;
+                pos4Set = true;
+            }
+
             foreach (var player in PhotonRealtimeClient.GetCurrentRoomPlayers())
             {
                 if (!player.HasCustomProperty(PlayerPositionKey) || !player.HasCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey) || !player.HasCustomProperty(PhotonBattleRoom.PlayerStatsKey))
@@ -6932,6 +6938,12 @@ namespace Altzone.Scripts.Lobby
             bool pos2Ready = false;
             bool pos3Ready = false;
             bool pos4Ready = false;
+            if (PhotonRealtimeClient.CurrentRoom.MaxPlayers == 2)
+            {
+                pos2Ready = true;
+                pos4Ready = true;
+            }
+
             foreach (var player in PhotonRealtimeClient.GetCurrentRoomPlayers())
             {
                 if (!player.HasCustomProperty(PlayerPositionKey) || !player.HasCustomProperty(PhotonBattleRoom.PlayerCharacterIdsKey) || !player.HasCustomProperty(PhotonBattleRoom.PlayerStatsKey))

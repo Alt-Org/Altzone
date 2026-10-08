@@ -15,6 +15,7 @@ using Prg.Scripts.Common.PubSub;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Lobby.Wrappers;
 using static Altzone.Scripts.Lobby.LobbyManager;
+using Altzone.Scripts.Lobby;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 //using Player = Battle1.PhotonRealtime.Code.Player;
 //using Room = Battle1.PhotonRealtime.Code.Room;
@@ -450,7 +451,7 @@ namespace Altzone.Scripts.Battle.Photon
 
         public bool IsValidPlayerPos(int playerPos)
         {
-            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2 && (MatchmakingType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(MatchmakingKey) is not MatchmakingType.Custom)
             {
                 return playerPos is >= PlayerPosition1 and <= PlayerPosition2;
             }

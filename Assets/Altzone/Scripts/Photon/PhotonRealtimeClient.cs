@@ -737,7 +737,7 @@ public static class PhotonRealtimeClient
                     break;
             }
         }
-        if (maxPlayers == 4)
+        if (maxPlayers == 4 || lobbyType is MatchmakingType.Custom)
         {
             customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey3, "");
             customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey4, "");
