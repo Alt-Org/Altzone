@@ -26,6 +26,7 @@ namespace Altzone.Scripts.Battle.Photon
         #region Custom property names and values
 
         public const string BattleID = "bid";
+        public const string VisibleRoomNameKey = "rn";
         public const string PlayerPositionKey = "pp";
         public const string PlayerCountKey = "pc";
         public const string PlayerCharacterIdKey = "mk";

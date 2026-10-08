@@ -36,7 +36,13 @@ namespace MenuUi.Scripts.Lobby.InLobby
             if (altColour) _backgroundImage.color = _alternativeColour;
             else _backgroundImage.color = _mainColour;
 
-            _roomName.text = roomInfo.Name;
+            if (roomInfo.CustomProperties.ContainsKey(PhotonBattleRoom.VisibleRoomNameKey))
+            {
+                string name = (string)roomInfo.CustomProperties[PhotonBattleRoom.VisibleRoomNameKey];
+                _roomName.text = name;
+            }
+            else
+                _roomName.text = roomInfo.Name;
             if (altColour) _roomName.color = Color.black;
             else _roomName.color = Color.white;
                 _roomPlayerCount.text = $"{roomInfo.PlayerCount}/4";
