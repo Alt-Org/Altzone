@@ -1,8 +1,14 @@
 var namespace_battle_1_1_view_1_1_player =
 [
-    [ "BattlePlayerClassBaseViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_class_base_view_controller.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_class_base_view_controller" ],
+    [ "BattlePlayerCharacterClassBaseViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_character_class_base_view_controller.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_character_class_base_view_controller" ],
+    [ "BattlePlayerCharacterViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller" ],
+    [ "BattlePlayerCharacterViewControllerEditor", "class_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller_editor.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller_editor" ],
     [ "BattlePlayerInput", "class_battle_1_1_view_1_1_player_1_1_battle_player_input.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_input" ],
-    [ "BattlePlayerViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller" ],
-    [ "BattlePlayerClassNoneViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_class_none_view_controller.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_class_none_view_controller" ],
-    [ "BattlePlayerClassProjectorViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_class_projector_view_controller.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_class_projector_view_controller" ]
+    [ "BattlePlayerShieldClassBaseViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_shield_class_base_view_controller.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_shield_class_base_view_controller" ],
+    [ "BattlePlayerShieldViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_shield_view_controller.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_shield_view_controller" ],
+    [ "BattlePlayerShieldViewControllerEditor", "class_battle_1_1_view_1_1_player_1_1_battle_player_shield_view_controller_editor.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_shield_view_controller_editor" ],
+    [ "BattlePlayerCharacterClass100ViewControllerTest", "class_battle_1_1_view_1_1_player_1_1_battle_player_character_class100_view_controller_test.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_character_class100_view_controller_test" ],
+    [ "BattlePlayerCharacterClassNoneViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_character_class_none_view_controller.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_character_class_none_view_controller" ],
+    [ "BattlePlayerShieldClass400ViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_shield_class400_view_controller.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_shield_class400_view_controller" ],
+    [ "BattlePlayerShieldClassNoneViewController", "class_battle_1_1_view_1_1_player_1_1_battle_player_shield_class_none_view_controller.html", "class_battle_1_1_view_1_1_player_1_1_battle_player_shield_class_none_view_controller" ]
 ];

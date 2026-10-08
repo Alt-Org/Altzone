@@ -53,7 +53,7 @@ namespace Altzone.Scripts.Model
                 i++;
             }
 
-            for (i = 0; i < (ServerManager.Instance.Clan != null ? ServerManager.Instance.Clan.playerCount : 1); i++)
+            for (i = 0; i < (ServerManager.Instance?.Clan != null ? ServerManager.Instance.Clan.playerCount : 1); i++)
             {
                 int slotRows = 8;
                 int slotColumn = 20;

@@ -75,6 +75,11 @@ namespace Altzone.Scripts.Lobby.Wrappers
             return _hashtable.ContainsKey(key);
         }
 
+        public bool ContainsKey(string key)
+        {
+            return _hashtable.ContainsKey(key);
+        }
+
         public DictionaryEntryEnumerator GetEnumerator()
         {
             return _hashtable.GetEnumerator();

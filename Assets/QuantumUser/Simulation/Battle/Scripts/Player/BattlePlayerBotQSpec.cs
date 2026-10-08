@@ -51,6 +51,9 @@ namespace Battle.QSimulation.Player
         /// </summary>
         public FP Inaccuracy;
 
+        public FP CharacterSwapTimeSecMin;
+        public FP CharacterSwapTimeSecMax;
+
         [Header("Character")]
 
         [Tooltip("Characters that bots can use")]

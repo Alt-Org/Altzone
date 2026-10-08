@@ -15,6 +15,7 @@ using Prg.Scripts.Common.PubSub;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Lobby.Wrappers;
 using static Altzone.Scripts.Lobby.LobbyManager;
+using Altzone.Scripts.Lobby;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 //using Player = Battle1.PhotonRealtime.Code.Player;
 //using Room = Battle1.PhotonRealtime.Code.Room;
@@ -26,11 +27,13 @@ namespace Altzone.Scripts.Battle.Photon
         #region Custom property names and values
 
         public const string BattleID = "bid";
+        public const string VisibleRoomNameKey = "rn";
         public const string PlayerPositionKey = "pp";
         public const string PlayerCountKey = "pc";
         public const string PlayerCharacterIdKey = "mk";
         public const string PlayerCharacterIdsKey = "ci";
         public const string PlayerStatsKey = "cs";
+        public const string PlayerReadyKey = "pr";
         public const string TeamAlphaNameKey = "tb";
         public const string TeamBetaNameKey = "tr";
         public const string TeamWinTypeKey = "wt";
@@ -41,18 +44,38 @@ namespace Altzone.Scripts.Battle.Photon
         public const string StartingEmotionKey = "e";
         public const string RoomNameKey = "n";
         public const string PasswordKey = "pw";
+        public const string MatchmakingKey = "mt";
         public const string GameTypeKey = "gt";
-        public const string CustomGameModeKey = "cgm";
         public const string BotFillKey = "bf";
         public const string IsMatchmakingKey = "mm";
         public const string IsQueueKey = "iq";
         public const string SoulhomeRank = "sr";
         public const string SoulhomeRankVariance = "rv";
         public const string ClanNameKey = "c";
+        public const string ClanIdKey = "cid";
         public const string ClanOpponentNameKey = "c2";
+        public const string ClanOpponentIdKey = "c2id";
         public const string ShowToFriendsKey = "sf";
         public const string ShowToClanKey = "sc";
         public const string LeaderIdKey = "lid";
+        public const string PremadeModeKey = "pm";
+        public const string PremadeTargetMatchmakingTypeKey = "ptm";
+        public const string PremadeTargetGameTypeKey = "ptg";
+        public const string PremadeLeaderUserIdKey = "plid";
+        public const string PremadeLeaderUsernameKey = "pln";
+        public const string PremadeInvitedUserIdKey = "piu";
+        public const string PremadeInviteStateKey = "pis";
+        public const string PremadeInviteTimestampKey = "pits";
+        public const string PremadeUserId1Key = "pm1";
+        public const string PremadeUsername1Key = "pmn1";
+        public const string PremadeUserId2Key = "pm2";
+        public const string PremadeUsername2Key = "pmn2";
+
+        public const int PremadeInviteStateNone = 0;
+        public const int PremadeInviteStatePending = 1;
+        public const int PremadeInviteStateAccepted = 2;
+        public const int PremadeInviteStateDeclined = 3;
+        public const int PremadeInviteStateExpired = 4;
         public const string TestModeKey = "tm";
 
         public static string PlayerPositionKey1 { get => PlayerPosition1.ToString(); }
@@ -429,7 +452,7 @@ namespace Altzone.Scripts.Battle.Photon
 
         public bool IsValidPlayerPos(int playerPos)
         {
-            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2 && (MatchmakingType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(MatchmakingKey) is not MatchmakingType.Custom)
             {
                 return playerPos is >= PlayerPosition1 and <= PlayerPosition2;
             }

@@ -1,6 +1,7 @@
 using System;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
+using System.Collections.Generic;
 using Altzone.Scripts.Chat;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
@@ -69,6 +70,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public enum TopBarStyle
     {
+        None = -1,
         Old,
         NewHelena,
         NewNiko
@@ -378,10 +380,19 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         {
             if (_topBarStyleSetting == value) return;
             _topBarStyleSetting = value;
+
             PlayerPrefs.SetInt(TopBarStyleSettingKey, (int)value);
             OnTopBarChanged?.Invoke((int)value);
         }
     }
+
+
+    public static bool IsTopBarItemVisibleByKeyStatic(string key, bool defaultOn = true)
+        => PlayerPrefs.GetInt(key, defaultOn ? 1 : 0) != 0;
+
+
+    private const string _topBarOrderKeyPrefix = "TopBarOrder_";
+    private static string GetTopBarOrderKey(TopBarStyle style) => _topBarOrderKeyPrefix + style;
 
     private bool _battleDebug;
 
@@ -518,6 +529,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
 
+        OnTopBarChanged?.Invoke((int)_topBarStyleSetting);
         _battleDebug = PlayerPrefs.GetInt("BattleDebug", 0) == 1;
 
         _showFps = PlayerPrefs.GetInt("ShowFps", 0) == 1;
@@ -738,6 +750,71 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 PlayerPrefs.SetString("MainMenuMusic", value);
                 break;
         }
+    }
+
+    public void SetTopBarItemVisibleByKey(string key, bool visible)
+    {
+        int newV = visible ? 1 : 0;
+        int oldV = PlayerPrefs.HasKey(key) ? PlayerPrefs.GetInt(key) : -1;
+        if (oldV == newV) return;
+
+        PlayerPrefs.SetInt(key, newV);
+        OnTopBarChanged?.Invoke((int)TopBarStyleSetting);
+    }
+
+    [System.Serializable]
+    private class TopBarOrderData
+    {
+        public List<int> order = new List<int>();
+    }
+
+    public void SaveTopBarOrder(TopBarStyle style, IList<int> order)
+    {
+        string key = GetTopBarOrderKey(style);
+
+        TopBarOrderData data = new TopBarOrderData { order = new List<int>(order) };
+        string jsonNew = JsonUtility.ToJson(data);
+
+        string jsonOld = PlayerPrefs.GetString(key, "");
+        if (jsonOld == jsonNew) return;
+
+        PlayerPrefs.SetString(key, jsonNew);
+        OnTopBarChanged?.Invoke((int)style);
+    }
+
+    public static List<int> LoadTopBarOrderStatic(TopBarStyle style, int count)
+    {
+        List<int> result = new List<int>(count);
+        bool[] used = new bool[count];
+
+        string raw = PlayerPrefs.GetString(GetTopBarOrderKey(style), "");
+        if (string.IsNullOrEmpty(raw))
+        {
+            for (int i = 0; i < count; i++) result.Add(i);
+            return result;
+        }
+
+        TopBarOrderData data = JsonUtility.FromJson<TopBarOrderData>(raw);
+
+        // JSON-lista l�pi foreachilla
+        if (data != null && data.order != null)
+        {
+            foreach (int idx in data.order)
+            {
+                if ((uint)idx < (uint)count && !used[idx])
+                {
+                    used[idx] = true;
+                    result.Add(idx);
+                    if (result.Count == count) return result;
+                }
+            }
+        }
+
+        for (int i = 0; i < count; i++)
+            if (!used[i])
+                result.Add(i);
+
+        return result;
     }
 
     public ChatChannelType FetchChatChannel()

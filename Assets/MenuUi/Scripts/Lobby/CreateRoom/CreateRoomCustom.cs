@@ -1,4 +1,5 @@
 using Altzone.Scripts.Common;
+using Altzone.Scripts.Lobby;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,7 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         [SerializeField] private Button _createRoom;
         [SerializeField] private MapAndRoomNameSelector _mapAndRoomNameSelector;
         [SerializeField] private CustomBattleGameModeSelector _customBattleGameModeSelector;
+        [SerializeField] private PlayerCountSelector _playerCountSelector;
 
         public bool IsCustomRoomOptionsReady => _isInitialized;
         public string RoomName { get { return _mapAndRoomNameSelector?.SelectedEmotionalSituation?.SituationName ?? string.Empty; } }
@@ -53,8 +55,9 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         public bool ShowToFriends {  get { return _showToFriends.isOn; } }
         public bool ShowToClan { get {  return _showToClan.isOn; } }
         public Button CreateRoomButton { get { return _createRoom; } }
-        public CustomGameMode SelectedCustomGameMode { get { return _customBattleGameModeSelector.SelectedGameMode; } }
+        public GameType SelectedCustomGameMode { get { return _customBattleGameModeSelector.SelectedGameMode; } }
         public int SelectedCustomGameModeIndex { get { return (int)_customBattleGameModeSelector.SelectedGameMode; } }
+        public int PlayerCount { get { return (int)_playerCountSelector.PlayerCount; } }
         public bool CanCreateRoom => !IsPrivate || !string.IsNullOrWhiteSpace(RoomPassword);
 
         public void InitializeCustomRoomOptions()

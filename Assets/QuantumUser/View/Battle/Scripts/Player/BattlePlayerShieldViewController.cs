@@ -125,7 +125,7 @@ namespace Battle.View.Player
         #region Public - Sprite Control Methods
 
         /// <summary>
-        /// Changes the sprite of the shield gameobject based on <paramref name="shieldNumber"/>, <paramref name="side"/> and <paramref name="isHit"/>.
+        /// Changes the sprite of the shield gameobject based on <paramref name="shieldNumber"/> and <paramref name="side"/>.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerShieldViewController-Public-SpriteControlMethods "Public Sprite Control Methods"
@@ -134,15 +134,11 @@ namespace Battle.View.Player
         ///
         /// <param name="shieldNumber">ShieldNumber of the shield.</param>
         /// <param name="side">The side the shield is on.</param>
-        /// <param name="isHit">Whether the shield has been hit or not.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetShieldSprite(int shieldNumber, ShieldSide side, bool isHit)
+        public void SetShieldSprite(int shieldNumber, ShieldSide side)
         {
             int index = SpriteSheetMap.ShieldSpriteStart
-                      + (int)side
-                      * (SpriteSheetMap.ShieldStateCount * SpriteSheetMap.ShieldCount)
-                      + Convert.ToInt32(isHit)
-                      * SpriteSheetMap.ShieldCount
+                      + (int)side * (SpriteSheetMap.ShieldStateCount * SpriteSheetMap.ShieldCount)
                       + shieldNumber;
 
             SpriteSheetMap sprite = SpriteSheetMap.FromInt(index);
@@ -153,18 +149,10 @@ namespace Battle.View.Player
                     SpriteSheetMap.Enum.ShieldUp2 or
                     SpriteSheetMap.Enum.ShieldUp3 or
                     SpriteSheetMap.Enum.ShieldUp4 or
-                    SpriteSheetMap.Enum.ShieldUpHit1 or
-                    SpriteSheetMap.Enum.ShieldUpHit2 or
-                    SpriteSheetMap.Enum.ShieldUpHit3 or
-                    SpriteSheetMap.Enum.ShieldUpHit4 or
                     SpriteSheetMap.Enum.ShieldDown1 or
                     SpriteSheetMap.Enum.ShieldDown2 or
                     SpriteSheetMap.Enum.ShieldDown3 or
-                    SpriteSheetMap.Enum.ShieldDown4 or
-                    SpriteSheetMap.Enum.ShieldDownHit1 or
-                    SpriteSheetMap.Enum.ShieldDownHit2 or
-                    SpriteSheetMap.Enum.ShieldDownHit3 or
-                    SpriteSheetMap.Enum.ShieldDownHit4,
+                    SpriteSheetMap.Enum.ShieldDown4,
                 "{0} Sprite is not a shield sprite", sprite
             );
 
@@ -428,11 +416,11 @@ namespace Battle.View.Player
 
             if (_onLocalTeam)
             {
-                SetShieldSprite(_shieldNumber, ShieldSide.Top, isHit: false);
+                SetShieldSprite(_shieldNumber, ShieldSide.Top);
             }
             else
             {
-                SetShieldSprite(_shieldNumber, ShieldSide.Bottom, isHit: false);
+                SetShieldSprite(_shieldNumber, ShieldSide.Bottom);
             }
             return true;
         }

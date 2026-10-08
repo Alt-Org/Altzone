@@ -1,10 +1,11 @@
 using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby.InLobby;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using MenuUi.Scripts.Lobby.InLobby;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Lobby
 {
@@ -116,9 +117,9 @@ namespace MenuUi.Scripts.Lobby
             }
             catch { }
 
-            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType, true));
+            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedMatchmakingType, true));
             bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
-            if (!isLeader && InLobbyController.SelectedGameType != GameType.Clan2v2)
+            if (!isLeader && InLobbyController.SelectedMatchmakingType != MatchmakingType.Clan2v2 && InLobbyController.SelectedMatchmakingType != MatchmakingType.FriendLobby)
             {
                 Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
             }
@@ -204,7 +205,7 @@ namespace MenuUi.Scripts.Lobby
 
         private void OnFailedToStartMatchmakingGame()
         {
-            PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin aloittamisessa, lopetetaan pelin etsiminen.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Virhe pelin aloittamisessa, lopetetaan pelin etsiminen.");
         }
     }
 }

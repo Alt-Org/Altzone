@@ -105,8 +105,8 @@ Inheritance diagram for Battle.View.SoulWall.BattleStoneCharacterViewController:
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1576cf87953eeb3420fbea752aa1ff8d" id="r_a1576cf87953eeb3420fbea752aa1ff8d"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a1576cf87953eeb3420fbea752aa1ff8d">DestroyCharacterPart</a> (int wallNumber, <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a> team)</td></tr>
-<tr class="memdesc:a1576cf87953eeb3420fbea752aa1ff8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys (deactivates) the character part which corresponds to the wall number and team.  <br /></td></tr>
+<tr class="memitem:af324619a5d3863a641c11427ad5ca581" id="r_af324619a5d3863a641c11427ad5ca581"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#af324619a5d3863a641c11427ad5ca581">DestroyCharacterPart</a> (<a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a> team, int wallNumber)</td></tr>
+<tr class="memdesc:af324619a5d3863a641c11427ad5ca581"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destroys (deactivates) the part of a stone character that is associated with a SoulWall segment and belongs to a team based on <em>team</em>  and <em>wallNumber</em> .  <br /></td></tr>
 <tr class="memitem:a9387408dc998ae05c0c311a3830f4ea2" id="r_a9387408dc998ae05c0c311a3830f4ea2"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a9387408dc998ae05c0c311a3830f4ea2">SetEmotionIndicator</a> (int wallNumber, <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a> team, int emotionIndex)</td></tr>
 <tr class="memdesc:a9387408dc998ae05c0c311a3830f4ea2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets new emotion color to emotion indicator which corresponds to the wall number and team.  <br /></td></tr>
 <tr class="memitem:a0f36c82b801e5bb7158389bf0afd644e" id="r_a0f36c82b801e5bb7158389bf0afd644e"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a0f36c82b801e5bb7158389bf0afd644e">PlayHitAnimation</a> (<a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a> team, <a class="el" href="namespace_quantum.html#ad5e1966c7acd39a3ff3da658fbd8803b">BattleEmotionState</a> emotion)</td></tr>
@@ -136,8 +136,8 @@ Private Attributes</h2></td></tr>
 <div class="textblock"><p><span class="brief-h">Stone character view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script🡵</a>.</span><br  />
  Handles stone characters visual functionality. </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
-<a id="a1576cf87953eeb3420fbea752aa1ff8d" name="a1576cf87953eeb3420fbea752aa1ff8d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1576cf87953eeb3420fbea752aa1ff8d">&#9670;&#160;</a></span>DestroyCharacterPart()</h2>
+<a id="af324619a5d3863a641c11427ad5ca581" name="af324619a5d3863a641c11427ad5ca581"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af324619a5d3863a641c11427ad5ca581">&#9670;&#160;</a></span>DestroyCharacterPart()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -148,12 +148,12 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">void Battle.View.SoulWall.BattleStoneCharacterViewController.DestroyCharacterPart </td>
           <td>(</td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>wallNumber</em></span>, </td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a></td>          <td class="paramname"><span class="paramname"><em>team</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a></td>          <td class="paramname"><span class="paramname"><em>team</em></span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>wallNumber</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -163,11 +163,11 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Destroys (deactivates) the character part which corresponds to the wall number and team. </p>
+<p>Destroys (deactivates) the part of a stone character that is associated with a SoulWall segment and belongs to a team based on <em>team</em>  and <em>wallNumber</em> . </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">wallNumber</td><td>The wall number which to destroy.</td></tr>
-    <tr><td class="paramname">team</td><td>The <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf" title="Enum that defines the teams in battle.">BattleTeamNumber</a> which character part to destroy.</td></tr>
+    <tr><td class="paramname">team</td><td>Team number of the team that the desired stone character belongs to.</td></tr>
+    <tr><td class="paramname">wallNumber</td><td>The wall number corresponding to the desired stone character part.</td></tr>
   </table>
   </dd>
 </dl>
@@ -313,7 +313,7 @@ Private Attributes</h2></td></tr>
 <p>[SerializeField] Array of the bottom stone character parts <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject🡵</a> references. </p>
 <p><a class="el" href="#BattleStoneCharacterViewController-SerializeFields" title="BattleStoneCharacterViewController-SerializeFields">SerializeFields</a> </p>
 
-<p class="reference">Referenced by <a class="el" href="#a1576cf87953eeb3420fbea752aa1ff8d">DestroyCharacterPart()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#af324619a5d3863a641c11427ad5ca581">DestroyCharacterPart()</a>.</p>
 
 </div>
 </div>
@@ -446,7 +446,7 @@ Private Attributes</h2></td></tr>
 <p>[SerializeField] Array of the top stone character parts <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject🡵</a> references. </p>
 <p><a class="el" href="#BattleStoneCharacterViewController-SerializeFields" title="BattleStoneCharacterViewController-SerializeFields">SerializeFields</a> </p>
 
-<p class="reference">Referenced by <a class="el" href="#a1576cf87953eeb3420fbea752aa1ff8d">DestroyCharacterPart()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#af324619a5d3863a641c11427ad5ca581">DestroyCharacterPart()</a>.</p>
 
 </div>
 </div>

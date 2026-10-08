@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
@@ -9,10 +10,12 @@ using UnityEngine.UI;
 public class IntroCharacters : MonoBehaviour
 {
     [SerializeField]
-    private List<GameObject> characterCards;
+    private List<CharacterThumbnailHandler> characterCards;
 
     private List<int> characterIDs = new List<int>();
 
+    public delegate void InitialAvatarSelection(CharacterClassType classType);
+    public static event InitialAvatarSelection OnInitialAvatarSelection;
 
     void Start()
     {
@@ -22,32 +25,21 @@ public class IntroCharacters : MonoBehaviour
             characterIDs.Add(i);
         }
 
-
-        CharacterClassType classType;
         int j = 0;                     //for going through the classtype list
         AvatarReference avatarreference= AvatarReference.Instance;
-        foreach (GameObject characterCard in characterCards)
+        foreach (CharacterThumbnailHandler characterCard in characterCards)
         {
             j++;
 
-            classType = (CharacterClassType)characterIDs[j]; //get classtype from list
+            CharacterClassType classType = (CharacterClassType)characterIDs[j]; //get classtype from list
 
-            characterCard.GetComponent<Image>().color = avatarreference.GetColour(classType); //change card color
-
-
-            CharacterThumbnailHandler characterThumbnailHandler = characterCard.GetComponent<CharacterThumbnailHandler>(); // get correct thumbnailhandler 
-
-            Image characterSprite = characterThumbnailHandler._characterSprite;
-            characterSprite.sprite = avatarreference.GetCharacterSprite(classType); //set character sprite
-
-
-            TextMeshProUGUI nameSprite = characterThumbnailHandler._nameText; //find name-child
-            nameSprite.text = avatarreference.GetName(classType); //set name sprite
-            nameSprite.color = avatarreference.GetColour(classType);
-
-           
+            characterCard.SetData(classType, SelectInitialAvatar);
         }
     }
 
+    private void SelectInitialAvatar(CharacterClassType classType)
+    {
+        OnInitialAvatarSelection?.Invoke(classType);
+    }
 
 }

@@ -19,7 +19,7 @@ namespace Battle.QSimulation.Game
     /// All new commands must be added to the <see cref="Type"/> enum.
     /// </summary>
     ///
-    /// See [{BattleCommand (base class)}](#page-concepts-commands-battle-qcommand) for more info.
+    /// See [{BattleCommand (base class)}](#page-concepts-commands-battle-command-base) for more info.
     public abstract class BattleCommand : DeterministicCommand
     {
         /// <summary>

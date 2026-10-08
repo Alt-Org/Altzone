@@ -170,7 +170,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1104863877725991840}
   - component: {fileID: 2662377611880675965}
-  - component: {fileID: 6135565766865687711}
   m_Layer: 5
   m_Name: EmojiComments
   m_TagString: Untagged
@@ -245,34 +244,8 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6135565766865687711}
-        m_TargetAssemblyTypeName: ToggleSetting, MainMenu
-        m_MethodName: ChangeValue
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_IsOn: 1
---- !u!114 &6135565766865687711
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 40798673886610222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d31326f1abff33f43ad47c6f6c6ae834, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _name: AllowEmojis
-  _type: 0
 --- !u!1 &98656533661224459
 GameObject:
   m_ObjectHideFlags: 0
@@ -3888,7 +3861,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6824894533823608063}
   - component: {fileID: 5492499873000453075}
-  - component: {fileID: 2539432868111568425}
   m_Layer: 5
   m_Name: ChatMessages
   m_TagString: Untagged
@@ -3963,34 +3935,8 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2539432868111568425}
-        m_TargetAssemblyTypeName: ToggleSetting, MainMenu
-        m_MethodName: ChangeValue
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_IsOn: 1
---- !u!114 &2539432868111568425
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2681119470368705635}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d31326f1abff33f43ad47c6f6c6ae834, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _name: AllowChat
-  _type: 0
 --- !u!1 &2712209141328445026
 GameObject:
   m_ObjectHideFlags: 0
@@ -4720,7 +4666,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3424603028079712281}
   - component: {fileID: 1316645462292013334}
-  - component: {fileID: 3870732589658725851}
   - component: {fileID: 721626783236373173}
   m_Layer: 5
   m_Name: InternetLinks
@@ -4796,34 +4741,8 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3870732589658725851}
-        m_TargetAssemblyTypeName: ToggleSetting, MainMenu
-        m_MethodName: ChangeValue
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_IsOn: 1
---- !u!114 &3870732589658725851
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2914870263330595007}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d31326f1abff33f43ad47c6f6c6ae834, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _name: AllowLinks
-  _type: 0
 --- !u!114 &721626783236373173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5941,7 +5860,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2474360715844257753}
   - component: {fileID: 2987561433458577013}
-  - component: {fileID: 7657161076326914749}
   m_Layer: 5
   m_Name: IndependetSpendingAcitvation
   m_TagString: Untagged
@@ -6016,34 +5934,8 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7657161076326914749}
-        m_TargetAssemblyTypeName: ToggleSetting, MainMenu
-        m_MethodName: ChangeValue
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_IsOn: 1
---- !u!114 &7657161076326914749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4092839752801214212}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d31326f1abff33f43ad47c6f6c6ae834, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _name: ActivatePurchasesSeparately
-  _type: 0
 --- !u!1 &4176782744802467136
 GameObject:
   m_ObjectHideFlags: 0
@@ -8050,7 +7942,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7123826758579407487}
   - component: {fileID: 8214927360779991760}
-  - component: {fileID: 907240076640570972}
   m_Layer: 5
   m_Name: TreasureHunt
   m_TagString: Untagged
@@ -8125,34 +8016,8 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 907240076640570972}
-        m_TargetAssemblyTypeName: ToggleSetting, MainMenu
-        m_MethodName: ChangeValue
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_IsOn: 1
---- !u!114 &907240076640570972
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5780024503599140405}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d31326f1abff33f43ad47c6f6c6ae834, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _name: AllowTreasureHunt
-  _type: 0
 --- !u!1 &5800584424620557782
 GameObject:
   m_ObjectHideFlags: 0
@@ -10087,7 +9952,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4568759219931406123}
   - component: {fileID: 2801006928543796551}
-  - component: {fileID: 3308987812524993606}
   m_Layer: 5
   m_Name: MidMatch
   m_TagString: Untagged
@@ -10162,34 +10026,8 @@ MonoBehaviour:
   m_Group: {fileID: 7282008864532783616}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3308987812524993606}
-        m_TargetAssemblyTypeName: ToggleSetting, MainMenu
-        m_MethodName: ChangeValue
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_IsOn: 0
---- !u!114 &3308987812524993606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6899231543036517756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d31326f1abff33f43ad47c6f6c6ae834, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _name: EndMidMatch
-  _type: 0
 --- !u!1 &6908306446343504070
 GameObject:
   m_ObjectHideFlags: 0
@@ -12162,7 +12000,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3470927033059902898}
   - component: {fileID: 2049342845174483598}
-  - component: {fileID: 2484213923173275341}
   m_Layer: 5
   m_Name: EndMatch
   m_TagString: Untagged
@@ -12237,34 +12074,8 @@ MonoBehaviour:
   m_Group: {fileID: 7282008864532783616}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2484213923173275341}
-        m_TargetAssemblyTypeName: ToggleSetting, MainMenu
-        m_MethodName: ChangeValue
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_IsOn: 1
---- !u!114 &2484213923173275341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8670708927271268695}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d31326f1abff33f43ad47c6f6c6ae834, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _name: EndAfterMatch
-  _type: 0
 --- !u!1 &8773061388164665278
 GameObject:
   m_ObjectHideFlags: 0

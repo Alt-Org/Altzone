@@ -1,5 +1,17 @@
+enum BattlePlayerClass100State
+{
+    Unused,
+    Placement,
+    Placed
+}
+
 component BattlePlayerClass100DataQComponent
 {
+    [HideInInspector]
+    BattlePlayerClass100State ClassState;
+    [HideInInspector]
+    FrameTimer PlacementTimer;
+
     [HideInInspector]
     FPVector2 JoystickValuePrevious;
     [HideInInspector]
@@ -8,6 +20,4 @@ component BattlePlayerClass100DataQComponent
     FrameTimer JoystickTimer;
     [HideInInspector]
     FrameTimer CooldownTimer;
-    [HideInInspector]
-    FrameTimer PlacementTimer;
 }

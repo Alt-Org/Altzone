@@ -2,6 +2,9 @@
 
 ## Overview {#page-concepts-player-overview}
 
+@note
+This documentation is not entirely up to date. Player code was modified for testing flipper style game and behavior varies depending on if @cref{Battle.QSimulation.Game.BattleParameters,IsTestFlipperGame} is on.
+
 **%Quantum** handles recognizing **Players** through a [PlayerRef🡵](https://doc-api.photonengine.com/en/quantum/current/struct_quantum_1_1_player_ref.html),
 but we prefer to use **PlayerSlot** as defined by us whenever possible.  
 Each **Player** has an assigned **PlayerSlot** and a **TeamNumber**.  
@@ -489,8 +492,9 @@ and/or a [{PlayerShieldClassViewController}](#page-concepts-player-view-shield-c
 
 ### Player Character Class List {#page-concepts-player-characters-class-list}
 
-@subpage page-concepts-player-class-100
-@subpage page-concepts-player-class-400
+@subpage page-concepts-player-class-100 <br/>
+@subpage page-concepts-player-class-400 <br/>
+@subpage page-concepts-player-class-500 <br/>
 @subpage page-concepts-player-class-600
 
 <br/>
@@ -633,16 +637,16 @@ See [{Joining and Initializing}](#page-concepts-player-initializing) for more in
 **Characters** can be [{Alive}](#page-concepts-player-character-entity-character-state) or [{Dead}](#page-concepts-player-character-entity-character-state)
 and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate) or [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).
 
-A **Character** can be **Spawned** using @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int)}.
+A **Character** can be **Spawned** using @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int, bool)}.
 ([{InPlay}](#page-concepts-entity-management-registered-entities-playstate))  
 The **Character** is spawned based on it's chosen [{Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour).  
 If a **Character** is [{Dead}](#page-concepts-player-character-entity-character-state), it cannot be **Spawned**.
 
-A **Character** can be **Despawned** using @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, bool)}.
+A **Character** can be **Despawned** using @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, int, bool)}.
 ([{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))  
 
-The @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int)}
-and @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, bool)}
+The @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int, bool)}
+and @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, int, bool)}
 methods also affect the [{Player PlayState}](#page-concepts-player-playstate) of the **Player** the **Character** belongs to.
 
 <br/>
@@ -815,7 +819,7 @@ See [{Player Character Classes}](#page-concepts-player-characters-classes) for m
 
 ### PlayerClassQSpec (%Quantum Spec) {#page-concepts-player-simulation-QSpec}
 
-Every  **Player Character Class** can optionally have a **QSpec** for additional immutable data that is shared between all the [{Player Character Entities}](#page-concepts-player-character-entity) of the corresponding **Character Class**.
+Every  **Player Character Class** can optionally have a **QSpec** for additional immutable data that is shared between all the [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) of the corresponding **Character Class**.
 
 **C# code example**
 ```cs
@@ -825,7 +829,7 @@ public class BattlePlayerClassExample3QSpec : AssetObject
 }
 ```
 
-See [{PlayerClass}](#page-concepts-player-simulation-playerclass) for more info.  
+See [{PlayerClass}](#page-concepts-player-simulation-class-playerclass) for more info.  
 See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
 
 <br/>

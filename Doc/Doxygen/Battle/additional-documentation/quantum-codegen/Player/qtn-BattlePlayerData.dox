@@ -84,6 +84,10 @@
 /// <summary>How many GridCells the character extends below the center heart position.</summary>
 /// Part of @ref PlayerAttributes "Player's attributes"
 ///
+/// @var bool Quantum::BattlePlayerDataQComponent::DisableMovement
+/// <summary>Whether moving the character is disabled or not.</summary>
+/// Part of @ref PlayerAttributes "Player's attributes"
+///
 /// @var bool Quantum::BattlePlayerDataQComponent::DisableRotation
 /// <summary>Whether rotating the character is disabled or not.</summary>
 /// Part of @ref PlayerAttributes "Player's attributes"
@@ -215,6 +219,9 @@
 ///
 /// @var BattlePlayerHitboxTemplate Quantum::BattlePlayerDataTemplateQComponent::Hitbox
 /// <summary>BattlePlayerHitboxTemplate that contains all character colliders.</summary>
+///
+/// @var bool Quantum::BattlePlayerDataTemplateQComponent::DisableMovement
+/// <summary>Bool for disabling movement for character.</summary>
 ///
 /// @var bool Quantum::BattlePlayerDataTemplateQComponent::DisableRotation
 /// <summary>Bool for disabling rotation for character.</summary>

@@ -5,10 +5,11 @@ using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.MQTT;
 using MenuUi.Scripts.Login;
 using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Loader
 {
@@ -35,13 +36,26 @@ namespace MenuUi.Scripts.Loader
         [SerializeField]
         private WindowNavigation _languageNavigation;
 
+        [Header("Error messages")]
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorFinnish;
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorEnglish;
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorFinnishDev;
+        [SerializeField, TextArea(1, 10)]
+        private string _mqttErrorEnglishDev;
+
         private string _currentAccessToken = null;
+        private bool _clanFetched = false;
+        private bool _mqttEstablished = false;
 
         private void OnEnable()
         {
             ServerManager.OnLogInFailed += OpenLogInScreen;
             ServerManager.OnLogInStatusChanged += PlayerDataFetched;
-            ServerManager.OnClanFetchFinished += LogInReady;
+            ServerManager.OnClanFetchFinished += ClanDataFetched;
+            MQTTManager.OnMQTTConnectionEstablished += MQTTEstablished;
             _loginSuccess.OnLogInPanelSuccess += CloseLogInScreen;
             _loginSuccess.OnLogInPanelReturn += CloseLogInScreen;
             _changeAccountHandler.OnChangeAccountEvent += ChangeAccount;
@@ -53,7 +67,8 @@ namespace MenuUi.Scripts.Loader
         {
             ServerManager.OnLogInFailed -= OpenLogInScreen;
             ServerManager.OnLogInStatusChanged -= PlayerDataFetched;
-            ServerManager.OnClanFetchFinished -= LogInReady;
+            ServerManager.OnClanFetchFinished -= ClanDataFetched;
+            MQTTManager.OnMQTTConnectionEstablished -= MQTTEstablished;
             _loginSuccess.OnLogInPanelSuccess -= CloseLogInScreen;
             _loginSuccess.OnLogInPanelReturn -= CloseLogInScreen;
             _changeAccountHandler.OnChangeAccountEvent -= ChangeAccount;
@@ -124,6 +139,52 @@ namespace MenuUi.Scripts.Loader
         private void PlayerDataFetched(bool value)
         {
             _loadInfoController.Status = LogInStatus.FetchClanData;
+        }
+
+        private void ClanDataFetched()
+        {
+            _clanFetched = true;
+
+            if (_mqttEstablished)
+            {
+                LogInReady();
+            }
+            else
+            {
+                _loadInfoController.Status = LogInStatus.ConnectingMQTT;
+            }
+        }
+
+        private void MQTTEstablished(bool value)
+        {
+            _mqttEstablished = value;
+
+            if (_mqttEstablished)
+            {
+                if (_clanFetched)
+                {
+                    LogInReady();
+                }
+            }
+            else
+            {
+                if (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
+                {
+                    if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                        OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorFinnishDev);
+                    else OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorEnglishDev);
+                    if (_clanFetched)
+                    {
+                        LogInReady();
+                    }
+                }
+                else
+                {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                        OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorFinnish);
+                    else OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorEnglish);
+                }
+            }
         }
 
         private void LogInReady()

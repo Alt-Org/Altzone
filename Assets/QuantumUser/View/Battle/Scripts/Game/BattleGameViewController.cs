@@ -157,7 +157,7 @@ namespace Battle.View.Game
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
-        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="state"><see cref="Quantum.BattleJoystickState"></see> of the joystick.</param>
         /// <param name="value">The movement direction Vector2.</param>
         public void UiInputOnJoystickMovement(BattleJoystickState state, Vector2 value)
         {
@@ -170,7 +170,7 @@ namespace Battle.View.Game
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>.
         /// </summary>
         ///
-        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="state"><see cref="Quantum.BattleJoystickState"></see> of the joystick.</param>
         /// <param name="value">The rotation input as float.</param>
         public void UiInputOnJoystickRotation(BattleJoystickState state, float value)
         {
@@ -183,7 +183,7 @@ namespace Battle.View.Game
         /// </summary>
         public void UiInputOnExitGamePressed()
         {
-            if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam == LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
+            if (_endOfGameDataHasEnded) LobbyManager.ExitQuantum(_endOfGameDataWinningTeam, LocalPlayerTeam, (float)_endOfGameDataGameLengthSec);
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace Battle.View.Game
         /// in <see cref="BattleGameViewController._playerInput">_playerInput</see>
         /// </summary>
         ///
-        /// <param name="state"><see cref="BattleJoystickState"></see> of the joystick.</param>
+        /// <param name="state"><see cref="Quantum.BattleJoystickState"></see> of the joystick.</param>
         /// <param name="value">The special input as Vector2</param>
         public void UiInputOnJoystickSpecial(BattleJoystickState state, Vector2 value)
         {
@@ -617,15 +617,15 @@ namespace Battle.View.Game
         /// Private handler method for EventBattleLastRowWallDestroyed QuantumEvent.<br/>
         /// Handles calling <see cref="Battle.View.SoulWall.BattleStoneCharacterViewController.DestroyCharacterPart">DestroyCharacterPart</see>
         /// in <see cref="BattleGameViewController._stoneCharacterViewController">_stoneCharacterViewController</see><br/>
-        /// and <see cref="Battle.View.Effect.BattleLightrayEffectViewController.SpawnLightray">SpawnLightray</see>
+        /// and <see cref="Battle.View.Effect.BattleLightrayEffectViewController.ActivateLightray">SpawnLightray</see>
         /// in <see cref="BattleGameViewController._lightrayEffectViewController">_lightrayEffectViewController</see>.
         /// </summary>
         ///
         /// <param name="e">The event data.</param>
         private void QEventOnLastRowWallDestroyed(EventBattleLastRowWallDestroyed e)
         {
-            _stoneCharacterViewController.DestroyCharacterPart(e.WallNumber, e.Team);
-            _lightrayEffectViewController.SpawnLightray(e.WallNumber, e.LightrayColor);
+            _stoneCharacterViewController.DestroyCharacterPart(e.Team, e.WallNumber);
+            _lightrayEffectViewController.ActivateLightray(e.Team, e.WallNumber);
         }
 
         /// <summary>
@@ -665,7 +665,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleCharacterSelected QuantumEvent.<br/>
-        /// Handles calling <see cref="BattleUiPlayerInfoHandler.SetSelected">SetSeleced</see> in
+        /// Handles calling <see cref="Battle.View.UI.BattleUiPlayerInfoHandler.SetSelected">SetSelected</see> in
         /// <see cref="BattleGameViewController._uiController">_uiController's</see>
         /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>.
         /// </summary>
@@ -710,7 +710,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleStoneCharacterPlayHitAnimation QuantumEvent.<br/>
-        /// Handles calling <see cref="BattleStoneCharacterViewController.PlayHitAnimation">PlaySound</see>
+        /// Handles calling <see cref="Battle.View.SoulWall.BattleStoneCharacterViewController.PlayHitAnimation">PlaySound</see>
         /// in <see cref="BattleGameViewController._stoneCharacterViewController">_stoneCharacterViewController</see>
         /// </summary>
         ///
@@ -736,7 +736,7 @@ namespace Battle.View.Game
 
         /// <summary>
         /// Private handler method for EventBattleCharacterDeath QuantumEvent.<br/>
-        /// Handles calling <see cref="BattleUiPlayerInfoHandler.MarkCharacterDead">MarkCharacterDead</see>
+        /// Handles calling <see cref="Battle.View.UI.BattleUiPlayerInfoHandler.MarkCharacterDead">MarkCharacterDead</see>
         /// in <see cref="BattleGameViewController._uiController">_uiController's</see>
         /// <see cref="Battle.View.UI.BattleUiController.PlayerInfoHandler">PlayerInfoHandler</see>
         /// </summary>

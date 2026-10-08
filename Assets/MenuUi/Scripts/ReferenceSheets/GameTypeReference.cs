@@ -58,6 +58,7 @@ namespace MenuUi.Scripts.ReferenceSheets
         public Sprite Banner;
         public Sprite Background;
         public Sprite Middleground;
+        public MatchmakingType matchmakingType;
         public GameType gameType;
         public bool Enabled;
         public string FinnishName;

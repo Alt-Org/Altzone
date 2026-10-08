@@ -104,17 +104,17 @@ namespace Battle.View.Player
         private float _maxShieldRotateDistanceSqr;
 
         /// <summary>
-        /// Offset of the <see cref="_shieldSpriteGameObject">_shieldSpriteGameObject</see>.
+        /// Offset of the shield's gameobject.
         /// </summary>
         private float _shieldOffset;
 
         /// <summary>
-        /// Default position of the <see cref="_shieldSpriteGameObject">_shieldSpriteGameObject</see>.
+        /// Default position of the shield's gameobject.
         /// </summary>
         private Vector3 _shieldDefaultPosition;
 
         /// <summary>
-        /// Default rotation of the <see cref="_shieldSpriteGameObject">_shieldSpriteGameObject</see>.
+        /// Default rotation of the shield's gameobject.
         /// </summary>
         private Quaternion _shieldDefaultRotation;
     }

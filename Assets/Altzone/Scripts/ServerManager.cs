@@ -1,30 +1,29 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using UnityEngine;
-using UnityEngine.Networking;
-using Altzone.Scripts.Model.Poco.Player;
-using System.Globalization;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.GA;
-using Altzone.Scripts.Model.Poco.Game;
-using UnityEngine.Assertions;
-using Altzone.Scripts.Model;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Altzone.Scripts;
+using Altzone.Scripts.Chat;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.GA;
+using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.MQTT;
+using Altzone.Scripts.ReferenceSheets; 
+using Altzone.Scripts.Settings;
+using Altzone.Scripts.Store;
+using Altzone.Scripts.Voting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Altzone.Scripts.Settings;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
-using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Voting;
-using System.Linq;
-using Altzone.Scripts.Model.Poco;
-using Altzone.Scripts.Store;
-using Altzone.Scripts.Chat;
-using Altzone.Scripts.Audio;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -159,6 +158,7 @@ public class ServerManager : MonoBehaviour
     {
         OnClanChanged?.Invoke(Clan);
         _firstJoin = false;
+        if (MQTTManager.IsConnected && !MQTTManager.IsSubscribed) MQTTManager.Instance.SubscribeToClanNotifications();
     }
 
     /// <summary>
@@ -318,6 +318,8 @@ public class ServerManager : MonoBehaviour
             OnLogInStatusChanged?.Invoke(true);
             _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
 
+            MQTTManager.Instance.StartMQTT();
+
             if (Clan == null)
             {
                 StartCoroutine(GetClanFromServer(clan =>
@@ -354,6 +356,8 @@ public class ServerManager : MonoBehaviour
         OnLogInStatusChanged?.Invoke(false);
 
         OnClanChanged?.Invoke(null);
+
+        if (MQTTManager.IsConnected && MQTTManager.IsSubscribed) MQTTManager.Instance.UnsubscribeFromClanNotifications();
     }
 
     /// <summary>
@@ -805,7 +809,7 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator GetPlayerFromServer(string playerId, Action<ServerPlayer> callback)
+    public IEnumerator GetPlayerFromServer(string playerId, Action<ServerPlayer> callback, Action<bool> finished = null)
     {
         if (Player != null)
             Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
@@ -826,6 +830,8 @@ public class ServerManager : MonoBehaviour
                 if (callback != null)
                     callback(null);
             }
+            if (finished != null)
+                finished(true);
         }));
     }
 
@@ -886,10 +892,11 @@ public class ServerManager : MonoBehaviour
 
         yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "player/emotioncheck", AccessToken, request =>
         {
+            JObject result = JObject.Parse(request.downloadHandler.text);
             if (request.result == UnityWebRequest.Result.Success)
             {
                 if (callback != null)
-                    callback(true);
+                    callback(bool.Parse(result["emotioncheck"]["submitted_today"].ToString()));
             }
             else
             {
@@ -933,7 +940,7 @@ public class ServerManager : MonoBehaviour
     #endregion
 
     #region Clan
-    public IEnumerator GetClanFromServer(Action<ServerClan> callback)
+    public IEnumerator GetClanFromServer(Action<ServerClan> callback, Action<bool> finished = null)
     {
         if (Clan != null)
             Debug.LogWarning("Clan already exists. Consider using ServerManager.Instance.Clan if the most up to data data from server is not needed.");
@@ -942,6 +949,8 @@ public class ServerManager : MonoBehaviour
         {
             if (callback != null)
                 callback(Clan);
+            if (finished != null)
+                finished(true);
             yield break;
         }
 
@@ -965,15 +974,19 @@ public class ServerManager : MonoBehaviour
                 if (callback != null)
                     callback(null);
             }
+            if (finished != null)
+                finished(true);
         }));
     }
 
-    public IEnumerator GetClanFromServer(string clanId, Action<ServerClan> callback)
+    public IEnumerator GetClanFromServer(string clanId, Action<ServerClan> callback, Action<bool> finished = null)
     {
         if (string.IsNullOrEmpty(clanId))
         {
             Debug.LogWarning("GetClanFromServer called with empty clanId.");
             callback?.Invoke(null);
+            if (finished != null)
+                finished(true);
             yield break;
         }
 
@@ -990,6 +1003,8 @@ public class ServerManager : MonoBehaviour
             {
                 callback?.Invoke(null);
             }
+            if (finished != null)
+                finished(true);
         }));
     }
 
@@ -1182,6 +1197,7 @@ public class ServerManager : MonoBehaviour
                     playerData.ClanId = string.Empty;
                     storefront.SavePlayerData(playerData, null);
                     OnClanChanged?.Invoke(null);
+                    if (MQTTManager.IsConnected && MQTTManager.IsSubscribed) MQTTManager.Instance.UnsubscribeFromClanNotifications();
                 }
                 else
                 {

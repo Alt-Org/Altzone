@@ -1,11 +1,12 @@
+using System.Collections;
+using System.Text;
+using Altzone.Scripts.Chat;
+using Altzone.Scripts.Common;
+using Altzone.Scripts.Model.Poco.Player;
+using MenuUi.Scripts.AvatarEditor;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using Altzone.Scripts.Chat;
-using MenuUi.Scripts.AvatarEditor;
-using Altzone.Scripts.Model.Poco.Player;
-using System.Text;
-using System.Collections;
 
 /// <summary>
 /// ChatMessagePrefab contains references to children of an instantiated chat message prefab.
@@ -46,23 +47,23 @@ public class ChatMessagePrefab : MonoBehaviour
     /// Sets the correct emoji and message background for the chat message instance.
     /// </summary>
     /// <<param name="mood">Mood value received from the server/Photon Chat</param>
-    internal void SetMood(Mood mood)
+    internal void SetMood(Emotion mood)
     {
         switch (mood)
         {
-            case Mood.Sad:
+            case Emotion.Sorrow:
                 _messageContentText.color = new Color32(81, 155, 255, 255);
                 return;
-            case Mood.Angry:
+            case Emotion.Anger:
                 _messageContentText.color = new Color32(255, 50, 50, 255);
                 return;
-            case Mood.Happy:
+            case Emotion.Joy:
                 _messageContentText.color = new Color32(255, 208, 72, 255);
                 return;
-            case Mood.Wink:
+            case Emotion.Playful:
                 _messageContentText.color = new Color32(255, 106, 0, 255);
                 return;
-            case Mood.Love:
+            case Emotion.Love:
                 _messageContentText.color = new Color32(255, 127, 182, 255);
                 return;
             default:

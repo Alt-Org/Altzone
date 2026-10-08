@@ -3,7 +3,13 @@
 /// Prefab for class 500 Base/Test shield. This is used for testing purposes and as a base for creating other class 500 shields.
 /// </summary>
 ///
-/// This prefab is a variant of @ref "BattlePlayer000Shield(BaseAndTestCharacter).prefab" and has the same structure as the base prefab.
+/// This prefab is a variant of @ref "BattlePlayer000Shield(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
+///
+/// ### Structure Overrides
+/// - **BattlePlayer500Shield(BaseAndTestCharacter)**
+///     - *Components:*
+///         - %Quantum Entity Prototype
+///             - @cref{Quantum,BattlePlayerShieldDataTemplateQComponent}
 
 /// @file "BattlePlayer500Shield(BaseAndTestCharacter)EntityPrototype.qprototype"
 /// <summary>

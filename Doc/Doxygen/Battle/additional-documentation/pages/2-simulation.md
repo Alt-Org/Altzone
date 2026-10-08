@@ -110,6 +110,7 @@ In **%Battle** **Singletons** have **"QSingleton"** suffix. [[Naming]](#index-na
 | @crefd{Quantum}   | @cref{Quantum,BattlePlayerManagerDataQSingleton}         | @copybrief Quantum.BattlePlayerManagerDataQSingleton       |
 | @crefd{Quantum}   | @cref{Quantum,BattlePlayerShieldManagerDataQSingleton}   | @copybrief Quantum.BattlePlayerShieldManagerDataQSingleton |
 | @crefd{Quantum}   | @cref{Quantum,BattleEntityManagerDataQSingleton}         | @copybrief Quantum.BattleEntityManagerDataQSingleton       |
+| @crefd{Quantum}   | @cref{Quantum,BattleProjectileSystemDataQSingleton}      | @copybrief Quantum.BattleProjectileSystemDataQSingleton    |
 
 <br/>
 

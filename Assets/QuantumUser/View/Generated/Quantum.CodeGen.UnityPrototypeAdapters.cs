@@ -120,12 +120,43 @@ namespace Quantum.Prototypes.Unity {
     }
   }
   [System.SerializableAttribute()]
+  public unsafe partial class BattlePlayerClass600DataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerClass600DataQComponentPrototype> {
+    [HideInInspector()]
+    public QBoolean IsHoldingProjectile;
+    [HideInInspector()]
+    public Quantum.QuantumEntityPrototype HeldProjectileEntity;
+    [HideInInspector()]
+    public FPVector2 HeldProjectileOffset;
+    [HideInInspector()]
+    public FPVector2 PreviousPosition;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype HoldMinTimer;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype HoldMaxTimer;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype ReleaseBufferTimer;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerClass600DataQComponentPrototype prototype);
+    public override Quantum.Prototypes.BattlePlayerClass600DataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattlePlayerClass600DataQComponentPrototype();
+      converter.Convert(this.IsHoldingProjectile, out result.IsHoldingProjectile);
+      converter.Convert(this.HeldProjectileEntity, out result.HeldProjectileEntity);
+      converter.Convert(this.HeldProjectileOffset, out result.HeldProjectileOffset);
+      converter.Convert(this.PreviousPosition, out result.PreviousPosition);
+      converter.Convert(this.HoldMinTimer, out result.HoldMinTimer);
+      converter.Convert(this.HoldMaxTimer, out result.HoldMaxTimer);
+      converter.Convert(this.ReleaseBufferTimer, out result.ReleaseBufferTimer);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerDataQComponentPrototype> {
     public PlayerRef PlayerRef;
     public Quantum.QEnum32<BattlePlayerSlot> Slot;
     public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
     public Quantum.QEnum32<BattlePlayerCharacterID> CharacterId;
     public Quantum.QEnum32<BattlePlayerCharacterClass> CharacterClass;
+    public Int32 CharacterNumber;
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
@@ -147,6 +178,7 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
     public FP BotMovementCooldownSec;
+    public FP BotCharacterSwapTimerSec;
     public FPVector2 ViewPosition;
     public FPVector2 ViewMovementVector;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerDataQComponentPrototype prototype);
@@ -157,6 +189,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.TeamNumber, out result.TeamNumber);
       converter.Convert(this.CharacterId, out result.CharacterId);
       converter.Convert(this.CharacterClass, out result.CharacterClass);
+      converter.Convert(this.CharacterNumber, out result.CharacterNumber);
       converter.Convert(this.Stats, out result.Stats);
       converter.Convert(this.GridExtendTop, out result.GridExtendTop);
       converter.Convert(this.GridExtendBottom, out result.GridExtendBottom);
@@ -178,6 +211,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.AbilityCooldownSec, out result.AbilityCooldownSec);
       converter.Convert(this.AbilityActivateBufferSec, out result.AbilityActivateBufferSec);
       converter.Convert(this.BotMovementCooldownSec, out result.BotMovementCooldownSec);
+      converter.Convert(this.BotCharacterSwapTimerSec, out result.BotCharacterSwapTimerSec);
       converter.Convert(this.ViewPosition, out result.ViewPosition);
       converter.Convert(this.ViewMovementVector, out result.ViewMovementVector);
       ConvertUser(converter, ref result);

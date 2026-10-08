@@ -1,15 +1,16 @@
+using System;
+using System.Collections;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Voting;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Voting;
-using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Model.Poco.Clan;
-using MenuUI.Scripts;
-using System;
-using System.Collections;
-using Altzone.Scripts.Model.Poco.Player;
 
 public class PollInfoPopup : MonoBehaviour
 {
@@ -372,13 +373,13 @@ public class PollInfoPopup : MonoBehaviour
         {
             if (!result)
             {
-                SignalBus.OnChangePopupInfoSignal("Äänen antaminen epäonnistui");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error,"Äänen antaminen epäonnistui");
                 return;
             }
             voteButtons.SetActive(false);
             voteBar.SetActive(true);
 
-            VotingActions.ReloadPollList?.Invoke();
+            //VotingActions.ReloadPollList?.Invoke();
             playerHeads.InstantiateHeads(_currentPollData.Id);
         });
     }

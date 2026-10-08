@@ -14,6 +14,9 @@ namespace Altzone.Scripts.Window
         public const string BattleUiEditorRequested = "bui";
         public const string RequestedWindow = "rw";
         public const string BattleWinner = "bw";
+        public const string OwnBattleResult = "obr";
+        public const string BattleOwnTeamName = "botn";
+        public const string BattleEnemyTeamName = "betn";
 
         public static DataCarrier Instance { get; private set; }
         public ServerClan clanToView;

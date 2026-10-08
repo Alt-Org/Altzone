@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using Altzone.Scripts.Model.Poco.Player;
 using Newtonsoft.Json;
 
@@ -14,6 +15,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public string RaidRoomId;
         public ClanRoles Role;
         private ServerPlayer _player;
+        private DateTime _clanJoinDate = DateTime.MinValue;
 
         public string ClanRoleId;
 
@@ -26,6 +28,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public int LeaderBoardCoins { get => _leaderBoardCoins;}
         public ServerPlayer Player { get => _player; }
         public string CreatedAt => _player?.createdAt;
+        public DateTime ClanJoinDate => _clanJoinDate;
 
         [JsonConstructor]
         private ClanMember() { }
@@ -35,6 +38,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             _id = player._id;
             _name = player.name;
             _player = player;
+            _clanJoinDate = DateTime.ParseExact(player.clan_joindate, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
 
             ClanRoleId = player.clanRole_id;
         }

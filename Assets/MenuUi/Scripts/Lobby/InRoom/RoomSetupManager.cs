@@ -1,23 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
-
-using UnityEngine;
-using UnityEngine.UI;
-
-using TMPro;
-
-using Prg.Scripts.Common.PubSub;
-
+using System.Linq;
+using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Config.ScriptableObjects;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-
 using MenuUi.Scripts.Lobby.SelectedCharacters;
 using MenuUi.Scripts.Signals;
-using Altzone.Scripts.Language;
+using Newtonsoft.Json.Linq;
+using Prg.Scripts.Common.PubSub;
 using Prg.Scripts.Common.Unity;
+using TMPro;
+using UnityEngine;
+using UnityEngine.TextCore.Text;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Lobby.InRoom
 {
@@ -29,6 +30,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private const string PlayerPositionKey = PhotonBattleRoom.PlayerPositionKey;
         private const string PlayerCharactersKey = PhotonLobbyRoom.PlayerPrefabIdsKey;
         private const string PlayerStatsKey = PhotonBattleRoom.PlayerStatsKey;
+        private const string PlayerReadyKey = PhotonBattleRoom.PlayerReadyKey;
 
         private const int PlayerPosition1 = PhotonBattleRoom.PlayerPosition1;
         private const int PlayerPosition2 = PhotonBattleRoom.PlayerPosition2;
@@ -48,33 +50,19 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [Header("Settings"), SerializeField] private TextMeshProUGUI _upperTeamText;
         [SerializeField] private TextMeshProUGUI _lowerTeamText;
         [SerializeField] private SliderToggle _toggleBotFill;
-        [SerializeField] private Button _buttonPlayerP1;
-        [SerializeField] private Button _buttonPlayerP2;
-        [SerializeField] private Button _buttonPlayerP3;
-        [SerializeField] private Button _buttonPlayerP4;
-        [SerializeField] private SliderToggle _toggleBotPlayerP1;
-        [SerializeField] private SliderToggle _toggleBotPlayerP2;
-        [SerializeField] private SliderToggle _toggleBotPlayerP3;
-        [SerializeField] private SliderToggle _toggleBotPlayerP4;
+        [SerializeField] private InRoomPlayerSlot _player1Slot;
+        [SerializeField] private InRoomPlayerSlot _player2Slot;
+        [SerializeField] private InRoomPlayerSlot _player3Slot;
+        [SerializeField] private InRoomPlayerSlot _player4Slot;
         [SerializeField] private Button _buttonStartPlay;
         [SerializeField] private Button _buttonRaidTest;
 
-        [Header("Player names")]
-        [SerializeField] private TextLanguageSelectorCaller _nameP1;
-        [SerializeField] private TextLanguageSelectorCaller _nameP2;
-        [SerializeField] private TextLanguageSelectorCaller _nameP3;
-        [SerializeField] private TextLanguageSelectorCaller _nameP4;
-
-        [Header("Selected characters")]
-        [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP1;
-        [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP2;
-        [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP3;
-        [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersP4;
         [SerializeField] private BattlePopupCharacterSlotController _selectedCharactersEditable;
 
         [Header("Live Data"), SerializeField] private int _localPlayerPosition;
         [SerializeField] private bool _isLocalPlayerPositionUnique;
         [SerializeField] private int _masterClientPosition;
+        private bool _isPlayerMaster;
 
         private bool _interactablePlayerP1;
         private bool _interactablePlayerP2;
@@ -86,6 +74,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private string _captionPlayerP2;
         private string _captionPlayerP3;
         private string _captionPlayerP4;
+
+        private bool _player1SlotInUse = false;
+        private bool _player2SlotInUse = false;
+        private bool _player3SlotInUse = false;
+        private bool _player4SlotInUse = false;
 
         private Coroutine _onEnableCoroutineHolder = null;
 
@@ -109,7 +102,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void OnEnable()
         {
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
-            _buttonStartPlay.interactable = false;
+            if (_buttonStartPlay != null) _buttonStartPlay.interactable = false;
             //_buttonRaidTest.interactable = false;
 
             LobbyManager.LobbyOnPlayerEnteredRoom += OnPlayerEnteredRoom;
@@ -118,7 +111,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnPlayerPropertiesUpdate += OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched += OnMasterClientSwitched;
 
-            _toggleBotFill.onValueChanged.AddListener(SetFillBotToggle);
+            if (_toggleBotFill != null) _toggleBotFill.onValueChanged.AddListener(SetFillBotToggle);
 
             PhotonRealtimeClient.AddCallbackTarget(this);
             if (_onEnableCoroutineHolder == null) _onEnableCoroutineHolder = StartCoroutine(OnEnableInRoom());
@@ -132,7 +125,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             LobbyManager.LobbyOnRoomPropertiesUpdate -= OnRoomPropertiesUpdate;
             LobbyManager.LobbyOnPlayerPropertiesUpdate -= OnPlayerPropertiesUpdate;
             LobbyManager.LobbyOnMasterClientSwitched -= OnMasterClientSwitched;
-            _toggleBotFill.onValueChanged.RemoveListener(SetFillBotToggle);
+            if (_toggleBotFill != null) _toggleBotFill.onValueChanged.RemoveListener(SetFillBotToggle);
             PhotonRealtimeClient.RemoveCallbackTarget(this);
             if (_onEnableCoroutineHolder != null) StopCoroutine(_onEnableCoroutineHolder);
             _onEnableCoroutineHolder = null;
@@ -176,6 +169,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 _onEnableCoroutineHolder = null;
                 yield break;
             }
+
+            if (_player1Slot) _player1Slot.Initialize(0);
+            if (_player2Slot) _player2Slot.Initialize(1);
+            if (_player3Slot) _player3Slot.Initialize(2);
+            if (_player4Slot) _player4Slot.Initialize(3);
 
             // Setting photon nickname from playerdata name
             PhotonRealtimeClient.NickName = playerData.Name;
@@ -226,7 +224,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 // Setting custom characters for quantum
                 List<CustomCharacter> selectedCharacters = GetSelectedCustomCharacters(playerData);
                 LobbyManager.Instance.SetPlayerQuantumCharacters(selectedCharacters);
-                _selectedCharactersEditable.SetCharacters();
+                if (_selectedCharactersEditable != null) _selectedCharactersEditable.SetCharacters();
                 _reloadCharacters = false;
                 UpdateStatus();
             }));
@@ -288,46 +286,57 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 return;
             }
             ResetState();
-            GameType roomGameType = (GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey);
+            MatchmakingType roomGameType = (MatchmakingType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey);
+            if(roomGameType is MatchmakingType.Custom)
+                if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+                {
+                    _player1Slot.gameObject.SetActive(true);
+                    _player2Slot.gameObject.SetActive(false);
+                    _player3Slot.gameObject.SetActive(true);
+                    _player4Slot.gameObject.SetActive(false);
+                }
+                else
+                {
+                    _player1Slot.gameObject.SetActive(true);
+                    _player2Slot.gameObject.SetActive(true);
+                    _player3Slot.gameObject.SetActive(true);
+                    _player4Slot.gameObject.SetActive(true);
+                }
 
-            // We need local player to check against other players
-            LobbyPlayer localPlayer = PhotonRealtimeClient.LocalLobbyPlayer;
+                // We need local player to check against other players
+                LobbyPlayer localPlayer = PhotonRealtimeClient.LocalLobbyPlayer;
             _localPlayerPosition = localPlayer.GetCustomProperty(PlayerPositionKey, 0);
 
             CheckMasterClient();
 
             // Check if bot fill is active
             bool botFillActive = PhotonBattleRoom.IsBotFillActive();
-            _toggleBotFill.SetState(botFillActive);
+            if (_toggleBotFill != null) _toggleBotFill.SetState(botFillActive);
 
             //Check if positions have bots
             bool botActive1 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
-            _toggleBotPlayerP1.SetState(botActive1);
             if (botActive1)
             {
-                _captionPlayerP1 = "Bot";
-                _selectedCharactersP1.SetBotCharacters();
+                _player1Slot.SetBotCharacters(_isPlayerMaster);
+                _player1SlotInUse = true;
             }
             bool botActive2 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition2);
-            _toggleBotPlayerP2.SetState(botActive2);
             if (botActive2)
             {
-                _captionPlayerP2 = "Bot";
-                _selectedCharactersP2.SetBotCharacters();
+                _player2Slot.SetBotCharacters(_isPlayerMaster);
+                _player2SlotInUse = true;
             }
             bool botActive3 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition3);
-            _toggleBotPlayerP3.SetState(botActive3);
             if (botActive3)
             {
-                _captionPlayerP3 = "Bot";
-                _selectedCharactersP3.SetBotCharacters();
+                _player3Slot.SetBotCharacters(_isPlayerMaster);
+                _player3SlotInUse = true;
             }
             bool botActive4 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition4);
-            _toggleBotPlayerP4.SetState(botActive4);
             if (botActive4)
             {
-                _captionPlayerP4 = "Bot";
-                _selectedCharactersP4.SetBotCharacters();
+                _player4Slot.SetBotCharacters(_isPlayerMaster);
+                _player4SlotInUse = true;
             }
 
 
@@ -341,28 +350,13 @@ namespace MenuUi.Scripts.Lobby.InRoom
             }
             CheckLocalPlayer(localPlayer);
 
-            // Setting player position buttons active status
-            SetButtonActive(_buttonPlayerP1, _interactablePlayerP1 && !botActive1);
-            SetButtonActive(_buttonPlayerP2, _interactablePlayerP2 && !botActive2);
-            SetButtonActive(_buttonPlayerP3, _interactablePlayerP3 && !botActive3);
-            SetButtonActive(_buttonPlayerP4, _interactablePlayerP4 && !botActive4);
-
-            // Setting bot toggle buttons.
-            SetButtonActive(_toggleBotPlayerP1, /*_interactablePlayerP1*/false, /*localPlayer.IsMasterClient*/ false);
-            SetButtonActive(_toggleBotPlayerP2, /*_interactablePlayerP2 */ false, /*localPlayer.IsMasterClient*/ false);
-            SetButtonActive(_toggleBotPlayerP3, /*_interactablePlayerP3 */ false, /*localPlayer.IsMasterClient*/ false);
-            SetButtonActive(_toggleBotPlayerP4, /*_interactablePlayerP4 */ false, /*localPlayer.IsMasterClient*/ false);
-
-            SetButtonActive(_toggleBotFill, /*true*/false, /*localPlayer.IsMasterClient*/ false);
-
-            // Setting player name texts
-            if (_nameP1 != null) _nameP1.SetText(_captionPlayerP1);
-            if (_nameP2 != null) _nameP2.SetText(_captionPlayerP2);
-            if (_nameP3 != null) _nameP3.SetText(_captionPlayerP3);
-            if (_nameP4 != null) _nameP4.SetText(_captionPlayerP4);
-
             // Setting start game button interactable status
-            _buttonStartPlay.interactable = _interactableStartPlay;
+            if (_buttonStartPlay != null) _buttonStartPlay.interactable = _interactableStartPlay;
+
+            if (_player1Slot && !_player1SlotInUse) _player1Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player2Slot && !_player2SlotInUse) _player2Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player3Slot && !_player3SlotInUse) _player3Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player4Slot && !_player4SlotInUse) _player4Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
 
             // Setting team text
             SetTeamText();
@@ -433,6 +427,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             var curValue = PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).GetCustomProperty(PlayerPositionKey, 0);
             _masterClientPosition = curValue;
+            if (PhotonRealtimeClient.LocalLobbyPlayer.UserId == PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).UserId) _isPlayerMaster = true;
+            else _isPlayerMaster = false;
         }
 
         private void CheckOtherPlayer(LobbyPlayer player)
@@ -456,6 +452,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
             var playerPosition = player.GetCustomProperty(PlayerPositionKey, 0);
             int[] characters = player.GetCustomProperty(PlayerCharactersKey, new int[3]);
             int[] stats = player.GetCustomProperty(PlayerStatsKey, new int[15]);
+            bool ready = player.GetCustomProperty(PlayerReadyKey, false);
+
+            bool isMasterClient = false;
+            if(player.UserId == PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).UserId) isMasterClient = true;
 
             switch (playerPosition)
             {
@@ -463,25 +463,45 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (!_interactablePlayerP1) { _captionPlayerP1 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP1 = false;
                     if (_captionPlayerP1 != null) _captionPlayerP1 = player.NickName;
-                    if (_selectedCharactersP1 != null) _selectedCharactersP1.SetCharacters(characters, stats);
+                    if (_player1Slot != null)
+                    {
+                        _player1Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient, _isPlayerMaster);
+                        _player1Slot.SetReadyState(ready);
+                        _player1SlotInUse = true;
+                    }
                     break;
                 case PlayerPosition2:
                     if (!_interactablePlayerP2) { _captionPlayerP2 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP2 = false;
                     if (_captionPlayerP2 != null) _captionPlayerP2 = player.NickName;
-                    if (_selectedCharactersP2 != null) _selectedCharactersP2.SetCharacters(characters, stats);
+                    if (_player2Slot != null)
+                    {
+                        _player2Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient, _isPlayerMaster);
+                        _player2Slot.SetReadyState(ready);
+                        _player2SlotInUse = true;
+                    }
                     break;
                 case PlayerPosition3:
                     if (!_interactablePlayerP3) { _captionPlayerP3 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP3 = false;
                     if (_captionPlayerP3 != null) _captionPlayerP3 = player.NickName;
-                    if (_selectedCharactersP3 != null) _selectedCharactersP3.SetCharacters(characters, stats);
+                    if (_player3Slot != null)
+                    {
+                        _player3Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient, _isPlayerMaster);
+                        _player3Slot.SetReadyState(ready);
+                        _player3SlotInUse = true;
+                    }
                     break;
                 case PlayerPosition4:
                     if (!_interactablePlayerP4) { _captionPlayerP4 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP4 = false;
                     if (_captionPlayerP4 != null) _captionPlayerP4 = player.NickName;
-                    if (_selectedCharactersP4 != null) _selectedCharactersP4.SetCharacters(characters, stats);
+                    if (_player4Slot != null)
+                    {
+                        _player4Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient, _isPlayerMaster);
+                        _player4Slot.SetReadyState(ready);
+                        _player4SlotInUse = true;
+                    }
                     break;
             }
         }
@@ -489,9 +509,24 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private void CheckLocalPlayer(LobbyPlayer player)
         {
             var playerPosition = player.GetCustomProperty(PlayerPositionKey, 0);
+            bool ready = player.GetCustomProperty(PlayerReadyKey, false);
 
             // Master client can *only* start the game when in room as player!
             _interactableStartPlay = player.IsMasterClient && playerPosition >= PlayerPosition1 && playerPosition <= PlayerPosition4;
+            int[] characters = new int[3];
+            Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, playerData =>
+            {
+                CustomCharacterListObject[] character = playerData.SelectedCharacterIds;
+                int i = 0;
+                foreach (CustomCharacterListObject characterId in character)
+                {
+                    characters[i] = (int)characterId.CharacterID;
+                    i++;
+                }
+            });
+
+            bool isMasterClient = false;
+            if (player.UserId == PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).UserId) isMasterClient = true;
 
             switch (playerPosition)
             {
@@ -499,25 +534,45 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (!_interactablePlayerP1) { _captionPlayerP1 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP1 = false;
                     if (_captionPlayerP1 != null) _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
-                    if (_selectedCharactersP1 != null) _selectedCharactersP1.SetCharacters();
+                    if (_player1Slot != null)
+                    {
+                        _player1Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient, _isPlayerMaster);
+                        _player1Slot.SetReadyState(ready);
+                        _player1SlotInUse = true;
+                    }
                     break;
                 case PlayerPosition2:
                     if (!_interactablePlayerP2) { _captionPlayerP2 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP2 = false;
                     if (_captionPlayerP2 != null) _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
-                    if (_selectedCharactersP2 != null) _selectedCharactersP2.SetCharacters();
+                    if (_player2Slot != null)
+                    {
+                        _player2Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient, _isPlayerMaster);
+                        _player2Slot.SetReadyState(ready);
+                        _player2SlotInUse = true;
+                    }
                     break;
                 case PlayerPosition3:
                     if (!_interactablePlayerP3) { _captionPlayerP3 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP3 = false;
                     if (_captionPlayerP3 != null) _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
-                    if (_selectedCharactersP4 != null) _selectedCharactersP3.SetCharacters();
+                    if (_player3Slot != null)
+                    {
+                        _player3Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient, _isPlayerMaster);
+                        _player3Slot.SetReadyState(ready);
+                        _player3SlotInUse = true;
+                    }
                     break;
                 case PlayerPosition4:
                     if (!_interactablePlayerP4) { _captionPlayerP4 = $"<color=red>Confict Detected!!</color> "; break; }
                     _interactablePlayerP4 = false;
                     if (_captionPlayerP4 != null) _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
-                    if (_selectedCharactersP4 != null) _selectedCharactersP4.SetCharacters();
+                    if (_player4Slot != null)
+                    {
+                        _player4Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient, _isPlayerMaster);
+                        _player4Slot.SetReadyState(ready);
+                        _player4SlotInUse = true;
+                    }
                     break;
             }
         }
@@ -528,12 +583,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
             _interactablePlayerP2 = true;
             _interactablePlayerP3 = true;
             _interactablePlayerP4 = true;
-            _interactableStartPlay = false;
 
-            _captionPlayerP1 = "";
-            _captionPlayerP2 = "";
-            _captionPlayerP3 = "";
-            _captionPlayerP4 = "";
+            _player1SlotInUse = false;
+            _player2SlotInUse = false;
+            _player3SlotInUse = false;
+            _player4SlotInUse = false;
         }
 
         private void SetFillBotToggle(bool value)
@@ -578,10 +632,12 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             _firstOnEnable = true;
 
-            SetButtonActive(_buttonPlayerP1, true, false);
-            SetButtonActive(_buttonPlayerP2, true, false);
-            SetButtonActive(_buttonPlayerP3, true, false);
-            SetButtonActive(_buttonPlayerP4, true, false);
+            ResetState();
+
+            if (_player1Slot && !_player1SlotInUse) _player1Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player2Slot && !_player2SlotInUse) _player2Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player3Slot && !_player3SlotInUse) _player3Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player4Slot && !_player4SlotInUse) _player4Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
         }
     }
 }

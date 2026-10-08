@@ -269,6 +269,10 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass100DataQComponent))]
   public unsafe partial class BattlePlayerClass100DataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass100DataQComponent> {
     [HideInInspector()]
+    public Quantum.QEnum32<BattlePlayerClass100State> ClassState;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype PlacementTimer;
+    [HideInInspector()]
     public FPVector2 JoystickValuePrevious;
     [HideInInspector()]
     public QBoolean JoystickDownPrevious;
@@ -276,8 +280,6 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.FrameTimerPrototype JoystickTimer;
     [HideInInspector()]
     public Quantum.Prototypes.FrameTimerPrototype CooldownTimer;
-    [HideInInspector()]
-    public Quantum.Prototypes.FrameTimerPrototype PlacementTimer;
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerClass100DataQComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerClass100DataQComponent component = default;
@@ -285,11 +287,12 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerClass100DataQComponent result, in PrototypeMaterializationContext context = default) {
+        result.ClassState = this.ClassState;
+        this.PlacementTimer.Materialize(frame, ref result.PlacementTimer, in context);
         result.JoystickValuePrevious = this.JoystickValuePrevious;
         result.JoystickDownPrevious = this.JoystickDownPrevious;
         this.JoystickTimer.Materialize(frame, ref result.JoystickTimer, in context);
         this.CooldownTimer.Materialize(frame, ref result.CooldownTimer, in context);
-        this.PlacementTimer.Materialize(frame, ref result.PlacementTimer, in context);
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -344,6 +347,38 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass600DataQComponent))]
+  public unsafe class BattlePlayerClass600DataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass600DataQComponent> {
+    [HideInInspector()]
+    public QBoolean IsHoldingProjectile;
+    [HideInInspector()]
+    public MapEntityId HeldProjectileEntity;
+    [HideInInspector()]
+    public FPVector2 HeldProjectileOffset;
+    [HideInInspector()]
+    public FPVector2 PreviousPosition;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype HoldMinTimer;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype HoldMaxTimer;
+    [HideInInspector()]
+    public Quantum.Prototypes.FrameTimerPrototype ReleaseBufferTimer;
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattlePlayerClass600DataQComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerClass600DataQComponent result, in PrototypeMaterializationContext context = default) {
+        result.IsHoldingProjectile = this.IsHoldingProjectile;
+        PrototypeValidator.FindMapEntity(this.HeldProjectileEntity, in context, out result.HeldProjectileEntity);
+        result.HeldProjectileOffset = this.HeldProjectileOffset;
+        result.PreviousPosition = this.PreviousPosition;
+        this.HoldMinTimer.Materialize(frame, ref result.HoldMinTimer, in context);
+        this.HoldMaxTimer.Materialize(frame, ref result.HoldMaxTimer, in context);
+        this.ReleaseBufferTimer.Materialize(frame, ref result.ReleaseBufferTimer, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerDataQComponent))]
   public unsafe class BattlePlayerDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerDataQComponent> {
     public PlayerRef PlayerRef;
@@ -351,6 +386,7 @@ namespace Quantum.Prototypes {
     public Quantum.QEnum32<BattleTeamNumber> TeamNumber;
     public Quantum.QEnum32<BattlePlayerCharacterID> CharacterId;
     public Quantum.QEnum32<BattlePlayerCharacterClass> CharacterClass;
+    public Int32 CharacterNumber;
     public Quantum.Prototypes.BattlePlayerStatsPrototype Stats;
     public Int32 GridExtendTop;
     public Int32 GridExtendBottom;
@@ -372,6 +408,7 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.FrameTimerPrototype AbilityCooldownSec;
     public Quantum.Prototypes.FrameTimerPrototype AbilityActivateBufferSec;
     public FP BotMovementCooldownSec;
+    public FP BotCharacterSwapTimerSec;
     public FPVector2 ViewPosition;
     public FPVector2 ViewMovementVector;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -385,6 +422,7 @@ namespace Quantum.Prototypes {
         result.TeamNumber = this.TeamNumber;
         result.CharacterId = this.CharacterId;
         result.CharacterClass = this.CharacterClass;
+        result.CharacterNumber = this.CharacterNumber;
         this.Stats.Materialize(frame, ref result.Stats, in context);
         result.GridExtendTop = this.GridExtendTop;
         result.GridExtendBottom = this.GridExtendBottom;
@@ -406,6 +444,7 @@ namespace Quantum.Prototypes {
         this.AbilityCooldownSec.Materialize(frame, ref result.AbilityCooldownSec, in context);
         this.AbilityActivateBufferSec.Materialize(frame, ref result.AbilityActivateBufferSec, in context);
         result.BotMovementCooldownSec = this.BotMovementCooldownSec;
+        result.BotCharacterSwapTimerSec = this.BotCharacterSwapTimerSec;
         result.ViewPosition = this.ViewPosition;
         result.ViewMovementVector = this.ViewMovementVector;
     }

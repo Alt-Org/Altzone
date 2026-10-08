@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using Altzone.Scripts.BattleUiShared;
 using MenuUi.Scripts.UIScaling;
 using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement.OrientationType;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
@@ -389,7 +389,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             _unsavedChanges = false;
-            PopupSignalBus.OnChangePopupInfoSignal("Muutokset on tallennettu.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info,"Muutokset on tallennettu.");
         }
 
         public void ResetChanges()
