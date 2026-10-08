@@ -249,14 +249,6 @@ public class KojuPopup : MonoBehaviour
     // Called when pressing the cancel button
     private void Close()
     {
-        // Uusi lisäys (Perttu)
-        iconImage.enabled = false;
-        inputBar.SetActive(false);
-        confirmButton.enabled = false;
-        confirmImage.color = new Vector4(255f, 255f, 255f, 0.2f);
-        chooseText.enabled = true;
-        removeButtonGO.SetActive(false);
-
         currentCard = null;
         furnitureData = null;
         itemMover = null;
@@ -264,6 +256,14 @@ public class KojuPopup : MonoBehaviour
         infoObject.SetActive(false);
         removePopup.SetActive(false);
         gameObject.SetActive(false);
+
+        // Uusi lisäys (Perttu)
+        iconImage.enabled = false;
+        inputBar.SetActive(false);
+        confirmButton.enabled = false;
+        confirmImage.color = new Vector4(255f, 255f, 255f, 0.2f);
+        chooseText.enabled = true;
+        removeButtonGO.SetActive(false);
 
         // Uusi lisäys (Perttu)
         if (kojuPanel != null)
