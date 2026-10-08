@@ -62,6 +62,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [Header("Live Data"), SerializeField] private int _localPlayerPosition;
         [SerializeField] private bool _isLocalPlayerPositionUnique;
         [SerializeField] private int _masterClientPosition;
+        private bool _isPlayerMaster;
 
         private bool _interactablePlayerP1;
         private bool _interactablePlayerP2;
@@ -301,25 +302,25 @@ namespace MenuUi.Scripts.Lobby.InRoom
             bool botActive1 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition1);
             if (botActive1)
             {
-                _player1Slot.SetBotCharacters();
+                _player1Slot.SetBotCharacters(_isPlayerMaster);
                 _player1SlotInUse = true;
             }
             bool botActive2 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition2);
             if (botActive2)
             {
-                _player2Slot.SetBotCharacters();
+                _player2Slot.SetBotCharacters(_isPlayerMaster);
                 _player2SlotInUse = true;
             }
             bool botActive3 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition3);
             if (botActive3)
             {
-                _player3Slot.SetBotCharacters();
+                _player3Slot.SetBotCharacters(_isPlayerMaster);
                 _player3SlotInUse = true;
             }
             bool botActive4 = PhotonBattleRoom.CheckIfPositionHasBot(PlayerPosition4);
             if (botActive4)
             {
-                _player4Slot.SetBotCharacters();
+                _player4Slot.SetBotCharacters(_isPlayerMaster);
                 _player4SlotInUse = true;
             }
 
@@ -337,10 +338,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
             // Setting start game button interactable status
             if (_buttonStartPlay != null) _buttonStartPlay.interactable = _interactableStartPlay;
 
-            if (_player1Slot && !_player1SlotInUse) _player1Slot.SetCharacters(null, null, null, false, false);
-            if (_player2Slot && !_player2SlotInUse) _player2Slot.SetCharacters(null, null, null, false, false);
-            if (_player3Slot && !_player3SlotInUse) _player3Slot.SetCharacters(null, null, null, false, false);
-            if (_player4Slot && !_player4SlotInUse) _player4Slot.SetCharacters(null, null, null, false, false);
+            if (_player1Slot && !_player1SlotInUse) _player1Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player2Slot && !_player2SlotInUse) _player2Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player3Slot && !_player3SlotInUse) _player3Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player4Slot && !_player4SlotInUse) _player4Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
 
             // Setting team text
             SetTeamText();
@@ -411,6 +412,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             var curValue = PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).GetCustomProperty(PlayerPositionKey, 0);
             _masterClientPosition = curValue;
+            if (PhotonRealtimeClient.LocalLobbyPlayer.UserId == PhotonRealtimeClient.LobbyCurrentRoom.GetPlayer(PhotonRealtimeClient.LobbyCurrentRoom.MasterClientId).UserId) _isPlayerMaster = true;
+            else _isPlayerMaster = false;
         }
 
         private void CheckOtherPlayer(LobbyPlayer player)
@@ -447,7 +450,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_captionPlayerP1 != null) _captionPlayerP1 = player.NickName;
                     if (_player1Slot != null)
                     {
-                        _player1Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
+                        _player1Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient, _isPlayerMaster);
                         _player1Slot.SetReadyState(ready);
                         _player1SlotInUse = true;
                     }
@@ -458,7 +461,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_captionPlayerP2 != null) _captionPlayerP2 = player.NickName;
                     if (_player2Slot != null)
                     {
-                        _player2Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
+                        _player2Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient, _isPlayerMaster);
                         _player2Slot.SetReadyState(ready);
                         _player2SlotInUse = true;
                     }
@@ -469,7 +472,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_captionPlayerP3 != null) _captionPlayerP3 = player.NickName;
                     if (_player3Slot != null)
                     {
-                        _player3Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
+                        _player3Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient, _isPlayerMaster);
                         _player3Slot.SetReadyState(ready);
                         _player3SlotInUse = true;
                     }
@@ -480,7 +483,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_captionPlayerP4 != null) _captionPlayerP4 = player.NickName;
                     if (_player4Slot != null)
                     {
-                        _player4Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient);
+                        _player4Slot.SetCharacters(player.UserId, player.NickName, characters, false, isMasterClient, _isPlayerMaster);
                         _player4Slot.SetReadyState(ready);
                         _player4SlotInUse = true;
                     }
@@ -518,7 +521,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_captionPlayerP1 != null) _captionPlayerP1 = $"<color=blue>{player.NickName}</color>";
                     if (_player1Slot != null)
                     {
-                        _player1Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                        _player1Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient, _isPlayerMaster);
                         _player1Slot.SetReadyState(ready);
                         _player1SlotInUse = true;
                     }
@@ -529,7 +532,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_captionPlayerP2 != null) _captionPlayerP2 = $"<color=blue>{player.NickName}</color>";
                     if (_player2Slot != null)
                     {
-                        _player2Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                        _player2Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient, _isPlayerMaster);
                         _player2Slot.SetReadyState(ready);
                         _player2SlotInUse = true;
                     }
@@ -540,7 +543,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_captionPlayerP3 != null) _captionPlayerP3 = $"<color=blue>{player.NickName}</color>";
                     if (_player3Slot != null)
                     {
-                        _player3Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                        _player3Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient, _isPlayerMaster);
                         _player3Slot.SetReadyState(ready);
                         _player3SlotInUse = true;
                     }
@@ -551,7 +554,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     if (_captionPlayerP4 != null) _captionPlayerP4 = $"<color=blue>{player.NickName}</color>";
                     if (_player4Slot != null)
                     {
-                        _player4Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient);
+                        _player4Slot.SetCharacters(player.UserId, player.NickName, characters, true, isMasterClient, _isPlayerMaster);
                         _player4Slot.SetReadyState(ready);
                         _player4SlotInUse = true;
                     }
@@ -616,10 +619,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             ResetState();
 
-            if (_player1Slot && !_player1SlotInUse) _player1Slot.SetCharacters(null, null, null, false, false);
-            if (_player2Slot && !_player2SlotInUse) _player2Slot.SetCharacters(null, null, null, false, false);
-            if (_player3Slot && !_player3SlotInUse) _player3Slot.SetCharacters(null, null, null, false, false);
-            if (_player4Slot && !_player4SlotInUse) _player4Slot.SetCharacters(null, null, null, false, false);
+            if (_player1Slot && !_player1SlotInUse) _player1Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player2Slot && !_player2SlotInUse) _player2Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player3Slot && !_player3SlotInUse) _player3Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
+            if (_player4Slot && !_player4SlotInUse) _player4Slot.SetCharacters(null, null, null, false, false, _isPlayerMaster);
         }
     }
 }

@@ -64,7 +64,7 @@ public class InRoomPlayerSlot : MonoBehaviour
     /// </summary>
     /// <param name="selectedCharacterIds">The selected character ids to display.</param>
     /// <param name="stats">The stats for all three characters in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
-    public void SetCharacters(string playerId, string playerName, int[] selectedCharacterIds, bool ownSlot, bool isMasterClient)
+    public void SetCharacters(string playerId, string playerName, int[] selectedCharacterIds, bool ownSlot, bool isMasterClient, bool masterRights)
     {
         if (_playerId == playerId) return;
         if (selectedCharacterIds == null)
@@ -78,7 +78,7 @@ public class InRoomPlayerSlot : MonoBehaviour
             _isOwn = false;
             _slotButton.GetComponent<Image>().sprite = _freePlayerSprite;
             _botButton.GetComponent<Image>().sprite = _botSprite;
-            if(_customRoom) _botButton.gameObject.SetActive(true);
+            if(_customRoom && masterRights) _botButton.gameObject.SetActive(true);
             else _botButton.gameObject.SetActive(false);
             _readyToggle.gameObject.SetActive(false);
             _readyToggle.SetIsOnWithoutNotify(false);
@@ -93,7 +93,7 @@ public class InRoomPlayerSlot : MonoBehaviour
         _playerName.SetText(playerName);
         if (ownSlot)
         {
-            _playerName.GetComponent<TMP_Text>().color = Color.blue;
+            _playerName.GetComponent<TMP_Text>().color = Color.yellow;
         }
         else
         {
@@ -121,7 +121,7 @@ public class InRoomPlayerSlot : MonoBehaviour
     /// Set slots to teh bot mode where there is just a blank head in the slot if no characters are given.
     /// </summary>
     /// <param name="selectedCharacterIds">The selected character ids to display.</param>
-    public void SetBotCharacters()
+    public void SetBotCharacters(bool master)
     {
         if (_playerId == BOT_ID) return;
         _playerId = BOT_ID;
@@ -133,7 +133,8 @@ public class InRoomPlayerSlot : MonoBehaviour
         _isOwn = false;
         _slotButton.GetComponent<Image>().sprite = _botSprite;
         _botButton.GetComponent<Image>().sprite = _freePlayerSprite;
-        _botButton.gameObject.SetActive(true);
+        if(master) _botButton.gameObject.SetActive(true);
+        else _botButton.gameObject.SetActive(false);
         _readyToggle.gameObject.SetActive(false);
         _readyToggle.SetIsOnWithoutNotify(false);
         _readyToggle.GetComponent<Image>().color = _unreadyColor;
