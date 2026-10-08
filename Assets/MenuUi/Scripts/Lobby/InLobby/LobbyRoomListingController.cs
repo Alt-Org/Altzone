@@ -189,15 +189,19 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 }
 
                 // For private rooms keep the provided password for hashing and the display name for the lobby.
-                string internalName = $"{roomName}_{Guid.NewGuid()}";
-                PhotonRealtimeClient.CreateCustomLobbyRoom(internalName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword, null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
+                string newId = Guid.NewGuid().ToString();
+                string internalName = $"{roomName}_{newId}";
+                roomName = $"{roomName}_{newId.Substring(0, 4)}";
+                PhotonRealtimeClient.CreateCustomLobbyRoom(internalName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword, null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.PlayerCount, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
             }
             else
             {
                 // Always create a new custom room instead of joining an existing one.
                 // Use a unique internal room id to avoid "A game with the specified id already exist." errors
-                string uniqueRoomId = string.IsNullOrWhiteSpace(roomName) ? $"{DefaultRoomNameCustom}{Guid.NewGuid()}" : $"{roomName}_{Guid.NewGuid()}";
-                PhotonRealtimeClient.CreateCustomLobbyRoom(uniqueRoomId, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, "", null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
+                string newId = Guid.NewGuid().ToString();
+                string uniqueRoomId = string.IsNullOrWhiteSpace(roomName) ? $"{DefaultRoomNameCustom}{newId}" : $"{roomName}_{newId}";
+                roomName = $"{roomName}_{newId.Substring(0, 4)}";
+                PhotonRealtimeClient.CreateCustomLobbyRoom(uniqueRoomId, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, "", null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.PlayerCount, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
             }
 
             _pendingJoinIntent = JoinIntent.CustomCreate;

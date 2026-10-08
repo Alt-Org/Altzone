@@ -15,6 +15,7 @@ using Prg.Scripts.Common.PubSub;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Lobby.Wrappers;
 using static Altzone.Scripts.Lobby.LobbyManager;
+using Altzone.Scripts.Lobby;
 //using PhotonNetwork = Battle1.PhotonUnityNetworking.Code.PhotonNetwork;
 //using Player = Battle1.PhotonRealtime.Code.Player;
 //using Room = Battle1.PhotonRealtime.Code.Room;
@@ -26,11 +27,13 @@ namespace Altzone.Scripts.Battle.Photon
         #region Custom property names and values
 
         public const string BattleID = "bid";
+        public const string VisibleRoomNameKey = "rn";
         public const string PlayerPositionKey = "pp";
         public const string PlayerCountKey = "pc";
         public const string PlayerCharacterIdKey = "mk";
         public const string PlayerCharacterIdsKey = "ci";
         public const string PlayerStatsKey = "cs";
+        public const string PlayerReadyKey = "pr";
         public const string TeamAlphaNameKey = "tb";
         public const string TeamBetaNameKey = "tr";
         public const string TeamWinTypeKey = "wt";
@@ -448,7 +451,7 @@ namespace Altzone.Scripts.Battle.Photon
 
         public bool IsValidPlayerPos(int playerPos)
         {
-            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+            if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2 && (MatchmakingType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(MatchmakingKey) is not MatchmakingType.Custom)
             {
                 return playerPos is >= PlayerPosition1 and <= PlayerPosition2;
             }
