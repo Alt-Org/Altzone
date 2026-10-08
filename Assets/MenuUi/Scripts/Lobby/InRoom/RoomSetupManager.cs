@@ -287,20 +287,21 @@ namespace MenuUi.Scripts.Lobby.InRoom
             }
             ResetState();
             MatchmakingType roomGameType = (MatchmakingType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey);
-            if(PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
-            {
-                _player1Slot.gameObject.SetActive(true);
-                _player2Slot.gameObject.SetActive(false);
-                _player3Slot.gameObject.SetActive(true);
-                _player4Slot.gameObject.SetActive(false);
-            }
-            else
-            {
-                _player1Slot.gameObject.SetActive(true);
-                _player2Slot.gameObject.SetActive(true);
-                _player3Slot.gameObject.SetActive(true);
-                _player4Slot.gameObject.SetActive(true);
-            }
+            if(roomGameType is MatchmakingType.Custom)
+                if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+                {
+                    _player1Slot.gameObject.SetActive(true);
+                    _player2Slot.gameObject.SetActive(false);
+                    _player3Slot.gameObject.SetActive(true);
+                    _player4Slot.gameObject.SetActive(false);
+                }
+                else
+                {
+                    _player1Slot.gameObject.SetActive(true);
+                    _player2Slot.gameObject.SetActive(true);
+                    _player3Slot.gameObject.SetActive(true);
+                    _player4Slot.gameObject.SetActive(true);
+                }
 
                 // We need local player to check against other players
                 LobbyPlayer localPlayer = PhotonRealtimeClient.LocalLobbyPlayer;
