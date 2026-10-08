@@ -181,10 +181,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
                         return;
                     }
 
-                    MatchmakingType targetGameType = InLobbyController.SelectedPremadeTargetMatchmakingType;
-                    if (targetGameType != MatchmakingType.Random2v2 && targetGameType != MatchmakingType.Clan2v2)
+                    MatchmakingType targetMatchmakingType = InLobbyController.SelectedPremadeTargetMatchmakingType;
+                    GameType targetGameType = InLobbyController.SelectedGameType;
+                    if (targetMatchmakingType != MatchmakingType.Random2v2 && targetMatchmakingType != MatchmakingType.Clan2v2)
                     {
-                        targetGameType = MatchmakingType.Random2v2;
+                        targetMatchmakingType = MatchmakingType.Random2v2;
                     }
 
                     string localUserId = PhotonRealtimeClient.LocalLobbyPlayer?.UserId ?? string.Empty;
@@ -197,13 +198,14 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     }
 
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetMatchmakingTypeKey, (int)targetMatchmakingType);
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, GetPlayerName(localUserId));
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, teammateUserId);
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, GetPlayerName(teammateUserId));
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
-                    this.Publish(new LobbyManager.StartMatchmakingEvent(targetGameType, true));
+                    this.Publish(new LobbyManager.StartMatchmakingEvent(targetMatchmakingType, targetGameType, true));
                     break;
 
                 case MatchmakingType.Clan2v2:
@@ -221,7 +223,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                             }
                         }
                         catch { }
-                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType));
+                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType));
                     }
                     else
                     {
@@ -242,7 +244,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                         }
                     }
                     catch { }
-                    this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType));
+                    this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType));
                     break;
             }
         }

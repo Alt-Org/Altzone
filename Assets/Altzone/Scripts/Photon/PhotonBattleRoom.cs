@@ -59,6 +59,7 @@ namespace Altzone.Scripts.Battle.Photon
         public const string ShowToClanKey = "sc";
         public const string LeaderIdKey = "lid";
         public const string PremadeModeKey = "pm";
+        public const string PremadeTargetMatchmakingTypeKey = "ptm";
         public const string PremadeTargetGameTypeKey = "ptg";
         public const string PremadeLeaderUserIdKey = "plid";
         public const string PremadeLeaderUsernameKey = "pln";
