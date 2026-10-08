@@ -38740,7 +38740,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1356468498133532517}
   m_HandleRect: {fileID: 4108153674447640027}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -39347,6 +39347,7 @@ GameObject:
   - component: {fileID: 4032205676087598395}
   - component: {fileID: 4910111921645770740}
   - component: {fileID: 4386047200506033685}
+  - component: {fileID: 9192263908804429060}
   m_Layer: 5
   m_Name: Role
   m_TagString: Untagged
@@ -39455,7 +39456,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4910111921645770740}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 9192263908804429060}
+        m_TargetAssemblyTypeName: ClanMemberRoleRights, MainMenu
+        m_MethodName: MemberRoleRights
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &9192263908804429060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7423269599633156048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3189bd2ca8cfc06686c37ad4511d60b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7440529842116118635
 GameObject:
   m_ObjectHideFlags: 0
@@ -41883,7 +41908,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000061035156}
+  m_AnchoredPosition: {x: 0, y: -0.000030517578}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7506980393763558435
@@ -51545,22 +51570,22 @@ PrefabInstance:
     - target: {fileID: 65864164231725841, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 65864164231725841, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 65864164231725841, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 30
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 65864164231725841, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -39.95
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 559536060567727330, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
@@ -51744,6 +51769,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSizeMin
       value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 4885100647578834475, guid: 7316bdf50a7cbc2478ed256a2cac4374,
+        type: 3}
+      propertyPath: m_overflowMode
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4885100647578834475, guid: 7316bdf50a7cbc2478ed256a2cac4374,
         type: 3}
@@ -62277,6 +62307,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSizeMax
       value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 7888028970085048130, guid: aa9fc0b9fc6d0324fb88d8d1d9c08be3,
+        type: 3}
+      propertyPath: m_overflowMode
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7888028970085048130, guid: aa9fc0b9fc6d0324fb88d8d1d9c08be3,
         type: 3}
