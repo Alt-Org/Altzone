@@ -5144,7 +5144,7 @@ namespace Altzone.Scripts.Lobby
                                     }
                                 }
 
-                                PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.BotFillKey, true);
+                                //PhotonRealtimeClient.CurrentRoom.SetCustomProperty(PhotonBattleRoom.BotFillKey, true);
                                 botBackfillApplied = true;
                             }
                         }
