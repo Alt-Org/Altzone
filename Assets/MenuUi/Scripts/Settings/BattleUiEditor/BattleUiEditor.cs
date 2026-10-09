@@ -257,7 +257,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 SaveChanges();
                 _whetherToSaveChangesPopup.SetActive(false);
-                _optionsPopup.OnCloseButtonClicked();
+                CloseEditor();
             });
 
             //Whether to Cancel Changes listener
@@ -389,7 +389,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             _unsavedChanges = false;
-            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info,"Muutokset on tallennettu.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info, "Muutokset on tallennettu.");
         }
 
         public void ResetChanges()
