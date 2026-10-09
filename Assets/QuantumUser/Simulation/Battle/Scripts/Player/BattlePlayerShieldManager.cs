@@ -320,26 +320,6 @@ namespace Battle.QSimulation.Player
             f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityRef, playerHandle.PlayerData.Team, shieldHandle.ShieldData->IsAttached, shieldNumber);
         }
 
-        /// <summary>
-        /// Low level method for retrieving the BattleEntityID of the specified shield of the specified player character.
-        /// @note Low level method! Only meant for use by <see cref="BattlePlayerManager"/>.
-        /// </summary>
-        ///
-        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
-        /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.<br/>
-        /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
-        /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerSlot">Slot of the specified character.</param>
-        /// <param name="characterNumber">The character number of the specified character.</param>
-        ///
-        /// <returns>The BattleEntityID of the specified shield.</returns>
-        /*public static BattleEntityID Low_GetShieldEntityGroupID(Frame f, BattlePlayerSlot playerSlot, int characterNumber)
-        {
-            return GetPlayerShieldManagerData(f)->PlayerShieldEntityGroupIDs[GetShieldIndex(playerSlot, characterNumber)];
-        }*/
-
         public static bool IsValidShieldNumber(BattlePlayerHandle playerHandle, int shieldNumber)
         {
             return playerHandle.IsValidShieldNumber(playerHandle.LoadedCharacterData->Number, shieldNumber);
@@ -370,69 +350,11 @@ namespace Battle.QSimulation.Player
 
         #region Private Static Methods
 
-        /// <summary>
-        /// Private helper method for getting the BattlePlayerShieldManagerDataQSingleton from the %Quantum %Frame.
-        /// </summary>
-        ///
-        /// See [{ShieldManagerData}](#page-concepts-player-simulation-management-shieldmanagerdata) for more info.
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        ///
-        /// <returns>Pointer to the PlayerShieldManagerData singleton.</returns>
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        /*private static BattlePlayerShieldManagerDataQSingleton* GetPlayerShieldManagerData(Frame f)
-        {
-            if (!f.Unsafe.TryGetPointerSingleton(out BattlePlayerShieldManagerDataQSingleton* playerShieldManagerData))
-            {
-                BattleDebugLogger.Error(f, nameof(BattlePlayerShieldManager), "PlayerShieldManagerData singleton not found!");
-            }
-
-            return playerShieldManagerData;
-        }*/
-
-        /// <summary>
-        /// Private helper method for retrieving the index in BattlePlayerShieldManagerDataQSingleton of the shield entity group for a specified player character.
-        /// </summary>
-        ///
-        /// See @ref BattlePlayerShieldManager-ShieldGroupIndex "ShieldIndex" for more info.<br/>
-        /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
-        /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.
-        ///
-        /// <param name="playerSlot">The BattlePlayerSlot of the specified player.</param>
-        /// <param name="characterNumber">The character number of the specified character.</param>
-        ///
-        /// <returns>The index in BattlePlayerShieldManagerDataQSingleton for the specified shield.</returns>
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        /*private static int GetShieldIndex(BattlePlayerSlot playerSlot, int characterNumber)
-        {
-            int playerIndex = BattlePlayerData.GetPlayerIndex(playerSlot);
-            return playerIndex * Constants.BATTLE_PLAYER_CHARACTER_COUNT + characterNumber;
-        }*/
-
         /// @anchor BattlePlayerShieldManager-PrivateStaticMethods-ShieldEntity
         /// @name Shield Entity Methods
         /// Methods for handling shield entities
         /// @{
         #region Private Static Methods - Shield Entity
-
-        /// <summary>
-        /// Sets the shield entity IDs for specified player's specified character in BattlePlayerShieldManagerDataQSingleton.
-        /// </summary>
-        ///
-        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
-        /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.<br/>
-        /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
-        /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerSlot">Slot of the specified player.</param>
-        /// <param name="characterNumber">The character number of the specified character.</param>
-        /// <param name="shieldEntityGroupID">The entity group's ID to be set.</param>
-        /*private static void SetShieldEntityGroupID(Frame f, BattlePlayerSlot playerSlot, int characterNumber, BattleEntityID shieldEntityGroupID)
-        {
-            BattlePlayerShieldManagerDataQSingleton* playerShieldManagerSingleton = GetPlayerShieldManagerData(f);
-            playerShieldManagerSingleton->PlayerShieldEntityGroupIDs[GetShieldIndex(playerSlot, characterNumber)] = shieldEntityGroupID;
-        }*/
 
         /// <summary>
         /// Private helper method for retrieving a shield entity based on given <paramref name="shieldNumber"/>
