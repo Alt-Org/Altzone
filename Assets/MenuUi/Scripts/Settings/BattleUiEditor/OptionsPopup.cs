@@ -564,10 +564,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _gyroscopeRotationToggle.gameObject.SetActive(true);
 
             //Spacer visibilty
-            _spacerAfterTwoFinger.SetActive(twoFingerVisibility);
-            _spacerAfterSwipeRotation.SetActive(swipeRotationVisibility);
-            _spacerAfterJoystickRotation.SetActive(joystickRotationVisibility);
-            _spacerAftergyroscopeRotation.SetActive(true);
+            _spacerAfterTwoFinger?.SetActive(twoFingerVisibility);
+            _spacerAfterSwipeRotation?.SetActive(swipeRotationVisibility);
+            _spacerAfterJoystickRotation?.SetActive(joystickRotationVisibility);
+            _spacerAftergyroscopeRotation?.SetActive(true);
 
             // Setting visibility for the swipe and gyroscope additional options
             _swipeMinDistanceHolder.SetActive(movementType == BattleMovementInputType.Swipe ||

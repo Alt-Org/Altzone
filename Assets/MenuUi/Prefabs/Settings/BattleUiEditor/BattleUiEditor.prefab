@@ -5344,10 +5344,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 5102592587621334071}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.33333334, y: 0}
+  m_AnchorMax: {x: 0.33333334, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7759847727549637279
 CanvasRenderer:
@@ -24480,10 +24480,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3642067739487579186}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.33333334, y: 0}
+  m_AnchorMax: {x: 0.33333334, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2034671575766428409
 CanvasRenderer:
@@ -33006,7 +33006,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 0
-  m_AspectRatio: 0.46153846
+  m_AspectRatio: NaN
 --- !u!114 &1518622967709335699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33038,13 +33038,13 @@ MonoBehaviour:
   _joystickMovementToggle: {fileID: 6231176301245161133}
   _followPointerMovementToggle: {fileID: 4013177715165752897}
   _twoFingerRotationToggle: {fileID: 8730932829331434159}
-  _spacerAfterTwoFinger: {fileID: 0}
+  _spacerAfterTwoFinger: {fileID: 4379618065141152769}
   _swipeRotationToggle: {fileID: 6723632242872105896}
-  _spacerAfterSwipeRotation: {fileID: 0}
+  _spacerAfterSwipeRotation: {fileID: 128081938035544074}
   _joystickRotationToggle: {fileID: 9118769593893638344}
-  _spacerAfterJoystickRotation: {fileID: 0}
+  _spacerAfterJoystickRotation: {fileID: 5989454838847263987}
   _gyroscopeRotationToggle: {fileID: 1515552827737166297}
-  _spacerAftergyroscopeRotation: {fileID: 0}
+  _spacerAftergyroscopeRotation: {fileID: 908608300436946057}
   _swipeMinDistanceHolder: {fileID: 8111739473068690430}
   _swipeMinDistanceSlider: {fileID: 7268061210148173873}
   _swipeMinDistanceInputField: {fileID: 2854205122527864410}
@@ -35541,10 +35541,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7596143202808903385}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.20444445, y: 0}
+  m_AnchorMax: {x: 0.20444445, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7351480450895085888
 CanvasRenderer:

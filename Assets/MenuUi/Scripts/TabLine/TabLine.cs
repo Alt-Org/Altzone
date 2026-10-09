@@ -24,7 +24,7 @@ namespace MenuUi.Scripts.TabLine
 
         public delegate void TabChanged(int newTab);
 
-        public static event TabChanged OnTabChanged;
+        public event TabChanged OnTabChanged;
 
         public SwipeUI Swipe
         {

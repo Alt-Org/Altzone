@@ -16,15 +16,16 @@ public class TabChangeHandler : MonoBehaviour
         public GameObject TabAreaContent;
         public Image Image;
     }
-    [Header("TablineScript reference")]
-    public TabLine _tablineScript;
+
+    [Header("TablineScript reference")] public TabLine _tablineScript;
 
     [SerializeField] protected List<ButtonWindowBind> _buttons = new List<ButtonWindowBind>();
     [SerializeField] protected int _defaultTab = 1;
     [SerializeField] private bool _ignoreChange;
 
-    [Header("Optional Tab Context UI")]
-    [SerializeField] private bool _updateTabContextUI;
+    [Header("Optional Tab Context UI")] [SerializeField]
+    private bool _updateTabContextUI;
+
     [SerializeField] private int _primaryTabIndex = 0;
     [SerializeField] private int _secondaryTabIndex = 1;
 
@@ -33,7 +34,9 @@ public class TabChangeHandler : MonoBehaviour
     [SerializeField] private TMP_Text _headerText;
 
     [SerializeField] private string _primaryHeaderText = "Kaikki klaanit";
+
     [SerializeField] private string _secondaryHeaderText = "Luo klaani";
+
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -46,7 +49,7 @@ public class TabChangeHandler : MonoBehaviour
 
     private void Awake()
     {
-        TabLine.OnTabChanged += SetVisible;
+        _tablineScript.OnTabChanged += SetVisible;
     }
 
     protected virtual void OnEnable()
@@ -58,13 +61,13 @@ public class TabChangeHandler : MonoBehaviour
             value = DataCarrier.GetData<int?>(DataCarrier.RequestedWindow, false, suppressWarning: true);
         if (value != null) SetVisible((int)value);
         else
-        //Added "if(!_ignoreChange)" so that "chat channel" tabs wouldn't change
-        if(!_ignoreChange) SetVisible(_defaultTab);
+            //Added "if(!_ignoreChange)" so that "chat channel" tabs wouldn't change
+        if (!_ignoreChange) SetVisible(_defaultTab);
     }
 
     private void OnDestroy()
     {
-        TabLine.OnTabChanged -= SetVisible;
+        _tablineScript.OnTabChanged -= SetVisible;
     }
 
     protected virtual void SetVisible(int activeIndex)
@@ -85,6 +88,7 @@ public class TabChangeHandler : MonoBehaviour
                 if (_buttons[i].TabAreaContent != null) _buttons[i].TabAreaContent.SetActive(i == activeIndex);
             }
         }
+
         _tablineScript.UpdateTabVisuals(activeIndex);
         UpdateTabContextUI(activeIndex);
     }
