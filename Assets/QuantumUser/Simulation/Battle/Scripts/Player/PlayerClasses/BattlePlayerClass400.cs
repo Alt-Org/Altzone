@@ -39,7 +39,7 @@ namespace Battle.QSimulation.Player
         public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, bool selected)
         {
             BattlePlayerHandle                playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
-            BattlePlayerCharacterShieldHandle shieldHandle = BattlePlayerCharacterShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
+            BattlePlayerShieldHandle shieldHandle = BattlePlayerShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
 
             if (projectileCollisionData->Projectile.Data->IsHeld) return;
 

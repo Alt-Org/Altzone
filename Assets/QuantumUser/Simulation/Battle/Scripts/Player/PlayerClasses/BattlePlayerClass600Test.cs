@@ -35,7 +35,7 @@ namespace Battle.QSimulation.Player
         /// <param name="selected">Is the character selected or not.</param>
         public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, bool selected)
         {
-            BattlePlayerCharacterShieldHandle shieldHandle = BattlePlayerCharacterShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
+            BattlePlayerShieldHandle shieldHandle = BattlePlayerShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
 
             if (projectileCollisionData->Projectile.Data->IsHeld) return;
             if (projectileCollisionData->Projectile.Data->EmotionCurrent == BattleEmotionState.Love) return;

@@ -468,7 +468,7 @@ namespace Battle.QSimulation.Projectile
         private static bool ProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, out FPVector2 normal)
         {
             BattlePlayerHandle                playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
-            BattlePlayerCharacterShieldHandle shieldHandle = BattlePlayerCharacterShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
+            BattlePlayerShieldHandle shieldHandle = BattlePlayerShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
 
             normal = FPVector2.Zero;
 

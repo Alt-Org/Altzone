@@ -425,7 +425,7 @@ namespace Battle.QSimulation.Player
         public static void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData)
         {
             BattlePlayerHandle                playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
-            BattlePlayerCharacterShieldHandle shieldHandle = BattlePlayerCharacterShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
+            BattlePlayerShieldHandle shieldHandle = BattlePlayerShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
 
             ReturnCode returnCode = GetClass(playerHandle.LoadedCharacterData->Class, out BattlePlayerClassBase playerClass);
 

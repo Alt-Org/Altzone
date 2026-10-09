@@ -644,7 +644,7 @@ namespace Battle.QSimulation.Player
 
             // link hitbox
             parameters.PlayerCharacterEntityTemplate.Link(playerCharacterHitboxEntity, new FPVector2(0, 0));
-            BattlePlayerHandle.CreateLink(f, playerData.Slot, parameters.PlayerCharacterEntityTemplate.ParentEntityRef, PlayerEntityType.Hitbox, playerCharacterHitboxEntity);
+            BattlePlayerHandle.CreateLink(f, playerData.Slot, parameters.PlayerCharacterEntityTemplate.ParentEntityRef, BattlePlayerLinkEntityType.Hitbox, playerCharacterHitboxEntity);
 
             //} create player hitBox
 
@@ -725,7 +725,7 @@ namespace Battle.QSimulation.Player
             f.Remove<BattlePlayerCharacterDataTemplateQComponent>(parameters.PlayerCharacterEntityTemplate.ParentEntityRef);
             f.Add(parameters.PlayerCharacterEntityTemplate.ParentEntityRef, playerCharacterData);
 
-            BattlePlayerHandle.CreateLink(f, playerData.Slot, parameters.PlayerCharacterEntityTemplate.ParentEntityRef, PlayerEntityType.Character, parameters.PlayerCharacterEntityTemplate.ParentEntityRef);
+            BattlePlayerHandle.CreateLink(f, playerData.Slot, parameters.PlayerCharacterEntityTemplate.ParentEntityRef, BattlePlayerLinkEntityType.Character, parameters.PlayerCharacterEntityTemplate.ParentEntityRef);
         }
 
         private static void SetupPlayerCharacter(Frame f, BattlePlayerHandle playerHandle)
@@ -799,7 +799,7 @@ namespace Battle.QSimulation.Player
             // update shield if attached
             if (playerHandle.LoadedCharacterHasShieldAttached)
             {
-                BattlePlayerCharacterShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
+                BattlePlayerShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
 
                 f.Events.BattlePlayStateUpdate(shieldHandle.ShieldEntityRef, true);
                 f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityRef, playerHandle.PlayerData.Team, ShieldAttached: true, shieldHandle.ShieldData->ShieldNumber);
@@ -839,7 +839,7 @@ namespace Battle.QSimulation.Player
             // return shield if attached
             if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef != EntityRef.None)
             {
-                BattlePlayerCharacterShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
+                BattlePlayerShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
 
                 BattleEntityManager.Return(f, playerHandle.PlayerData.Low_Level.ShieldEntityGroupIDs[playerHandle.PlayerData.SelectedCharacterNumber]);
             }

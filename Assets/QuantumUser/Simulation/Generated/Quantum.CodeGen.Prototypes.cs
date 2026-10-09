@@ -358,21 +358,6 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerCharacterShieldLinkQComponent))]
-  public unsafe class BattlePlayerCharacterShieldLinkQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerCharacterShieldLinkQComponent> {
-    public MapEntityId ERef;
-    public Quantum.QEnum32<PlayerCharacterShieldEntityType> Type;
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.BattlePlayerCharacterShieldLinkQComponent component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.BattlePlayerCharacterShieldLinkQComponent result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.ERef, in context, out result.ERef);
-        result.Type = this.Type;
-    }
-  }
-  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerClass100DataQComponent))]
   public unsafe partial class BattlePlayerClass100DataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerClass100DataQComponent> {
     [HideInInspector()]
@@ -596,7 +581,7 @@ namespace Quantum.Prototypes {
   public unsafe class BattlePlayerLinkQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerLinkQComponent> {
     public Quantum.QEnum32<BattlePlayerSlot> Slot;
     public MapEntityId CharacterEntityRef;
-    public Quantum.QEnum32<PlayerEntityType> Type;
+    public Quantum.QEnum32<BattlePlayerLinkEntityType> Type;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.BattlePlayerLinkQComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -679,6 +664,21 @@ namespace Quantum.Prototypes {
     public MapEntityId ERef;
     public void Materialize(Frame frame, ref Quantum.BattlePlayerShieldEntityRef result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.ERef, in context, out result.ERef);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerShieldLinkQComponent))]
+  public unsafe class BattlePlayerShieldLinkQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerShieldLinkQComponent> {
+    public MapEntityId ERef;
+    public Quantum.QEnum32<BattlePlayerShieldLinkEntityType> Type;
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.BattlePlayerShieldLinkQComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.BattlePlayerShieldLinkQComponent result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.ERef, in context, out result.ERef);
+        result.Type = this.Type;
     }
   }
   [System.SerializableAttribute()]

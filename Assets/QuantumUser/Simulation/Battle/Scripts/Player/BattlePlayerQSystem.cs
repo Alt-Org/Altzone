@@ -85,7 +85,7 @@ namespace Battle.QSimulation.Player
 
             // get spec
             BattlePlayerHandle playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
-            BattlePlayerCharacterShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
+            BattlePlayerShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
             BattlePlayerQSpec playerSpec = BattleQConfig.GetPlayerSpec(f);
 
             if (playerHandle.LoadedCharacterData->StateStunCooldown.IsRunning(f) || playerHandle.LoadedCharacterData->StateShieldHitCooldown.IsRunning(f)) goto Exit;
@@ -156,7 +156,7 @@ namespace Battle.QSimulation.Player
             //{ hit
 
             BattlePlayerHandle                playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
-            BattlePlayerCharacterShieldHandle shieldHandle = BattlePlayerCharacterShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
+            BattlePlayerShieldHandle shieldHandle = BattlePlayerShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
 
             int  characterNumber     = playerHandle.LoadedCharacterData->Number;
             bool defenceUpdateVisual = false;

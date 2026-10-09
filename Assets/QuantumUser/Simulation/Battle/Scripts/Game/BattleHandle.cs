@@ -38,12 +38,12 @@ namespace Battle.QSimulation.Game
             handle.PlayerData = BattlePlayerManager.GetPlayerData(f, link->Slot);
             handle.SetCharacter(f, link->CharacterEntityRef);
 
-            if (link->Type == PlayerEntityType.Hitbox) handle.SetHitbox(f, entityRef);
+            if (link->Type == BattlePlayerLinkEntityType.Hitbox) handle.SetHitbox(f, entityRef);
 
             return handle;
         }
 
-        public static void CreateLink(Frame f, BattlePlayerSlot slot, EntityRef characterEntityRef, PlayerEntityType type, EntityRef entity)
+        public static void CreateLink(Frame f, BattlePlayerSlot slot, EntityRef characterEntityRef, BattlePlayerLinkEntityType type, EntityRef entity)
         {
             BattlePlayerLinkQComponent playerLink = new()
             {
@@ -104,7 +104,7 @@ namespace Battle.QSimulation.Game
 
             SetCharacter(f, link->CharacterEntityRef);
 
-            if (link->Type == PlayerEntityType.Hitbox)
+            if (link->Type == BattlePlayerLinkEntityType.Hitbox)
             {
                 SetHitbox(f, entity);
             }
@@ -122,9 +122,9 @@ namespace Battle.QSimulation.Game
             return copy;
         }
 
-        public BattlePlayerCharacterShieldHandle GetLoadedCharacterAttachedShield(Frame f)
+        public BattlePlayerShieldHandle GetLoadedCharacterAttachedShield(Frame f)
         {
-            return BattlePlayerCharacterShieldHandle.Create(f, LoadedCharacterData->AttachedShieldEntityRef);
+            return BattlePlayerShieldHandle.Create(f, LoadedCharacterData->AttachedShieldEntityRef);
         }
 
         private void SetCharacter(Frame f, EntityRef entity)
@@ -149,24 +149,24 @@ namespace Battle.QSimulation.Game
         }
     }
 
-    public unsafe struct BattlePlayerCharacterShieldHandle
+    public unsafe struct BattlePlayerShieldHandle
     {
-        public static BattlePlayerCharacterShieldHandle Create(Frame f, EntityRef entity)
+        public static BattlePlayerShieldHandle Create(Frame f, EntityRef entity)
         {
-            BattlePlayerCharacterShieldHandle handle = new();
+            BattlePlayerShieldHandle handle = new();
 
-            BattlePlayerCharacterShieldLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerCharacterShieldLinkQComponent>(entity);
+            BattlePlayerShieldLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerShieldLinkQComponent>(entity);
 
             handle.SetShield(f, link->ERef);
 
-            if (link->Type == PlayerCharacterShieldEntityType.Hitbox) handle.SetHitbox(f, entity);
+            if (link->Type == BattlePlayerShieldLinkEntityType.Hitbox) handle.SetHitbox(f, entity);
 
             return handle;
         }
 
-        public static void CreateLink(Frame f, EntityRef shieldEntityRef, PlayerCharacterShieldEntityType type, EntityRef entity)
+        public static void CreateLink(Frame f, EntityRef shieldEntityRef, BattlePlayerShieldLinkEntityType type, EntityRef entity)
         {
-            BattlePlayerCharacterShieldLinkQComponent shieldLink = new()
+            BattlePlayerShieldLinkQComponent shieldLink = new()
             {
                 ERef = shieldEntityRef,
                 Type = type,

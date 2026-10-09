@@ -158,16 +158,16 @@ namespace Battle.QSimulation.Player
 
                     // link hitbox
                     playerShieldEntityTemplate.Link(playerShieldHitboxEntity, new FPVector2(0, 0));
-                    BattlePlayerCharacterShieldHandle.CreateLink(f, playerShieldEntityRef, PlayerCharacterShieldEntityType.Hitbox, playerShieldHitboxEntity);
-                    BattlePlayerHandle.CreateLink(f, playerData.Slot, playerCharacterEntityRef, PlayerEntityType.Shield, playerShieldHitboxEntity);
+                    BattlePlayerShieldHandle.CreateLink(f, playerShieldEntityRef, BattlePlayerShieldLinkEntityType.Hitbox, playerShieldHitboxEntity);
+                    BattlePlayerHandle.CreateLink(f, playerData.Slot, playerCharacterEntityRef, BattlePlayerLinkEntityType.Shield, playerShieldHitboxEntity);
                 } // create shield hitbox entities
 
                 // initialize entity
                 f.Remove<BattlePlayerShieldDataTemplateQComponent>(playerShieldEntityRef);
                 f.Add(playerShieldEntityRef, playerShieldData);
 
-                BattlePlayerCharacterShieldHandle.CreateLink(f, playerShieldEntityRef, PlayerCharacterShieldEntityType.Shield, playerShieldEntityRef);
-                BattlePlayerHandle.CreateLink(f, playerData.Slot, playerCharacterEntityRef, PlayerEntityType.Shield, playerShieldEntityRef);
+                BattlePlayerShieldHandle.CreateLink(f, playerShieldEntityRef, BattlePlayerShieldLinkEntityType.Shield, playerShieldEntityRef);
+                BattlePlayerHandle.CreateLink(f, playerData.Slot, playerCharacterEntityRef, BattlePlayerLinkEntityType.Shield, playerShieldEntityRef);
 
                 shieldEntities[shieldEntityIndex] = playerShieldEntityTemplate;
 
@@ -231,11 +231,11 @@ namespace Battle.QSimulation.Player
         {
             if (!IsValidShieldNumber(f, playerHandle.PlayerData.Slot, characterNumber, shieldNumber)) return;
 
-            BattlePlayerCharacterShieldHandle shieldNewHandle = GetShield(f, playerHandle.PlayerData, characterNumber, shieldNumber, updateViewPlayState: teleport);
+            BattlePlayerShieldHandle shieldNewHandle = GetShield(f, playerHandle.PlayerData, characterNumber, shieldNumber, updateViewPlayState: teleport);
 
             if (playerHandle.LoadedCharacterHasShieldAttached)
             {
-                BattlePlayerCharacterShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
+                BattlePlayerShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
 
                 ReturnShieldEntityRef(f, playerHandle.PlayerData, characterNumber, shieldHandle.ShieldData->ShieldNumber);
             }
@@ -273,7 +273,7 @@ namespace Battle.QSimulation.Player
         {
             if (!IsValidShieldNumber(f, playerHandle.PlayerData.Slot, characterNumber, shieldNumber)) return BattlePlayerShieldEntityRef.None;
 
-            BattlePlayerCharacterShieldHandle shieldHandle = GetShield(f, playerHandle.PlayerData, characterNumber, shieldNumber, updateViewPlayState);
+            BattlePlayerShieldHandle shieldHandle = GetShield(f, playerHandle.PlayerData, characterNumber, shieldNumber, updateViewPlayState);
 
             if (!shieldHandle.ShieldData->IsAttached) return (BattlePlayerShieldEntityRef)shieldHandle.ShieldEntityRef;
 
@@ -304,7 +304,7 @@ namespace Battle.QSimulation.Player
         {
             if (!IsValidShieldNumber(f, playerHandle.PlayerData.Slot, characterNumber, shieldNumber)) return;
 
-            BattlePlayerCharacterShieldHandle shieldHandle = GetShield(f, playerHandle.PlayerData, characterNumber, shieldNumber, updateViewPlayState: false);
+            BattlePlayerShieldHandle shieldHandle = GetShield(f, playerHandle.PlayerData, characterNumber, shieldNumber, updateViewPlayState: false);
 
             if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == (BattlePlayerShieldEntityRef)shieldHandle.ShieldEntityRef)
             {
@@ -376,10 +376,10 @@ namespace Battle.QSimulation.Player
         ///
         /// <returns>EntityRef of the retrieved shield entity.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static BattlePlayerCharacterShieldHandle GetShield(Frame f, BattlePlayerData.Ref playerData, int characterNumber, int shieldNumber, bool updateViewPlayState)
+        private static BattlePlayerShieldHandle GetShield(Frame f, BattlePlayerData.Ref playerData, int characterNumber, int shieldNumber, bool updateViewPlayState)
         {
             BattleEntityID shieldGroupID = playerData.Low_Level.ShieldEntityGroupIDs[characterNumber];
-            return BattlePlayerCharacterShieldHandle.Create(f, BattleEntityManager.Get(f, shieldGroupID, shieldNumber, updateViewPlayState));
+            return BattlePlayerShieldHandle.Create(f, BattleEntityManager.Get(f, shieldGroupID, shieldNumber, updateViewPlayState));
         }
 
         /// <summary>
