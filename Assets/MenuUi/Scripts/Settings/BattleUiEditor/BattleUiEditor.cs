@@ -6,6 +6,7 @@ using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using OrientationType = Altzone.Scripts.BattleUiShared.BattleUiMultiOrientationElement.OrientationType;
@@ -17,33 +18,49 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     /// </summary>
     public class BattleUiEditor : MonoBehaviour
     {
-        [Header("Editor GameObject references")]
-        [SerializeField] private RectTransform _editorRectTransform;
+        [Header("Editor GameObject references")] [SerializeField]
+        private RectTransform _editorRectTransform;
+
         [SerializeField] private RectTransform _topButtonsRectTransform;
         [SerializeField] private Button _closeButton;
         [SerializeField] private Button _saveButton;
         [SerializeField] private Button _previewButton;
         [SerializeField] private Button _previewModeTouchDetector;
-        [Space]
-        [SerializeField] private GameObject _uiTransparencyHolder;
+        [Space] [SerializeField] private GameObject _uiTransparencyHolder;
         [SerializeField] private Slider _uiTransparencySlider;
         [SerializeField] private TMP_InputField _uiTransparencyInputField;
-        [Space]
-        [SerializeField] private RectTransform _uiElementsHolder;
+        [Space] [SerializeField] private RectTransform _uiElementsHolder;
         [SerializeField] private GridController _grid;
 
-        [Header("Options popup")]
-        [SerializeField] private Button _optionsButton;
+        [Header("Options popup")] [SerializeField]
+        private Button _optionsButton;
+
         [SerializeField] private OptionsPopup _optionsPopup;
 
-        [Header("Save/reset popup")]
-        [SerializeField] private SaveReset _saveReset;
+        [Header("Save/reset popup")] [SerializeField]
+        private SaveReset _saveReset;
 
-        [Header("BattleUi prefabs")]
-        [SerializeField] private GameObject _editingComponent;
+        [Header("Whether To Save Changes Popup")] [SerializeField]
+        private GameObject _whetherToSaveChangesPopup;
+
+        [Header("Whether To Save Changes Ok Button")] [SerializeField]
+        private Button _whetherToSaveChangesOkButton;
+
+        [Header("Whether To Save Changes Cancel Button")] [SerializeField]
+        private Button _whetherToSaveChangesCancelButton;
+
+        [Header("UI Layout Saved Popup")] [SerializeField]
+        private GameObject _uiLayoutSavedPopup;
+
+        [SerializeField] private Button _uiLayoutSavedPopupButton;
+
+        [Header("BattleUi prefabs")] [SerializeField]
+        private GameObject _editingComponent;
+
         [SerializeField] private BattleUiPrefabs _prefabs;
 
-        public enum CornerType // Helper enum to access button world corners and scale handles array in editing component script more readably.
+        public enum
+            CornerType // Helper enum to access button world corners and scale handles array in editing component script more readably.
         {
             BottomLeft = 0,
             TopLeft = 1,
@@ -62,9 +79,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <param name="offset">Offset for calculating the anchors.</param>
         /// <param name="useUiElementsHolder">If calculation should use Ui elements holder rect instead of editor rect.</param>
         /// <returns>Two Vector2, anchorMin and anchorMax.</returns>
-        public static (Vector2 anchorMin, Vector2 anchorMax) CalculateAnchors(Vector2 size, Vector2 pos, float offset = 0f, bool useUiElementsHolder = false)
+        public static (Vector2 anchorMin, Vector2 anchorMax) CalculateAnchors(Vector2 size, Vector2 pos,
+            float offset = 0f, bool useUiElementsHolder = false)
         {
-            Vector2 holderSize = useUiElementsHolder ? s_uiElementsHolder.rect.size : new(EditorRect.width, EditorRect.height);
+            Vector2 holderSize = useUiElementsHolder
+                ? s_uiElementsHolder.rect.size
+                : new(EditorRect.width, EditorRect.height);
 
             // Calculating anchors
             float anchorXMin = Mathf.Clamp01((pos.x - size.x * 0.5f) / holderSize.x + offset);
@@ -82,15 +102,28 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OpenEditor()
         {
             gameObject.SetActive(true);
+            _saveReset.CloseSaveResetPopup();
+            _uiLayoutSavedPopup.SetActive(false);
+            _whetherToSaveChangesPopup.SetActive(false);
             _optionsPopup.OpenOptionsPopup();
 
             // Instantiating Ui element prefabs
-            if (_instantiatedTimer == null) _instantiatedTimer = InstantiateBattleUiElement(BattleUiElementType.Timer).GetComponent<BattleUiMovableElement>();
-            if (_instantiatedDiamonds == null) _instantiatedDiamonds = InstantiateBattleUiElement(BattleUiElementType.Diamonds).GetComponent<BattleUiMovableElement>();
-            if (_instantiatedGiveUpButton == null) _instantiatedGiveUpButton = InstantiateBattleUiElement(BattleUiElementType.GiveUpButton).GetComponent<BattleUiMovableElement>();
+            if (_instantiatedTimer == null)
+                _instantiatedTimer = InstantiateBattleUiElement(BattleUiElementType.Timer)
+                    .GetComponent<BattleUiMovableElement>();
+            if (_instantiatedDiamonds == null)
+                _instantiatedDiamonds = InstantiateBattleUiElement(BattleUiElementType.Diamonds)
+                    .GetComponent<BattleUiMovableElement>();
+            if (_instantiatedGiveUpButton == null)
+                _instantiatedGiveUpButton = InstantiateBattleUiElement(BattleUiElementType.GiveUpButton)
+                    .GetComponent<BattleUiMovableElement>();
 
-            if (_instantiatedPlayerInfo == null) _instantiatedPlayerInfo = InstantiateBattleUiElement(BattleUiElementType.PlayerInfo).GetComponent<BattleUiMultiOrientationElement>();
-            if (_instantiatedTeammateInfo == null) _instantiatedTeammateInfo = InstantiateBattleUiElement(BattleUiElementType.TeammateInfo).GetComponent<BattleUiMultiOrientationElement>();
+            if (_instantiatedPlayerInfo == null)
+                _instantiatedPlayerInfo = InstantiateBattleUiElement(BattleUiElementType.PlayerInfo)
+                    .GetComponent<BattleUiMultiOrientationElement>();
+            if (_instantiatedTeammateInfo == null)
+                _instantiatedTeammateInfo = InstantiateBattleUiElement(BattleUiElementType.TeammateInfo)
+                    .GetComponent<BattleUiMultiOrientationElement>();
 
             // Setting data to Ui elements
             SetDataToUiElement(_instantiatedTimer);
@@ -102,7 +135,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             if (_instantiatedMoveJoystick != null) SetDataToUiElement(_instantiatedMoveJoystick);
             if (_instantiatedRotateJoystick != null) SetDataToUiElement(_instantiatedRotateJoystick);
-            OverlayPanelCheck.Instance.gameObject.SetActive(false);
+            OverlayPanelCheck.Instance?.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -114,7 +147,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             if (_unsavedChanges)
             {
                 OnUiElementSelected(null);
-                StartCoroutine(_saveReset.ShowSaveResetPopup(SaveChangesText, saveChanges =>
+                StartCoroutine(_saveReset.ShowSaveResetPopup(saveChanges =>
                 {
                     if (saveChanges == null) return;
                     if (saveChanges.Value == true) SaveChanges();
@@ -126,7 +159,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 gameObject.SetActive(false);
             }
-            OverlayPanelCheck.Instance.gameObject.SetActive(true);
+
+            OverlayPanelCheck.Instance?.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -135,7 +169,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void ClosePopups()
         {
             _saveReset.CloseSaveResetPopup();
-            _optionsPopup.CloseOptionsPopup();
+            _optionsPopup.OnCloseButtonClicked();
+
+            _uiLayoutSavedPopup.SetActive(false);
+
             OnUiElementSelected(null);
         }
 
@@ -177,15 +214,24 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             // Assign static editor rect variables
             EditorRectTransform = _editorRectTransform;
-            EditorRect = EditorRectTransform.rect;
             s_uiElementsHolder = _uiElementsHolder;
 
             // Scale editor to account for unsafe area
             ScaleEditor();
 
+            //
+            Canvas.ForceUpdateCanvases();
+            EditorRect = EditorRectTransform.rect;
+
             // Close and save button listeners
-            _closeButton.onClick.AddListener(CloseEditor);
-            _saveButton.onClick.AddListener(SaveChanges);
+            _closeButton.onClick.AddListener(WhetherToSaveChangesPopup);
+            _saveButton.onClick.AddListener(() =>
+            {
+                SaveChanges();
+                _optionsPopup.OnCloseButtonClicked();
+                _uiLayoutSavedPopup.SetActive(true);
+                SetTopButtons(true, false, false, true);
+            });
 
             // Preview mode listeners
             _previewButton.onClick.AddListener(OpenPreviewMode);
@@ -205,6 +251,30 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Options popup listeners
             _optionsButton.onClick.AddListener(_optionsPopup.ToggleOptionsPopup);
+
+            //Whether To Save Changes listener
+            _whetherToSaveChangesOkButton.onClick.AddListener(() =>
+            {
+                SaveChanges();
+                _whetherToSaveChangesPopup.SetActive(false);
+                CloseEditor();
+            });
+
+            //Whether to Cancel Changes listener
+            _whetherToSaveChangesCancelButton.onClick.AddListener(() =>
+            {
+                _whetherToSaveChangesPopup.SetActive(false);
+                _optionsPopup.OpenOptionsPopup();
+                //OpenEditor();
+            });
+
+            //UILayoutSavedPopupButton listener
+            _uiLayoutSavedPopupButton.onClick.AddListener(() =>
+                {
+                    _uiLayoutSavedPopup.SetActive(false);
+                    _optionsPopup.OpenOptionsPopup();
+                }
+            );
         }
 
         private void OnDestroy()
@@ -227,10 +297,20 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Removing options button listeners
             _optionsButton.onClick.RemoveAllListeners();
+
+            //Removing Whether To Save Changes Button listeners
+            _whetherToSaveChangesOkButton.onClick.RemoveAllListeners();
+
+            //Removing Whether to Cancel Changes Button listener
+            _whetherToSaveChangesCancelButton.onClick.RemoveAllListeners();
+
+            //Removing UI Layout Saved Popup Button listener
+            _uiLayoutSavedPopupButton.onClick.RemoveAllListeners();
         }
+
         private void OnDisable()
         {
-            OverlayPanelCheck.Instance.gameObject.SetActive(true);
+            OverlayPanelCheck.Instance?.gameObject.SetActive(true);
         }
 
         private void ScaleEditor()
@@ -238,31 +318,23 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             float unsafeAreaHeight = PanelScaler.CalculateUnsafeAreaHeight();
 
             // Calculating max y anchor for the editor
-            float anchorMaxY = 1 - TopButtonsHeight - unsafeAreaHeight;
-
-            // Calculating editor aspect ratio and size
-            float editorAspectRatio = (float)Screen.width / Screen.height;
-            float editorHeight = Screen.height * anchorMaxY;
-            float editorWidth = editorHeight * editorAspectRatio;
-
-            // Calculating x anchors
-            float widthAnchorValue = editorWidth / Screen.width;
-            float anchorMinX = (1 - widthAnchorValue) * 0.5f;
-            float anchorMaxX = widthAnchorValue + anchorMinX;
+            float anchorMaxY = 1f - unsafeAreaHeight;
 
             // Setting editor anchors
-            EditorRectTransform.anchorMin = new(anchorMinX, 0);
-            EditorRectTransform.anchorMax = new(anchorMaxX, anchorMaxY);
+            EditorRectTransform.anchorMin = new(0f, 0f);
+            EditorRectTransform.anchorMax = new(1f, anchorMaxY);
 
             // Setting top button anchors
-            _topButtonsRectTransform.anchorMin = new(0, anchorMaxY);
-            _topButtonsRectTransform.anchorMax = new(1, 1 - unsafeAreaHeight);
+            _topButtonsRectTransform.anchorMin = new(0f, anchorMaxY - TopButtonsHeight);
+            _topButtonsRectTransform.anchorMax = new(1f, anchorMaxY);
+
+            Canvas.ForceUpdateCanvases();
         }
 
         private void OpenPreviewMode()
         {
             OnUiElementSelected(null);
-            _optionsPopup.CloseOptionsPopup();
+            _optionsPopup.OnCloseButtonClicked();
             _topButtonsRectTransform.gameObject.SetActive(false);
             _previewModeTouchDetector.gameObject.SetActive(true);
             EditorRectTransform.anchorMin = Vector2.zero;
@@ -279,34 +351,45 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void SaveChanges()
         {
             BattleUiMovableElementData timerData = _instantiatedTimer.GetData();
-            if (!IsSavedDataSimilar(BattleUiElementType.Timer)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Timer, timerData);
+            if (!IsSavedDataSimilar(BattleUiElementType.Timer))
+                SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Timer, timerData);
 
             BattleUiMovableElementData diamondsData = _instantiatedDiamonds.GetData();
-            if (!IsSavedDataSimilar(BattleUiElementType.Diamonds)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Diamonds, diamondsData);
+            if (!IsSavedDataSimilar(BattleUiElementType.Diamonds))
+                SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Diamonds, diamondsData);
 
             BattleUiMovableElementData giveUpButtonData = _instantiatedGiveUpButton.GetData();
-            if (!IsSavedDataSimilar(BattleUiElementType.GiveUpButton)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.GiveUpButton, giveUpButtonData);
+            if (!IsSavedDataSimilar(BattleUiElementType.GiveUpButton))
+                SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.GiveUpButton,
+                    giveUpButtonData);
 
             BattleUiMovableElementData playerInfoData = _instantiatedPlayerInfo.GetData();
-            if (!IsSavedDataSimilar(BattleUiElementType.PlayerInfo)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.PlayerInfo, playerInfoData);
+            if (!IsSavedDataSimilar(BattleUiElementType.PlayerInfo))
+                SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.PlayerInfo, playerInfoData);
 
             BattleUiMovableElementData teammateInfoData = _instantiatedTeammateInfo.GetData();
-            if (!IsSavedDataSimilar(BattleUiElementType.TeammateInfo)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.TeammateInfo, teammateInfoData);
+            if (!IsSavedDataSimilar(BattleUiElementType.TeammateInfo))
+                SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.TeammateInfo,
+                    teammateInfoData);
 
             if (_instantiatedMoveJoystick != null) // Joysticks might not be initialized so doing a null check
             {
                 BattleUiMovableElementData moveJoystickData = _instantiatedMoveJoystick.GetData();
-                if (!IsSavedDataSimilar(BattleUiElementType.MoveJoystick)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.MoveJoystick, moveJoystickData);
+                if (!IsSavedDataSimilar(BattleUiElementType.MoveJoystick))
+                    SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.MoveJoystick,
+                        moveJoystickData);
             }
 
             if (_instantiatedRotateJoystick != null)
             {
                 BattleUiMovableElementData rotateJoystickData = _instantiatedRotateJoystick.GetData();
-                if (!IsSavedDataSimilar(BattleUiElementType.RotateJoystick)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.RotateJoystick, rotateJoystickData);
+                if (!IsSavedDataSimilar(BattleUiElementType.RotateJoystick))
+                    SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.RotateJoystick,
+                        rotateJoystickData);
             }
 
             _unsavedChanges = false;
-            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info,"Muutokset on tallennettu.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info, "Muutokset on tallennettu.");
         }
 
         public void ResetChanges()
@@ -322,26 +405,40 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _unsavedChanges = !IsSavedDataSimilar();
         }
 
+        private void WhetherToSaveChangesPopup()
+        {
+            _optionsPopup.OnCloseButtonClicked();
+            _whetherToSaveChangesPopup.SetActive(true);
+
+            _whetherToSaveChangesPopup.transform.SetAsLastSibling();
+        }
+
         private bool IsSavedDataSimilar(BattleUiElementType uiElementType = BattleUiElementType.None)
         {
-            BattleUiMovableElementData savedData = SettingsCarrier.Instance.GetBattleUiMovableElementData(uiElementType);
+            BattleUiMovableElementData
+                savedData = SettingsCarrier.Instance.GetBattleUiMovableElementData(uiElementType);
             BattleUiMovableElementData compareData;
 
             switch (uiElementType)
             {
                 case BattleUiElementType.Timer:
+                    if (_instantiatedTimer == null) return true;
                     compareData = _instantiatedTimer.GetData();
                     break;
                 case BattleUiElementType.Diamonds:
+                    if (_instantiatedDiamonds == null) return true;
                     compareData = _instantiatedDiamonds.GetData();
                     break;
                 case BattleUiElementType.GiveUpButton:
+                    if (_instantiatedGiveUpButton == null) return true;
                     compareData = _instantiatedGiveUpButton.GetData();
                     break;
                 case BattleUiElementType.PlayerInfo:
+                    if (_instantiatedPlayerInfo == null) return true;
                     compareData = _instantiatedPlayerInfo.GetData();
                     break;
                 case BattleUiElementType.TeammateInfo:
+                    if (_instantiatedTeammateInfo == null) return true;
                     compareData = _instantiatedTeammateInfo.GetData();
                     break;
                 case BattleUiElementType.MoveJoystick:
@@ -360,6 +457,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                         isSavedDataSimilar = IsSavedDataSimilar((BattleUiElementType)i);
                         if (!isSavedDataSimilar) break;
                     }
+
                     return isSavedDataSimilar;
             }
 
@@ -367,12 +465,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Compare if the data is similar
             return savedData.IsFlippedHorizontally == compareData.IsFlippedHorizontally
-                && savedData.IsFlippedVertically == compareData.IsFlippedVertically
-                && savedData.AnchorMin == compareData.AnchorMin
-                && savedData.AnchorMax == compareData.AnchorMax
-                && savedData.Orientation == compareData.Orientation
-                && savedData.HandleSize == compareData.HandleSize
-                && savedData.Transparency == compareData.Transparency;
+                   && savedData.IsFlippedVertically == compareData.IsFlippedVertically
+                   && savedData.AnchorMin == compareData.AnchorMin
+                   && savedData.AnchorMax == compareData.AnchorMax
+                   && savedData.Orientation == compareData.Orientation
+                   && savedData.HandleSize == compareData.HandleSize
+                   && savedData.Transparency == compareData.Transparency;
         }
 
         public GameObject InstantiateBattleUiElement(BattleUiElementType uiElementType)
@@ -413,18 +511,21 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             editingComponentGameObject.SetActive(true);
 
             // Getting editing component script from the editing component game object
-            BattleUiEditingComponent editingComponent = editingComponentGameObject.GetComponent<BattleUiEditingComponent>();
+            BattleUiEditingComponent editingComponent =
+                editingComponentGameObject.GetComponent<BattleUiEditingComponent>();
             if (editingComponent == null) return null;
 
             // Setting info to the editing component
-            BattleUiMultiOrientationElement multiOrientationElement = uiElementGameObject.GetComponent<BattleUiMultiOrientationElement>();
+            BattleUiMultiOrientationElement multiOrientationElement =
+                uiElementGameObject.GetComponent<BattleUiMultiOrientationElement>();
             if (multiOrientationElement != null)
             {
                 editingComponent.SetInfo(multiOrientationElement);
             }
             else
             {
-                BattleUiMovableJoystickElement movableJoystickElement = uiElementGameObject.GetComponent<BattleUiMovableJoystickElement>();
+                BattleUiMovableJoystickElement movableJoystickElement =
+                    uiElementGameObject.GetComponent<BattleUiMovableJoystickElement>();
 
                 if (movableJoystickElement != null)
                 {
@@ -490,8 +591,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 case BattleUiElementType.PlayerInfo:
                 case BattleUiElementType.TeammateInfo:
-                    TextMeshProUGUI playerNameHorizontal = multiOrientationElement.HorizontalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
-                    TextMeshProUGUI playerNameVertical = multiOrientationElement.VerticalConfiguration.GetComponentInChildren<TextMeshProUGUI>();
+                    TextMeshProUGUI playerNameHorizontal = multiOrientationElement.HorizontalConfiguration
+                        .GetComponentInChildren<TextMeshProUGUI>();
+                    TextMeshProUGUI playerNameVertical = multiOrientationElement.VerticalConfiguration
+                        .GetComponentInChildren<TextMeshProUGUI>();
 
                     string nameText = uiElementType == BattleUiElementType.PlayerInfo ? PlayerText : TeammateText;
 
@@ -757,7 +860,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             // Calculating aspect ratio for movable elements (multiorientation elements have aspect ratios saved to serializefield)
-            if (movableUiElementRect != Rect.zero) aspectRatio = movableUiElementRect.width / movableUiElementRect.height;
+            if (movableUiElementRect != Rect.zero)
+                aspectRatio = movableUiElementRect.width / movableUiElementRect.height;
 
             // Calculating anchors
             Vector2 size = new();
@@ -771,7 +875,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             (anchorMin, anchorMax) = CalculateAnchors(size, pos);
 
-            return new(uiElementType, anchorMin, anchorMax, 0, orientation, isFlippedHorizontally, isFlippedVertically, handleSize);
+            return new(uiElementType, anchorMin, anchorMax, 0, orientation, isFlippedHorizontally, isFlippedVertically,
+                handleSize);
         }
 
         private BattleUiEditingComponent GetEditingComponent(BattleUiElementType uiElementType)
@@ -812,10 +917,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public void OnUiElementSelected(BattleUiEditingComponent newSelectedEditingComponent)
         {
-            _optionsPopup.CloseOptionsPopup();
+            _optionsPopup.OnCloseButtonClicked();
             _grid.RemoveLineHighlight();
 
-            if (_currentlySelectedEditingComponent != null && _currentlySelectedEditingComponent != newSelectedEditingComponent)
+            if (_currentlySelectedEditingComponent != null &&
+                _currentlySelectedEditingComponent != newSelectedEditingComponent)
             {
                 _currentlySelectedEditingComponent.ShowControls(false);
             }
@@ -860,6 +966,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 field.SetTextWithoutNotify(minValueString);
                 slider.SetValueWithoutNotify(slider.minValue);
             }
+        }
+
+        public void SetTopButtons(bool close, bool save, bool preview, bool options)
+        {
+            _closeButton.gameObject.SetActive(close);
+            _saveButton.gameObject.SetActive(save);
+            _previewButton.gameObject.SetActive(preview);
+            _optionsButton.gameObject.SetActive(options);
         }
 
 #if (UNITY_EDITOR)

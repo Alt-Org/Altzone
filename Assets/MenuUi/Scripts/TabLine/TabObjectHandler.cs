@@ -6,30 +6,48 @@ using UnityEngine.UI;
 
 public class TabObjectHandler : MonoBehaviour
 {
-    [Header("References to components")]
-    [SerializeField] private Image _tabBaseComponent;
-    [SerializeField] private Image _tabImageComponent;
-    [SerializeField] private TextMeshProUGUI _tabText;
+    [Header("References to components")] [SerializeField]
+    private Image _tabBaseComponent;
 
-    private Color _tabColorActive = Color.white;
-    private Color _tabColorInactive = Color.gray;
+    [SerializeField] private TextMeshProUGUI _tabTextBlack;
+    [SerializeField] private TextMeshProUGUI _tabTextWhite;
+    [SerializeField] private Image _darkeningImage;
+    [SerializeField] private Image _lightBlueImage;
+
 
     private bool _active = true;
 
     private void Start()
     {
-        if (_tabImageComponent.sprite != null) _tabText.gameObject.SetActive(false);
-        else
-        {
-            _tabImageComponent.gameObject.SetActive(false);
-            _tabText.gameObject.SetActive(true);
-        }
+        if (_darkeningImage != null)
+            _darkeningImage.gameObject.SetActive(_active);
+
+        if (_tabTextWhite != null)
+            _tabTextWhite.gameObject.SetActive(_active);
+
+        if (_lightBlueImage != null)
+            _lightBlueImage.gameObject.SetActive(!_active);
+
+        if (_tabTextBlack != null)
+            _tabTextBlack.gameObject.SetActive(!_active);
     }
 
     public (Sprite, Color) SetActiveVisuals(Sprite tablineImage, Color stripeColour)
     {
         _active = true;
-        if (_tabBaseComponent != null) _tabBaseComponent.color = _tabColorActive;
+
+        if (_darkeningImage != null)
+            _darkeningImage.gameObject.SetActive(true);
+
+        if (_tabTextWhite != null)
+            _tabTextWhite.gameObject.SetActive(true);
+
+        if (_lightBlueImage != null)
+            _lightBlueImage.gameObject.SetActive(false);
+
+        if (_tabTextBlack != null)
+            _tabTextBlack.gameObject.SetActive(false);
+
         return (tablineImage, stripeColour);
     }
 
@@ -37,15 +55,27 @@ public class TabObjectHandler : MonoBehaviour
     public void SetInactiveVisuals()
     {
         _active = false;
-        if (_tabBaseComponent != null) _tabBaseComponent.color = _tabColorInactive;
+
+        if (_darkeningImage != null)
+            _darkeningImage.gameObject.SetActive(false);
+
+        if (_tabTextWhite != null)
+            _tabTextWhite.gameObject.SetActive(false);
+
+        if (_lightBlueImage != null)
+            _lightBlueImage.gameObject.SetActive(true);
+
+        if (_tabTextBlack != null)
+            _tabTextBlack.gameObject.SetActive(true);
     }
 
 
     public void SetColour(Color activeColour, Color inactiveColour)
     {
-        _tabColorActive = activeColour;
-        _tabColorInactive = inactiveColour;
-        if (_active) _tabBaseComponent.color = _tabColorActive;
-        else _tabBaseComponent.color = _tabColorInactive;
+        if (_darkeningImage != null)
+            _darkeningImage.color = activeColour;
+
+        if (_tabBaseComponent != null)
+            _tabBaseComponent.color = inactiveColour;
     }
 }
