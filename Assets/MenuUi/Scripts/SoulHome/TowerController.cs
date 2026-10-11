@@ -329,6 +329,14 @@ namespace MenuUI.Scripts.SoulHome
             if(ClickStateHandler.GetClickState() is ClickState.End && _selectedFurniture == null && _tempSelectedFurniture != null) _tempSelectedFurniture = null;
         }
 
+        void LateUpdate()
+        {
+            if (!_startFinished) return;
+            // Keep the hover buttons attached to the selected furniture when the camera scrolls or zooms.
+            if (_selectedFurniture != null && _furnitureHoverButtons.activeSelf)
+                _mainScreen.SetHoverButtons(_camera.WorldToViewportPoint(_selectedFurniture.transform.position));
+        }
+
         public bool FindRayPoint(Vector2 relPoint, ClickState click)
         {
             //if (click == ClickState.Start) cameraMove = true;
