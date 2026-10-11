@@ -59,9 +59,19 @@ namespace MenuUI.Scripts.SoulHome
             foreach (FurnitureSetInfo setInfo in _storageFurnitureReference.Info) // creates a set filter button for each set
             {
                 GameObject _setSelectButton = Instantiate(_setSelectButtonPrefab, _setSelectButtonContainer.transform);
-                _setSelectButton.GetComponent<Image>().sprite = setInfo.SetFontName;
                 TextMeshProUGUI _setName = _setSelectButton.GetComponentInChildren<TextMeshProUGUI>();
-                _setName.text = setInfo.SetName;
+                if (setInfo.SetFontName != null)
+                {
+                   _setSelectButton.transform.GetChild(1).GetComponent<Image>().sprite = setInfo.SetFontName;
+                   _setSelectButton.transform.GetChild(1).GetComponent<Image>().gameObject.SetActive(true);
+                   _setName.gameObject.SetActive(false);
+                }
+                else
+                {
+                    _setName.text = setInfo.SetName;
+                    _setName.gameObject.SetActive(true); // probably not needed
+                    _setSelectButton.transform.GetChild(1).GetComponent<Image>().gameObject.SetActive(false); // probably not needed
+                }
                 _setSelectButton.GetComponent<Button>().onClick.AddListener(() => SelectSet(setInfo.SetName));
             }
         }
@@ -79,11 +89,9 @@ namespace MenuUI.Scripts.SoulHome
         public void InitializeTray()
         {
             FurnitureList list = _controller.FurnitureList;
-            //Debug.Log("Count: "+list.Count);
             if (list == null) return;
 
-            // FurnitureList = how many furniture items in total, FurnitureListObject = how many of that type?, Furniture = the actual furniture object
-            FillSelectionButtonList(list); // ----------------
+            FillSelectionButtonList(list);
         }
 
         public void FilterTrayObjects(int _category)
@@ -159,7 +167,7 @@ namespace MenuUI.Scripts.SoulHome
             _trayContent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0); // Reset FurnitureTray position
         }
         
-        public void SelectSet(string set) // ----------------------------
+        public void SelectSet(string set)
         {
             if (set == "")
             {
@@ -178,7 +186,7 @@ namespace MenuUI.Scripts.SoulHome
             _setSelectMenu.GetComponentInChildren<ScrollRect>().verticalNormalizedPosition = 1f; // reset scroll to the top
         }
 
-        public void ToggleMinimizeTray() // ---------------------------
+        public void ToggleMinimizeTray()
         {
             if (!_isTrayMinimized)
             {
@@ -186,7 +194,7 @@ namespace MenuUI.Scripts.SoulHome
                 //rect.offsetMax = new Vector2(rect.offsetMax.x, -400f); // not ideal if screen size or resolution can change??
                 _isTrayMinimized = true;
 
-                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 100f); // 100f
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 300f); // 100f
             }
             else
             {
@@ -194,7 +202,7 @@ namespace MenuUI.Scripts.SoulHome
                 //rect.offsetMax = new Vector2(rect.offsetMax.x, 0f);
                 _isTrayMinimized = false;
 
-                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 462);
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 462f); // 462f
             }
         }
 

@@ -104,7 +104,7 @@ namespace MenuUI.Scripts.SoulHome
                 _furnitureSetFont.preserveAspect = true;
                 _furnitureSetFont.gameObject.SetActive(true);
             }
-            
+            GetComponent<ResizeCollider>().Resize();
         }
 
         public override void SetData<T1>(T1 data)
