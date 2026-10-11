@@ -60,13 +60,10 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
     private RectTransform _locationHelper;
     private readonly Vector3[] _itemWorldCorners = new Vector3[4];
 
-    private bool _buildOnEnable = false;
+    private Action _pendingSetup; //Setup called while disabled, run on enable when the layout is valid.
 
     public delegate void NewDataRequested(int targetIndex);
     public event NewDataRequested OnNewDataRequested; //Used to tell the host that new content data is needed.
-
-    public delegate void LateDataRequest();
-    public event LateDataRequest OnLateDataRequest; //Used to get data for the list when this list is enabled.
 
     private enum HorizontalDirectionType
     {
@@ -149,10 +146,11 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
 
     private void OnEnable()
     {
-        if (!_buildOnEnable) return;
+        if (_pendingSetup == null) return;
 
-        _buildOnEnable = false;
-        OnLateDataRequest?.Invoke();
+        Action pendingSetup = _pendingSetup;
+        _pendingSetup = null;
+        pendingSetup();
     }
 
     private void CreateLocationHelper()
@@ -216,23 +214,19 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
     #region Data
     public void Setup<T>(List<T> data)
     {
+        // When the furniture tray is loaded the list is disabled and its layout is not up to date,
+        // so the pool size and viewport borders would be calculated from stale rects.
+        if (!isActiveAndEnabled)
+        {
+            _pendingSetup = () => Setup(data);
+            return;
+        }
+        _pendingSetup = null;
+
         StopMovement();
         _outOfBoundDirection = HorizontalDirectionType.Neutral;
         _scrollDiffCompensation = 0f;
-        if (_smartListItems.Count == 0)
-        {
-            CreatePool(); // Awake() is not called yet (where this should be called), causing _smartListItems to be disabled --------------------
-        } 
-        
-        if (!isActiveAndEnabled)
-        {
-            // When furniture tray loaded, smart list always disabled
-        }
-        if (_buildOnEnable)
-        {
-            _buildOnEnable = true;
-            return;
-        }
+        if (_smartListItems.Count == 0) CreatePool();
 
         if (data.Count == 0) // Hide smart list slots if list empty
         {
@@ -249,12 +243,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
 
         _contentListLenght = data.Count;
 
-        _viewportLeftAnchoredBorder = _viewport.rect.xMin;
-        _viewportRightAnchoredBorder = _viewport.rect.xMax;
-
-        _viewportLeftWorldBorder = _viewport.TransformPoint(new Vector3(_viewportLeftAnchoredBorder, 0f, 0f)).x;
-
-        _viewportRightWorldBorder = _viewport.TransformPoint(new Vector3(_viewportRightAnchoredBorder, 0f, 0f)).x;
+        UpdateViewportBorders();
 
         if (_smartListItems.Count != _contentListLenght) CreatePool();
 
@@ -434,14 +423,12 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
         foreach (RectTransform item in _uniqueGameObjectsAtRight) contentWidth += item.rect.width + _horizontalPadding;
         if (contentWidth <= _viewport.rect.width) return;
 
+        UpdateViewportBorders();
+
         bool movementCheck = ((_outOfBoundDirection == HorizontalDirectionType.Left && _velocity > 0) ||
                               (_outOfBoundDirection == HorizontalDirectionType.Right && _velocity < 0));
 
         if (!movementCheck) _content.position = new Vector2(_contentStartWorldPosition.x + distance, _content.position.y);
-
-        float anchoredDistance = _content.anchoredPosition.x - _contentStartAnchoredPosition.x;
-
-        if (!movementCheck) _outOfBoundDirection = ScrollLimiter(distance, anchoredDistance);
 
         //Out of bounds checks.
         //Unique left objects
@@ -458,6 +445,11 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
             }
 
         RecycleSmartItems();
+
+        // Limit only after recycling, so the edge indexes already include the item that just came in.
+        float anchoredDistance = _content.anchoredPosition.x - _contentStartAnchoredPosition.x;
+
+        if (!movementCheck) _outOfBoundDirection = ScrollLimiter(distance, anchoredDistance);
     }
 
     private void RecycleSmartItems()
@@ -488,8 +480,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
     /// <returns>HorizontalDirectionType in which there was no more content to be displayed.</returns>
     private HorizontalDirectionType ScrollLimiter(float worldDistance, float anchoredDistance)
     {
-        if ((_smartListLeftIndex * -1 - _uniqueGameObjectsAtLeft.Count <= 0 && _uniqueGameObjectsAtLeft.Count != 0 ||
-             _uniqueGameObjectsAtLeft.Count == 0 && _smartListLeftIndex < 0) && _velocity > 0) //Over left check.
+        if (IsFirstItemInList() && _velocity > 0) //Over left check.
         {
             RectTransform leftItem = _uniqueGameObjectsAtLeft.Count > 0
                 ? _uniqueGameObjectsAtLeft[0] : _smartListItems[0].SelfRectTransform;
@@ -502,8 +493,7 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
             return HorizontalDirectionType.Left;
         }
 
-        if ((_smartListRightIndex >= _contentListLenght + _uniqueGameObjectsAtRight.Count && _uniqueGameObjectsAtRight.Count != 0 ||
-             _uniqueGameObjectsAtRight.Count == 0 && _smartListRightIndex >= _contentListLenght) && _velocity < 0) //Over right check.
+        if (IsLastItemInList() && _velocity < 0) //Over right check.
         {
             GetViewportEdges(GetRightItemRectTransform(), out _, out float rightItemRightEdge);
 
@@ -652,8 +642,9 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
         bool overLeft = _viewportLeftAnchoredBorder > smartItemBorderRight && _velocity < 0f;
         bool overRight = _viewportRightAnchoredBorder < smartItemBorderLeft && _velocity > 0f;
         bool outOfBounds = (overLeft || overRight);
-        bool outOfRange = ((overLeft && _smartListRightIndex >= _contentListLenght) ||
-                           (overRight && _smartListLeftIndex < 0));
+        // Don't recycle past the ends: the first/last item must stay in the list for ScrollLimiter.
+        bool outOfRange = ((overLeft && IsLastItemInList()) ||
+                           (overRight && IsFirstItemInList()));
 
         if (!outOfBounds || outOfRange) return false;
 
@@ -688,6 +679,21 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
     #region Helper Functions
 
     private static float HalfWidth(RectTransform rectTransform) { return rectTransform.rect.width * 0.5f; }
+
+    // The edge indexes cover the whole list, including the unique objects at both ends.
+    private bool IsFirstItemInList() { return _smartListLeftIndex <= -_uniqueGameObjectsAtLeft.Count; }
+
+    private bool IsLastItemInList() { return _smartListRightIndex >= _contentListLenght - 1 + _uniqueGameObjectsAtRight.Count; }
+
+    // Read every time, the viewport can be resized after Setup (layout rebuilds, screen size changes).
+    private void UpdateViewportBorders()
+    {
+        _viewportLeftAnchoredBorder = _viewport.rect.xMin;
+        _viewportRightAnchoredBorder = _viewport.rect.xMax;
+
+        _viewportLeftWorldBorder = _viewport.TransformPoint(new Vector3(_viewportLeftAnchoredBorder, 0f, 0f)).x;
+        _viewportRightWorldBorder = _viewport.TransformPoint(new Vector3(_viewportRightAnchoredBorder, 0f, 0f)).x;
+    }
 
     // Compare actual rectangle edges in viewport space, including anchors, pivots and scale.
     private void GetViewportEdges(RectTransform item, out float left, out float right)
