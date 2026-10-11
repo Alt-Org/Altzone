@@ -1,81 +1,39 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Altzone.Scripts.Audio;
 
 /// <summary>
-/// Recycles a limited amount of gameobjects by moving and repurposing out of bounds gameobjects for the other end that is coming out of the invisible area.
+/// Horizontal list that only creates enough slots to fill the viewport and reuses them while scrolling.
+/// Scrolling, inertia and the edge limits are handled by a <see cref="GestureScrollRect"/>; this only sets the content
+/// width and places each slot at its data index based on the scroll position.
 /// </summary>
-public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+[RequireComponent(typeof(GestureScrollRect))]
+public class SmartHorizontalObjectList : MonoBehaviour
 {
-    [SerializeField] private float _anchoredVelocityLimit = 100f;
-    [SerializeField] private float _worldVelocityLimit = 100f;
-    
-    [SerializeField] private float _slowdownTime = 1.5f;
-    [Space]
+    [SerializeField] private GestureScrollRect _scrollRect;
     [SerializeField] private RectTransform _viewport;
     [SerializeField] private RectTransform _content;
-    [Space]
-    [SerializeField] private List<RectTransform> _uniqueGameObjectsAtLeft = new();
     [SerializeField] private GameObject _contentPrefab;
-    private List<RectTransform> _uniqueGameObjectsAtRight = new();
-    [Space]
-    [SerializeField] private float _smartItemLeftStrengthMultiplier = 0f;
-    [SerializeField] private float _smartItemRightStrengthMultiplier = 2f;
-    [Tooltip("Use to prevent pop in of the items.")]
-    [SerializeField] private int _extraSmartListItems = 1;
-    [SerializeField] private float _ignoreRemainingVelocityTriggerTime = 0.1f;
-    [Space]
+    [Tooltip("Slots created on top of what fits in the viewport. At least one is needed while slots at both edges are partially visible.")]
+    [SerializeField] private int _extraSmartListItems = 2;
     [SerializeField] private int _horizontalPadding = 10;
 
-    private readonly List<SmartListItem> _smartListItems = new();
-    private readonly List<SmartListItem> _recyclingOrder = new();
+    private readonly List<SmartListItem> _pool = new();
+    private readonly List<int> _poolBoundIndexes = new(); //The data index each pool slot currently shows, -1 if none.
+    private Vector2 _slotSize;
+    private float _step; //Slot width + padding.
+    private float _poolViewportWidth = -1f;
 
-    private int _contentListLenght = -1;
-    private int _smartListRightIndex = -1;
-    private int _smartListLeftIndex = -1; //-1 and below are for _uniqueGameObjectsAtLeft.
-
-    private float _viewportRightAnchoredBorder = 0f;
-    private float _viewportLeftAnchoredBorder = 0f;
-    private float _viewportRightWorldBorder = 0f;
-    private float _viewportLeftWorldBorder = 0f;
-
-    private float _velocity = 0f;
-    private float _scrollDiffCompensation = 0f;
-    private Coroutine _velocityCoroutine;
-    private Vector2 _previousUpdatePosition;
-    private Vector2 _pointerStartPosition;
-    private Vector2 _contentStartAnchoredPosition;
-    private Vector2 _contentStartWorldPosition;
-    private float _timeFromLastVelocityUpdate = 0f;
-
-    private int _amountToFillContentList = 0;
-    private float _smartListItemLocalWidthWithPadding = 0f;
-    private float _rightItemWorldWidthWithPadding = 0f;
-
-    private HorizontalDirectionType _outOfBoundDirection = HorizontalDirectionType.Neutral;
-
-    private RectTransform _locationHelper;
-    private readonly Vector3[] _itemWorldCorners = new Vector3[4];
-
+    private int _count;
+    private Action<SmartListItem, int> _bindItem;
+    private int _firstIndex = -1;
     private Action _pendingSetup; //Setup called while disabled, run on enable when the layout is valid.
-
-    public delegate void NewDataRequested(int targetIndex);
-    public event NewDataRequested OnNewDataRequested; //Used to tell the host that new content data is needed.
-
-    private enum HorizontalDirectionType
-    {
-        Neutral = 0,
-        Left = -1,
-        Right = 1
-    }
 
     public enum DragIntent { Pending, Scroll, Furniture }
     private Vector2 _gestureStartPosition;
-    private DragIntent _dragIntent;
-    private int? _dragPointerId;
+    private DragIntent _dragIntent = DragIntent.Pending;
     private bool _scrollEnabled = true;
 
     public bool scroll_enabled
@@ -84,11 +42,54 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
         set
         {
             _scrollEnabled = value;
-            if (!value) StopMovement();
+            if (!value) _scrollRect.CancelDrag();
         }
     }
 
-    // Shared by UI drag events and the controller's physics picking path.
+    private void Awake()
+    {
+        if (!_scrollRect) _scrollRect = GetComponent<GestureScrollRect>();
+
+        _scrollRect.content = _content;
+        _scrollRect.viewport = _viewport;
+        _scrollRect.horizontal = true;
+        _scrollRect.vertical = false;
+        _scrollRect.CanBeginDrag = eventData => _scrollEnabled && ResolveGesture(eventData.position) == DragIntent.Scroll;
+        _scrollRect.PotentialDragStarted += eventData => BeginGesture(eventData.pressPosition);
+
+        //Content grows to the right from the left edge, its width is set from the data count.
+        _content.anchorMin = new Vector2(0f, _content.anchorMin.y);
+        _content.anchorMax = new Vector2(0f, _content.anchorMax.y);
+        _content.pivot = new Vector2(0f, _content.pivot.y);
+
+        if (_pool.Count == 0) CreatePool();
+    }
+
+    private void OnEnable()
+    {
+        _scrollRect.onValueChanged.AddListener(OnScrollValueChanged);
+
+        if (_pendingSetup == null) return;
+
+        Action pendingSetup = _pendingSetup;
+        _pendingSetup = null;
+        pendingSetup();
+    }
+
+    private void OnDisable()
+    {
+        if (!_scrollRect) return; //Destroyed together with this object.
+        _scrollRect.onValueChanged.RemoveListener(OnScrollValueChanged);
+        CancelGesture();
+    }
+
+    //The content position can also be set directly (ScrollToStart, ScrollRect clamping), so check it every frame too.
+    private void LateUpdate() { Refresh(false); }
+
+    private void OnScrollValueChanged(Vector2 _) { Refresh(false); }
+
+    #region Gesture
+    // Shared by the ScrollRect drag events and the controller's physics picking path.
     public void BeginGesture(Vector2 position)
     {
         StopMovement();
@@ -106,116 +107,22 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
         return _dragIntent;
     }
 
-    public void StopMovement()
-    {
-        if (_velocityCoroutine != null) StopCoroutine(_velocityCoroutine);
-        _velocityCoroutine = null;
-        _velocity = 0f;
-        _timeFromLastVelocityUpdate = float.NegativeInfinity;
-    }
+    public void StopMovement() { _scrollRect.StopMovement(); }
 
     public void CancelGesture()
     {
-        StopMovement();
-        _dragPointerId = null;
-        // Ignore remaining drag events until the next press initializes a gesture.
+        _scrollRect.CancelDrag();
+        // Ignore the rest of this gesture until the next press initializes a new one.
         _dragIntent = DragIntent.Furniture;
     }
-
-    private void OnDisable()
-    {
-        CancelGesture();
-    }
-
-    public void OnInitializePotentialDrag(PointerEventData eventData)
-    {
-        if (eventData.button != PointerEventData.InputButton.Left || _dragPointerId.HasValue) return;
-        BeginGesture(eventData.pressPosition);
-    }
-
-    private void Awake()
-    {
-        if (_smartListItems.Count == 0)
-        {
-            CreatePool();
-        } 
-        _contentStartAnchoredPosition = _content.anchoredPosition;
-    }
-
-    private void Start() { if (!_locationHelper) CreateLocationHelper(); }
-
-    private void OnEnable()
-    {
-        if (_pendingSetup == null) return;
-
-        Action pendingSetup = _pendingSetup;
-        _pendingSetup = null;
-        pendingSetup();
-    }
-
-    private void CreateLocationHelper()
-    {
-        GameObject locationHelper = new GameObject("LocationHelper");
-
-        _locationHelper = locationHelper.AddComponent<RectTransform>();
-        _locationHelper.SetParent(_viewport);
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        if (!scroll_enabled || eventData.button != PointerEventData.InputButton.Left || _dragPointerId.HasValue) return;
-        _dragPointerId = eventData.pointerId;
-        _pointerStartPosition = eventData.pressPosition;
-        _previousUpdatePosition = eventData.pressPosition;
-        _contentStartWorldPosition = _content.position;
-        _scrollDiffCompensation = 0f;
-
-        if (_velocityCoroutine == null) return;
-
-        StopCoroutine(_velocityCoroutine);
-        _velocityCoroutine = null;
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (!scroll_enabled || _dragPointerId != eventData.pointerId ||
-            ResolveGesture(eventData.position) != DragIntent.Scroll) return;
-        
-        _velocity = eventData.position.x - _previousUpdatePosition.x;
-
-        if (Mathf.Abs(_velocity) > _anchoredVelocityLimit)
-            _velocity = _anchoredVelocityLimit * Mathf.Sign(_velocity);
-
-        ScrollHandling(eventData.position.x - _pointerStartPosition.x + _scrollDiffCompensation);
-        _previousUpdatePosition = eventData.position;
-
-        if (_outOfBoundDirection != HorizontalDirectionType.Neutral)
-        {
-            _pointerStartPosition = eventData.position;
-            _contentStartWorldPosition = _content.position;
-        }
-
-        _timeFromLastVelocityUpdate = Time.time;
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        if (_dragPointerId != eventData.pointerId) return;
-        _dragPointerId = null;
-        _pointerStartPosition = eventData.position;
-        _contentStartWorldPosition = _content.position;
-        _scrollDiffCompensation = 0f;
-
-        if (scroll_enabled && _dragIntent == DragIntent.Scroll &&
-            _ignoreRemainingVelocityTriggerTime > (Time.time - _timeFromLastVelocityUpdate))
-            _velocityCoroutine = StartCoroutine(HandleVelocity());
-    }
+    #endregion
 
     #region Data
+    /// <summary>Shows the given data. Keeps the current scroll position, use <see cref="ScrollToStart"/> to reset it.</summary>
     public void Setup<T>(List<T> data)
     {
         // When the furniture tray is loaded the list is disabled and its layout is not up to date,
-        // so the pool size and viewport borders would be calculated from stale rects.
+        // so the slot size and pool size would be calculated from stale rects.
         if (!isActiveAndEnabled)
         {
             _pendingSetup = () => Setup(data);
@@ -223,508 +130,107 @@ public class SmartHorizontalObjectList : MonoBehaviour, IInitializePotentialDrag
         }
         _pendingSetup = null;
 
-        StopMovement();
-        _outOfBoundDirection = HorizontalDirectionType.Neutral;
-        _scrollDiffCompensation = 0f;
-        if (_smartListItems.Count == 0) CreatePool();
+        if (_pool.Count == 0) CreatePool();
 
-        if (data.Count == 0) // Hide smart list slots if list empty
-        {
-            _contentListLenght = 0;
-            for (int i = 0; i < _smartListItems.Count; i++)
-            {
-                _smartListItems[i].SetVisibility(false);
-            }
-            Clear(); 
-            return; 
-        }
+        _count = data.Count;
+        _bindItem = (item, index) => item.SetData(data[index]);
 
-        if (!_locationHelper) CreateLocationHelper();
+        float contentWidth = _count > 0 ? _count * _step - _horizontalPadding : 0f;
+        _content.sizeDelta = new Vector2(contentWidth, _content.sizeDelta.y);
 
-        _contentListLenght = data.Count;
-
-        UpdateViewportBorders();
-
-        if (_smartListItems.Count != _contentListLenght) CreatePool();
-
-        _smartListLeftIndex = -_uniqueGameObjectsAtLeft.Count;
-        _smartListRightIndex = _smartListItems.Count - 1 - _uniqueGameObjectsAtLeft.Count;
-
-        UpdateContents<T>(data);
-
-        RectTransform rectTransform = GetRightItemRectTransform();
-
-        if (rectTransform)
-        {
-            _locationHelper.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x + rectTransform.rect.width + _horizontalPadding, 0f);
-            float worldBorderRightPosition = _locationHelper.position.x;
-
-            _locationHelper.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, 0f);
-            float worldBorderLeftPosition = _locationHelper.position.x;
-
-            _rightItemWorldWidthWithPadding = worldBorderRightPosition - worldBorderLeftPosition;
-        }
+        Refresh(true);
     }
 
-    public void UpdateContent<T>(int index, T data)
+    /// <summary>Sets the data again to the slots that are currently shown, e.g. after the data has changed.</summary>
+    public void Refresh() { Refresh(true); }
+
+    public void ScrollToStart()
     {
-        if (index < 0 || index >= _contentListLenght || _smartListItems.Count == 0 ||
-            index < _smartListLeftIndex || index > _smartListRightIndex) return;
-
-        int smartIndex = index % _smartListItems.Count;
-
-        _smartListItems[smartIndex].SetVisibility(true);
-        _smartListItems[smartIndex].SetData<T>(data);
+        _scrollRect.StopMovement();
+        _content.anchoredPosition = new Vector2(0f, _content.anchoredPosition.y);
+        Refresh(false);
     }
 
-    private void UpdateContents<T>(List<T> data)
+    private void Refresh(bool rebind)
     {
-        int smartPositionIndexesUsed = 0;
+        if (_pool.Count == 0 || _step <= 0f) return;
 
-        //Set positions.
-        for (int mainIndex = -_uniqueGameObjectsAtLeft.Count; mainIndex < _contentListLenght + _uniqueGameObjectsAtRight.Count; mainIndex++)
+        if (!Mathf.Approximately(GetViewportWidth(), _poolViewportWidth))
         {
-            int rightIndex = mainIndex - _contentListLenght;
-
-            if (mainIndex < 0) //Set left unique items.
-            {
-                int leftIndex = mainIndex + _uniqueGameObjectsAtLeft.Count;
-
-                if (mainIndex < _smartListLeftIndex || mainIndex > _smartListRightIndex)
-                {
-                    _uniqueGameObjectsAtLeft[leftIndex].gameObject.SetActive(false);
-                    continue;
-                }
-
-                float widthWithPadding = _uniqueGameObjectsAtLeft[leftIndex].rect.width + _horizontalPadding;
-
-                SetAnchoredPosition(_uniqueGameObjectsAtLeft[leftIndex], widthWithPadding, leftIndex);
-                smartPositionIndexesUsed++;
-            }
-            else if (rightIndex < _uniqueGameObjectsAtRight.Count && mainIndex >= _contentListLenght) //Set right unique items.
-            {
-                if (mainIndex < _smartListLeftIndex || mainIndex > _smartListRightIndex)
-                {
-                    _uniqueGameObjectsAtRight[rightIndex].gameObject.SetActive(false);
-                    continue;
-                }
-
-                int positionIndex = mainIndex + _uniqueGameObjectsAtLeft.Count;
-                float widthWithPadding = _uniqueGameObjectsAtRight[rightIndex].rect.width + _horizontalPadding;
-
-                SetAnchoredPosition(_uniqueGameObjectsAtRight[rightIndex], widthWithPadding, positionIndex);
-            }
+            if (FillPool()) rebind = true; //Index to slot mapping changes when the pool grows.
         }
 
-        //Set all generated smart items.
-        for (int i = 0; i < _smartListItems.Count; i++)
+        int maxFirstIndex = Mathf.Max(0, _count - _pool.Count);
+        int firstIndex = Mathf.Clamp(Mathf.FloorToInt(-_content.anchoredPosition.x / _step), 0, maxFirstIndex);
+
+        if (firstIndex == _firstIndex && !rebind) return;
+        _firstIndex = firstIndex;
+
+        for (int i = 0; i < _pool.Count; i++)
         {
-            int smartIndex = i % _smartListItems.Count;
-            int positionIndex = (i + _uniqueGameObjectsAtLeft.Count) % _smartListItems.Count;
+            int index = firstIndex + i;
+            int poolIndex = index % _pool.Count;
+            SmartListItem item = _pool[poolIndex];
 
-            SetAnchoredPosition(_smartListItems[smartIndex].SelfRectTransform, _smartListItemLocalWidthWithPadding, positionIndex);
-
-            if (i < _smartListLeftIndex || i > _smartListRightIndex || smartPositionIndexesUsed >= _smartListItems.Count || i >= data.Count)
+            if (index >= _count)
             {
-                _smartListItems[smartIndex].SetVisibility(false);
+                if (_poolBoundIndexes[poolIndex] != -1) item.ClearData();
+                item.SetVisibility(false);
+                _poolBoundIndexes[poolIndex] = -1;
                 continue;
             }
-            else
-            {
-                _smartListItems[smartIndex].SetVisibility(true);
-            }
-            _smartListItems[smartIndex].SetData<T>(data[i]);
-            smartPositionIndexesUsed++;
+
+            item.SelfRectTransform.anchoredPosition = new Vector2(index * _step, 0f);
+            item.SetVisibility(true);
+
+            if (!rebind && _poolBoundIndexes[poolIndex] == index) continue;
+            _bindItem(item, index);
+            _poolBoundIndexes[poolIndex] = index;
         }
     }
-
-    public void Clear() { foreach (var smartListItem in _smartListItems) smartListItem.ClearData(); }
 
     private void CreatePool()
     {
+        //All slots use the same size: the prefab's aspect ratio scaled to the content height.
         RectTransform prefabRect = _contentPrefab.GetComponent<RectTransform>();
-        float _size_ratio = prefabRect.sizeDelta.x / prefabRect.sizeDelta.y;
+        float sizeRatio = prefabRect.sizeDelta.x / prefabRect.sizeDelta.y;
+        float height = _content.rect.height;
 
-        //Create first SmartListItem to calculate how many of it can fit inside based on the width + padding.
-        if (_smartListItems.Count == 0)
+        _slotSize = new Vector2(height * sizeRatio, height);
+        _step = _slotSize.x + _horizontalPadding;
+
+        FillPool();
+    }
+
+    /// <returns>True if new slots were created.</returns>
+    private bool FillPool()
+    {
+        _poolViewportWidth = GetViewportWidth();
+        if (_step <= 0f) return false;
+
+        int amount = Mathf.CeilToInt(_poolViewportWidth / _step) + Mathf.Max(1, _extraSmartListItems);
+        if (amount <= _pool.Count) return false;
+
+        for (int i = _pool.Count; i < amount; i++)
         {
-            SmartListItem firstSmartListItem = Instantiate(_contentPrefab, _content).GetComponent<SmartListItem>();
+            SmartListItem item = Instantiate(_contentPrefab, _content).GetComponent<SmartListItem>();
+            if (!item.SelfRectTransform) item.SetSelfRectTransform();
 
-            if (!firstSmartListItem.SelfRectTransform) firstSmartListItem.SetSelfRectTransform();
+            item.SelfRectTransform.sizeDelta = _slotSize;
+            item.ClearData();
+            item.SetVisibility(false);
 
-            _size_ratio = firstSmartListItem.SelfRectTransform.sizeDelta.x / firstSmartListItem.SelfRectTransform.sizeDelta.y; // ----------
-
-            // Set the size of the first smart list item
-            firstSmartListItem.SelfRectTransform.sizeDelta = new Vector2( // ------------------------------
-                _content.rect.height * _size_ratio, _content.rect.height); // ------------------------------
-
-            _smartListItemLocalWidthWithPadding = firstSmartListItem.SelfRectTransform.rect.width + _horizontalPadding;
-
-            firstSmartListItem.ClearData();
-            _smartListItems.Add(firstSmartListItem);
+            _pool.Add(item);
+            _poolBoundIndexes.Add(-1);
         }
-        else
-        {
-            // Set the padding of all smart list items based on the first one
-            _smartListItemLocalWidthWithPadding = _smartListItems[0].SelfRectTransform.rect.width + _horizontalPadding;
-        }
-
-        // One buffer slot is needed while slots at both viewport edges are partially visible.
-        Vector3 viewportLeft = _content.InverseTransformPoint(_viewport.TransformPoint(new Vector3(_viewport.rect.xMin, 0f, 0f)));
-        Vector3 viewportRight = _content.InverseTransformPoint(_viewport.TransformPoint(new Vector3(_viewport.rect.xMax, 0f, 0f)));
-        float visibleWidth = Mathf.Abs(viewportRight.x - viewportLeft.x);
-        _amountToFillContentList = Mathf.CeilToInt(visibleWidth / _smartListItemLocalWidthWithPadding) + Mathf.Max(1, _extraSmartListItems);
-
-        if (_amountToFillContentList <= _smartListItems.Count) return;
-
-        _amountToFillContentList -= _smartListItems.Count;
-
-        //Create the rest of the SmartListItem's.
-        for (int i = 0; i < _amountToFillContentList; i++)
-        {
-            SmartListItem smartListItem = Instantiate(_contentPrefab, _content).GetComponent<SmartListItem>();
-
-            if (!smartListItem.SelfRectTransform) smartListItem.SetSelfRectTransform();
-
-            // Set the size of all the other slots
-            smartListItem.SelfRectTransform.sizeDelta = new Vector2( // ------------------------------
-                _content.rect.height * _size_ratio, _content.rect.height); // ------------------------------
-
-            smartListItem.ClearData(); // does nothing?? what is it even clearing in a fresh prefab? (OK)
-            _smartListItems.Add(smartListItem);
-        }
-    }
-    #endregion
-
-    #region Movement
-    private IEnumerator HandleVelocity()
-    {
-        float totalDistance = 0f;
-        float timer = 0f;
-
-        while (scroll_enabled && timer < _slowdownTime)
-        {
-            totalDistance += Mathf.Lerp(_velocity, 0f, timer / _slowdownTime);
-
-            ScrollHandling(totalDistance);
-            yield return null;
-            timer += Time.deltaTime;
-        }
-
-        _velocity = 0f;
-        _velocityCoroutine = null;
-    }
-
-    private void ScrollHandling(float distance) //TODO: Add elasticity.
-    {
-        if (_contentListLenght <= 0) return;
-        float contentWidth = _contentListLenght * _smartListItemLocalWidthWithPadding - _horizontalPadding;
-        foreach (RectTransform item in _uniqueGameObjectsAtLeft) contentWidth += item.rect.width + _horizontalPadding;
-        foreach (RectTransform item in _uniqueGameObjectsAtRight) contentWidth += item.rect.width + _horizontalPadding;
-        if (contentWidth <= _viewport.rect.width) return;
-
-        UpdateViewportBorders();
-
-        bool movementCheck = ((_outOfBoundDirection == HorizontalDirectionType.Left && _velocity > 0) ||
-                              (_outOfBoundDirection == HorizontalDirectionType.Right && _velocity < 0));
-
-        if (!movementCheck) _content.position = new Vector2(_contentStartWorldPosition.x + distance, _content.position.y);
-
-        //Out of bounds checks.
-        //Unique left objects
-        if (_smartListLeftIndex <= 0)
-            for (int i = _uniqueGameObjectsAtLeft.Count - 1; i >= 0; i--)
-            {
-                if (i < (_uniqueGameObjectsAtLeft.Count + _smartListLeftIndex))
-                {
-                    _uniqueGameObjectsAtLeft[i].gameObject.SetActive(false);
-                    continue;
-                }
-
-                CheckUniqueItemVisibility(_uniqueGameObjectsAtLeft, i, HorizontalDirectionType.Left);
-            }
-
-        RecycleSmartItems();
-
-        // Limit only after recycling, so the edge indexes already include the item that just came in.
-        float anchoredDistance = _content.anchoredPosition.x - _contentStartAnchoredPosition.x;
-
-        if (!movementCheck) _outOfBoundDirection = ScrollLimiter(distance, anchoredDistance);
-    }
-
-    private void RecycleSmartItems()
-    {
-        if (_velocity == 0f || _smartListItemLocalWidthWithPadding <= 0f) return;
-
-        // Pool order is the data-index modulo mapping used by UpdateContent: never sort it.
-        // Process the outgoing edge first, so the slot moved is also the slot receiving data.
-        bool recycled;
-        do
-        {
-            _recyclingOrder.Clear();
-            _recyclingOrder.AddRange(_smartListItems);
-            _recyclingOrder.Sort((a, b) => _velocity < 0f
-                ? a.SelfRectTransform.anchoredPosition.x.CompareTo(b.SelfRectTransform.anchoredPosition.x)
-                : b.SelfRectTransform.anchoredPosition.x.CompareTo(a.SelfRectTransform.anchoredPosition.x));
-
-            recycled = false;
-            foreach (SmartListItem item in _recyclingOrder)
-                recycled |= CheckSmartItemVisibility(item);
-            // A single frame can move farther than one whole pool width.
-        } while (recycled);
-    }
-
-    /// <summary>
-    /// Sets content to the edge position that was crossed over.
-    /// </summary>
-    /// <returns>HorizontalDirectionType in which there was no more content to be displayed.</returns>
-    private HorizontalDirectionType ScrollLimiter(float worldDistance, float anchoredDistance)
-    {
-        if (IsFirstItemInList() && _velocity > 0) //Over left check.
-        {
-            RectTransform leftItem = _uniqueGameObjectsAtLeft.Count > 0
-                ? _uniqueGameObjectsAtLeft[0] : _smartListItems[0].SelfRectTransform;
-            GetViewportEdges(leftItem, out float leftItemLeftEdge, out _);
-
-            if (_viewportLeftAnchoredBorder > leftItemLeftEdge) return HorizontalDirectionType.Neutral;
-
-            _content.position += _viewport.TransformVector(new Vector3(_viewportLeftAnchoredBorder - leftItemLeftEdge, 0f, 0f));
-
-            return HorizontalDirectionType.Left;
-        }
-
-        if (IsLastItemInList() && _velocity < 0) //Over right check.
-        {
-            GetViewportEdges(GetRightItemRectTransform(), out _, out float rightItemRightEdge);
-
-            if (_viewportRightAnchoredBorder < rightItemRightEdge) return HorizontalDirectionType.Neutral;
-
-            _content.position += _viewport.TransformVector(new Vector3(_viewportRightAnchoredBorder - rightItemRightEdge, 0f, 0f));
-
-            return HorizontalDirectionType.Right;
-        }
-
-        return HorizontalDirectionType.Neutral;
-    }
-
-    private RectTransform GetRightItemRectTransform()
-    {
-        if (_uniqueGameObjectsAtRight.Count != 0) return _uniqueGameObjectsAtRight[^1];
-
-        if (_smartListItems.Count != 0 && _contentListLenght > 0)
-        {
-            int smartIndex = (_contentListLenght - 1) % _smartListItems.Count;
-            return _smartListItems[smartIndex].SelfRectTransform;
-        }
-
-        if (_uniqueGameObjectsAtLeft.Count != 0) return _uniqueGameObjectsAtLeft[^1];
-
-        return null;
-    }
-
-    private float GetLeftItemEdgeLocalPositionX()
-    {
-        if (_uniqueGameObjectsAtLeft.Count != 0)
-            return _uniqueGameObjectsAtLeft[0].localPosition.x - HalfWidth(_uniqueGameObjectsAtLeft[0]) * _smartItemLeftStrengthMultiplier;
-
-        if (_smartListItems.Count != 0)
-            return _smartListItems[0].SelfRectTransform.localPosition.x - HalfWidth(_smartListItems[0].SelfRectTransform) * _smartItemLeftStrengthMultiplier;
-
-        if (_uniqueGameObjectsAtRight.Count != 0)
-            return _uniqueGameObjectsAtRight[0].localPosition.x - HalfWidth(_uniqueGameObjectsAtRight[0]) * _smartItemLeftStrengthMultiplier;
-
-        return 0f;
-    }
-
-    private float GetLeftItemWorldPositionX()
-    {
-        if (_uniqueGameObjectsAtLeft.Count != 0) return _uniqueGameObjectsAtLeft[0].position.x;
-
-        if (_smartListItems.Count != 0) return _smartListItems[0].SelfRectTransform.position.x;
-
-        if (_uniqueGameObjectsAtRight.Count != 0) return _uniqueGameObjectsAtRight[0].position.x;
-
-        return 0f;
-    }
-
-    private float GetRightItemEdgeLocalPositionX()
-    {
-        RectTransform rectTransform = GetRightItemRectTransform();
-        if (rectTransform) return rectTransform.localPosition.x + rectTransform.rect.width;
-
-        return 0f;
-    }
-
-    private float GetRightItemWorldPositionX()
-    {
-        RectTransform rectTransform = GetRightItemRectTransform();
-        if (rectTransform) return rectTransform.position.x;
-
-        return 0f;
-    }
-
-    private void CheckUniqueItemVisibility(List<RectTransform> rectTransforms, int index, HorizontalDirectionType listDirection)
-    {
-        HorizontalDirectionType outOfBoundsDirection = OutOfBoundsHorizontalCheck(rectTransforms[index]);
-
-        if (outOfBoundsDirection == HorizontalDirectionType.Neutral)
-        {
-            if (!rectTransforms[index].gameObject.activeSelf)
-            {
-                float adjacentItem = GetAdjacentItemHorizontalLocation(listDirection);
-
-                rectTransforms[index].anchoredPosition = new Vector2(
-                    adjacentItem + (_smartListItemLocalWidthWithPadding * _smartListItems.Count) * (int)outOfBoundsDirection,
-                    rectTransforms[index].anchoredPosition.y);
-            }
-
-            rectTransforms[index].gameObject.SetActive(true);
-            return;
-        }
-
-        if (rectTransforms[index].gameObject.activeSelf) UpdateEdgeIndexes(outOfBoundsDirection);
-
-        rectTransforms[index].gameObject.SetActive(false);
-    }
-
-    private float GetAdjacentItemHorizontalLocation(HorizontalDirectionType selfDirection)
-    {
-        if (selfDirection == HorizontalDirectionType.Left)
-        {
-            if (_smartListItems.Count != 0 && _smartListLeftIndex == 0)
-                return _smartListItems[0].SelfRectTransform.anchoredPosition.x;
-
-            if (_smartListLeftIndex >= 0 && _uniqueGameObjectsAtRight.Count != 0)
-                return _uniqueGameObjectsAtRight[0].anchoredPosition.x;
-
-            return _uniqueGameObjectsAtLeft[_smartListLeftIndex + _uniqueGameObjectsAtLeft.Count].anchoredPosition.x;
-        }
-
-        //Right
-        if (_smartListItems.Count != 0 && _smartListRightIndex == _contentListLenght - 1)
-            return _smartListItems[^1].SelfRectTransform.anchoredPosition.x;
-
-        if (_smartListRightIndex == _contentListLenght - 1 && _uniqueGameObjectsAtLeft.Count != 0)
-            return _uniqueGameObjectsAtLeft[^1].anchoredPosition.x;
-
-        return _uniqueGameObjectsAtRight[_smartListRightIndex].anchoredPosition.x;
-    }
-
-    private float GetCurrentEdgeItemWidth(HorizontalDirectionType scrollDirection)
-    {
-        if (scrollDirection == HorizontalDirectionType.Left)
-        {
-            if (_smartListItems.Count != 0 && _smartListRightIndex < _smartListItems.Count)
-                return _smartListItems[_smartListRightIndex].SelfRectTransform.rect.width;
-
-            if (_uniqueGameObjectsAtRight.Count != 0 && _smartListRightIndex >= _contentListLenght)
-                return _uniqueGameObjectsAtRight[_smartListRightIndex - _contentListLenght].rect.width;
-
-            return 0f;
-        }
-
-        if (_smartListItems.Count != 0 && _smartListLeftIndex >= 0 && _smartListLeftIndex < _smartListItems.Count)
-            return _smartListItems[_smartListLeftIndex].SelfRectTransform.rect.width;
-
-        if (_uniqueGameObjectsAtLeft.Count != 0 && _smartListLeftIndex < 0)
-            return _uniqueGameObjectsAtLeft[_smartListLeftIndex + _uniqueGameObjectsAtLeft.Count].rect.width;
-
-        return 0f;
-    }
-
-    private bool CheckSmartItemVisibility(SmartListItem smartListItem)
-    {
-        RectTransform rectTransform = smartListItem.SelfRectTransform;
-
-        //Out of bounds calculations.
-        GetViewportEdges(rectTransform, out float smartItemBorderLeft, out float smartItemBorderRight);
-
-        bool overLeft = _viewportLeftAnchoredBorder > smartItemBorderRight && _velocity < 0f;
-        bool overRight = _viewportRightAnchoredBorder < smartItemBorderLeft && _velocity > 0f;
-        bool outOfBounds = (overLeft || overRight);
-        // Don't recycle past the ends: the first/last item must stay in the list for ScrollLimiter.
-        bool outOfRange = ((overLeft && IsLastItemInList()) ||
-                           (overRight && IsFirstItemInList()));
-
-        if (!outOfBounds || outOfRange) return false;
-
-        //Move item to opposite end.
-        HorizontalDirectionType outOfBoundsDirection =
-            (overLeft ? HorizontalDirectionType.Right : HorizontalDirectionType.Left);
-
-        rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x +
-            (_smartListItemLocalWidthWithPadding * _smartListItems.Count) * (int)outOfBoundsDirection,
-            rectTransform.anchoredPosition.y);
-
-        //Update SmartListItem & data.
-        UpdateEdgeIndexes(outOfBoundsDirection);
-
-        int targetIndex = overLeft ? _smartListRightIndex : _smartListLeftIndex;
-
-        //Set or clear smart list item.
-        if (targetIndex >= 0 && targetIndex < _contentListLenght)
-            OnNewDataRequested?.Invoke(targetIndex);
-        else
-            smartListItem.ClearData();
         return true;
     }
 
-    private void UpdateEdgeIndexes(HorizontalDirectionType outOfBoundsDirection)
+    // Viewport width in the content's local units.
+    private float GetViewportWidth()
     {
-        _smartListLeftIndex += (int)outOfBoundsDirection;
-        _smartListRightIndex += (int)outOfBoundsDirection;
-    }
-    #endregion
-
-    #region Helper Functions
-
-    private static float HalfWidth(RectTransform rectTransform) { return rectTransform.rect.width * 0.5f; }
-
-    // The edge indexes cover the whole list, including the unique objects at both ends.
-    private bool IsFirstItemInList() { return _smartListLeftIndex <= -_uniqueGameObjectsAtLeft.Count; }
-
-    private bool IsLastItemInList() { return _smartListRightIndex >= _contentListLenght - 1 + _uniqueGameObjectsAtRight.Count; }
-
-    // Read every time, the viewport can be resized after Setup (layout rebuilds, screen size changes).
-    private void UpdateViewportBorders()
-    {
-        _viewportLeftAnchoredBorder = _viewport.rect.xMin;
-        _viewportRightAnchoredBorder = _viewport.rect.xMax;
-
-        _viewportLeftWorldBorder = _viewport.TransformPoint(new Vector3(_viewportLeftAnchoredBorder, 0f, 0f)).x;
-        _viewportRightWorldBorder = _viewport.TransformPoint(new Vector3(_viewportRightAnchoredBorder, 0f, 0f)).x;
-    }
-
-    // Compare actual rectangle edges in viewport space, including anchors, pivots and scale.
-    private void GetViewportEdges(RectTransform item, out float left, out float right)
-    {
-        item.GetWorldCorners(_itemWorldCorners);
-        left = float.PositiveInfinity;
-        right = float.NegativeInfinity;
-        foreach (Vector3 corner in _itemWorldCorners)
-        {
-            float x = _viewport.InverseTransformPoint(corner).x;
-            left = Mathf.Min(left, x);
-            right = Mathf.Max(right, x);
-        }
-    }
-
-    private static void SetAnchoredPosition(RectTransform rectTransform, float sizeWithPadding, int number = 1)
-    {
-        rectTransform.anchoredPosition = new Vector2(sizeWithPadding * number, rectTransform.anchoredPosition.y);
-    }
-
-    private HorizontalDirectionType OutOfBoundsHorizontalCheck(RectTransform rectTransform)
-    {
-        GetViewportEdges(rectTransform, out float smartItemBorderLeft, out float smartItemBorderRight);
-
-        bool overLeft = _viewportLeftAnchoredBorder > smartItemBorderRight && _velocity < 0;
-        bool overRight = _viewportRightAnchoredBorder < smartItemBorderLeft && _velocity > 0;
-        bool outOfBounds = (overLeft || overRight);
-
-        if (!outOfBounds) return HorizontalDirectionType.Neutral;
-
-        return (overLeft ? HorizontalDirectionType.Right : HorizontalDirectionType.Left);
+        Vector3 viewportWidth = _viewport.TransformVector(new Vector3(_viewport.rect.width, 0f, 0f));
+        return Mathf.Abs(_content.InverseTransformVector(viewportWidth).x);
     }
     #endregion
 }

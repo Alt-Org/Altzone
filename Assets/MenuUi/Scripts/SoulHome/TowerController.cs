@@ -81,6 +81,9 @@ namespace MenuUI.Scripts.SoulHome
                 _selectedFurniture?.GetComponent<FurnitureHandling>().SetOutline(false);
                 _selectedFurniture = value;
                 _furnitureHoverButtons.SetActive(false); // ----------------------------------------------
+                // The tray preview belongs to the selection. If it is left behind, the next press on the screen
+                // spawns a new furniture from it (e.g. after the hover cancel button or discarding changes).
+                if (_selectedFurniture == null) _mainScreen.DeselectTrayFurniture();
                 //if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
                 if(_selectedFurniture != null) _selectedFurniture.GetComponent<FurnitureHandling>().SetOutline(true);
                 _soulHomeController.SetFurniture(_selectedFurniture?.GetComponent<FurnitureHandling>().Furniture);

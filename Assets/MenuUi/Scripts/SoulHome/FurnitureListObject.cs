@@ -51,6 +51,12 @@ namespace MenuUI.Scripts.SoulHome
             }
             return count;
         }
+
+        /// <summary>How many of these are left in the tray (not placed in a room).</summary>
+        public int GetAvailableCount()
+        {
+            return _count - GetInRoomCount();
+        }
     }
 
     public enum SortType

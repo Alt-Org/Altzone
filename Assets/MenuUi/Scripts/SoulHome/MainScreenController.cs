@@ -350,7 +350,7 @@ namespace MenuUI.Scripts.SoulHome
                                 {
                                     //Destroy(_selectedFurnitureTray); //This is temporaty setup until a create the handling to up the furniture into the tray.
                                     //Debug.Log("Check1");
-                                    if(!CheckAndRevealTrayItem(_selectedFurnitureTray)) AddTrayItem(_selectedFurnitureTray.GetComponent<TrayFurniture>().Furniture);
+                                    AddTrayItem(_selectedFurnitureTray.GetComponent<TrayFurniture>().Furniture);
                                     Destroy(_selectedFurnitureTray);
                                 }
                                 _soulHomeTower.RemoveFurniture();
@@ -601,6 +601,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void SetFurniture(GameObject trayFurniture)
         {
+            DeselectTrayFurniture(); // Don't leave the previous preview behind when it's replaced.
             GameObject furnitureObject = Instantiate(trayFurniture.GetComponent<FurnitureHandling>().TrayFurnitureObject, GetTray().transform);
             furnitureObject.GetComponent<TrayFurniture>().Furniture = trayFurniture.GetComponent<FurnitureHandling>().Furniture;
             _selectedFurnitureTray = furnitureObject;
@@ -634,31 +635,15 @@ namespace MenuUI.Scripts.SoulHome
             _tempSelectedFurnitureTray = null;
         }
 
-        public void HideTrayItem(GameObject trayFurniture)
-        {
-            GetTrayHandler().HideFurnitureSlot(trayFurniture);
-        }
+        // Drops the furniture preview that was taken from the tray.
         public void RevealTrayItem()
         {
-            GetTrayHandler().RevealFurnitureSlot();
             if (_selectedFurnitureTray != null && !_selectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem"))
             {
                 Destroy(_selectedFurnitureTray);
                 _tempSelectedFurnitureTray = null;
             }
             _selectedFurnitureTray = null;
-        }
-        public bool CheckAndRevealTrayItem(GameObject trayFurniture)
-        {
-            bool value = GetTrayHandler().CheckAndRevealHiddenSlot(trayFurniture);
-            if (value)
-            {
-                Destroy(_selectedFurnitureTray);
-                _selectedFurnitureTray = null;
-                _tempSelectedFurnitureTray = null;
-                return true;
-            }
-            return false;
         }
 
         private IEnumerator SetColliderSize()
