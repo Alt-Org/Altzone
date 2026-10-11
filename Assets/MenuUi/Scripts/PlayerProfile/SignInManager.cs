@@ -76,22 +76,22 @@ namespace MenuUi.Scripts.Login
 
         private const string REGISTERING_SUCCESS_FI = "Rekisteröinti onnistui!";
         private const string REGISTERING_SUCCESS_EN = "Registration successful!";
-        private const string ERROR_DEFAULT =_FI "Jotain meni pieleen!";
-        private const string ERROR_DEFAULT = _EN "something went wrong.";
-        private const string ERROR_EMPTY_FIELD =_FI "Kentät eivät voi olla tyhjiä!";
-        private const string ERROR_EMPTY_FIELD = _EN "The fields cannot be empty!";
-        private const string ERROR_PASSWORD_MISMATCH_FI = "Salasananat eivät täsmää!";
+        private const string ERROR_DEFAULT_FI = "Jotain meni pieleen!";
+        private const string ERROR_DEFAULT_EN = "Something went wrong.";
+        private const string ERROR_EMPTY_FIELD_FI = "Kentät eivät voi olla tyhjiä!";
+        private const string ERROR_EMPTY_FIELD_EN = "The fields cannot be empty!";
+        private const string ERROR_PASSWORD_MISMATCH_FI = "Salasanat eivät täsmää!";
         private const string ERROR_PASSWORD_MISMATCH_EN = "Passwords do not match!";
         private const string ERROR_USERNAME_TOO_SHORT_FI = "Käyttäjänimen täytyy olla vähintään 3 merkkiä pitkä!";
         private const string ERROR_USERNAME_TOO_SHORT_EN = "The username must be at least 3 characters long!";
         private const string ERROR_PASSWORD_TOO_SHORT_FI = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
         private const string ERROR_PASSWORD_TOO_SHORT_EN = "The password must be at least 5 characters long!";
         private const string ERROR_PRIVACY_CONCENT_NOT_GRANTED_FI = "Et ole hyväksynyt tietosuojaselostetta.";
-        private const string ERROR_PRIVACY_CONCENT_NOT_GRANTED_EN= "You have not accepted the privacy policy.";
+        private const string ERROR_PRIVACY_CONCENT_NOT_GRANTED_EN = "You have not accepted the privacy policy.";
         private const string ERROR_AGE_CONSENT_NOT_GRANTED_FI = "Et ole vahvistanut olevasi yli 13-vuotias tai että sinulla on huoltajan lupa pelata peliä";
         private const string ERROR_AGE_CONSENT_NOT_GRANTED_EN = "You have not confirmed that you are over 13 years of age or that you have a guardian's permission to play the game";
-        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED_FI = "Et ole antanut lupaa tietojen käyttää pelin hallinnoinnnissa.";
-        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED_EN = "You have not granted permission to use the data for game management."
+        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED_FI = "Et ole antanut lupaa tietojen käyttää pelin hallinnoinnissa.";
+        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED_EN = "You have not granted permission to use the data for game management.";
         private const string ERROR400_FI = "Validointivirhe!";
         private const string ERROR400_EN = "Validation error!";
         private const string ERROR401_FI = "Virheellinen käyttäjänimi tai salasana!";
@@ -101,13 +101,133 @@ namespace MenuUi.Scripts.Login
         private const string ERROR500_FI = "Serverivirhe!";
         private const string ERROR500_EN = "Server error!";
 
-        public static string REGISTERING_SUCCESS
+
+        private static string REGISTERING_SUCCESS
         {
             get
             {
                 if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return REGISTERING_SUCCESS_FI;
                 else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return REGISTERING_SUCCESS_EN;
                 else return REGISTERING_SUCCESS_FI;
+            }
+        }
+        private static string ERROR_DEFAULT
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_DEFAULT_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_DEFAULT_EN;
+                else return ERROR_DEFAULT_FI;
+            }
+        }
+
+        private static string ERROR_EMPTY_FIELD
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_EMPTY_FIELD_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_EMPTY_FIELD_EN;
+                else return ERROR_EMPTY_FIELD_FI;
+            }
+        }
+
+        private static string ERROR_PASSWORD_MISMATCH
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_PASSWORD_MISMATCH_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_PASSWORD_MISMATCH_EN;
+                else return ERROR_PASSWORD_MISMATCH_FI;
+            }
+        }
+
+        private static string ERROR_USERNAME_TOO_SHORT
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_USERNAME_TOO_SHORT_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_USERNAME_TOO_SHORT_EN;
+                else return ERROR_USERNAME_TOO_SHORT_FI;
+            }
+        }
+
+        private static string ERROR_PASSWORD_TOO_SHORT
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_PASSWORD_TOO_SHORT_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_PASSWORD_TOO_SHORT_EN;
+                else return ERROR_PASSWORD_TOO_SHORT_FI;
+            }
+        }
+
+        private static string ERROR_PRIVACY_CONCENT_NOT_GRANTED
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_PRIVACY_CONCENT_NOT_GRANTED_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_PRIVACY_CONCENT_NOT_GRANTED_EN;
+                else return ERROR_PRIVACY_CONCENT_NOT_GRANTED_FI;
+            }
+        }
+
+        private static string ERROR_AGE_CONSENT_NOT_GRANTED
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_AGE_CONSENT_NOT_GRANTED_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_AGE_CONSENT_NOT_GRANTED_EN;
+                else return ERROR_AGE_CONSENT_NOT_GRANTED_FI;
+            }
+        }
+
+        private static string ERROR_INFORMATION_CONCENT_NOT_GRANTED
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_INFORMATION_CONCENT_NOT_GRANTED_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_INFORMATION_CONCENT_NOT_GRANTED_EN;
+                else return ERROR_INFORMATION_CONCENT_NOT_GRANTED_FI;
+            }
+        }
+
+        private static string ERROR400
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR400_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR400_EN;
+                else return ERROR400_FI;
+            }
+        }
+
+        private static string ERROR401
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR401_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR401_EN;
+                else return ERROR401_FI;
+            }
+        }
+
+        private static string ERROR409
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR409_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR409_EN;
+                else return ERROR409_FI;
+            }
+        }
+
+        private static string ERROR500
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR500_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR500_EN;
+                else return ERROR500_FI;
             }
         }
 
