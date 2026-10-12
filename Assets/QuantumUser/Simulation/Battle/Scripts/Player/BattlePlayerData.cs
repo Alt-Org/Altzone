@@ -96,6 +96,24 @@ namespace Quantum
             BattleDebugLogger.DevAssertFormat(source, IsValidCharacterNumber(characterNumber), "Invalid characterNumber = {0}", characterNumber);
         }
 
+        public static bool IsValidShieldNumber(BattlePlayerHandle playerHandle, int shieldNumber)
+        {
+            return shieldNumber >= 0 && shieldNumber < playerHandle.LoadedCharacterData->ShieldCount;
+        }
+
+        [Conditional("UNITY_EDITOR")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevAssertIsValidShieldNumber(string source, BattlePlayerHandle playerHandle, int shieldNumber)
+        {
+            BattleDebugLogger.DevAssertFormat(
+                source,
+                IsValidShieldNumber(playerHandle, shieldNumber),
+                "Invalid shieldNumber {0} for character number {1}",
+                shieldNumber,
+                playerHandle.LoadedCharacterData->Number
+            );
+        }
+
         #endregion Public Static Methods
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
