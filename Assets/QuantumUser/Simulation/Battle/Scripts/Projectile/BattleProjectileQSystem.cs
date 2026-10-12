@@ -81,7 +81,7 @@ namespace Battle.QSimulation.Projectile
         public static BattleProjectileHandle GetProjectileHandle(Frame f)
         {
             BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
-            return GetProjectileHandle(f, projectileSystemData);
+            return GetProjectileHandle(f, projectileSystemData, markInUse: false);
         }
 
         #endregion Public - Helper Methods
@@ -141,7 +141,7 @@ namespace Battle.QSimulation.Projectile
             BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
 
             // get references
-            BattleProjectileHandle projectile = GetProjectileHandle(f, projectileSystemData, updateViewPlayState: true);
+            BattleProjectileHandle projectile = GetProjectileHandle(f, projectileSystemData, markInUse: true);
 
             // retrieve the projectiles spec
             BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
@@ -165,7 +165,7 @@ namespace Battle.QSimulation.Projectile
 
             projectile.SetHeld(false);
 
-            BattleEntityManager.TeleportCompound(f, projectile.ERef, new FPVector2(0, 0), FP._0);
+            BattleEntityManager.TeleportCompound(f, projectile.EntityHandle, new FPVector2(0, 0), FP._0);
 
             f.Events.BattleProjectileChangeSpeed(projectile.Data->Speed);
 
@@ -383,7 +383,7 @@ namespace Battle.QSimulation.Projectile
         {
             BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
 
-            BattleProjectileHandle projectile = GetProjectileHandle(f, projectileSystemData);
+            BattleProjectileHandle projectile = GetProjectileHandle(f, projectileSystemData, markInUse: false);
 
             projectile.SetHeld(true);
             BattleEntityManager.Return(f, projectileSystemData->ProjectileEntityID);
@@ -429,9 +429,13 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <returns>The EntityRef of the projectile.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static BattleProjectileHandle GetProjectileHandle(Frame f, BattleProjectileSystemDataQSingleton* projectileSystemData, bool updateViewPlayState = false)
+        private static BattleProjectileHandle GetProjectileHandle(Frame f, BattleProjectileSystemDataQSingleton* projectileSystemData, bool markInUse)
         {
-            return BattleProjectileHandle.Create(f, BattleEntityManager.Get(f, projectileSystemData->ProjectileEntityID, updateViewPlayState));
+            BattleEntityID entityId = projectileSystemData->ProjectileEntityID;
+
+            if (markInUse) BattleEntityManager.Use(f, entityId);
+
+            return BattleProjectileHandle.Create(f, BattleEntityManager.Get(f, entityId));
         }
 
         private static EntityRef CreateProjectileTriggerEntity(Frame f, BattleProjectileHandle projectileHandle, PhysicsCollider2D* projectileCollider)

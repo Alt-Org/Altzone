@@ -213,7 +213,11 @@ namespace Battle.QSimulation.Player
             playerHandle.LoadedCharacterData->ViewMovementVector = position - playerHandle.LoadedCharacterTransform.Position;
             BattleEntityManager.MoveCompound(f, playerHandle.LoadedCharacterEntityHandle, position, playerHandle.LoadedCharacterData->MovementRotationBaseRad);
             if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == EntityRef.None) return;
-            BattleEntityManager.MoveCompound(f, playerHandle.LoadedCharacterData->AttachedShieldEntityRef, position, playerHandle.LoadedCharacterData->MovementRotationBaseRad + playerHandle.LoadedCharacterData->MovementRotationOffsetRad);
+            BattleEntityManager.MoveCompound(f,
+                BattleManageEntityHandle.Create(f, playerHandle.LoadedCharacterData->AttachedShieldEntityRef),
+                position,
+                playerHandle.LoadedCharacterData->MovementRotationBaseRad + playerHandle.LoadedCharacterData->MovementRotationOffsetRad
+            );
         }
 
         /// <summary>

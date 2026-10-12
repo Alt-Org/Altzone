@@ -227,11 +227,15 @@ namespace Battle.QSimulation.Player
         /// <param name="characterNumber">The character number of the desired character.</param>
         /// <param name="shieldNumber">The number of the shield that's being attached.</param>
         /// <param name="teleport">Whether to teleport the attached shield or not.</param>
-        public static void AttachShield(Frame f, BattlePlayerHandle playerHandle, int characterNumber, int shieldNumber, bool teleport = true)
+        public static void AttachShield(Frame f, BattlePlayerHandle playerHandle, int shieldNumber)
         {
-            if (!IsValidShieldNumber(f, playerHandle.PlayerData.Slot, characterNumber, shieldNumber)) return;
+            playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerShieldManager), "");
 
-            BattlePlayerShieldHandle shieldNewHandle = GetShield(f, playerHandle.PlayerData, characterNumber, shieldNumber, updateViewPlayState: teleport);
+            BattlePlayerData.DevAssertIsValidShieldNumber(nameof(BattlePlayerShieldManager), playerHandle, shieldNumber);
+
+            BattleEntityID shieldGroupID = GetShieldGroupID(f, playerHandle);
+
+            BattlePlayerShieldHandle shieldNewHandle = BattleEntityManager.GetTest<BattlePlayerShieldHandle>(f, shieldGroupID, shieldNumber);
 
             if (playerHandle.LoadedCharacterHasShieldAttached)
             {
@@ -246,8 +250,9 @@ namespace Battle.QSimulation.Player
 
             if (playerHandle.LoadedCharacterEntityHandle.RegisteredState == BattleEntityPlayState.InPlay)
             {
-                FPVector2 playerPosition = playerHandle.LoadedCharacterTransform->Position;
-                BattleEntityManager.TeleportCompound(f, shieldNewHandle.ShieldEntityRef, playerPosition, playerHandle.LoadedCharacterData->MovementRotationBaseRad);
+                BattleEntityManager.Use(f, shieldGroupID, shieldNumber);
+                FPVector2 playerPosition = playerHandle.LoadedCharacterTransform.Position;
+                BattleEntityManager.TeleportCompound(f, shieldNewHandle.ShieldEntityHandle, playerPosition, playerHandle.LoadedCharacterData->MovementRotationBaseRad);
             }
             f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityHandle, playerHandle.PlayerData.Team, shieldNewHandle.ShieldData->IsAttached, shieldNumber);
         }
@@ -269,13 +274,15 @@ namespace Battle.QSimulation.Player
         /// <param name="updateViewPlayState">Whether to update the view play state or not.</param>
         ///
         /// <returns>The BattlePlayerShieldEntityRef of the detached shield.</returns>
-        public static BattlePlayerShieldEntityRef GetDetachedShieldEntityRef(Frame f, BattlePlayerHandle playerHandle, int characterNumber, int shieldNumber, bool updateViewPlayState = false)
+        public static BattlePlayerShieldHandle GetDetachedShieldEntityRef(Frame f, BattlePlayerHandle playerHandle, int shieldNumber)
         {
-            if (!IsValidShieldNumber(f, playerHandle.PlayerData.Slot, characterNumber, shieldNumber)) return BattlePlayerShieldEntityRef.None;
+            playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerShieldManager), "");
 
-            BattlePlayerShieldHandle shieldHandle = GetShield(f, playerHandle.PlayerData, characterNumber, shieldNumber, updateViewPlayState);
+            BattlePlayerData.DevAssertIsValidShieldNumber(nameof(BattlePlayerShieldManager), playerHandle, shieldNumber);
 
-            if (!shieldHandle.ShieldData->IsAttached) return (BattlePlayerShieldEntityRef)shieldHandle.ShieldEntityRef;
+            BattlePlayerShieldHandle shieldHandle = GetShield(f, playerHandle, shieldNumber);
+
+            if (!shieldHandle.ShieldData->IsAttached) return shieldHandle;
 
             s_debugLogger.LogFormat(f, DebugMessageShieldDetachFormat, playerHandle.PlayerData.Slot, shieldNumber, playerHandle.LoadedCharacterData->Number);
 
@@ -322,7 +329,7 @@ namespace Battle.QSimulation.Player
 
         public static bool IsValidShieldNumber(BattlePlayerHandle playerHandle, int shieldNumber)
         {
-            return playerHandle.IsValidShieldNumber(playerHandle.LoadedCharacterData->Number, shieldNumber);
+            return BattlePlayerData.IsValidShieldNumber(playerHandle, shieldNumber);
         }
 
         #endregion Public Static Methods
@@ -376,10 +383,14 @@ namespace Battle.QSimulation.Player
         ///
         /// <returns>EntityRef of the retrieved shield entity.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static BattlePlayerShieldHandle GetShield(Frame f, BattlePlayerData.Ref playerData, int characterNumber, int shieldNumber, bool updateViewPlayState)
+        private static BattlePlayerShieldHandle GetShield(Frame f, BattlePlayerHandle playerHandle, int shieldNumber)
         {
-            BattleEntityID shieldGroupID = playerData.Low_Level.ShieldEntityGroupIDs[characterNumber];
-            return BattlePlayerShieldHandle.Create(f, BattleEntityManager.Get(f, shieldGroupID, shieldNumber, updateViewPlayState));
+            return BattlePlayerShieldHandle.Create(f, BattleEntityManager.Get(f, GetShieldGroupID(f, playerHandle), shieldNumber));
+        }
+
+        private static BattleEntityID GetShieldGroupID(Frame f, BattlePlayerHandle playerHandle)
+        {
+            return playerHandle.PlayerData.Low_Level.ShieldEntityGroupIDs[playerHandle.LoadedCharacterData->Number];
         }
 
         /// <summary>
