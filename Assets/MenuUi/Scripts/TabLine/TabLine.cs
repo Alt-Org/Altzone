@@ -26,10 +26,7 @@ namespace MenuUi.Scripts.TabLine
 
         public event TabChanged OnTabChanged;
 
-        public SwipeUI Swipe
-        {
-            get => _swipe;
-        }
+        public SwipeUI Swipe => _swipe;
 
         private void OnEnable()
         {
@@ -44,7 +41,7 @@ namespace MenuUi.Scripts.TabLine
         {
             foreach (TabLineButton button in _tabLineButtons)
             {
-                if (_tabColorActive.a > 0) button.SetColour(_tabColorActive, _tabColorInactive);
+                if (_tabColorActive != Color.white && _tabColorInactive != Color.white) button.SetColour(_tabColorActive, _tabColorInactive);
                 else button.SetColour(Color.white, Color.gray);
             }
 
@@ -155,16 +152,13 @@ namespace MenuUi.Scripts.TabLine
         [Serializable]
         private class TabLineButton
         {
-            [Header("References to components")] [SerializeField]
-            private TabObjectHandler _tabObjectHandler;
+            [Header("References to components")]
+            [SerializeField] private TabObjectHandler _tabObjectHandler;
 
             [SerializeField] private Sprite _tablineImage;
             [SerializeField] private Color _stripeColour;
 
-            public TabObjectHandler TabObjectHandler
-            {
-                get => _tabObjectHandler;
-            }
+            public TabObjectHandler TabObjectHandler => _tabObjectHandler;
 
             public (Sprite, Color) SetActiveVisuals() =>
                 _tabObjectHandler.SetActiveVisuals(_tablineImage, _stripeColour);

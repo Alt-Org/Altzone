@@ -17,14 +17,15 @@ public class TabChangeHandler : MonoBehaviour
         public Image Image;
     }
 
-    [Header("TablineScript reference")] public TabLine _tablineScript;
+    [Header("TablineScript reference")]
+    [SerializeField] protected TabLine _tablineScript;
 
     [SerializeField] protected List<ButtonWindowBind> _buttons = new List<ButtonWindowBind>();
     [SerializeField] protected int _defaultTab = 1;
     [SerializeField] private bool _ignoreChange;
 
-    [Header("Optional Tab Context UI")] [SerializeField]
-    private bool _updateTabContextUI;
+    [Header("Optional Tab Context UI")]
+    [SerializeField] private bool _updateTabContextUI;
 
     [SerializeField] private int _primaryTabIndex = 0;
     [SerializeField] private int _secondaryTabIndex = 1;
