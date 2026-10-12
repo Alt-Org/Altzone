@@ -104,8 +104,8 @@ public class KojuPopup : MonoBehaviour
         rarityText.text = $"Rarity: {rarityEnum}";
 
         // Price fields
-        priceInput.text = currentPrice.ToString("0.0");
-        kojuPriceText.text = $"Value: {currentPrice:0.0}";
+        priceInput.text = currentPrice.ToString("0");
+        kojuPriceText.text = $"Value: {currentPrice:0}";
 
         // Description
         descriptionText.text = cardUI.GetDescriptionText();
