@@ -12,7 +12,7 @@ namespace Altzone.Scripts.ReferenceSheets
 
         [SerializeField] private List<AdBorderFrameObject> _frameList;
 
-        [SerializeField] public List<AdFontObject> _fontList; // Uusi lisäys (Perttu)
+        [SerializeField] public List<AdFontObject> _fontList;
 
         private List<AdFurnitureObject> _furnitureList;
 
@@ -25,13 +25,13 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Color _purpleColor;
         [SerializeField] private Color _darkPinkColor;
         [SerializeField] private Color _redColor;
-        [SerializeField] private Color _blackColor; // Uusi lisäys (Perttu)
-        [SerializeField] private Color _whiteColor; // Uusi lisäys (Perttu)
+        [SerializeField] private Color _blackColor;
+        [SerializeField] private Color _whiteColor;
         private List<Color> _colourList;
-        private List<Color> _textColourList; // Uusi lisäys (Perttu)
+        private List<Color> _textColourList;
 
         private List<AdBorderFrameObject> _validatedFrameList = null;
-        private List<AdFontObject> _validatedFontList = null; // Uusi lisäys (Perttu)
+        private List<AdFontObject> _validatedFontList = null;
         private static AdDecorationReference _instance = null;
         private static bool _hasInstance = false;
 
@@ -43,7 +43,7 @@ namespace Altzone.Scripts.ReferenceSheets
             }
         } // Public accessor for _info
 
-        public List<AdFontObject> FontList // Uusi lisäys (Perttu)
+        public List<AdFontObject> FontList
         {
             get
             {
@@ -82,7 +82,7 @@ namespace Altzone.Scripts.ReferenceSheets
             }
         }
 
-        public List<Color> TextColourList // Uusi lisäys (Perttu)
+        public List<Color> TextColourList
         {
             get
             {
@@ -169,7 +169,6 @@ namespace Altzone.Scripts.ReferenceSheets
             return null;
         }
 
-        // Uusi lisäys (Perttu)
         private void ValidateFonts()
         {
             HashSet<string> uniqueNames = new();
@@ -220,7 +219,7 @@ namespace Altzone.Scripts.ReferenceSheets
     }
 
     [Serializable]
-    public class AdFontObject // Uusi lisäys (Perttu)
+    public class AdFontObject
     {
         public string Name;
         public TMPro.TMP_FontAsset Font;

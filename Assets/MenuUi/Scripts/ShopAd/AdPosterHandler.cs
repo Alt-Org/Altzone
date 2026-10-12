@@ -66,7 +66,6 @@ public class AdPosterHandler : AltMonoBehaviour
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
 
-        // Uusi lisäys (Perttu)
         if (AdDecorationReference.Instance.FurnitureList == null || AdDecorationReference.Instance.FurnitureList.Count <= 0) _adFurniture.enabled = false;
         else
         {
@@ -77,14 +76,14 @@ public class AdPosterHandler : AltMonoBehaviour
         }
 
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
-        if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
+        if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour;
 
-        if (!data.TextFont) data.TextFont = _adText.font; // Uusi lisäys (Perttu)
-        _adText.font = data.TextFont; // Uusi lisäys (Perttu)
-        _adText.text = data.AdText; // Uusi lisäys (Perttu)
+        if (!data.TextFont) data.TextFont = _adText.font;
+        _adText.font = data.TextFont;
+        _adText.text = data.AdText;
 
-        if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
-        if (data.IsAdText == false) _adTextHolder.SetActive(false); // Uusi lisäys (Perttu)
+        if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true);
+        if (data.IsAdText == false) _adTextHolder.SetActive(false);
         _adClanLogo.SetHeartColors(pieceData);
         _adClanName.text = clanName;
     }
@@ -94,7 +93,6 @@ public class AdPosterHandler : AltMonoBehaviour
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
 
-        // Uusi lisäys (Perttu)
         if (AdDecorationReference.Instance.FurnitureList == null || AdDecorationReference.Instance.FurnitureList.Count <= 0) _adFurniture.enabled = false;
         else
         {
@@ -105,14 +103,14 @@ public class AdPosterHandler : AltMonoBehaviour
         }
 
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
-        if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour; // Uusi lisäys (Perttu)
+        if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour;
 
-        if (!data.TextFont) data.TextFont = _adText.font; // Uusi lisäys (Perttu)
-        _adText.font = data.TextFont; // Uusi lisäys (Perttu)
-        _adText.text = data.AdText; // Uusi lisäys (Perttu)
+        if (!data.TextFont) data.TextFont = _adText.font;
+        _adText.font = data.TextFont;
+        _adText.text = data.AdText;
 
-        if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true); // Uusi lisäys (Perttu)
-        if (data.IsAdText == false) _adTextHolder.SetActive(false); // Uusi lisäys (Perttu)
+        if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true);
+        if (data.IsAdText == false) _adTextHolder.SetActive(false);
         _adClanName.text = clanName;
     }
 }

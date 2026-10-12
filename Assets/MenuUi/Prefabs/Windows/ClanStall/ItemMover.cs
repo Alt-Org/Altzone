@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using MenuUi.Scripts.Storage;
 using Altzone.Scripts.Model.Poco.Game;
-using Altzone.Scripts.ReferenceSheets; // Uusi lisäys (Perttu)
+using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Config;
 using Altzone.Scripts;
 
@@ -25,7 +25,6 @@ public class ItemMover : MonoBehaviour
     // Event to notify that this item was moved to panel
     public event Action<StorageFurniture> OnItemMovedToPanel;
 
-    //[SerializeField] private AdEditor adEditor;
     [SerializeField] private AdDecorationReference _adDecReference;
 
     void Start()
@@ -63,7 +62,7 @@ public class ItemMover : MonoBehaviour
         if (assignedSlot != null)
         {
             //popup?.OpenRemovePopup(gameObject);
-            popup?.Open(gameObject); // Uusi muokkaus (Perttu)
+            popup?.Open(gameObject);
         }
         else if (HasFreeSlot())
         {
@@ -109,7 +108,6 @@ public class ItemMover : MonoBehaviour
                     // Notify trayPopulator this item was moved
                     OnItemMovedToPanel?.Invoke(currentFurniture);
 
-                    // Uusi lisäys (Perttu)
                     AdFurnitureObject adFurnitureObject = new AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
                     _adDecReference.AddFurniture(adFurnitureObject);
 
@@ -136,7 +134,6 @@ public class ItemMover : MonoBehaviour
                 // Notify trayPopulator this item was returned
                 trayPopulator?.HandleItemReturnedToTray(currentFurniture);
 
-                // Uusi lisäys (Perttu)
                 AdFurnitureObject removableFurniture = _adDecReference.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
                 _adDecReference.RemoveFurniture(removableFurniture);
 

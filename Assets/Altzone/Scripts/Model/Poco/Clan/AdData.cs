@@ -11,13 +11,12 @@ namespace Altzone.Scripts.Store
     {
         public string _borderFrame;
         public string _backgroundColour;
-        public TMPro.TMP_FontAsset _textFont; // Uusi lisäys (Perttu)
-        public string _textColour; // Uusi lisäys (Perttu)
-        public Sprite _furniture; // Uusi lisäys (Perttu)
-        public string _adText; // Uusi lisäys (Perttu)
-        public bool _isAdText = true; // Uusi lisäys (Perttu)
+        public TMPro.TMP_FontAsset _textFont;
+        public string _textColour;
+        public Sprite _furniture;
+        public string _adText;
+        public bool _isAdText = true;
 
-        // Uusi lisäys (Perttu)
         public string previousColor;
         public string previousBorder;
         public Sprite previousFurniture;
@@ -51,7 +50,7 @@ namespace Altzone.Scripts.Store
             }
         }
 
-        public TMPro.TMP_FontAsset TextFont // Uusi lisäys (Perttu)
+        public TMPro.TMP_FontAsset TextFont
         {
             get => _textFont;
             set
@@ -64,7 +63,7 @@ namespace Altzone.Scripts.Store
             }
         }
 
-        public string TextColour // Uusi lisäys (Perttu)
+        public string TextColour
         {
             get => _textColour;
             set
@@ -77,7 +76,7 @@ namespace Altzone.Scripts.Store
             }
         }
 
-        public Sprite Furniture // Uusi lisäys (Perttu)
+        public Sprite Furniture
         {
             get => _furniture;
             set
@@ -90,7 +89,7 @@ namespace Altzone.Scripts.Store
             }
         }
 
-        public string AdText // Uusi lisäys (Perttu)
+        public string AdText
         {
             get => _adText;
             set
@@ -124,12 +123,11 @@ namespace Altzone.Scripts.Store
             if (ColorUtility.TryParseHtmlString(backgroundColour, out Color colour)) _backgroundColour = backgroundColour;
             else _backgroundColour = "#FFFFFF";
 
-            if (string.IsNullOrEmpty(_adText)) // Uusi lisäys (Perttu)
+            if (string.IsNullOrEmpty(_adText))
             {
                 _adText = "Myyntikoju avattu!";
             }
 
-            // Uusi lisäys (Perttu)
             if (_textColour == null) _textColour = "#000000";
             //if (ColorUtility.TryParseHtmlString(adTextColour, out Color textColour)) _textColour = adTextColour;
             //else _textColour = "#000000";

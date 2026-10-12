@@ -11,16 +11,16 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Button denyButton;
     [SerializeField] private Button increasePriceButton;
     [SerializeField] private Button decreasePriceButton;
-    [SerializeField] private Button removeButton; // Uusi lisäys (Perttu)
-    [SerializeField] private Image confirmImage; // Uusi lisäys (Perttu)
-    [SerializeField] private GameObject denyButtonGO; // Uusi lisäys (Perttu)
-    [SerializeField] private GameObject removeButtonGO; // Uusi lisäys (Perttu)
+    [SerializeField] private Button removeButton;
+    [SerializeField] private Image confirmImage;
+    [SerializeField] private GameObject denyButtonGO;
+    [SerializeField] private GameObject removeButtonGO;
 
     [Header("Price UI")]
     [SerializeField] private TMP_InputField priceInput;
     [SerializeField] private TMP_Text kojuPriceText;
-    [SerializeField] private GameObject inputBar; // Uusi lisäys (Perttu)
-    [SerializeField] private TMP_Text removeKojuPriceText; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject inputBar;
+    [SerializeField] private TMP_Text removeKojuPriceText;
 
     [Header("Info UI")]
     [SerializeField] private TMP_Text nameText;
@@ -31,16 +31,16 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text artistNameText;
-    [SerializeField] private Image removeIconImage; // Uusi lisäys (Perttu)
-    [SerializeField] private TMP_Text removeNameText; // Uusi lisäys (Perttu)
-    [SerializeField] private TMP_Text removeSetNameText; // Uusi lisäys (Perttu)
+    [SerializeField] private Image removeIconImage;
+    [SerializeField] private TMP_Text removeNameText;
+    [SerializeField] private TMP_Text removeSetNameText;
 
     [Header("Panels")]
     [SerializeField] private GameObject infoObject;
     [SerializeField] private GameObject removePopup;
-    [SerializeField] private GameObject kojuPanel; // Uusi lisäys (Perttu)
-    [SerializeField] private KojuSorting kojuContent; // Uusi lisäys (Perttu)
-    [SerializeField] private GameObject furnitureTray; // Uusi lisäys (Perttu)
+    [SerializeField] private GameObject kojuPanel;
+    [SerializeField] private KojuSorting kojuContent;
+    [SerializeField] private GameObject furnitureTray;
 
     [Header("Remove Confirmation")]
     [SerializeField] private Button removeConfirmButton;
@@ -49,7 +49,7 @@ public class KojuPopup : MonoBehaviour
     [Header("Backgrounds")]
     [SerializeField] private Image infoBoxBackground;
     [SerializeField] private Image removePopupBackground;
-    [SerializeField] private TMP_Text chooseText; // Uusi lisäys (Perttu)
+    [SerializeField] private TMP_Text chooseText;
 
     [Header("Rarity Color Reference")]
     [SerializeField] private RarityColourReference rarityColourReference;
@@ -120,7 +120,6 @@ public class KojuPopup : MonoBehaviour
             infoBoxBackground.color = rarityColor;
         }
 
-        // uusi lisäys(perttu)
         if (iconImage.enabled == false)
         {
             iconImage.enabled = true;
@@ -163,7 +162,6 @@ public class KojuPopup : MonoBehaviour
             removePopupBackground.color = rarityColor;
         }
 
-        // Uusi lisäys (Perttu)
         if (cardUI != null && removeIconImage != null && removeKojuPriceText != null)
         {
             Sprite cardIconImage = cardUI.GetIcon();
@@ -172,7 +170,6 @@ public class KojuPopup : MonoBehaviour
             removeKojuPriceText.text = cardPrice.ToString();
         }
 
-        // Uusi lisäys (Perttu)
         if (cardUI != null && removeNameText != null && removeSetNameText != null)
         {
             string cardNameText = cardUI.GetNameText();
@@ -257,7 +254,6 @@ public class KojuPopup : MonoBehaviour
         removePopup.SetActive(false);
         gameObject.SetActive(false);
 
-        // Uusi lisäys (Perttu)
         iconImage.enabled = false;
         inputBar.SetActive(false);
         confirmButton.enabled = false;
@@ -265,7 +261,6 @@ public class KojuPopup : MonoBehaviour
         chooseText.enabled = true;
         removeButtonGO.SetActive(false);
 
-        // Uusi lisäys (Perttu)
         if (kojuPanel != null)
         {
             kojuPanel.SetActive(true);
