@@ -298,7 +298,7 @@ namespace Battle.View.Projectile
         private void QEventOnPlayStateUpdate(EventBattlePlayStateUpdate e)
         {
             if (e.ERef != EntityRef) return;
-            _trailRenderer.enabled = e.IsInPlay;
+            _trailRenderer.enabled = e.PlayState == BattleEntityPlayState.InPlay;
         }
 
         /// <summary>

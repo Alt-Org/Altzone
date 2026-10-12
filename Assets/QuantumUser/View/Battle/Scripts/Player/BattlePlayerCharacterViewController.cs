@@ -626,7 +626,7 @@ namespace Battle.View.Player
         /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
         public override void OnUpdateView()
         {
-            if (!_isInPlay) return;
+            if (_playState == BattleEntityPlayState.OutOfPlay) return;
             BattlePlayerHandle playerHandle = BattlePlayerHandle.Create(PredictedFrame, EntityRef);
 
             UpdateAnimation(playerHandle.LoadedCharacterData);
@@ -712,7 +712,7 @@ namespace Battle.View.Player
         /// <summary>%Boolean that tells whether the %Quantum Entity this ViewController is attached to is in play.</summary>
         ///
         /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
-        private bool _isInPlay;
+        private BattleEntityPlayState _playState;
 
         /// <summary>Is shield attached.</summary>
         ///
@@ -789,7 +789,7 @@ namespace Battle.View.Player
         private void QEventOnPlayStateUpdate(EventBattlePlayStateUpdate e)
         {
             if (e.ERef != EntityRef) return;
-            _isInPlay = e.IsInPlay;
+            _playState = e.PlayState;
 
             _classViewController.OnPlayStateUpdate(e);
         }

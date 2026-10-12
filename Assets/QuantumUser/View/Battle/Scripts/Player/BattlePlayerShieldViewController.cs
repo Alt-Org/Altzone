@@ -290,7 +290,7 @@ namespace Battle.View.Player
         /// Part of @ref BattlePlayerShieldViewController-Public-GameflowMethods "Public Gameflow Methods"
         public override void OnUpdateView()
         {
-            if (!_isInPlay) return;
+            if (_playState == BattleEntityPlayState.OutOfPlay) return;
 
             _classViewController.OnUpdateView();
         }
@@ -351,7 +351,7 @@ namespace Battle.View.Player
         /// <summary>%Boolean that tells whether the %Quantum Entity this ViewController is attached to is in play.</summary>
         ///
         /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
-        private bool _isInPlay;
+        private BattleEntityPlayState _playState;
 
         /// <summary>Reference to the active shield class view controller.</summary>
         ///
@@ -436,7 +436,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Handler method for <see cref="Quantum.EventBattlePlayStateUpdate">EventBattlePlayStateUpdate</see> QuantumEvent.<br/>
-        /// Updates the <see cref="_isInPlay">_isInPlay</see> bool.
+        /// Updates the <see cref="_playState">_isInPlay</see> bool.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerShieldViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
@@ -447,7 +447,7 @@ namespace Battle.View.Player
         private void QEventOnPlayStateUpdate(EventBattlePlayStateUpdate e)
         {
             if (e.ERef != EntityRef) return;
-            _isInPlay = e.IsInPlay;
+            _playState = e.PlayState;
 
             _classViewController.OnPlayStateUpdate(e);
         }
