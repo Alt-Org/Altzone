@@ -938,6 +938,15 @@ namespace Battle.QSimulation
         #endregion Public Static Assert Methods
         /// @}
 
+#if !DEBUG_ASSERT_ENABLED_OVERRIDE
+        [Conditional("UNITY_EDITOR")]
+#endif
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DevDebugCode(Action debugCode)
+        {
+            debugCode.Invoke();
+        }
+
         /// @anchor BattleDebugLogger-LogMethods
         /// @name Log Methods
         /// Public Log methods that can only be used with a BattleDebugLogger instance.
