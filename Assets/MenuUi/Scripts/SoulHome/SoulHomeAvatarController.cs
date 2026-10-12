@@ -25,6 +25,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private float _roomChangeCooldown = 20f;
         // Percentage chance of avatar changing rooms when moving
         [SerializeField] private float _roomChangeChance = 50f;
+        [SerializeField] private float _furnitureInteractChance = 50f;
         [SerializeField]
         private SortingGroup _sortingGroup;
         [SerializeField]
@@ -45,6 +46,8 @@ namespace MenuUI.Scripts.SoulHome
         private CharacterClassType _class = CharacterClassType.None;
 
         private AvatarStatus _status;
+
+        private FurnitureHandling _targetFurniture;
 
         private Transform _points;
         private RoomData _roomData;
@@ -82,7 +85,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             //_animator.keepAnimatorStateOnDisable = true;
             _animator.writeDefaultValuesOnDisable = true;
-            
+
 
             if (transform.parent.CompareTag("Room"))
             {
@@ -176,8 +179,19 @@ namespace MenuUI.Scripts.SoulHome
             while (elapsed < idleTime)
             {
                 elapsed += Time.deltaTime;
-
                 yield return null;
+            }
+
+            //Random chance to move towards furniture
+            if (Random.Range(0, 100) < _furnitureInteractChance)
+            {
+                FurnitureHandling[] items = _roomData.GetComponentsInChildren<FurnitureHandling>();
+                if (items.Length > 0)
+                {
+                    int randomIndex = Random.Range(0, items.Length);
+                    MoveToFurniture(items[randomIndex].gameObject);
+                    yield break;
+                }
             }
 
             SelectStatus();
@@ -267,7 +281,8 @@ namespace MenuUI.Scripts.SoulHome
             }
             else
             {
-                SelectStatus();
+                OnArrival(); // always ends in SelectStatus()
+                //SelectStatus();
             }
         }
 
@@ -683,6 +698,8 @@ namespace MenuUI.Scripts.SoulHome
 
             SelectStatus();
         }
+
+
         private List<AvatarAnimation> ValidateAnimations(List<AvatarAnimation> animationToValidate)
         {
             List<AvatarAnimation> validatedAnimation = new();
@@ -732,6 +749,45 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             StartCoroutine(InteractAnimation());
+        }
+
+        public void MoveToFurniture(GameObject furnitureObj)
+        {
+            _targetFurniture = furnitureObj.GetComponent<FurnitureHandling>();
+            if (_targetFurniture == null)  return;
+
+            FurnitureSlot targetSlot = _targetFurniture.GetClosestInteractionSlot(transform.position);
+            if (targetSlot != null)
+            {
+                if (_statusCoroutine != null) StopCoroutine(_statusCoroutine);
+                _travelPoints.Clear();
+                _status = AvatarStatus.Wander;
+
+                Vector2Int targetGridPos = new Vector2Int(targetSlot.column, targetSlot.row);
+                HandleWander(targetGridPos);
+            }
+            else
+            {
+                _targetFurniture = null;
+                SelectStatus();
+            }
+        }
+
+        private void OnArrival()
+        {
+            if (_targetFurniture != null)
+            {
+                _targetFurniture.StartInteract(this);
+                Debug.Log($"NPC arrived at: {_targetFurniture.gameObject.name}");
+                _targetFurniture = null;
+
+                //Temporary until real furniture interaction is added
+                StartCoroutine(InteractAnimation());
+            }
+            else
+            {
+                SelectStatus();
+            }
         }
 
         #if UNITY_EDITOR
