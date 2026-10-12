@@ -1,0 +1,25 @@
+struct BattleEntityID
+{
+    int Int;
+}
+
+enum BattleEntityPlayState
+{
+    OutOfPlay,
+    InPlay
+}
+
+struct BattleEntityLink
+{
+    EntityRef ERef;
+    FPVector2 Offset;
+}
+
+component BattleManageEntityQComponent
+{
+    bool                  IsRegistered;
+    BattleEntityPlayState RegisteredState;
+
+    bool                                            IsCompound;
+    [FreeOnComponentRemoved] list<BattleEntityLink> CompoundLinkedEntities;
+}
