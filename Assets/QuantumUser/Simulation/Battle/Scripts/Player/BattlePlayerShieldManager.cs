@@ -79,7 +79,7 @@ namespace Battle.QSimulation.Player
             // create shieldEntity for each shield of a character
             for (int shieldEntityIndex = 0; shieldEntityIndex < playerShieldEntityPrototypes.Length; shieldEntityIndex++)
             {
-                BattlePlayerShieldEntityRef playerShieldEntityRef = BattlePlayerShieldEntityRef.Create(f, playerShieldEntityPrototypes[shieldEntityIndex]);
+                EntityRef playerShieldEntityRef = f.Create(playerShieldEntityPrototypes[shieldEntityIndex]);
                 BattleEntityManager.CompoundEntityTemplate playerShieldEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(playerShieldEntityRef, playerShieldEntityPrototypes.Length);
 
                 // get template data
@@ -279,11 +279,11 @@ namespace Battle.QSimulation.Player
 
             s_debugLogger.LogFormat(f, DebugMessageShieldDetachFormat, playerHandle.PlayerData.Slot, shieldNumber, characterNumber);
 
-            playerHandle.LoadedCharacterData->AttachedShieldEntityRef = BattlePlayerShieldEntityRef.None;
+            playerHandle.LoadedCharacterData->AttachedShieldEntityRef = EntityRef.None;
             shieldHandle.ShieldData->IsAttached                       = false;
 
-            f.Events.BattleShieldChangeState(shieldHandle.ShieldData->PlayerEntityRef.ERef, playerHandle.PlayerData.Team, shieldHandle.ShieldData->IsAttached, shieldNumber);
-            return (BattlePlayerShieldEntityRef)shieldHandle.ShieldEntityRef;
+            f.Events.BattleShieldChangeState(shieldHandle.ShieldData->PlayerEntityRef, playerHandle.PlayerData.Team, shieldHandle.ShieldData->IsAttached, shieldNumber);
+            return shieldHandle;
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 //{ ShieldData
 component BattlePlayerShieldDataQComponent
 {
-    BattlePlayerEntityRef PlayerEntityRef;
+    EntityRef PlayerEntityRef;
     int ShieldNumber;
     bool IsAttached;
 

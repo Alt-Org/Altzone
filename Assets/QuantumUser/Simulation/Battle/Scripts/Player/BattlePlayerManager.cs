@@ -649,7 +649,7 @@ namespace Battle.QSimulation.Player
             //} create player hitBox
 
             // create player shields
-            int playerCharacterShieldCount = BattlePlayerShieldManager.CreateShields(f, playerData, parameters.PlayerCharacterNumber, parameters.PlayerCharacterId, parameters.PlayerCharacterClass, (BattlePlayerEntityRef)parameters.PlayerCharacterEntityTemplate.ParentEntityRef);
+            int playerCharacterShieldCount = BattlePlayerShieldManager.CreateShields(f, playerData, parameters.PlayerCharacterNumber, parameters.PlayerCharacterId, parameters.PlayerCharacterClass, parameters.PlayerCharacterEntityTemplate.ParentEntityRef);
 
             //{ initialize playerData
 
