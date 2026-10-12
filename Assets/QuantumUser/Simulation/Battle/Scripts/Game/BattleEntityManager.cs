@@ -166,6 +166,7 @@ namespace Battle.QSimulation.Game
             BattleEntityID id = AssignID(entityList);
             int listIndex = GetListIndex(id);
 
+            MakeManagedEntity(f, entityRef);
             entityList.Add(entityRef);
             Return(f, entityManagerData, entityRef, id, listIndex);
 
@@ -198,6 +199,7 @@ namespace Battle.QSimulation.Game
 
             for (int i = 0; i < entityRefs.Length; i++)
             {
+                MakeManagedEntity(f, entityRefs[i]);
                 entityList.Add(entityRefs[i]);
                 Return(f, entityManagerData, entityRefs[i], id, listIndex);
                 listIndex++;
@@ -231,14 +233,12 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             QList<EntityRef> entityList = f.ResolveList(entityManagerData->RegisteredEntities);
 
-            BattleEntityID id = AssignID(entityList, isCompound: true);
+            BattleEntityID id = AssignID(entityList);
             int listIndex = GetListIndex(id);
 
-            MakeCompound(f, template);
-
-            EntityRef entityRef = template.ParentEntityRef;
-            entityList.Add(entityRef);
-            Return(f, entityManagerData, entityRef, id, listIndex);
+            MakeManagedEntity(f, template, registered: true);
+            entityList.Add(template.ParentEntityRef);
+            Return(f, entityManagerData, template.ParentEntityRef, id, listIndex);
 
             return id;
         }
@@ -269,18 +269,16 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             QList<EntityRef> entityList = f.ResolveList(entityManagerData->RegisteredEntities);
 
-            BattleEntityID id = AssignID(entityList, isCompound: true);
+            BattleEntityID id = AssignID(entityList);
             int listIndex = GetListIndex(id);
 
             for (int i = 0; i < templates.Length; i++)
             {
                 CompoundEntityTemplate template = templates[i];
 
-                MakeCompound(f, template);
-
-                EntityRef entityRef = template.ParentEntityRef;
-                entityList.Add(entityRef);
-                Return(f, entityManagerData, entityRef, id, listIndex);
+                MakeManagedEntity(f, template, registered: true);
+                entityList.Add(template.ParentEntityRef);
+                Return(f, entityManagerData, template.ParentEntityRef, id, listIndex);
                 listIndex++;
             }
 
@@ -312,16 +310,14 @@ namespace Battle.QSimulation.Game
         /// <param name="updateViewPlayState">Whether to update the ViewPlayState.</param>
         ///
         /// <returns>EntityRef for retrieved entity.</returns>
-        public static EntityRef Get(Frame f, BattleEntityID id, bool updateViewPlayState = false)
+        public static BattleManageEntityHandle Get(Frame f, BattleEntityID id)
         {
             DevAssertValidEntityID(id, context: nameof(Get));
 
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
             int listIndex = GetListIndex(id);
 
-            if (updateViewPlayState) f.Events.BattlePlayStateUpdate(entityList[listIndex], IsInPlay: true);
-
-            return entityList[listIndex];
+            return BattleManageEntityHandle.Create(f, entityList[listIndex]);
         }
 
         /// <summary>
@@ -342,16 +338,50 @@ namespace Battle.QSimulation.Game
         /// <param name="updateViewPlayState">Whether to update the ViewPlayState.</param>
         ///
         /// <returns>EntityRef for retrieved entity.</returns>
-        public static EntityRef Get(Frame f, BattleEntityID id, int offset, bool updateViewPlayState = false)
+        public static BattleManageEntityHandle Get(Frame f, BattleEntityID id, int offset)
         {
             DevAssertValidEntityID(id, context: nameof(Get));
 
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
             int listIndex = GetListIndex(id, offset);
 
-            if (updateViewPlayState) f.Events.BattlePlayStateUpdate(entityList[listIndex], IsInPlay: true);
+            return BattleManageEntityHandle.Create(f, entityList[listIndex]);
+        }
 
-            return entityList[listIndex];
+        public static T GetTest<T>(Frame f, BattleEntityID id, int offset) where T : BattleManageEntityHandle.IComposite, new()
+        {
+            DevAssertValidEntityID(id, context: nameof(Get));
+
+            QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
+            int listIndex = GetListIndex(id, offset);
+
+            return BattleManageEntityHandle.Create(f, entityList[listIndex]).To<T>(f);
+        }
+
+        public static void Use(Frame f, BattleEntityID id)
+        {
+            DevAssertValidEntityID(id, context: nameof(Use));
+
+            QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
+            int listIndex = GetListIndex(id);
+
+            BattleManageEntityQComponent* managedEntity = f.Unsafe.GetPointer<BattleManageEntityQComponent>(entityList[listIndex]);
+
+            managedEntity->RegisteredState = BattleEntityPlayState.InPlay;
+            f.Events.BattlePlayStateUpdate(entityList[listIndex], managedEntity->RegisteredState);
+        }
+
+        public static void Use(Frame f, BattleEntityID id, int offset)
+        {
+            DevAssertValidEntityID(id, context: nameof(Use));
+
+            QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
+            int listIndex = GetListIndex(id, offset);
+
+            BattleManageEntityQComponent* managedEntity = f.Unsafe.GetPointer<BattleManageEntityQComponent>(entityList[listIndex]);
+
+            managedEntity->RegisteredState = BattleEntityPlayState.InPlay;
+            f.Events.BattlePlayStateUpdate(entityList[listIndex], managedEntity->RegisteredState);
         }
 
         /// <summary>
@@ -436,19 +466,7 @@ namespace Battle.QSimulation.Game
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="template">Compound entity template used to make compounds.</param>
-        public static void MakeCompound(Frame f, CompoundEntityTemplate template)
-        {
-            BattleCompoundEntityQComponent compound = new();
-            compound.LinkedEntities = f.AllocateList<BattleEntityLink>(template.LinkedEntities.Count);
-            QList<BattleEntityLink> entityList = f.ResolveList(compound.LinkedEntities);
-
-            foreach (BattleEntityLink entityRef in template.LinkedEntities)
-            {
-                entityList.Add(entityRef);
-            }
-
-            f.Set(template.ParentEntityRef, compound);
-        }
+        public static void MakeCompound(Frame f, CompoundEntityTemplate template) => MakeManagedEntity(f, template, registered: false);
 
         /// <summary>
         /// Moves a Compound Entity.
@@ -458,25 +476,25 @@ namespace Battle.QSimulation.Game
         /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="parentEntityRef">Reference to the parent entity.</param>
+        /// <param name="managedEntity">Reference to the parent entity.</param>
         /// <param name="position">New position.</param>
         /// <param name="rotation">New rotation</param>
-        public static void MoveCompound(Frame f, EntityRef parentEntityRef, FPVector2 position, FP rotation)
+        public static void MoveCompound(Frame f, BattleManageEntityHandle managedEntity, FPVector2 position, FP rotation)
         {
-            s_debugLogger.DevAssertFormat(
-                f,
-                f.Has<BattleCompoundEntityQComponent>(parentEntityRef),
-                "Parent entity ({0}) is expected to have a BattleCompoundEntityComponent",
-                parentEntityRef
-            );
-            if (!f.Has<BattleCompoundEntityQComponent>(parentEntityRef)) return;
+            managedEntity.DevAssertIsCompound(nameof(BattleEntityManager), "Can not " + nameof(MoveCompound));
 
-            Transform2D* parentTransform = f.Unsafe.GetPointer<Transform2D>(parentEntityRef);
+            BattleDebugLogger.DevDebugCode(() => {
+                if (managedEntity.IsRegistered)
+                {
+                    managedEntity.DevAssertIsInPlay(nameof(BattleEntityManager), "Can not" + nameof(MoveCompound));
+                }
+            });
+
+            Transform2D* parentTransform = f.Unsafe.GetPointer<Transform2D>(managedEntity);
             parentTransform->Position = position;
             parentTransform->Rotation = rotation;
 
-            BattleCompoundEntityQComponent compound = f.Get<BattleCompoundEntityQComponent>(parentEntityRef);
-            QList<BattleEntityLink> linkedEntities = f.ResolveList(compound.LinkedEntities);
+            QList<BattleEntityLink> linkedEntities = managedEntity.CompoundGetLinkedEntities(f);
 
             for(int i = 0; i < linkedEntities.Count; i++)
             {
@@ -501,24 +519,22 @@ namespace Battle.QSimulation.Game
         /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="parentEntityRef">Reference to the parent entity.</param>
+        /// <param name="managedEntity">Reference to the parent entity.</param>
         /// <param name="position">New position.</param>
         /// <param name="rotation">New rotation</param>
-        public static void TeleportCompound(Frame f, EntityRef parentEntityRef, FPVector2 position, FP rotation)
+        public static void TeleportCompound(Frame f, BattleManageEntityHandle managedEntity, FPVector2 position, FP rotation)
         {
-            s_debugLogger.DevAssertFormat(
-                f,
-                f.Has<BattleCompoundEntityQComponent>(parentEntityRef),
-                "Parent entity ({0}) is expected to have a BattleCompoundEntityComponent",
-                parentEntityRef
-            );
-            if (!f.Has<BattleCompoundEntityQComponent>(parentEntityRef)) return;
+            managedEntity.DevAssertIsCompound(nameof(BattleEntityManager), "Can not " + nameof(TeleportCompound));
 
-            Transform2D* parentTransform = f.Unsafe.GetPointer<Transform2D>(parentEntityRef);
+            BattleDebugLogger.DevDebugCode(() => { if (managedEntity.IsRegistered)
+            {
+                managedEntity.DevAssertIsInPlay(nameof(BattleEntityManager), "Can not" + nameof(TeleportCompound));
+            }});
+
+            Transform2D* parentTransform = f.Unsafe.GetPointer<Transform2D>(managedEntity);
             parentTransform->Teleport(f, position, rotation);
 
-            BattleCompoundEntityQComponent compound = f.Get<BattleCompoundEntityQComponent>(parentEntityRef);
-            QList<BattleEntityLink> linkedEntities = f.ResolveList(compound.LinkedEntities);
+            QList<BattleEntityLink> linkedEntities = managedEntity.CompoundGetLinkedEntities(f);
 
             for (int i = 0; i < linkedEntities.Count; i++)
             {
@@ -565,6 +581,42 @@ namespace Battle.QSimulation.Game
             return entityManagerData;
         }
 
+        private static BattleManageEntityQComponent* MakeManagedEntity(Frame f, EntityRef entityRef)
+        {
+            BattleManageEntityQComponent managedEntity = new();
+
+            managedEntity.RegisteredState = BattleEntityPlayState.OutOfPlay;
+            managedEntity.IsRegistered = true;
+
+            f.Add(entityRef, managedEntity, out BattleManageEntityQComponent* componentPointer);
+
+            return componentPointer;
+        }
+
+        private static BattleManageEntityQComponent* MakeManagedEntity(Frame f, CompoundEntityTemplate template,  bool registered)
+        {
+            BattleManageEntityQComponent managedEntity = new();
+
+            if (registered)
+            {
+                managedEntity.IsRegistered = true;
+                managedEntity.RegisteredState = BattleEntityPlayState.OutOfPlay;
+            }
+
+            managedEntity.IsCompound = true;
+            managedEntity.CompoundLinkedEntities = f.AllocateList<BattleEntityLink>(template.LinkedEntities.Count);
+            QList<BattleEntityLink> entityList = f.ResolveList(managedEntity.CompoundLinkedEntities);
+
+            foreach (BattleEntityLink entityRef in template.LinkedEntities)
+            {
+                entityList.Add(entityRef);
+            }
+
+            f.Add(template.ParentEntityRef, managedEntity, out BattleManageEntityQComponent* componentPointer);
+
+            return componentPointer;
+        }
+
         /// <summary>
         /// Private method that handles entity return logic. Used by the public
         /// <see cref="BattleEntityManager.Return(Frame, BattleEntityID)">Return(Frame, BattleEntityID)</see>
@@ -592,15 +644,19 @@ namespace Battle.QSimulation.Game
 
             FPVector2 entityGridToWorldPosition = BattleGridManager.GridPositionToWorldPosition(entityGridPosition);
 
-            if (id.IsCompound)
+            BattleManageEntityHandle managedEntity = BattleManageEntityHandle.Create(f, entityRef);
+
+            if (managedEntity.IsCompound)
             {
-                TeleportCompound(f, entityRef, entityGridToWorldPosition, 0);
+                TeleportCompound(f, managedEntity, entityGridToWorldPosition, 0);
             }
             else
             {
                 f.Unsafe.GetPointer<Transform2D>(entityRef)->Teleport(f, entityGridToWorldPosition);
             }
-            f.Events.BattlePlayStateUpdate(entityRef, IsInPlay: false);
+
+            f.Unsafe.GetPointer<BattleManageEntityQComponent>(managedEntity)->RegisteredState = BattleEntityPlayState.OutOfPlay;
+            f.Events.BattlePlayStateUpdate(entityRef, managedEntity.RegisteredState);
         }
 
         /// <summary>
@@ -617,9 +673,9 @@ namespace Battle.QSimulation.Game
             return FPVector2.Rotate(offset, parentRotation) + parentPosition;
         }
 
-        private static BattleEntityID AssignID(QList<EntityRef> entityList, bool isCompound = false)
+        private static BattleEntityID AssignID(QList<EntityRef> entityList)
         {
-            return new() { Int = entityList.Count + 1, IsCompound = isCompound };
+            return new() { Int = entityList.Count + 1};
         }
 
         private static int GetListIndex(BattleEntityID id)
