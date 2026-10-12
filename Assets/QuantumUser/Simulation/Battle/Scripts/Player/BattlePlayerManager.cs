@@ -745,7 +745,7 @@ namespace Battle.QSimulation.Player
             playerHandle.LoadedCharacterData->State = playerCharacterState;
 
             // initialize view
-            f.Events.BattlePlayerCharacterViewInit(playerHandle.LoadedCharacterEntityRef, playerHandle.PlayerData.Slot, playerHandle.LoadedCharacterData->Id, playerHandle.LoadedCharacterData->Class, playerHandle.LoadedCharacterData->ShieldCount, BattleGridManager.GridScaleFactor);
+            f.Events.BattlePlayerCharacterViewInit(playerHandle.LoadedCharacterEntityHandle, playerHandle.PlayerData.Slot, playerHandle.LoadedCharacterData->Id, playerHandle.LoadedCharacterData->Class, playerHandle.LoadedCharacterData->ShieldCount, BattleGridManager.GridScaleFactor);
         }
 
         /// <summary>
@@ -778,8 +778,8 @@ namespace Battle.QSimulation.Player
                 case BattlePlayerSpawnBehaviour.PreviousCharactersPosition:
                     if (playerHandlePreviousCharacter != null)
                     {
-                        DevAssertPlayerHandleHasCharacterLoaded(f, playerHandlePreviousCharacter.Value, errorContext: "Can't read previous character");
-                        worldPosition = playerHandlePreviousCharacter.Value.LoadedCharacterTransform->Position;
+                        playerHandlePreviousCharacter.Value.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerManager), errorContext: "Can't read previous character");
+                        worldPosition = playerHandlePreviousCharacter.Value.LoadedCharacterTransform.Position;
                     }
                     break;
             }
@@ -801,8 +801,8 @@ namespace Battle.QSimulation.Player
             {
                 BattlePlayerShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
 
-                f.Events.BattlePlayStateUpdate(shieldHandle.ShieldEntityRef, true);
-                f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityRef, playerHandle.PlayerData.Team, ShieldAttached: true, shieldHandle.ShieldData->ShieldNumber);
+                f.Events.BattlePlayStateUpdate(shieldHandle.ShieldEntityHandle, BattleEntityPlayState.InPlay);
+                f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityHandle, playerHandle.PlayerData.Team, ShieldAttached: true, shieldHandle.ShieldData->ShieldNumber);
             }
 
             BattlePlayerMovementController.Teleport(f, playerHandle);
@@ -830,7 +830,7 @@ namespace Battle.QSimulation.Player
 
             s_debugLogger.LogFormat(f, "({0}) Despawning character number: {1}", playerHandle.PlayerData.Slot, playerHandle.LoadedCharacterData->Number);
 
-            playerHandle.LoadedCharacterData->MovementPreviousInPlayPosition = playerHandle.LoadedCharacterTransform->Position;
+            playerHandle.LoadedCharacterData->MovementPreviousInPlayPosition = playerHandle.LoadedCharacterTransform.Position;
 
             BattlePlayerClassManager.OnDespawn(f, BattlePlayerClassManager.DespawnEventType.DespawnUnSelect, playerHandle);
 
@@ -845,7 +845,7 @@ namespace Battle.QSimulation.Player
             }
 
             // update data
-            playerHandle.LoadedCharacterData->ViewPosition = playerHandle.LoadedCharacterTransform->Position;
+            playerHandle.LoadedCharacterData->ViewPosition = playerHandle.LoadedCharacterTransform.Position;
         }
 
         private static void OnScreenError(Frame f, string messageformat, params object[] args)

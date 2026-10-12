@@ -41,7 +41,7 @@ namespace Battle.QSimulation.Player
             if (projectileCollisionData->Projectile.Data->EmotionCurrent == BattleEmotionState.Love) return;
             if (projectileCollisionData->IsLoveProjectileCollision) return;
 
-            FPVector2 normal = (projectileCollisionData->Projectile.Transform->Position - shieldHandle.ShieldTransform->Position).Normalized;
+            FPVector2 normal = (projectileCollisionData->Projectile.Transform.Position - shieldHandle.ShieldTransform.Position).Normalized;
 
             BattleProjectileQSystem.HandleIntersection(f,
                 projectileCollisionData->Projectile,
@@ -70,8 +70,8 @@ namespace Battle.QSimulation.Player
 
             projectileCollisionData->Projectile.SetHeld(true);
 
-            classData->HeldProjectileEntity = projectileCollisionData->Projectile.ERef;
-            classData->HeldProjectileOffset = projectileCollisionData->Projectile.Transform->Position - shieldHandle.ShieldTransform->Position;
+            classData->HeldProjectileEntity = projectileCollisionData->Projectile.EntityHandle;
+            classData->HeldProjectileOffset = projectileCollisionData->Projectile.Transform.Position - shieldHandle.ShieldTransform.Position;
 
             classData->HoldMinTimer = FrameTimer.FromSeconds(f, spec.HoldMinDurationSec);
             classData->HoldMaxTimer = FrameTimer.FromSeconds(f, spec.HoldMaxDurationSec);
@@ -90,7 +90,7 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerClass600QSpec spec = BattleQConfig.GetBattlePlayerClass600Spec(f);
 
-            BattlePlayerClass600DataQComponent* classData = GetClassData(f, playerHandle.LoadedCharacterEntityRef);
+            BattlePlayerClass600DataQComponent* classData = GetClassData(f, playerHandle.LoadedCharacterEntityHandle);
 
             if (!classData->IsHoldingProjectile) return;
 
@@ -105,7 +105,7 @@ namespace Battle.QSimulation.Player
 
             FPVector2 projectilePositionNext = transformShield->Position + classData->HeldProjectileOffset;
 
-            BattleEntityManager.MoveCompound(f, projectile.ERef, projectilePositionNext, FP._0);
+            BattleEntityManager.MoveCompound(f, projectile.EntityHandle, projectilePositionNext, FP._0);
 
             if (transformShield->Position != classData->PreviousPosition)
             {

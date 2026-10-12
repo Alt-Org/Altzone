@@ -27,9 +27,9 @@ namespace Battle.QSimulation.Player
 
         public override unsafe BattlePlayerClassManager.SetupParameters OnCreate(Frame f, BattlePlayerHandle playerHandle)
         {
-            BattleCompoundEntityQComponent* compoundEntityComponent = f.Unsafe.GetPointer<BattleCompoundEntityQComponent>(playerHandle.LoadedCharacterEntityRef);
+            BattleManageEntityQComponent* compoundEntityComponent = f.Unsafe.GetPointer<BattleManageEntityQComponent>(playerHandle.LoadedCharacterEntityHandle);
 
-            foreach(BattleEntityLink link in f.ResolveList(compoundEntityComponent->LinkedEntities))
+            foreach(BattleEntityLink link in f.ResolveList(compoundEntityComponent->CompoundLinkedEntities))
             {
                 BattlePlayerHitboxQComponent* hitBoxComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(link.ERef);
                 hitBoxComponent->CollisionType = BattlePlayerCollisionType.None;
@@ -78,7 +78,7 @@ namespace Battle.QSimulation.Player
 
             direction = FPVector2.Rotate(direction, f.RNG->NextInclusive(-FP.Rad_45, FP.Rad_45));
 
-            BattleEntityManager.TeleportCompound(f, projectileCollisionData->Projectile.ERef, position, FP._0);
+            BattleEntityManager.TeleportCompound(f, projectileCollisionData->Projectile.EntityHandle, position, FP._0);
             BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile.Data, direction, BattleProjectileQSystem.SpeedChange.Increment);
         }
     }

@@ -48,18 +48,18 @@ namespace Battle.QSimulation.Player
 
             if (grab)
             {
-                data = GetClassData(f, playerHandle.LoadedCharacterEntityRef);
+                data = GetClassData(f, playerHandle.LoadedCharacterEntityHandle);
                 BattlePlayerData.Ref teammateData = BattlePlayerManager.GetPlayerData(f, BattlePlayerManager.GetTeammateSlot(playerHandle.PlayerData.Slot));
                 if (!teammateData.PlayState.IsInPlay()) grab = false;
             }
             if (grab)
             {
 
-                FPVector2 toProjectile = projectileCollisionData->Projectile.Transform->Position - playerHandle.LoadedCharacterTransform->Position;
+                FPVector2 toProjectile = projectileCollisionData->Projectile.Transform.Position - playerHandle.LoadedCharacterTransform.Position;
 
                 projectileCollisionData->Projectile.SetHeld(true);
                 data->IsHoldingProjectile = true;
-                data->HeldProjectileEntity = projectileCollisionData->Projectile.ERef;
+                data->HeldProjectileEntity = projectileCollisionData->Projectile.EntityHandle;
                 data->HeldProjectileAngleRadians = FPVector2.RadiansSigned(FPVector2.Up, toProjectile);
                 data->HeldProjectileDistance = shieldHandle.CollidedHitboxComponent->CollisionMinOffset + projectileCollisionData->Projectile.Data->Radius;
                 data->HoldStartFrame = f.Number;
@@ -91,7 +91,7 @@ namespace Battle.QSimulation.Player
         /// <param name="specialInput">Pointer to special input (unused)</param>
         public override unsafe void OnUpdate(Frame f, BattlePlayerHandle playerHandle, BattleSpecialInput* specialInput)
         {
-            BattlePlayerClass400DataQComponent* data = GetClassData(f, playerHandle.LoadedCharacterEntityRef);
+            BattlePlayerClass400DataQComponent* data = GetClassData(f, playerHandle.LoadedCharacterEntityHandle);
             if (!data->IsHoldingProjectile) return;
 
             if (!BattleParameters.GetIsTestFlipperGame(f))
@@ -106,10 +106,10 @@ namespace Battle.QSimulation.Player
             if (teammateHandle.PlayerData.PlayState.IsInPlay())
             {
                 BattleProjectileHandle projectile = BattleProjectileQSystem.GetProjectileHandle(f);
-                FPVector2 targetPosition = teammateHandle.LoadedCharacterTransform->Position;
+                FPVector2 targetPosition = teammateHandle.LoadedCharacterTransform.Position;
                 targetPosition.Y += (playerHandle.PlayerData.Team == BattleTeamNumber.TeamAlpha ? FP._4 : -FP._4) * BattleGridManager.GridScaleFactor;
 
-                FPVector2 toTeammate = targetPosition - playerHandle.LoadedCharacterTransform->Position;
+                FPVector2 toTeammate = targetPosition - playerHandle.LoadedCharacterTransform.Position;
                 FP angleTeammate = FPVector2.RadiansSigned(FPVector2.Up, toTeammate);
 
                 FP rotationTime = (f.Number - data->HoldStartFrame) / data->RotationDurationFrames;
@@ -117,7 +117,7 @@ namespace Battle.QSimulation.Player
 
                 FPVector2 newDirection = FPVector2.Rotate(FPVector2.Up, newAngle);
 
-                BattleEntityManager.MoveCompound(f, data->HeldProjectileEntity, playerHandle.LoadedCharacterTransform->Position + newDirection * data->HeldProjectileDistance, FP._0);
+                BattleEntityManager.MoveCompound(f, BattleManageEntityHandle.Create(f, data->HeldProjectileEntity), playerHandle.LoadedCharacterTransform.Position + newDirection * data->HeldProjectileDistance, FP._0);
 
                 if (newAngle == angleTeammate)
                 {

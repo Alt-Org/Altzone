@@ -3,17 +3,80 @@ using Battle.QSimulation.Player;
 using Battle.QSimulation.Projectile;
 using Photon.Deterministic;
 using Quantum;
+using Quantum.Collections;
 
 namespace Battle.QSimulation.Game
 {
-    public struct BattleManageEntityHandle
+    public unsafe struct BattleManageEntityHandle
     {
-        public EntityRef ERef;
+        public interface IComposite
+        {
+            public void FromManagedEntity(Frame f, BattleManageEntityHandle managedEntity);
+        }
+
+        public static BattleManageEntityHandle Create(Frame f, EntityRef entity)
+        {
+            BattleManageEntityHandle handle = new()
+            {
+                ERef = entity,
+                _component = f.Unsafe.GetPointer<BattleManageEntityQComponent>(entity)
+            };
+
+            return handle;
+        }
 
         public static implicit operator EntityRef(BattleManageEntityHandle manageEntityRef) => manageEntityRef.ERef;
+
+        public EntityRef ERef { get; private set; }
+
+        public bool IsRegistered => _component->IsRegistered;
+
+        public BattleEntityPlayState RegisteredState { get
+        {
+            DevAssertIsRegistered("Can not read the play state");
+            return _component->RegisteredState;
+        }}
+
+        public bool IsCompound => _component->IsCompound;
+
+        public QList<BattleEntityLink> CompoundGetLinkedEntities(Frame f)
+        {
+            DevAssertIsCompound("Can not " + nameof(CompoundGetLinkedEntities));
+            return f.ResolveList(_component->CompoundLinkedEntities);
+        }
+
+        public T To<T>(Frame f) where T : IComposite, new()
+        {
+            T composite = new();
+            composite.FromManagedEntity(f, this);
+            return composite;
+        }
+
+        public void DevAssertIsRegistered(string context) => DevAssertIsRegistered(nameof(BattleManageEntityHandle), context);
+
+        public void DevAssertIsRegistered(string source, string context)
+        {
+            BattleDebugLogger.DevAssertFormat(source, _component->IsRegistered, "{0}, entity is not registered", context);
+        }
+
+        public void DevAssertIsInPlay(string context) => DevAssertIsInPlay(nameof(BattleManageEntityHandle), context);
+
+        public void DevAssertIsInPlay(string source, string context)
+        {
+            BattleDebugLogger.DevAssertFormat(source, _component->RegisteredState != BattleEntityPlayState.InPlay, "{0}, entity is not in play", context);
+        }
+
+        public void DevAssertIsCompound(string context) => DevAssertIsCompound(nameof(BattleManageEntityHandle), context);
+
+        public void DevAssertIsCompound(string source, string context)
+        {
+            BattleDebugLogger.DevAssertFormat(source, _component->IsCompound, "{0}, entity is not a compound", context);
+        }
+
+        private BattleManageEntityQComponent* _component;
     }
 
-    public unsafe struct BattlePlayerHandle
+    public unsafe struct BattlePlayerHandle : BattleManageEntityHandle.IComposite
     {
         public static BattlePlayerHandle Create(Frame f, BattlePlayerSlot slot)
         {
@@ -43,7 +106,7 @@ namespace Battle.QSimulation.Game
             return handle;
         }
 
-        public static void CreateLink(Frame f, BattlePlayerSlot slot, EntityRef characterEntityRef, BattlePlayerLinkEntityType type, EntityRef entity)
+        public static void CreateLink(Frame f, BattlePlayerSlot slot, EntityRef characterEntityRef, BattlePlayerLinkEntityType type, EntityRef linkEntityRef)
         {
             BattlePlayerLinkQComponent playerLink = new()
             {
@@ -52,12 +115,12 @@ namespace Battle.QSimulation.Game
                 Type = type
             };
 
-            f.Add(entity, playerLink);
+            f.Add(linkEntityRef, playerLink);
         }
 
         public readonly bool PlayerHasSelectedCharacter => PlayerData.SelectedCharacterNumber != BattlePlayerData.NoSelectedCharacter;
 
-        public readonly bool HandleHasCharacterLoaded => LoadedCharacterEntityRef != EntityRef.None;
+        public readonly bool HandleHasCharacterLoaded => LoadedCharacterEntityHandle != EntityRef.None;
 
         public readonly bool LoadedCharacterIsSelected => LoadedCharacterData->Number == PlayerData.SelectedCharacterNumber;
 
@@ -67,11 +130,20 @@ namespace Battle.QSimulation.Game
 
         public BattlePlayerData.Ref PlayerData { get; private set; }
 
-        public EntityRef LoadedCharacterEntityRef { get; private set; }
+        public BattleManageEntityHandle LoadedCharacterEntityHandle { get; private set; }
 
         public BattlePlayerCharacterDataQComponent* LoadedCharacterData { get; private set; }
 
-        public Transform2D* LoadedCharacterTransform { get; private set; }
+        public Transform2D* LoadedCharacterTransformPtr
+        {
+            get
+            {
+                LoadedCharacterEntityHandle.DevAssertIsInPlay(nameof(BattlePlayerHandle), "Improper transform access: possible unauthorized modification");
+                return _loadedCharacterTransformInternalPtr;
+            }
+        }
+
+        public Transform2D LoadedCharacterTransform => *LoadedCharacterTransformPtr;
 
         public EntityRef CollidedHitboxEntityRef { get; private set; }
 
@@ -79,23 +151,10 @@ namespace Battle.QSimulation.Game
 
         public Transform2D* CollidedHitboxTransform { get; private set; }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsValidCharacterNumber(int characterNumber)
-        {
-            return BattlePlayerData.IsValidCharacterNumber(characterNumber);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsValidShieldNumber(int characterNumber, int shieldNumber)
-        {
-            BattlePlayerData.DevAssertIsValidCharacterNumber(nameof(BattlePlayerHandle), characterNumber);
-            return shieldNumber >= 0 && LoadedCharacterData->ShieldCount < shieldNumber;
-        }
-
         public void LoadCharacter(Frame f, int characterNumber)
         {
             BattlePlayerData.DevAssertIsValidCharacterNumber(nameof(BattlePlayerHandle), characterNumber);
-            SetCharacter(f, (BattlePlayerEntityRef)BattleEntityManager.Get(f, PlayerData.Low_Level.CharacterEntityGroupID, characterNumber));
+            SetCharacter(f, BattleEntityManager.Get(f, PlayerData.Low_Level.CharacterEntityGroupID, characterNumber));
         }
 
         public void LoadCharacter(Frame f, EntityRef entity)
@@ -127,11 +186,18 @@ namespace Battle.QSimulation.Game
             return BattlePlayerShieldHandle.Create(f, LoadedCharacterData->AttachedShieldEntityRef);
         }
 
+        public void DevAssertPlayerHandleHasCharacterLoaded(string source, string errorContext)
+        {
+            BattleDebugLogger.DevAssertFormat(source, HandleHasCharacterLoaded, "{0}, PlayerHandle has no loaded character", errorContext);
+        }
+
+        private Transform2D* _loadedCharacterTransformInternalPtr {  get; set; }
+
         private void SetCharacter(Frame f, EntityRef entity)
         {
-            LoadedCharacterEntityRef  = entity;
-            LoadedCharacterData = f.Unsafe.GetPointer<BattlePlayerCharacterDataQComponent>(entity);
-            LoadedCharacterTransform  = f.Unsafe.GetPointer<Transform2D>(entity);
+            LoadedCharacterEntityHandle          = BattleManageEntityHandle.Create(f, entity);
+            LoadedCharacterData                  = f.Unsafe.GetPointer<BattlePlayerCharacterDataQComponent>(entity);
+            _loadedCharacterTransformInternalPtr = f.Unsafe.GetPointer<Transform2D>(entity);
         }
 
         private void SetHitbox(Frame f, EntityRef entity)
@@ -147,9 +213,14 @@ namespace Battle.QSimulation.Game
             CollidedHitboxComponent = null;
             CollidedHitboxTransform = null;
         }
+
+        void BattleManageEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManageEntityHandle managedEntity)
+        {
+            SetCharacter(f, managedEntity);
+        }
     }
 
-    public unsafe struct BattlePlayerShieldHandle
+    public unsafe struct BattlePlayerShieldHandle : BattleManageEntityHandle.IComposite
     {
         public static BattlePlayerShieldHandle Create(Frame f, EntityRef entity)
         {
@@ -157,14 +228,16 @@ namespace Battle.QSimulation.Game
 
             BattlePlayerShieldLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerShieldLinkQComponent>(entity);
 
-            handle.SetShield(f, link->ERef);
+            BattleManageEntityHandle managedEntity = BattleManageEntityHandle.Create(f, link->ERef);
+
+            handle.SetShield(f, managedEntity);
 
             if (link->Type == BattlePlayerShieldLinkEntityType.Hitbox) handle.SetHitbox(f, entity);
 
             return handle;
         }
 
-        public static void CreateLink(Frame f, EntityRef shieldEntityRef, BattlePlayerShieldLinkEntityType type, EntityRef entity)
+        public static void CreateLink(Frame f, EntityRef shieldEntityRef, BattlePlayerShieldLinkEntityType type, EntityRef linkEntityRef)
         {
             BattlePlayerShieldLinkQComponent shieldLink = new()
             {
@@ -172,16 +245,25 @@ namespace Battle.QSimulation.Game
                 Type = type,
             };
 
-            f.Add(entity, shieldLink);
+            f.Add(linkEntityRef, shieldLink);
         }
 
         public readonly bool HandleHasCollidedHitbox => CollidedHitboxEntityRef != EntityRef.None;
 
-        public EntityRef ShieldEntityRef {  get; private set; }
+        public BattleManageEntityHandle ShieldEntityHandle {  get; private set; }
 
         public BattlePlayerShieldDataQComponent* ShieldData { get; private set; }
 
-        public Transform2D* ShieldTransform { get; private set; }
+        public Transform2D* ShieldTransformPtr
+        {
+            get
+            {
+                ShieldEntityHandle.DevAssertIsInPlay(nameof(BattlePlayerShieldHandle), "Improper transform access: possible unauthorized modification");
+                return _shieldTransformInternalPtr;
+            }
+        }
+
+        public Transform2D ShieldTransform => *ShieldTransformPtr;
 
         public EntityRef CollidedHitboxEntityRef { get; private set; }
 
@@ -189,11 +271,13 @@ namespace Battle.QSimulation.Game
 
         public Transform2D* CollidedHitboxTransform { get; private set; }
 
-        private void SetShield(Frame f, EntityRef entity)
+        private Transform2D* _shieldTransformInternalPtr { get; set; }
+
+        private void SetShield(Frame f, BattleManageEntityHandle managedEntity)
         {
-            ShieldEntityRef = entity;
-            ShieldData      = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(entity);
-            ShieldTransform = f.Unsafe.GetPointer<Transform2D>(entity);
+            ShieldEntityHandle          = managedEntity;
+            ShieldData                  = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(managedEntity);
+            _shieldTransformInternalPtr = f.Unsafe.GetPointer<Transform2D>(managedEntity);
         }
 
         private void SetHitbox(Frame f, EntityRef entity)
@@ -202,9 +286,14 @@ namespace Battle.QSimulation.Game
             CollidedHitboxComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(entity);
             CollidedHitboxTransform = f.Unsafe.GetPointer<Transform2D>(entity);
         }
+
+        void BattleManageEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManageEntityHandle managedEntity)
+        {
+            SetShield(f, managedEntity);
+        }
     }
 
-    public unsafe struct BattleProjectileHandle
+    public unsafe struct BattleProjectileHandle : BattleManageEntityHandle.IComposite
     {
         public static BattleProjectileHandle Create(Frame f, EntityRef entity)
         {
@@ -212,39 +301,48 @@ namespace Battle.QSimulation.Game
 
             BattleProjectileLinkQComponent* link = f.Unsafe.GetPointer<BattleProjectileLinkQComponent>(entity);
 
-            handle.ERef      = link->ERef;
-            handle.Data      = f.Unsafe.GetPointer<BattleProjectileQComponent>(link->ERef);
-            handle.Transform = f.Unsafe.GetPointer<Transform2D>(link->ERef);
+            handle.EntityHandle          = BattleManageEntityHandle.Create(f, link->ERef);
+            handle.Data                  = f.Unsafe.GetPointer<BattleProjectileQComponent>(link->ERef);
+            handle._transformInternalPtr = f.Unsafe.GetPointer<Transform2D>(link->ERef);
 
             return handle;
         }
 
-        public static BattleProjectileHandle Create(BattleProjectileQSystem.Filter filter)
+        public static BattleProjectileHandle Create(Frame f, BattleProjectileQSystem.Filter filter)
         {
             BattleProjectileHandle handle = new();
 
-            handle.ERef      = filter.Entity;
-            handle.Data      = filter.Projectile;
-            handle.Transform = filter.Transform;
+            handle.EntityHandle          = BattleManageEntityHandle.Create(f, filter.Entity);
+            handle.Data                  = filter.Projectile;
+            handle._transformInternalPtr = filter.Transform;
 
             return handle;
         }
 
-        public static void CreateLink(Frame f, EntityRef projectileEntity, EntityRef entity)
+        public static void CreateLink(Frame f, EntityRef projectileEntity, EntityRef linkEntityRef)
         {
             BattleProjectileLinkQComponent projectileLink = new()
             {
                 ERef = projectileEntity
             };
 
-            f.Add(entity, projectileLink);
+            f.Add(linkEntityRef, projectileLink);
         }
 
-        public EntityRef ERef { get; private set; }
+        public BattleManageEntityHandle EntityHandle { get; private set; }
 
         public BattleProjectileQComponent* Data {  get; private set; }
 
-        public Transform2D* Transform { get; private set; }
+        public Transform2D* TransformPtr
+        {
+            get
+            {
+                EntityHandle.DevAssertIsInPlay(nameof(BattleProjectileHandle), "Improper transform access: possible unauthorized modification");
+                return _transformInternalPtr;
+            }
+        }
+
+        public Transform2D Transform => *TransformPtr;
 
         /// <summary>
         /// Sets a specific collision flag for the current frame.
@@ -299,6 +397,15 @@ namespace Battle.QSimulation.Game
         {
             Data->Attack = attack;
             f.Events.BattleProjectileChangeGlowStrength(Data->Attack / Data->AttackMax);
+        }
+
+        private Transform2D* _transformInternalPtr { get; set; }
+
+        void BattleManageEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManageEntityHandle managedEntity)
+        {
+            EntityHandle          = managedEntity;
+            Data                  = f.Unsafe.GetPointer<BattleProjectileQComponent>(managedEntity);
+            _transformInternalPtr = f.Unsafe.GetPointer<Transform2D>(managedEntity);
         }
     }
 }

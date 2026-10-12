@@ -111,7 +111,7 @@ namespace Battle.QSimulation.Player
                 HandleSFXCommon(f, playerHandle.PlayerData.Slot, soundEffectType, SoundEffectTarget.All);
 
                 f.Events.BattleCharacterHit(
-                    playerHandle.LoadedCharacterEntityRef,
+                    playerHandle.LoadedCharacterEntityHandle,
                     playerHandle.PlayerData.Team,
                     playerHandle.PlayerData.Slot,
                     playerHandle.LoadedCharacterData->Number,
@@ -201,7 +201,7 @@ namespace Battle.QSimulation.Player
             }
 
             f.Events.BattleShieldHit(
-                shieldHandle.ShieldEntityRef,
+                shieldHandle.ShieldEntityHandle,
                 playerHandle.PlayerData.Team,
                 playerHandle.PlayerData.Slot,
                 characterNumber,

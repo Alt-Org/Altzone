@@ -119,10 +119,10 @@ namespace Battle.QSimulation.Projectile
             //} create projectile trigger entity
 
             // set projectile position and initial values
-            projectileHandle.Transform->Position  = new FPVector2(0, 0);
-            projectileHandle.Data->Radius         = projectileCollider->Shape.Circle.Radius;
-            projectileHandle.Data->EmotionCurrent = 0;
-            projectileHandle.Data->EmotionBase    = 0;
+            projectileHandle.TransformPtr->Position = new FPVector2(0, 0);
+            projectileHandle.Data->Radius           = projectileCollider->Shape.Circle.Radius;
+            projectileHandle.Data->EmotionCurrent   = 0;
+            projectileHandle.Data->EmotionBase      = 0;
 
             BattleEntityID projectileEntityID = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
             GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityID;
@@ -224,13 +224,13 @@ namespace Battle.QSimulation.Projectile
             Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
 
             // calculate how far off from other entity's position is the projectile supposed to hit it's surface
-            FPVector2 offsetVector = projectile.Transform->Position - otherTransform->Position;
+            FPVector2 offsetVector = projectile.Transform.Position - otherTransform->Position;
             FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
 
             // if projectile accidentally went inside another entity, lift it out
             if (collisionOffset - projectile.Data->Radius < collisionMinOffset)
             {
-                projectile.Transform->Position += normal * (collisionMinOffset - collisionOffset + projectile.Data->Radius);
+                projectile.TransformPtr->Position += normal * (collisionMinOffset - collisionOffset + projectile.Data->Radius);
             }
         }
 
@@ -259,14 +259,14 @@ namespace Battle.QSimulation.Projectile
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
-            BattleProjectileHandle projectileHandle = BattleProjectileHandle.Create(filter);
-            projectileHandle.Data->Position = projectileHandle.Transform->Position;
+            BattleProjectileHandle projectileHandle = BattleProjectileHandle.Create(f, filter);
+            projectileHandle.Data->Position = projectileHandle.Transform.Position;
 
             if (!projectileHandle.Data->IsHeld)
             {
                 // move the projectile
-                FPVector2 newPosition = projectileHandle.Transform->Position + projectileHandle.Data->Direction * (projectileHandle.Data->Speed * f.DeltaTime);
-                BattleEntityManager.MoveCompound(f, GetProjectileHandle(f).ERef, newPosition, FP._0);
+                FPVector2 newPosition = projectileHandle.Transform.Position + projectileHandle.Data->Direction * (projectileHandle.Data->Speed * f.DeltaTime);
+                BattleEntityManager.MoveCompound(f, GetProjectileHandle(f).EntityHandle, newPosition, FP._0);
             }
 
             // reset CollisionFlags for next frame
@@ -484,8 +484,8 @@ namespace Battle.QSimulation.Projectile
                 {
                     BattlePlayerHandle teammateHandle = BattlePlayerHandle.Create(f, BattlePlayerManager.GetTeammateSlot(playerHandle.PlayerData.Slot));
 
-                    BattleGridPosition playerGridPosition = BattleGridManager.WorldPositionToGridPosition(playerHandle.LoadedCharacterTransform->Position);
-                    BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateHandle.LoadedCharacterTransform->Position);
+                    BattleGridPosition playerGridPosition = BattleGridManager.WorldPositionToGridPosition(playerHandle.LoadedCharacterTransform.Position);
+                    BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateHandle.LoadedCharacterTransform.Position);
 
                     isOnTopOfTeammate = playerGridPosition.Row == teammateGridPosition.Row && playerGridPosition.Col == teammateGridPosition.Col;
                 }

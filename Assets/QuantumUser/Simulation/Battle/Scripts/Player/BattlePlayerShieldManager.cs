@@ -56,7 +56,7 @@ namespace Battle.QSimulation.Player
         /// <param name="playerCharacterId">The ID of the specified character.</param>
         /// <param name="playerCharacterClass">The character class of the specified character.</param>
         /// <param name="playerCharacterEntityRef">EntityRef to the specified character's entity.</param>
-        public static int CreateShields(Frame f, BattlePlayerData.Ref playerData, int playerCharacterNumber, BattlePlayerCharacterID playerCharacterId, BattlePlayerCharacterClass playerCharacterClass, BattlePlayerEntityRef playerCharacterEntityRef)
+        public static int CreateShields(Frame f, BattlePlayerData.Ref playerData, int playerCharacterNumber, BattlePlayerCharacterID playerCharacterId, BattlePlayerCharacterClass playerCharacterClass, EntityRef playerCharacterEntityRef)
         {
             s_debugLogger.LogFormat(f, "({0}) Creating shields for character ID {1}", playerData.Slot, playerCharacterId);
 
@@ -237,19 +237,19 @@ namespace Battle.QSimulation.Player
             {
                 BattlePlayerShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
 
-                ReturnShieldEntityRef(f, playerHandle.PlayerData, characterNumber, shieldHandle.ShieldData->ShieldNumber);
+                ReturnShieldEntityRef(f, playerHandle.PlayerData, playerHandle.LoadedCharacterData->Number, shieldHandle.ShieldData->ShieldNumber);
             }
 
-            s_debugLogger.LogFormat(f, DebugMessageShieldAttachFormat, playerHandle.PlayerData.Slot, shieldNumber, characterNumber);
+            s_debugLogger.LogFormat(f, DebugMessageShieldAttachFormat, playerHandle.PlayerData.Slot, shieldNumber, playerHandle.LoadedCharacterData->Number);
             shieldNewHandle.ShieldData->IsAttached                    = true;
-            playerHandle.LoadedCharacterData->AttachedShieldEntityRef = shieldNewHandle.ShieldEntityRef;
+            playerHandle.LoadedCharacterData->AttachedShieldEntityRef = shieldNewHandle.ShieldEntityHandle;
 
-            if (teleport)
+            if (playerHandle.LoadedCharacterEntityHandle.RegisteredState == BattleEntityPlayState.InPlay)
             {
                 FPVector2 playerPosition = playerHandle.LoadedCharacterTransform->Position;
                 BattleEntityManager.TeleportCompound(f, shieldNewHandle.ShieldEntityRef, playerPosition, playerHandle.LoadedCharacterData->MovementRotationBaseRad);
             }
-            f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityRef, playerHandle.PlayerData.Team, shieldNewHandle.ShieldData->IsAttached, shieldNumber);
+            f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityHandle, playerHandle.PlayerData.Team, shieldNewHandle.ShieldData->IsAttached, shieldNumber);
         }
 
         /// <summary>
@@ -277,7 +277,7 @@ namespace Battle.QSimulation.Player
 
             if (!shieldHandle.ShieldData->IsAttached) return (BattlePlayerShieldEntityRef)shieldHandle.ShieldEntityRef;
 
-            s_debugLogger.LogFormat(f, DebugMessageShieldDetachFormat, playerHandle.PlayerData.Slot, shieldNumber, characterNumber);
+            s_debugLogger.LogFormat(f, DebugMessageShieldDetachFormat, playerHandle.PlayerData.Slot, shieldNumber, playerHandle.LoadedCharacterData->Number);
 
             playerHandle.LoadedCharacterData->AttachedShieldEntityRef = EntityRef.None;
             shieldHandle.ShieldData->IsAttached                       = false;
@@ -304,12 +304,12 @@ namespace Battle.QSimulation.Player
         {
             if (!IsValidShieldNumber(f, playerHandle.PlayerData.Slot, characterNumber, shieldNumber)) return;
 
-            BattlePlayerShieldHandle shieldHandle = GetShield(f, playerHandle.PlayerData, characterNumber, shieldNumber, updateViewPlayState: false);
+            BattlePlayerShieldHandle shieldHandle = GetShield(f, playerHandle, shieldNumber);
 
-            if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == (BattlePlayerShieldEntityRef)shieldHandle.ShieldEntityRef)
+            if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == shieldHandle.ShieldEntityHandle)
             {
                 s_debugLogger.LogFormat(f, DebugMessageShieldDetachFormat, playerHandle.PlayerData.Slot, shieldNumber, characterNumber);
-                playerHandle.LoadedCharacterData->AttachedShieldEntityRef = BattlePlayerShieldEntityRef.None;
+                playerHandle.LoadedCharacterData->AttachedShieldEntityRef = EntityRef.None;
             }
 
             s_debugLogger.LogFormat(f, DebugMessageShieldRemovedFormat, playerHandle.PlayerData.Slot, shieldNumber, characterNumber);
@@ -317,7 +317,7 @@ namespace Battle.QSimulation.Player
             shieldHandle.ShieldData->IsAttached = false;
 
             ReturnShieldEntityRef(f, playerHandle.PlayerData, characterNumber, shieldNumber);
-            f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityRef, playerHandle.PlayerData.Team, shieldHandle.ShieldData->IsAttached, shieldNumber);
+            f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityHandle, playerHandle.PlayerData.Team, shieldHandle.ShieldData->IsAttached, shieldNumber);
         }
 
         public static bool IsValidShieldNumber(BattlePlayerHandle playerHandle, int shieldNumber)

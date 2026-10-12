@@ -778,7 +778,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Handler method for <see cref="Quantum.EventBattlePlayStateUpdate">EventBattlePlayStateUpdate</see> QuantumEvent.<br/>
-        /// Updates the <see cref="_isInPlay">_isInPlay</see> bool.
+        /// Updates the <see cref="_playState">_isInPlay</see> bool.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
