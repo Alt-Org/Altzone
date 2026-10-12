@@ -13,21 +13,10 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     public void MemberRoleRights()
     {
-        Debug.Log("Hello there!");
+        Debug.Log($"We got CurrentMember: {CurrentMember.Player.name}");
 
-        // !-- Remember to delete, test for seeing role rights
-
-        Storefront.Get().GetClanData(ServerManager.Instance.Player.clan_id, data =>
-        {
-            _clanData = data;
-        });
-
-        foreach (var role in _clanData.ClanRoles)
-        {
-            if (role.rights != null)
-                PopulateRolesAndRights(role);
-        }
-        // Ends here
+        if (CurrentMember.Role.rights != null)
+            PopulateRolesAndRights(CurrentMember.Role);
 
         return;
     }
@@ -37,7 +26,10 @@ public class ClanMemberRoleRights : MonoBehaviour
         foreach (PlayerRights right in Enum.GetValues(typeof(PlayerRights)))
         {
             bool isAllowed = currentRole.HasRights(right);
-            Debug.Log($"{right} {isAllowed}");
+
+            // currentRole.SetRights(right, true);
+
+            Debug.Log($"{right} {currentRole.HasRights(right)}");
         }
     }
 }

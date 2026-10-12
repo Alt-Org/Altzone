@@ -14,16 +14,17 @@ using System;
 public class ClanMemberPopupController : MonoBehaviour
 {
     [SerializeField] private WindowDef _playerProfileWindowDef;
+    [SerializeField] private ClanMemberRoleRights roleRightsComponent;
 
     [Header("Root / Close")]
-    [SerializeField] private GameObject _root;              
+    [SerializeField] private GameObject _root;
     [SerializeField] private Button _closeButton;
     [SerializeField] private Button _leaveButton;
-    [SerializeField] private Button _backgroundCloseButton; 
+    [SerializeField] private Button _backgroundCloseButton;
 
     [Header("Top")]
     [SerializeField] private TMP_Text _nameText;
-    [SerializeField] private Button _openProfileButton;    
+    [SerializeField] private Button _openProfileButton;
 
     [Header("Right info")]
     [SerializeField] private TMP_Text _rolesText;
@@ -115,6 +116,9 @@ public class ClanMemberPopupController : MonoBehaviour
         Action<ClanMember> onAddFriendRequested = null)
     {
         if (member == null) return;
+
+        // related to votingq
+        roleRightsComponent.CurrentMember = member;
 
         _currentMember = member;
         _onAddFriendRequested = onAddFriendRequested;
@@ -369,7 +373,7 @@ public class ClanMemberPopupController : MonoBehaviour
     }
 
     private System.Collections.IEnumerator PollStartedRoutine()
-    {        
+    {
         yield return new WaitForSecondsRealtime(_pollStartedVisibleSeconds);
 
         // fade out
