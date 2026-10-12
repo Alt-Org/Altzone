@@ -35,7 +35,8 @@ namespace MenuUi.Scripts.Lobby.InRoom
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private TMP_Text _noticeText;
         [SerializeField] private TMP_Text _sendInviteToFriendText;
-        
+        [SerializeField] private AttentionSpanHandler _readyPanel;
+
         [SerializeField] private Button _inviteOnlinePlayerButton;
         [SerializeField] private InRoomInviteSelectorPanel _inviteSelectorPanel;
 
@@ -45,15 +46,19 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private Coroutine _customRoomTimeoutHolder;
         private const float CustomRoomTimeoutSeconds = 300f;
 
+        public delegate void LeaveRoom();
+        public static event LeaveRoom OnLeaveRoom;
+
         private void Awake()
         {
             //buttons[0].onClick.AddListener(SetPlayerAsGuest);
             //buttons[1].onClick.AddListener(SetPlayerAsSpectator);
             _startGameButton.onClick.AddListener(StartPlaying);
-            _backButton.onClick.AddListener(GoBack);
+            _backButton.onClick.AddListener(() => StartCoroutine(GoBack()));
             // premade target-mode selector removed until prefab wiring is fixed
             if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.AddListener(OnInviteOnlinePlayerButtonPressed);
             //buttons[3].onClick.AddListener(StartRaidTest);
+            InRoomPlayerSlot.OnActivateReadyPanel += OpenReadyPanel;
         }
 
         private void OnEnable()
@@ -113,6 +118,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
             StopCustomRoomTimeoutMonitoring();
             _startGameButton.onClick.RemoveAllListeners();
             _backButton.onClick.RemoveAllListeners();
+            InRoomPlayerSlot.OnActivateReadyPanel -= OpenReadyPanel;
         }
 
         private void OnDisable()
@@ -175,10 +181,11 @@ namespace MenuUi.Scripts.Lobby.InRoom
                         return;
                     }
 
-                    MatchmakingType targetGameType = InLobbyController.SelectedPremadeTargetMatchmakingType;
-                    if (targetGameType != MatchmakingType.Random2v2 && targetGameType != MatchmakingType.Clan2v2)
+                    MatchmakingType targetMatchmakingType = InLobbyController.SelectedPremadeTargetMatchmakingType;
+                    GameType targetGameType = InLobbyController.SelectedGameType;
+                    if (targetMatchmakingType != MatchmakingType.Random2v2 && targetMatchmakingType != MatchmakingType.Clan2v2)
                     {
-                        targetGameType = MatchmakingType.Random2v2;
+                        targetMatchmakingType = MatchmakingType.Random2v2;
                     }
 
                     string localUserId = PhotonRealtimeClient.LocalLobbyPlayer?.UserId ?? string.Empty;
@@ -191,13 +198,14 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     }
 
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
+                    PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetMatchmakingTypeKey, (int)targetMatchmakingType);
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, GetPlayerName(localUserId));
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, teammateUserId);
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, GetPlayerName(teammateUserId));
                     PhotonRealtimeClient.LobbyCurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateAccepted);
-                    this.Publish(new LobbyManager.StartMatchmakingEvent(targetGameType, true));
+                    this.Publish(new LobbyManager.StartMatchmakingEvent(targetMatchmakingType, targetGameType, true));
                     break;
 
                 case MatchmakingType.Clan2v2:
@@ -215,7 +223,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                             }
                         }
                         catch { }
-                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType));
+                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType));
                     }
                     else
                     {
@@ -236,9 +244,14 @@ namespace MenuUi.Scripts.Lobby.InRoom
                         }
                     }
                     catch { }
-                    this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType));
+                    this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType));
                     break;
             }
+        }
+
+        private void OpenReadyPanel()
+        {
+            _readyPanel.OpenPanel();
         }
 
         // Premade target selector UI path temporarily removed.
@@ -586,7 +599,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 }
 
                 Debug.Log($"Custom room timeout reached after {CustomRoomTimeoutSeconds}s, leaving room.");
-                GoBack();
+                yield return GoBack();
             }
             finally
             {
@@ -710,11 +723,13 @@ namespace MenuUi.Scripts.Lobby.InRoom
             }
         }
 
-        private void GoBack()
+        private IEnumerator GoBack()
         {
             Debug.Log($"leavingRoom");
             PhotonRealtimeClient.LeaveRoom();
-            if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Clan2v2) SignalBus.OnCloseBattlePopupRequestedSignal();
+            yield return new WaitUntil(() => !PhotonRealtimeClient.InRoom);
+            if (InLobbyController.SelectedMatchmakingType == MatchmakingType.Custom) OnLeaveRoom?.Invoke();
+            else SignalBus.OnCloseBattlePopupRequestedSignal();
             //this.Publish(new LobbyManager.StartPlayingEvent());
         }
 
@@ -728,7 +743,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
             // Getting room name either from custom properties or from the room's name itself.
-            string roomName = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonLobbyRoom.RoomNameKey);
+            string roomName = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.VisibleRoomNameKey);
             bool testRoom = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<bool>(PhotonLobbyRoom.TestModeKey);
             string gameType = ((GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey)).GetString();
             if (string.IsNullOrEmpty(roomName)) roomName = PhotonRealtimeClient.LobbyCurrentRoom.Name;
