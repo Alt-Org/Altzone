@@ -730,14 +730,14 @@ namespace Battle.QSimulation.Player
 
         private static void SetupPlayerCharacter(Frame f, BattlePlayerHandle playerHandle)
         {
-            DevAssertPlayerHandleHasCharacterLoaded(f, playerHandle, errorContext: "Can not setup player");
+            playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerManager), errorContext: "Can not setup player");
 
             BattlePlayerClassManager.SetupParameters creationParameters = BattlePlayerClassManager.OnCreate(f, playerHandle);
 
             // attach shield
             if (creationParameters.AttachedShieldNumber >= 0)
             {
-                BattlePlayerShieldManager.AttachShield(f, playerHandle, playerHandle.LoadedCharacterData->Number, creationParameters.AttachedShieldNumber, teleport: false);
+                BattlePlayerShieldManager.AttachShield(f, playerHandle, creationParameters.AttachedShieldNumber);
             }
 
             // set playerManagerData for player character
@@ -757,7 +757,7 @@ namespace Battle.QSimulation.Player
         /// <param name="characterNumber">The character number of the character to be spawned.</param>
         private static void SpawnPlayerCharacter(Frame f, BattlePlayerHandle playerHandle, BattlePlayerHandle? playerHandlePreviousCharacter)
         {
-            DevAssertPlayerHandleHasCharacterLoaded(f, playerHandle, errorContext: "Can not spawn player");
+            playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerManager), errorContext: "Can not spawn player");
 
             FPVector2 worldPosition = BattleParameters.GetIsTestFlipperGame(f)
                                     ? playerHandle.PlayerData.Low_Level.CharacterDefaultSpawnPositions[playerHandle.LoadedCharacterData->Number]
@@ -826,7 +826,7 @@ namespace Battle.QSimulation.Player
         /// <param name="characterNumber">Character number of the character being despawned.</param>
         private static void DespawnPlayerCharacter(Frame f, BattlePlayerHandle playerHandle)
         {
-            DevAssertPlayerHandleHasCharacterLoaded(f, playerHandle, errorContext: "Can not despawn player");
+            playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerManager), errorContext: "Can not despawn player");
 
             s_debugLogger.LogFormat(f, "({0}) Despawning character number: {1}", playerHandle.PlayerData.Slot, playerHandle.LoadedCharacterData->Number);
 
@@ -853,11 +853,6 @@ namespace Battle.QSimulation.Player
             string message = string.Format(messageformat, args);
             s_debugLogger.Error(f, message);
             f.Events.BattleDebugOnScreenMessage(message);
-        }
-
-        private static void DevAssertPlayerHandleHasCharacterLoaded(Frame f, BattlePlayerHandle playerHandle, string errorContext)
-        {
-            s_debugLogger.DevAssertFormat(f, playerHandle.HandleHasCharacterLoaded, "{0}, PlayerHandle has no loaded character", errorContext);
         }
 
         #endregion Private - Static Methods
