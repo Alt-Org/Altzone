@@ -79,7 +79,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 button.onClick.AddListener(() => onJoinRoom(room.Name));
             }
 
-            slot.SetInfo(room, alternativeStyle);
+            slot.SetInfo(room, !alternativeStyle);
         }
 
         private static void ResetPanel(Transform parent)
