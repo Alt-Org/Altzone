@@ -13,13 +13,15 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private SoulHomeFurnitureReference _furnitureReference;
         [SerializeField]
-        private StorageFurnitureReference _storageFurnitureReference; // -------------------------
+        private StorageFurnitureReference _storageFurnitureReference;
         [SerializeField]
         private GameObject _furnitureIconObject;
         [SerializeField]
-        private Image _furnitureBackground; // non-default background object-------------------------
+        private Image _furnitureBackground; // non-default background object
         [SerializeField]
-        private Image _furnitureSetFont; // set "font" object-------------------------
+        private Image _furnitureSetFont; // set "font" object
+        [SerializeField]
+        private TextMeshProUGUI _furnitureSetFontFallback; // fallback when SetFont is null
         [SerializeField]
         private TextMeshProUGUI _name;
         [SerializeField]
@@ -84,12 +86,15 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _furnitureSetFont.sprite = null;
                 _furnitureSetFont.gameObject.SetActive(false);
+                _furnitureSetFontFallback.text = furnitureSetInfo.SetName;
+                _furnitureSetFontFallback.gameObject.SetActive(true);
             }
             else
             {
                 _furnitureSetFont.sprite = furnitureSetInfo.SetFontName;
                 _furnitureSetFont.preserveAspect = true;
                 _furnitureSetFont.gameObject.SetActive(true);
+                _furnitureSetFontFallback.gameObject.SetActive(false);
             }
             GetComponent<ResizeCollider>().Resize();
         }
