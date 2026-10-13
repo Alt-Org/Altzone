@@ -585,8 +585,8 @@ namespace Battle.QSimulation.Game
         {
             BattleManageEntityQComponent managedEntity = new();
 
-            managedEntity.RegisteredState = BattleEntityPlayState.OutOfPlay;
             managedEntity.IsRegistered = true;
+            managedEntity.RegisteredState = BattleEntityPlayState.InPlay;
 
             f.Add(entityRef, managedEntity, out BattleManageEntityQComponent* componentPointer);
 
@@ -600,7 +600,7 @@ namespace Battle.QSimulation.Game
             if (registered)
             {
                 managedEntity.IsRegistered = true;
-                managedEntity.RegisteredState = BattleEntityPlayState.OutOfPlay;
+                managedEntity.RegisteredState = BattleEntityPlayState.InPlay;
             }
 
             managedEntity.IsCompound = true;
