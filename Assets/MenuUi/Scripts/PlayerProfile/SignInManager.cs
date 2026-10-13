@@ -43,6 +43,34 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private TMP_InputField _registerPasswordHintInputField;
         [SerializeField] private TMP_InputField _registerPasswordHintAnswerInputField;
 
+        public void ResetAllFields()
+        {
+            _logInUsernameInputField.text = string.Empty;
+            _logInPasswordInputField.text = string.Empty;
+            _registerUsernameInputField.text = string.Empty;
+            _registerPasswordInputField.text = string.Empty;
+            _registerPassword2InputField.text = string.Empty;
+            _registerPasswordHintInputField.text = string.Empty;
+            _registerPasswordHintAnswerInputField.text = string.Empty;
+
+
+            _logInPasswordVisibilityToggle.isOn = false;
+            _registerPasswordVisibilityToggle.isOn = false;
+            _registerPassword2VisibilityToggle.isOn = false;
+            _privacyPolicyAuthToggle.isOn = false;
+            _registerAgeVerificationCheckToggle.isOn = false;
+            _registerAgeVerificationToggle.isOn = false;
+            _registerParentalAuthToggle.isOn = false;
+            _informationPolicyAuthToggle.isOn = false;
+
+            if (_ageAuthToggleGroup != null)
+            {
+                _ageAuthToggleGroup.SetAllTogglesOff();
+            }
+        }
+
+        
+
 
         [Header("Input Fields Errors")]
         [SerializeField] private Image _logInUsernameInputFieldError;
