@@ -759,8 +759,10 @@ namespace Battle.QSimulation.Player
         {
             playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerManager), errorContext: "Can not spawn player");
 
+            int characterNumber = playerHandle.LoadedCharacterData->Number;
+
             FPVector2 worldPosition = BattleParameters.GetIsTestFlipperGame(f)
-                                    ? playerHandle.PlayerData.Low_Level.CharacterDefaultSpawnPositions[playerHandle.LoadedCharacterData->Number]
+                                    ? playerHandle.PlayerData.Low_Level.CharacterDefaultSpawnPositions[characterNumber]
                                     : playerHandle.PlayerData.Low_Level.CharacterDefaultSpawnPositions[1];
 
             BattlePlayerSpawnBehaviour spawnBehaviour = BattleParameters.GetIsTestFlipperGame(f) ? BattlePlayerSpawnBehaviour.DefaultPosition : playerHandle.LoadedCharacterData->AttributeSpawnBehaviour;
@@ -779,7 +781,7 @@ namespace Battle.QSimulation.Player
                     if (playerHandlePreviousCharacter != null)
                     {
                         playerHandlePreviousCharacter.Value.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerManager), errorContext: "Can't read previous character");
-                        worldPosition = playerHandlePreviousCharacter.Value.LoadedCharacterTransform.Position;
+                        worldPosition = playerHandlePreviousCharacter.Value.LoadedCharacterTransformCopy.Position;
                     }
                     break;
             }
@@ -789,20 +791,29 @@ namespace Battle.QSimulation.Player
                 DespawnPlayerCharacter(f, playerHandlePreviousCharacter.Value);
             }
 
-            s_debugLogger.LogFormat(f, "({0}) Spawning character number: {1}", playerHandle.PlayerData.Slot, playerHandle.LoadedCharacterData->Number);
+            s_debugLogger.LogFormat(f, "({0}) Spawning character number: {1}", playerHandle.PlayerData.Slot, characterNumber);
 
-            // update player data
+            //{ update character
+
+            BattleEntityManager.Use(f, playerHandle.PlayerData.Low_Level.CharacterEntityGroupID, characterNumber);
+
             playerHandle.LoadedCharacterData->AbilityCooldownSec       = FrameTimer.FromSeconds(f, FP._3);
             playerHandle.LoadedCharacterData->AbilityActivateBufferSec = FrameTimer.FromSeconds(f, FP._0);
             playerHandle.LoadedCharacterData->ViewPosition             = worldPosition;
+
+            //} update character
 
             // update shield if attached
             if (playerHandle.LoadedCharacterHasShieldAttached)
             {
                 BattlePlayerShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
 
+                int shieldNumber = shieldHandle.ShieldData->ShieldNumber;
+
+                BattleEntityManager.Use(f, playerHandle.PlayerData.Low_Level.ShieldEntityGroupIDs[characterNumber], shieldNumber);
+
                 f.Events.BattlePlayStateUpdate(shieldHandle.ShieldEntityHandle, BattleEntityPlayState.InPlay);
-                f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityHandle, playerHandle.PlayerData.Team, ShieldAttached: true, shieldHandle.ShieldData->ShieldNumber);
+                f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityHandle, playerHandle.PlayerData.Team, ShieldAttached: true, shieldNumber);
             }
 
             BattlePlayerMovementController.Teleport(f, playerHandle);
@@ -823,14 +834,13 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">PlayerHandle of the player the character will be spawned for.</param>
-        /// <param name="characterNumber">Character number of the character being despawned.</param>
         private static void DespawnPlayerCharacter(Frame f, BattlePlayerHandle playerHandle)
         {
             playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerManager), errorContext: "Can not despawn player");
 
             s_debugLogger.LogFormat(f, "({0}) Despawning character number: {1}", playerHandle.PlayerData.Slot, playerHandle.LoadedCharacterData->Number);
 
-            playerHandle.LoadedCharacterData->MovementPreviousInPlayPosition = playerHandle.LoadedCharacterTransform.Position;
+            playerHandle.LoadedCharacterData->MovementPreviousInPlayPosition = playerHandle.LoadedCharacterTransformCopy.Position;
 
             BattlePlayerClassManager.OnDespawn(f, BattlePlayerClassManager.DespawnEventType.DespawnUnSelect, playerHandle);
 
@@ -845,7 +855,7 @@ namespace Battle.QSimulation.Player
             }
 
             // update data
-            playerHandle.LoadedCharacterData->ViewPosition = playerHandle.LoadedCharacterTransform.Position;
+            playerHandle.LoadedCharacterData->ViewPosition = playerHandle.LoadedCharacterTransformCopy.Position;
         }
 
         private static void OnScreenError(Frame f, string messageformat, params object[] args)
