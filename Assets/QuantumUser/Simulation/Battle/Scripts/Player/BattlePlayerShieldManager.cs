@@ -313,7 +313,7 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerShieldHandle shieldHandle = GetShield(f, playerHandle, shieldNumber);
 
-            if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == shieldHandle.ShieldEntityHandle)
+            if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == shieldHandle.ShieldEntityHandle.ERef)
             {
                 s_debugLogger.LogFormat(f, DebugMessageShieldDetachFormat, playerHandle.PlayerData.Slot, shieldNumber, characterNumber);
                 playerHandle.LoadedCharacterData->AttachedShieldEntityRef = EntityRef.None;
