@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Model.Poco.Game; // --------------------------------
+using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,25 +16,25 @@ namespace MenuUI.Scripts.SoulHome
         private SoulHomeController _controller;
 
         [SerializeField] private SmartHorizontalObjectList _smartList;
-        private List<FurnitureListObject> _candidateListObjects = new(); // Matches the category/set filter, including sold out ones.
-        private List<FurnitureListObject> _furnitureListObjects = new(); // What the tray shows: candidates that still have furniture left.
-        [SerializeField] private GameObject _decorateModeButtons; //-----------------
-        [SerializeField] private FurnitureTrayCategoryButton _decorateModeSetsButton; //-----------------
+        private List<FurnitureListObject> _candidateListObjects = new(); // Matches the category/set filter
+        private List<FurnitureListObject> _furnitureListObjects = new(); // What the tray shows
+        [SerializeField] private GameObject _decorateModeButtons;
+        [SerializeField] private FurnitureTrayCategoryButton _decorateModeSetsButton;
         
-        [SerializeField] private GameObject _renovateModeButtons; //-----------------
-        [SerializeField] private TextMeshProUGUI _categoryText; //-----------------
-        [SerializeField] private TextMeshProUGUI _modeText; //-----------------
-        [SerializeField] private GameObject _setSelectMenu; //-----------------
-        [SerializeField] private GameObject _setSelectButtonContainer; //-----------------
-        [SerializeField] private GameObject _setSelectButtonPrefab; //-----------------
-        [SerializeField] private StorageFurnitureReference _storageFurnitureReference; // needed for set info? -------------------------
-        private bool _isOnDecorateMode = true; // ----------------
-        private bool _isTrayMinimized = false; // ----------------
+        [SerializeField] private GameObject _renovateModeButtons;
+        [SerializeField] private TextMeshProUGUI _categoryText;
+        [SerializeField] private TextMeshProUGUI _modeText;
+        [SerializeField] private GameObject _setSelectMenu;
+        [SerializeField] private GameObject _setSelectButtonContainer;
+        [SerializeField] private GameObject _setSelectButtonPrefab;
+        [SerializeField] private StorageFurnitureReference _storageFurnitureReference;
+        private bool _isOnDecorateMode = true;
+        private bool _isTrayMinimized = false;
 
-        private string _currentSelectedSet; // -------------------
-        private int _currentSelectedCategory = 1; // shows all by default ------------------
+        private string _currentSelectedSet;
+        private int _currentSelectedCategory = 1; // shows all by default
 
-        private FurnitureTrayCategoryButton _previousCategoryButton = null; // -----------------
+        private FurnitureTrayCategoryButton _previousCategoryButton = null;
 
         public SmartHorizontalObjectList SmartList => _smartList;
 
@@ -172,18 +172,16 @@ namespace MenuUI.Scripts.SoulHome
             if (!_isTrayMinimized)
             {
                 RectTransform rect = GetComponent<RectTransform>();
-                //rect.offsetMax = new Vector2(rect.offsetMax.x, -400f); // not ideal if screen size or resolution can change??
                 _isTrayMinimized = true;
 
-                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 300f); // 100f
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 300f); // Minimized height
             }
             else
             {
                 RectTransform rect = GetComponent<RectTransform>();
-                //rect.offsetMax = new Vector2(rect.offsetMax.x, 0f);
                 _isTrayMinimized = false;
 
-                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 462f); // 462f
+                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 462f); // Maximized height
             }
         }
 
@@ -228,7 +226,6 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (furniture == null || _controller.FurnitureList == null) return;
 
-            // Look up the model, not the slots: the furniture's slot may be scrolled out of view, filtered out or sold out.
             foreach (FurnitureListObject list in _controller.FurnitureList.Get())
             {
                 if (!list.Name.Equals(furniture.Name)) continue;
@@ -245,7 +242,6 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (string.IsNullOrWhiteSpace(furnitureName)) return null;
 
-            // Look up the model, not a pooled slot which may have been recycled.
             foreach (FurnitureListObject list in _furnitureListObjects)
             {
                 if (list.Name.Equals(furnitureName))
@@ -328,7 +324,6 @@ namespace MenuUI.Scripts.SoulHome
                 _decorateModeButtons.SetActive(true);
                 _renovateModeButtons.SetActive(false);
                 CategoryButtonClicked(_decorateModeButtons.transform.GetChild(0).GetComponent<FurnitureTrayCategoryButton>());
-                // TODO - FillSelectionButtonList() with renovate sets category filter
             }
             else
             {
@@ -339,7 +334,6 @@ namespace MenuUI.Scripts.SoulHome
                 _decorateModeButtons.SetActive(false);
                 _renovateModeButtons.SetActive(true);
                 CategoryButtonClicked(_renovateModeButtons.transform.GetChild(0).GetComponent<FurnitureTrayCategoryButton>());
-                // TODO - FillSelectionButtonList() with decorate sets category filter
             }
         }
     }

@@ -335,9 +335,28 @@ namespace MenuUI.Scripts.SoulHome
         void LateUpdate()
         {
             if (!_startFinished) return;
-            // Keep the hover buttons attached to the selected furniture when the camera scrolls or zooms.
-            if (_selectedFurniture != null && _furnitureHoverButtons.activeSelf)
-                _mainScreen.SetHoverButtons(_camera.WorldToViewportPoint(_selectedFurniture.transform.position));
+            // Move hover buttons with the selected furniture when scrolling the tower
+            if (_selectedFurniture != null && _furnitureHoverButtons.activeSelf) UpdateHoverButtons();
+        }
+
+        // Places the hover buttons around the selected furniture's collider
+        private void UpdateHoverButtons()
+        {
+            // Built from the box itself: Collider2D.bounds lags behind until physics syncs the transform, and is empty while disabled.
+            BoxCollider2D box = _selectedFurniture.GetComponent<BoxCollider2D>();
+            Transform furniture = _selectedFurniture.transform;
+            Vector2 half = box.size * 0.5f;
+            Bounds bounds = new(furniture.TransformPoint(box.offset), Vector3.zero);
+            bounds.Encapsulate(furniture.TransformPoint(box.offset + new Vector2(-half.x, -half.y)));
+            bounds.Encapsulate(furniture.TransformPoint(box.offset + new Vector2(half.x, -half.y)));
+            bounds.Encapsulate(furniture.TransformPoint(box.offset + new Vector2(-half.x, half.y)));
+            bounds.Encapsulate(furniture.TransformPoint(box.offset + new Vector2(half.x, half.y)));
+            Vector3 center = bounds.center;
+
+            _mainScreen.SetHoverButtons(
+                _camera.WorldToViewportPoint(new Vector3(center.x, bounds.max.y, center.z)),
+                _camera.WorldToViewportPoint(new Vector3(bounds.min.x, center.y, center.z)),
+                _camera.WorldToViewportPoint(new Vector3(center.x, bounds.min.y, center.z)));
         }
 
         public bool FindRayPoint(Vector2 relPoint, ClickState click)
@@ -511,7 +530,7 @@ namespace MenuUI.Scripts.SoulHome
                     _grabbingFurniture = false;
                 }
 
-                if(_selectedFurniture)_mainScreen.SetHoverButtons(_camera.WorldToViewportPoint(_selectedFurniture.transform.position));
+                if(_selectedFurniture) UpdateHoverButtons();
 
             }
             else if (click is ClickState.End && furnitureObject == null)
@@ -881,6 +900,16 @@ namespace MenuUI.Scripts.SoulHome
                 _soulHomeController.EditModeTrayHandle(false);
             }
             //if(!editingMode) ResetChanges();
+        }
+
+        // Hover confirm button: hides the hover buttons and outlines
+        public void ConfirmFurniture()
+        {
+            _furnitureHoverButtons.SetActive(false);
+            if (_selectedFurniture == null) return;
+            // Without a slot DeselectFurniture would send it back to the tray
+            if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot == null) return;
+            DeselectFurniture();
         }
 
         public void RotateFurniture()

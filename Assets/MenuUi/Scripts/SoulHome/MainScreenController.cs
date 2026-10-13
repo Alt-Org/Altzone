@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using UnityEngine.UI;
-using UnityEngine.EventSystems; // -------------------
+using UnityEngine.EventSystems;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace MenuUI.Scripts.SoulHome
@@ -23,14 +23,17 @@ namespace MenuUI.Scripts.SoulHome
         private Camera _camera;
         [SerializeField]
         private GameObject _hoverButtons;
+        [SerializeField] private RectTransform _confirmHoverButton; // Placed above the selected furniture.
+        [SerializeField] private RectTransform _cancelHoverButton; // Placed left of the selected furniture.
+        [SerializeField] private RectTransform _rotateHoverButton; // Placed below the selected furniture.
+        [SerializeField] private float _hoverButtonMargin = 10f;
+        [SerializeField] private RectTransform _hoverButtonLine;
+        [SerializeField] private Vector2 _hoverButtonLineStart = new(0.07f, 0f);
+        [SerializeField] private Vector2 _hoverButtonLineEnd = new(1f, 0.94f);
         [SerializeField]
-        //private GameObject _furnitureButtonTray;
-        //[SerializeField]
         private GameObject _changeHandleButtonTray;
         [SerializeField]
         private GameObject _horizontalItemTray;
-        //[SerializeField]
-        //private GameObject _furnitureButtons;
 
         float _prevTapTime = 0;
         float _backDelay = 0;
@@ -62,7 +65,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             CheckTrayButtonStatus();
             //CheckHoverButtons();
-            CheckFurnitureButtons();
+            //CheckFurnitureButtons();
             if (!_soulHomeController.CheckInteractableStatus())
             {
                 CancelTrayGesture();
@@ -88,7 +91,8 @@ namespace MenuUI.Scripts.SoulHome
                 //Debug.Log(Touch.activeFingers[0].screenPosition);
                 if (ClickStateHandler.GetClickType() is ClickType.Click)
                 RayPoint(clickState);
-                else if(ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll)
+                // Mouse wheel or pinch over a menu (e.g. scrolling the set select list) belongs to that menu, not the tower zoom.
+                else if(ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll && !IsPointerOverUi())
                 {
                     Debug.LogWarning("Scroll Test");
                     float distance = ClickStateHandler.GetPinchDistance();
@@ -160,10 +164,12 @@ namespace MenuUI.Scripts.SoulHome
             _uiRaycastResults.Clear();
             EventSystem.current.RaycastAll(pointer, _uiRaycastResults);
             if (_uiRaycastResults.Count == 0) return false;
+            // Stop scroll input from going through the gaps
             GameObject target = _uiRaycastResults[0].gameObject;
-            // Slot graphics are valid furniture targets, even if a slot has a Button.
-            return target.GetComponentInParent<FurnitureTraySlotHandler>() == null &&
-                target.GetComponentInParent<Selectable>() != null;
+            if (target.GetComponentInParent<FurnitureTraySlotHandler>() != null) return false;
+            if (target.GetComponentInParent<Selectable>() != null) return true;
+            ScrollRect scrollRect = target.GetComponentInParent<ScrollRect>();
+            return scrollRect != null && scrollRect.GetComponentInParent<FurnitureTrayHandler>() == null;
         }
 
         private void RayPoint(ClickState click)
@@ -183,7 +189,6 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     if (_trayFurnitureDragStarted && _soulHomeTower.SelectedFurniture == null)
                         DeselectTrayFurniture();
-                    // Keep the list's decision until its OnEndDrag has also run.
                     _trayGestureList = null;
                     _trayGestureFurnitureName = null;
                     _trayFurnitureDragStarted = false;
@@ -220,7 +225,6 @@ namespace MenuUI.Scripts.SoulHome
             bool trayHit = false;
             if (!overlayHit)
             {
-                // Decide ownership before processing overlapping room/tray colliders.
                 if (click == ClickState.Start)
                 {
                     foreach (RaycastHit2D trayTarget in hit)
@@ -266,8 +270,6 @@ namespace MenuUI.Scripts.SoulHome
                     if (!trayHit && hit2.collider.gameObject.CompareTag("SoulHomeScreen"))
                     {
                         soulHomeHit = true;
-                        //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement(); // ------------
-                        //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false; // ------------
                         if (_tempSelectedFurnitureTray != null || _selectedFurnitureTray != null)
                         {
                             if (_tempSelectedFurnitureTray != null)
@@ -293,34 +295,31 @@ namespace MenuUI.Scripts.SoulHome
 
                         //Debug.Log(hit.collider.gameObject.name);
                         Vector3 hitPoint = hit2.transform.InverseTransformPoint(hit2.point);
-                        //Debug.Log(hitPoint);
                         float x = hit2.transform.GetComponent<RectTransform>().rect.width;
                         float y = hit2.transform.GetComponent<RectTransform>().rect.height;
                         Vector2 relPos = new((x / 2 + hitPoint.x) / x, (y / 2 + hitPoint.y) / y);
-                        //Debug.Log(relPos);
                         bool check = _soulHomeTower.FindRayPoint(relPos, click);
                         if (check) _backDelay = Time.time;
                         if (_soulHomeTower.SelectedFurniture != null)
                         {
-                            if (_selectedFurnitureTray == null)
-                            {
+                            //if (_selectedFurnitureTray == null)
+                            //{
                                 //SetFurniture();
-                            }
-                                if (_selectedFurnitureTray != null && _selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
+                            //}
+                            if (_selectedFurnitureTray != null && _selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
                                 //_selectedFurnitureTray.transform.position = hit2.point;
                         }
                     }
                     if (hit2.collider.gameObject.CompareTag("FurnitureTray"))
                     {
                         trayHit = true;
-                        //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true; // -------------------
                         if (_selectedFurnitureTray == null)
                         {
-                            if (_soulHomeTower.SelectedFurniture != null)
-                            {
+                            //if (_soulHomeTower.SelectedFurniture != null)
+                            //{
                                 //SetFurniture(_soulHomeTower.SelectedFurniture);
                                 //_selectedFurnitureTray.transform.position = hit2.point;
-                            }
+                            //}
                         }
                         else
                         {
@@ -330,7 +329,6 @@ namespace MenuUI.Scripts.SoulHome
                         }
                         if (_soulHomeTower.SelectedFurniture != null)
                         {
-                            //Debug.Log("Check2");
                             if (click is ClickState.Start)
                             {
                                 _soulHomeTower.DeselectFurniture();
@@ -345,11 +343,8 @@ namespace MenuUI.Scripts.SoulHome
 
                             if (click is ClickState.End)
                             {
-                                //Debug.Log("Check3");
                                 if (_selectedFurnitureTray != null /*&& !_selectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem")*/)
                                 {
-                                    //Destroy(_selectedFurnitureTray); //This is temporaty setup until a create the handling to up the furniture into the tray.
-                                    //Debug.Log("Check1");
                                     AddTrayItem(_selectedFurnitureTray.GetComponent<TrayFurniture>().Furniture);
                                     Destroy(_selectedFurnitureTray);
                                 }
@@ -367,18 +362,12 @@ namespace MenuUI.Scripts.SoulHome
                             string furnitureName = hit2.collider.GetComponent<FurnitureTraySlotHandler>().FurnitureList?.Name;
                             GameObject furnitureObject = GetTrayHandler().TakeFurnitureFromTray(furnitureName);
                             if(furnitureObject != null) _tempSelectedFurnitureTray = furnitureObject;
-                            //_selectedFurnitureTray = _tempSelectedFurnitureTray;
-                            //transform.Find("Itemtray/Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement();
-                            //transform.Find("Itemtray/Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false;
                         }
                     }
                 }
                 if (!trayHit)
                 {
-                    //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().StopMovement(); // --------------------
-                    //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = false; // --------------------
                     if (_selectedFurnitureTray != null && _selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
-
                 }
                 if (click is ClickState.End)
                 {
@@ -404,10 +393,10 @@ namespace MenuUI.Scripts.SoulHome
                         }
                         _soulHomeTower.DeselectFurniture();
                     }*/
-                    if (_soulHomeTower.SelectedFurniture == null)
-                    {
+                    //if (_soulHomeTower.SelectedFurniture == null)
+                    //{
                         //RevealTrayItem();
-                    }
+                    //}
                     if (!soulHomeHit && _soulHomeTower.SelectedFurniture != null)
                     {
                         if (_soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
@@ -508,7 +497,7 @@ namespace MenuUI.Scripts.SoulHome
                 tray.SetActive(true);
                 _changeHandleButtonTray.SetActive(true);
                 //_furnitureButtonTray.SetActive(true);
-                SetFurnitureButtons();
+                //SetFurnitureButtons();
             }
             else
             {
@@ -544,8 +533,8 @@ namespace MenuUI.Scripts.SoulHome
             return _horizontalItemTray;
         }
 
-        private void SetFurnitureButtons()
-        {/*
+        /*private void SetFurnitureButtons()
+        {
             float width = _furnitureButtonTray.GetComponent<RectTransform>().rect.width;
             float height = _furnitureButtonTray.GetComponent<RectTransform>().rect.height;
 
@@ -583,8 +572,8 @@ namespace MenuUI.Scripts.SoulHome
                 rotateButton.GetComponent<RectTransform>().anchorMin = new(0.75f, 0.5f);
                 rotateButton.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                 rotateButton.GetComponent<RectTransform>().sizeDelta = new(buttonSize, buttonSize);
-            }*/
-        }
+            }
+        }*/
 
         public void SetFurnitureInfo()
         {
@@ -672,9 +661,9 @@ namespace MenuUI.Scripts.SoulHome
             if(_soulHomeTower.SelectedFurniture != null && _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled) _hoverButtons.SetActive(true);
             else _hoverButtons.SetActive(false);
         }
-        private void CheckFurnitureButtons()
-        {
-            return; // ----------------------------------------------
+        //private void CheckFurnitureButtons()
+        //{
+         //   return; // ----------------------------------------------
             /*
             if (_soulHomeTower.SelectedFurniture != null)
             {
@@ -686,15 +675,60 @@ namespace MenuUI.Scripts.SoulHome
                 _furnitureButtons.transform.Find("RotateFurniture").GetComponent<Button>().interactable = false;
                 _furnitureButtons.transform.Find("SetFurniture").GetComponent<Button>().interactable = false;
             }*/
-        }
-        public void SetHoverButtons(Vector3 relPos)
+        //}
+        /// <summary>Positions the hover buttons next to the selected furniture's edges, given as tower camera viewport points.</summary>
+        public void SetHoverButtons(Vector3 topEdge, Vector3 leftEdge, Vector3 bottomEdge)
         {
-            float x = transform.Find("Screen").GetComponent<RectTransform>().rect.width;
-            float y = transform.Find("Screen").GetComponent<RectTransform>().rect.height;
-            Vector2 localPosition = new(x * relPos.x - x / 2, y * relPos.y - y / 2);
-            Vector2 position = transform.Find("Screen").TransformPoint(localPosition);
-            _hoverButtons.transform.position = position;
-            CheckHoverButtons(); // ----------------------------------------------
+            RectTransform screen = transform.Find("Screen").GetComponent<RectTransform>();
+            PlaceHoverButton(_confirmHoverButton, screen, topEdge, Vector2.up);
+            PlaceHoverButton(_cancelHoverButton, screen, leftEdge, Vector2.left);
+            PlaceHoverButton(_rotateHoverButton, screen, bottomEdge, Vector2.down);
+            PlaceHoverButtonLine();
+            CheckHoverButtons();
+        }
+
+        private void PlaceHoverButtonLine()
+        {
+            if (_hoverButtonLine == null || _cancelHoverButton == null || _confirmHoverButton == null) return;
+
+            Transform parent = _hoverButtonLine.parent;
+            Vector2 start = parent.InverseTransformPoint(GetEdgeWorldPoint(_cancelHoverButton, Vector2.up));
+            Vector2 end = parent.InverseTransformPoint(GetEdgeWorldPoint(_confirmHoverButton, Vector2.left));
+            Vector2 delta = end - start;
+            Vector2 imageSpan = _hoverButtonLineEnd - _hoverButtonLineStart;
+
+            bool fits = delta.x > 0f && delta.y > 0f && imageSpan.x > 0f && imageSpan.y > 0f;
+            _hoverButtonLine.gameObject.SetActive(fits);
+            if (!fits) return;
+
+            // With the pivot at the line's start, the pivot is placed on the start point and the size scales the
+            // part of the image between the two ends to cover the distance between the buttons.
+            _hoverButtonLine.anchorMin = _hoverButtonLine.anchorMax = new Vector2(0.5f, 0.5f);
+            _hoverButtonLine.pivot = _hoverButtonLineStart;
+            _hoverButtonLine.sizeDelta = new Vector2(delta.x / imageSpan.x, delta.y / imageSpan.y);
+            _hoverButtonLine.position = parent.TransformPoint(start);
+        }
+
+        private static Vector3 GetEdgeWorldPoint(RectTransform rectTransform, Vector2 direction)
+        {
+            Rect rect = rectTransform.rect;
+            return rectTransform.TransformPoint(rect.center + Vector2.Scale(rect.size * 0.5f, direction));
+        }
+
+        private void PlaceHoverButton(RectTransform button, RectTransform screen, Vector3 viewportPoint, Vector2 direction)
+        {
+            if (button == null) return;
+
+            // The tower camera renders onto the Screen, so a viewport point maps to the same relative spot on its rect.
+            Rect rect = screen.rect;
+            Vector2 localPosition = new(rect.xMin + rect.width * viewportPoint.x, rect.yMin + rect.height * viewportPoint.y);
+
+            // Move the button out by half of its size plus the margin, so its edge sits next to the furniture's edge.
+            Vector3 halfSize = screen.InverseTransformVector(button.TransformVector(button.rect.size * 0.5f));
+            float offset = Mathf.Abs(direction.x * halfSize.x) + Mathf.Abs(direction.y * halfSize.y) + _hoverButtonMargin;
+            localPosition += direction * offset;
+
+            button.position = screen.TransformPoint(localPosition);
         }
 
     }
