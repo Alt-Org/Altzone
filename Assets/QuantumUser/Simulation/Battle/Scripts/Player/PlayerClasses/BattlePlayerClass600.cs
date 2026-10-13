@@ -42,7 +42,7 @@ namespace Battle.QSimulation.Player
             if (projectileCollisionData->Projectile.Data->EmotionCurrent == BattleEmotionState.Love) return;
             if (projectileCollisionData->IsLoveProjectileCollision) return;
 
-            FPVector2 normal = projectileCollisionData->Projectile.Transform.Position - shieldHandle.ShieldTransform.Position;
+            FPVector2 normal = projectileCollisionData->Projectile.TransformCopy.Position - shieldHandle.ShieldTransformCopy.Position;
             FPVector2 direction = FPVector2.Reflect(projectileCollisionData->Projectile.Data->Direction, normal).Normalized;
 
             BattleProjectileQSystem.HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->OtherEntityRef, normal, shieldHandle.CollidedHitboxComponent->CollisionMinOffset);

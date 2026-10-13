@@ -220,7 +220,7 @@ namespace Battle.QSimulation.Player
                 FPVector2 direction = isJoystickTap ? FPVector2.Up : classData->JoystickValuePrevious.Normalized;
 
                 if (playerHandle.PlayerData.Team == BattleTeamNumber.TeamBeta) direction = FPVector2.Rotate(direction, FP.Rad_180);
-                FPVector2 position = playerHandle.LoadedCharacterTransform.Position + direction * spec.ProjectileSpawnDistance;
+                FPVector2 position = playerHandle.LoadedCharacterTransformCopy.Position + direction * spec.ProjectileSpawnDistance;
                 BattlePlayerClass100ProjectileQSystem.Create(f, f.FindAsset(spec.ProjectileEntityPrototype), position, direction, spec.ProjectileSpeed);
 
                 // start projectile cooldown
@@ -267,9 +267,9 @@ namespace Battle.QSimulation.Player
 
                 bool isJoystickTap = classData->JoystickTimer.IsRunning(f) && classData->JoystickValuePrevious.Magnitude < spec.JoystickTapDistanceMax;
 
-                FPVector2 targetPosition = projectile.Transform.Position;
+                FPVector2 targetPosition = projectile.TransformCopy.Position;
                 FPVector2 targetVelocity = projectile.Data->Direction * projectile.Data->Speed;
-                FPVector2 playerPosition = playerHandle.LoadedCharacterTransform.Position;
+                FPVector2 playerPosition = playerHandle.LoadedCharacterTransformCopy.Position;
                 FPVector2 direction      = (targetPosition - playerPosition).Normalized;
 
                 FP time = FP._2;

@@ -41,7 +41,7 @@ namespace Battle.QSimulation.Player
             if (projectileCollisionData->Projectile.Data->EmotionCurrent == BattleEmotionState.Love) return;
             if (projectileCollisionData->IsLoveProjectileCollision) return;
 
-            FPVector2 normal = (projectileCollisionData->Projectile.Transform.Position - shieldHandle.ShieldTransform.Position).Normalized;
+            FPVector2 normal = (projectileCollisionData->Projectile.TransformCopy.Position - shieldHandle.ShieldTransformCopy.Position).Normalized;
 
             BattleProjectileQSystem.HandleIntersection(f,
                 projectileCollisionData->Projectile,
@@ -71,7 +71,7 @@ namespace Battle.QSimulation.Player
             projectileCollisionData->Projectile.SetHeld(true);
 
             classData->HeldProjectileEntity = projectileCollisionData->Projectile.EntityHandle;
-            classData->HeldProjectileOffset = projectileCollisionData->Projectile.Transform.Position - shieldHandle.ShieldTransform.Position;
+            classData->HeldProjectileOffset = projectileCollisionData->Projectile.TransformCopy.Position - shieldHandle.ShieldTransformCopy.Position;
 
             classData->HoldMinTimer = FrameTimer.FromSeconds(f, spec.HoldMinDurationSec);
             classData->HoldMaxTimer = FrameTimer.FromSeconds(f, spec.HoldMaxDurationSec);

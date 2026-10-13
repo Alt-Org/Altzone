@@ -55,7 +55,7 @@ namespace Battle.QSimulation.Player
             if (grab)
             {
 
-                FPVector2 toProjectile = projectileCollisionData->Projectile.Transform.Position - playerHandle.LoadedCharacterTransform.Position;
+                FPVector2 toProjectile = projectileCollisionData->Projectile.TransformCopy.Position - playerHandle.LoadedCharacterTransformCopy.Position;
 
                 projectileCollisionData->Projectile.SetHeld(true);
                 data->IsHoldingProjectile = true;
@@ -106,10 +106,10 @@ namespace Battle.QSimulation.Player
             if (teammateHandle.PlayerData.PlayState.IsInPlay())
             {
                 BattleProjectileHandle projectile = BattleProjectileQSystem.GetProjectileHandle(f);
-                FPVector2 targetPosition = teammateHandle.LoadedCharacterTransform.Position;
+                FPVector2 targetPosition = teammateHandle.LoadedCharacterTransformCopy.Position;
                 targetPosition.Y += (playerHandle.PlayerData.Team == BattleTeamNumber.TeamAlpha ? FP._4 : -FP._4) * BattleGridManager.GridScaleFactor;
 
-                FPVector2 toTeammate = targetPosition - playerHandle.LoadedCharacterTransform.Position;
+                FPVector2 toTeammate = targetPosition - playerHandle.LoadedCharacterTransformCopy.Position;
                 FP angleTeammate = FPVector2.RadiansSigned(FPVector2.Up, toTeammate);
 
                 FP rotationTime = (f.Number - data->HoldStartFrame) / data->RotationDurationFrames;
@@ -117,7 +117,7 @@ namespace Battle.QSimulation.Player
 
                 FPVector2 newDirection = FPVector2.Rotate(FPVector2.Up, newAngle);
 
-                BattleEntityManager.MoveCompound(f, BattleManageEntityHandle.Create(f, data->HeldProjectileEntity), playerHandle.LoadedCharacterTransform.Position + newDirection * data->HeldProjectileDistance, FP._0);
+                BattleEntityManager.MoveCompound(f, BattleManageEntityHandle.Create(f, data->HeldProjectileEntity), playerHandle.LoadedCharacterTransformCopy.Position + newDirection * data->HeldProjectileDistance, FP._0);
 
                 if (newAngle == angleTeammate)
                 {
