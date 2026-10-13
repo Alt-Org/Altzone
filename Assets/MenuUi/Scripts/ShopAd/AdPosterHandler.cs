@@ -78,7 +78,7 @@ public class AdPosterHandler : AltMonoBehaviour
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour;
 
-        if (!data.TextFont) data.TextFont = _adText.font;
+        if (!data._textFont) data._textFont = AdDecorationReference.Instance.FontList[1].Font;
         _adText.font = data.TextFont;
         _adText.text = data.AdText;
 
@@ -98,14 +98,14 @@ public class AdPosterHandler : AltMonoBehaviour
         {
             _adFurniture.enabled = true;
 
-            if (data.Furniture == null) _adFurniture.sprite = AdDecorationReference.Instance.FurnitureList[0].Image;
+            if (data.Furniture == null) _adFurniture.sprite = AdDecorationReference.Instance.FurnitureList[1].Image;
             else _adFurniture.sprite = data.Furniture;
         }
 
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour;
 
-        if (!data.TextFont) data.TextFont = _adText.font;
+        if (!data._textFont) data._textFont = AdDecorationReference.Instance.FontList[0].Font;
         _adText.font = data.TextFont;
         _adText.text = data.AdText;
 

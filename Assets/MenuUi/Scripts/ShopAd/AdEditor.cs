@@ -134,6 +134,8 @@ public class AdEditor : AltMonoBehaviour
 
         _inputFieldHolder.SetActive(true);
         _inputField.onValueChanged.AddListener(delegate { ChangeText(_inputField.text); });
+        _inputField.onSelect.AddListener(delegate { _inputFieldHolder.GetComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f, 1.0f); });
+        _inputField.onDeselect.AddListener(delegate { _inputFieldHolder.GetComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f, 0.2f); });
     }
 
     private void GetColors()
