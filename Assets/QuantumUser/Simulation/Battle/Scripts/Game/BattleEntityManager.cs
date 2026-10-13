@@ -335,7 +335,6 @@ namespace Battle.QSimulation.Game
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
         /// <param name="offset">Offset of the desired entity within the group.</param>
-        /// <param name="updateViewPlayState">Whether to update the ViewPlayState.</param>
         ///
         /// <returns>EntityRef for retrieved entity.</returns>
         public static BattleManageEntityHandle Get(Frame f, BattleEntityID id, int offset)
