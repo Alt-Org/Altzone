@@ -629,7 +629,7 @@ namespace Altzone.Scripts.Lobby
                 bool created = false;
                 GameType gameType = (GameType)roomGameTypeInt;
                 int playerCount;
-                if (gameType is GameType.BattleTestFlipperGame) playerCount = 2;
+                if (gameType is GameType.BattleFlipperGame) playerCount = 2;
                 else playerCount = 4;
                 // Use deterministic server-side join-or-create to avoid leader create races.
                 if ((MatchmakingType)roomGameTypeInt == MatchmakingType.Clan2v2)
@@ -1214,7 +1214,7 @@ namespace Altzone.Scripts.Lobby
             {
                 case GameType.BattlePingPong:
                     return 3;
-                case GameType.BattleTestFlipperGame:
+                case GameType.BattleFlipperGame:
                     return 1;
                 default:
                     return 3;
@@ -4265,7 +4265,7 @@ namespace Altzone.Scripts.Lobby
                         default:
                             playerCount = 4;
                             break;
-                        case GameType.BattleTestFlipperGame:
+                        case GameType.BattleFlipperGame:
                             playerCount = 2;
                             break;
                     }
@@ -5059,7 +5059,7 @@ namespace Altzone.Scripts.Lobby
                                 {
                                     Debug.Log($"Matchmaking: applying early botfill to complete room.");
                                     int[] positions;
-                                    if (currentGameType is GameType.BattleTestFlipperGame)
+                                    if (currentGameType is GameType.BattleFlipperGame)
                                     {
                                         positions = new int[]{
                                         PhotonBattleRoom.PlayerPosition1,
@@ -5121,7 +5121,7 @@ namespace Altzone.Scripts.Lobby
                                 Debug.Log($"Matchmaking timeout ({effectiveBotfillTimeoutSeconds}s) reached for Random2v2. Filling remaining slots with bots.");
 
                                 int[] positions;
-                                if (currentGameType is GameType.BattleTestFlipperGame)
+                                if (currentGameType is GameType.BattleFlipperGame)
                                 {
                                     positions = new int[]{
                                         PhotonBattleRoom.PlayerPosition1,
@@ -6553,7 +6553,7 @@ namespace Altzone.Scripts.Lobby
                         PlayerCount = data.PlayerCount,
                         ProjectileInitialEmotion = (BattleEmotionState)data.ProjectileInitialEmotion,
                         IsTestMode = data.TestMode,
-                        IsTestFlipperGame = data.GameType == GameType.BattleTestFlipperGame
+                        IsTestFlipperGame = data.GameType == GameType.BattleFlipperGame
                     }
                 };
 

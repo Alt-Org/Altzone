@@ -241,7 +241,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         switch (mode)
         {
             case GameType.BattlePingPong:
-            case GameType.BattleTestFlipperGame:
+            case GameType.BattleFlipperGame:
                 _custom2v2WaitingRoom.SetActive(true);
                 _topPanel.SetActive(false);
                 break;
