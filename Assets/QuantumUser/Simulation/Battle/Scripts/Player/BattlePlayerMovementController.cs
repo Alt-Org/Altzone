@@ -82,7 +82,7 @@ namespace Battle.QSimulation.Player
                 cancelMovement = true;
             }
 
-            FPVector2 positionNext = playerHandle.LoadedCharacterTransform.Position;
+            FPVector2 positionNext = playerHandle.LoadedCharacterTransformCopy.Position;
 
             //{ handle movement
 
@@ -99,7 +99,7 @@ namespace Battle.QSimulation.Player
                     break;
 
                 case BattleMovementInputType.PositionMove:
-                    positionNext = FPVector2.MoveTowards(playerHandle.LoadedCharacterTransform.Position, input->MovementVector, playerHandle.LoadedCharacterData->Stats.Speed * f.DeltaTime);
+                    positionNext = FPVector2.MoveTowards(playerHandle.LoadedCharacterTransformCopy.Position, input->MovementVector, playerHandle.LoadedCharacterData->Stats.Speed * f.DeltaTime);
                     if (ClampAndSnapWorldPosition(playerHandle, positionNext, out FPVector2 clampedNext))
                     {
                         positionNext = clampedNext;
@@ -109,7 +109,7 @@ namespace Battle.QSimulation.Player
 
                 case BattleMovementInputType.Direction:
                     FPVector2 movementDirection = input->MovementVector * (input->MovementDirectionIsNormalized ? playerHandle.LoadedCharacterData->Stats.Speed : FP._1);
-                    positionNext = playerHandle.LoadedCharacterTransform.Position + FPVector2.ClampMagnitude(movementDirection, playerHandle.LoadedCharacterData->Stats.Speed) * f.DeltaTime;
+                    positionNext = playerHandle.LoadedCharacterTransformCopy.Position + FPVector2.ClampMagnitude(movementDirection, playerHandle.LoadedCharacterData->Stats.Speed) * f.DeltaTime;
                     if (ClampAndSnapWorldPosition(playerHandle, positionNext, out FPVector2 clampedPosition))
                     {
                         positionNext = clampedPosition;
@@ -121,7 +121,7 @@ namespace Battle.QSimulation.Player
             // handle target position based movement
             if (playerHandle.LoadedCharacterData->MovementHasTargetPosition)
             {
-                positionNext = FPVector2.MoveTowards(playerHandle.LoadedCharacterTransform.Position, playerHandle.LoadedCharacterData->MovementTargetPosition, playerHandle.LoadedCharacterData->Stats.Speed * f.DeltaTime);
+                positionNext = FPVector2.MoveTowards(playerHandle.LoadedCharacterTransformCopy.Position, playerHandle.LoadedCharacterData->MovementTargetPosition, playerHandle.LoadedCharacterData->Stats.Speed * f.DeltaTime);
                 if (positionNext == playerHandle.LoadedCharacterData->MovementTargetPosition)
                 {
                     playerHandle.LoadedCharacterData->MovementHasTargetPosition = false;
@@ -132,7 +132,7 @@ namespace Battle.QSimulation.Player
             // cancel movement if needed
             if (cancelMovement)
             {
-                ClampAndSnapWorldPosition(playerHandle, playerHandle.LoadedCharacterTransform.Position, out positionNext);
+                ClampAndSnapWorldPosition(playerHandle, playerHandle.LoadedCharacterTransformCopy.Position, out positionNext);
                 playerHandle.LoadedCharacterData->MovementTargetPosition = positionNext;
                 playerHandle.LoadedCharacterData->ViewPosition   = positionNext;
             }
@@ -210,7 +210,7 @@ namespace Battle.QSimulation.Player
         /// <param name="position">World position to move to.</param>
         public static void Move(Frame f, BattlePlayerHandle playerHandle, FPVector2 position)
         {
-            playerHandle.LoadedCharacterData->ViewMovementVector = position - playerHandle.LoadedCharacterTransform.Position;
+            playerHandle.LoadedCharacterData->ViewMovementVector = position - playerHandle.LoadedCharacterTransformCopy.Position;
             BattleEntityManager.MoveCompound(f, playerHandle.LoadedCharacterEntityHandle, position, playerHandle.LoadedCharacterData->MovementRotationBaseRad);
             if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == EntityRef.None) return;
             BattleEntityManager.MoveCompound(f,
@@ -231,11 +231,11 @@ namespace Battle.QSimulation.Player
         public static void Teleport(Frame f, BattlePlayerHandle playerHandle)
         {
             playerHandle.LoadedCharacterData->ViewMovementVector = FPVector2.Zero;
-            BattleEntityManager.TeleportCompound(f, playerHandle.LoadedCharacterEntityHandle, playerHandle.LoadedCharacterTransform.Position, playerHandle.LoadedCharacterData->MovementRotationBaseRad);
+            BattleEntityManager.TeleportCompound(f, playerHandle.LoadedCharacterEntityHandle, playerHandle.LoadedCharacterTransformCopy.Position, playerHandle.LoadedCharacterData->MovementRotationBaseRad);
             if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == EntityRef.None) return;
             BattleEntityManager.TeleportCompound(f,
                 BattleManageEntityHandle.Create(f, playerHandle.LoadedCharacterData->AttachedShieldEntityRef),
-                playerHandle.LoadedCharacterTransform.Position,
+                playerHandle.LoadedCharacterTransformCopy.Position,
                 playerHandle.LoadedCharacterData->MovementRotationBaseRad + playerHandle.LoadedCharacterData->MovementRotationOffsetRad
             );
         }
