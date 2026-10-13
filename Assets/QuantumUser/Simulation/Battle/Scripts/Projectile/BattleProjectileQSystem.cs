@@ -104,13 +104,11 @@ namespace Battle.QSimulation.Projectile
             // initialize projectile link
             BattleProjectileHandle.CreateLink(f, projectileEntityRef, projectileEntityRef);
 
-            // get handle and other components
-            BattleProjectileHandle projectileHandle   = BattleProjectileHandle.Create(f, projectileEntityRef);
-            PhysicsCollider2D*     projectileCollider = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
+            //{ create projectile trigger entity
 
-            //{create projectile trigger entity
+            PhysicsCollider2D* projectileCollider = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
 
-            EntityRef projectileTriggerEntityRef = CreateProjectileTriggerEntity(f, projectileHandle, projectileCollider);
+            EntityRef projectileTriggerEntityRef = CreateProjectileTriggerEntity(f, projectileCollider);
 
             // link trigger
             projectileEntityTemplate.Link(projectileTriggerEntityRef, new FPVector2(0, 0));
@@ -118,16 +116,22 @@ namespace Battle.QSimulation.Projectile
 
             //} create projectile trigger entity
 
-            // set projectile position and initial values
-            projectileHandle.TransformPtr->Position = new FPVector2(0, 0);
+            BattleEntityID projectileEntityID = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
+
+            //{ post registration setup
+
+            BattleProjectileHandle projectileHandle = BattleProjectileHandle.Create(f, projectileEntityRef);
+
             projectileHandle.Data->Radius           = projectileCollider->Shape.Circle.Radius;
             projectileHandle.Data->EmotionCurrent   = 0;
             projectileHandle.Data->EmotionBase      = 0;
 
-            BattleEntityID projectileEntityID = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
-            GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityID;
-
             projectileHandle.SetHeld(true);
+
+            //} post registration setup
+
+            // save projectile id
+            GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityID;
         }
 
         /// <summary>
@@ -140,7 +144,7 @@ namespace Battle.QSimulation.Projectile
             // get system data
             BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
 
-            // get references
+            // get projectile
             BattleProjectileHandle projectile = GetProjectileHandle(f, projectileSystemData, markInUse: true);
 
             // retrieve the projectiles spec
@@ -224,7 +228,7 @@ namespace Battle.QSimulation.Projectile
             Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
 
             // calculate how far off from other entity's position is the projectile supposed to hit it's surface
-            FPVector2 offsetVector = projectile.Transform.Position - otherTransform->Position;
+            FPVector2 offsetVector = projectile.TransformCopy.Position - otherTransform->Position;
             FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
 
             // if projectile accidentally went inside another entity, lift it out
@@ -260,12 +264,12 @@ namespace Battle.QSimulation.Projectile
         public override void Update(Frame f, ref Filter filter)
         {
             BattleProjectileHandle projectileHandle = BattleProjectileHandle.Create(f, filter);
-            projectileHandle.Data->Position = projectileHandle.Transform.Position;
+            projectileHandle.Data->Position = projectileHandle.TransformCopy.Position;
 
             if (!projectileHandle.Data->IsHeld)
             {
                 // move the projectile
-                FPVector2 newPosition = projectileHandle.Transform.Position + projectileHandle.Data->Direction * (projectileHandle.Data->Speed * f.DeltaTime);
+                FPVector2 newPosition = projectileHandle.TransformCopy.Position + projectileHandle.Data->Direction * (projectileHandle.Data->Speed * f.DeltaTime);
                 BattleEntityManager.MoveCompound(f, GetProjectileHandle(f).EntityHandle, newPosition, FP._0);
             }
 
@@ -438,7 +442,7 @@ namespace Battle.QSimulation.Projectile
             return BattleProjectileHandle.Create(f, BattleEntityManager.Get(f, entityId));
         }
 
-        private static EntityRef CreateProjectileTriggerEntity(Frame f, BattleProjectileHandle projectileHandle, PhysicsCollider2D* projectileCollider)
+        private static EntityRef CreateProjectileTriggerEntity(Frame f, PhysicsCollider2D* projectileCollider)
         {
             EntityRef projectileTriggerEntityRef = f.Create();
 
@@ -488,8 +492,8 @@ namespace Battle.QSimulation.Projectile
                 {
                     BattlePlayerHandle teammateHandle = BattlePlayerHandle.Create(f, BattlePlayerManager.GetTeammateSlot(playerHandle.PlayerData.Slot));
 
-                    BattleGridPosition playerGridPosition = BattleGridManager.WorldPositionToGridPosition(playerHandle.LoadedCharacterTransform.Position);
-                    BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateHandle.LoadedCharacterTransform.Position);
+                    BattleGridPosition playerGridPosition = BattleGridManager.WorldPositionToGridPosition(playerHandle.LoadedCharacterTransformCopy.Position);
+                    BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateHandle.LoadedCharacterTransformCopy.Position);
 
                     isOnTopOfTeammate = playerGridPosition.Row == teammateGridPosition.Row && playerGridPosition.Col == teammateGridPosition.Col;
                 }
