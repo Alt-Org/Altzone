@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 859707155599744754}
   - component: {fileID: 9044489761429929595}
-  - component: {fileID: 2966798876581388703}
+  - component: {fileID: 1406020581350043695}
   m_Layer: 5
   m_Name: CarbonEmissionButton
   m_TagString: Untagged
@@ -82,7 +82,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &2966798876581388703
+--- !u!114 &1406020581350043695
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,17 +91,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2606927289966551306}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Script: {fileID: 11500000, guid: fc10d1d14b48b994db7544536d44a5d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreLayout: 0
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: 204
-  m_PreferredHeight: 182
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
 --- !u!1 &3570918395155875176
 GameObject:
   m_ObjectHideFlags: 0
