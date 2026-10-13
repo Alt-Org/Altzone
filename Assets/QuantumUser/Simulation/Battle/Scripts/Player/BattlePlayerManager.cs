@@ -428,7 +428,7 @@ namespace Battle.QSimulation.Player
                 {
                     playerHandlePreviousCharacter.Value.LoadedCharacterData->State = unSelectedCharacterState;
 
-                    BattlePlayerClassManager.OnDespawn(f, BattlePlayerClassManager.DespawnEventType.UnSelect, playerHandlePreviousCharacter.Value);
+                    BattlePlayerClassManager.OnDespawn(f, unSelectedCharacterDespawnEventType, playerHandlePreviousCharacter.Value);
                 }
 
                 playerHandleNewCharacter.PlayerData.Low_Level.SelectedCharacterNumber  = characterNumber;
