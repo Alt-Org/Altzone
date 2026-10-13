@@ -251,7 +251,7 @@ namespace Battle.QSimulation.Player
             if (playerHandle.LoadedCharacterEntityHandle.RegisteredState == BattleEntityPlayState.InPlay)
             {
                 BattleEntityManager.Use(f, shieldGroupID, shieldNumber);
-                FPVector2 playerPosition = playerHandle.LoadedCharacterTransform.Position;
+                FPVector2 playerPosition = playerHandle.LoadedCharacterTransformCopy.Position;
                 BattleEntityManager.TeleportCompound(f, shieldNewHandle.ShieldEntityHandle, playerPosition, playerHandle.LoadedCharacterData->MovementRotationBaseRad);
             }
             f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityHandle, playerHandle.PlayerData.Team, shieldNewHandle.ShieldData->IsAttached, shieldNumber);
