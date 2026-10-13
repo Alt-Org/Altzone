@@ -63,7 +63,7 @@ namespace Battle.QSimulation.Game
 
         public void DevAssertIsInPlay(string source, string context)
         {
-            BattleDebugLogger.DevAssertFormat(source, _component->RegisteredState != BattleEntityPlayState.InPlay, "{0}, entity is not in play", context);
+            BattleDebugLogger.DevAssertFormat(source, _component->RegisteredState == BattleEntityPlayState.InPlay, "{0}, entity is not in play", context);
         }
 
         public void DevAssertIsCompound(string context) => DevAssertIsCompound(nameof(BattleManageEntityHandle), context);
@@ -120,7 +120,7 @@ namespace Battle.QSimulation.Game
 
         public readonly bool PlayerHasSelectedCharacter => PlayerData.SelectedCharacterNumber != BattlePlayerData.NoSelectedCharacter;
 
-        public readonly bool HandleHasCharacterLoaded => LoadedCharacterEntityHandle != EntityRef.None;
+        public readonly bool HandleHasCharacterLoaded => LoadedCharacterEntityHandle.ERef != EntityRef.None;
 
         public readonly bool LoadedCharacterIsSelected => LoadedCharacterData->Number == PlayerData.SelectedCharacterNumber;
 
@@ -143,7 +143,7 @@ namespace Battle.QSimulation.Game
             }
         }
 
-        public Transform2D LoadedCharacterTransform => *LoadedCharacterTransformPtr;
+        public Transform2D LoadedCharacterTransformCopy => *_loadedCharacterTransformInternalPtr;
 
         public EntityRef CollidedHitboxEntityRef { get; private set; }
 
@@ -263,7 +263,7 @@ namespace Battle.QSimulation.Game
             }
         }
 
-        public Transform2D ShieldTransform => *ShieldTransformPtr;
+        public Transform2D ShieldTransformCopy => *_shieldTransformInternalPtr;
 
         public EntityRef CollidedHitboxEntityRef { get; private set; }
 
@@ -342,7 +342,7 @@ namespace Battle.QSimulation.Game
             }
         }
 
-        public Transform2D Transform => *TransformPtr;
+        public Transform2D TransformCopy => *_transformInternalPtr;
 
         /// <summary>
         /// Sets a specific collision flag for the current frame.
