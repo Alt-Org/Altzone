@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Button))]
 public class CarbonButtonHandler : MonoBehaviour
 {
+    [SerializeField] private TMP_Text _buttonText;
     private Button _button;
 
     public delegate void ToggleCarbonPopup();
@@ -15,5 +17,18 @@ public class CarbonButtonHandler : MonoBehaviour
     {
         _button = GetComponent<Button>();
         _button.onClick.AddListener(() => OnToggleCarbonPopup?.Invoke());
+    }
+
+    private void Update()
+    {
+        float carbonValue = CarbonFootprint.CarbonCount;
+
+        if (_buttonText != null)
+        {
+            if (carbonValue >= 1000f)
+                _buttonText.text = $"{carbonValue / 1000f:F1}kg/CO2";
+            else
+                _buttonText.text = $"{carbonValue:F0}g/CO2";
+        }
     }
 }
