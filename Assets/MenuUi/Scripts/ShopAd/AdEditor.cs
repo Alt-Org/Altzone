@@ -175,6 +175,16 @@ public class AdEditor : AltMonoBehaviour
                     colourObject.GetComponent<Button>().colors = colorBlock;
                 }
             }
+            if (colour == currentTextColor)
+            {
+                Color c = colour;
+                c.a = 0.25f;
+                GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
+                colourObject.GetComponent<Image>().color = c;
+                float objectWidth = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width;
+                colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
+                colourObject.GetComponent<Button>().enabled = false;
+            }
         }
         _backgroundColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
 
@@ -194,6 +204,16 @@ public class AdEditor : AltMonoBehaviour
                     colorBlock.pressedColor = new Color(0, 0, 0, 0.45f);
                     colourObject.GetComponent<Button>().colors = colorBlock;
                 }
+            }
+            if (textColour == currentColor)
+            {
+                Color c = textColour;
+                c.a = 0.25f;
+                GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _textColourSelectorContent);
+                colourObject.GetComponent<Image>().color = c;
+                float objectWidth = _textColourSelectorContent.GetComponent<RectTransform>().rect.width;
+                colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
+                colourObject.GetComponent<Button>().enabled = false;
             }
         }
         _textColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _textColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
