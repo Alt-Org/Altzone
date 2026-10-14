@@ -7,6 +7,7 @@ using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.MQTT;
+using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
 using UnityEngine;
