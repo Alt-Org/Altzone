@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections;
 using Altzone.Scripts;
+using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
-using Altzone.Scripts.Lobby;
 using Altzone.Scripts.MQTT;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using MenuUi.Scripts.Signals;
-using Altzone.Scripts.Battle.Photon;
-using MenuUi.Scripts.Window;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Signals
 {
@@ -198,7 +197,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
                     SelectedMatchmakingType = matchmakingType;
                     SelectedGameType = gameType;
-                    _roomSwitcher.SwitchRoom(matchmakingType);
+                    _roomSwitcher.OpenConfirmWindow(matchmakingType);
                     return;
                 case MatchmakingType.Clan2v2:
                 case MatchmakingType.Random2v2:
@@ -368,7 +367,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             if (!popupShown)
             {
                 Debug.LogWarning("ShowServerMatchmakingInvite: decision popup unavailable; invite was ignored.");
-                PopupSignalBus.OnChangePopupInfoSignal("Friend Lobby -kutsu saatu, mutta vahvistusikkunaa ei voitu avata. Kutsu hylättiin turvallisuussyista.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Friend Lobby -kutsu saatu, mutta vahvistusikkunaa ei voitu avata. Kutsu hylättiin turvallisuussyista.");
             }
         }
 
@@ -455,7 +454,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 ? "Friend Lobby -kutsuun liittyminen epaonnistui: huone on taynna tai kutsu ei ole enaa voimassa."
                 : "Friend Lobby -kutsuun liittyminen epaonnistui. Yrita uudelleen, jos kutsu on yha voimassa.";
 
-            PopupSignalBus.OnChangePopupInfoSignal(popupMessage);
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, popupMessage);
             // Close the battle popup since join failed and we're not in the FriendLobby room
             try { CloseWindow(); } catch (Exception ex) { Debug.LogWarning($"OnFriendLobbyJoinFailed: failed to close popup: {ex.Message}"); }
         }

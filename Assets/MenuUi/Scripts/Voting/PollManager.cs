@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
@@ -9,7 +8,9 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Voting;
 using MenuUi.Scripts.Storage;
+using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
+using UnityEngine;
 
 public static class PollManager // Handles the polls from creation to loading to ending them
 {
@@ -55,7 +56,7 @@ public static class PollManager // Handles the polls from creation to loading to
             }
             else
             {
-                SignalBus.OnChangePopupInfoSignal("Tavaran ostoäänestyksen luominen epäonnistui.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error,"Tavaran ostoäänestyksen luominen epäonnistui.");
                 if (callback != null)
                     callback(false);
             }
@@ -120,7 +121,7 @@ public static class PollManager // Handles the polls from creation to loading to
             }
             else
             {
-                SignalBus.OnChangePopupInfoSignal("Tavaran myyntiäänestyksen luominen epäonnistui.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error,"Tavaran myyntiäänestyksen luominen epäonnistui.");
                 if (callback != null)
                     callback(false);
             }

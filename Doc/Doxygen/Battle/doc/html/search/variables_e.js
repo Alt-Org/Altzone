@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['onclick_0',['onClick',['../class_on_pointer_down_button.html#a5fca33d280822503d4030611b2fe2bad',1,'OnPointerDownButton']]],
-  ['orientation_1',['Orientation',['../class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_movable_element_data.html#aa28e9cc584ac78f88e33ed1949e9e652',1,'Altzone::Scripts::BattleUiShared::BattleUiMovableElementData']]],
-  ['otherentity_2',['OtherEntity',['../struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_projectile_collision_data.html#a4a794cef01dec1b174ef0d935d5e920b',1,'Battle::QSimulation::Game::BattleCollisionQSystem::ProjectileCollisionData']]]
+  ['objects_0',['Objects',['../class_battle_1_1_view_1_1_battle_view_registry_1_1_registry_entry.html#a8178466479c07a3182fe62376de5607d',1,'Battle::View::BattleViewRegistry::RegistryEntry']]],
+  ['offset_1',['Offset',['../struct_quantum_1_1_battle_entity_link.html#a2a065733e9fcccc82f123931ff7f594b',1,'Quantum.BattleEntityLink.Offset'],['../class_quantum_1_1_prototypes_1_1_battle_entity_link_prototype.html#a8193f8a7849d122c3de7d688591d216f',1,'Quantum.Prototypes.BattleEntityLinkPrototype.Offset'],['../class_quantum_1_1_prototypes_1_1_unity_1_1_battle_entity_link_prototype.html#a3257ef4e03518372a88ca22e3d016c4f',1,'Quantum.Prototypes.Unity.BattleEntityLinkPrototype.Offset']]],
+  ['onclick_2',['onClick',['../class_on_pointer_down_button.html#a5fca33d280822503d4030611b2fe2bad',1,'OnPointerDownButton']]],
+  ['orientation_3',['Orientation',['../class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_movable_element_data.html#aa28e9cc584ac78f88e33ed1949e9e652',1,'Altzone::Scripts::BattleUiShared::BattleUiMovableElementData']]],
+  ['otherentityref_4',['OtherEntityRef',['../struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_projectile_collision_data.html#a05ddc18f00fd5a6b47927567f4588616',1,'Battle.QSimulation.Game.BattleCollisionQSystem.ProjectileCollisionData.OtherEntityRef'],['../struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_class100_projectile_collision_data.html#ab643444144e2317bc2945e1e21bb3f85',1,'Battle.QSimulation.Game.BattleCollisionQSystem.PlayerClass100ProjectileCollisionData.OtherEntityRef']]]
 ];
