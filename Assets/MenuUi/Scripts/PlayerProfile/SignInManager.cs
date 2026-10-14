@@ -529,7 +529,7 @@ namespace MenuUi.Scripts.Login
             // Checks empty fields and password requirements
             if (_registerUsernameInputField.text == string.Empty || _registerPasswordInputField.text == string.Empty || _registerPassword2InputField.text == string.Empty)
             {
-                ShowMessage(ERROR_EMPTY_FIELD, Color.red);
+                ShowMessage(ERROR_EMPTY_FIELD, InfoLevel.Error);
                 if (_registerUsernameInputField.text == string.Empty) _registerUsernameInputFieldError.gameObject.SetActive(true);
                 else if(_registerPasswordInputField.text == string.Empty) _registerPasswordInputFieldError.gameObject.SetActive(true);
                 else if(_registerPassword2InputField.text == string.Empty) _registerPassword2InputFieldError.gameObject.SetActive(true);
@@ -538,42 +538,42 @@ namespace MenuUi.Scripts.Login
 
             if (password1 != password2)
             {
-                ShowMessage(ERROR_PASSWORD_MISMATCH, Color.red);
+                ShowMessage(ERROR_PASSWORD_MISMATCH, InfoLevel.Error);
                 _registerPassword2InputFieldError.gameObject.SetActive(true);
                 return;
             }
 
             if (password1.Length < _passwordMinLength)
             {
-                ShowMessage(ERROR_PASSWORD_TOO_SHORT, Color.red);
+                ShowMessage(ERROR_PASSWORD_TOO_SHORT, InfoLevel.Error);
                 _registerPasswordInputFieldError.gameObject.SetActive(true);
                 return;
             }
 
             if (username.Length < _userNameMinLength)
             {
-                ShowMessage(ERROR_USERNAME_TOO_SHORT, Color.red);
+                ShowMessage(ERROR_USERNAME_TOO_SHORT, InfoLevel.Error);
                 _registerUsernameInputFieldError.gameObject.SetActive(true);
                 return;
             }
 
             if (!_registerAgeVerificationToggle.isOn || !_registerParentalAuthToggle.isOn)
             {
-                ShowMessage(ERROR_AGE_CONSENT_NOT_GRANTED, Color.red);
+                ShowMessage(ERROR_AGE_CONSENT_NOT_GRANTED, InfoLevel.Error);
                 _registerAgeVerificationToggleError.gameObject.SetActive(true);
                 return;
             }
 
             if (!_privacyPolicyAuthToggle.isOn)
             {
-                ShowMessage(ERROR_PRIVACY_CONCENT_NOT_GRANTED, Color.red);
+                ShowMessage(ERROR_PRIVACY_CONCENT_NOT_GRANTED, InfoLevel.Error);
                 _privacyPolicyToggleError.gameObject.SetActive(true);
                 return;
             }
 
             if (!_informationPolicyAuthToggle.isOn)
             {
-                ShowMessage(ERROR_INFORMATION_CONCENT_NOT_GRANTED, Color.red);
+                ShowMessage(ERROR_INFORMATION_CONCENT_NOT_GRANTED, InfoLevel.Error);
                 _informationPolicyToggleError.gameObject.SetActive(true);
                 return;
             }
