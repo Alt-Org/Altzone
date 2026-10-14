@@ -196,7 +196,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
                     SelectedMatchmakingType = matchmakingType;
                     SelectedGameType = gameType;
-                    _roomSwitcher.SwitchRoom(matchmakingType);
+                    _roomSwitcher.OpenConfirmWindow(matchmakingType);
                     return;
                 case MatchmakingType.Clan2v2:
                 case MatchmakingType.Random2v2:
@@ -347,7 +347,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             if (inviteInfo == null || string.IsNullOrEmpty(inviteInfo.RoomName)) return;
 
             string inviterName = ResolveOnlinePlayerName(inviteInfo.LeaderUserName);
-            string targetMode = inviteInfo.TargetGameType == MatchmakingType.Clan2v2 ? "Clan 2v2" : "Random 2v2";
+            string targetMode = inviteInfo.TargetMatchmakingType == MatchmakingType.Clan2v2 ? "Clan 2v2" : "Random 2v2";
             string message = $"{inviterName} kutsui sinut Friend Lobby -huoneeseen.\n\nHaettava pelimuoto: {targetMode}.\n\nLiitytaanko huoneeseen?";
 
             bool popupShown = InviteDecisionPopupHandler.RequestInviteDecisionPrompt(
