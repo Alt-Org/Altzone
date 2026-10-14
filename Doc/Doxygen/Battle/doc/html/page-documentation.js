@@ -64,8 +64,8 @@ var page_documentation =
         [ "Documentation commands", "page-documentation-pages.html#page-documentation-pages-commands", null ],
         [ "Linking formats", "page-documentation-pages.html#page-documentation-pages-linking", null ],
         [ "Markdown", "page-documentation-pages.html#page-documentation-pages-markdown", null ],
-        [ "Titles", "page-documentation-pages.html#autotoc_md22", null ],
-        [ "Sections", "page-documentation-pages.html#autotoc_md23", null ]
+        [ "Titles", "page-documentation-pages.html#autotoc_md25", null ],
+        [ "Sections", "page-documentation-pages.html#autotoc_md26", null ]
       ] ]
     ] ],
     [ "Writing additional documentation", "page-documentation-additional.html", [

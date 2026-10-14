@@ -96,16 +96,18 @@ $(function(){initNavTree('class_battle_1_1_q_simulation_1_1_game_1_1_battle_altz
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:af743b3390a3ec11e2c8a2463438892cd" id="r_af743b3390a3ec11e2c8a2463438892cd"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#af743b3390a3ec11e2c8a2463438892cd">InitLink</a> (Func&lt; int, AssetRef&lt; EntityPrototype &gt; &gt; getCharacterPrototypeFnRef)</td></tr>
-<tr class="memitem:abf08ae013a94f78ad6bd5cacbe1d40a0" id="r_abf08ae013a94f78ad6bd5cacbe1d40a0"><td class="memItemLeft">static AssetRef&lt; EntityPrototype &gt;&#160;</td><td class="memItemRight"><a class="el" href="#abf08ae013a94f78ad6bd5cacbe1d40a0">GetCharacterPrototype</a> (int id)</td></tr>
+<tr class="memitem:ac33f272fb1fb88ccedd195db65aff1ed" id="r_ac33f272fb1fb88ccedd195db65aff1ed"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#ac33f272fb1fb88ccedd195db65aff1ed">InitLink</a> (Func&lt; int, AssetRef&lt; EntityPrototype &gt; &gt; getCharacterPrototypeFnRef, Func&lt; int, AssetRef&lt; EntityPrototype &gt;[]&gt; getShieldPrototypesFnRef)</td></tr>
+<tr class="memitem:a69c291f7d502cb346badd2b51f17a46f" id="r_a69c291f7d502cb346badd2b51f17a46f"><td class="memItemLeft">static AssetRef&lt; EntityPrototype &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a69c291f7d502cb346badd2b51f17a46f">GetCharacterPrototype</a> (<a class="el" href="namespace_quantum.html#a9b74128cdd70fd3489f6529817bc82b2">BattlePlayerCharacterID</a> id)</td></tr>
+<tr class="memitem:ac0784c3eb637150faa15ae6d5fabfc38" id="r_ac0784c3eb637150faa15ae6d5fabfc38"><td class="memItemLeft">static AssetRef&lt; EntityPrototype &gt;[]&#160;</td><td class="memItemRight"><a class="el" href="#ac0784c3eb637150faa15ae6d5fabfc38">GetShieldPrototypes</a> (<a class="el" href="namespace_quantum.html#a9b74128cdd70fd3489f6529817bc82b2">BattlePlayerCharacterID</a> id)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-static-attribs" class="groupheader"><a id="pri-static-attribs" name="pri-static-attribs"></a>
 Static Private Attributes</h2></td></tr>
 <tr class="memitem:a5ad9aecff1d7e390963d2aea6e8f6767" id="r_a5ad9aecff1d7e390963d2aea6e8f6767"><td class="memItemLeft">static Func&lt; int, AssetRef&lt; EntityPrototype &gt; &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a5ad9aecff1d7e390963d2aea6e8f6767">s_getCharacterPrototypeFnRef</a></td></tr>
+<tr class="memitem:a46689346fe0d6698600d7962ccb4413a" id="r_a46689346fe0d6698600d7962ccb4413a"><td class="memItemLeft">static Func&lt; int, AssetRef&lt; EntityPrototype &gt;[]&gt;&#160;</td><td class="memItemRight"><a class="el" href="#a46689346fe0d6698600d7962ccb4413a">s_getShieldPrototypesFnRef</a></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
-<a id="abf08ae013a94f78ad6bd5cacbe1d40a0" name="abf08ae013a94f78ad6bd5cacbe1d40a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf08ae013a94f78ad6bd5cacbe1d40a0">&#9670;&#160;</a></span>GetCharacterPrototype()</h2>
+<a id="a69c291f7d502cb346badd2b51f17a46f" name="a69c291f7d502cb346badd2b51f17a46f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69c291f7d502cb346badd2b51f17a46f">&#9670;&#160;</a></span>GetCharacterPrototype()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -116,7 +118,7 @@ Static Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">AssetRef&lt; EntityPrototype &gt; Battle.QSimulation.Game.BattleAltzoneLink.GetCharacterPrototype </td>
           <td>(</td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#a9b74128cdd70fd3489f6529817bc82b2">BattlePlayerCharacterID</a></td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -131,8 +133,8 @@ Static Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af743b3390a3ec11e2c8a2463438892cd" name="af743b3390a3ec11e2c8a2463438892cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af743b3390a3ec11e2c8a2463438892cd">&#9670;&#160;</a></span>InitLink()</h2>
+<a id="ac0784c3eb637150faa15ae6d5fabfc38" name="ac0784c3eb637150faa15ae6d5fabfc38"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0784c3eb637150faa15ae6d5fabfc38">&#9670;&#160;</a></span>GetShieldPrototypes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -141,9 +143,9 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Battle.QSimulation.Game.BattleAltzoneLink.InitLink </td>
+          <td class="memname">AssetRef&lt; EntityPrototype &gt;[] Battle.QSimulation.Game.BattleAltzoneLink.GetShieldPrototypes </td>
           <td>(</td>
-          <td class="paramtype">Func&lt; int, AssetRef&lt; EntityPrototype &gt; &gt;</td>          <td class="paramname"><span class="paramname"><em>getCharacterPrototypeFnRef</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#a9b74128cdd70fd3489f6529817bc82b2">BattlePlayerCharacterID</a></td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -154,7 +156,38 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">References <a class="el" href="#a5ad9aecff1d7e390963d2aea6e8f6767">s_getCharacterPrototypeFnRef</a>.</p>
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_shield_manager.html#ad79ea5a3ea3af9b6a223411c7f50a8d8">Battle.QSimulation.Player.BattlePlayerShieldManager.CreateShields()</a>.</p>
+
+</div>
+</div>
+<a id="ac33f272fb1fb88ccedd195db65aff1ed" name="ac33f272fb1fb88ccedd195db65aff1ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac33f272fb1fb88ccedd195db65aff1ed">&#9670;&#160;</a></span>InitLink()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.QSimulation.Game.BattleAltzoneLink.InitLink </td>
+          <td>(</td>
+          <td class="paramtype">Func&lt; int, AssetRef&lt; EntityPrototype &gt; &gt;</td>          <td class="paramname"><span class="paramname"><em>getCharacterPrototypeFnRef</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Func&lt; int, AssetRef&lt; EntityPrototype &gt;[]&gt;</td>          <td class="paramname"><span class="paramname"><em>getShieldPrototypesFnRef</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="reference">References <a class="el" href="#a5ad9aecff1d7e390963d2aea6e8f6767">s_getCharacterPrototypeFnRef</a>, and <a class="el" href="#a46689346fe0d6698600d7962ccb4413a">s_getShieldPrototypesFnRef</a>.</p>
 
 </div>
 </div>
@@ -179,7 +212,31 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">Referenced by <a class="el" href="#af743b3390a3ec11e2c8a2463438892cd">InitLink()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#ac33f272fb1fb88ccedd195db65aff1ed">InitLink()</a>.</p>
+
+</div>
+</div>
+<a id="a46689346fe0d6698600d7962ccb4413a" name="a46689346fe0d6698600d7962ccb4413a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46689346fe0d6698600d7962ccb4413a">&#9670;&#160;</a></span>s_getShieldPrototypesFnRef</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Func&lt;int, AssetRef&lt;EntityPrototype&gt;[]&gt; Battle.QSimulation.Game.BattleAltzoneLink.s_getShieldPrototypesFnRef</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="reference">Referenced by <a class="el" href="#ac33f272fb1fb88ccedd195db65aff1ed">InitLink()</a>.</p>
 
 </div>
 </div>

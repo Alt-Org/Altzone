@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
+using static Altzone.Scripts.Audio.JukeboxManager;
 
 namespace MenuUI.Scripts.Jukebox
 {
@@ -21,7 +23,7 @@ namespace MenuUI.Scripts.Jukebox
         [SerializeField] private Button _addMusicInfoButton;
         [SerializeField] private GameObject _addMusicInfoPopup;
         [SerializeField] private JukeboxInfoPopupHandler _jukeboxInfoPopupHandler;
-        [SerializeField] private PopupController _jukeboxTextPopup;
+        [SerializeField] private InfoPopupController _jukeboxTextPopup;
         [SerializeField] private PopupButtonVisual _jukeboxButtonVisual; // for selection effects
 
         private Coroutine _diskSpinCoroutine;
@@ -76,7 +78,7 @@ namespace MenuUI.Scripts.Jukebox
                 JukeboxManager.Instance.OnMusicTrackInfoPressed -= OpenMusicTrackInfoPopup;
                 JukeboxManager.Instance.OnPreviewStart -= JukeboxPreviewPlaybackStart;
                 JukeboxManager.Instance.OnPreviewEnd -= JukeboxPreviewPlaybackEnd;
-                JukeboxManager.Instance.OnShowTextPopup -= _jukeboxTextPopup.ActivatePopUp;
+                JukeboxManager.Instance.OnShowTextPopup -= HandlePopupMessage;
             }
         }
 
@@ -105,7 +107,7 @@ namespace MenuUI.Scripts.Jukebox
             JukeboxManager.Instance.OnMusicTrackInfoPressed += OpenMusicTrackInfoPopup;
             JukeboxManager.Instance.OnPreviewStart += JukeboxPreviewPlaybackStart;
             JukeboxManager.Instance.OnPreviewEnd += JukeboxPreviewPlaybackEnd;
-            JukeboxManager.Instance.OnShowTextPopup += _jukeboxTextPopup.ActivatePopUp;
+            JukeboxManager.Instance.OnShowTextPopup += HandlePopupMessage;
 
             if (JukeboxManager.Instance.CurrentTrackQueueData != null)
             {
@@ -335,6 +337,11 @@ namespace MenuUI.Scripts.Jukebox
             {
                 _mainDiskHandler.ToggleIndicatorHolder(false);
             }
+        }
+
+        private void HandlePopupMessage(MessageLevel level, string message)
+        {
+            OverlayPanelCheck.ActivateInfoPopup((InfoLevel)level, message);
         }
     }
 }

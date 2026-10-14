@@ -97,25 +97,53 @@ $(function(){initNavTree('class_battle_1_1_q_simulation_1_1_player_1_1_battle_pl
 <p>Handles the initial loading of player classes and routes individual game events to the correct class scripts.  
  <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:CreationParameters" id="r_CreationParameters"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_creation_parameters.html">CreationParameters</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gives class code access to creation parameters.  <a href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_creation_parameters.html#details">More...</a><br /></td></tr>
+<tr class="memitem:ClassEntry" id="r_ClassEntry"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html">ClassEntry</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct that holds the <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClass</a> script and <a class="el" href="#a913415630181d9063dbebba2e9134e34" title="Enum defines the state of a BattlePlayerClass in ClassEntry.">ClassState</a> of an entry in <a class="el" href="#a41b0323a367fba381e24b6c7d0a205a2" title="An array containing a ClassEntry for all of the BattlePlayerCharacterClasses">s_classArray</a>.  <a href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html#details">More...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a510eb9ce8544a9439541e09efea4c431" id="r_a510eb9ce8544a9439541e09efea4c431"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="#a510eb9ce8544a9439541e09efea4c431">ClassOption</a> { <a class="el" href="#a510eb9ce8544a9439541e09efea4c431abb316a55d1f20c5223d4086f56823e74">UseNone</a>
+, <a class="el" href="#a510eb9ce8544a9439541e09efea4c431a0d72b048455053de242f23311f11e6e9">UseClass</a>
+, <a class="el" href="#a510eb9ce8544a9439541e09efea4c431a8a8d2b04f5ee8306f26e658eeb9d7aca">UseTestClass</a>
+ }</td></tr>
+<tr class="memdesc:a510eb9ce8544a9439541e09efea4c431"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum that defines the <a class="el" href="#ab3ad2c32a3e550f648d5fed676595585" title="Decides which ClassOption to use depending on available class scripts and whether testMode  is enable...">PickClass</a> method's return options.  <a href="#a510eb9ce8544a9439541e09efea4c431">More...</a><br /></td></tr>
+<tr class="memitem:a1960827aad1fa7f1ee764b1864285e9b" id="r_a1960827aad1fa7f1ee764b1864285e9b"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="#a1960827aad1fa7f1ee764b1864285e9b">SpawnEventType</a> { <a class="el" href="#a1960827aad1fa7f1ee764b1864285e9ba4fd1dddbd78f7f7cdcd62e926266611e">Spawn</a>
+, <a class="el" href="#a1960827aad1fa7f1ee764b1864285e9bae0626222614bdee31951d84c64e5e9ff">Select</a>
+, <a class="el" href="#a1960827aad1fa7f1ee764b1864285e9ba1bc07afa15936a0b93bf5bffefd8f7df">SpawnSelect</a>
+ }</td></tr>
+<tr class="memdesc:a1960827aad1fa7f1ee764b1864285e9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Temporary enum for making both a flipper game test and the original behavior work.  <a href="#a1960827aad1fa7f1ee764b1864285e9b">More...</a><br /></td></tr>
+<tr class="memitem:ad19af4e7e20d2adf556e372d5ceda978" id="r_ad19af4e7e20d2adf556e372d5ceda978"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="#ad19af4e7e20d2adf556e372d5ceda978">DespawnEventType</a> { <a class="el" href="#ad19af4e7e20d2adf556e372d5ceda978a27d64919779ac7814ec6de00393181bb">UnSelect</a>
+, <a class="el" href="#ad19af4e7e20d2adf556e372d5ceda978a1a51970c321a45d4eb1a6cf7c25dfee0">DespawnUnSelect</a>
+ }</td></tr>
+<tr class="memdesc:ad19af4e7e20d2adf556e372d5ceda978"><td class="mdescLeft">&#160;</td><td class="mdescRight">Temporary enum for making both a flipper game test and the original behavior work.  <a href="#ad19af4e7e20d2adf556e372d5ceda978">More...</a><br /></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a19dd4d6f087aa92bc241c3694aac769b" id="r_a19dd4d6f087aa92bc241c3694aac769b"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a19dd4d6f087aa92bc241c3694aac769b">Init</a> ()</td></tr>
-<tr class="memdesc:a19dd4d6f087aa92bc241c3694aac769b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes this classes <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html" title="Provides custom debug logging methods for use in Battle to apply consistant formatting to all Log mes...">BattleDebugLogger</a> instance.<br  />
- This method is exclusively for debug logging purposes.  <br /></td></tr>
-<tr class="memitem:a796a7d16f4f16a288cf12f1248c6f2e5" id="r_a796a7d16f4f16a288cf12f1248c6f2e5"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a796a7d16f4f16a288cf12f1248c6f2e5">LoadClass</a> (<a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a> characterClass)</td></tr>
-<tr class="memdesc:a796a7d16f4f16a288cf12f1248c6f2e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the specified class to be ready for use, if it is implemented.  <br /></td></tr>
-<tr class="memitem:a66484635a152dcbda3dddae7fc117ff5" id="r_a66484635a152dcbda3dddae7fc117ff5"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a66484635a152dcbda3dddae7fc117ff5">OnCreate</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a> playerHandle, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *playerData, EntityRef playerEntity)</td></tr>
-<tr class="memdesc:a66484635a152dcbda3dddae7fc117ff5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the OnCreate method of the class of the given player character, if it is implemented.  <br /></td></tr>
-<tr class="memitem:a96ac4ee6f26baadf11f8a853db811112" id="r_a96ac4ee6f26baadf11f8a853db811112"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a96ac4ee6f26baadf11f8a853db811112">OnSpawn</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a> playerHandle, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *playerData, EntityRef playerEntity)</td></tr>
-<tr class="memdesc:a96ac4ee6f26baadf11f8a853db811112"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the OnSpawn method of the class of the given player character, if it is implemented.  <br /></td></tr>
-<tr class="memitem:ae02edfe79ea2a0d5e994ba599676cc3b" id="r_ae02edfe79ea2a0d5e994ba599676cc3b"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#ae02edfe79ea2a0d5e994ba599676cc3b">OnDespawn</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a> playerHandle, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *playerData, EntityRef playerEntity)</td></tr>
-<tr class="memdesc:ae02edfe79ea2a0d5e994ba599676cc3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the OnDespawn method of the class of the given player character, if it is implemented.  <br /></td></tr>
+<tr class="memdesc:a19dd4d6f087aa92bc241c3694aac769b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes this classes <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html" title="Provides custom debug logging methods for use in Battle to apply consistant formatting to all Log mes...">BattleDebugLogger</a> instance and fills <a class="el" href="#a41b0323a367fba381e24b6c7d0a205a2" title="An array containing a ClassEntry for all of the BattlePlayerCharacterClasses">s_classArray</a> states with ClassState.Notloaded.<br  />
+.  <br /></td></tr>
+<tr class="memitem:a1165efc5a18b943551d67c7130c2c8f7" id="r_a1165efc5a18b943551d67c7130c2c8f7"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a1165efc5a18b943551d67c7130c2c8f7">LoadClass</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a> characterClass)</td></tr>
+<tr class="memdesc:a1165efc5a18b943551d67c7130c2c8f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the specified class to be ready for use, if it is implemented.  <br /></td></tr>
+<tr class="memitem:ab3ad2c32a3e550f648d5fed676595585" id="r_ab3ad2c32a3e550f648d5fed676595585"><td class="memItemLeft">static <a class="el" href="#a510eb9ce8544a9439541e09efea4c431">ClassOption</a>&#160;</td><td class="memItemRight"><a class="el" href="#ab3ad2c32a3e550f648d5fed676595585">PickClass</a> (object hasClass, object hasTestClass, bool testMode)</td></tr>
+<tr class="memdesc:ab3ad2c32a3e550f648d5fed676595585"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decides which <a class="el" href="#a510eb9ce8544a9439541e09efea4c431" title="Enum that defines the PickClass method&#39;s return options.">ClassOption</a> to use depending on available class scripts and whether <em>testMode</em>  is enabled.  <br /></td></tr>
+<tr class="memitem:a62c009a1738f563a4036fa78a122cfeb" id="r_a62c009a1738f563a4036fa78a122cfeb"><td class="memItemLeft">static <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_creation_parameters.html">CreationParameters</a>&#160;</td><td class="memItemRight"><a class="el" href="#a62c009a1738f563a4036fa78a122cfeb">OnCreate</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a> playerHandle, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *playerData, EntityRef playerEntity)</td></tr>
+<tr class="memdesc:a62c009a1738f563a4036fa78a122cfeb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the OnCreate method of the class of the given player character, if it is implemented.  <br /></td></tr>
+<tr class="memitem:a03c642158e9a2a9e57e57885cb07c374" id="r_a03c642158e9a2a9e57e57885cb07c374"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a03c642158e9a2a9e57e57885cb07c374">OnGameStart</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a> playerHandle, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *playerData, EntityRef playerEntity, bool selected)</td></tr>
+<tr class="memdesc:a03c642158e9a2a9e57e57885cb07c374"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the OnGameStart method of the class of the given player character, if it is implemented.  <br /></td></tr>
+<tr class="memitem:a9f3dd774c963082d93c5f265997f7995" id="r_a9f3dd774c963082d93c5f265997f7995"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a9f3dd774c963082d93c5f265997f7995">OnSpawn</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="#a1960827aad1fa7f1ee764b1864285e9b">SpawnEventType</a> spawnEventType, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a> playerHandle, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *playerData, EntityRef playerEntity)</td></tr>
+<tr class="memdesc:a9f3dd774c963082d93c5f265997f7995"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the OnSpawn method of the class of the given player character, if it is implemented.  <br /></td></tr>
+<tr class="memitem:aeb8350dfec6c1c0d4a7c3b0184fd23ce" id="r_aeb8350dfec6c1c0d4a7c3b0184fd23ce"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#aeb8350dfec6c1c0d4a7c3b0184fd23ce">OnDespawn</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="#ad19af4e7e20d2adf556e372d5ceda978">DespawnEventType</a> despawnEventType, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a> playerHandle, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *playerData, EntityRef playerEntity)</td></tr>
+<tr class="memdesc:aeb8350dfec6c1c0d4a7c3b0184fd23ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the OnDespawn method of the class of the given player character, if it is implemented.  <br /></td></tr>
 <tr class="memitem:a630ace578497ff35ea8a5b6296aaaaec" id="r_a630ace578497ff35ea8a5b6296aaaaec"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a630ace578497ff35ea8a5b6296aaaaec">OnProjectileHitPlayerCharacter</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_projectile_collision_data.html">BattleCollisionQSystem.ProjectileCollisionData</a> *projectileCollisionData, <a class="el" href="struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_character_collision_data.html">BattleCollisionQSystem.PlayerCharacterCollisionData</a> *playerCollisionData)</td></tr>
 <tr class="memdesc:a630ace578497ff35ea8a5b6296aaaaec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the OnProjectileHitPlayerCharacter method of the class of the given player character, if it is implemented.  <br /></td></tr>
 <tr class="memitem:ac028437f1ced6e85fb98d220a69c2320" id="r_ac028437f1ced6e85fb98d220a69c2320"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#ac028437f1ced6e85fb98d220a69c2320">OnProjectileHitPlayerShield</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_projectile_collision_data.html">BattleCollisionQSystem.ProjectileCollisionData</a> *projectileCollisionData, <a class="el" href="struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_shield_collision_data.html">BattleCollisionQSystem.PlayerShieldCollisionData</a> *shieldCollisionData)</td></tr>
 <tr class="memdesc:ac028437f1ced6e85fb98d220a69c2320"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the OnProjectileHitPlayerShield method of the class of the given player character, if it is implemented.  <br /></td></tr>
-<tr class="memitem:a9ca8e87888cd2872b615a3b8fca4aa96" id="r_a9ca8e87888cd2872b615a3b8fca4aa96"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a9ca8e87888cd2872b615a3b8fca4aa96">OnUpdate</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a> playerHandle, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *playerData, EntityRef playerEntity)</td></tr>
-<tr class="memdesc:a9ca8e87888cd2872b615a3b8fca4aa96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the OnUpdate method of the class of the given player character, if it is implemented.  <br /></td></tr>
+<tr class="memitem:a711fb02242767e3c798d709fb6ac36be" id="r_a711fb02242767e3c798d709fb6ac36be"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a711fb02242767e3c798d709fb6ac36be">OnUpdate</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a> playerHandle, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *playerData, <a class="el" href="struct_quantum_1_1_battle_player_entity_ref.html">BattlePlayerEntityRef</a> playerEntity, <a class="el" href="struct_quantum_1_1_battle_special_input.html">BattleSpecialInput</a> *specialInput)</td></tr>
+<tr class="memdesc:a711fb02242767e3c798d709fb6ac36be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calls the OnUpdate method of the class of the given player character, if it is implemented.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-types" class="groupheader"><a id="pri-types" name="pri-types"></a>
 Private Types</h2></td></tr>
@@ -125,42 +153,130 @@ Private Types</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:adb8dd94eac5b823ce4a850e1083928af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum that defines the <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass</a> method's return codes.<br  />
  Used to communicate the result of method call.  <a href="#adb8dd94eac5b823ce4a850e1083928af">More...</a><br /></td></tr>
+<tr class="memitem:a913415630181d9063dbebba2e9134e34" id="r_a913415630181d9063dbebba2e9134e34"><td class="memItemLeft">enum &#160;</td><td class="memItemRight"><a class="el" href="#a913415630181d9063dbebba2e9134e34">ClassState</a> { <a class="el" href="#a913415630181d9063dbebba2e9134e34a5111e24c1ecc6266ce0de4b4dc42033b">NotLoaded</a>
+, <a class="el" href="#a913415630181d9063dbebba2e9134e34a8168bf5f621ab95c246521563d3c609b">NoCode</a>
+, <a class="el" href="#a913415630181d9063dbebba2e9134e34a7381d487d18845b379422325c0a768d6">Loaded</a>
+ }</td></tr>
+<tr class="memdesc:a913415630181d9063dbebba2e9134e34"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum defines the state of a <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClass</a> in <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html" title="Struct that holds the BattlePlayerClass script and ClassState of an entry in s_classArray.">ClassEntry</a>.  <a href="#a913415630181d9063dbebba2e9134e34">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
+<tr class="memitem:a9eb72198566472654ab1856902ae4d59" id="r_a9eb72198566472654ab1856902ae4d59"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a9eb72198566472654ab1856902ae4d59">LoadClass</a> (<a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a> characterClass, int classIndex, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClassBase</a> @class, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClassBase</a> testClass, bool testMode)</td></tr>
+<tr class="memdesc:a9eb72198566472654ab1856902ae4d59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a class and saves it to to to <a class="el" href="#a41b0323a367fba381e24b6c7d0a205a2" title="s_classArray">s_classArray</a> at <em>classIndex</em> .  <br /></td></tr>
 <tr class="memitem:abbb5d461b468109c110b669d1172b8b8" id="r_abbb5d461b468109c110b669d1172b8b8"><td class="memItemLeft">static <a class="el" href="#adb8dd94eac5b823ce4a850e1083928af">ReturnCode</a>&#160;</td><td class="memItemRight"><a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass</a> (<a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a> characterClass, out <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClassBase</a> playerClass)</td></tr>
 <tr class="memdesc:abbb5d461b468109c110b669d1172b8b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the class script of the specified class from the class array, if it is implemented.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-static-attribs" class="groupheader"><a id="pri-static-attribs" name="pri-static-attribs"></a>
 Static Private Attributes</h2></td></tr>
-<tr class="memitem:a4f209bde04b0917ee2aa995f0fae472e" id="r_a4f209bde04b0917ee2aa995f0fae472e"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a4f209bde04b0917ee2aa995f0fae472e">ClassIndexError</a> = -2</td></tr>
+<tr class="memitem:a4f209bde04b0917ee2aa995f0fae472e" id="r_a4f209bde04b0917ee2aa995f0fae472e"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a4f209bde04b0917ee2aa995f0fae472e">ClassIndexError</a> = -1</td></tr>
 <tr class="memdesc:a4f209bde04b0917ee2aa995f0fae472e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for a class index error. <br /></td></tr>
-<tr class="memitem:a3a8f502530bbef32bfbdac1ac82e606e" id="r_a3a8f502530bbef32bfbdac1ac82e606e"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a3a8f502530bbef32bfbdac1ac82e606e">ClassIndexNoCode</a> = -1</td></tr>
-<tr class="memdesc:a3a8f502530bbef32bfbdac1ac82e606e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for a no code class index. <br /></td></tr>
-<tr class="memitem:a19e9e52c459f4fda9b780579415a7fd9" id="r_a19e9e52c459f4fda9b780579415a7fd9"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a19e9e52c459f4fda9b780579415a7fd9">ClassIndexDesensitizer</a> = 0</td></tr>
-<tr class="memdesc:a19e9e52c459f4fda9b780579415a7fd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Desensitizer class index. <br /></td></tr>
-<tr class="memitem:a8c1aeeaef24d336a1028ab85c32de28e" id="r_a8c1aeeaef24d336a1028ab85c32de28e"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a8c1aeeaef24d336a1028ab85c32de28e">ClassIndexTrickster</a> = 1</td></tr>
-<tr class="memdesc:a8c1aeeaef24d336a1028ab85c32de28e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Trickster class index. <br /></td></tr>
-<tr class="memitem:a421873a8f839cb83ab0febb9e457f74e" id="r_a421873a8f839cb83ab0febb9e457f74e"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a421873a8f839cb83ab0febb9e457f74e">ClassIndexProjector</a> = 2</td></tr>
-<tr class="memdesc:a421873a8f839cb83ab0febb9e457f74e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Projector class index. <br /></td></tr>
-<tr class="memitem:a9f6bdb3cfde372453f42bcb2b050703b" id="r_a9f6bdb3cfde372453f42bcb2b050703b"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a9f6bdb3cfde372453f42bcb2b050703b">ClassIndexRetroflector</a> = 3</td></tr>
-<tr class="memdesc:a9f6bdb3cfde372453f42bcb2b050703b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Retroflector class index. <br /></td></tr>
-<tr class="memitem:a2db0879c44c6a5d29516f294eef1ffb3" id="r_a2db0879c44c6a5d29516f294eef1ffb3"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a2db0879c44c6a5d29516f294eef1ffb3">ClassIndexConfluent</a> = 4</td></tr>
-<tr class="memdesc:a2db0879c44c6a5d29516f294eef1ffb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Confluent class index. <br /></td></tr>
-<tr class="memitem:a7730eed0021419a506cca950cc19b913" id="r_a7730eed0021419a506cca950cc19b913"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a7730eed0021419a506cca950cc19b913">ClassIndexIntellectualizer</a> = 5</td></tr>
-<tr class="memdesc:a7730eed0021419a506cca950cc19b913"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Intellectualizer class index. <br /></td></tr>
-<tr class="memitem:a4aeac0b1289910b129bd662e23f0ad82" id="r_a4aeac0b1289910b129bd662e23f0ad82"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a4aeac0b1289910b129bd662e23f0ad82">ClassCount</a> = 6</td></tr>
+<tr class="memitem:a06eb7e1fa6cccb34d0179d3064bd80cf" id="r_a06eb7e1fa6cccb34d0179d3064bd80cf"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a06eb7e1fa6cccb34d0179d3064bd80cf">ClassIndex100</a> = 0</td></tr>
+<tr class="memdesc:a06eb7e1fa6cccb34d0179d3064bd80cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Desensitizer class index. <br /></td></tr>
+<tr class="memitem:a2e9066e2342d0b56685b2b875345a511" id="r_a2e9066e2342d0b56685b2b875345a511"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a2e9066e2342d0b56685b2b875345a511">ClassIndex200</a> = 1</td></tr>
+<tr class="memdesc:a2e9066e2342d0b56685b2b875345a511"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Trickster class index. <br /></td></tr>
+<tr class="memitem:a37f3800deca44574b16e3ad1996bc099" id="r_a37f3800deca44574b16e3ad1996bc099"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a37f3800deca44574b16e3ad1996bc099">ClassIndex300</a> = 2</td></tr>
+<tr class="memdesc:a37f3800deca44574b16e3ad1996bc099"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Obedient class index. <br /></td></tr>
+<tr class="memitem:a5854000ca340592d75123ca55fae6945" id="r_a5854000ca340592d75123ca55fae6945"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a5854000ca340592d75123ca55fae6945">ClassIndex400</a> = 3</td></tr>
+<tr class="memdesc:a5854000ca340592d75123ca55fae6945"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Projector class index. <br /></td></tr>
+<tr class="memitem:aa3131afab16a16f94154eae282bef954" id="r_aa3131afab16a16f94154eae282bef954"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#aa3131afab16a16f94154eae282bef954">ClassIndex500</a> = 4</td></tr>
+<tr class="memdesc:aa3131afab16a16f94154eae282bef954"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Retroflector class index. <br /></td></tr>
+<tr class="memitem:aa1070e1f2eb3246c07f3ddea9e4c3dc7" id="r_aa1070e1f2eb3246c07f3ddea9e4c3dc7"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#aa1070e1f2eb3246c07f3ddea9e4c3dc7">ClassIndex600</a> = 5</td></tr>
+<tr class="memdesc:aa1070e1f2eb3246c07f3ddea9e4c3dc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Confluent class index. <br /></td></tr>
+<tr class="memitem:a02ffaf90f3c4a64dd4c2a1358bfa9419" id="r_a02ffaf90f3c4a64dd4c2a1358bfa9419"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a02ffaf90f3c4a64dd4c2a1358bfa9419">ClassIndex700</a> = 6</td></tr>
+<tr class="memdesc:a02ffaf90f3c4a64dd4c2a1358bfa9419"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for Intellectualizer class index. <br /></td></tr>
+<tr class="memitem:a4aeac0b1289910b129bd662e23f0ad82" id="r_a4aeac0b1289910b129bd662e23f0ad82"><td class="memItemLeft">const int&#160;</td><td class="memItemRight"><a class="el" href="#a4aeac0b1289910b129bd662e23f0ad82">ClassCount</a> = 7</td></tr>
 <tr class="memdesc:a4aeac0b1289910b129bd662e23f0ad82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constant for the amount of classes that exist. <br /></td></tr>
-<tr class="memitem:a75bbfdbb941b96a271f41ecf9b520b6f" id="r_a75bbfdbb941b96a271f41ecf9b520b6f"><td class="memItemLeft">static <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClassBase</a>[]&#160;</td><td class="memItemRight"><a class="el" href="#a75bbfdbb941b96a271f41ecf9b520b6f">s_classArray</a> = new <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClassBase</a>[<a class="el" href="#a4aeac0b1289910b129bd662e23f0ad82">ClassCount</a>]</td></tr>
-<tr class="memdesc:a75bbfdbb941b96a271f41ecf9b520b6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">An array containing all of the class scripts that have been implemented and can be used. <br /></td></tr>
-<tr class="memitem:a1941a9ab889a1073b4beef0b93692b3f" id="r_a1941a9ab889a1073b4beef0b93692b3f"><td class="memItemLeft">static Dictionary&lt; <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a>, bool &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a1941a9ab889a1073b4beef0b93692b3f">s_errorMessagesSent</a> = new()</td></tr>
-<tr class="memdesc:a1941a9ab889a1073b4beef0b93692b3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">A dictionary used for tracking which classes have already had an error message sent regarding their missing implementation. <br /></td></tr>
+<tr class="memitem:a41b0323a367fba381e24b6c7d0a205a2" id="r_a41b0323a367fba381e24b6c7d0a205a2"><td class="memItemLeft">static readonly <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html">ClassEntry</a>[]&#160;</td><td class="memItemRight"><a class="el" href="#a41b0323a367fba381e24b6c7d0a205a2">s_classArray</a> = new <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html">ClassEntry</a>[<a class="el" href="#a4aeac0b1289910b129bd662e23f0ad82">ClassCount</a>]</td></tr>
+<tr class="memdesc:a41b0323a367fba381e24b6c7d0a205a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">An array containing a <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html" title="Struct that holds the BattlePlayerClass script and ClassState of an entry in s_classArray.">ClassEntry</a> for all of the <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClasses</a> <br /></td></tr>
+<tr class="memitem:a54de5fbcb452be5596d15870028bd411" id="r_a54de5fbcb452be5596d15870028bd411"><td class="memItemLeft">static readonly Dictionary&lt; <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a>, bool &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a54de5fbcb452be5596d15870028bd411">s_errorMessagesSent</a> = new()</td></tr>
+<tr class="memdesc:a54de5fbcb452be5596d15870028bd411"><td class="mdescLeft">&#160;</td><td class="mdescRight">A dictionary used for tracking which classes have already had an error message sent regarding their missing implementation. <br /></td></tr>
 <tr class="memitem:a4a95fda3483f7e05ddb6dd99e575b77f" id="r_a4a95fda3483f7e05ddb6dd99e575b77f"><td class="memItemLeft">static <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html">BattleDebugLogger</a>&#160;</td><td class="memItemRight"><a class="el" href="#a4a95fda3483f7e05ddb6dd99e575b77f">s_debugLogger</a></td></tr>
 <tr class="memdesc:a4a95fda3483f7e05ddb6dd99e575b77f"><td class="mdescLeft">&#160;</td><td class="mdescRight">This classes <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html" title="Provides custom debug logging methods for use in Battle to apply consistant formatting to all Log mes...">BattleDebugLogger</a> instance.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Handles the initial loading of player classes and routes individual game events to the correct class scripts. </p>
+<p><span class="big-text">See <a class="el" href="page-concepts-player.html#page-concepts-player-simulation-class-classmanager" title="PlayerClassManager">{PlayerClassManager}</a> for more info.</span><br  />
+ <span class="big-text">See <a class="el" href="page-concepts-player.html#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Classes}</a> for more info.</span><br  />
+ <span class="big-text">See <a class="el" href="page-concepts-player.html#page-concepts-player-overview" title="Overview">{Player Overview}</a> for more info.</span><br  />
+ <span class="big-text">See <a class="el" href="page-concepts-player.html#page-concepts-player-simulation-overview" title="Simulation Code Overview">{Player Simulation Code Overview}</a> for more info.</span><br  />
+ </p>
 </div><a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">Member Enumeration Documentation</h2>
+<a id="a510eb9ce8544a9439541e09efea4c431" name="a510eb9ce8544a9439541e09efea4c431"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a510eb9ce8544a9439541e09efea4c431">&#9670;&#160;</a></span>ClassOption</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#a510eb9ce8544a9439541e09efea4c431">Battle.QSimulation.Player.BattlePlayerClassManager.ClassOption</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enum that defines the <a class="el" href="#ab3ad2c32a3e550f648d5fed676595585" title="Decides which ClassOption to use depending on available class scripts and whether testMode  is enable...">PickClass</a> method's return options. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a510eb9ce8544a9439541e09efea4c431abb316a55d1f20c5223d4086f56823e74" name="a510eb9ce8544a9439541e09efea4c431abb316a55d1f20c5223d4086f56823e74"></a>UseNone&#160;</td><td class="fielddoc"><p>Use no class script. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a510eb9ce8544a9439541e09efea4c431a0d72b048455053de242f23311f11e6e9" name="a510eb9ce8544a9439541e09efea4c431a0d72b048455053de242f23311f11e6e9"></a>UseClass&#160;</td><td class="fielddoc"><p>Use class script. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a510eb9ce8544a9439541e09efea4c431a8a8d2b04f5ee8306f26e658eeb9d7aca" name="a510eb9ce8544a9439541e09efea4c431a8a8d2b04f5ee8306f26e658eeb9d7aca"></a>UseTestClass&#160;</td><td class="fielddoc"><p>Use test class script. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="a913415630181d9063dbebba2e9134e34" name="a913415630181d9063dbebba2e9134e34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a913415630181d9063dbebba2e9134e34">&#9670;&#160;</a></span>ClassState</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#a913415630181d9063dbebba2e9134e34">Battle.QSimulation.Player.BattlePlayerClassManager.ClassState</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Enum defines the state of a <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClass</a> in <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html" title="Struct that holds the BattlePlayerClass script and ClassState of an entry in s_classArray.">ClassEntry</a>. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a913415630181d9063dbebba2e9134e34a5111e24c1ecc6266ce0de4b4dc42033b" name="a913415630181d9063dbebba2e9134e34a5111e24c1ecc6266ce0de4b4dc42033b"></a>NotLoaded&#160;</td><td class="fielddoc"><p>Class is not loaded yet. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a913415630181d9063dbebba2e9134e34a8168bf5f621ab95c246521563d3c609b" name="a913415630181d9063dbebba2e9134e34a8168bf5f621ab95c246521563d3c609b"></a>NoCode&#160;</td><td class="fielddoc"><p>Class has been attempted to be loaded but has no code. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a913415630181d9063dbebba2e9134e34a7381d487d18845b379422325c0a768d6" name="a913415630181d9063dbebba2e9134e34a7381d487d18845b379422325c0a768d6"></a>Loaded&#160;</td><td class="fielddoc"><p>Class has been loaded. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="ad19af4e7e20d2adf556e372d5ceda978" name="ad19af4e7e20d2adf556e372d5ceda978"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad19af4e7e20d2adf556e372d5ceda978">&#9670;&#160;</a></span>DespawnEventType</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#ad19af4e7e20d2adf556e372d5ceda978">Battle.QSimulation.Player.BattlePlayerClassManager.DespawnEventType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Temporary enum for making both a flipper game test and the original behavior work. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad19af4e7e20d2adf556e372d5ceda978a27d64919779ac7814ec6de00393181bb" name="ad19af4e7e20d2adf556e372d5ceda978a27d64919779ac7814ec6de00393181bb"></a>UnSelect&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ad19af4e7e20d2adf556e372d5ceda978a1a51970c321a45d4eb1a6cf7c25dfee0" name="ad19af4e7e20d2adf556e372d5ceda978a1a51970c321a45d4eb1a6cf7c25dfee0"></a>DespawnUnSelect&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <a id="adb8dd94eac5b823ce4a850e1083928af" name="adb8dd94eac5b823ce4a850e1083928af"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adb8dd94eac5b823ce4a850e1083928af">&#9670;&#160;</a></span>ReturnCode</h2>
 
@@ -191,6 +307,27 @@ Static Private Attributes</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="adb8dd94eac5b823ce4a850e1083928afa902b0d55fddef6f8d651fe1035b7d4bd" name="adb8dd94eac5b823ce4a850e1083928afa902b0d55fddef6f8d651fe1035b7d4bd"></a>Error&#160;</td><td class="fielddoc"><p>Class could not be retrieved. </p>
 </td></tr>
+</table>
+
+</div>
+</div>
+<a id="a1960827aad1fa7f1ee764b1864285e9b" name="a1960827aad1fa7f1ee764b1864285e9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1960827aad1fa7f1ee764b1864285e9b">&#9670;&#160;</a></span>SpawnEventType</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#a1960827aad1fa7f1ee764b1864285e9b">Battle.QSimulation.Player.BattlePlayerClassManager.SpawnEventType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Temporary enum for making both a flipper game test and the original behavior work. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1960827aad1fa7f1ee764b1864285e9ba4fd1dddbd78f7f7cdcd62e926266611e" name="a1960827aad1fa7f1ee764b1864285e9ba4fd1dddbd78f7f7cdcd62e926266611e"></a>Spawn&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1960827aad1fa7f1ee764b1864285e9bae0626222614bdee31951d84c64e5e9ff" name="a1960827aad1fa7f1ee764b1864285e9bae0626222614bdee31951d84c64e5e9ff"></a>Select&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1960827aad1fa7f1ee764b1864285e9ba1bc07afa15936a0b93bf5bffefd8f7df" name="a1960827aad1fa7f1ee764b1864285e9ba1bc07afa15936a0b93bf5bffefd8f7df"></a>SpawnSelect&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -233,9 +370,9 @@ Static Private Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Result of the method call as a <a class="el" href="#adb8dd94eac5b823ce4a850e1083928af">ReturnCode</a>.</dd></dl>
 
-<p class="reference">References <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html#acfa87cbed45c6ef17f2cac8378455523">Battle.QSimulation.Player.BattlePlayerClassBase.Class</a>, <a class="el" href="#a2db0879c44c6a5d29516f294eef1ffb3">ClassIndexConfluent</a>, <a class="el" href="#a19e9e52c459f4fda9b780579415a7fd9">ClassIndexDesensitizer</a>, <a class="el" href="#a4f209bde04b0917ee2aa995f0fae472e">ClassIndexError</a>, <a class="el" href="#a3a8f502530bbef32bfbdac1ac82e606e">ClassIndexNoCode</a>, <a class="el" href="#a421873a8f839cb83ab0febb9e457f74e">ClassIndexProjector</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2eaa03d0d99a3287875dda3d19daa736d0c">Quantum.Confluent</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2eae4cee4a275173aeb30e9a993221a9333">Quantum.Desensitizer</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2ea6adf97f83acf6453d4a6a4b1070f3754">Quantum.None</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2eabbcd7465180a53688243ea0f98a1bbe0">Quantum.Obedient</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2ea0f6dd79d8172be227108a7637c91d739">Quantum.Projector</a>, <a class="el" href="#a75bbfdbb941b96a271f41ecf9b520b6f">s_classArray</a>, <a class="el" href="#a4a95fda3483f7e05ddb6dd99e575b77f">s_debugLogger</a>, and <a class="el" href="#a1941a9ab889a1073b4beef0b93692b3f">s_errorMessagesSent</a>.</p>
+<p class="reference">References <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html#acfa87cbed45c6ef17f2cac8378455523">Battle.QSimulation.Player.BattlePlayerClassBase.Class</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html#a738303d886e46afa8a58f2d2bcd2ac7c">Battle.QSimulation.Player.BattlePlayerClassManager.ClassEntry.Class</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2ead25265f6c5102a88cd794c6604be28d0">Quantum.Class100</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2ea3e84ad7735b149029e2d7b27b047a46c">Quantum.Class200</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2ea0b40bce4c6f5a44b2a9d7e0939029a4b">Quantum.Class300</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2ea308dc731a2fef3ffc5792c3026b181fe">Quantum.Class400</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2ea4c02e613e87d27a10f73db6b94769957">Quantum.Class500</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2eaab0f81122008f2e1b2803250ad25b27c">Quantum.Class600</a>, <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2ea7f6a8ace51c2decc39ad8f31718a5f4c">Quantum.Class700</a>, <a class="el" href="#a06eb7e1fa6cccb34d0179d3064bd80cf">ClassIndex100</a>, <a class="el" href="#a2e9066e2342d0b56685b2b875345a511">ClassIndex200</a>, <a class="el" href="#a37f3800deca44574b16e3ad1996bc099">ClassIndex300</a>, <a class="el" href="#a5854000ca340592d75123ca55fae6945">ClassIndex400</a>, <a class="el" href="#aa3131afab16a16f94154eae282bef954">ClassIndex500</a>, <a class="el" href="#aa1070e1f2eb3246c07f3ddea9e4c3dc7">ClassIndex600</a>, <a class="el" href="#a02ffaf90f3c4a64dd4c2a1358bfa9419">ClassIndex700</a>, <a class="el" href="#a4f209bde04b0917ee2aa995f0fae472e">ClassIndexError</a>, <a class="el" href="#a41b0323a367fba381e24b6c7d0a205a2">s_classArray</a>, <a class="el" href="#a4a95fda3483f7e05ddb6dd99e575b77f">s_debugLogger</a>, <a class="el" href="#a54de5fbcb452be5596d15870028bd411">s_errorMessagesSent</a>, and <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html#a055b4e07d1e69a875f9bc2e304118a24">Battle.QSimulation.Player.BattlePlayerClassManager.ClassEntry.State</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="#a66484635a152dcbda3dddae7fc117ff5">OnCreate()</a>, <a class="el" href="#ae02edfe79ea2a0d5e994ba599676cc3b">OnDespawn()</a>, <a class="el" href="#a630ace578497ff35ea8a5b6296aaaaec">OnProjectileHitPlayerCharacter()</a>, <a class="el" href="#ac028437f1ced6e85fb98d220a69c2320">OnProjectileHitPlayerShield()</a>, <a class="el" href="#a96ac4ee6f26baadf11f8a853db811112">OnSpawn()</a>, and <a class="el" href="#a9ca8e87888cd2872b615a3b8fca4aa96">OnUpdate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a62c009a1738f563a4036fa78a122cfeb">OnCreate()</a>, <a class="el" href="#aeb8350dfec6c1c0d4a7c3b0184fd23ce">OnDespawn()</a>, <a class="el" href="#a03c642158e9a2a9e57e57885cb07c374">OnGameStart()</a>, <a class="el" href="#a630ace578497ff35ea8a5b6296aaaaec">OnProjectileHitPlayerCharacter()</a>, <a class="el" href="#ac028437f1ced6e85fb98d220a69c2320">OnProjectileHitPlayerShield()</a>, <a class="el" href="#a9f3dd774c963082d93c5f265997f7995">OnSpawn()</a>, and <a class="el" href="#a711fb02242767e3c798d709fb6ac36be">OnUpdate()</a>.</p>
 
 </div>
 </div>
@@ -262,17 +399,17 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Initializes this classes <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html" title="Provides custom debug logging methods for use in Battle to apply consistant formatting to all Log mes...">BattleDebugLogger</a> instance.<br  />
- This method is exclusively for debug logging purposes. </p>
+<p>Initializes this classes <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html" title="Provides custom debug logging methods for use in Battle to apply consistant formatting to all Log mes...">BattleDebugLogger</a> instance and fills <a class="el" href="#a41b0323a367fba381e24b6c7d0a205a2" title="An array containing a ClassEntry for all of the BattlePlayerCharacterClasses">s_classArray</a> states with ClassState.Notloaded.<br  />
+. </p>
 
-<p class="reference">References <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html#a60a7e34530eeb066aaea85039f210cab">Battle.QSimulation.BattleDebugLogger.Create()</a>, and <a class="el" href="#a4a95fda3483f7e05ddb6dd99e575b77f">s_debugLogger</a>.</p>
+<p class="reference">References <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html#a60a7e34530eeb066aaea85039f210cab">Battle.QSimulation.BattleDebugLogger.Create()</a>, <a class="el" href="#a41b0323a367fba381e24b6c7d0a205a2">s_classArray</a>, and <a class="el" href="#a4a95fda3483f7e05ddb6dd99e575b77f">s_debugLogger</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_game_control_q_system.html#a10a692694496d2a87fb64a8bcc004d94">Battle.QSimulation.Game.BattleGameControlQSystem.OnInit()</a>.</p>
 
 </div>
 </div>
-<a id="a796a7d16f4f16a288cf12f1248c6f2e5" name="a796a7d16f4f16a288cf12f1248c6f2e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a796a7d16f4f16a288cf12f1248c6f2e5">&#9670;&#160;</a></span>LoadClass()</h2>
+<a id="a9eb72198566472654ab1856902ae4d59" name="a9eb72198566472654ab1856902ae4d59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9eb72198566472654ab1856902ae4d59">&#9670;&#160;</a></span>LoadClass() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -283,8 +420,70 @@ Static Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">void Battle.QSimulation.Player.BattlePlayerClassManager.LoadClass </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a></td>          <td class="paramname"><span class="paramname"><em>characterClass</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a></td>          <td class="paramname"><span class="paramname"><em>characterClass</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>classIndex</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClassBase</a> @</td>          <td class="paramname"><span class="paramname"><em>class</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClassBase</a></td>          <td class="paramname"><span class="paramname"><em>testClass</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>testMode</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Loads a class and saves it to to to <a class="el" href="#a41b0323a367fba381e24b6c7d0a205a2" title="s_classArray">s_classArray</a> at <em>classIndex</em> . </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">characterClass</td><td>Character class</td></tr>
+    <tr><td class="paramname">classIndex</td><td>Index of the character class</td></tr>
+    <tr><td class="paramname">class</td><td>Normal class script for the given character class</td></tr>
+    <tr><td class="paramname">testClass</td><td>Test class script for the given character class</td></tr>
+    <tr><td class="paramname">testMode</td><td>Is test mode enabled</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="reference">References <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html#acfa87cbed45c6ef17f2cac8378455523">Battle.QSimulation.Player.BattlePlayerClassBase.Class</a>, <a class="el" href="#ab3ad2c32a3e550f648d5fed676595585">PickClass()</a>, <a class="el" href="#a41b0323a367fba381e24b6c7d0a205a2">s_classArray</a>, <a class="el" href="#a4a95fda3483f7e05ddb6dd99e575b77f">s_debugLogger</a>, <a class="el" href="#a510eb9ce8544a9439541e09efea4c431a0d72b048455053de242f23311f11e6e9">UseClass</a>, and <a class="el" href="#a510eb9ce8544a9439541e09efea4c431a8a8d2b04f5ee8306f26e658eeb9d7aca">UseTestClass</a>.</p>
+
+</div>
+</div>
+<a id="a1165efc5a18b943551d67c7130c2c8f7" name="a1165efc5a18b943551d67c7130c2c8f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1165efc5a18b943551d67c7130c2c8f7">&#9670;&#160;</a></span>LoadClass() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.QSimulation.Player.BattlePlayerClassManager.LoadClass </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_quantum_1_1_frame.html">Frame</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a></td>          <td class="paramname"><span class="paramname"><em>characterClass</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -297,19 +496,20 @@ Static Private Attributes</h2></td></tr>
 <p>Loads the specified class to be ready for use, if it is implemented. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">f</td><td>Current simulation frame.</td></tr>
     <tr><td class="paramname">characterClass</td><td>The class that is to be loaded.</td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="#a2db0879c44c6a5d29516f294eef1ffb3">ClassIndexConfluent</a>, <a class="el" href="#a19e9e52c459f4fda9b780579415a7fd9">ClassIndexDesensitizer</a>, <a class="el" href="#a7730eed0021419a506cca950cc19b913">ClassIndexIntellectualizer</a>, <a class="el" href="#a421873a8f839cb83ab0febb9e457f74e">ClassIndexProjector</a>, <a class="el" href="#a9f6bdb3cfde372453f42bcb2b050703b">ClassIndexRetroflector</a>, <a class="el" href="#a8c1aeeaef24d336a1028ab85c32de28e">ClassIndexTrickster</a>, and <a class="el" href="#a75bbfdbb941b96a271f41ecf9b520b6f">s_classArray</a>.</p>
+<p class="reference">References <a class="el" href="#a06eb7e1fa6cccb34d0179d3064bd80cf">ClassIndex100</a>, <a class="el" href="#a2e9066e2342d0b56685b2b875345a511">ClassIndex200</a>, <a class="el" href="#a37f3800deca44574b16e3ad1996bc099">ClassIndex300</a>, <a class="el" href="#a5854000ca340592d75123ca55fae6945">ClassIndex400</a>, <a class="el" href="#aa3131afab16a16f94154eae282bef954">ClassIndex500</a>, <a class="el" href="#aa1070e1f2eb3246c07f3ddea9e4c3dc7">ClassIndex600</a>, <a class="el" href="#a02ffaf90f3c4a64dd4c2a1358bfa9419">ClassIndex700</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_game_1_1_battle_parameters.html#a906fadfdf1947e89f088574f6f1cd9a4">Battle.QSimulation.Game.BattleParameters.GetIsTestMode()</a>, <a class="el" href="#a1165efc5a18b943551d67c7130c2c8f7">LoadClass()</a>, and <a class="el" href="#a41b0323a367fba381e24b6c7d0a205a2">s_classArray</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a537f2ef8fefcdec16e38bd5b2575b2a2">Battle.QSimulation.Player.BattlePlayerManager.CreatePlayers()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a537f2ef8fefcdec16e38bd5b2575b2a2">Battle.QSimulation.Player.BattlePlayerManager.CreatePlayers()</a>, and <a class="el" href="#a1165efc5a18b943551d67c7130c2c8f7">LoadClass()</a>.</p>
 
 </div>
 </div>
-<a id="a66484635a152dcbda3dddae7fc117ff5" name="a66484635a152dcbda3dddae7fc117ff5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a66484635a152dcbda3dddae7fc117ff5">&#9670;&#160;</a></span>OnCreate()</h2>
+<a id="a62c009a1738f563a4036fa78a122cfeb" name="a62c009a1738f563a4036fa78a122cfeb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62c009a1738f563a4036fa78a122cfeb">&#9670;&#160;</a></span>OnCreate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -318,7 +518,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Battle.QSimulation.Player.BattlePlayerClassManager.OnCreate </td>
+          <td class="memname"><a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_creation_parameters.html">CreationParameters</a> Battle.QSimulation.Player.BattlePlayerClassManager.OnCreate </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_quantum_1_1_frame.html">Frame</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
         </tr>
@@ -350,20 +550,21 @@ Static Private Attributes</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">f</td><td>Current simulation frame.</td></tr>
     <tr><td class="paramname">playerHandle</td><td>Reference to the player handle.</td></tr>
-    <tr><td class="paramname">playerData</td><td>Pointer reference to the player data.</td></tr>
+    <tr><td class="paramname">playerData</td><td>Pointer to the player data.</td></tr>
     <tr><td class="paramname">playerEntity</td><td>Reference to the player entity.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_creation_parameters.html" title="Battle.QSimulation.Player.BattlePlayerClassManager.CreationParameters">CreationParameters</a>.</dd></dl>
 
-<p class="reference">References <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab76623786edfd23744c70d49fa080170">Quantum.BattlePlayerDataQComponent.CharacterClass</a>, <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a4a95fda3483f7e05ddb6dd99e575b77f">s_debugLogger</a>.</p>
+<p class="reference">References <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab76623786edfd23744c70d49fa080170">Quantum.BattlePlayerDataQComponent.CharacterClass</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_creation_parameters.html#a1721798d50983a6e928861cd53820af7">Battle.QSimulation.Player.BattlePlayerClassManager.CreationParameters.Default</a>, <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a4a95fda3483f7e05ddb6dd99e575b77f">s_debugLogger</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a537f2ef8fefcdec16e38bd5b2575b2a2">Battle.QSimulation.Player.BattlePlayerManager.CreatePlayers()</a>.</p>
 
 </div>
 </div>
-<a id="ae02edfe79ea2a0d5e994ba599676cc3b" name="ae02edfe79ea2a0d5e994ba599676cc3b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae02edfe79ea2a0d5e994ba599676cc3b">&#9670;&#160;</a></span>OnDespawn()</h2>
+<a id="aeb8350dfec6c1c0d4a7c3b0184fd23ce" name="aeb8350dfec6c1c0d4a7c3b0184fd23ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb8350dfec6c1c0d4a7c3b0184fd23ce">&#9670;&#160;</a></span>OnDespawn()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -375,6 +576,11 @@ Static Private Attributes</h2></td></tr>
           <td class="memname">void Battle.QSimulation.Player.BattlePlayerClassManager.OnDespawn </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_quantum_1_1_frame.html">Frame</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#ad19af4e7e20d2adf556e372d5ceda978">DespawnEventType</a></td>          <td class="paramname"><span class="paramname"><em>despawnEventType</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -403,8 +609,9 @@ Static Private Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">f</td><td>Current simulation frame.</td></tr>
+    <tr><td class="paramname">despawnEventType</td><td>The type of "despawn" event.</td></tr>
     <tr><td class="paramname">playerHandle</td><td>Reference to the player handle.</td></tr>
-    <tr><td class="paramname">playerData</td><td>Pointer reference to the player data.</td></tr>
+    <tr><td class="paramname">playerData</td><td>Pointer to the player data.</td></tr>
     <tr><td class="paramname">playerEntity</td><td>Reference to the player entity.</td></tr>
   </table>
   </dd>
@@ -412,7 +619,67 @@ Static Private Attributes</h2></td></tr>
 
 <p class="reference">References <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab76623786edfd23744c70d49fa080170">Quantum.BattlePlayerDataQComponent.CharacterClass</a>, and <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a68dfc38440f34c58f6714ecd9a6e02b7">Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#ae4bbc1c3a36ccc6ffed380be6928970a">Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer()</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#acbde58b2ac5fc895378af67ebfdc8c57">Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer()</a>.</p>
+
+</div>
+</div>
+<a id="a03c642158e9a2a9e57e57885cb07c374" name="a03c642158e9a2a9e57e57885cb07c374"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03c642158e9a2a9e57e57885cb07c374">&#9670;&#160;</a></span>OnGameStart()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.QSimulation.Player.BattlePlayerClassManager.OnGameStart </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_quantum_1_1_frame.html">Frame</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a></td>          <td class="paramname"><span class="paramname"><em>playerHandle</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *</td>          <td class="paramname"><span class="paramname"><em>playerData</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">EntityRef</td>          <td class="paramname"><span class="paramname"><em>playerEntity</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>selected</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Calls the OnGameStart method of the class of the given player character, if it is implemented. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>Current simulation frame.</td></tr>
+    <tr><td class="paramname">playerHandle</td><td>Reference to the player handle.</td></tr>
+    <tr><td class="paramname">playerData</td><td>Pointer to the player data.</td></tr>
+    <tr><td class="paramname">playerEntity</td><td>Reference to the player entity.</td></tr>
+    <tr><td class="paramname">selected</td><td>Is the character selected or not.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="reference">References <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab76623786edfd23744c70d49fa080170">Quantum.BattlePlayerDataQComponent.CharacterClass</a>, and <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#abd8ccf638bd10959a013d7b3cc2f836e">Battle.QSimulation.Player.BattlePlayerQSystem.OnGameStart()</a>.</p>
 
 </div>
 </div>
@@ -458,7 +725,7 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab76623786edfd23744c70d49fa080170">Quantum.BattlePlayerDataQComponent.CharacterClass</a>, and <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>.</p>
+<p class="reference">References <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab76623786edfd23744c70d49fa080170">Quantum.BattlePlayerDataQComponent.CharacterClass</a>, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#aabf62c2a98461b4b236623ad364d43f9">Quantum.BattlePlayerDataQComponent.CharacterNumber</a>, <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a5519ec5441510b6a7d9ba31b76249b2b">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.GetPlayerHandle()</a>, and <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab052be46c8a7e654273b85c383e93979">Quantum.BattlePlayerDataQComponent.Slot</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system.html#a616d5f87b21fcd7bcfdb76e5bd5f7aba">Battle.QSimulation.Game.BattleCollisionQSystem.OnTrigger2D()</a>.</p>
 
@@ -506,14 +773,14 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab76623786edfd23744c70d49fa080170">Quantum.BattlePlayerDataQComponent.CharacterClass</a>, and <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>.</p>
+<p class="reference">References <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab76623786edfd23744c70d49fa080170">Quantum.BattlePlayerDataQComponent.CharacterClass</a>, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#aabf62c2a98461b4b236623ad364d43f9">Quantum.BattlePlayerDataQComponent.CharacterNumber</a>, <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, <a class="el" href="struct_quantum_1_1_battle_player_entity_ref.html#ad079b3a0d05863994b8946c8994e724e">Quantum.BattlePlayerEntityRef.GetDataQComponent()</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a5519ec5441510b6a7d9ba31b76249b2b">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.GetPlayerHandle()</a>, <a class="el" href="struct_quantum_1_1_battle_player_shield_data_q_component.html#a9485754d5d46c2171fe43f15e9f9be1e">Quantum.BattlePlayerShieldDataQComponent.PlayerEntityRef</a>, and <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab052be46c8a7e654273b85c383e93979">Quantum.BattlePlayerDataQComponent.Slot</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system.html#a616d5f87b21fcd7bcfdb76e5bd5f7aba">Battle.QSimulation.Game.BattleCollisionQSystem.OnTrigger2D()</a>.</p>
 
 </div>
 </div>
-<a id="a96ac4ee6f26baadf11f8a853db811112" name="a96ac4ee6f26baadf11f8a853db811112"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a96ac4ee6f26baadf11f8a853db811112">&#9670;&#160;</a></span>OnSpawn()</h2>
+<a id="a9f3dd774c963082d93c5f265997f7995" name="a9f3dd774c963082d93c5f265997f7995"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f3dd774c963082d93c5f265997f7995">&#9670;&#160;</a></span>OnSpawn()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -525,6 +792,11 @@ Static Private Attributes</h2></td></tr>
           <td class="memname">void Battle.QSimulation.Player.BattlePlayerClassManager.OnSpawn </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_quantum_1_1_frame.html">Frame</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#a1960827aad1fa7f1ee764b1864285e9b">SpawnEventType</a></td>          <td class="paramname"><span class="paramname"><em>spawnEventType</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -553,8 +825,9 @@ Static Private Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">f</td><td>Current simulation frame.</td></tr>
+    <tr><td class="paramname">spawnEventType</td><td>The type of "spawn" event.</td></tr>
     <tr><td class="paramname">playerHandle</td><td>Reference to the player handle.</td></tr>
-    <tr><td class="paramname">playerData</td><td>Pointer reference to the player data.</td></tr>
+    <tr><td class="paramname">playerData</td><td>Pointer to the player data.</td></tr>
     <tr><td class="paramname">playerEntity</td><td>Reference to the player entity.</td></tr>
   </table>
   </dd>
@@ -562,12 +835,12 @@ Static Private Attributes</h2></td></tr>
 
 <p class="reference">References <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab76623786edfd23744c70d49fa080170">Quantum.BattlePlayerDataQComponent.CharacterClass</a>, and <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a70d45e98c068518dd012963e1e131252">Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#acbde58b2ac5fc895378af67ebfdc8c57">Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer()</a>.</p>
 
 </div>
 </div>
-<a id="a9ca8e87888cd2872b615a3b8fca4aa96" name="a9ca8e87888cd2872b615a3b8fca4aa96"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9ca8e87888cd2872b615a3b8fca4aa96">&#9670;&#160;</a></span>OnUpdate()</h2>
+<a id="a711fb02242767e3c798d709fb6ac36be" name="a711fb02242767e3c798d709fb6ac36be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a711fb02242767e3c798d709fb6ac36be">&#9670;&#160;</a></span>OnUpdate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -593,7 +866,12 @@ Static Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">EntityRef</td>          <td class="paramname"><span class="paramname"><em>playerEntity</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="struct_quantum_1_1_battle_player_entity_ref.html">BattlePlayerEntityRef</a></td>          <td class="paramname"><span class="paramname"><em>playerEntity</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_quantum_1_1_battle_special_input.html">BattleSpecialInput</a> *</td>          <td class="paramname"><span class="paramname"><em>specialInput</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -608,15 +886,75 @@ Static Private Attributes</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">f</td><td>Current simulation frame.</td></tr>
     <tr><td class="paramname">playerHandle</td><td>Reference to the player handle.</td></tr>
-    <tr><td class="paramname">playerData</td><td>Pointer reference to the player data.</td></tr>
+    <tr><td class="paramname">playerData</td><td>Pointer to the player data.</td></tr>
     <tr><td class="paramname">playerEntity</td><td>Reference to the player entity.</td></tr>
+    <tr><td class="paramname">specialInput</td><td>Pointer to special input.</td></tr>
   </table>
   </dd>
 </dl>
 
 <p class="reference">References <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab76623786edfd23744c70d49fa080170">Quantum.BattlePlayerDataQComponent.CharacterClass</a>, and <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#ab49da1aa71fd7feddc0b48e31493200a">Battle.QSimulation.Player.BattlePlayerQSystem.HandleInPlay()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a7c838e1c869c294ef28e847e7f55fa5c">Battle.QSimulation.Player.BattlePlayerQSystem.HandleCharacterUpdate()</a>.</p>
+
+</div>
+</div>
+<a id="ab3ad2c32a3e550f648d5fed676595585" name="ab3ad2c32a3e550f648d5fed676595585"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3ad2c32a3e550f648d5fed676595585">&#9670;&#160;</a></span>PickClass()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a510eb9ce8544a9439541e09efea4c431">ClassOption</a> Battle.QSimulation.Player.BattlePlayerClassManager.PickClass </td>
+          <td>(</td>
+          <td class="paramtype">object</td>          <td class="paramname"><span class="paramname"><em>hasClass</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">object</td>          <td class="paramname"><span class="paramname"><em>hasTestClass</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>testMode</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Decides which <a class="el" href="#a510eb9ce8544a9439541e09efea4c431" title="Enum that defines the PickClass method&#39;s return options.">ClassOption</a> to use depending on available class scripts and whether <em>testMode</em>  is enabled. </p>
+<p>See <a class="el" href="page-concepts-player.html#page-concepts-player-simulation-class-playerclass" title="PlayerClass">PlayerClass</a> for more info<br  />
+ See <a class="el" href="page-concepts-player.html#page-concepts-player-characters-classes" title="Player Character Classes">Player Character Classes</a> for more info</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadLeft"></th><th class="markdownTableHeadLeft">has none  </th><th class="markdownTableHeadLeft"><em>hasClass</em>   </th><th class="markdownTableHeadLeft"><em>hasTestClass</em>   </th><th class="markdownTableHeadLeft">has both  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft"><em>testMode</em>  <b>false</b>  </td><td class="markdownTableBodyLeft"><a class="el" href="#a510eb9ce8544a9439541e09efea4c431abb316a55d1f20c5223d4086f56823e74" title="ClassOption.UseNone">UseNone</a>  </td><td class="markdownTableBodyLeft"><a class="el" href="#a510eb9ce8544a9439541e09efea4c431a0d72b048455053de242f23311f11e6e9" title="ClassOption.UseClass">UseClass</a>  </td><td class="markdownTableBodyLeft"><a class="el" href="#a510eb9ce8544a9439541e09efea4c431abb316a55d1f20c5223d4086f56823e74" title="ClassOption.UseNone">UseNone</a>  </td><td class="markdownTableBodyLeft"><a class="el" href="#a510eb9ce8544a9439541e09efea4c431a0d72b048455053de242f23311f11e6e9" title="ClassOption.UseClass">UseClass</a>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft"><em>testMode</em>  <b>true</b>  </td><td class="markdownTableBodyLeft"><a class="el" href="#a510eb9ce8544a9439541e09efea4c431abb316a55d1f20c5223d4086f56823e74" title="ClassOption.UseNone">UseNone</a>  </td><td class="markdownTableBodyLeft"><a class="el" href="#a510eb9ce8544a9439541e09efea4c431a0d72b048455053de242f23311f11e6e9" title="ClassOption.UseClass">UseClass</a>  </td><td class="markdownTableBodyLeft"><a class="el" href="#a510eb9ce8544a9439541e09efea4c431a8a8d2b04f5ee8306f26e658eeb9d7aca" title="ClassOption.UseTestClass">UseTestClass</a>  </td><td class="markdownTableBodyLeft"><a class="el" href="#a510eb9ce8544a9439541e09efea4c431a8a8d2b04f5ee8306f26e658eeb9d7aca" title="ClassOption.UseTestClass">UseTestClass</a>  </td></tr>
+</table>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">hasClass</td><td>Normal class script reference to check</td></tr>
+    <tr><td class="paramname">hasTestClass</td><td>Test class script reference to check</td></tr>
+    <tr><td class="paramname">testMode</td><td>Is test mode enabled</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The picked <a class="el" href="#a510eb9ce8544a9439541e09efea4c431" title="Enum that defines the PickClass method&#39;s return options.">ClassOption</a></dd></dl>
+
+<p class="reference">References <a class="el" href="#a510eb9ce8544a9439541e09efea4c431a0d72b048455053de242f23311f11e6e9">UseClass</a>, and <a class="el" href="#a510eb9ce8544a9439541e09efea4c431a8a8d2b04f5ee8306f26e658eeb9d7aca">UseTestClass</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="#a9eb72198566472654ab1856902ae4d59">LoadClass()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller.html#a53a429ca275750035969ed25e410ec66">Battle.View.Player.BattlePlayerCharacterViewController.OnActivate()</a>, and <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_shield_view_controller.html#ad43b3c1f04f6fa9191cafd5d4a0673ee">Battle.View.Player.BattlePlayerShieldViewController.OnActivate()</a>.</p>
 
 </div>
 </div>
@@ -631,7 +969,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassCount = 6</td>
+          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassCount = 7</td>
         </tr>
       </table>
   </td>
@@ -645,8 +983,8 @@ Static Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a2db0879c44c6a5d29516f294eef1ffb3" name="a2db0879c44c6a5d29516f294eef1ffb3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2db0879c44c6a5d29516f294eef1ffb3">&#9670;&#160;</a></span>ClassIndexConfluent</h2>
+<a id="a06eb7e1fa6cccb34d0179d3064bd80cf" name="a06eb7e1fa6cccb34d0179d3064bd80cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06eb7e1fa6cccb34d0179d3064bd80cf">&#9670;&#160;</a></span>ClassIndex100</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -655,33 +993,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndexConfluent = 4</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Constant for Confluent class index.</p>
-
-<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a796a7d16f4f16a288cf12f1248c6f2e5">LoadClass()</a>.</p>
-
-</div>
-</div>
-<a id="a19e9e52c459f4fda9b780579415a7fd9" name="a19e9e52c459f4fda9b780579415a7fd9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19e9e52c459f4fda9b780579415a7fd9">&#9670;&#160;</a></span>ClassIndexDesensitizer</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndexDesensitizer = 0</td>
+          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndex100 = 0</td>
         </tr>
       </table>
   </td>
@@ -693,7 +1005,163 @@ Static Private Attributes</h2></td></tr>
 
 <p>Constant for Desensitizer class index.</p>
 
-<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a796a7d16f4f16a288cf12f1248c6f2e5">LoadClass()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a1165efc5a18b943551d67c7130c2c8f7">LoadClass()</a>.</p>
+
+</div>
+</div>
+<a id="a2e9066e2342d0b56685b2b875345a511" name="a2e9066e2342d0b56685b2b875345a511"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e9066e2342d0b56685b2b875345a511">&#9670;&#160;</a></span>ClassIndex200</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndex200 = 1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constant for Trickster class index.</p>
+
+<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a1165efc5a18b943551d67c7130c2c8f7">LoadClass()</a>.</p>
+
+</div>
+</div>
+<a id="a37f3800deca44574b16e3ad1996bc099" name="a37f3800deca44574b16e3ad1996bc099"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37f3800deca44574b16e3ad1996bc099">&#9670;&#160;</a></span>ClassIndex300</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndex300 = 2</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constant for Obedient class index.</p>
+
+<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a1165efc5a18b943551d67c7130c2c8f7">LoadClass()</a>.</p>
+
+</div>
+</div>
+<a id="a5854000ca340592d75123ca55fae6945" name="a5854000ca340592d75123ca55fae6945"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5854000ca340592d75123ca55fae6945">&#9670;&#160;</a></span>ClassIndex400</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndex400 = 3</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constant for Projector class index.</p>
+
+<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a1165efc5a18b943551d67c7130c2c8f7">LoadClass()</a>.</p>
+
+</div>
+</div>
+<a id="aa3131afab16a16f94154eae282bef954" name="aa3131afab16a16f94154eae282bef954"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3131afab16a16f94154eae282bef954">&#9670;&#160;</a></span>ClassIndex500</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndex500 = 4</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constant for Retroflector class index.</p>
+
+<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a1165efc5a18b943551d67c7130c2c8f7">LoadClass()</a>.</p>
+
+</div>
+</div>
+<a id="aa1070e1f2eb3246c07f3ddea9e4c3dc7" name="aa1070e1f2eb3246c07f3ddea9e4c3dc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1070e1f2eb3246c07f3ddea9e4c3dc7">&#9670;&#160;</a></span>ClassIndex600</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndex600 = 5</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constant for Confluent class index.</p>
+
+<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a1165efc5a18b943551d67c7130c2c8f7">LoadClass()</a>.</p>
+
+</div>
+</div>
+<a id="a02ffaf90f3c4a64dd4c2a1358bfa9419" name="a02ffaf90f3c4a64dd4c2a1358bfa9419"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02ffaf90f3c4a64dd4c2a1358bfa9419">&#9670;&#160;</a></span>ClassIndex700</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndex700 = 6</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constant for Intellectualizer class index.</p>
+
+<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a1165efc5a18b943551d67c7130c2c8f7">LoadClass()</a>.</p>
 
 </div>
 </div>
@@ -707,7 +1175,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndexError = -2</td>
+          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndexError = -1</td>
         </tr>
       </table>
   </td>
@@ -723,8 +1191,8 @@ Static Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a7730eed0021419a506cca950cc19b913" name="a7730eed0021419a506cca950cc19b913"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7730eed0021419a506cca950cc19b913">&#9670;&#160;</a></span>ClassIndexIntellectualizer</h2>
+<a id="a41b0323a367fba381e24b6c7d0a205a2" name="a41b0323a367fba381e24b6c7d0a205a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41b0323a367fba381e24b6c7d0a205a2">&#9670;&#160;</a></span>s_classArray</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -733,7 +1201,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndexIntellectualizer = 5</td>
+          <td class="memname">readonly <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html">ClassEntry</a> [] Battle.QSimulation.Player.BattlePlayerClassManager.s_classArray = new <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html">ClassEntry</a>[<a class="el" href="#a4aeac0b1289910b129bd662e23f0ad82">ClassCount</a>]</td>
         </tr>
       </table>
   </td>
@@ -743,139 +1211,9 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Constant for Intellectualizer class index.</p>
+<p>An array containing a <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager_1_1_class_entry.html" title="Struct that holds the BattlePlayerClass script and ClassState of an entry in s_classArray.">ClassEntry</a> for all of the <a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClasses</a></p>
 
-<p class="reference">Referenced by <a class="el" href="#a796a7d16f4f16a288cf12f1248c6f2e5">LoadClass()</a>.</p>
-
-</div>
-</div>
-<a id="a3a8f502530bbef32bfbdac1ac82e606e" name="a3a8f502530bbef32bfbdac1ac82e606e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3a8f502530bbef32bfbdac1ac82e606e">&#9670;&#160;</a></span>ClassIndexNoCode</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndexNoCode = -1</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Constant for a no code class index.</p>
-
-<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>.</p>
-
-</div>
-</div>
-<a id="a421873a8f839cb83ab0febb9e457f74e" name="a421873a8f839cb83ab0febb9e457f74e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a421873a8f839cb83ab0febb9e457f74e">&#9670;&#160;</a></span>ClassIndexProjector</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndexProjector = 2</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Constant for Projector class index.</p>
-
-<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a796a7d16f4f16a288cf12f1248c6f2e5">LoadClass()</a>.</p>
-
-</div>
-</div>
-<a id="a9f6bdb3cfde372453f42bcb2b050703b" name="a9f6bdb3cfde372453f42bcb2b050703b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f6bdb3cfde372453f42bcb2b050703b">&#9670;&#160;</a></span>ClassIndexRetroflector</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndexRetroflector = 3</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Constant for Retroflector class index.</p>
-
-<p class="reference">Referenced by <a class="el" href="#a796a7d16f4f16a288cf12f1248c6f2e5">LoadClass()</a>.</p>
-
-</div>
-</div>
-<a id="a8c1aeeaef24d336a1028ab85c32de28e" name="a8c1aeeaef24d336a1028ab85c32de28e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c1aeeaef24d336a1028ab85c32de28e">&#9670;&#160;</a></span>ClassIndexTrickster</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const int Battle.QSimulation.Player.BattlePlayerClassManager.ClassIndexTrickster = 1</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Constant for Trickster class index.</p>
-
-<p class="reference">Referenced by <a class="el" href="#a796a7d16f4f16a288cf12f1248c6f2e5">LoadClass()</a>.</p>
-
-</div>
-</div>
-<a id="a75bbfdbb941b96a271f41ecf9b520b6f" name="a75bbfdbb941b96a271f41ecf9b520b6f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a75bbfdbb941b96a271f41ecf9b520b6f">&#9670;&#160;</a></span>s_classArray</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClassBase</a> [] Battle.QSimulation.Player.BattlePlayerClassManager.s_classArray = new <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html">BattlePlayerClassBase</a>[<a class="el" href="#a4aeac0b1289910b129bd662e23f0ad82">ClassCount</a>]</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>An array containing all of the class scripts that have been implemented and can be used.</p>
-
-<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, and <a class="el" href="#a796a7d16f4f16a288cf12f1248c6f2e5">LoadClass()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, <a class="el" href="#a19dd4d6f087aa92bc241c3694aac769b">Init()</a>, <a class="el" href="#a9eb72198566472654ab1856902ae4d59">LoadClass()</a>, and <a class="el" href="#a1165efc5a18b943551d67c7130c2c8f7">LoadClass()</a>.</p>
 
 </div>
 </div>
@@ -901,12 +1239,12 @@ Static Private Attributes</h2></td></tr>
 
 <p>This classes <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html" title="Provides custom debug logging methods for use in Battle to apply consistant formatting to all Log mes...">BattleDebugLogger</a> instance. </p>
 
-<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, <a class="el" href="#a19dd4d6f087aa92bc241c3694aac769b">Init()</a>, and <a class="el" href="#a66484635a152dcbda3dddae7fc117ff5">OnCreate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#abbb5d461b468109c110b669d1172b8b8">GetClass()</a>, <a class="el" href="#a19dd4d6f087aa92bc241c3694aac769b">Init()</a>, <a class="el" href="#a9eb72198566472654ab1856902ae4d59">LoadClass()</a>, and <a class="el" href="#a62c009a1738f563a4036fa78a122cfeb">OnCreate()</a>.</p>
 
 </div>
 </div>
-<a id="a1941a9ab889a1073b4beef0b93692b3f" name="a1941a9ab889a1073b4beef0b93692b3f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1941a9ab889a1073b4beef0b93692b3f">&#9670;&#160;</a></span>s_errorMessagesSent</h2>
+<a id="a54de5fbcb452be5596d15870028bd411" name="a54de5fbcb452be5596d15870028bd411"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54de5fbcb452be5596d15870028bd411">&#9670;&#160;</a></span>s_errorMessagesSent</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -915,7 +1253,7 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Dictionary&lt;<a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a>, bool&gt; Battle.QSimulation.Player.BattlePlayerClassManager.s_errorMessagesSent = new()</td>
+          <td class="memname">readonly Dictionary&lt;<a class="el" href="namespace_quantum.html#abe9d5ee206f2ff73cc7fee5c92b6bc2e">BattlePlayerCharacterClass</a>, bool&gt; Battle.QSimulation.Player.BattlePlayerClassManager.s_errorMessagesSent = new()</td>
         </tr>
       </table>
   </td>

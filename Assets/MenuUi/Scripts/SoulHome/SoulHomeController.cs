@@ -209,7 +209,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ShowInfoPopup(string popupText)
         {
-            SignalBus.OnChangePopupInfoSignal(popupText);
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info, popupText);
         }
 
         private void SetSongName(MusicTrack song)

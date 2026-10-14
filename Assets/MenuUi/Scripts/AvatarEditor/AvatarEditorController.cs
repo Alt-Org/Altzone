@@ -115,7 +115,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 yield break;
 
             _currentPlayerData = playerData;
-            if (playerData.SelectedCharacterId != 0)
+            if (playerData.SelectedCharacterId != 0 && playerData.SelectedCharacterId != -1)
             {
                 _characterClassType = (CharacterClassType)((_currentPlayerData.SelectedCharacterId / 100) * 100);
                 SetAllAvatarFeatures();

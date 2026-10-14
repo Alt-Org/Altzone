@@ -161,7 +161,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3909196248017474539}
-  - component: {fileID: 4139031153675824652}
   - component: {fileID: 3915831388473070548}
   m_Layer: 5
   m_Name: CloseGamePanel
@@ -190,14 +189,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &4139031153675824652
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2138903436155762796}
-  m_CullTransparentMesh: 1
 --- !u!114 &3915831388473070548
 MonoBehaviour:
   m_ObjectHideFlags: 0

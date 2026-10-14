@@ -4,5 +4,5 @@ var class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_spec =
     [ "DamageCooldownSec", "class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_spec.html#aea6b5344f9d1e84de4e7291066eb85c0", null ],
     [ "MaxRotationAngleDeg", "class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_spec.html#ac82eaa8a16d658061ae87533da0422a4", null ],
     [ "RotationSpeed", "class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_spec.html#ad5e20cf333c33fc029098703287b1631", null ],
-    [ "StunCooldownSec", "class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_spec.html#af94fa03f248a7bbfefbbc8c874d19a6b", null ]
+    [ "StunDurationSec", "class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_spec.html#a4fbe7848074c70fd318026d5310188ee", null ]
 ];

@@ -9,8 +9,9 @@ using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.CharacterGallery;
 using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.SwipeNavigation;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using UnityEngine;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
@@ -353,7 +354,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
             else
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi kyyneliä.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Ei tarpeeksi kyyneliä.");
                 return false;
             }
         }
@@ -518,18 +519,18 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 if (!CheckCombinedLevelCap())
                 {
-                    if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
+                    if (showPopupMessages) OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
                     return false;
                 }
                 else if (GetStatStrength(statType) == ValueStrength.None)
                 {
-                    if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Tätä taitoa ei voi muokata.");
+                    if (showPopupMessages) OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Tätä taitoa ei voi muokata.");
                     return false;
                 }
             }
             if (!CheckStatLevelCap(statType))
             {
-                if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
+                if (showPopupMessages) OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 return false;
             }
 
@@ -612,18 +613,18 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if(!SettingsCarrier.Instance.StatDebuggingMode){
                 if (showPopupMessages && !(GetStat(statType) > GetBaseStat(statType)))
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi vähentää pohjataitoa.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Et voi vähentää pohjataitoa.");
                     return false;
                 }
                 else if (GetStatStrength(statType) == ValueStrength.None)
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Tätä taitoa ei voi muokata.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Tätä taitoa ei voi muokata.");
                     return false;
                 }
             }
             if (GetStat(statType) <= CustomCharacter.STATMINLEVEL)
             {
-                if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, minimi on {CustomCharacter.STATMINLEVEL}.");
+                if (showPopupMessages) OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Et voi päivittää taitoa, minimi on {CustomCharacter.STATMINLEVEL}.");
                 return false;
             }
 

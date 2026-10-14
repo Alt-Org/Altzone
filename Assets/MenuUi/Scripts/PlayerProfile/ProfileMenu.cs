@@ -790,7 +790,7 @@ public class ProfileMenu : AltMonoBehaviour
         StartCoroutine(ServerManager.Instance.SendFriendRequest(_playerData.Id, c =>
         {
             if(c) CloseFriendRequestPopup();
-            else SignalBus.OnChangePopupInfoSignal("Kaveripyynnön lähettäminen epäonnistui.");
+            else OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Kaveripyynnön lähettäminen epäonnistui.");
         }));
     }
 

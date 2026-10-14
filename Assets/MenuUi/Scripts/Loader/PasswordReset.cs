@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Language;
+using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
 using Newtonsoft.Json.Linq;
 using TMPro;
@@ -173,7 +174,7 @@ public class PasswordReset : MonoBehaviour
                         break;
                 }
 
-                ShowMessage(errorString, Color.red);
+                ShowMessage(errorString, InfoLevel.Error);
             }
             else
             {
@@ -224,7 +225,7 @@ public class PasswordReset : MonoBehaviour
                         break;
                 }
 
-                ShowMessage(errorString, Color.red);
+                ShowMessage(errorString, InfoLevel.Error);
             }
             else
             {
@@ -281,7 +282,7 @@ public class PasswordReset : MonoBehaviour
                         break;
                 }
 
-                ShowMessage(errorString, Color.red);
+                ShowMessage(errorString, InfoLevel.Error);
             }
             else
             {
@@ -305,8 +306,8 @@ public class PasswordReset : MonoBehaviour
         _passwordResetPanel.SetActive(false);
     }
 
-    private void ShowMessage(string message, Color textColor)
+    private void ShowMessage(string message, InfoLevel level)
     {
-        SignalBus.OnChangePopupInfoSignal(message);
+        OverlayPanelCheck.ActivateInfoPopup(level, message);
     }
 }
