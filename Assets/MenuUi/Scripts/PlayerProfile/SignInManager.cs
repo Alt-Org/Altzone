@@ -300,7 +300,7 @@ namespace MenuUi.Scripts.Login
         /// <summary>
         /// Logs the user in.
         /// </summary>
-        public void LogIn(bool guest)
+        public void LogIn()
         {
             ClearMessage();
 
