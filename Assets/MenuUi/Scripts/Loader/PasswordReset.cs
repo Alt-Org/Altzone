@@ -243,7 +243,7 @@ public class PasswordReset : MonoBehaviour
     {
         if (password.Length < _passwordMinLength)
         {
-            ShowMessage(ERROR_PASSWORD_TOO_SHORT, Color.red);
+            ShowMessage(ERROR_PASSWORD_TOO_SHORT, InfoLevel.Error);
             
             return;
         }
