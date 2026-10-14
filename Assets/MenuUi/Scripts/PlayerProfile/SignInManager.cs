@@ -496,23 +496,14 @@ namespace MenuUi.Scripts.Login
                 _registerButton.interactable = true;
             }));
         }
-        private void Register(){
 
-            if (_registerAgeVerificationToggle.isOn && !_registerParentalAuthToggle.isOn)
-            {
-                return;
-            }
-
-
-        }
-
-        private void Openregister()
+        private void OpenRegister()
         {
             _registerWindow.SetActive(true);
             _signInWindow.SetActive(false);
         }
 
-        private void closeregister()
+        private void CloseRegister()
         {
             _registerWindow.SetActive(false);
             _signInWindow.SetActive(true);
