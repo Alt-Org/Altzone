@@ -4,32 +4,68 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts;
 using UnityEngine;
+using TMPro;
 
 public class ClanMemberRoleRights : MonoBehaviour
 {
-    public ClanMember CurrentMember { get; set; }
+    private ClanMember _currentMember;
+    public ClanMember CurrentMember
+    {
+        get
+        {
+            return _currentMember;
+        }
+        set
+        {
+            _currentMember = value;
+
+            if (_currentMember != null)
+            {
+                PopulateRolesAndRights(_currentMember.Role);
+            }
+        }
+    }
+
+    [SerializeField] private GameObject textPrefab;
+    [SerializeField] private Transform contentParent;
+    [SerializeField] private GameObject popup;
 
     private ClanData _clanData = null;
 
-    public void MemberRoleRights()
+    public void OpenPopup() => popup.SetActive(true);
+    public void ClosePopup() => popup.SetActive(false);
+
+    void Start()
     {
-        Debug.Log($"We got CurrentMember: {CurrentMember.Player.name}");
-
-        if (CurrentMember.Role.rights != null)
+        if (CurrentMember.Role.name != null)
+        {
+            Debug.Log("Starting");
             PopulateRolesAndRights(CurrentMember.Role);
-
-        return;
+        }
     }
+
 
     private void PopulateRolesAndRights(ClanRoles currentRole)
     {
+        foreach (Transform child in contentParent)
+        {
+            Destroy(child.gameObject);
+        }
+
         foreach (PlayerRights right in Enum.GetValues(typeof(PlayerRights)))
         {
             bool isAllowed = currentRole.HasRights(right);
 
-            // currentRole.SetRights(right, true);
+            Debug.Log($"{right} {isAllowed}");
 
-            Debug.Log($"{right} {currentRole.HasRights(right)}");
+            GameObject newTextObj = Instantiate(textPrefab, contentParent);
+            TextMeshProUGUI tmp = newTextObj.GetComponent<TextMeshProUGUI>();
+
+            if(tmp != null)
+            {
+                string statusColor = isAllowed ? "green" : "red";
+                tmp.text = $"{right}: <color={statusColor}>{isAllowed}</color>";
+            }
         }
     }
 }
