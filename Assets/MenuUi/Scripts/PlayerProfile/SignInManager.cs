@@ -313,6 +313,7 @@ namespace MenuUi.Scripts.Login
             }
             ServerLogIn(_logInUsernameInputField.text, _logInPasswordInputField.text);
         }
+
         private void ServerLogIn(string username, string password) {
             string body = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
 
@@ -634,12 +635,9 @@ namespace MenuUi.Scripts.Login
             _registerPassword2VisibilityToggle.isOn = false;
             _privacyPolicyAuthToggle.isOn = false;
             _registerAgeVerificationCheckToggle.isOn = false;
+            _registerAgeVerificationToggle.isOn = false;
+            _registerParentalAuthToggle.isOn = false;
             _informationPolicyAuthToggle.isOn = false;
-
-            if (_ageAuthToggleGroup != null)
-            {
-                _ageAuthToggleGroup.SetAllTogglesOff();
-            }
         }
 
         private void ClearMessage()
