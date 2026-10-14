@@ -102,6 +102,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         public void OpenEditor()
         {
             gameObject.SetActive(true);
+            ScaleEditor();
             _saveReset.CloseSaveResetPopup();
             _uiLayoutSavedPopup.SetActive(false);
             _whetherToSaveChangesPopup.SetActive(false);
@@ -219,10 +220,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             // Scale editor to account for unsafe area
             ScaleEditor();
 
-            //
-            Canvas.ForceUpdateCanvases();
-            EditorRect = EditorRectTransform.rect;
-
             // Close and save button listeners
             _closeButton.onClick.AddListener(WhetherToSaveChangesPopup);
             _saveButton.onClick.AddListener(() =>
@@ -324,11 +321,22 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             EditorRectTransform.anchorMin = new(0f, 0f);
             EditorRectTransform.anchorMax = new(1f, anchorMaxY);
 
+            // Setting editor offsets
+            EditorRectTransform.offsetMin = Vector2.zero;
+            EditorRectTransform.offsetMax = Vector2.zero;
+
             // Setting top button anchors
             _topButtonsRectTransform.anchorMin = new(0f, anchorMaxY - TopButtonsHeight);
             _topButtonsRectTransform.anchorMax = new(1f, anchorMaxY);
 
             Canvas.ForceUpdateCanvases();
+            EditorRect = EditorRectTransform.rect;
+
+            Debug.Log(
+                $"Editor size: {_editorRectTransform.rect.size}, " +
+                $"Anchors: {_editorRectTransform.anchorMin} - {_editorRectTransform.anchorMax}, " +
+                $"Offsets: {_editorRectTransform.offsetMin} / {_editorRectTransform.offsetMax}"
+            );
         }
 
         private void OpenPreviewMode()
@@ -339,6 +347,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _previewModeTouchDetector.gameObject.SetActive(true);
             EditorRectTransform.anchorMin = Vector2.zero;
             EditorRectTransform.anchorMax = Vector2.one;
+            Canvas.ForceUpdateCanvases();
+            EditorRect = EditorRectTransform.rect;
         }
 
         private void ClosePreviewMode()

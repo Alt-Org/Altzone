@@ -673,6 +673,15 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 arenaWidth = arenaHeight * GameAspectRatio;
             }
 
+            Debug.Log(
+                $"EditorRect: {EditorRect.width} x {EditorRect.height}\n" +
+                $"WorldSize: {editorWorldSize}\n" +
+                $"WorldAspectRatio: {editorWorldAspectRatio}\n" +
+                $"CalculatedHeight: {editorAspectRatioHeight}\n" +
+                $"GameAspectRatio: {GameAspectRatio}\n" +
+                $"AvailableAspectRatio: {availableAspectRatio}"
+            );
+
             // Calculating arena position
             Vector2 position = Vector2.zero;
             position.x = _arenaPosXSlider.value * 0.01f * (availableWidth - arenaWidth);
