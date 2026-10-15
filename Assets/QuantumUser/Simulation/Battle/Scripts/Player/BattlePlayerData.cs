@@ -79,7 +79,8 @@ namespace Quantum
             private int _index;
         }
 
-        public static int NoSelectedCharacter => -1;
+        public const int NoSelectedCharacter = -1;
+        public const int NoAttachedShield = -1;
 
         #region Public Static Methods
 
