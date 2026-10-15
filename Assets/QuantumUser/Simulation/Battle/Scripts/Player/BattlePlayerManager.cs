@@ -465,15 +465,17 @@ namespace Battle.QSimulation.Player
                 return;
             }
 
-            bool selected = playerHandle.LoadedCharacterData->State == BattlePlayerCharacterState.InPlaySelected;
+            playerHandle.LoadCharacter(f, characterNumber);
 
-            DespawnPlayerCharacter(f, playerHandle, characterNumber);
+            bool wasSelected = playerHandle.LoadedCharacterData->State == BattlePlayerCharacterState.InPlaySelected;
 
             BattlePlayerCharacterState state = kill ? BattlePlayerCharacterState.OutOfPlayDead : BattlePlayerCharacterState.OutOfPlay;
 
+            DespawnPlayerCharacter(f, playerHandle);
+
             playerHandle.LoadedCharacterData->State = state;
 
-            if (selected)
+            if (wasSelected)
             {
                 playerHandle.PlayerData.Low_Level.PlayState = BattlePlayerPlayState.OutOfPlay;
                 playerHandle.PlayerData.Low_Level.SelectedCharacterNumber = BattlePlayerData.NoSelectedCharacter;
