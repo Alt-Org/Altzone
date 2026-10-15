@@ -10,13 +10,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     public class SaveReset : MonoBehaviour
     {
         [SerializeField] private GameObject _contents;
-
-        //[SerializeField] private TMP_Text _popupText;
         [SerializeField] private Button _okButton;
         [SerializeField] private Button _noButton;
         [SerializeField] private BattleUiEditor _battleUiEditor;
 
-        //private const string ResetChangesText = "Palauta UI-elementtien oletusasettelu?";
 
         private void OnDestroy()
         {

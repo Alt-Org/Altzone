@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class SliderPopupHnadler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class SliderPopupHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] private OptionsPopup _optionsPopup;
     [SerializeField] private Transform _valueField;

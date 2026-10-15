@@ -264,7 +264,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             {
                 _whetherToSaveChangesPopup.SetActive(false);
                 _optionsPopup.OpenOptionsPopup();
-                //OpenEditor();
             });
 
             //UILayoutSavedPopupButton listener
@@ -333,12 +332,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             Canvas.ForceUpdateCanvases();
             EditorRect = EditorRectTransform.rect;
-
-            Debug.Log(
-                $"Editor size: {_editorRectTransform.rect.size}, " +
-                $"Anchors: {_editorRectTransform.anchorMin} - {_editorRectTransform.anchorMax}, " +
-                $"Offsets: {_editorRectTransform.offsetMin} / {_editorRectTransform.offsetMax}"
-            );
         }
 
         private void OpenPreviewMode()
@@ -362,14 +355,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void SaveChanges()
         {
-            Debug.Log($"SaveChanges kutsuttu: {gameObject.name}, ID: {GetInstanceID()}");
-            Debug.Log($"Timer: {_instantiatedTimer}");
-            Debug.Log($"Diamonds: {_instantiatedDiamonds}");
-            Debug.Log($"GiveUpButton: {_instantiatedGiveUpButton}");
-            Debug.Log($"PlayerInfo: {_instantiatedPlayerInfo}");
-            Debug.Log($"TeammateInfo: {_instantiatedTeammateInfo}");
-
-
             BattleUiMovableElementData timerData = _instantiatedTimer.GetData();
             if (!IsSavedDataSimilar(BattleUiElementType.Timer))
                 SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Timer, timerData);
@@ -495,7 +480,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public GameObject InstantiateBattleUiElement(BattleUiElementType uiElementType)
         {
-            Debug.Log($"InstantiateBattleUiElement: {uiElementType}");
             if (uiElementType == BattleUiElementType.None) return null;
 
             GameObject uiElementPrefab = null;
