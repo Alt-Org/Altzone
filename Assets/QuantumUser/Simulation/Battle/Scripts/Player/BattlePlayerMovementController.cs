@@ -228,15 +228,25 @@ namespace Battle.QSimulation.Player
         /// <param name="playerData">Pointer to the player's data component.</param>
         /// <param name="playerEntityRef">Reference to player entity.</param>
         /// <param name="position">New world position.</param>
-        public static void Teleport(Frame f, BattlePlayerHandle playerHandle)
+        public static void Teleport(Frame f, BattlePlayerHandle playerHandle, FPVector2 position)
         {
+            playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerMovementController), errorContext: "Can not teleport player");
+
             playerHandle.LoadedCharacterData->ViewMovementVector = FPVector2.Zero;
-            BattleEntityManager.TeleportCompound(f, playerHandle.LoadedCharacterEntityHandle, playerHandle.LoadedCharacterTransformCopy.Position, playerHandle.LoadedCharacterData->MovementRotationBaseRad);
-            if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == EntityRef.None) return;
+            BattleEntityManager.TeleportCompound(f,
+                playerHandle.LoadedCharacterEntityHandle,
+                position,
+                playerHandle.LoadedCharacterData->MovementRotationBaseRad
+            );
+
+            if (!playerHandle.LoadedCharacterHasShieldAttached) return;
+
+            FP shieldRotation = playerHandle.LoadedCharacterData->MovementRotationBaseRad +
+                                playerHandle.LoadedCharacterData->MovementRotationOffsetRad;
             BattleEntityManager.TeleportCompound(f,
                 BattleManageEntityHandle.Create(f, playerHandle.LoadedCharacterData->AttachedShieldEntityRef),
-                playerHandle.LoadedCharacterTransformCopy.Position,
-                playerHandle.LoadedCharacterData->MovementRotationBaseRad + playerHandle.LoadedCharacterData->MovementRotationOffsetRad
+                position,
+                shieldRotation
             );
         }
 
