@@ -85,7 +85,6 @@ namespace Battle.QSimulation.Player
 
             // get spec
             BattlePlayerHandle playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
-            BattlePlayerShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
             BattlePlayerQSpec playerSpec = BattleQConfig.GetPlayerSpec(f);
 
             if (playerHandle.LoadedCharacterData->StateStunCooldown.IsRunning(f) || playerHandle.LoadedCharacterData->StateShieldHitCooldown.IsRunning(f)) goto Exit;
@@ -110,12 +109,18 @@ namespace Battle.QSimulation.Player
                 };
                 HandleSFXCommon(f, playerHandle.PlayerData.Slot, soundEffectType, SoundEffectTarget.All);
 
+                int shieldNumber = BattlePlayerData.NoAttachedShield;
+                if (playerHandle.LoadedCharacterHasShieldAttached)
+                {
+                    shieldNumber = playerHandle.GetLoadedCharacterAttachedShield(f).ShieldData->ShieldNumber;
+                }
+
                 f.Events.BattleCharacterHit(
                     playerHandle.LoadedCharacterEntityHandle,
                     playerHandle.PlayerData.Team,
                     playerHandle.PlayerData.Slot,
                     playerHandle.LoadedCharacterData->Number,
-                    shieldHandle.ShieldData->ShieldNumber,
+                    shieldNumber,
                     playerSpec.StunDurationSec,
                     projectileCollisionData->ProjectileEmotionCurrent
                 );
@@ -688,22 +693,23 @@ namespace Battle.QSimulation.Player
             // handle auto respawning
             if (updateData.PlayerHandle.PlayerData.PlayState.IsOutOfPlayRespawning() && !updateData.PlayerHandle.PlayerData.RespawnTimer.IsRunning(f) && updateData.PlayerHandle.PlayerData.StateAllowCharacterSwapping)
             {
-                int i;
+                int characterNumber;
 
                 // try to spawn next character
-                for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
+                for (characterNumber = 0; characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT; characterNumber++)
                 {
+                    updateData.PlayerHandle.LoadCharacter(f, characterNumber);
                     if (updateData.PlayerHandle.LoadedCharacterData->State != BattlePlayerCharacterState.OutOfPlayDead)
                     {
-                        s_debugLogger.LogFormat(f, "({0}) Auto spawning character number: {1}", updateData.PlayerHandle.PlayerData.Slot, i);
+                        s_debugLogger.LogFormat(f, "({0}) Auto spawning character number: {1}", updateData.PlayerHandle.PlayerData.Slot, characterNumber);
 
-                        BattlePlayerManager.SpawnPlayerCharacter(f, updateData.PlayerHandle.PlayerData.Slot, i, select: true);
+                        BattlePlayerManager.SpawnPlayerCharacter(f, updateData.PlayerHandle.PlayerData.Slot, characterNumber, select: true);
                         break;
                     }
                 }
 
                 // handle out of characters
-                if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
+                if (characterNumber == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
                 {
                     s_debugLogger.LogFormat(f, "({0}) Player is out of characters!", updateData.PlayerHandle.PlayerData.Slot);
 
