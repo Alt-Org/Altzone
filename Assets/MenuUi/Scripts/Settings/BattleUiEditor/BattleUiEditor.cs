@@ -101,6 +101,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// </summary>
         public void OpenEditor()
         {
+            Debug.Log($"OpenEditor kutsuttu: {gameObject.name}, ID: {GetInstanceID()}");
             gameObject.SetActive(true);
             ScaleEditor();
             _saveReset.CloseSaveResetPopup();
@@ -213,6 +214,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void Awake()
         {
+            Debug.Log("BattleUiEditor Awake kutsuttu");
             // Assign static editor rect variables
             EditorRectTransform = _editorRectTransform;
             s_uiElementsHolder = _uiElementsHolder;
@@ -360,6 +362,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void SaveChanges()
         {
+            Debug.Log($"SaveChanges kutsuttu: {gameObject.name}, ID: {GetInstanceID()}");
+            Debug.Log($"Timer: {_instantiatedTimer}");
+            Debug.Log($"Diamonds: {_instantiatedDiamonds}");
+            Debug.Log($"GiveUpButton: {_instantiatedGiveUpButton}");
+            Debug.Log($"PlayerInfo: {_instantiatedPlayerInfo}");
+            Debug.Log($"TeammateInfo: {_instantiatedTeammateInfo}");
+
+
             BattleUiMovableElementData timerData = _instantiatedTimer.GetData();
             if (!IsSavedDataSimilar(BattleUiElementType.Timer))
                 SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Timer, timerData);
@@ -485,6 +495,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public GameObject InstantiateBattleUiElement(BattleUiElementType uiElementType)
         {
+            Debug.Log($"InstantiateBattleUiElement: {uiElementType}");
             if (uiElementType == BattleUiElementType.None) return null;
 
             GameObject uiElementPrefab = null;
