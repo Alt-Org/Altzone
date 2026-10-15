@@ -10,11 +10,15 @@ public class TaskBuggerEditor : DailyTaskProgressListenerEditor
     {
         serializedObject.Update();
 
-        base.OnInspectorGUI();
+        SerializedProperty educationCategory = serializedObject.FindProperty("_educationCategoryType");
+        SerializedProperty actionType = serializedObject.FindProperty("_educationCategoryActionType");
 
         SerializedProperty buggedText = serializedObject.FindProperty("_buggedText");
         SerializedProperty buggedTextString = serializedObject.FindProperty("_buggedTextString");
         SerializedProperty wheelPrefab = serializedObject.FindProperty("_wheelPrefab");
+
+        educationCategory.enumValueIndex = (int)EducationCategoryType.Action;
+        actionType.enumValueIndex = (int)TaskEducationActionType.FindBug;
 
         EditorGUILayout.PropertyField(buggedText);
         EditorGUILayout.PropertyField(buggedTextString);
