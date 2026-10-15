@@ -99,15 +99,6 @@ public class ItemMover : MonoBehaviour
         get => assignedSlot;
     }
 
-    public void AddFurniture(AdFurnitureObject kojuFurniture)
-    {
-        if (!AdDecorationReference.Instance.FurnitureList.Contains(kojuFurniture)) AdDecorationReference.Instance.FurnitureList.Add(kojuFurniture);
-    }
-    public void RemoveFurniture(AdFurnitureObject kojuFurniture)
-    {
-        AdDecorationReference.Instance.FurnitureList.Remove(kojuFurniture);
-    }
-
     // Call when user confirms the moving of a furniture
     public void ExecuteMove()
     {
@@ -126,7 +117,7 @@ public class ItemMover : MonoBehaviour
                     OnItemMovedToPanel?.Invoke(currentFurniture);
                     
                     AdFurnitureObject adFurnitureObject = new AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
-                    AddFurniture(adFurnitureObject);
+                    if (!AdDecorationReference.Instance.FurnitureList.Contains(adFurnitureObject)) AdDecorationReference.Instance.FurnitureList.Add(adFurnitureObject);
 
                     return;
                 }
@@ -152,7 +143,7 @@ public class ItemMover : MonoBehaviour
                 trayPopulator?.HandleItemReturnedToTray(currentFurniture);
 
                 AdFurnitureObject removableFurniture = AdDecorationReference.Instance.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
-                RemoveFurniture(removableFurniture);
+                AdDecorationReference.Instance.FurnitureList.Remove(removableFurniture);
 
                 //var store = Storefront.Get();
                 //store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>

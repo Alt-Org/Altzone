@@ -222,11 +222,11 @@ public class AdEditor : AltMonoBehaviour
 
     private void GetFurniture()
     {
-        if (_furnitureSelectionContent.transform.childCount > 0)
+        if (_furnitureSelectionContent.childCount > 0)
         {
-            for (int i = 0; i < _furnitureSelectionContent.transform.childCount; i++)
+            for (int i = 0; i < _furnitureSelectionContent.childCount; i++)
             {
-                Destroy(_furnitureSelectionContent.transform.GetChild(i));
+                Destroy(_furnitureSelectionContent.GetChild(i));
             }
         }
 
