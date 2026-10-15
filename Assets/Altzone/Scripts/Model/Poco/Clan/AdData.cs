@@ -123,12 +123,12 @@ namespace Altzone.Scripts.Store
 
             if (ColorUtility.TryParseHtmlString(backgroundColour, out Color colour)) _backgroundColour = backgroundColour;
 
-            if (string.IsNullOrEmpty(AdText))
+            if (string.IsNullOrEmpty(_adText))
             {
                 _adText = "Myyntikoju avattu!";
             }
 
-            if (TextFont == null) _textFont = AdDecorationReference.Instance.FontList[0].Font;
+            if (_textFont == null) _textFont = AdDecorationReference.Instance.FontList[0].Font;
 
             if (_textColour == null) _textColour = "#000000";
             //if (ColorUtility.TryParseHtmlString(adTextColour, out Color textColour)) _textColour = adTextColour;
