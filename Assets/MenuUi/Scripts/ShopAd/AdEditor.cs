@@ -40,6 +40,7 @@ public class AdEditor : AltMonoBehaviour
 
     [Header("Panels")]
     [SerializeField] private GameObject kojuPanel;
+    //[SerializeField] private GameObject itemMover;
 
     private AdStoreObject _adData;
     private string _posterName = null;
@@ -70,9 +71,9 @@ public class AdEditor : AltMonoBehaviour
             _adData.previousTextColor = _adData.TextColour;
             _adData.previousFont = _adData.TextFont;
             _adData.previousText = _adData.AdText;
-            _adData.previousTextState = _adData._isAdText;
+            _adData.previousTextState = _adData.IsAdText;
 
-            if (_adData._isAdText)
+            if (_adData.IsAdText)
             {
                 _inputFieldHolder.SetActive(true);
                 _inputField.text = _adData.previousText;
@@ -103,7 +104,7 @@ public class AdEditor : AltMonoBehaviour
                 _posterName = "Et ole klaanissa";
             }
             _adGraphicHandler.SetAdPoster(_adData, _posterName, _heartPieceData);
-            if (_adData._isAdText) _adText.SetActive(true);
+            if (_adData.IsAdText) _adText.SetActive(true);
             _adData.previousText = _adData.AdText;
         }));
 
@@ -229,13 +230,13 @@ public class AdEditor : AltMonoBehaviour
             }
         }
 
-        if (_borderReference.FurnitureList == null || _borderReference.FurnitureList.Count <= 0)
+        if (AdDecorationReference.Instance.FurnitureList == null || AdDecorationReference.Instance.FurnitureList.Count <= 0)
         {
             return;
         }
         else
         {
-            foreach (AdFurnitureObject furniture in _borderReference.FurnitureList)
+            foreach (AdFurnitureObject furniture in AdDecorationReference.Instance.FurnitureList)
             {
                 GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
                 furnitureObject.GetComponent<Image>().preserveAspect = true;
@@ -348,11 +349,11 @@ public class AdEditor : AltMonoBehaviour
     {
         if (!textStateChanged)
         {
-            _adData.previousTextState = _adData._isAdText;
+            _adData.previousTextState = _adData.IsAdText;
             textStateChanged = true;
         }
 
-        _adData._isAdText = enable;
+        _adData.IsAdText = enable;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
 
@@ -360,8 +361,8 @@ public class AdEditor : AltMonoBehaviour
     {
         kojuPanel.SetActive(true);
         _inputFieldHolder.SetActive(false);
-        if (_adData._isAdText) _adText.SetActive(true);
-        if (!_adData._isAdText) _adText.SetActive(false);
+        if (_adData.IsAdText) _adText.SetActive(true);
+        if (!_adData.IsAdText) _adText.SetActive(false);
 
         if (gameObject.activeSelf) gameObject.SetActive(false);
     }
@@ -391,7 +392,7 @@ public class AdEditor : AltMonoBehaviour
         }
 
         if (!string.IsNullOrEmpty(_adData.previousText)) _adData.AdText = _adData.previousText;
-        _adData._isAdText = _adData.previousTextState;
+        _adData.IsAdText = _adData.previousTextState;
 
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
         CloseEditor();

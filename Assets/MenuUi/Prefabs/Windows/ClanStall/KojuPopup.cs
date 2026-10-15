@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 
@@ -156,26 +157,30 @@ public class KojuPopup : MonoBehaviour
 
         // Apply rarity color to the background in RemovePopup
         var cardUI = card.GetComponent<FurnitureCardUI>();
-        if (cardUI != null && removePopupBackground != null)
-        {
-            Color rarityColor = cardUI.GetRarityColor();
-            removePopupBackground.color = rarityColor;
-        }
 
-        if (cardUI != null && removeIconImage != null && removeKojuPriceText != null)
+        if (cardUI != null)
         {
-            Sprite cardIconImage = cardUI.GetIcon();
-            removeIconImage.sprite = cardIconImage;
-            float cardPrice = cardUI.GetValue();
-            removeKojuPriceText.text = cardPrice.ToString();
-        }
+            if (removePopupBackground != null)
+            {
+                Color rarityColor = cardUI.GetRarityColor();
+                removePopupBackground.color = rarityColor;
+            }
 
-        if (cardUI != null && removeNameText != null && removeSetNameText != null)
-        {
-            string cardNameText = cardUI.GetNameText();
-            removeNameText.text = cardNameText;
-            string cardSetNameText = cardUI.GetSetNameText();
-            removeSetNameText.text = cardSetNameText;
+            if (removeIconImage != null && removeKojuPriceText != null)
+            {
+                Sprite cardIconImage = cardUI.GetIcon();
+                removeIconImage.sprite = cardIconImage;
+                float cardPrice = cardUI.GetValue();
+                removeKojuPriceText.text = cardPrice.ToString();
+            }
+
+            if (removeNameText != null && removeSetNameText != null)
+            {
+                string cardNameText = cardUI.GetNameText();
+                removeNameText.text = cardNameText;
+                string cardSetNameText = cardUI.GetSetNameText();
+                removeSetNameText.text = cardSetNameText;
+            }
         }
 
         removePopup.SetActive(true);

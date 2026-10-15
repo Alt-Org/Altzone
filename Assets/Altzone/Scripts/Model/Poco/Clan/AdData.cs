@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
+using TMPro;
 using UnityEngine;
 
 namespace Altzone.Scripts.Store
@@ -9,19 +10,19 @@ namespace Altzone.Scripts.Store
     [Serializable]
     public class AdStoreObject
     {
-        public string _borderFrame;
-        public string _backgroundColour;
-        public TMPro.TMP_FontAsset _textFont;
-        public string _textColour;
-        public Sprite _furniture;
-        public string _adText;
-        public bool _isAdText = true;
+        private string _borderFrame;
+        private string _backgroundColour;
+        private TMP_FontAsset _textFont;
+        private string _textColour;
+        private Sprite _furniture;
+        private string _adText;
+        private bool _isAdText = true;
 
         public string previousColor;
         public string previousBorder;
         public Sprite previousFurniture;
         public string previousTextColor;
-        public TMPro.TMP_FontAsset previousFont;
+        public TMP_FontAsset previousFont;
         public string previousText;
         public bool previousTextState = true;
 
@@ -50,7 +51,7 @@ namespace Altzone.Scripts.Store
             }
         }
 
-        public TMPro.TMP_FontAsset TextFont
+        public TMP_FontAsset TextFont
         {
             get => _textFont;
             set
@@ -58,7 +59,7 @@ namespace Altzone.Scripts.Store
                 if (value != null) _textFont = value;
                 else
                 {
-                    Debug.LogError($"Invalid font value: \"{value}\". Font not changed.");
+                    Debug.LogError($"Given font value is null. Font not changed.");
                 }
             }
         }
@@ -84,7 +85,7 @@ namespace Altzone.Scripts.Store
                 if (value != null) _furniture = value;
                 else
                 {
-                    Debug.LogError($"Invalid furniture id: \"{value}\". Furniture not changed.");
+                    Debug.LogError($"Given sprite value is null. Font not changed.");
                 }
             }
         }
@@ -97,7 +98,7 @@ namespace Altzone.Scripts.Store
                 if (value != null) _adText = value;
                 else
                 {
-                    Debug.LogError($"Invalid text value: \"{value}\". Text not changed.");
+                    Debug.LogError($"Given string value is null. Font not changed.");
                 }
             }
         }
@@ -123,7 +124,7 @@ namespace Altzone.Scripts.Store
             if (ColorUtility.TryParseHtmlString(backgroundColour, out Color colour)) _backgroundColour = backgroundColour;
             //else _backgroundColour = "#FFFFFF";
 
-            if (string.IsNullOrEmpty(_adText))
+            if (string.IsNullOrEmpty(AdText))
             {
                 _adText = "Myyntikoju avattu!";
             }

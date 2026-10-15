@@ -5411,6 +5411,7 @@ MonoBehaviour:
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0
+  _disabledOnProd: 0
   Interactable: 1
 --- !u!1 &3963619410154810606
 GameObject:
@@ -14635,6 +14636,16 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: -0.000015999467
       objectReference: {fileID: 0}
+    - target: {fileID: 6378196027626622136, guid: 1c4803e545a5e4a4084a4040bf1c9008,
+        type: 3}
+      propertyPath: kojuPopup
+      value: 
+      objectReference: {fileID: 1498098101285256586}
+    - target: {fileID: 6378196027626622136, guid: 1c4803e545a5e4a4084a4040bf1c9008,
+        type: 3}
+      propertyPath: _kojuPopup
+      value: 
+      objectReference: {fileID: 6434618941988514820}
     - target: {fileID: 6379748142248165024, guid: 1c4803e545a5e4a4084a4040bf1c9008,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -14795,6 +14806,11 @@ PrefabInstance:
       propertyPath: kojuPanel
       value: 
       objectReference: {fileID: 1505102553696984170}
+    - target: {fileID: 8869476066704906533, guid: 1c4803e545a5e4a4084a4040bf1c9008,
+        type: 3}
+      propertyPath: kojuPopup
+      value: 
+      objectReference: {fileID: 6434618941988514820}
     - target: {fileID: 8869476066704906533, guid: 1c4803e545a5e4a4084a4040bf1c9008,
         type: 3}
       propertyPath: _dtSelectButtons
@@ -15939,7 +15955,7 @@ PrefabInstance:
     - target: {fileID: 6427746584253606736, guid: 3817768121a5f724cb0ed629f647c55b,
         type: 3}
       propertyPath: m_fontSize
-      value: 33.65
+      value: 41.45
       objectReference: {fileID: 0}
     - target: {fileID: 6462555999945686503, guid: 3817768121a5f724cb0ed629f647c55b,
         type: 3}
@@ -16549,6 +16565,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 607bcf1f0b9821c44b6178273a64721f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1498098101285256586 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6677288586072095349, guid: 3817768121a5f724cb0ed629f647c55b,
+    type: 3}
+  m_PrefabInstance: {fileID: 5215219901497837567}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1505102553696984170 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6666202737643346837, guid: 3817768121a5f724cb0ed629f647c55b,
@@ -16561,7 +16583,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 5215219901497837567}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1498098101285256586}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cbc8467ddaf17bc44b8ad713ae788742, type: 3}

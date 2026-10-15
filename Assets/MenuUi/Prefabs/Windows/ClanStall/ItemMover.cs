@@ -25,8 +25,6 @@ public class ItemMover : MonoBehaviour
     // Event to notify that this item was moved to panel
     public event Action<StorageFurniture> OnItemMovedToPanel;
 
-    [SerializeField] private AdDecorationReference _adDecReference;
-
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(OnClick);
@@ -107,9 +105,9 @@ public class ItemMover : MonoBehaviour
 
                     // Notify trayPopulator this item was moved
                     OnItemMovedToPanel?.Invoke(currentFurniture);
-
+                    
                     AdFurnitureObject adFurnitureObject = new AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
-                    _adDecReference.AddFurniture(adFurnitureObject);
+                    AdDecorationReference.Instance.AddFurniture(adFurnitureObject);
 
                     return;
                 }
@@ -134,8 +132,8 @@ public class ItemMover : MonoBehaviour
                 // Notify trayPopulator this item was returned
                 trayPopulator?.HandleItemReturnedToTray(currentFurniture);
 
-                AdFurnitureObject removableFurniture = _adDecReference.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
-                _adDecReference.RemoveFurniture(removableFurniture);
+                AdFurnitureObject removableFurniture = AdDecorationReference.Instance.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
+                AdDecorationReference.Instance.RemoveFurniture(removableFurniture);
 
                 //var store = Storefront.Get();
                 //store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>

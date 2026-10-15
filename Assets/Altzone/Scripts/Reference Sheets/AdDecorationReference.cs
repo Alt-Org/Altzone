@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using TMPro;
 using UnityEngine;
 
 namespace Altzone.Scripts.ReferenceSheets
@@ -171,10 +172,11 @@ namespace Altzone.Scripts.ReferenceSheets
 
         private void ValidateFonts()
         {
-            HashSet<string> uniqueNames = new();
-            HashSet<TMPro.TMP_FontAsset> uniqueMap = new();
-
             if (_validatedFontList != null && _validatedFontList.Count > 0) return;
+
+            HashSet<string> uniqueNames = new();
+            HashSet<TMP_FontAsset> uniqueMap = new();
+            
             List<AdFontObject> fonts = new();
             foreach (AdFontObject font in _fontList)
             {
@@ -182,11 +184,10 @@ namespace Altzone.Scripts.ReferenceSheets
 
                 if (!uniqueNames.Add(font.Name))
                 {
-                    Debug.LogError($"duplicate font Name {font.Name}");
+                    continue;
                 }
                 if (!uniqueMap.Add(font.Font))
                 {
-                    Debug.LogError($"duplicate font {font.Font}");
                     continue;
                 }
                 fonts.Add(font);
@@ -222,7 +223,7 @@ namespace Altzone.Scripts.ReferenceSheets
     public class AdFontObject
     {
         public string Name;
-        public TMPro.TMP_FontAsset Font;
+        public TMP_FontAsset Font;
 
         public bool IsValid()
         {
