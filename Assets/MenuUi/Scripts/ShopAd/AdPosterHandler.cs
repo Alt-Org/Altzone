@@ -28,7 +28,7 @@ public class AdPosterHandler : AltMonoBehaviour
     [SerializeField]
     private GameObject _inputFieldHolder;
 
-    [SerializeField] private GameObject itemMover;
+    //[SerializeField] private GameObject itemMover;
 
     // Start is called before the first frame update
     void Start()
@@ -78,7 +78,6 @@ public class AdPosterHandler : AltMonoBehaviour
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour;
 
-        if (!data.TextFont) data.TextFont = AdDecorationReference.Instance.FontList[0].Font;
         _adText.font = data.TextFont;
         _adText.text = data.AdText;
 
@@ -105,7 +104,6 @@ public class AdPosterHandler : AltMonoBehaviour
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
         if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour;
 
-        if (!data.TextFont) data.TextFont = AdDecorationReference.Instance.FontList[0].Font;
         _adText.font = data.TextFont;
         _adText.text = data.AdText;
 

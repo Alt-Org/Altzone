@@ -40,7 +40,7 @@ public class AdEditor : AltMonoBehaviour
 
     [Header("Panels")]
     [SerializeField] private GameObject kojuPanel;
-    //[SerializeField] private GameObject itemMover;
+    [SerializeField] private GameObject itemMover;
 
     private AdStoreObject _adData;
     private string _posterName = null;
@@ -226,7 +226,7 @@ public class AdEditor : AltMonoBehaviour
         {
             for (int i = 0; i < _furnitureSelectionContent.transform.childCount; i++)
             {
-                Destroy(_furnitureSelectionContent.transform.GetChild(i).gameObject);
+                Destroy(_furnitureSelectionContent.transform.GetChild(i));
             }
         }
 
@@ -326,7 +326,7 @@ public class AdEditor : AltMonoBehaviour
         GetColors();
     }
 
-    public void ChangeTextFont(TMPro.TMP_FontAsset font)
+    public void ChangeTextFont(TMP_FontAsset font)
     {
         if (!fontChanged)
         {

@@ -25,6 +25,16 @@ public class ItemMover : MonoBehaviour
     // Event to notify that this item was moved to panel
     public event Action<StorageFurniture> OnItemMovedToPanel;
 
+    //private List<AdFurnitureObject> _furnitureList;
+
+    //public List<AdFurnitureObject> FurnitureList
+    //{
+    //    get
+    //    {
+    //        return _furnitureList;
+    //    }
+    //}
+
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(OnClick);
@@ -89,6 +99,15 @@ public class ItemMover : MonoBehaviour
         get => assignedSlot;
     }
 
+    public void AddFurniture(AdFurnitureObject kojuFurniture)
+    {
+        if (!AdDecorationReference.Instance.FurnitureList.Contains(kojuFurniture)) AdDecorationReference.Instance.FurnitureList.Add(kojuFurniture);
+    }
+    public void RemoveFurniture(AdFurnitureObject kojuFurniture)
+    {
+        AdDecorationReference.Instance.FurnitureList.Remove(kojuFurniture);
+    }
+
     // Call when user confirms the moving of a furniture
     public void ExecuteMove()
     {
@@ -107,7 +126,7 @@ public class ItemMover : MonoBehaviour
                     OnItemMovedToPanel?.Invoke(currentFurniture);
                     
                     AdFurnitureObject adFurnitureObject = new AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
-                    AdDecorationReference.Instance.AddFurniture(adFurnitureObject);
+                    AddFurniture(adFurnitureObject);
 
                     return;
                 }
@@ -133,7 +152,7 @@ public class ItemMover : MonoBehaviour
                 trayPopulator?.HandleItemReturnedToTray(currentFurniture);
 
                 AdFurnitureObject removableFurniture = AdDecorationReference.Instance.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
-                AdDecorationReference.Instance.RemoveFurniture(removableFurniture);
+                RemoveFurniture(removableFurniture);
 
                 //var store = Storefront.Get();
                 //store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>

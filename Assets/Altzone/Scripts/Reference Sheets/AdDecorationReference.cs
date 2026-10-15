@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
+using UnityEngine.Serialization;
 using UnityEngine;
 
 namespace Altzone.Scripts.ReferenceSheets
@@ -55,9 +56,10 @@ namespace Altzone.Scripts.ReferenceSheets
 
         public List<AdFurnitureObject> FurnitureList
         {
-            get
+            get => _furnitureList;
+            set
             {
-                return _furnitureList;
+                _furnitureList = value;
             }
         }
 
@@ -195,14 +197,14 @@ namespace Altzone.Scripts.ReferenceSheets
             _validatedFontList = fonts;
         }
 
-        public void AddFurniture(AdFurnitureObject kojuFurniture)
-        {
-            if (!_furnitureList.Contains(kojuFurniture)) _furnitureList.Add(kojuFurniture);
-        }
-        public void RemoveFurniture(AdFurnitureObject kojuFurniture)
-        {
-            _furnitureList.Remove(kojuFurniture);
-        }
+        //public void AddFurniture(AdFurnitureObject kojuFurniture)
+        //{
+        //    if (!_furnitureList.Contains(kojuFurniture)) _furnitureList.Add(kojuFurniture);
+        //}
+        //public void RemoveFurniture(AdFurnitureObject kojuFurniture)
+        //{
+        //    _furnitureList.Remove(kojuFurniture);
+        //}
     }
 
     [Serializable]
@@ -222,8 +224,11 @@ namespace Altzone.Scripts.ReferenceSheets
     [Serializable]
     public class AdFontObject
     {
-        public string Name;
-        public TMP_FontAsset Font;
+        [SerializeField, FormerlySerializedAs("Name")] private string _name;
+        [SerializeField, FormerlySerializedAs("Font")] private TMP_FontAsset _font;
+
+        public string Name => _name;
+        public TMP_FontAsset Font => _font;
 
         public bool IsValid()
         {
@@ -236,9 +241,22 @@ namespace Altzone.Scripts.ReferenceSheets
     [Serializable]
     public class AdFurnitureObject
     {
-        public string Name;
-        public string Id;
-        public Sprite Image;
+        private string _name;
+        private string _id;
+        private Sprite _image;
+
+        public string Name{
+            get => _name;
+            set => _name = value;
+        }
+        public string Id{
+            get => _id;
+            set => _id = value;
+        }
+        public Sprite Image{
+            get => _image;
+            set => _image = value;
+        }
 
         public AdFurnitureObject(string name, string id, Sprite image)
         {
