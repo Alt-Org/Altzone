@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Audio; // ----------------------
-using Altzone.Scripts.ReferenceSheets; // -------------------
+using Altzone.Scripts.Audio;
+using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +15,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private StorageFurnitureReference _storageFurnitureReference;
         [SerializeField]
-        private GameObject _furnitureIconObject;
+        private Image _furnitureIconObject;
         [SerializeField]
         private Image _furnitureBackground; // non-default background object
         [SerializeField]
@@ -63,11 +63,10 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (_furnitureList == null) return;
             string[] nameParts = _furnitureList.Name.Split('_');
-            _name.text = nameParts[0]; //_furnitureList.Name;
+            _name.text = nameParts[0];
             UpdateFurnitureCount();
             GameObject furnitureObject = _furnitureReference.GetSoulHomeTrayFurnitureObject(_furnitureList.Name);
-            _furnitureIconObject.GetComponent<Image>().sprite = furnitureObject.GetComponent<Image>().sprite;
-            _furnitureIconObject.GetComponent<Image>().preserveAspect = true;
+            _furnitureIconObject.sprite = furnitureObject.GetComponent<Image>().sprite;
 
             FurnitureInfo furnitureSetInfo = _storageFurnitureReference.GetFurnitureInfo(_furnitureList.Name);
 
@@ -84,7 +83,6 @@ namespace MenuUI.Scripts.SoulHome
 
             if (furnitureSetInfo.SetFontName == null)
             {
-                _furnitureSetFont.sprite = null;
                 _furnitureSetFont.gameObject.SetActive(false);
                 _furnitureSetFontFallback.text = furnitureSetInfo.SetName;
                 _furnitureSetFontFallback.gameObject.SetActive(true);
@@ -92,7 +90,6 @@ namespace MenuUI.Scripts.SoulHome
             else
             {
                 _furnitureSetFont.sprite = furnitureSetInfo.SetFontName;
-                _furnitureSetFont.preserveAspect = true;
                 _furnitureSetFont.gameObject.SetActive(true);
                 _furnitureSetFontFallback.gameObject.SetActive(false);
             }

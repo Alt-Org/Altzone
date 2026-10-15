@@ -461,31 +461,13 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ToggleTray(GameObject tray)
         {
-            float width = transform.GetComponent<RectTransform>().rect.width;
+            //float width = transform.GetComponent<RectTransform>().rect.width;
             if(tray is null) tray = GetTray();
-            if (!_trayOpen)
-            {
-                //if(!_rotated)tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.8f, tray.transform.localPosition.y);
-                //else tray.transform.localPosition = new Vector2(tray.transform.localPosition.x - width * 0.2f + tray.transform.Find("EditButton").GetComponent<RectTransform>().rect.width, tray.transform.localPosition.y);
-                _trayOpen = true;
-                ///RectTransform furnitureRectTransform = tray.transform.Find("TopButtons").transform.Find("ModeButton").GetComponent<RectTransform>();
-                //RectTransform furnitureRectTransform = tray.transform.Find("CategoryButton").GetComponent<RectTransform>(); // original -----------------
-                ///furnitureRectTransform.sizeDelta = new(width *0.2f, furnitureRectTransform.sizeDelta.y);
-                ///furnitureRectTransform.gameObject.SetActive(true);
-                //RectTransform trapRectTransform = tray.transform.Find("TrapButton").GetComponent<RectTransform>();
-                //trapRectTransform.sizeDelta = new(width * 0.2f, trapRectTransform.sizeDelta.y);
-                //trapRectTransform.gameObject.SetActive(true);
-                //transform.Find("ChangeHandleButtons/SaveChangesButton").gameObject.SetActive(true);
-                //if (!_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
-            }
+            if (!_trayOpen) _trayOpen = true;
             else
             {
                 tray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                 _trayOpen = false;
-                //tray.transform.Find("FurnitureButton").GetComponent<RectTransform>().gameObject.SetActive(false); // -----------
-                //tray.transform.Find("TrapButton").GetComponent<RectTransform>().gameObject.SetActive(false); // -----------
-                //transform.Find("ChangeHandleButtons/SaveChangesButton").gameObject.SetActive(false);
-                //if (_soulHomeTower.EditingMode) _soulHomeTower.ToggleEdit();
             }
         }
         public void EnableTray(bool enable)
@@ -496,15 +478,12 @@ namespace MenuUI.Scripts.SoulHome
                 OverlayPanelCheck.Instance.ToggleBottomBar(false);
                 tray.SetActive(true);
                 _changeHandleButtonTray.SetActive(true);
-                //_furnitureButtonTray.SetActive(true);
-                //SetFurnitureButtons();
             }
             else
             {
                 OverlayPanelCheck.Instance.ToggleBottomBar(true);
                 tray.SetActive(false);
                 _changeHandleButtonTray.SetActive(false);
-                //_furnitureButtonTray.SetActive(false);
             }
             CheckEditMode();
         }
@@ -656,80 +635,10 @@ namespace MenuUI.Scripts.SoulHome
                 _changeHandleButtonTray.transform.Find("ExitEditModeButton").GetComponent<Button>().interactable = false;
             }
         }
-        private void CheckHoverButtons()
+        public void CheckHoverButtons()
         {
             if(_soulHomeTower.SelectedFurniture != null && _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled) _hoverButtons.SetActive(true);
             else _hoverButtons.SetActive(false);
         }
-        //private void CheckFurnitureButtons()
-        //{
-         //   return; // ----------------------------------------------
-            /*
-            if (_soulHomeTower.SelectedFurniture != null)
-            {
-                _furnitureButtons.transform.Find("RotateFurniture").GetComponent<Button>().interactable = true;
-                _furnitureButtons.transform.Find("SetFurniture").GetComponent<Button>().interactable = true;
-            }
-            else
-            {
-                _furnitureButtons.transform.Find("RotateFurniture").GetComponent<Button>().interactable = false;
-                _furnitureButtons.transform.Find("SetFurniture").GetComponent<Button>().interactable = false;
-            }*/
-        //}
-        /// <summary>Positions the hover buttons next to the selected furniture's edges, given as tower camera viewport points.</summary>
-        public void SetHoverButtons(Vector3 topEdge, Vector3 leftEdge, Vector3 bottomEdge)
-        {
-            RectTransform screen = transform.Find("Screen").GetComponent<RectTransform>();
-            PlaceHoverButton(_confirmHoverButton, screen, topEdge, Vector2.up);
-            PlaceHoverButton(_cancelHoverButton, screen, leftEdge, Vector2.left);
-            PlaceHoverButton(_rotateHoverButton, screen, bottomEdge, Vector2.down);
-            PlaceHoverButtonLine();
-            CheckHoverButtons();
-        }
-
-        private void PlaceHoverButtonLine()
-        {
-            if (_hoverButtonLine == null || _cancelHoverButton == null || _confirmHoverButton == null) return;
-
-            Transform parent = _hoverButtonLine.parent;
-            Vector2 start = parent.InverseTransformPoint(GetEdgeWorldPoint(_cancelHoverButton, Vector2.up));
-            Vector2 end = parent.InverseTransformPoint(GetEdgeWorldPoint(_confirmHoverButton, Vector2.left));
-            Vector2 delta = end - start;
-            Vector2 imageSpan = _hoverButtonLineEnd - _hoverButtonLineStart;
-
-            bool fits = delta.x > 0f && delta.y > 0f && imageSpan.x > 0f && imageSpan.y > 0f;
-            _hoverButtonLine.gameObject.SetActive(fits);
-            if (!fits) return;
-
-            // With the pivot at the line's start, the pivot is placed on the start point and the size scales the
-            // part of the image between the two ends to cover the distance between the buttons.
-            _hoverButtonLine.anchorMin = _hoverButtonLine.anchorMax = new Vector2(0.5f, 0.5f);
-            _hoverButtonLine.pivot = _hoverButtonLineStart;
-            _hoverButtonLine.sizeDelta = new Vector2(delta.x / imageSpan.x, delta.y / imageSpan.y);
-            _hoverButtonLine.position = parent.TransformPoint(start);
-        }
-
-        private static Vector3 GetEdgeWorldPoint(RectTransform rectTransform, Vector2 direction)
-        {
-            Rect rect = rectTransform.rect;
-            return rectTransform.TransformPoint(rect.center + Vector2.Scale(rect.size * 0.5f, direction));
-        }
-
-        private void PlaceHoverButton(RectTransform button, RectTransform screen, Vector3 viewportPoint, Vector2 direction)
-        {
-            if (button == null) return;
-
-            // The tower camera renders onto the Screen, so a viewport point maps to the same relative spot on its rect.
-            Rect rect = screen.rect;
-            Vector2 localPosition = new(rect.xMin + rect.width * viewportPoint.x, rect.yMin + rect.height * viewportPoint.y);
-
-            // Move the button out by half of its size plus the margin, so its edge sits next to the furniture's edge.
-            Vector3 halfSize = screen.InverseTransformVector(button.TransformVector(button.rect.size * 0.5f));
-            float offset = Mathf.Abs(direction.x * halfSize.x) + Mathf.Abs(direction.y * halfSize.y) + _hoverButtonMargin;
-            localPosition += direction * offset;
-
-            button.position = screen.TransformPoint(localPosition);
-        }
-
     }
 }

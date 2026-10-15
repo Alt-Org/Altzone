@@ -37,7 +37,7 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _rooms;
 
         [SerializeField]
-        private GameObject _furnitureHoverButtons; //----------------------------------------------
+        private GameObject _hoverButtons;
 
         private Bounds _roomBounds;
 
@@ -80,7 +80,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _selectedFurniture?.GetComponent<FurnitureHandling>().SetOutline(false);
                 _selectedFurniture = value;
-                _furnitureHoverButtons.SetActive(false); // ----------------------------------------------
+                _hoverButtons.SetActive(false);
                 // The tray preview belongs to the selection. If it is left behind, the next press on the screen
                 // spawns a new furniture from it (e.g. after the hover cancel button or discarding changes).
                 if (_selectedFurniture == null) _mainScreen.DeselectTrayFurniture();
@@ -336,7 +336,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (!_startFinished) return;
             // Move hover buttons with the selected furniture when scrolling the tower
-            if (_selectedFurniture != null && _furnitureHoverButtons.activeSelf) UpdateHoverButtons();
+            if (_selectedFurniture != null && _hoverButtons.activeSelf) UpdateHoverButtons();
         }
 
         // Places the hover buttons around the selected furniture's collider
@@ -345,18 +345,7 @@ namespace MenuUI.Scripts.SoulHome
             // Built from the box itself: Collider2D.bounds lags behind until physics syncs the transform, and is empty while disabled.
             BoxCollider2D box = _selectedFurniture.GetComponent<BoxCollider2D>();
             Transform furniture = _selectedFurniture.transform;
-            Vector2 half = box.size * 0.5f;
-            Bounds bounds = new(furniture.TransformPoint(box.offset), Vector3.zero);
-            bounds.Encapsulate(furniture.TransformPoint(box.offset + new Vector2(-half.x, -half.y)));
-            bounds.Encapsulate(furniture.TransformPoint(box.offset + new Vector2(half.x, -half.y)));
-            bounds.Encapsulate(furniture.TransformPoint(box.offset + new Vector2(-half.x, half.y)));
-            bounds.Encapsulate(furniture.TransformPoint(box.offset + new Vector2(half.x, half.y)));
-            Vector3 center = bounds.center;
-
-            _mainScreen.SetHoverButtons(
-                _camera.WorldToViewportPoint(new Vector3(center.x, bounds.max.y, center.z)),
-                _camera.WorldToViewportPoint(new Vector3(bounds.min.x, center.y, center.z)),
-                _camera.WorldToViewportPoint(new Vector3(center.x, bounds.min.y, center.z)));
+            _hoverButtons.GetComponent<SoulHomeHoverButtonHandler>().SetButtonPositions(_camera, box, furniture);
         }
 
         public bool FindRayPoint(Vector2 relPoint, ClickState click)
@@ -905,7 +894,7 @@ namespace MenuUI.Scripts.SoulHome
         // Hover confirm button: hides the hover buttons and outlines
         public void ConfirmFurniture()
         {
-            _furnitureHoverButtons.SetActive(false);
+            _hoverButtons.SetActive(false);
             if (_selectedFurniture == null) return;
             // Without a slot DeselectFurniture would send it back to the tray
             if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot == null) return;
