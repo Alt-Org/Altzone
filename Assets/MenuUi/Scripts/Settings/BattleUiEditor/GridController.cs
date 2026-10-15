@@ -287,7 +287,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             // Removing extra lines
             int linesToRemove = lineParent.childCount - lineAmount;
-            for (int i = 0; i < linesToRemove; i++)
+            for (int i = lineParent.childCount - 1; i >= lineAmount; i--)
             {
                 if (lineParent == _gridRows) _rowLineImages.RemoveAt(i);
                 else _columnLineImages.RemoveAt(i);
