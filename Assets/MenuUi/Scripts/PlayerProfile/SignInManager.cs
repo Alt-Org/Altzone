@@ -262,9 +262,11 @@ namespace MenuUi.Scripts.Login
                 SetVersionState(true);
             }*/
             _logInPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_logInPasswordInputField, value));
+            _logInButton.onClick.AddListener(LogIn);
             _registerPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPasswordInputField, value));
             _registerPassword2VisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPassword2InputField, value));
             _registerButton.onClick.AddListener(OpenPasswordHintPanel);
+            _registerButton.onClick.AddListener(Register);
             _setHintButton.onClick.AddListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
             _skipHintButton.onClick.AddListener(() => Register());
             _registerPasswordHintAnswerInputField.onValueChanged.AddListener((value) => CheckHintValidity());
