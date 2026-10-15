@@ -6269,6 +6269,7 @@ MonoBehaviour:
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0
+  _disabledOnProd: 0
   Interactable: 1
 --- !u!114 &3653383284202618329
 MonoBehaviour:
@@ -9378,6 +9379,7 @@ GameObject:
   - component: {fileID: 4741703271835260094}
   - component: {fileID: 2467947121303553598}
   - component: {fileID: 8037915861875124488}
+  - component: {fileID: 4053586116388648526}
   m_Layer: 5
   m_Name: FPSText
   m_TagString: Untagged
@@ -9511,13 +9513,40 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3538920100484285165}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _finnishText: FPS LIMIT
   _englishText: FPS LIMIT
+--- !u!114 &4053586116388648526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3538920100484285165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8740f3516d21ae4f8b6e3af8fa98fbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 5
+  _educationCategoryActionType: 15
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+  _longClickStartThresholdTime: 0.2
+  _longClickThresholdTime: 3
+  _uniqueName: 
+  _buggedText: {fileID: 2467947121303553598}
+  _toggle: {fileID: 2378000071278872411}
+  _buggedTextString: PCRBdfe Limigaga#%&
+  _wheelPrefab: {fileID: 8663310473271682075, guid: 9e98e501f5b2a43caa012d4ed3f60893,
+    type: 3}
 --- !u!1 &3590594289163602986
 GameObject:
   m_ObjectHideFlags: 0
@@ -23846,6 +23875,7 @@ MonoBehaviour:
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0
+  _disabledOnProd: 0
   Interactable: 1
 --- !u!114 &4834822388002688743
 MonoBehaviour:
@@ -29264,6 +29294,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1c6ada8ec7b433a45b004c8c72ba4e3f, type: 3}
+--- !u!114 &2378000071278872411 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1316645462292013334, guid: 1c6ada8ec7b433a45b004c8c72ba4e3f,
+    type: 3}
+  m_PrefabInstance: {fileID: 3694623387107583565}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &8264485052517870646 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4752609579693476475, guid: 1c6ada8ec7b433a45b004c8c72ba4e3f,
