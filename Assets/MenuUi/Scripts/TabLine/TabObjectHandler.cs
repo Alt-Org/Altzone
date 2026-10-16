@@ -8,6 +8,7 @@ public class TabObjectHandler : MonoBehaviour
 {
     [Header("References to components")]
     [SerializeField] private Image _tabBaseComponent;
+
     [SerializeField] private Image _tabImageComponent;
     [SerializeField] private TextMeshProUGUI _tabText;
     [SerializeField] private TMP_FontAsset _tabTextFontDark;
@@ -52,9 +53,11 @@ public class TabObjectHandler : MonoBehaviour
         _active = false;
 
         if (_tabBaseComponent != null) _tabBaseComponent.color = _tabColorInactive;
+
         if (_tabText!.gameObject.activeSelf)
         {
             if (_tabTextFontInactive != null) _tabText.font = _tabTextFontInactive;
+
             _tabText.color = _textColorInactive;
         }
     }
@@ -66,17 +69,18 @@ public class TabObjectHandler : MonoBehaviour
         (_textColorActive, _tabTextFontActive) = DetermineTextColour(activeColour);
         _tabColorInactive = inactiveColour;
         (_textColorInactive, _tabTextFontInactive) = DetermineTextColour(inactiveColour);
+
         if (_active) _tabBaseComponent.color = _tabColorActive;
         else _tabBaseComponent.color = _tabColorInactive;
     }
 
     private (Color, TMP_FontAsset) DetermineTextColour(Color backgroundColour)
     {
-        if(backgroundColour == null) return (Color.black, _tabTextFontDark);
+        if (backgroundColour == null) return (Color.black, _tabTextFontDark);
 
         Color.RGBToHSV(backgroundColour, out float h, out float s, out float v);
 
-        if(s > 0.5f || v < 0.5f) return (Color.white, _tabTextFontBright);
-        else return (Color.black,_tabTextFontDark);
+        if (s > 0.5f || v < 0.5f) return (Color.white, _tabTextFontBright);
+        else return (Color.black, _tabTextFontDark);
     }
 }

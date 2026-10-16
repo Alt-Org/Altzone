@@ -23,7 +23,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         public IEnumerator ShowSaveResetPopup(Action<bool?> callback)
         {
-            //_popupText.text = message;
             _contents.SetActive(true);
 
             _okButton.onClick.RemoveAllListeners();
@@ -31,16 +30,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             bool? resetChanges = null;
 
-            _okButton.onClick.AddListener(() =>
-            {
-                Debug.Log("Save Reset OK button clicked");
-                resetChanges = true;
-            });
-            _noButton.onClick.AddListener(() =>
-            {
-                Debug.Log("Save Reset No button clicked");
-                resetChanges = false;
-            });
+            _okButton.onClick.AddListener(() => resetChanges = true);
+
+            _noButton.onClick.AddListener(() => resetChanges = false);
 
             yield return new WaitUntil(() => resetChanges.HasValue || !_contents.activeSelf);
 
@@ -59,7 +51,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             gameObject.SetActive(true);
             StartCoroutine(ShowSaveResetPopup(resetChanges =>
             {
-                //if (resetChanges == null) return;
                 if (resetChanges == true) _battleUiEditor.ResetChanges();
             }));
         }

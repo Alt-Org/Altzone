@@ -142,6 +142,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _battleUiEditor.UpdateInputFieldText(value, _gridColumnsInputField);
                 UpdateGridColumnLines();
             });
+
             _gridColumnsInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_gridColumnsInputField, _gridColumnsSlider);
@@ -154,6 +155,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _battleUiEditor.UpdateInputFieldText(value, _gridRowsInputField);
                 UpdateGridRowLines();
             });
+
             _gridRowsInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_gridRowsInputField, _gridRowsSlider);
@@ -167,6 +169,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _grid.SetGridHue(value);
                 PlayerPrefs.SetInt(GridHueKey, (int)value);
             });
+
             _gridHueInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_gridHueInputField, _gridHueSlider);
@@ -181,6 +184,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _grid.SetGridTransparency(value);
                 PlayerPrefs.SetInt(GridTransparencyKey, (int)value);
             });
+
             _gridTransparencyInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_gridTransparencyInputField, _gridTransparencySlider);
@@ -258,6 +262,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _battleUiEditor.UpdateInputFieldText(value, _movementSwipeSensitivityInputField);
                 SettingsCarrier.Instance.BattleSwipeSensitivity = value;
             });
+
             _movementSwipeSensitivityInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_movementSwipeSensitivityInputField, _movementSwipeSensitivitySlider);
@@ -283,6 +288,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _stoneWallBottomCharacterImage.SetActive(value);
 
                 SettingsCarrier.Instance.BattleArenaStoneWallCharacter = value;
+
+                if (value) UpdateArena();
             });
 
             _outerEdgeWithoutFloorToggle.onValueChanged.AddListener((value) =>
@@ -431,6 +438,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             bool outerEdgeWithoutFloor = SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor;
             _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(outerEdgeWithoutFloor);
             SetOuterEdgeWithoutFloor(outerEdgeWithoutFloor);
+
+            UpdateArena();
         }
 
         private void OnDestroy()

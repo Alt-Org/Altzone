@@ -46,10 +46,8 @@ namespace MenuUi.Scripts.TabLine
             }
 
             //if(_tabLineRibbon.GetComponent<Image>().enabled) _tabLineRibbon.GetComponent<Image>().color = _tabColorActive;
-            if (_tabLineRibbon != null && _tabLineRibbon.TryGetComponent<Image>(out var image) && image.enabled)
-            {
-                image.color = _tabColorActive;
-            }
+            if (_tabLineRibbon != null && _tabLineRibbon.TryGetComponent<Image>(out var image) && image.enabled) image.color = _tabColorActive;
+
 
             if (_getActiveButtonFromSwipe)
             {
@@ -66,11 +64,8 @@ namespace MenuUi.Scripts.TabLine
 
         private void OnDestroy()
         {
-            if (_getActiveButtonFromSwipe)
-            {
-                _swipe.OnCurrentPageChanged -= OnSwipeCurrentPageChanged;
-            }
-        }
+            if (_getActiveButtonFromSwipe) _swipe.OnCurrentPageChanged -= OnSwipeCurrentPageChanged;
+}
 
 
         private void OnSwipeCurrentPageChanged()
@@ -93,10 +88,8 @@ namespace MenuUi.Scripts.TabLine
         public void UpdateTabVisuals(int index)
         {
             // Check if enough tab button entries in array.
-            if (index >= _tabLineButtons.Length || index < 0)
-            {
-                return;
-            }
+            if (index >= _tabLineButtons.Length || index < 0) return;
+
 
             (Sprite image, Color stripeColour) = _tabLineButtons[index].SetActiveVisuals();
             if (_tabLineImage != null)
@@ -111,8 +104,7 @@ namespace MenuUi.Scripts.TabLine
 
             if (_tabLineStripe != null)
             {
-                if (stripeColour != Color.white)
-                    _tabLineStripe.color = stripeColour;
+                if (stripeColour != Color.white) _tabLineStripe.color = stripeColour;
             }
 
             for (int i = 0; i < _tabLineButtons.Length; i++)
@@ -132,10 +124,7 @@ namespace MenuUi.Scripts.TabLine
         /// <param name="index">The index which to change the swipe current page to.</param>
         public void SetSwipeCurrentPage(int index)
         {
-            if (_swipe != null && _getActiveButtonFromSwipe)
-            {
-                _swipe.CurrentPage = index;
-            }
+            if (_swipe != null && _getActiveButtonFromSwipe) _swipe.CurrentPage = index;
         }
 
         protected virtual void SetTabOnTop(int index)

@@ -96,18 +96,14 @@ public class TabChangeHandler : MonoBehaviour
 
     private void UpdateTabContextUI(int activeIndex)
     {
-        if (!_updateTabContextUI)
-            return;
+        if (!_updateTabContextUI) return;
 
         bool isSecondaryTab = activeIndex == _secondaryTabIndex;
 
-        if (_primaryOnlyButton != null)
-            _primaryOnlyButton.SetActive(!isSecondaryTab);
+        if (_primaryOnlyButton != null) _primaryOnlyButton.SetActive(!isSecondaryTab);
 
-        if (_secondaryOnlyButton != null)
-            _secondaryOnlyButton.SetActive(isSecondaryTab);
+        if (_secondaryOnlyButton != null) _secondaryOnlyButton.SetActive(isSecondaryTab);
 
-        if (_headerText != null)
-            _headerText.text = isSecondaryTab ? _secondaryHeaderText : _primaryHeaderText;
+        if (_headerText != null) _headerText.text = isSecondaryTab ? _secondaryHeaderText : _primaryHeaderText;
     }
 }
