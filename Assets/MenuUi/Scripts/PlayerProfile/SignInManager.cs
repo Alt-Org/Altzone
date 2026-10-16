@@ -266,9 +266,12 @@ namespace MenuUi.Scripts.Login
             _registerPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPasswordInputField, value));
             _registerPassword2VisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPassword2InputField, value));
             _registerButton.onClick.AddListener(OpenPasswordHintPanel);
-            _registerButton.onClick.AddListener(Register);
+            _backButton.onClick.AddListener(CloseRegister);
+            _guestLogInButton.onClick.AddListener(GuestLogin);
+            _returnToLogIn.onClick.AddListener(() => _passwordHintWindow.SetActive(false));
+            _returnToSignInScreenButton.onClick.AddListener(() => OpenPasswordHintPanel());
             _setHintButton.onClick.AddListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
-            _skipHintButton.onClick.AddListener(() => Register());
+            _backButton2.onClick.AddListener(() => _registerWindow.SetActive(false));
             _registerPasswordHintAnswerInputField.onValueChanged.AddListener((value) => CheckHintValidity());
             _registerPasswordHintInputField.onValueChanged.AddListener((value) => CheckHintValidity());
             _autoLoginToggle.OnToggleStateChanged += SetVersionState;
