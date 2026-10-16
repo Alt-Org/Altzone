@@ -1,24 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
-using MenuUi.Scripts.Settings.BattleUiEditor;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 
 public class SliderPopupHandler : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    [SerializeField] private OptionsPopup _optionsPopup;
+    public event Action<Transform, Transform, Transform> DragStarted;
+    public event Action DragEnded;
     [SerializeField] private Transform _valueField;
     [SerializeField] private Transform _title;
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        _optionsPopup.HideExceptSlider(transform, _valueField, _title);
+        DragStarted?.Invoke(transform, _valueField, _title);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        _optionsPopup.RestoreAfterSliderDragging();
+        DragEnded?.Invoke();
     }
 }

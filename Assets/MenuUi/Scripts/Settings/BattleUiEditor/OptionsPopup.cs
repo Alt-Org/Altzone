@@ -18,6 +18,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [Header("Options popup")] [SerializeField]
         private GameObject _optionsContents;
 
+        [SerializeField] private SliderPopupHandler[] _sliderPopupHandler;
+
         [SerializeField] private Button _resetButton;
 
         [Header("Grid options")] [SerializeField]
@@ -363,6 +365,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SettingsCarrier.Instance.BattleArenaPosY = (int)_arenaPosYSlider.value;
                 UpdateArena();
             });
+
+            foreach (SliderPopupHandler handler in _sliderPopupHandler)
+            {
+                if (handler == null) continue;
+
+                handler.DragStarted += HideExceptSlider;
+                handler.DragEnded += RestoreAfterSliderDragging;
+            }
         }
 
         private void Start()
@@ -498,6 +508,12 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             //Removing Outside Floor Popup listeners
             _outsideFloorOkButton.onClick.RemoveAllListeners();
             _outsideFloorCancelButton.onClick.RemoveAllListeners();
+
+            foreach (SliderPopupHandler handler in _sliderPopupHandler)
+            {
+                handler.DragStarted -= HideExceptSlider;
+                handler.DragEnded -= RestoreAfterSliderDragging;
+            }
         }
 
         private void UpdateInputSettings(BattleMovementInputType movementType, BattleRotationInputType rotationType)
