@@ -407,7 +407,7 @@ namespace MenuUi.Scripts.Login
                 return;
             }
 
-            if (!_registerAgeVerificationToggle.isOn || !_registerParentalAuthToggle.isOn)
+            if (!_registerAgeVerificationToggle.isOn && !_registerParentalAuthToggle.isOn)
             {
                 ShowMessage(ERROR_AGE_CONSENT_NOT_GRANTED, InfoLevel.Error);
                 _registerAgeVerificationToggleError.gameObject.SetActive(true);
