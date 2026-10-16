@@ -291,8 +291,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor = value;
             });
 
-            _infoImageButton.onClick.AddListener(() => _outsideFloorPopup.SetActive(true);
-                );
+            _infoImageButton.onClick.AddListener(() => _outsideFloorPopup.SetActive(true));
 
             _arenaScaleSlider.onValueChanged.AddListener((value) =>
             {
