@@ -196,15 +196,6 @@ namespace Altzone.Scripts.ReferenceSheets
             }
             _validatedFontList = fonts;
         }
-
-        //public void AddFurniture(AdFurnitureObject kojuFurniture)
-        //{
-        //    if (!_furnitureList.Contains(kojuFurniture)) _furnitureList.Add(kojuFurniture);
-        //}
-        //public void RemoveFurniture(AdFurnitureObject kojuFurniture)
-        //{
-        //    _furnitureList.Remove(kojuFurniture);
-        //}
     }
 
     [Serializable]

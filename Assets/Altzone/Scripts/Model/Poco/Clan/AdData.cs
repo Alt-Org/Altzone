@@ -18,14 +18,6 @@ namespace Altzone.Scripts.Store
         private string _adText;
         private bool _isAdText = true;
 
-        public string previousColor;
-        public string previousBorder;
-        public Sprite previousFurniture;
-        public string previousTextColor;
-        public TMP_FontAsset previousFont;
-        public string previousText;
-        public bool previousTextState = true;
-
         public string BorderFrame
         {
             get => _borderFrame;
@@ -83,9 +75,9 @@ namespace Altzone.Scripts.Store
             set
             {
                 if (value != null) _furniture = value;
-                else
+                else if (AdDecorationReference.Instance.FurnitureList.Count > 0)
                 {
-                    Debug.LogError($"Given sprite value is null. Font not changed.");
+                    Debug.LogError($"Given sprite value is null. Furniture not changed.");
                 }
             }
         }
@@ -98,7 +90,7 @@ namespace Altzone.Scripts.Store
                 if (value != null) _adText = value;
                 else
                 {
-                    Debug.LogError($"Given string value is null. Font not changed.");
+                    Debug.LogError($"Given string value is null. Text not changed.");
                 }
             }
         }
