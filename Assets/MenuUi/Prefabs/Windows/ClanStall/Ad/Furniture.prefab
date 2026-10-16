@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2909339680411361845}
   - component: {fileID: 8747849279297215353}
   - component: {fileID: 816307067822990089}
+  - component: {fileID: 6606979489587276307}
   m_Layer: 5
   m_Name: Furniture
   m_TagString: Untagged
@@ -147,3 +148,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_AspectMode: 2
   m_AspectRatio: 0.625
+--- !u!114 &6606979489587276307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7082800346161996096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26905708ca045674e89e6829b498d410, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _image: {fileID: 2909339680411361845}
+  _button: {fileID: 8747849279297215353}

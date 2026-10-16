@@ -113,9 +113,10 @@ public class AdEditor : AltMonoBehaviour
         foreach (AdFontObject font in fontList)
         {
             GameObject fontObject = Instantiate(_fontPrefab, _fontSelectionContent);
-            fontObject.GetComponentInChildren<TextMeshProUGUI>().font = font.Font;
-            fontObject.GetComponent<Image>().preserveAspect = true;
-            float objectHeight = _fontSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            //fontObject.GetComponentInChildren<TextMeshProUGUI>().font = font.Font;
+            //fontObject.GetComponent<Image>().preserveAspect = true;
+            fontObject.GetComponent<FontPrefabHandler>().SetFont(font);
+            //float objectHeight = _fontSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
             fontObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextFont(font.Font));
         }
 
@@ -142,16 +143,16 @@ public class AdEditor : AltMonoBehaviour
     {
         if (_backgroundColourSelectorContent.childCount > 0)
         {
-            for (int i = 0; i < _backgroundColourSelectorContent.childCount; i++)
+            foreach (Transform bgColor in _backgroundColourSelectorContent)
             {
-                Destroy(_backgroundColourSelectorContent.GetChild(i).gameObject);
+                Destroy(bgColor.gameObject);
             }
         }
         if (_textColourSelectorContent.childCount > 0)
         {
-            for (int i = 0; i < _textColourSelectorContent.childCount; i++)
+            foreach (Transform txtColor in _textColourSelectorContent)
             {
-                Destroy(_textColourSelectorContent.GetChild(i).gameObject);
+                Destroy(txtColor.gameObject);
             }
         }
 
@@ -223,9 +224,9 @@ public class AdEditor : AltMonoBehaviour
     {
         if (_furnitureSelectionContent.childCount > 0)
         {
-            for (int i = 0; i < _furnitureSelectionContent.childCount; i++)
+            foreach (Transform child in _furnitureSelectionContent)
             {
-                Destroy(_furnitureSelectionContent.GetChild(i).gameObject);
+                Destroy(child.gameObject);
             }
         }
 
@@ -238,8 +239,9 @@ public class AdEditor : AltMonoBehaviour
             foreach (AdFurnitureObject furniture in AdDecorationReference.Instance.FurnitureList)
             {
                 GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
-                furnitureObject.GetComponent<Image>().preserveAspect = true;
-                furnitureObject.GetComponent<Image>().sprite = furniture.Image;
+                //furnitureObject.GetComponent<Image>().preserveAspect = true;
+                //furnitureObject.GetComponent<Image>().sprite = furniture.Image;
+                furnitureObject.GetComponent<FurniturePrefabHandler>().SetFurniture(furniture);
                 //float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
                 furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
                 if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
