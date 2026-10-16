@@ -25,16 +25,6 @@ public class ItemMover : MonoBehaviour
     // Event to notify that this item was moved to panel
     public event Action<StorageFurniture> OnItemMovedToPanel;
 
-    //private List<AdFurnitureObject> _furnitureList;
-
-    //public List<AdFurnitureObject> FurnitureList
-    //{
-    //    get
-    //    {
-    //        return _furnitureList;
-    //    }
-    //}
-
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(OnClick);
@@ -116,7 +106,10 @@ public class ItemMover : MonoBehaviour
                     // Notify trayPopulator this item was moved
                     OnItemMovedToPanel?.Invoke(currentFurniture);
                     
-                    AdFurnitureObject adFurnitureObject = new AdFurnitureObject(currentFurniture.Name, currentFurniture.Id, currentFurniture.Sprite);
+                    AdFurnitureObject adFurnitureObject = new AdFurnitureObject();
+                    adFurnitureObject.Name = currentFurniture.Name;
+                    adFurnitureObject.Id = currentFurniture.Id;
+                    adFurnitureObject.Image = currentFurniture.Sprite;
                     if (!AdDecorationReference.Instance.FurnitureList.Contains(adFurnitureObject)) AdDecorationReference.Instance.FurnitureList.Add(adFurnitureObject);
 
                     return;

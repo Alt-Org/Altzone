@@ -28,8 +28,6 @@ public class AdPosterHandler : AltMonoBehaviour
     [SerializeField]
     private GameObject _inputFieldHolder;
 
-    //[SerializeField] private GameObject itemMover;
-
     // Start is called before the first frame update
     void Start()
     {

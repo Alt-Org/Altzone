@@ -258,19 +258,19 @@ namespace Altzone.Scripts.ReferenceSheets
             set => _image = value;
         }
 
-        public AdFurnitureObject(string name, string id, Sprite image)
-        {
-            Name = name;
-            Id = id;
-            Image = image;
-        }
+        //public AdFurnitureObject(string name, string id, Sprite image)
+        //{
+        //    Name = name;
+        //    Id = id;
+        //    Image = image;
+        //}
 
-        public bool IsValid()
-        {
-            if (string.IsNullOrWhiteSpace(Name)) return false;
-            if (string.IsNullOrWhiteSpace(Id)) return false;
-            if (Image == null) return false;
-            return true;
-        }
+        //public bool IsValid()
+        //{
+        //    if (string.IsNullOrWhiteSpace(Name)) return false;
+        //    if (string.IsNullOrWhiteSpace(Id)) return false;
+        //    if (Image == null) return false;
+        //    return true;
+        //}
     }
 }

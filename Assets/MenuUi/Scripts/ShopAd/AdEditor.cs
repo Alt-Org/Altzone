@@ -40,7 +40,6 @@ public class AdEditor : AltMonoBehaviour
 
     [Header("Panels")]
     [SerializeField] private GameObject kojuPanel;
-    [SerializeField] private GameObject itemMover;
 
     private AdStoreObject _adData;
     private string _posterName = null;
@@ -141,18 +140,18 @@ public class AdEditor : AltMonoBehaviour
 
     private void GetColors()
     {
-        if (_backgroundColourSelectorContent.transform.childCount > 0)
+        if (_backgroundColourSelectorContent.childCount > 0)
         {
-            for (int i = 0; i < _backgroundColourSelectorContent.transform.childCount; i++)
+            for (int i = 0; i < _backgroundColourSelectorContent.childCount; i++)
             {
-                Destroy(_backgroundColourSelectorContent.transform.GetChild(i).gameObject);
+                Destroy(_backgroundColourSelectorContent.GetChild(i).gameObject);
             }
         }
-        if (_textColourSelectorContent.transform.childCount > 0)
+        if (_textColourSelectorContent.childCount > 0)
         {
-            for (int i = 0; i < _textColourSelectorContent.transform.childCount; i++)
+            for (int i = 0; i < _textColourSelectorContent.childCount; i++)
             {
-                Destroy(_textColourSelectorContent.transform.GetChild(i).gameObject);
+                Destroy(_textColourSelectorContent.GetChild(i).gameObject);
             }
         }
 
@@ -226,7 +225,7 @@ public class AdEditor : AltMonoBehaviour
         {
             for (int i = 0; i < _furnitureSelectionContent.childCount; i++)
             {
-                Destroy(_furnitureSelectionContent.GetChild(i));
+                Destroy(_furnitureSelectionContent.GetChild(i).gameObject);
             }
         }
 
@@ -241,7 +240,7 @@ public class AdEditor : AltMonoBehaviour
                 GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
                 furnitureObject.GetComponent<Image>().preserveAspect = true;
                 furnitureObject.GetComponent<Image>().sprite = furniture.Image;
-                float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+                //float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
                 furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
                 if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
             }
