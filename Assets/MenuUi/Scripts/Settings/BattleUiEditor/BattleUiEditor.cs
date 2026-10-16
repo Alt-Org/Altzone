@@ -18,8 +18,8 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     /// </summary>
     public class BattleUiEditor : MonoBehaviour
     {
-        [Header("Editor GameObject references")] [SerializeField]
-        private RectTransform _editorRectTransform;
+        [Header("Editor GameObject references")]
+        [SerializeField] private RectTransform _editorRectTransform;
 
         [SerializeField] private RectTransform _topButtonsRectTransform;
         [SerializeField] private Button _closeButton;
@@ -32,30 +32,30 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         [Space] [SerializeField] private RectTransform _uiElementsHolder;
         [SerializeField] private GridController _grid;
 
-        [Header("Options popup")] [SerializeField]
-        private Button _optionsButton;
+        [Header("Options popup")]
+        [SerializeField] private Button _optionsButton;
 
         [SerializeField] private OptionsPopup _optionsPopup;
 
-        [Header("Save/reset popup")] [SerializeField]
-        private SaveReset _saveReset;
+        [Header("Save/reset popup")]
+        [SerializeField] private SaveReset _saveReset;
 
-        [Header("Whether To Save Changes Popup")] [SerializeField]
-        private GameObject _whetherToSaveChangesPopup;
+        [Header("Whether To Save Changes Popup")]
+        [SerializeField] private GameObject _whetherToSaveChangesPopup;
 
-        [Header("Whether To Save Changes Ok Button")] [SerializeField]
-        private Button _whetherToSaveChangesOkButton;
+        [Header("Whether To Save Changes Ok Button")]
+        [SerializeField] private Button _whetherToSaveChangesOkButton;
 
-        [Header("Whether To Save Changes Cancel Button")] [SerializeField]
-        private Button _whetherToSaveChangesCancelButton;
+        [Header("Whether To Save Changes Cancel Button")]
+        [SerializeField] private Button _whetherToSaveChangesCancelButton;
 
-        [Header("UI Layout Saved Popup")] [SerializeField]
-        private GameObject _uiLayoutSavedPopup;
+        [Header("UI Layout Saved Popup")]
+        [SerializeField] private GameObject _uiLayoutSavedPopup;
 
         [SerializeField] private Button _uiLayoutSavedPopupButton;
 
-        [Header("BattleUi prefabs")] [SerializeField]
-        private GameObject _editingComponent;
+        [Header("BattleUi prefabs")]
+        [SerializeField] private GameObject _editingComponent;
 
         [SerializeField] private BattleUiPrefabs _prefabs;
 

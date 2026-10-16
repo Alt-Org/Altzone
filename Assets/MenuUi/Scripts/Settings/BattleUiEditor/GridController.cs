@@ -13,14 +13,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     [RequireComponent(typeof(RectTransform))]
     public class GridController : MonoBehaviour
     {
-        [Header("Grid options")] [SerializeField]
-        private int _gridLineThickness = 5;
+        [Header("Grid options")]
+        [SerializeField] private int _gridLineThickness = 5;
 
         [SerializeField] private Color _lineDefaultColor = Color.black;
         [SerializeField] private Color _lineHighlightedColor = Color.blue;
 
-        [Header("GameObject references.")] [SerializeField]
-        private Transform _gridColumns;
+        [Header("GameObject references.")]
+        [SerializeField] private Transform _gridColumns;
 
         [SerializeField] private Transform _gridRows;
         [SerializeField] private GameObject _gridLinePrefab;
