@@ -57,10 +57,7 @@ namespace MenuUi.Scripts.Lobby
             LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
 
             SetMatchmakingTextForCurrentRoom();
-            bool isLeader = LobbyManager.IsServerMatchmakingActive
-                ? LobbyManager.IsLocalServerMatchmakingOwner
-                : PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
-            SetCancelButton(isLeader);
+            SetCancelButton(LobbyManager.IsLocalServerMatchmakingOwner);
         }
 
         private void OnDisable()
@@ -108,21 +105,8 @@ namespace MenuUi.Scripts.Lobby
         {
             Debug.Log("MatchmakingPanel: Cancel button pressed (OnCancelButtonPressed)");
             if (_cancelButton != null) _cancelButton.interactable = false;
-            try
-            {
-                var lobbyRoom = PhotonRealtimeClient.LobbyCurrentRoom;
-                if (lobbyRoom != null && lobbyRoom.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey, false))
-                {
-                    Debug.Log("MatchmakingPanel: leaving queue room immediately due to user cancel.");
-                    PhotonRealtimeClient.LeaveRoom();
-                }
-            }
-            catch { }
-
             this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedMatchmakingType, true));
-            bool isLeader = LobbyManager.IsServerMatchmakingActive
-                ? LobbyManager.IsLocalServerMatchmakingOwner
-                : PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+            bool isLeader = LobbyManager.IsLocalServerMatchmakingOwner;
             if (!isLeader && InLobbyController.SelectedMatchmakingType != MatchmakingType.Clan2v2 && InLobbyController.SelectedMatchmakingType != MatchmakingType.FriendLobby)
             {
                 Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
@@ -161,10 +145,7 @@ namespace MenuUi.Scripts.Lobby
             SetMatchmakingTextForCurrentRoom();
             if (_cancelButton != null)
             {
-                bool isLeader = LobbyManager.IsServerMatchmakingActive
-                    ? LobbyManager.IsLocalServerMatchmakingOwner
-                    : PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
-                SetCancelButton(isLeader);
+                SetCancelButton(LobbyManager.IsLocalServerMatchmakingOwner);
             }
         }
 
@@ -183,30 +164,13 @@ namespace MenuUi.Scripts.Lobby
         {
             if (_matchmakingText == null) return;
 
-            try
+            if (!LobbyManager.IsServerMatchmakingActive)
             {
-                bool inMatchmakingOrQueue = LobbyManager.IsServerMatchmakingActive || PhotonRealtimeClient.InMatchmakingRoom;
-
-                var room = PhotonRealtimeClient.LobbyCurrentRoom;
-                bool isQueue = false;
-                if (room != null)
-                {
-                    isQueue = room.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey);
-                    if (isQueue) inMatchmakingOrQueue = true;
-                }
-
-                if (!inMatchmakingOrQueue)
-                {
-                    _matchmakingText.text = string.Empty;
-                    return;
-                }
-
-                _matchmakingText.text = LobbyManager.IsServerMatchmakingActive || isQueue ? "Jonossa..." : "Etsitään peliä...";
+                _matchmakingText.text = string.Empty;
+                return;
             }
-            catch
-            {
-                _matchmakingText.text = "Etsitään peliä...";
-            }
+
+            _matchmakingText.text = "Jonossa...";
         }
 
         private void OnFailedToStartMatchmakingGame()

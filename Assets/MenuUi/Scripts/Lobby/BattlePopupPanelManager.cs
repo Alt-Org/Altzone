@@ -57,19 +57,8 @@ public class BattlePopupPanelManager : MonoBehaviour
     {
         ClosePanels();
 
-        // If we're already in a matchmaking or queue room, prefer showing the matchmaking panel
-        bool inMatchmakingOrQueue = LobbyManager.IsServerMatchmakingActive;
-        try
-        {
-            if (PhotonRealtimeClient.InMatchmakingRoom) inMatchmakingOrQueue = true;
-            var curr = PhotonRealtimeClient.LobbyCurrentRoom;
-            if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey)) inMatchmakingOrQueue = true;
-        }
-        catch { }
-
-        bool isLeader = LobbyManager.IsServerMatchmakingActive
-            ? LobbyManager.IsLocalServerMatchmakingOwner
-            : PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+        bool inMatchmaking = LobbyManager.IsServerMatchmakingActive;
+        bool isLeader = LobbyManager.IsLocalServerMatchmakingOwner;
 
         string currRoomName = "<none>";
         try
@@ -79,7 +68,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         }
         catch { }
 
-        Debug.Log($"BattlePopupPanelManager.SwitchRoom: gameType={gameType}, inMatchmakingOrQueue={inMatchmakingOrQueue}, currRoom={currRoomName}, isLeader={isLeader}");
+        Debug.Log($"BattlePopupPanelManager.SwitchRoom: gameType={gameType}, inMatchmaking={inMatchmaking}, currRoom={currRoomName}, isLeader={isLeader}");
 
         switch (gameType)
         {
@@ -105,7 +94,7 @@ public class BattlePopupPanelManager : MonoBehaviour
             case MatchmakingType.FriendLobby:
             case MatchmakingType.Clan2v2:
             case MatchmakingType.Random2v2:
-                if (inMatchmakingOrQueue)
+                if (inMatchmaking)
                 {
                     SwitchToMatchmakingPanel(isLeader);
                 }
@@ -129,21 +118,9 @@ public class BattlePopupPanelManager : MonoBehaviour
     private IEnumerator DelayedMatchCheckCoroutine(bool isLeader)
     {
         yield return new WaitForSeconds(0.15f);
-        bool inMatchmakingOrQueue = LobbyManager.IsServerMatchmakingActive;
-        try
+        if (LobbyManager.IsServerMatchmakingActive)
         {
-            if (PhotonRealtimeClient.InMatchmakingRoom) inMatchmakingOrQueue = true;
-            var curr = PhotonRealtimeClient.LobbyCurrentRoom;
-            if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey)) inMatchmakingOrQueue = true;
-        }
-        catch { }
-
-        if (inMatchmakingOrQueue)
-        {
-            if (LobbyManager.IsServerMatchmakingActive)
-            {
-                isLeader = LobbyManager.IsLocalServerMatchmakingOwner;
-            }
+            isLeader = LobbyManager.IsLocalServerMatchmakingOwner;
             Debug.Log($"BattlePopupPanelManager.DelayedMatchCheckCoroutine: switching to matchmaking panel, isLeader={isLeader}");
             SwitchToMatchmakingPanel(isLeader);
         }

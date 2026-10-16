@@ -37,14 +37,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private PhotonRoomList _photonRoomList;
         private JoinIntent _pendingJoinIntent = JoinIntent.None;
-        private MatchmakingType _pendingQueueGameType = MatchmakingType.Random2v2;
-        private Coroutine _queueRejoinHolder;
         private bool _createRoomRequestInFlight;
 
         private enum JoinIntent
         {
             None,
-            QueueJoin,
             CustomCreate,
             ManualRoomJoin
         }
@@ -68,15 +65,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 UpdateStatus();
             }
-            // If already in matchmaking or queue room, ensure creating-room text is hidden
-            try
+            if (LobbyManager.IsServerMatchmakingActive && _creatingRoomText != null && _creatingRoomText.activeSelf)
             {
-                bool isMatchmakingOrQueue = LobbyManager.IsServerMatchmakingActive || PhotonRealtimeClient.InMatchmakingRoom;
-                var curr = PhotonRealtimeClient.LobbyCurrentRoom;
-                if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey, false)) isMatchmakingOrQueue = true;
-                if (isMatchmakingOrQueue && _creatingRoomText != null && _creatingRoomText.activeSelf) _creatingRoomText.SetActive(false);
+                _creatingRoomText.SetActive(false);
             }
-            catch { }
             _photonRoomList.OnRoomsUpdated += UpdateStatus;
             LobbyManager.LobbyOnJoinedRoom += OnJoinedRoom;
             LobbyManager.OnMatchmakingRoomEntered += HandleMatchmakingRoomEntered;
@@ -92,11 +84,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
             LobbyManager.OnMatchmakingRoomEntered -= HandleMatchmakingRoomEntered;
             LobbyManager.LobbyOnJoinRoomFailed -= OnJoinedRoomFailed;
             LobbyWindowNavigationHandler.OnLobbyWindowChangeRequest -= SwitchToRoom;
-            if (_queueRejoinHolder != null)
-            {
-                StopCoroutine(_queueRejoinHolder);
-                _queueRejoinHolder = null;
-            }
             _createRoomRequestInFlight = false;
             _pendingJoinIntent = JoinIntent.None;
         }
@@ -126,16 +113,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             _createRoomRequestInFlight = true;
             try
             {
-            // Do not show the creating-room text if the client is in a matchmaking or queue room
-            bool isMatchmakingOrQueue = LobbyManager.IsServerMatchmakingActive || PhotonRealtimeClient.InMatchmakingRoom;
-            try
-            {
-                var curr = PhotonRealtimeClient.LobbyCurrentRoom;
-                if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey, false)) isMatchmakingOrQueue = true;
-            }
-            catch { }
-
-            if (!isMatchmakingOrQueue)
+            if (!LobbyManager.IsServerMatchmakingActive)
             {
                 _creatingRoomText.SetActive(true);
        
@@ -259,46 +237,14 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private IEnumerator CreateClan2v2Room(GameType gameType)  // soulhome value for matchmaking
         {
-            if (LobbyManager.UsesServerAuthoritativeMatchmaking)
-            {
-                this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Clan2v2, gameType));
-                yield break;
-            }
-
-            yield return GetClanData( clanData =>
-            {
-                if (clanData != null)
-                {
-                    // Join the persistent queue room instead of creating a matchmaking room immediately
-                    _pendingJoinIntent = JoinIntent.QueueJoin;
-                    _pendingQueueGameType = MatchmakingType.Clan2v2;
-                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(MatchmakingType.Clan2v2, gameType);
-                }
-            });
-            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
             this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Clan2v2, gameType));
+            yield break;
         }
 
         private IEnumerator CreateRandom2v2Room(GameType gameType)  // soulhome value for matchmaking
         {
-            if (LobbyManager.UsesServerAuthoritativeMatchmaking)
-            {
-                this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Random2v2, gameType));
-                yield break;
-            }
-
-            yield return GetClanData(clanData =>
-            {
-                if (clanData != null)
-                {
-                    // Join the persistent queue room instead of creating a matchmaking room immediately
-                    _pendingJoinIntent = JoinIntent.QueueJoin;
-                    _pendingQueueGameType = MatchmakingType.Random2v2;
-                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(MatchmakingType.Random2v2, gameType);
-                }
-            });
-            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
             this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Random2v2, gameType));
+            yield break;
         }
 
         private void JoinRoom(string roomName)
@@ -395,133 +341,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 return;
             }
 
-            if (ShouldRejoinQueueAfterJoinFailed(returnCode, message, out MatchmakingType queueGameType))
-            {
-                if (LobbyManager.Instance != null && LobbyManager.Instance.IsJoinFailureAutoRequeueInFlight)
-                {
-                    if (creatingTextActive) _creatingRoomText.SetActive(false);
-                    _pendingJoinIntent = JoinIntent.None;
-                    Debug.Log("OnJoinedRoomFailed: skipping queue rejoin because LobbyManager already started recovery.");
-                    return;
-                }
-
-                if (creatingTextActive) _creatingRoomText.SetActive(false);
-                _pendingJoinIntent = JoinIntent.None;
-                StartQueueRejoin(queueGameType, InLobbyController.SelectedGameType);
-                return;
-            }
-
             if (creatingTextActive) _creatingRoomText.SetActive(false);
             _pendingJoinIntent = JoinIntent.None;
             OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
-        }
-
-        private bool ShouldRejoinQueueAfterJoinFailed(short returnCode, string message, out MatchmakingType queueGameType)
-        {
-            queueGameType = _pendingQueueGameType;
-
-            if (_pendingJoinIntent == JoinIntent.ManualRoomJoin)
-            {
-                return false;
-            }
-
-            if (_pendingJoinIntent == JoinIntent.QueueJoin)
-            {
-                queueGameType = _pendingQueueGameType;
-            }
-            else if (InLobbyController.SelectedMatchmakingType == MatchmakingType.Random2v2 || InLobbyController.SelectedMatchmakingType == MatchmakingType.Clan2v2)
-            {
-                queueGameType = InLobbyController.SelectedMatchmakingType;
-            }
-            else
-            {
-                return false;
-            }
-
-            bool retryableCode = returnCode == Altzone.Scripts.Lobby.Wrappers.LobbyErrorCode.GameFull
-                                 || returnCode == Altzone.Scripts.Lobby.Wrappers.LobbyErrorCode.GameClosed
-                                 || returnCode == Altzone.Scripts.Lobby.Wrappers.LobbyErrorCode.GameDoesNotExist;
-            if (retryableCode)
-            {
-                return true;
-            }
-
-            if (string.IsNullOrEmpty(message))
-            {
-                return false;
-            }
-
-            string msg = message.ToLowerInvariant();
-            return msg.Contains("game full") || msg.Contains("game closed") || msg.Contains("does not exist");
-        }
-
-        private void StartQueueRejoin(MatchmakingType matchmakingType, GameType gameType)
-        {
-            if (_queueRejoinHolder != null)
-            {
-                return;
-            }
-
-            _queueRejoinHolder = StartCoroutine(RejoinQueueWhenLobbyReady(matchmakingType, gameType));
-        }
-
-        private IEnumerator RejoinQueueWhenLobbyReady(MatchmakingType matchmakingType, GameType gameType)
-        {
-            try
-            {
-                float waitStart = Time.time;
-                while (PhotonRealtimeClient.InRoom && Time.time - waitStart < 6f)
-                {
-                    yield return null;
-                }
-
-                while (!PhotonRealtimeClient.InLobby && Time.time - waitStart < 6f)
-                {
-                    yield return null;
-                }
-
-                if (!PhotonRealtimeClient.InLobby)
-                {
-                    Debug.LogWarning($"RejoinQueueWhenLobbyReady: not in lobby, skip queue rejoin for {matchmakingType}");
-                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
-                    yield break;
-                }
-
-                bool inMatchmakingOrQueue = LobbyManager.IsServerMatchmakingActive || PhotonRealtimeClient.InMatchmakingRoom;
-                try
-                {
-                    var room = PhotonRealtimeClient.LobbyCurrentRoom;
-                    if (room != null && room.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey, false)) inMatchmakingOrQueue = true;
-                }
-                catch { }
-
-                if (inMatchmakingOrQueue)
-                {
-                    yield break;
-                }
-
-                bool joined;
-                try
-                {
-                    joined = PhotonRealtimeClient.JoinOrCreateQueueRoom(matchmakingType, gameType);
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogWarning($"RejoinQueueWhenLobbyReady: JoinOrCreateQueueRoom threw: {ex.Message}");
-                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
-                    yield break;
-                }
-
-                if (!joined)
-                {
-                    Debug.LogWarning($"RejoinQueueWhenLobbyReady: JoinOrCreateQueueRoom returned false for {matchmakingType}");
-                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
-                }
-            }
-            finally
-            {
-                _queueRejoinHolder = null;
-            }
         }
 
         public void SwitchToRoom()

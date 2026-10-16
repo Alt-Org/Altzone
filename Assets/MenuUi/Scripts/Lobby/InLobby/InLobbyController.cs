@@ -155,7 +155,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             var playerCount = PhotonRealtimeClient.CountOfPlayers;
             _topInfoPanel.LobbyText = new string[2] { _currentRegion, PhotonRealtimeClient.GetPing().ToString()};
             _topInfoPanel.PlayerCountText = playerCount.ToString();
-            _topInfoPanel.MatchmakingCountText = PhotonRealtimeClient.CurrentRoomPlayerCount.ToString();
+            _topInfoPanel.MatchmakingCountText = LobbyManager.ServerMatchmakingPlayerCount.ToString();
         }
 
         /*public void OnDisconnected(DisconnectCause cause)
@@ -200,15 +200,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     return;
                 case MatchmakingType.Clan2v2:
                 case MatchmakingType.Random2v2:
-                    // Treat persistent queue rooms as matchmaking state so reopening the popup shows matchmaking panel
-                    bool inQueueRoom = false;
-                    try
-                    {
-                        var curr = PhotonRealtimeClient.LobbyCurrentRoom;
-                        if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey)) inQueueRoom = true;
-                    }
-                    catch { }
-
                     bool currentRoomGameTypeMatches = false;
                     try
                     {
@@ -226,12 +217,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         _roomSwitcher.SwitchToMatchmakingPanel(LobbyManager.IsLocalServerMatchmakingOwner);
                         return;
                     }
-                    if ((PhotonRealtimeClient.InMatchmakingRoom || inQueueRoom) && currentRoomGameTypeMatches)
-                    {
-                        _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
-                        return;
-                    }
-                    else if (PhotonRealtimeClient.InRoom) // If we are in a room
+                    if (PhotonRealtimeClient.InRoom) // If we are in a custom or premade room
                     {
                         // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
                         if (currentRoomGameTypeMatches)
@@ -265,12 +251,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         _roomSwitcher.SwitchToMatchmakingPanel(LobbyManager.IsLocalServerMatchmakingOwner);
                         return;
                     }
-                    if (PhotonRealtimeClient.InMatchmakingRoom && currentFriendRoomMatches)
-                    {
-                        _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
-                        return;
-                    }
-
                     if (PhotonRealtimeClient.InRoom)
                     {
                         if (currentFriendRoomMatches)
@@ -323,7 +303,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 {
                     _topInfoPanel.LobbyText = new string[2] { _currentRegion, PhotonRealtimeClient.GetPing().ToString() };
                     _topInfoPanel.PlayerCountText = PhotonRealtimeClient.CountOfPlayers.ToString();
-                    _topInfoPanel.MatchmakingCountText = PhotonRealtimeClient.CurrentRoomPlayerCount.ToString();
+                    _topInfoPanel.MatchmakingCountText = LobbyManager.ServerMatchmakingPlayerCount.ToString();
                 }
             }
             catch (Exception ex)
