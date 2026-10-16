@@ -59,8 +59,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         [SerializeField] private BattleUiPrefabs _prefabs;
 
-        public enum
-            CornerType // Helper enum to access button world corners and scale handles array in editing component script more readably.
+        public enum CornerType // Helper enum to access button world corners and scale handles array in editing component script more readably.
         {
             BottomLeft = 0,
             TopLeft = 1,
