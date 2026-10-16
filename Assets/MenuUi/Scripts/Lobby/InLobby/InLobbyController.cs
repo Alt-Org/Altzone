@@ -221,6 +221,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     }
                     catch { }
 
+                    if (LobbyManager.IsServerMatchmakingActive)
+                    {
+                        _roomSwitcher.SwitchToMatchmakingPanel(LobbyManager.IsLocalServerMatchmakingOwner);
+                        return;
+                    }
                     if ((PhotonRealtimeClient.InMatchmakingRoom || inQueueRoom) && currentRoomGameTypeMatches)
                     {
                         _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
@@ -255,6 +260,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     }
                     catch { }
 
+                    if (LobbyManager.IsServerMatchmakingActive)
+                    {
+                        _roomSwitcher.SwitchToMatchmakingPanel(LobbyManager.IsLocalServerMatchmakingOwner);
+                        return;
+                    }
                     if (PhotonRealtimeClient.InMatchmakingRoom && currentFriendRoomMatches)
                     {
                         _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);

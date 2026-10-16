@@ -15,6 +15,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
+using Altzone.Scripts.MQTT;
 using Altzone.Scripts.Settings;
 using Altzone.Scripts.Window;
 using Battle.QSimulation.Game;
@@ -100,6 +101,7 @@ namespace Altzone.Scripts.Lobby
         private const string QueueFormedMatchKey = "qfm";
         // When true, clients must enter queue first and never directly create/join matchmaking rooms.
         private static bool UseQueueAuthoritativeMatchmaking = true;
+        private static readonly bool UseServerAuthoritativeMatchmaking = true;
         // Flattened queue duo list [duo1UserA, duo1UserB, duo2UserA, duo2UserB, ...].
         private const string QueueDuoPairsKey = "qdp";
         // Flattened queue solo-pair list [pair1UserA, pair1UserB, pair2UserA, pair2UserB, ...].
@@ -195,10 +197,25 @@ namespace Altzone.Scripts.Lobby
         private float _lastStartMatchmakingAcceptedTime = -100f;
         // Tracks whether a full-room join failure is already being recovered by LobbyManager.
         private bool _joinFailureAutoRequeueInFlight = false;
+        private bool _serverMatchmakingActive;
+        private bool _serverRoomStartInFlight;
+        private bool _serverPhotonReadyInFlight;
+        private bool _serverMatchStartHandled;
+        private string _pendingServerInviteRoomId = string.Empty;
+        private MQTTMatchRoomData _serverRoomData;
+        private MqttMatchSet _serverMatchData;
 
         public static LobbyManager Instance { get; private set; }
         public bool IsStartFinished {set => _isStartFinished = value; }
         public bool IsJoinFailureAutoRequeueInFlight => _joinFailureAutoRequeueInFlight;
+        public static bool IsServerMatchmakingActive => Instance != null && Instance._serverMatchmakingActive;
+        public static bool UsesServerAuthoritativeMatchmaking => UseServerAuthoritativeMatchmaking;
+        public static int ServerMatchmakingPlayerCount => Instance?._serverRoomData?.players?.Count ?? 0;
+        public static bool IsLocalServerMatchmakingOwner => Instance?._serverRoomData?.ownerPlayerId == ServerManager.Instance?.Player?._id;
+        public static string[] ServerMatchmakingPlayerNames => Instance?._serverRoomData?.players?
+            .Where(player => player != null && !string.IsNullOrWhiteSpace(player.name))
+            .Select(player => player.name)
+            .ToArray() ?? Array.Empty<string>();
         public static bool IsActive { get => _isActive;}
 
         private static bool _isActive = false;
@@ -443,6 +460,14 @@ namespace Altzone.Scripts.Lobby
         public void AcceptInRoomInvite(string roomName)
         {
             if (string.IsNullOrEmpty(roomName)) return;
+
+            if (UseServerAuthoritativeMatchmaking && roomName == _pendingServerInviteRoomId)
+            {
+                _pendingServerInviteRoomId = string.Empty;
+                StartCoroutine(JoinServerMatchmakingRoom(roomName));
+                return;
+            }
+
             if (!PhotonRealtimeClient.InLobby || PhotonRealtimeClient.InRoom) return;
 
             string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId;
@@ -460,6 +485,12 @@ namespace Altzone.Scripts.Lobby
         public void DeclineInRoomInvite(string roomName)
         {
             if (string.IsNullOrEmpty(roomName)) return;
+
+            if (roomName == _pendingServerInviteRoomId)
+            {
+                _pendingServerInviteRoomId = string.Empty;
+                return;
+            }
 
             _declinedInRoomInviteUntil[roomName] = Time.time + InRoomInviteDeclineCooldownSeconds;
             if (_pendingInRoomInviteRoomName == roomName)
@@ -3751,6 +3782,7 @@ namespace Altzone.Scripts.Lobby
 
         public void OnDisable()
         {
+            UnsubscribeServerMatchmakingEvents();
             try
             {
                 if (PhotonRealtimeClient.Client != null)
@@ -3820,12 +3852,40 @@ namespace Altzone.Scripts.Lobby
             this.Subscribe<StartMatchmakingEvent>(OnStartMatchmakingEvent);
             this.Subscribe<StopMatchmakingEvent>(OnStopMatchmakingEvent);
             this.Subscribe<GetKickedEvent>(OnGetKickedEvent);
+            SubscribeServerMatchmakingEvents();
             if (_serviceHolder == null) _serviceHolder = StartCoroutine(Service());
 
             GameConfig gameConfig = GameConfig.Get();
             PlayerSettings playerSettings = gameConfig.PlayerSettings;
             string photonRegion = string.IsNullOrEmpty(playerSettings.PhotonRegion) ? null : playerSettings.PhotonRegion;
             StartCoroutine(StartLobby(playerSettings.PlayerGuid, playerSettings.PhotonRegion));
+        }
+
+        private void SubscribeServerMatchmakingEvents()
+        {
+            MQTTManager.OnMatchmakingRoomDataUpdated -= OnServerMatchmakingRoomUpdated;
+            MQTTManager.OnMatchmakingInviteReceived -= OnServerMatchmakingInviteReceived;
+            MQTTManager.OnMatchmakingClanInviteReceived -= OnServerMatchmakingInviteReceived;
+            MQTTManager.OnMatchmakingMatchFound -= OnServerMatchFound;
+            MQTTManager.OnMatchmakingMatchStarted -= OnServerMatchStarted;
+            MQTTManager.OnMatchmakingMatchFinished -= OnServerMatchFinished;
+
+            MQTTManager.OnMatchmakingRoomDataUpdated += OnServerMatchmakingRoomUpdated;
+            MQTTManager.OnMatchmakingInviteReceived += OnServerMatchmakingInviteReceived;
+            MQTTManager.OnMatchmakingClanInviteReceived += OnServerMatchmakingInviteReceived;
+            MQTTManager.OnMatchmakingMatchFound += OnServerMatchFound;
+            MQTTManager.OnMatchmakingMatchStarted += OnServerMatchStarted;
+            MQTTManager.OnMatchmakingMatchFinished += OnServerMatchFinished;
+        }
+
+        private void UnsubscribeServerMatchmakingEvents()
+        {
+            MQTTManager.OnMatchmakingRoomDataUpdated -= OnServerMatchmakingRoomUpdated;
+            MQTTManager.OnMatchmakingInviteReceived -= OnServerMatchmakingInviteReceived;
+            MQTTManager.OnMatchmakingClanInviteReceived -= OnServerMatchmakingInviteReceived;
+            MQTTManager.OnMatchmakingMatchFound -= OnServerMatchFound;
+            MQTTManager.OnMatchmakingMatchStarted -= OnServerMatchStarted;
+            MQTTManager.OnMatchmakingMatchFinished -= OnServerMatchFinished;
         }
 
         private IEnumerator Service()
@@ -3883,6 +3943,330 @@ namespace Altzone.Scripts.Lobby
 
 
         #region Matchmaking
+        private IEnumerator StartServerMatchmaking(MatchmakingType matchmakingType, GameType gameType, bool isPremadeInRoom)
+        {
+            _currentMatchmakingGameType = matchmakingType;
+            _currentGameType = gameType;
+            _serverMatchmakingActive = true;
+            _serverRoomStartInFlight = false;
+            _serverPhotonReadyInFlight = false;
+            _serverMatchStartHandled = false;
+            _serverMatchData = null;
+
+            string automaticInvitePlayerId = null;
+            try
+            {
+                if (PhotonRealtimeClient.CurrentRoom != null)
+                {
+                    automaticInvitePlayerId = PhotonRealtimeClient.CurrentRoom.Players.Values
+                        .Where(player => player != null
+                            && !string.IsNullOrWhiteSpace(player.UserId)
+                            && player.UserId != PhotonRealtimeClient.LocalPlayer.UserId)
+                        .Select(player => player.UserId)
+                        .FirstOrDefault();
+
+                    PhotonRealtimeClient.CurrentRoom.IsOpen = false;
+                    PhotonRealtimeClient.LeaveRoom();
+                }
+
+                if (!PhotonRealtimeClient.InLobby)
+                {
+                    yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
+                }
+
+                int teamSize = gameType == GameType.BattleFlipperGame ? 1 : 2;
+                bool createSucceeded = false;
+                MatchmakingRoomResponse createdRoom = null;
+                yield return StartCoroutine(ServerManager.Instance.MatchmakingCreateRoom(
+                    matchmakingType,
+                    gameType,
+                    (success, room) =>
+                    {
+                        createSucceeded = success;
+                        createdRoom = room;
+                    },
+                    teamSize: teamSize,
+                    allowBots: true,
+                    automaticInvitePlayerId: isPremadeInRoom ? automaticInvitePlayerId : null));
+
+                if (!createSucceeded || createdRoom == null)
+                {
+                    Debug.LogWarning("Server matchmaking room creation failed.");
+                    ResetServerMatchmakingState();
+                    OnFailedToStartMatchmakingGame?.Invoke();
+                    yield break;
+                }
+
+                _serverRoomData = new MQTTMatchRoomData
+                {
+                    id = createdRoom.id,
+                    matchType = createdRoom.matchType,
+                    gameType = createdRoom.gameType,
+                    status = createdRoom.status,
+                    ownerPlayerId = createdRoom.ownerPlayerId,
+                    clanId = createdRoom.clanId,
+                    teamSize = createdRoom.teamSize,
+                    allowBots = createdRoom.allowBots,
+                    createdAt = createdRoom.createdAt,
+                    updatedAt = createdRoom.updatedAt,
+                    readyAt = createdRoom.readyAt,
+                    players = new List<MQTTMatchPlayers>()
+                };
+
+                OnMatchmakingRoomEntered?.Invoke(true);
+                OnRoomLeaderChanged?.Invoke(true);
+
+                if (createdRoom.status == InviteStatus.READY)
+                {
+                    yield return StartCoroutine(StartServerRoomIfReady(createdRoom.id));
+                }
+            }
+            finally
+            {
+                _matchmakingHolder = null;
+            }
+        }
+
+        private IEnumerator JoinServerMatchmakingRoom(string roomId)
+        {
+            if (string.IsNullOrWhiteSpace(roomId)) yield break;
+
+            if (PhotonRealtimeClient.InRoom)
+            {
+                PhotonRealtimeClient.LeaveRoom();
+                yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
+            }
+
+            bool success = false;
+            MatchmakingRoomResponse joinedRoom = null;
+            yield return StartCoroutine(ServerManager.Instance.MatchmakingJoinRoom(roomId, (joined, room) =>
+            {
+                success = joined;
+                joinedRoom = room;
+            }));
+
+            if (!success || joinedRoom == null)
+            {
+                OnInRoomInviteJoinFailed?.Invoke(roomId, -1, "server matchmaking room join failed");
+                yield break;
+            }
+
+            _serverMatchmakingActive = true;
+            _currentMatchmakingGameType = (MatchmakingType)joinedRoom.matchType;
+            _currentGameType = (GameType)joinedRoom.gameType;
+            OnMatchmakingRoomEntered?.Invoke(joinedRoom.ownerPlayerId == PhotonRealtimeClient.LocalPlayer?.UserId);
+        }
+
+        private IEnumerator StartServerRoomIfReady(string roomId)
+        {
+            if (_serverRoomStartInFlight || string.IsNullOrWhiteSpace(roomId)) yield break;
+            _serverRoomStartInFlight = true;
+            try
+            {
+                bool success = false;
+                MatchmakingRoomResponse room = null;
+                yield return StartCoroutine(ServerManager.Instance.MatchmakingStartRoom(roomId, (started, response) =>
+                {
+                    success = started;
+                    room = response;
+                }));
+
+                if (!success)
+                {
+                    // The backend can enqueue the room successfully and still return an error if a
+                    // follow-up queue task fails. Re-read the authoritative state before reporting
+                    // a false failure or attempting a duplicate start.
+                    bool readSucceeded = false;
+                    MatchmakingRoomResponse currentRoom = null;
+                    yield return StartCoroutine(ServerManager.Instance.MatchmakingGetRoom(roomId, (read, response) =>
+                    {
+                        readSucceeded = read;
+                        currentRoom = response;
+                    }));
+
+                    if (readSucceeded
+                        && currentRoom != null
+                        && (currentRoom.status == InviteStatus.QUEUED || currentRoom.status == InviteStatus.MATCHED))
+                    {
+                        success = true;
+                        room = currentRoom;
+                        Debug.LogWarning($"Room start returned an error, but backend room '{roomId}' is already {currentRoom.status}; continuing.");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Failed to start server matchmaking room '{roomId}'.");
+                        OnFailedToStartMatchmakingGame?.Invoke();
+                    }
+                }
+
+                if (success && !string.IsNullOrWhiteSpace(room?.matchId))
+                {
+                    ServerManager.Instance.SetActiveMatchmakingMatch(room.matchId);
+                }
+            }
+            finally
+            {
+                _serverRoomStartInFlight = false;
+            }
+        }
+
+        private void OnServerMatchmakingRoomUpdated(MQTTMatchRoomData room)
+        {
+            if (room == null || string.IsNullOrWhiteSpace(room.id)) return;
+            if (!string.IsNullOrWhiteSpace(ServerManager.Instance.ActiveMatchmakingRoomId)
+                && room.id != ServerManager.Instance.ActiveMatchmakingRoomId) return;
+
+            _serverMatchmakingActive = true;
+            _serverRoomData = room;
+            bool isOwner = room.ownerPlayerId == ServerManager.Instance.Player?._id;
+            OnMatchmakingRoomEntered?.Invoke(isOwner);
+            OnRoomLeaderChanged?.Invoke(isOwner);
+
+            if (isOwner && room.status == InviteStatus.READY && !_serverRoomStartInFlight)
+            {
+                StartCoroutine(StartServerRoomIfReady(room.id));
+            }
+            else if (room.status == InviteStatus.CANCELLED)
+            {
+                ResetServerMatchmakingState();
+                OnMatchmakingStopped?.Invoke();
+            }
+        }
+
+        private void OnServerMatchmakingInviteReceived(MQTTMatchInvite invite)
+        {
+            if (invite == null || string.IsNullOrWhiteSpace(invite.id)) return;
+
+            _pendingServerInviteRoomId = invite.id;
+            string ownerId = invite.ownerPlayer?.playerId ?? string.Empty;
+            string ownerName = invite.ownerPlayer?.name ?? string.Empty;
+            MatchmakingType matchmakingType = (MatchmakingType)invite.matchType;
+            OnInRoomInviteReceived?.Invoke(new InRoomInviteInfo(
+                invite.id,
+                ownerId,
+                ownerName,
+                ServerManager.Instance.Player?._id ?? string.Empty,
+                matchmakingType,
+                (GameType)invite.gameType));
+        }
+
+        private void OnServerMatchFound(MqttMatchSet match)
+        {
+            if (match == null || string.IsNullOrWhiteSpace(match.id)) return;
+            if (_serverMatchData != null && _serverMatchData.id == match.id && _serverPhotonReadyInFlight) return;
+
+            _serverMatchmakingActive = true;
+            _serverMatchData = match;
+            _currentMatchmakingGameType = (MatchmakingType)match.matchType;
+            _currentGameType = (GameType)match.gameType;
+            ServerManager.Instance.SetActiveMatchmakingMatch(match.id);
+            StartCoroutine(JoinServerPhotonRoom(match));
+        }
+
+        private IEnumerator JoinServerPhotonRoom(MqttMatchSet match)
+        {
+            if (MQTTManager.Instance != null)
+            {
+                Task subscription = MQTTManager.Instance.SubscribeToActiveMatch(match.id);
+                yield return new WaitUntil(() => subscription.IsCompleted);
+                if (subscription.IsFaulted) Debug.LogException(subscription.Exception);
+            }
+
+            if (PhotonRealtimeClient.InRoom && PhotonRealtimeClient.CurrentRoom?.Name != match.id)
+            {
+                PhotonRealtimeClient.LeaveRoom();
+            }
+
+            if (!PhotonRealtimeClient.InLobby && !PhotonRealtimeClient.InRoom)
+            {
+                yield return new WaitUntil(() => PhotonRealtimeClient.InLobby || PhotonRealtimeClient.InRoom);
+            }
+
+            if (PhotonRealtimeClient.InRoom && PhotonRealtimeClient.CurrentRoom?.Name == match.id)
+            {
+                yield break;
+            }
+
+            if (!PhotonRealtimeClient.JoinOrCreateServerMatchRoom(match))
+            {
+                Debug.LogWarning($"Unable to join backend-assigned Photon room '{match.id}'.");
+                OnFailedToStartMatchmakingGame?.Invoke();
+            }
+        }
+
+        private void OnServerMatchStarted(MqttMatchSet match)
+        {
+            if (match == null || _serverMatchData == null || match.id != _serverMatchData.id) return;
+            _serverMatchData = match;
+            if (_serverMatchStartHandled || !PhotonRealtimeClient.InRoom) return;
+
+            _serverMatchStartHandled = true;
+            if (PhotonRealtimeClient.LocalPlayer != null && PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                OnStartPlayingEvent(new StartPlayingEvent());
+            }
+        }
+
+        private void OnServerMatchFinished(MqttMatchSet match)
+        {
+            if (match == null || _serverMatchData == null || match.id != _serverMatchData.id) return;
+            _serverMatchData = match;
+            ServerManager.Instance.ClearActiveMatchmakingState(match.id);
+            ResetServerMatchmakingState();
+        }
+
+        private IEnumerator ConfirmServerPhotonReady()
+        {
+            if (_serverPhotonReadyInFlight || _serverMatchData == null) yield break;
+            _serverPhotonReadyInFlight = true;
+            bool success = false;
+            yield return StartCoroutine(ServerManager.Instance.MatchmakingConfirmPhotonReady(
+                _serverMatchData.id,
+                (confirmed, _) => success = confirmed));
+            if (!success)
+            {
+                _serverPhotonReadyInFlight = false;
+                Debug.LogWarning($"Backend did not accept Photon readiness for match '{_serverMatchData.id}'.");
+                OnFailedToStartMatchmakingGame?.Invoke();
+            }
+        }
+
+        private void ApplyServerMatchPosition()
+        {
+            string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId;
+            if (string.IsNullOrWhiteSpace(localUserId) || PhotonRealtimeClient.CurrentRoom == null) return;
+
+            for (int position = PhotonBattleRoom.PlayerPosition1; position <= PhotonBattleRoom.PlayerPosition4; position++)
+            {
+                string reservedUserId = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.GetPositionKey(position), string.Empty);
+                if (reservedUserId != localUserId) continue;
+                PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PlayerPositionKey, position);
+                return;
+            }
+        }
+
+        private IEnumerator StopServerMatchmaking()
+        {
+            bool left = false;
+            yield return StartCoroutine(ServerManager.Instance.MatchmakingLeaveRoom(success => left = success));
+            if (!left) Debug.LogWarning("Backend matchmaking leave failed or the match was already assigned.");
+
+            if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
+            ResetServerMatchmakingState();
+            OnMatchmakingStopped?.Invoke();
+        }
+
+        private void ResetServerMatchmakingState()
+        {
+            _serverMatchmakingActive = false;
+            _serverRoomStartInFlight = false;
+            _serverPhotonReadyInFlight = false;
+            _serverMatchStartHandled = false;
+            _pendingServerInviteRoomId = string.Empty;
+            _serverRoomData = null;
+            _serverMatchData = null;
+        }
+
         /// <summary>
         /// Stops any active matchmaking or follow leader coroutines.
         /// Call this before leaving a room when switching game types.
@@ -5908,12 +6292,26 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator OnStartRoom()
         {
+            if (UseServerAuthoritativeMatchmaking && _serverMatchmakingActive)
+            {
+                yield break;
+            }
+
             float startTime =Time.time;
-            yield return new WaitUntil(() => PhotonRealtimeClient.Client.InRoom || Time.time > startTime+10);
+            yield return new WaitUntil(() =>
+                (UseServerAuthoritativeMatchmaking && _serverMatchmakingActive)
+                || PhotonRealtimeClient.Client.InRoom
+                || Time.time > startTime + 10);
+
+            if (UseServerAuthoritativeMatchmaking && _serverMatchmakingActive)
+            {
+                yield break;
+            }
+
             if (!PhotonRealtimeClient.Client.InRoom)
             {
                 Debug.LogWarning("Failed to join a room in time.");
-                PhotonRealtimeClient.LeaveRoom();
+                if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
                 yield break;
             }
             if(PhotonRealtimeClient.LocalPlayer.IsMasterClient) PhotonRealtimeClient.CurrentRoom.SetCustomProperties(new PhotonHashtable { { BattleID, PhotonRealtimeClient.CurrentRoom.Name.Replace(' ', '_') + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString() } });
@@ -5941,6 +6339,28 @@ namespace Altzone.Scripts.Lobby
         private void OnStartMatchmakingEvent(StartMatchmakingEvent data)
         {
             Debug.Log($"onEvent {data}");
+
+            if (UseServerAuthoritativeMatchmaking)
+            {
+                if (_matchmakingHolder != null || _serverMatchmakingActive)
+                {
+                    Debug.Log("OnStartMatchmakingEvent: server matchmaking is already active.");
+                    return;
+                }
+
+                if (data.IsPremadeInRoom && PhotonRealtimeClient.LocalPlayer != null && !PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+                {
+                    Debug.Log("OnStartMatchmakingEvent: ignoring premade server matchmaking start from non-master client.");
+                    return;
+                }
+
+                _lastStartMatchmakingAcceptedTime = Time.time;
+                _matchmakingHolder = StartCoroutine(StartServerMatchmaking(
+                    data.SelectedMatchmakingType,
+                    data.SelectedGameType,
+                    data.IsPremadeInRoom));
+                return;
+            }
 
             //if (!PhotonRealtimeClient.InRoom) return;
 
@@ -6020,6 +6440,11 @@ namespace Altzone.Scripts.Lobby
         private void OnStopMatchmakingEvent(StopMatchmakingEvent data)
         {
             Debug.Log($"onEvent {data}");
+            if (UseServerAuthoritativeMatchmaking && _serverMatchmakingActive)
+            {
+                StartCoroutine(StopServerMatchmaking());
+                return;
+            }
             _isPremadeMatchmakingFlow = false;
             _premadeTeammateUserId = string.Empty;
             try
@@ -6776,6 +7201,15 @@ namespace Altzone.Scripts.Lobby
             string betaTeamName = room.GetCustomProperty(TeamBetaNameKey, "Beta");
             DataCarrier.AddData(DataCarrier.BattleOwnTeamName, ownTeam is BattleTeamNumber.TeamAlpha? alphaTeamName : betaTeamName);
             DataCarrier.AddData(DataCarrier.BattleEnemyTeamName, ownTeam is BattleTeamNumber.TeamAlpha ? betaTeamName : alphaTeamName);
+            if (Instance != null
+                && ServerManager.Instance != null
+                && !string.IsNullOrEmpty(ServerManager.Instance.ActiveMatchmakingMatchId)
+                && PhotonRealtimeClient.LocalPlayer != null
+                && PhotonRealtimeClient.LocalPlayer.IsMasterClient)
+            {
+                string winningSide = winningTeam == BattleTeamNumber.TeamAlpha ? "A" : "B";
+                Instance.StartCoroutine(ServerManager.Instance.MatchmakingFinishMatch(winningSide));
+            }
             CloseRunner();
             OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.BattleStory);
         }
@@ -8013,6 +8447,18 @@ namespace Altzone.Scripts.Lobby
 
             // Enable: PhotonNetwork.CloseConnection needs to to work across all clients - to kick off invalid players!
             PhotonRealtimeClient.EnableCloseConnection = true;
+
+            if (_serverMatchmakingActive
+                && _serverMatchData != null
+                && PhotonRealtimeClient.CurrentRoom?.Name == _serverMatchData.id)
+            {
+                ApplyServerMatchPosition();
+                bool isLeader = PhotonRealtimeClient.LocalPlayer != null && PhotonRealtimeClient.LocalPlayer.IsMasterClient;
+                OnMatchmakingRoomEntered?.Invoke(isLeader);
+                OnRoomLeaderChanged?.Invoke(isLeader);
+                StartCoroutine(ConfirmServerPhotonReady());
+                return;
+            }
 
             // Getting info if room is matchmaking room, queue room or a normal lobby room
             // If this is a persistent queue room, show matchmaking UI so player can leave the queue.

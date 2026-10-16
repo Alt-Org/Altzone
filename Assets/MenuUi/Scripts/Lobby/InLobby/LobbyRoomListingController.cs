@@ -71,7 +71,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             // If already in matchmaking or queue room, ensure creating-room text is hidden
             try
             {
-                bool isMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
+                bool isMatchmakingOrQueue = LobbyManager.IsServerMatchmakingActive || PhotonRealtimeClient.InMatchmakingRoom;
                 var curr = PhotonRealtimeClient.LobbyCurrentRoom;
                 if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey, false)) isMatchmakingOrQueue = true;
                 if (isMatchmakingOrQueue && _creatingRoomText != null && _creatingRoomText.activeSelf) _creatingRoomText.SetActive(false);
@@ -127,7 +127,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             try
             {
             // Do not show the creating-room text if the client is in a matchmaking or queue room
-            bool isMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
+            bool isMatchmakingOrQueue = LobbyManager.IsServerMatchmakingActive || PhotonRealtimeClient.InMatchmakingRoom;
             try
             {
                 var curr = PhotonRealtimeClient.LobbyCurrentRoom;
@@ -259,6 +259,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private IEnumerator CreateClan2v2Room(GameType gameType)  // soulhome value for matchmaking
         {
+            if (LobbyManager.UsesServerAuthoritativeMatchmaking)
+            {
+                this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Clan2v2, gameType));
+                yield break;
+            }
+
             yield return GetClanData( clanData =>
             {
                 if (clanData != null)
@@ -275,6 +281,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private IEnumerator CreateRandom2v2Room(GameType gameType)  // soulhome value for matchmaking
         {
+            if (LobbyManager.UsesServerAuthoritativeMatchmaking)
+            {
+                this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Random2v2, gameType));
+                yield break;
+            }
+
             yield return GetClanData(clanData =>
             {
                 if (clanData != null)
@@ -475,7 +487,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     yield break;
                 }
 
-                bool inMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
+                bool inMatchmakingOrQueue = LobbyManager.IsServerMatchmakingActive || PhotonRealtimeClient.InMatchmakingRoom;
                 try
                 {
                     var room = PhotonRealtimeClient.LobbyCurrentRoom;

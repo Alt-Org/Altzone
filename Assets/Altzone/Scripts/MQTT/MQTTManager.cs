@@ -22,7 +22,7 @@ namespace Altzone.Scripts.MQTT
         {
             get
             {
-                return Instance.Client == null || !Instance.Client.IsConnected;
+                return Instance != null && Instance.Client != null && Instance.Client.IsConnected;
             }
         }
 
@@ -37,14 +37,19 @@ namespace Altzone.Scripts.MQTT
         private string _votingTopic = null;
         private string _dailyTaskPlayerTopic = null;
         private string _dailyTaskClanTopic = null;
+        private string _matchmakingRoomTopic = null;
         private string _matchmakingInviteTopic = null;
+        private string _matchmakingMatchTopic = null;
+        private string _activeMatchTopic = null;
         private string _jukeboxTopic = null;
 
         private const string VotingTopicBase = "/clan/{clanId}/voting/+/+";
         private const string DailyTaskPlayerTopicBase = "/player/{playerId}/daily_task/+/+";
         private const string DailyTaskClanTopicBase = "/clan/{clanId}/daily_task/+/+";
+        private const string MatchmakingRoomTopicBase = "/matchmaking/rooms/player/{playerId}";
         private const string MatchmakingInviteTopicBase = "/matchmaking/invites/player/{playerId}";
-        private const string MatchmakingMatchTopicBase = "/matchmaking/match/player/{playerId}";
+        private const string MatchmakingMatchTopicBase = "/matchmaking/matches/player/{playerId}";
+        private const string ActiveMatchTopicBase = "/match/{matchId}";
         private const string JukeboxTopicBase = "/clan/{clanId}/jukebox/+/update";
 
         private List<MqttApplicationMessageReceivedEventArgs> _pendingNotificationList = new();
@@ -64,8 +69,19 @@ namespace Altzone.Scripts.MQTT
         public delegate void VoteReceived(MQTTVotingUpdatedNotification vote);
         public static event VoteReceived OnVoteReceived;
 
+        public delegate void MatchmakingRoomDataUpdated(MQTTMatchRoomData data);
+        public static event MatchmakingRoomDataUpdated OnMatchmakingRoomDataUpdated;
+
         public delegate void MatchmakingInviteReceived(MQTTMatchInvite invite);
         public static event MatchmakingInviteReceived OnMatchmakingInviteReceived;
+
+        public delegate void MatchmakingClanInviteReceived(MQTTMatchInvite invite);
+        public static event MatchmakingClanInviteReceived OnMatchmakingClanInviteReceived;
+
+        public delegate void MatchmakingMatchUpdated(MqttMatchSet match);
+        public static event MatchmakingMatchUpdated OnMatchmakingMatchFound;
+        public static event MatchmakingMatchUpdated OnMatchmakingMatchStarted;
+        public static event MatchmakingMatchUpdated OnMatchmakingMatchFinished;
 
         public delegate void JukeboxPlaylistUpdated(MQTTJukeBoxPlaylist playList);
         public static event JukeboxPlaylistUpdated OnJukeboxPlaylistUpdated;
@@ -156,23 +172,26 @@ namespace Altzone.Scripts.MQTT
             finally
             {
                 if (_client != null && _client.IsConnected)
-                //OnMQTTConnectionEstablished?.Invoke(true);
-                if (string.IsNullOrEmpty(ServerManager.Instance.Player.clan_id))
                 {
-                    OnMQTTConnectionEstablished?.Invoke(true);
-                }
-                else
-                {
-                    while (true)
+                    await SubscribeToMatchmaking();
+                    if (string.IsNullOrEmpty(ServerManager.Instance.Player.clan_id))
                     {
-                        if (ServerManager.Instance.Clan != null)
+                        _subscriptionsDone = true;
+                        OnMQTTConnectionEstablished?.Invoke(true);
+                    }
+                    else
+                    {
+                        while (true)
                         {
-                            Debug.Log($"Clan Found: Starting subscription.");
-                            SubscribeToClanNotifications();
-                            break;
+                            if (ServerManager.Instance.Clan != null)
+                            {
+                                Debug.Log($"Clan Found: Starting subscription.");
+                                SubscribeToClanNotifications();
+                                break;
+                            }
+                            Debug.LogWarning($"Clan not found: Trying again.");
+                            await Task.Delay(1000);
                         }
-                        Debug.LogWarning($"Clan not found: Trying again.");
-                        await Task.Delay(1000);
                     }
                 }
                 else OnMQTTConnectionEstablished?.Invoke(false);
@@ -320,47 +339,70 @@ namespace Altzone.Scripts.MQTT
 
         public async Task SubscribeToMatchmaking()
         {
-            if (_client == null || !_client.IsConnected || _matchmakingInviteTopic != null) return;
+            if (_client == null || !_client.IsConnected || _matchmakingRoomTopic != null) return;
 
+            _matchmakingRoomTopic = MatchmakingRoomTopicBase.Replace("{playerId}", ServerManager.Instance.Player._id);
             _matchmakingInviteTopic = MatchmakingInviteTopicBase.Replace("{playerId}", ServerManager.Instance.Player._id);
-            // var topic2 = $"/matchmaking/matches/player/{ServerManager.Instance.Player._id}";
+            _matchmakingMatchTopic = MatchmakingMatchTopicBase.Replace("{playerId}", ServerManager.Instance.Player._id);
 
             try
             {
-                Task task = _client.SubscribeAsync(_matchmakingInviteTopic);
-                Debug.Log($"Subscribing to {_matchmakingInviteTopic}");
-                while (!task.IsCompleted)
-                {
-                    Task ongoingTask = await Task.WhenAny(task);
-                    await ongoingTask;
-                }
-                Debug.Log($"Subscribtion to {_matchmakingInviteTopic} successful");
-
-                //Debug.Log($"Subscribing to {topic2}");
-                //await _client.SubscribeAsync(topic2);
-                //Debug.Log($"Subscribtion to {topic2} successful");
+                Debug.Log($"Subscribing to matchmaking topics for player {ServerManager.Instance.Player._id}");
+                await Task.WhenAll(
+                    _client.SubscribeAsync(_matchmakingRoomTopic),
+                    _client.SubscribeAsync(_matchmakingInviteTopic),
+                    _client.SubscribeAsync(_matchmakingMatchTopic));
+                Debug.Log("Matchmaking subscriptions successful");
             }
             catch (Exception ex)
             {
                 Debug.LogError($"Subscription failed: {ex}");
+                _matchmakingRoomTopic = null;
+                _matchmakingInviteTopic = null;
+                _matchmakingMatchTopic = null;
             }
+        }
+
+        public async Task SubscribeToActiveMatch(string matchId)
+        {
+            if (_client == null || !_client.IsConnected || string.IsNullOrWhiteSpace(matchId)) return;
+
+            string topic = ActiveMatchTopicBase.Replace("{matchId}", matchId);
+            if (_activeMatchTopic == topic) return;
+
+            if (!string.IsNullOrEmpty(_activeMatchTopic))
+            {
+                await _client.UnsubscribeAsync(_activeMatchTopic);
+            }
+
+            await _client.SubscribeAsync(topic);
+            _activeMatchTopic = topic;
+            Debug.Log($"Subscribed to active match topic {_activeMatchTopic}");
         }
 
         public async Task UnsubscribeFromMatchmaking()
         {
             if (_client == null || !_client.IsConnected)
             {
+                _matchmakingRoomTopic = null;
                 _matchmakingInviteTopic = null;
+                _matchmakingMatchTopic = null;
+                _activeMatchTopic = null;
                 return;
             }
 
             try
             {
-                Debug.Log($"Unsubscribing from {_matchmakingInviteTopic}");
-                await _client.UnsubscribeAsync(_matchmakingInviteTopic);
-                Debug.Log($"Unsubscribtion from {_matchmakingInviteTopic} successful");
-
+                List<Task> tasks = new();
+                if (!string.IsNullOrEmpty(_matchmakingRoomTopic)) tasks.Add(_client.UnsubscribeAsync(_matchmakingRoomTopic));
+                if (!string.IsNullOrEmpty(_matchmakingInviteTopic)) tasks.Add(_client.UnsubscribeAsync(_matchmakingInviteTopic));
+                if (!string.IsNullOrEmpty(_matchmakingMatchTopic)) tasks.Add(_client.UnsubscribeAsync(_matchmakingMatchTopic));
+                if (!string.IsNullOrEmpty(_activeMatchTopic)) tasks.Add(_client.UnsubscribeAsync(_activeMatchTopic));
+                await Task.WhenAll(tasks);
+                _matchmakingRoomTopic = null;
                 _matchmakingInviteTopic = null;
+                _matchmakingMatchTopic = null;
+                _activeMatchTopic = null;
             }
             catch (Exception ex)
             {
@@ -438,11 +480,26 @@ namespace Altzone.Scripts.MQTT
                 }
                 else if (result["topic"].ToString().Equals("matchmaking"))
                 {
-                    if (result["type"].ToString().Equals("INVITE_UPDATED"))
+                    switch (result["type"].ToString())
                     {
-                        MQTTMatchInvite invite = result["payload"].ToObject<MQTTMatchInvite>();
-
-                        OnMatchmakingInviteReceived?.Invoke(invite);
+                        case "ROOM_UPDATED":
+                            OnMatchmakingRoomDataUpdated?.Invoke(result["payload"].ToObject<MQTTMatchRoomData>());
+                            break;
+                        case "INVITE_RECEIVED":
+                            OnMatchmakingInviteReceived?.Invoke(result["payload"].ToObject<MQTTMatchInvite>());
+                            break;
+                        case "CLAN_INVITE_RECEIVED":
+                            OnMatchmakingClanInviteReceived?.Invoke(result["payload"].ToObject<MQTTMatchInvite>());
+                            break;
+                        case "MATCH_FOUND":
+                            OnMatchmakingMatchFound?.Invoke(result["payload"].ToObject<MqttMatchSet>());
+                            break;
+                        case "MATCH_STARTED":
+                            OnMatchmakingMatchStarted?.Invoke(result["payload"].ToObject<MqttMatchSet>());
+                            break;
+                        case "MATCH_FINISHED":
+                            OnMatchmakingMatchFinished?.Invoke(result["payload"].ToObject<MqttMatchSet>());
+                            break;
                     }
                 }
                 else if (result["topic"].ToString().Equals("voting"))

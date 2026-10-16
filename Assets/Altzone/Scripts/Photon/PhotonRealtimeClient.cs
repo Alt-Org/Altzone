@@ -14,6 +14,7 @@ using UnityEngine.SceneManagement;
 using static Altzone.Scripts.Lobby.Wrappers.LobbyWrapper;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby;
+using Altzone.Scripts.MQTT;
 using Altzone.Scripts.Common;
 
 public static class PhotonRealtimeClient
@@ -1174,6 +1175,85 @@ public static class PhotonRealtimeClient
         catch (Exception ex)
         {
             Debug.LogWarning($"JoinOrCreateQueueRoom failed: {ex.Message}");
+            return false;
+        }
+    }
+
+    public static bool JoinOrCreateServerMatchRoom(MqttMatchSet match)
+    {
+        if (match == null || string.IsNullOrWhiteSpace(match.id))
+        {
+            Debug.LogError("JoinOrCreateServerMatchRoom: match data or match id is missing.");
+            return false;
+        }
+
+        if (Client == null || !Client.IsConnectedAndReady || Client.Server != ServerConnection.MasterServer)
+        {
+            Debug.LogWarning($"JoinOrCreateServerMatchRoom: Photon client is not ready on MasterServer (state={Client?.State}, server={Client?.Server}).");
+            return false;
+        }
+
+        MatchmakingType matchmakingType = (MatchmakingType)match.matchType;
+        GameType gameType = (GameType)match.gameType;
+        int maxPlayers = Math.Max(2, match.teamSize * 2);
+        RoomOptions roomOptions = GetRoomOptions(
+            lobbyType: matchmakingType,
+            matchmakingType: matchmakingType,
+            isMatchmaking: true,
+            roomName: match.id,
+            customGameMode: (int)gameType,
+            playerCount: maxPlayers);
+
+        PhotonHashtable properties = roomOptions.CustomRoomProperties ?? new PhotonHashtable();
+        properties[PhotonBattleRoom.BattleID] = match.id;
+        properties[PhotonBattleRoom.IsQueueKey] = false;
+
+        string[] slots = new string[maxPlayers];
+        List<string> expectedUsers = new();
+        bool hasBots = false;
+
+        if (match.teams != null)
+        {
+            foreach (MQTTMatchTeams team in match.teams)
+            {
+                int slotIndex = string.Equals(team.side, "B", StringComparison.OrdinalIgnoreCase) ? match.teamSize : 0;
+                if (team.players != null)
+                {
+                    foreach (MQTTMatchPlayers player in team.players)
+                    {
+                        if (player == null || string.IsNullOrWhiteSpace(player.playerId) || slotIndex >= slots.Length) continue;
+                        slots[slotIndex++] = player.playerId;
+                        if (!expectedUsers.Contains(player.playerId)) expectedUsers.Add(player.playerId);
+                    }
+                }
+
+                if (team.bots != null)
+                {
+                    foreach (MQTTBots bot in team.bots)
+                    {
+                        if (slotIndex >= slots.Length) break;
+                        slots[slotIndex++] = "Bot";
+                        hasBots = true;
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < slots.Length && i < 4; i++)
+        {
+            properties[PhotonBattleRoom.GetPositionKey(i + 1)] = slots[i] ?? string.Empty;
+        }
+        properties[PhotonBattleRoom.BotFillKey] = hasBots;
+        roomOptions.CustomRoomProperties = properties;
+
+        EnterRoomArgs enterRoomArgs = GetEnterRoomArgs(match.id, roomOptions, expectedUsers.ToArray());
+        try
+        {
+            return Client.OpJoinOrCreateRoom(enterRoomArgs);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"JoinOrCreateServerMatchRoom failed: {ex.Message}");
             return false;
         }
     }
