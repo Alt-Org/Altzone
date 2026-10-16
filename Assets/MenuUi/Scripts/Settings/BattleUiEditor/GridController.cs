@@ -66,8 +66,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         /// <param name="columnLines">The amount of column lines as int.</param>
         public bool SetColumnLines(int columnLines)
         {
-            if (s_columnLines == columnLines && _gridColumns.transform.childCount > 0)
-                return false; // If the value didn't change we return
+            if (s_columnLines == columnLines && _gridColumns.transform.childCount > 0) return false; // If the value didn't change we return
             s_columnLines = columnLines;
 
             StartCoroutine(InstantiateGridLines(columnLines, _gridColumns.transform, () =>

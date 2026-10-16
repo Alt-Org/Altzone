@@ -137,7 +137,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             if (_instantiatedMoveJoystick != null) SetDataToUiElement(_instantiatedMoveJoystick);
             if (_instantiatedRotateJoystick != null) SetDataToUiElement(_instantiatedRotateJoystick);
-            OverlayPanelCheck.Instance?.gameObject.SetActive(false);
+            OverlayPanelCheck.Instance?.ToggleOverlay(false);
         }
 
         /// <summary>
@@ -146,23 +146,26 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void CloseEditor()
         {
             ClosePopups();
+
             if (_unsavedChanges)
             {
                 OnUiElementSelected(null);
                 StartCoroutine(_saveReset.ShowSaveResetPopup(saveChanges =>
                 {
                     if (saveChanges == null) return;
+
                     if (saveChanges.Value == true) SaveChanges();
                     else _unsavedChanges = false;
+
                     gameObject.SetActive(false);
+                    OverlayPanelCheck.Instance?.ToggleOverlay(true);
                 }));
             }
             else
             {
                 gameObject.SetActive(false);
+                OverlayPanelCheck.Instance?.ToggleOverlay(true);
             }
-
-            OverlayPanelCheck.Instance?.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -308,7 +311,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void OnDisable()
         {
-            OverlayPanelCheck.Instance?.gameObject.SetActive(true);
+            OverlayPanelCheck.Instance?.ToggleOverlay(true);
         }
 
         private void ScaleEditor()
@@ -356,12 +359,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private void SaveChanges()
         {
             BattleUiMovableElementData timerData = _instantiatedTimer.GetData();
-            if (!IsSavedDataSimilar(BattleUiElementType.Timer))
-                SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Timer, timerData);
+            if (!IsSavedDataSimilar(BattleUiElementType.Timer)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Timer, timerData);
 
             BattleUiMovableElementData diamondsData = _instantiatedDiamonds.GetData();
-            if (!IsSavedDataSimilar(BattleUiElementType.Diamonds))
-                SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Diamonds, diamondsData);
+            if (!IsSavedDataSimilar(BattleUiElementType.Diamonds)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.Diamonds, diamondsData);
 
             BattleUiMovableElementData giveUpButtonData = _instantiatedGiveUpButton.GetData();
             if (!IsSavedDataSimilar(BattleUiElementType.GiveUpButton))
@@ -369,8 +370,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                     giveUpButtonData);
 
             BattleUiMovableElementData playerInfoData = _instantiatedPlayerInfo.GetData();
-            if (!IsSavedDataSimilar(BattleUiElementType.PlayerInfo))
-                SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.PlayerInfo, playerInfoData);
+            if (!IsSavedDataSimilar(BattleUiElementType.PlayerInfo)) SettingsCarrier.Instance.SetBattleUiMovableElementData(BattleUiElementType.PlayerInfo, playerInfoData);
 
             BattleUiMovableElementData teammateInfoData = _instantiatedTeammateInfo.GetData();
             if (!IsSavedDataSimilar(BattleUiElementType.TeammateInfo))
@@ -865,8 +865,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             // Calculating aspect ratio for movable elements (multiorientation elements have aspect ratios saved to serializefield)
-            if (movableUiElementRect != Rect.zero)
-                aspectRatio = movableUiElementRect.width / movableUiElementRect.height;
+            if (movableUiElementRect != Rect.zero) aspectRatio = movableUiElementRect.width / movableUiElementRect.height;
 
             // Calculating anchors
             Vector2 size = new();
