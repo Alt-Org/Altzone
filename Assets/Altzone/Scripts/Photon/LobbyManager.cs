@@ -7538,13 +7538,17 @@ namespace Altzone.Scripts.Lobby
 
         public void SetPlayerQuantumCharacters(GameType gameType, List<CustomCharacter> characters)
         {
+            int characterCount = gameType == GameType.BattleFlipperGame
+                ? RuntimePlayer.FlipperCharacterCount
+                : RuntimePlayer.NormalCharacterCount;
+
             Assert.IsTrue(
-                characters.Count == RuntimePlayer.CharacterCount,
-                string.Format("Invalid number of Characters (not {0})", RuntimePlayer.CharacterCount)
+                characters.Count == characterCount,
+                string.Format("Invalid number of Characters (not {0})", characterCount)
             );
 
             CustomCharacter character;
-            for (int i = 0; i < RuntimePlayer.CharacterCount; i++) {
+            for (int i = 0; i < characterCount; i++) {
                 character = characters[i];
 
                 if(character == null || character.Id is CharacterID.None)
