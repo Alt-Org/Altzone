@@ -376,57 +376,7 @@ namespace MenuUi.Scripts.Login
             string password1 = _registerPasswordInputField.text;
             string password2 = _registerPassword2InputField.text;
 
-            // Checks empty fields and password requirements
-            if (_registerUsernameInputField.text == string.Empty || _registerPasswordInputField.text == string.Empty || _registerPassword2InputField.text == string.Empty)
-            {
-                ShowMessage(ERROR_EMPTY_FIELD, InfoLevel.Error);
-                if (_registerUsernameInputField.text == string.Empty) _registerUsernameInputFieldError.gameObject.SetActive(true);
-                else if(_registerPasswordInputField.text == string.Empty) _registerPasswordInputFieldError.gameObject.SetActive(true);
-                else if(_registerPassword2InputField.text == string.Empty) _registerPassword2InputFieldError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (password1 != password2)
-            {
-                ShowMessage(ERROR_PASSWORD_MISMATCH, InfoLevel.Error);
-                _registerPassword2InputFieldError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (password1.Length < _passwordMinLength)
-            {
-                ShowMessage(ERROR_PASSWORD_TOO_SHORT, InfoLevel.Error);
-                _registerPasswordInputFieldError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (username.Length < _userNameMinLength)
-            {
-                ShowMessage(ERROR_USERNAME_TOO_SHORT, InfoLevel.Error);
-                _registerUsernameInputFieldError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (!_registerAgeVerificationToggle.isOn && !_registerParentalAuthToggle.isOn)
-            {
-                ShowMessage(ERROR_AGE_CONSENT_NOT_GRANTED, InfoLevel.Error);
-                _registerAgeVerificationToggleError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (!_privacyPolicyAuthToggle.isOn)
-            {
-                ShowMessage(ERROR_PRIVACY_CONCENT_NOT_GRANTED, InfoLevel.Error);
-                _privacyPolicyToggleError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (!_informationPolicyAuthToggle.isOn)
-            {
-                ShowMessage(ERROR_INFORMATION_CONCENT_NOT_GRANTED, InfoLevel.Error);
-                _informationPolicyToggleError.gameObject.SetActive(true);
-                return;
-            }
+            if (!RegisterInfoValidity()) return;
 
             string body;
 
@@ -514,6 +464,15 @@ namespace MenuUi.Scripts.Login
         {
             ClearMessage();
 
+            if (!RegisterInfoValidity()) return;
+
+            _passwordHintWindow.SetActive(true);
+            _registerPasswordHintAnswerInputField.text = string.Empty;
+            _registerPasswordHintInputField.text = string.Empty;
+        }
+
+        private bool RegisterInfoValidity()
+        {
             string username = _registerUsernameInputField.text;
             string password1 = _registerPasswordInputField.text;
             string password2 = _registerPassword2InputField.text;
@@ -523,56 +482,54 @@ namespace MenuUi.Scripts.Login
             {
                 ShowMessage(ERROR_EMPTY_FIELD, InfoLevel.Error);
                 if (_registerUsernameInputField.text == string.Empty) _registerUsernameInputFieldError.gameObject.SetActive(true);
-                else if(_registerPasswordInputField.text == string.Empty) _registerPasswordInputFieldError.gameObject.SetActive(true);
-                else if(_registerPassword2InputField.text == string.Empty) _registerPassword2InputFieldError.gameObject.SetActive(true);
-                return;
+                else if (_registerPasswordInputField.text == string.Empty) _registerPasswordInputFieldError.gameObject.SetActive(true);
+                else if (_registerPassword2InputField.text == string.Empty) _registerPassword2InputFieldError.gameObject.SetActive(true);
+                return false;
             }
 
             if (password1 != password2)
             {
                 ShowMessage(ERROR_PASSWORD_MISMATCH, InfoLevel.Error);
                 _registerPassword2InputFieldError.gameObject.SetActive(true);
-                return;
+                return false;
             }
 
             if (password1.Length < _passwordMinLength)
             {
                 ShowMessage(ERROR_PASSWORD_TOO_SHORT, InfoLevel.Error);
                 _registerPasswordInputFieldError.gameObject.SetActive(true);
-                return;
+                return false;
             }
 
             if (username.Length < _userNameMinLength)
             {
                 ShowMessage(ERROR_USERNAME_TOO_SHORT, InfoLevel.Error);
                 _registerUsernameInputFieldError.gameObject.SetActive(true);
-                return;
+                return false;
             }
 
-            if (!_registerAgeVerificationToggle.isOn || !_registerParentalAuthToggle.isOn)
+            if (!_registerAgeVerificationToggle.isOn && !_registerParentalAuthToggle.isOn)
             {
                 ShowMessage(ERROR_AGE_CONSENT_NOT_GRANTED, InfoLevel.Error);
                 _registerAgeVerificationToggleError.gameObject.SetActive(true);
-                return;
+                return false;
             }
 
             if (!_privacyPolicyAuthToggle.isOn)
             {
                 ShowMessage(ERROR_PRIVACY_CONCENT_NOT_GRANTED, InfoLevel.Error);
                 _privacyPolicyToggleError.gameObject.SetActive(true);
-                return;
+                return false;
             }
 
             if (!_informationPolicyAuthToggle.isOn)
             {
                 ShowMessage(ERROR_INFORMATION_CONCENT_NOT_GRANTED, InfoLevel.Error);
                 _informationPolicyToggleError.gameObject.SetActive(true);
-                return;
+                return false;
             }
 
-            _passwordHintWindow.SetActive(true);
-            _registerPasswordHintAnswerInputField.text = string.Empty;
-            _registerPasswordHintInputField.text = string.Empty;
+            return true;
         }
 
         public void GuestLogin()
