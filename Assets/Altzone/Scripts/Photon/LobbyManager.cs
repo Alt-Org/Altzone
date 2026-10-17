@@ -6694,7 +6694,7 @@ namespace Altzone.Scripts.Lobby
                     {
                         selectedCharacters.Add(battleCharacters[i]);
                     }
-                    SetPlayerQuantumCharacters(selectedCharacters);
+                    SetPlayerQuantumCharacters(data.GameType, selectedCharacters);
                 }
                 int retryCount=0;
                 do
@@ -7536,7 +7536,7 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
-        public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
+        public void SetPlayerQuantumCharacters(GameType gameType, List<CustomCharacter> characters)
         {
             Assert.IsTrue(
                 characters.Count == RuntimePlayer.CharacterCount,
