@@ -217,7 +217,7 @@ namespace Battle.QSimulation.Player
                                                            ? f.GetPlayerData(playerHandle.PlayerRef).Characters
                                                            : BattlePlayerBotController.GetBotCharacters(f);
 
-                BattleEntityManager.CompoundEntityTemplate[] playerCharacterEntityArray = new BattleEntityManager.CompoundEntityTemplate[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
+                BattleEntityManager.CompoundEntityTemplate[] playerCharacterEntityArray = new BattleEntityManager.CompoundEntityTemplate[PlayerCharacterCount];
 
                 //{ create playerEntity for each character
 
@@ -632,7 +632,7 @@ namespace Battle.QSimulation.Player
         /// <summary>Debug overlay entry number for stats.</summary>
         private static int s_debugOverlayStats;
 
-        private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_CHARACTER_TOTAL_COUNT];
+        private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_CHARACTER_MAX_TOTAL_COUNT];
 
         private static readonly FPVector2 s_noPreviousPosition = FPVector2.MaxValue;
 

@@ -737,7 +737,7 @@ namespace Battle.QSimulation.Player
             /// <param name="position">The position that all previous character positions will be set to.</param>
             public static void SetAllPreviousCharacterPosition(BattlePlayerManagerDataQSingleton* playerManagerData, FPVector2 position)
             {
-                for (int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_TOTAL_COUNT; i++)
+                for (int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_MAX_TOTAL_COUNT; i++)
                 {
                     playerManagerData->CharacterAllPreviousPositions[i] = position;
                 }
@@ -756,7 +756,7 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static bool IsValidCharacterNumber(int characterNumber)
             {
-                if (!(characterNumber >= 0 && characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT))
+                if (!(characterNumber >= 0 && characterNumber < PlayerCharacterCount))
                 {
                     s_debugLogger.ErrorFormat("Character number {0} is not valid", characterNumber);
                     return false;
@@ -1235,7 +1235,7 @@ namespace Battle.QSimulation.Player
             /// Calculates the index where player's characters start in the BattlePlayerManagerDataQSingleton.
             /// </summary>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private readonly int GetCharacterOffset() => Index * Constants.BATTLE_PLAYER_CHARACTER_COUNT;
+            private readonly int GetCharacterOffset() => Index * Constants.BATTLE_PLAYER_CHARACTER_MAX_COUNT;
 
             /// <summary>
             /// Calculates the index of player's character in the BattlePlayerManagerDataQSingleton.
