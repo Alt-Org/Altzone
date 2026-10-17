@@ -67,6 +67,10 @@ namespace Battle.QSimulation.Player
 
             s_debugLogger.Log(f, "Init");
 
+            PlayerCharacterCount = BattleParameters.GetIsTestFlipperGame(f)
+                                 ? Constants.BATTLE_FLIPPER_PLAYER_CHARACTER_COUNT
+                                 : Constants.BATTLE_NORMAL_PLAYER_CHARACTER_COUNT;
+
             for (int i = 0; i < s_spawnPoints.Length; i++)
             {
                 s_spawnPoints[i] = BattleGridManager.GridPositionToWorldPosition(battleArenaSpec.PlayerSpawnPositions[i]);
@@ -615,6 +619,8 @@ namespace Battle.QSimulation.Player
         #endregion Public - Static Methods - Spawn/Despawn
 
         #endregion Public - Static Methods
+
+        public static int PlayerCharacterCount { get; private set; }
 
         #endregion Public
 
