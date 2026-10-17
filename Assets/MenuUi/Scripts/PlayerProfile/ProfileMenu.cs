@@ -153,10 +153,10 @@ public class ProfileMenu : AltMonoBehaviour
 
     private bool _otherPlayerProfile = false;
 
-    private void Update()
+    /*private void Update()
     {
         updateTime();
-    }
+    }*/
 
     private void updateTime()
     {
@@ -249,7 +249,7 @@ public class ProfileMenu : AltMonoBehaviour
         //_TimePlayedText.text = loggedOutTimeText;
         _LosesText.text = loggedOutLosesText;
         _WinsText.text = loggedOutWinsText;
-        _CarbonText.text = loggedOutCarbonText;
+        //_CarbonText.text = loggedOutCarbonText;
     }
 
     /// <summary>
