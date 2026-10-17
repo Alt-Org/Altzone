@@ -4530,6 +4530,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DTSymbolicQuestionPopup
       objectReference: {fileID: 0}
+    - target: {fileID: 7958681105065840483, guid: 2bb14833a25e5b64bb852bf319701948,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6542,18 +6547,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _normalTaskType: 0
-  _educationCategoryType: 0
-  _educationCategoryActionType: 3
+  _educationCategoryType: 2
+  _educationCategoryActionType: 2
   _educationCategorySocialType: 1
-  _educationCategoryStoryType: 3
+  _educationCategoryStoryType: 2
   _educationCategoryCultureType: 0
   _educationCategoryEthicalType: 0
   _longClickStartThresholdTime: 0.2
   _longClickThresholdTime: 3
   _uniqueName: 
-  _questionOption1: 
-  _questionOption2: 
-  _questionOption3: 
+  _questionOption1: "Langatonta varpaiden l\xE4mmityst\xE4."
+  _questionOption2: Pelaajan muuttamista taskulampuksi.
+  _questionOption3: "Yhteyden luomista toisiin ja toisaalta riippuvuutta \xE4lylaitteista."
+  _answer: 3
 --- !u!224 &3854503833889092684 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6092755999000358271, guid: f1eb9321867a80347b3e82d95750325c,
