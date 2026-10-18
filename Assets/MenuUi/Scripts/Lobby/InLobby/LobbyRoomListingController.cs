@@ -149,7 +149,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     switch (matchmakingType)
                     {
                         case MatchmakingType.FriendLobby:
-                            PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(InLobbyController.SelectedPremadeTargetMatchmakingType, gameType);
+                            yield return CreateFriendLobbyRoom(gameType);
                             break;
                         case MatchmakingType.Clan2v2:
                             yield return CreateClan2v2Room(gameType);
@@ -171,6 +171,51 @@ namespace MenuUi.Scripts.Lobby.InLobby
             finally
             {
                 _createRoomRequestInFlight = false;
+            }
+        }
+
+        private IEnumerator CreateFriendLobbyRoom(GameType gameType)
+        {
+            if (ServerManager.Instance == null)
+            {
+                Debug.LogError("CreateFriendLobbyRoom: ServerManager is not available.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Vakava virhe: palvelinyhteyttä ei ole alustettu. Käynnistä peli uudelleen.");
+                yield break;
+            }
+
+            MatchmakingType targetMatchmakingType = InLobbyController.SelectedPremadeTargetMatchmakingType;
+            if (targetMatchmakingType != MatchmakingType.Random2v2 && targetMatchmakingType != MatchmakingType.Clan2v2)
+            {
+                targetMatchmakingType = MatchmakingType.Random2v2;
+            }
+
+            bool roomRegistered = false;
+            string serverRoomId = null;
+            yield return StartCoroutine(ServerManager.Instance.MatchmakingCreateRoom(
+                targetMatchmakingType,
+                gameType,
+                (success, roomId) =>
+                {
+                    roomRegistered = success;
+                    serverRoomId = roomId;
+                },
+                teamSize: 2,
+                allowBots: false));
+
+            if (!roomRegistered)
+            {
+                InLobbyController.ConsumePendingFriendLobbyInvitePlayer();
+                Debug.LogWarning("CreateFriendLobbyRoom: server rejected room creation.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Friend Lobby -huoneen luonti epäonnistui. Yritä uudelleen.");
+                yield break;
+            }
+
+            if (!PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(targetMatchmakingType, gameType, roomId: serverRoomId))
+            {
+                InLobbyController.ConsumePendingFriendLobbyInvitePlayer();
+                Debug.LogWarning($"CreateFriendLobbyRoom: Photon room creation failed to start for server room '{serverRoomId}'.");
+                yield return StartCoroutine(ServerManager.Instance.MatchmakingLeaveRoom());
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Friend Lobby -huoneen luonti epäonnistui. Yritä uudelleen.");
             }
         }
 
@@ -352,7 +397,26 @@ namespace MenuUi.Scripts.Lobby.InLobby
             var player = PhotonRealtimeClient.LocalLobbyPlayer;
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonRealtimeClient.NickName}'");
+            string shortcutInvitePlayerId = InLobbyController.ConsumePendingFriendLobbyInvitePlayer();
+            if (!string.IsNullOrEmpty(shortcutInvitePlayerId))
+            {
+                StartCoroutine(SendShortcutInvite(shortcutInvitePlayerId));
+            }
             this.Publish(new LobbyManager.StartRoomEvent());
+        }
+
+        private IEnumerator SendShortcutInvite(string playerId)
+        {
+            bool inviteSent = false;
+            if (ServerManager.Instance != null)
+            {
+                yield return StartCoroutine(ServerManager.Instance.MatchmakingSendInviteToPlayer(playerId, success => inviteSent = success));
+            }
+
+            if (!inviteSent)
+            {
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Kutsun lähetys epäonnistui. Yritä uudelleen Friend Lobby -huoneessa.");
+            }
         }
 
         private void HandleMatchmakingRoomEntered(bool isLeader)

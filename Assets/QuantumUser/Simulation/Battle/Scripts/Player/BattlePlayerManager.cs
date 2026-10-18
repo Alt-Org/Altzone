@@ -67,6 +67,10 @@ namespace Battle.QSimulation.Player
 
             s_debugLogger.Log(f, "Init");
 
+            PlayerCharacterCount = BattleParameters.GetIsTestFlipperGame(f)
+                                 ? Constants.BATTLE_FLIPPER_PLAYER_CHARACTER_COUNT
+                                 : Constants.BATTLE_NORMAL_PLAYER_CHARACTER_COUNT;
+
             for (int i = 0; i < s_spawnPoints.Length; i++)
             {
                 s_spawnPoints[i] = BattleGridManager.GridPositionToWorldPosition(battleArenaSpec.PlayerSpawnPositions[i]);
@@ -213,7 +217,7 @@ namespace Battle.QSimulation.Player
                                                            ? f.GetPlayerData(playerHandle.PlayerRef).Characters
                                                            : BattlePlayerBotController.GetBotCharacters(f);
 
-                BattleEntityManager.CompoundEntityTemplate[] playerCharacterEntityArray = new BattleEntityManager.CompoundEntityTemplate[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
+                BattleEntityManager.CompoundEntityTemplate[] playerCharacterEntityArray = new BattleEntityManager.CompoundEntityTemplate[PlayerCharacterCount];
 
                 //{ create playerEntity for each character
 
@@ -616,6 +620,8 @@ namespace Battle.QSimulation.Player
 
         #endregion Public - Static Methods
 
+        public static int PlayerCharacterCount { get; private set; }
+
         #endregion Public
 
         #region Private
@@ -626,7 +632,7 @@ namespace Battle.QSimulation.Player
         /// <summary>Debug overlay entry number for stats.</summary>
         private static int s_debugOverlayStats;
 
-        private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_CHARACTER_TOTAL_COUNT];
+        private static readonly FPVector2[] s_spawnPoints = new FPVector2[Constants.BATTLE_PLAYER_CHARACTER_MAX_TOTAL_COUNT];
 
         private static readonly FPVector2 s_noPreviousPosition = FPVector2.MaxValue;
 

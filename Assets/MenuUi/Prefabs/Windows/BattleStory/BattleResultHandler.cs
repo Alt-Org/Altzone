@@ -183,12 +183,12 @@ public class BattleResultHandler : MonoBehaviour
             if (!string.IsNullOrEmpty(info.Player3Name) && !string.IsNullOrEmpty(info.Player4Name))
             {
                 _teamBeta2PlayerPanel.SetActive(true);
-                _player3Name.text = info.Player1Name;
+                _player3Name.text = info.Player3Name;
                 StartCoroutine(FetchAvatarData(info.Player3Id, c =>
                 {
                     _player3Avatar.UpdateVisuals(c);
                 }));
-                _player4Name.text = info.Player2Name;
+                _player4Name.text = info.Player4Name;
                 StartCoroutine(FetchAvatarData(info.Player4Id, c =>
                 {
                     _player4Avatar.UpdateVisuals(c);
