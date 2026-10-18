@@ -1026,6 +1026,7 @@ GameObject:
   - component: {fileID: 3261891202469352012}
   - component: {fileID: 5001769224144860054}
   - component: {fileID: 1919205643705369515}
+  - component: {fileID: 7976995786053074612}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1152,6 +1153,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7976995786053074612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5125067499249322959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Mit\xE4 t\xE4m\xE4 merkki symboloi?"
+  _englishText: What does this icon symbolize?
 --- !u!1 &6056244053756425611
 GameObject:
   m_ObjectHideFlags: 0
