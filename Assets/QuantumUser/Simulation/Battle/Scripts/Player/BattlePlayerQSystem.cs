@@ -112,7 +112,7 @@ namespace Battle.QSimulation.Player
                 int shieldNumber = BattlePlayerData.NoAttachedShield;
                 if (playerHandle.LoadedCharacterHasShieldAttached)
                 {
-                    shieldNumber = playerHandle.GetLoadedCharacterAttachedShield(f).ShieldData->ShieldNumber;
+                    shieldNumber = playerHandle.GetLoadedCharacterAttachedShield(f).ShieldData->Number;
                 }
 
                 f.Events.BattleCharacterHit(
@@ -192,7 +192,7 @@ namespace Battle.QSimulation.Player
             {
                 s_debugLogger.LogFormat(f, "({0}) Current characters shield destroyed!", playerHandle.PlayerData.Slot);
 
-                BattlePlayerShieldManager.RemoveShield(f, playerHandle, characterNumber, shieldHandle.ShieldData->ShieldNumber);
+                BattlePlayerShieldManager.RemoveShield(f, playerHandle, characterNumber, shieldHandle.ShieldData->Number);
             }
 
             //} hit attach
@@ -210,7 +210,7 @@ namespace Battle.QSimulation.Player
                 playerHandle.PlayerData.Team,
                 playerHandle.PlayerData.Slot,
                 characterNumber,
-                shieldHandle.ShieldData->ShieldNumber,
+                shieldHandle.ShieldData->Number,
                 defenceUpdateVisual,
                 defencePercentage
             );

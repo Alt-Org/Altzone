@@ -2,8 +2,8 @@
 component BattlePlayerShieldDataQComponent
 {
     EntityRef PlayerEntityRef;
-    int ShieldNumber;
-    bool IsAttached;
+    int       Number;
+    bool      IsAttached;
 
     FrameTimer ShieldHitCooldown;
 }

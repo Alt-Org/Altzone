@@ -613,7 +613,7 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.BattlePlayerShieldDataQComponent))]
   public unsafe class BattlePlayerShieldDataQComponentPrototype : ComponentPrototype<Quantum.BattlePlayerShieldDataQComponent> {
     public MapEntityId PlayerEntityRef;
-    public Int32 ShieldNumber;
+    public Int32 Number;
     public QBoolean IsAttached;
     public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -623,7 +623,7 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.BattlePlayerShieldDataQComponent result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.PlayerEntityRef, in context, out result.PlayerEntityRef);
-        result.ShieldNumber = this.ShieldNumber;
+        result.Number = this.Number;
         result.IsAttached = this.IsAttached;
         this.ShieldHitCooldown.Materialize(frame, ref result.ShieldHitCooldown, in context);
     }

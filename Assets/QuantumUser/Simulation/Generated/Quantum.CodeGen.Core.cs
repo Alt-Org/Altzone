@@ -2013,7 +2013,7 @@ namespace Quantum {
     [FieldOffset(8)]
     public EntityRef PlayerEntityRef;
     [FieldOffset(0)]
-    public Int32 ShieldNumber;
+    public Int32 Number;
     [FieldOffset(4)]
     public QBoolean IsAttached;
     [FieldOffset(16)]
@@ -2022,7 +2022,7 @@ namespace Quantum {
       unchecked { 
         var hash = 3571;
         hash = hash * 31 + PlayerEntityRef.GetHashCode();
-        hash = hash * 31 + ShieldNumber.GetHashCode();
+        hash = hash * 31 + Number.GetHashCode();
         hash = hash * 31 + IsAttached.GetHashCode();
         hash = hash * 31 + ShieldHitCooldown.GetHashCode();
         return hash;
@@ -2030,7 +2030,7 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerShieldDataQComponent*)ptr;
-        serializer.Stream.Serialize(&p->ShieldNumber);
+        serializer.Stream.Serialize(&p->Number);
         QBoolean.Serialize(&p->IsAttached, serializer);
         EntityRef.Serialize(&p->PlayerEntityRef, serializer);
         FrameTimer.Serialize(&p->ShieldHitCooldown, serializer);

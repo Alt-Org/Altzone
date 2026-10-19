@@ -91,7 +91,7 @@ namespace Battle.QSimulation.Player
                 BattlePlayerShieldDataQComponent playerShieldData = new()
                 {
                     PlayerEntityRef = playerCharacterEntityRef,
-                    ShieldNumber = shieldEntityIndex
+                    Number = shieldEntityIndex
                 };
 
                 //} initialize shield component
@@ -241,7 +241,7 @@ namespace Battle.QSimulation.Player
             {
                 BattlePlayerShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
 
-                ReturnShieldEntityRef(f, playerHandle.PlayerData, playerHandle.LoadedCharacterData->Number, shieldHandle.ShieldData->ShieldNumber);
+                ReturnShieldEntityRef(f, playerHandle.PlayerData, playerHandle.LoadedCharacterData->Number, shieldHandle.ShieldData->Number);
             }
 
             s_debugLogger.LogFormat(f, DebugMessageShieldAttachFormat, playerHandle.PlayerData.Slot, shieldNumber, playerHandle.LoadedCharacterData->Number);

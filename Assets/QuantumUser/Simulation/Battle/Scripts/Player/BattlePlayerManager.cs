@@ -810,7 +810,7 @@ namespace Battle.QSimulation.Player
             {
                 BattlePlayerShieldHandle shieldHandle = playerHandle.GetLoadedCharacterAttachedShield(f);
 
-                int shieldNumber = shieldHandle.ShieldData->ShieldNumber;
+                int shieldNumber = shieldHandle.ShieldData->Number;
 
                 BattleEntityManager.Use(f, playerHandle.PlayerData.Low_Level.ShieldEntityGroupIDs[characterNumber], shieldNumber);
 

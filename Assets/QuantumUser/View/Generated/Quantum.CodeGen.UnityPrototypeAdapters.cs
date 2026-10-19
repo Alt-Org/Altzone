@@ -257,14 +257,14 @@ namespace Quantum.Prototypes.Unity {
   [System.SerializableAttribute()]
   public unsafe partial class BattlePlayerShieldDataQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype> {
     public Quantum.QuantumEntityPrototype PlayerEntityRef;
-    public Int32 ShieldNumber;
+    public Int32 Number;
     public QBoolean IsAttached;
     public Quantum.Prototypes.FrameTimerPrototype ShieldHitCooldown;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype prototype);
     public override Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BattlePlayerShieldDataQComponentPrototype();
       converter.Convert(this.PlayerEntityRef, out result.PlayerEntityRef);
-      converter.Convert(this.ShieldNumber, out result.ShieldNumber);
+      converter.Convert(this.Number, out result.Number);
       converter.Convert(this.IsAttached, out result.IsAttached);
       converter.Convert(this.ShieldHitCooldown, out result.ShieldHitCooldown);
       ConvertUser(converter, ref result);
