@@ -493,12 +493,10 @@ namespace Battle.QSimulation.Game
         {
             managedEntity.DevAssertIsCompound(nameof(BattleEntityManager), "Can not " + nameof(MoveCompound));
 
-            BattleDebugLogger.DevDebugCode(() => {
-                if (managedEntity.IsRegistered)
-                {
-                    managedEntity.DevAssertIsInPlay(nameof(BattleEntityManager), "Can not" + nameof(MoveCompound));
-                }
-            });
+            BattleDebugLogger.DevDebugCode(() => { if (managedEntity.IsRegistered)
+            {
+                managedEntity.DevAssertIsInPlay(nameof(BattleEntityManager), "Can not" + nameof(MoveCompound));
+            }});
 
             Transform2D* parentTransform = f.Unsafe.GetPointer<Transform2D>(managedEntity);
             parentTransform->Position = position;
