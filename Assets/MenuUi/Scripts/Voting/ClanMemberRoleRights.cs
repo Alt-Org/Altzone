@@ -5,6 +5,7 @@ using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class ClanMemberRoleRights : MonoBehaviour
 {
@@ -29,6 +30,7 @@ public class ClanMemberRoleRights : MonoBehaviour
     [SerializeField] private GameObject textPrefab;
     [SerializeField] private Transform contentParent;
     [SerializeField] private GameObject popup;
+    [SerializeField] private TextMeshProUGUI roleText;
 
     private ClanData _clanData = null;
 
@@ -44,7 +46,6 @@ public class ClanMemberRoleRights : MonoBehaviour
         }
     }
 
-
     private void PopulateRolesAndRights(ClanRoles currentRole)
     {
         foreach (Transform child in contentParent)
@@ -58,14 +59,33 @@ public class ClanMemberRoleRights : MonoBehaviour
 
             Debug.Log($"{right} {isAllowed}");
 
+            string _roleText = $"Rooli: {currentRole.name}";
+            roleText.text = _roleText;
             GameObject newTextObj = Instantiate(textPrefab, contentParent);
-            TextMeshProUGUI tmp = newTextObj.GetComponent<TextMeshProUGUI>();
 
-            if(tmp != null)
+            TextMeshProUGUI _roleRights = newTextObj.GetComponent<TextMeshProUGUI>();
+            Button _roleButton = newTextObj.GetComponentInChildren<Button>();
+
+            if (_roleRights != null)
             {
                 string statusColor = isAllowed ? "green" : "red";
-                tmp.text = $"{right}: <color={statusColor}>{isAllowed}</color>";
+                _roleRights.text = $"{right}: <color={statusColor}>{isAllowed}</color>";
+                _roleButton.GetComponent<Image>().color = isAllowed ? Color.green : Color.red;
+                _roleButton.onClick.AddListener(() =>
+                {
+                    OnButtonClicked(right, isAllowed, currentRole);
+                });
             }
         }
+    }
+
+    private void OnButtonClicked(PlayerRights rightName, bool allowed, ClanRoles currentRole)
+    {
+        // Toggles rights locally for now
+        Debug.Log($"Clicked button for right: {rightName}, Status: {allowed}");
+
+        currentRole.SetRights(rightName, !allowed);
+        PopulateRolesAndRights(currentRole);
+        // Put your logic here (e.g., toggle permission, open a menu, etc.)}
     }
 }
