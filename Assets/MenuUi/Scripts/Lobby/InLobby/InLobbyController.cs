@@ -269,7 +269,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             SelectedMatchmakingType = matchmakingType;
             SelectedGameType = gameType;
-            if (SelectedMatchmakingType == MatchmakingType.Random2v2) SelectedMatchmakingType = MatchmakingType.Clan2v2; //This line is for testing purposes, remove when you no longer want to force Clan2v2.
             SelectedPremadeTargetMatchmakingType = actualMatchmakingType;
 
             // Starting creating room of a selected game type if the coroutine is not already running
