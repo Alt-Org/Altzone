@@ -7,6 +7,7 @@
 // System usings
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 // Quantum usings
 using Quantum;
@@ -596,6 +597,7 @@ namespace Battle.QSimulation.Game
             return new() { Int = entityList.Count + 1};
         }
 
+        [Conditional("UNITY_EDITOR")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void DevAssertValidEntityID(BattleEntityID id, string context)
         {
