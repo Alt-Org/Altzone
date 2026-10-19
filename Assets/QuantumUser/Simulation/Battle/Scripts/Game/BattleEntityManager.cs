@@ -168,7 +168,7 @@ namespace Battle.QSimulation.Game
 
             MakeManagedEntity(f, entityRef);
             entityList.Add(entityRef);
-            Return(f, entityManagerData, entityRef, id, listIndex);
+            Return(f, entityManagerData, entityRef, listIndex);
 
             return id;
         }
@@ -201,7 +201,7 @@ namespace Battle.QSimulation.Game
             {
                 MakeManagedEntity(f, entityRefs[i]);
                 entityList.Add(entityRefs[i]);
-                Return(f, entityManagerData, entityRefs[i], id, listIndex);
+                Return(f, entityManagerData, entityRefs[i], listIndex);
                 listIndex++;
             }
 
@@ -238,7 +238,7 @@ namespace Battle.QSimulation.Game
 
             MakeManagedEntity(f, template, registered: true);
             entityList.Add(template.ParentEntityRef);
-            Return(f, entityManagerData, template.ParentEntityRef, id, listIndex);
+            Return(f, entityManagerData, template.ParentEntityRef, listIndex);
 
             return id;
         }
@@ -278,7 +278,7 @@ namespace Battle.QSimulation.Game
 
                 MakeManagedEntity(f, template, registered: true);
                 entityList.Add(template.ParentEntityRef);
-                Return(f, entityManagerData, template.ParentEntityRef, id, listIndex);
+                Return(f, entityManagerData, template.ParentEntityRef, listIndex);
                 listIndex++;
             }
 
@@ -292,7 +292,7 @@ namespace Battle.QSimulation.Game
         /// @name Get/Return Methods
         /// Methods for retrieving and returning [{Registered Entities}](#page-concepts-entity-management-registered-entities).
         /// @{
-        #region Public Get/Return Methods
+        #region Public Get Methods
 
         /// <summary>
         /// Retrieves registered entity matching given <paramref name="id"/>.
@@ -318,6 +318,11 @@ namespace Battle.QSimulation.Game
             int listIndex = GetListIndex(id);
 
             return BattleManageEntityHandle.Create(f, entityList[listIndex]);
+        }
+
+        public static T Get<T>(Frame f, BattleEntityID id) where T : BattleManageEntityHandle.IComposite, new()
+        {
+            return Get(f, id).To<T>(f);
         }
 
         /// <summary>
@@ -347,15 +352,19 @@ namespace Battle.QSimulation.Game
             return BattleManageEntityHandle.Create(f, entityList[listIndex]);
         }
 
-        public static T GetTest<T>(Frame f, BattleEntityID id, int offset) where T : BattleManageEntityHandle.IComposite, new()
+        public static T Get<T>(Frame f, BattleEntityID id, int offset) where T : BattleManageEntityHandle.IComposite, new()
         {
-            DevAssertValidEntityID(id, context: nameof(Get));
-
-            QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
-            int listIndex = GetListIndex(id, offset);
-
-            return BattleManageEntityHandle.Create(f, entityList[listIndex]).To<T>(f);
+            return Get(f, id, offset).To<T>(f);
         }
+
+        #endregion Public Get Methods
+        /// @}
+
+        /// @anchor BattleEntityManager-GetReturnMethods
+        /// @name Get/Return Methods
+        /// Methods for retrieving and returning [{Registered Entities}](#page-concepts-entity-management-registered-entities).
+        /// @{
+        #region Public Use/Return Methods
 
         public static void Use(Frame f, BattleEntityID id)
         {
@@ -405,7 +414,7 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[listIndex];
 
-            Return(f, entityManagerData, entityRef, id, listIndex);
+            Return(f, entityManagerData, entityRef, listIndex);
         }
 
         /// <summary>
@@ -432,10 +441,10 @@ namespace Battle.QSimulation.Game
             BattleEntityManagerDataQSingleton* entityManagerData = GetEntityManagerData(f);
             EntityRef entityRef = f.ResolveList(entityManagerData->RegisteredEntities)[listIndex];
 
-            Return(f, entityManagerData, entityRef, id, listIndex);
+            Return(f, entityManagerData, entityRef, listIndex);
         }
 
-        #endregion Public Get/Return Methods
+        #endregion Public Use/Return Methods
         /// @}
 
         /// @anchor BattleEntityManager-CompoundMethods
@@ -552,6 +561,7 @@ namespace Battle.QSimulation.Game
                 );
             }
         }
+
         #endregion Public Compound Methods
         /// @}
 
@@ -634,9 +644,8 @@ namespace Battle.QSimulation.Game
         /// <param name="f">Current simulation frame.</param>
         /// <param name="entityManagerData">Pointer to BattleEntityManagerData singleton.</param>
         /// <param name="entityRef">The entity to return.</param>
-        /// <param name="id">Entity ID of the entity to return.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Return(Frame f, BattleEntityManagerDataQSingleton* entityManagerData, EntityRef entityRef, BattleEntityID id, int listIndex)
+        private static void Return(Frame f, BattleEntityManagerDataQSingleton* entityManagerData, EntityRef entityRef, int listIndex)
         {
             BattleGridPosition entityGridPosition = entityManagerData->EntityOffscreenPositionOffset;
             entityGridPosition.Row -= listIndex * entityManagerData->EntitySpacing;
@@ -691,6 +700,7 @@ namespace Battle.QSimulation.Game
         {
             s_debugLogger.DevAssertFormat(id.Int != BattleEntityID.NoneValue, "Invalid ID, Can not {0} none EntityID", context);
         }
+
         #endregion Private Methods
     }
 }

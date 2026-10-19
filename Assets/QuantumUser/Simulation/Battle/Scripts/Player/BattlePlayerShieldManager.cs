@@ -235,7 +235,7 @@ namespace Battle.QSimulation.Player
 
             BattleEntityID shieldGroupID = GetShieldGroupID(f, playerHandle);
 
-            BattlePlayerShieldHandle shieldNewHandle = BattleEntityManager.GetTest<BattlePlayerShieldHandle>(f, shieldGroupID, shieldNumber);
+            BattlePlayerShieldHandle shieldNewHandle = BattleEntityManager.Get<BattlePlayerShieldHandle>(f, shieldGroupID, shieldNumber);
 
             if (playerHandle.LoadedCharacterHasShieldAttached)
             {
