@@ -1009,31 +1009,114 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData> callback)
+public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData> callback)
     {
-        string query = SERVERADDRESS + "clan";//?page=" + page + "&limit=5";
+    const int limit = 16;
 
-        StartCoroutine(WebRequests.Get(query, AccessToken, request =>
+    List<ServerClan> allClans = new();
+    PaginationData paginationData = null;
+
+    int pageCount = 1;
+    bool requestFailed = false;
+
+    Debug.Log(
+        "[GetAllClans] Starting clan fetch. "
+        + "Starting page: " + page
+        + ", limit: " + limit);
+
+    for (int currentPage = page; currentPage <= pageCount; currentPage++)
+    {
+        string query = SERVERADDRESS
+            + "clan?page=" + currentPage
+            + "&limit=" + limit;
+
+        Debug.Log(
+            "[GetAllClans] Requesting page "
+            + currentPage
+            + ". URL: "
+            + query);
+
+        yield return StartCoroutine(WebRequests.Get(
+            query,
+            AccessToken,
+            request =>
+            {
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError(
+                        "[GetAllClans] Request failed. "
+                        + "Page: " + currentPage
+                        + ", response code: "
+                        + request.responseCode
+                        + ", error: "
+                        + request.error);
+
+                    requestFailed = true;
+                    return;
+                }
+
+                JObject result = JObject.Parse(
+                    request.downloadHandler.text);
+
+                JArray clansJson =
+                    (JArray)result["data"]["Clan"];
+
+                List<ServerClan> clansFromPage =
+                    clansJson.ToObject<List<ServerClan>>();
+
+                allClans.AddRange(clansFromPage);
+
+                PaginationData responsePaginationData =
+                    result["paginationData"]?
+                        .ToObject<PaginationData>();
+
+                if (responsePaginationData == null)
+                {
+                    Debug.LogWarning(
+                        "[GetAllClans] Response did not contain "
+                        + "paginationData. Page: "
+                        + currentPage);
+                    return;
+                }
+
+                paginationData = responsePaginationData;
+
+                if (responsePaginationData.pageCount > 0)
+                {
+                    pageCount = responsePaginationData.pageCount;
+                }
+
+                Debug.Log(
+                    "[GetAllClans] Received "
+                    + clansFromPage.Count
+                    + " clans from page "
+                    + responsePaginationData.currentPage
+                    + " of "
+                    + pageCount
+                    + ". Total clans so far: "
+                    + allClans.Count);
+            }));
+        
+        if (requestFailed)
         {
-            if (request.result == UnityWebRequest.Result.Success)
-            {
-                JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(result);
-                JArray clans = (JArray)result["data"]["Clan"];
+            Debug.LogError(
+                "[GetAllClans] Fetch stopped after "
+                + allClans.Count
+                + " clans.");
 
-                PaginationData paginationData = new();//result["paginationData"].ToObject<PaginationData>();
+            callback?.Invoke(null, null);
+            yield break;
+        }
+    }
 
-                if (callback != null)
-                    callback(clans.ToObject<List<ServerClan>>(), paginationData);
-            }
-            else
-            {
-                if (callback != null)
-                    callback(null, null);
-            }
-        }));
+    Debug.Log(
+        "[GetAllClans] Finished fetching clans. "
+        + "Total clans received: "
+        + allClans.Count
+        + ", total pages: "
+        + pageCount);
 
-        yield break;
+    callback?.Invoke(allClans, paginationData);
     }
 
     public IEnumerator GetClanMembersFromServer(Action<List<ClanMember>> callback)

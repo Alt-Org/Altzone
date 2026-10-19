@@ -134,13 +134,16 @@ public class ClanSearchView : MonoBehaviour
 
     private void LoadMoreClans()
     {
-        StartCoroutine(ServerManager.Instance.GetAllClans(++_currentPage, new Action<List<ServerClan>, PaginationData>((clans, paginationData) =>
-        {
-            if (clans == null || paginationData == null) return;
+    StartCoroutine(ServerManager.Instance.GetAllClans(
+        1,
+        new Action<List<ServerClan>, PaginationData>(
+            (clans, paginationData) =>
+            {
+                if (clans == null || paginationData == null)
+                    return;
 
-            ListClans(clans, paginationData);
-        }
-        )));
+                ListClans(clans, paginationData);
+            })));
     }
 
     private void ListClans(List<ServerClan> clans, PaginationData paginationData)
