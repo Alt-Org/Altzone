@@ -23,9 +23,6 @@ namespace MenuUI.Scripts.SoulHome
         private Camera _camera;
         [SerializeField]
         private GameObject _hoverButtons;
-        [SerializeField] private RectTransform _confirmHoverButton; // Placed above the selected furniture.
-        [SerializeField] private RectTransform _cancelHoverButton; // Placed left of the selected furniture.
-        [SerializeField] private RectTransform _rotateHoverButton; // Placed below the selected furniture.
         [SerializeField] private float _hoverButtonMargin = 10f;
         [SerializeField] private RectTransform _hoverButtonLine;
         [SerializeField] private Vector2 _hoverButtonLineStart = new(0.07f, 0f);
@@ -80,8 +77,7 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             ClickState clickState = ClickStateHandler.GetClickState();
-            if (clickState == ClickState.None || Touch.activeTouches.Count > 1 ||
-                (Touch.activeTouches.Count == 1 && Touch.activeTouches[0].phase == UnityEngine.InputSystem.TouchPhase.Canceled))
+            if (clickState == ClickState.None || (Touch.activeTouches.Count == 1 && Touch.activeTouches[0].phase == UnityEngine.InputSystem.TouchPhase.Canceled))
             {
                 CancelTrayGesture();
                 _uiOwnsPointer = true;
