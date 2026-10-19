@@ -268,7 +268,7 @@ public class DailyTaskView : AltMonoBehaviour
             else
             {
                 PopulateClanPlayers(clanData);
-                _clanRewardBar.Initialize(clanData);
+                //_clanRewardBar.Initialize(clanData);
                 //SetClanProgressBar(clanData);
             }
         }
