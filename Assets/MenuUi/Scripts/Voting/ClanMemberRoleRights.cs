@@ -53,25 +53,24 @@ public class ClanMemberRoleRights : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        foreach (PlayerRights right in Enum.GetValues(typeof(PlayerRights)))
+        foreach (MemberRights right in Enum.GetValues(typeof(MemberRights)))
         {
             bool isAllowed = currentRole.HasRights(right);
 
             Debug.Log($"{right} {isAllowed}");
 
-            string _roleText = $"Rooli: {currentRole.name}";
-            roleText.text = _roleText;
+            roleText.text = $"Rooli: {currentRole.name}";
             GameObject newTextObj = Instantiate(textPrefab, contentParent);
 
-            TextMeshProUGUI _roleRights = newTextObj.GetComponent<TextMeshProUGUI>();
-            Button _roleButton = newTextObj.GetComponentInChildren<Button>();
+            TextMeshProUGUI roleRights = newTextObj.GetComponent<TextMeshProUGUI>();
+            Button roleButton = newTextObj.GetComponentInChildren<Button>();
 
-            if (_roleRights != null)
+            if (roleRights != null)
             {
                 string statusColor = isAllowed ? "green" : "red";
-                _roleRights.text = $"{right}: <color={statusColor}>{isAllowed}</color>";
-                _roleButton.GetComponent<Image>().color = isAllowed ? Color.green : Color.red;
-                _roleButton.onClick.AddListener(() =>
+                roleRights.text = $"{right}: <color={statusColor}>{isAllowed}</color>";
+                roleButton.GetComponent<Image>().color = isAllowed ? Color.green : Color.red;
+                roleButton.onClick.AddListener(() =>
                 {
                     OnButtonClicked(right, isAllowed, currentRole);
                 });
@@ -79,7 +78,7 @@ public class ClanMemberRoleRights : MonoBehaviour
         }
     }
 
-    private void OnButtonClicked(PlayerRights rightName, bool allowed, ClanRoles currentRole)
+    private void OnButtonClicked(MemberRights rightName, bool allowed, ClanRoles currentRole)
     {
         // Toggles rights locally for now
         Debug.Log($"Clicked button for right: {rightName}, Status: {allowed}");

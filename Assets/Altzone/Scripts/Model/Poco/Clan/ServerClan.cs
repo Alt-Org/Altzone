@@ -50,7 +50,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         Named
     }
 
-    public enum PlayerRights
+    public enum MemberRights
     {
         CanEditHome,
         CanEditClanData,
@@ -77,40 +77,40 @@ namespace Altzone.Scripts.Model.Poco.Clan
             public bool shop { get; set; }
         }
 
-        public bool HasRights(PlayerRights right)
+        public bool HasRights(MemberRights right)
         {
             if (rights == null) return false;
 
             return right switch
             {
-                PlayerRights.CanEditHome => rights.edit_soulhome,
-                PlayerRights.CanEditClanData => rights.edit_clan_data,
-                PlayerRights.CanEditRights => rights.edit_member_rights,
-                PlayerRights.CanManagerRoles => rights.manage_role,
-                PlayerRights.CanManageShop => rights.shop,
+                MemberRights.CanEditHome => rights.edit_soulhome,
+                MemberRights.CanEditClanData => rights.edit_clan_data,
+                MemberRights.CanEditRights => rights.edit_member_rights,
+                MemberRights.CanManagerRoles => rights.manage_role,
+                MemberRights.CanManageShop => rights.shop,
                 _ => false
             };
         }
 
-        public void SetRights(PlayerRights right, bool value)
+        public void SetRights(MemberRights right, bool value)
         {
             if (rights == null) rights = new ClanRights();
 
             switch (right)
             {
-                case PlayerRights.CanEditHome:
+                case MemberRights.CanEditHome:
                     rights.edit_soulhome = value;
                     break;
-                case PlayerRights.CanEditClanData:
+                case MemberRights.CanEditClanData:
                     rights.edit_clan_data = value;
                     break;
-                case PlayerRights.CanEditRights:
+                case MemberRights.CanEditRights:
                     rights.edit_member_rights = value;
                     break;
-                case PlayerRights.CanManagerRoles:
+                case MemberRights.CanManagerRoles:
                     rights.manage_role = value;
                     break;
-                case PlayerRights.CanManageShop:
+                case MemberRights.CanManageShop:
                     rights.shop = value;
                     break;
             }
