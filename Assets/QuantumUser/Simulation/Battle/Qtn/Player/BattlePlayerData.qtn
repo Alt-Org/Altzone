@@ -13,9 +13,9 @@ struct BattlePlayerData
 
     FrameTimer RespawnTimer;
 
-    int                                                  SelectedCharacterNumber;
-    BattleEntityID                                       CharacterEntityGroupID;
-    array<FPVector2>[BATTLE_PLAYER_CHARACTER_COUNT]      CharacterDefaultSpawnPositions;
+    int                                             SelectedCharacterNumber;
+    BattleEntityID                                  CharacterEntityGroupID;
+    array<FPVector2>[BATTLE_PLAYER_CHARACTER_COUNT] CharacterDefaultSpawnPositions;
 
     array<BattleEntityID>[BATTLE_PLAYER_CHARACTER_COUNT] ShieldEntityGroupIDs;
 }
