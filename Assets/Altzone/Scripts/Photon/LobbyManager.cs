@@ -6963,22 +6963,22 @@ namespace Altzone.Scripts.Lobby
 
             if (!pos1Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos1Set = true;
             }
             if (!pos2Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos2Set = true;
             }
             if (!pos3Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos3Set = true;
             }
             if (!pos4Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos4Set = true;
             }
 
@@ -7034,22 +7034,22 @@ namespace Altzone.Scripts.Lobby
 
             if (!pos1Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos1Ready = true;
             }
             if (!pos2Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos2Ready = true;
             }
             if (!pos3Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos3Ready = true;
             }
             if (!pos4Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos4Ready = true;
             }
 
