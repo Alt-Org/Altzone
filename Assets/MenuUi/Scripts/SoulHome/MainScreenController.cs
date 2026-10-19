@@ -23,10 +23,6 @@ namespace MenuUI.Scripts.SoulHome
         private Camera _camera;
         [SerializeField]
         private GameObject _hoverButtons;
-        [SerializeField] private float _hoverButtonMargin = 10f;
-        [SerializeField] private RectTransform _hoverButtonLine;
-        [SerializeField] private Vector2 _hoverButtonLineStart = new(0.07f, 0f);
-        [SerializeField] private Vector2 _hoverButtonLineEnd = new(1f, 0.94f);
         [SerializeField]
         private GameObject _changeHandleButtonTray;
         [SerializeField]
@@ -378,7 +374,6 @@ namespace MenuUI.Scripts.SoulHome
                         //else Destroy(_selectedFurnitureTray);
                     }
                     //_selectedFurnitureTray = null;
-                    //GetTray().transform.Find("Furniture Scroll View").gameObject.GetComponent<ScrollRect>().enabled = true; // -------------------
 
                     /*if (_soulHomeTower.SelectedFurniture != null)
                     {
