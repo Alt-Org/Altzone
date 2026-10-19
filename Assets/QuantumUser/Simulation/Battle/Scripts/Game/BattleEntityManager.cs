@@ -568,8 +568,6 @@ namespace Battle.QSimulation.Game
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;
 
-        #region Private Methods
-
         /// <summary>
         /// Private helper method for getting the BattleEntityManagerDataQSingleton from the %Quantum %Frame.
         /// </summary>
@@ -589,6 +587,32 @@ namespace Battle.QSimulation.Game
 
             return entityManagerData;
         }
+
+        #region Private Id Methods
+
+        private static BattleEntityID AssignID(QList<EntityRef> entityList)
+        {
+            return new() { Int = entityList.Count + 1};
+        }
+
+        private static void DevAssertValidEntityID(BattleEntityID id, string context)
+        {
+            s_debugLogger.DevAssertFormat(id.Int != BattleEntityID.NoneValue, "Invalid ID, Can not {0} none EntityID", context);
+        }
+
+        private static int GetListIndex(BattleEntityID id)
+        {
+            return id.Int - 1;
+        }
+
+        private static int GetListIndex(BattleEntityID id, int offset)
+        {
+            return id.Int + offset - 1;
+        }
+
+        #endregion Private Id Methods
+
+        #region Private Entity Methods
 
         private static BattleManageEntityQComponent* MakeManagedEntity(Frame f, EntityRef entityRef)
         {
@@ -667,6 +691,10 @@ namespace Battle.QSimulation.Game
             f.Events.BattlePlayStateUpdate(entityRef, managedEntity.RegisteredState);
         }
 
+        #endregion Private Entity Methods
+
+        #region Private Util Methods
+
         /// <summary>
         /// Transforms relative <paramref name="offset"/> to world position based on <paramref name="parentPosition"/> and <paramref name="parentRotation"/>.
         /// </summary>
@@ -681,26 +709,6 @@ namespace Battle.QSimulation.Game
             return FPVector2.Rotate(offset, parentRotation) + parentPosition;
         }
 
-        private static BattleEntityID AssignID(QList<EntityRef> entityList)
-        {
-            return new() { Int = entityList.Count + 1};
-        }
-
-        private static int GetListIndex(BattleEntityID id)
-        {
-            return id.Int - 1;
-        }
-
-        private static int GetListIndex(BattleEntityID id, int offset)
-        {
-            return id.Int + offset - 1;
-        }
-
-        private static void DevAssertValidEntityID(BattleEntityID id, string context)
-        {
-            s_debugLogger.DevAssertFormat(id.Int != BattleEntityID.NoneValue, "Invalid ID, Can not {0} none EntityID", context);
-        }
-
-        #endregion Private Methods
+        #endregion Private Util Methods
     }
 }
