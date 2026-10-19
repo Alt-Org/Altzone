@@ -320,6 +320,7 @@ namespace Battle.QSimulation.Game
             return BattleManageEntityHandle.Create(f, entityList[listIndex]);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Get<T>(Frame f, BattleEntityID id) where T : BattleManageEntityHandle.IComposite, new()
         {
             return Get(f, id).To<T>(f);
@@ -352,6 +353,7 @@ namespace Battle.QSimulation.Game
             return BattleManageEntityHandle.Create(f, entityList[listIndex]);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Get<T>(Frame f, BattleEntityID id, int offset) where T : BattleManageEntityHandle.IComposite, new()
         {
             return Get(f, id, offset).To<T>(f);
@@ -590,21 +592,25 @@ namespace Battle.QSimulation.Game
 
         #region Private Id Methods
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattleEntityID AssignID(QList<EntityRef> entityList)
         {
             return new() { Int = entityList.Count + 1};
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void DevAssertValidEntityID(BattleEntityID id, string context)
         {
             s_debugLogger.DevAssertFormat(id.Int != BattleEntityID.NoneValue, "Invalid ID, Can not {0} none EntityID", context);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetListIndex(BattleEntityID id)
         {
             return id.Int - 1;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetListIndex(BattleEntityID id, int offset)
         {
             return id.Int + offset - 1;
@@ -614,6 +620,7 @@ namespace Battle.QSimulation.Game
 
         #region Private Entity Methods
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattleManageEntityQComponent* MakeManagedEntity(Frame f, EntityRef entityRef)
         {
             BattleManageEntityQComponent managedEntity = new();
@@ -626,6 +633,7 @@ namespace Battle.QSimulation.Game
             return componentPointer;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattleManageEntityQComponent* MakeManagedEntity(Frame f, CompoundEntityTemplate template,  bool registered)
         {
             BattleManageEntityQComponent managedEntity = new();
@@ -704,6 +712,7 @@ namespace Battle.QSimulation.Game
         /// <param name="offset">Relative offset.</param>
         ///
         /// <returns>The calculated world position.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static FPVector2 CalculateWorldPosition(FPVector2 parentPosition, FP parentRotation, FPVector2 offset)
         {
             return FPVector2.Rotate(offset, parentRotation) + parentPosition;
