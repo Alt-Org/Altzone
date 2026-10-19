@@ -2186,6 +2186,24 @@ public class ServerManager : MonoBehaviour
         callback?.Invoke(success, room);
     }
 
+    public IEnumerator MatchmakingGetRooms(Action<bool, List<MatchmakingRoomResponse>> callback)
+    {
+        List<MatchmakingRoomResponse> rooms = null;
+        bool success = false;
+        yield return StartCoroutine(WebRequests.Get(
+            $"{DEVADDRESS}matchmaking/rooms",
+            AccessToken,
+            request =>
+            {
+                success = request.result == UnityWebRequest.Result.Success;
+                if (!success) return;
+                try { rooms = ParseMatchmakingResponse<List<MatchmakingRoomResponse>>(request); }
+                catch (Exception ex) { Debug.LogError($"MatchmakingGetRooms: invalid response: {ex.Message}"); }
+                success = rooms != null;
+            }));
+        callback?.Invoke(success, rooms);
+    }
+
     private IEnumerator MatchmakingRoomPost(string relativePath, string body, Action<bool, MatchmakingRoomResponse> callback)
     {
         MatchmakingRoomResponse room = null;

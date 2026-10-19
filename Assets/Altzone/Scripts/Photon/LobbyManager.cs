@@ -3971,23 +3971,71 @@ namespace Altzone.Scripts.Lobby
                 }
 
                 int teamSize = gameType == GameType.BattleFlipperGame ? 1 : 2;
-                bool createSucceeded = false;
-                MatchmakingRoomResponse createdRoom = null;
-                yield return StartCoroutine(ServerManager.Instance.MatchmakingCreateRoom(
-                    matchmakingType,
-                    gameType,
-                    (success, room) =>
-                    {
-                        createSucceeded = success;
-                        createdRoom = room;
-                    },
-                    teamSize: teamSize,
-                    allowBots: true,
-                    automaticInvitePlayerId: isPremadeInRoom ? automaticInvitePlayerId : null));
+                bool joinedExistingRoom = false;
+                MatchmakingRoomResponse matchmakingRoom = null;
 
-                if (!createSucceeded || createdRoom == null)
+                if (matchmakingType == MatchmakingType.Clan2v2 && !isPremadeInRoom)
                 {
-                    Debug.LogWarning("Server matchmaking room creation failed.");
+                    yield return StartCoroutine(TryJoinOpenClanMatchmakingRoom(
+                        gameType,
+                        roomIdBefore: null,
+                        (success, room) =>
+                        {
+                            joinedExistingRoom = success;
+                            matchmakingRoom = room;
+                        }));
+                }
+
+                if (!joinedExistingRoom)
+                {
+                    bool createSucceeded = false;
+                    yield return StartCoroutine(ServerManager.Instance.MatchmakingCreateRoom(
+                        matchmakingType,
+                        gameType,
+                        (success, room) =>
+                        {
+                            createSucceeded = success;
+                            matchmakingRoom = room;
+                        },
+                        teamSize: teamSize,
+                        allowBots: matchmakingType != MatchmakingType.Clan2v2,
+                        automaticInvitePlayerId: isPremadeInRoom ? automaticInvitePlayerId : null));
+
+                    if (!createSucceeded || matchmakingRoom == null)
+                    {
+                        Debug.LogWarning("Server matchmaking room creation failed.");
+                        ResetServerMatchmakingState();
+                        OnFailedToStartMatchmakingGame?.Invoke();
+                        yield break;
+                    }
+
+                    // Two clan members can create rooms at almost the same instant. The owner of
+                    // the newer room moves to the older one so both clients converge automatically.
+                    if (matchmakingType == MatchmakingType.Clan2v2 && !isPremadeInRoom
+                        && matchmakingRoom.status == InviteStatus.OPEN)
+                    {
+                        string createdRoomId = matchmakingRoom.id;
+                        for (int attempt = 0; attempt < 4 && !joinedExistingRoom; attempt++)
+                        {
+                            yield return new WaitForSeconds(0.25f);
+                            MatchmakingRoomResponse joinedRoom = null;
+                            yield return StartCoroutine(TryJoinOpenClanMatchmakingRoom(
+                                gameType,
+                                createdRoomId,
+                                (success, room) =>
+                                {
+                                    joinedExistingRoom = success;
+                                    joinedRoom = room;
+                                }));
+
+                            if (joinedExistingRoom) matchmakingRoom = joinedRoom;
+                        }
+                    }
+                }
+
+                if (matchmakingRoom == null)
+                {
+                    Debug.LogWarning("Server clan matchmaking room entry failed.");
                     ResetServerMatchmakingState();
                     OnFailedToStartMatchmakingGame?.Invoke();
                     yield break;
@@ -3995,32 +4043,95 @@ namespace Altzone.Scripts.Lobby
 
                 _serverRoomData = new MQTTMatchRoomData
                 {
-                    id = createdRoom.id,
-                    matchType = createdRoom.matchType,
-                    gameType = createdRoom.gameType,
-                    status = createdRoom.status,
-                    ownerPlayerId = createdRoom.ownerPlayerId,
-                    clanId = createdRoom.clanId,
-                    teamSize = createdRoom.teamSize,
-                    allowBots = createdRoom.allowBots,
-                    createdAt = createdRoom.createdAt,
-                    updatedAt = createdRoom.updatedAt,
-                    readyAt = createdRoom.readyAt,
-                    players = new List<MQTTMatchPlayers>()
+                    id = matchmakingRoom.id,
+                    matchType = matchmakingRoom.matchType,
+                    gameType = matchmakingRoom.gameType,
+                    status = matchmakingRoom.status,
+                    ownerPlayerId = matchmakingRoom.ownerPlayerId,
+                    clanId = matchmakingRoom.clanId,
+                    teamSize = matchmakingRoom.teamSize,
+                    allowBots = matchmakingRoom.allowBots,
+                    createdAt = matchmakingRoom.createdAt,
+                    updatedAt = matchmakingRoom.updatedAt,
+                    readyAt = matchmakingRoom.readyAt,
+                    players = matchmakingRoom.players?
+                        .Select(playerId => new MQTTMatchPlayers { playerId = playerId })
+                        .ToList() ?? new List<MQTTMatchPlayers>()
                 };
 
-                OnMatchmakingRoomEntered?.Invoke(true);
-                OnRoomLeaderChanged?.Invoke(true);
+                bool isOwner = matchmakingRoom.ownerPlayerId == ServerManager.Instance.Player?._id;
+                OnMatchmakingRoomEntered?.Invoke(isOwner);
+                OnRoomLeaderChanged?.Invoke(isOwner);
 
-                if (createdRoom.status == InviteStatus.READY)
+                if (isOwner && matchmakingRoom.status == InviteStatus.READY)
                 {
-                    yield return StartCoroutine(StartServerRoomIfReady(createdRoom.id));
+                    yield return StartCoroutine(StartServerRoomIfReady(matchmakingRoom.id));
                 }
             }
             finally
             {
                 _matchmakingHolder = null;
             }
+        }
+
+        private IEnumerator TryJoinOpenClanMatchmakingRoom(
+            GameType gameType,
+            string roomIdBefore,
+            Action<bool, MatchmakingRoomResponse> callback)
+        {
+            bool listSucceeded = false;
+            List<MatchmakingRoomResponse> rooms = null;
+            yield return StartCoroutine(ServerManager.Instance.MatchmakingGetRooms((success, result) =>
+            {
+                listSucceeded = success;
+                rooms = result;
+            }));
+
+            string playerId = ServerManager.Instance.Player?._id;
+            string clanId = ServerManager.Instance.Player?.clan_id;
+            MatchmakingRoomResponse roomToJoin = listSucceeded
+                ? rooms?
+                    .Where(room => room != null
+                        && room.matchType == MatchType.CLAN
+                        && room.gameType == (int)gameType
+                        && room.status == InviteStatus.OPEN
+                        && !room.allowBots
+                        && room.teamSize == 2
+                        && room.players != null
+                        && room.players.Count < room.teamSize
+                        && !room.players.Contains(playerId)
+                        && room.clanId == clanId
+                        && (string.IsNullOrWhiteSpace(roomIdBefore)
+                            || string.CompareOrdinal(room.id, roomIdBefore) < 0))
+                    .OrderBy(room => room.id, StringComparer.Ordinal)
+                    .FirstOrDefault()
+                : null;
+
+            if (roomToJoin == null)
+            {
+                callback?.Invoke(false, null);
+                yield break;
+            }
+
+            if (ServerManager.Instance.HasActiveMatchmakingRoom)
+            {
+                bool leftCurrentRoom = false;
+                yield return StartCoroutine(ServerManager.Instance.MatchmakingLeaveRoom(success => leftCurrentRoom = success));
+                if (!leftCurrentRoom)
+                {
+                    callback?.Invoke(false, null);
+                    yield break;
+                }
+            }
+
+            bool joinSucceeded = false;
+            MatchmakingRoomResponse joinedRoom = null;
+            yield return StartCoroutine(ServerManager.Instance.MatchmakingJoinRoom(roomToJoin.id, (success, room) =>
+            {
+                joinSucceeded = success;
+                joinedRoom = room;
+            }));
+            callback?.Invoke(joinSucceeded, joinedRoom);
         }
 
         private IEnumerator JoinServerMatchmakingRoom(string roomId)
