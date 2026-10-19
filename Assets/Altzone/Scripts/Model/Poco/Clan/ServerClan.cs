@@ -55,7 +55,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         CanEditHome,
         CanEditClanData,
         CanEditRights,
-        CanManagerRoles,
+        CanManageRoles,
         CanManageShop
     }
 
@@ -86,7 +86,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 MemberRights.CanEditHome => rights.edit_soulhome,
                 MemberRights.CanEditClanData => rights.edit_clan_data,
                 MemberRights.CanEditRights => rights.edit_member_rights,
-                MemberRights.CanManagerRoles => rights.manage_role,
+                MemberRights.CanManageRoles => rights.manage_role,
                 MemberRights.CanManageShop => rights.shop,
                 _ => false
             };
@@ -107,7 +107,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                 case MemberRights.CanEditRights:
                     rights.edit_member_rights = value;
                     break;
-                case MemberRights.CanManagerRoles:
+                case MemberRights.CanManageRoles:
                     rights.manage_role = value;
                     break;
                 case MemberRights.CanManageShop:
