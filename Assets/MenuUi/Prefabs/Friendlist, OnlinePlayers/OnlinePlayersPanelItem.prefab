@@ -700,6 +700,7 @@ GameObject:
   - component: {fileID: 1214049881076027653}
   - component: {fileID: 8338963487334465897}
   - component: {fileID: 8095732588530502290}
+  - component: {fileID: 4706673028685326833}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -826,6 +827,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4706673028685326833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4837339114878357771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Hylk\xE4\xE4"
+  _englishText: Decline
 --- !u!1 &6050363312076749630
 GameObject:
   m_ObjectHideFlags: 0
@@ -1095,6 +1110,7 @@ GameObject:
   - component: {fileID: 1442144847420188575}
   - component: {fileID: 5949699682807850325}
   - component: {fileID: 18945241310058985}
+  - component: {fileID: 2922132244056497228}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1221,6 +1237,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2922132244056497228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6864839820369477615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Lis\xE4\xE4 kaveriksi"
+  _englishText: Add friend
 --- !u!1 &7009106795627293045
 GameObject:
   m_ObjectHideFlags: 0
@@ -1812,6 +1842,7 @@ GameObject:
   - component: {fileID: 9123456789012345684}
   - component: {fileID: 9123456789012345685}
   - component: {fileID: 9123456789012345686}
+  - component: {fileID: 5663305312898911228}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1938,6 +1969,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5663305312898911228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9123456789012345683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kutsu peliin
+  _englishText: Invite to match
 --- !u!1 &9178286625869719438
 GameObject:
   m_ObjectHideFlags: 0
@@ -1949,6 +1994,7 @@ GameObject:
   - component: {fileID: 201942486347965360}
   - component: {fileID: 1338137980711866924}
   - component: {fileID: 3558636603848781148}
+  - component: {fileID: 8779973566213313838}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2075,6 +2121,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8779973566213313838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9178286625869719438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Hyv\xE4ksy"
+  _englishText: Accept
 --- !u!1001 &905341657561742215
 PrefabInstance:
   m_ObjectHideFlags: 0
