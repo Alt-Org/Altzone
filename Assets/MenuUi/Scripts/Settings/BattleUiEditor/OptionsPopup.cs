@@ -456,7 +456,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _incrementalScalingToggle.onValueChanged.RemoveAllListeners();
             _alignToGridToggle.onValueChanged.RemoveAllListeners();
 
-            // Removing input options listeners_gyroscopeRotationToggle.gameObject.SetActive(true);
+            // Removing input options listeners
             _swipeMovementToggle.onValueChanged.RemoveAllListeners();
             _pointAndClickMovementToggle.onValueChanged.RemoveAllListeners();
             _joystickMovementToggle.onValueChanged.RemoveAllListeners();
