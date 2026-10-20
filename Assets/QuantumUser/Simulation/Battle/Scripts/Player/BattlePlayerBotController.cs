@@ -50,9 +50,9 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
 
-            int[] selectedBotCharacters = new int[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
+            int[] selectedBotCharacters = new int[BattlePlayerManager.PlayerCharacterCount];
 
-            BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
+            BattleCharacterBase[] botCharacters = new BattleCharacterBase[BattlePlayerManager.PlayerCharacterCount];
             for (int i = 0; i < botCharacters.Length; i++)
             {
                 int selectedCharacter;
@@ -125,8 +125,8 @@ namespace Battle.QSimulation.Player
             else
             {
                 int nextCharacter = hasCharacter
-                    ? (playerHandle.SelectedCharacterNumber + f.RNG->NextInclusive(1, Constants.BATTLE_PLAYER_CHARACTER_COUNT - 1)) % Constants.BATTLE_PLAYER_CHARACTER_COUNT
-                    : f.RNG->NextInclusive(0, Constants.BATTLE_PLAYER_CHARACTER_COUNT - 1);
+                    ? (playerHandle.SelectedCharacterNumber + f.RNG->NextInclusive(1, BattlePlayerManager.PlayerCharacterCount - 1)) % BattlePlayerManager.PlayerCharacterCount
+                    : f.RNG->NextInclusive(0, BattlePlayerManager.PlayerCharacterCount - 1);
 
                 playerHandle.GetCharacterEntityRef(f, nextCharacter).GetDataQComponent(f)->BotCharacterSwapTimerSec =
                     f.RNG->NextInclusive(playerBotSpec.CharacterSwapTimeSecMin, playerBotSpec.CharacterSwapTimeSecMax);

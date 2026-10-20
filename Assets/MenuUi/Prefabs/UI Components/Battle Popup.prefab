@@ -223,6 +223,7 @@ GameObject:
   - component: {fileID: 1099240469827870232}
   - component: {fileID: 18994596190299184}
   - component: {fileID: 800645508207369148}
+  - component: {fileID: 4519247743824124579}
   m_Layer: 5
   m_Name: Text_NoRooms
   m_TagString: Untagged
@@ -349,6 +350,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4519247743824124579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145119693073590725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Avoimia tapahtumapaikkoja ei ole t\xE4ll\xE4 hetkell\xE4."
+  _englishText: Cannot find any available encounters right now.
 --- !u!1 &410425475498826955
 GameObject:
   m_ObjectHideFlags: 0
@@ -2728,6 +2743,7 @@ GameObject:
   - component: {fileID: 2101647513683685314}
   - component: {fileID: 5730984758541743266}
   - component: {fileID: 6018781699511724892}
+  - component: {fileID: 3255328703898370743}
   m_Layer: 5
   m_Name: Waiting/CountdownText
   m_TagString: Untagged
@@ -2854,6 +2870,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3255328703898370743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919717045870922279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Odotetaan pelaajia...
+  _englishText: Waiting for players...
 --- !u!1 &924863700751620412
 GameObject:
   m_ObjectHideFlags: 0
@@ -5540,7 +5570,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6354354804112515731
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5750,7 +5780,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &15072468070578721
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5810,7 +5840,7 @@ RectTransform:
   m_AnchorMin: {x: 0.2, y: 0.925}
   m_AnchorMax: {x: 0.8, y: 0.925}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 95.43273}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &4087635932372327809
 CanvasRenderer:
@@ -6280,6 +6310,7 @@ GameObject:
   - component: {fileID: 799469260614890249}
   - component: {fileID: 1702215489691151508}
   - component: {fileID: 5993172787150415026}
+  - component: {fileID: 7387455971119594454}
   m_Layer: 5
   m_Name: PanelTitle
   m_TagString: Untagged
@@ -6301,7 +6332,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1954938854106881495}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.05, y: 0.9}
+  m_AnchorMin: {x: 0.05, y: 0.92}
   m_AnchorMax: {x: 0.7, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -6362,12 +6393,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
+  m_fontSize: 48
   m_fontSizeBase: 55.15
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 36
+  m_fontSizeMax: 48
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -6406,6 +6437,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7387455971119594454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2857248451781118653}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 'Selaa tapahtumapaikkoja:'
+  _englishText: 'Search for encounters:'
 --- !u!1 &2889109787774481801
 GameObject:
   m_ObjectHideFlags: 0
@@ -6561,7 +6606,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4874668006867016235
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6899,7 +6944,7 @@ RectTransform:
   m_Father: {fileID: 2315689520699109490}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.98824316}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -7051,9 +7096,9 @@ RectTransform:
   m_Father: {fileID: 1155538765736967349}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -17, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &533628540212257550
 CanvasRenderer:
@@ -7654,6 +7699,7 @@ GameObject:
   - component: {fileID: 3751222784616770903}
   - component: {fileID: 1539869457106555456}
   - component: {fileID: 7402434954049792766}
+  - component: {fileID: 7945963182429583379}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -7780,6 +7826,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7945963182429583379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4403452291377480505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kaikki
+  _englishText: All
 --- !u!1 &4429692841512648237
 GameObject:
   m_ObjectHideFlags: 0
@@ -9597,7 +9657,7 @@ RectTransform:
   m_AnchorMin: {x: 0.2, y: 0.075}
   m_AnchorMax: {x: 0.8, y: 0.075}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 95.43273}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2015561530470739620
 CanvasRenderer:
@@ -9856,6 +9916,12 @@ MonoBehaviour:
   _matchmakingText: {fileID: 5023263658563891825}
   _cancelButton: {fileID: 4646929315743121399}
   _cancelButtonText: {fileID: 4843607860049965577}
+  _searchingForRoomTextFI: "Etsit\xE4\xE4n peli\xE4..."
+  _searchingForRoomTextEN: Searching for match...
+  _joiningRoomTextFI: "Liityt\xE4\xE4n huoneeseen..."
+  _joiningRoomTextEN: Joining room...
+  _matchStartingTextFI: Peli alkaa {0}...
+  _matchStartingTextEN: Match starts in {0}...
 --- !u!1 &5506999528909299634
 GameObject:
   m_ObjectHideFlags: 0
@@ -10190,7 +10256,7 @@ RectTransform:
   m_Father: {fileID: 15072468070578721}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.25}
+  m_AnchorMax: {x: 1, y: 0.15}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -10310,8 +10376,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1954938854106881495}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.05, y: 0.9}
-  m_AnchorMax: {x: 0.95, y: 0.9}
+  m_AnchorMin: {x: 0.05, y: 0.92}
+  m_AnchorMax: {x: 0.95, y: 0.92}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -10573,7 +10639,7 @@ RectTransform:
   m_Father: {fileID: 1954938854106881495}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.04, y: 0.05}
-  m_AnchorMax: {x: 0.96, y: 0.89}
+  m_AnchorMax: {x: 0.96, y: 0.88}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -10592,7 +10658,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6134044401766899602}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -10605,7 +10671,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 776df73bddbed9848b7968a02085a428, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11096,6 +11162,7 @@ GameObject:
   - component: {fileID: 5638575894968461534}
   - component: {fileID: 3172956538027667461}
   - component: {fileID: 5160220211730391748}
+  - component: {fileID: 4928937002527306403}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -11222,6 +11289,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4928937002527306403
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6414247570536164891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Lopeta pelin etsiminen
+  _englishText: Stop match search
 --- !u!1 &6426672476250609331
 GameObject:
   m_ObjectHideFlags: 0
@@ -12390,7 +12471,7 @@ RectTransform:
   - {fileID: 1155538765736967349}
   m_Father: {fileID: 15072468070578721}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.25}
+  m_AnchorMin: {x: 0, y: 0.15}
   m_AnchorMax: {x: 1, y: 0.95}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -13387,7 +13468,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.00012207031}
-  m_SizeDelta: {x: 0, y: -935.6256}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &174028010994286647
 MonoBehaviour:
@@ -13562,6 +13643,7 @@ GameObject:
   - component: {fileID: 9108243503653038548}
   - component: {fileID: 5470013098190104091}
   - component: {fileID: 4299816375354047390}
+  - component: {fileID: 2714285185982001105}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -13688,6 +13770,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2714285185982001105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7634733181567923854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Oletko varma, ett\xE4 haluat menn\xE4 n\xE4ill\xE4 hahmoilla taisteluun?"
+  _englishText: Are you sure you want to use these characters in an encounter?
 --- !u!1 &7825893206380017705
 GameObject:
   m_ObjectHideFlags: 0
@@ -14081,7 +14177,7 @@ RectTransform:
   - {fileID: 3751222784616770903}
   m_Father: {fileID: 1954938854106881495}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.7, y: 0.91}
+  m_AnchorMin: {x: 0.7, y: 0.93}
   m_AnchorMax: {x: 0.95, y: 0.99}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -14611,6 +14707,7 @@ GameObject:
   - component: {fileID: 6215986496320864865}
   - component: {fileID: 4130808373476247554}
   - component: {fileID: 2467319610039334832}
+  - component: {fileID: 8161275619276123556}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -14737,6 +14834,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8161275619276123556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8391760104556012391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: (Hahmoja ei voi vaihtaa sulkematta ikkunaa)
+  _englishText: (Characters cannot be changed without closing the window)
 --- !u!1 &8430237011204406025
 GameObject:
   m_ObjectHideFlags: 0
@@ -14795,6 +14906,7 @@ GameObject:
   - component: {fileID: 2036350464304810255}
   - component: {fileID: 5077323310434627398}
   - component: {fileID: 6918046356848895228}
+  - component: {fileID: 4747077827184145178}
   m_Layer: 5
   m_Name: CreatingRoomText
   m_TagString: Untagged
@@ -14921,6 +15033,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4747077827184145178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8493655741309318595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Odota...
+  _englishText: Waiting...
 --- !u!1 &8545005178151522405
 GameObject:
   m_ObjectHideFlags: 0
@@ -15089,7 +15215,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1358262030812293335}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.98824316
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -16426,7 +16552,7 @@ PrefabInstance:
     - target: {fileID: 9206491076697638754, guid: 6ebd30161396fb04ca1ed5d499e393dc,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 115
       objectReference: {fileID: 0}
     - target: {fileID: 9206491076697638754, guid: 6ebd30161396fb04ca1ed5d499e393dc,
         type: 3}
@@ -16566,7 +16692,7 @@ PrefabInstance:
     - target: {fileID: 1771892860018240756, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 84.01579
       objectReference: {fileID: 0}
     - target: {fileID: 3699171479073558533, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
@@ -16671,17 +16797,17 @@ PrefabInstance:
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -143.32245
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
@@ -17528,7 +17654,7 @@ PrefabInstance:
     - target: {fileID: 8703098976634220119, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20012,7 +20138,7 @@ PrefabInstance:
     - target: {fileID: 8279349774068130845, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.55
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 8279349774068130845, guid: 3db9db4cd4ab4f84b96799395497bcfa,
         type: 3}
@@ -20137,7 +20263,7 @@ PrefabInstance:
     - target: {fileID: 1771892860018240756, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 84.01579
       objectReference: {fileID: 0}
     - target: {fileID: 3699171479073558533, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
@@ -20242,17 +20368,17 @@ PrefabInstance:
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -143.32245
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
@@ -21187,7 +21313,7 @@ PrefabInstance:
     - target: {fileID: 1771892860018240756, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 84.01579
       objectReference: {fileID: 0}
     - target: {fileID: 3699171479073558533, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
@@ -21292,17 +21418,17 @@ PrefabInstance:
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -143.32245
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
@@ -22443,7 +22569,7 @@ PrefabInstance:
     - target: {fileID: 1771892860018240756, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 84.01579
       objectReference: {fileID: 0}
     - target: {fileID: 3699171479073558533, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
@@ -22548,17 +22674,17 @@ PrefabInstance:
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -143.32245
       objectReference: {fileID: 0}
     - target: {fileID: 3800911694790020813, guid: eaf39bb1de5c2e5438a00c44b10460c7,
         type: 3}
@@ -23261,7 +23387,7 @@ PrefabInstance:
     - target: {fileID: 9206491076697638754, guid: 6ebd30161396fb04ca1ed5d499e393dc,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 112.31999
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9206491076697638754, guid: 6ebd30161396fb04ca1ed5d499e393dc,
         type: 3}

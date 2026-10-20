@@ -227,6 +227,7 @@ GameObject:
   - component: {fileID: 3524526641798872073}
   - component: {fileID: 154243440753551014}
   - component: {fileID: 1890408356208413452}
+  - component: {fileID: 542144096599121575}
   m_Layer: 5
   m_Name: BT_DEFENSSIT
   m_TagString: Untagged
@@ -365,6 +366,8 @@ MonoBehaviour:
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0
+  _disabledOnProd: 0
+  Interactable: 1
 --- !u!114 &154243440753551014
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -393,3 +396,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 965ac3e1f5427e34e8939712e5218195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &542144096599121575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7371302892792201885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa065b798c421034ba43b01dae74e81a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 2
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 2
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+  _longClickStartThresholdTime: 0.2
+  _longClickThresholdTime: 3
+  _uniqueName: 
+  _questionOption1Fi: Puhelimen muuttumista pehmoleluksi.
+  _questionOption1En: Turning a phone into a stuffed toy.
+  _questionOption2Fi: "Syd\xE4men suojaamista erilaisilta tunteilta."
+  _questionOption2En: Protecting the heart from different emotions.
+  _questionOption3Fi: Kahvitaukoa.
+  _questionOption3En: A coffee break.
+  _answer: 2

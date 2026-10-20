@@ -16,7 +16,7 @@ namespace Altzone.Scripts.Lobby
     {
         None = -1,
         BattlePingPong = 0,
-        BattleTestFlipperGame = 1,
+        BattleFlipperGame = 1,
         Raid = 10,
     }
 
@@ -35,21 +35,21 @@ namespace Altzone.Scripts.Lobby
                 SettingsCarrier.LanguageType.English => gameMode switch
                 {
                     GameType.BattlePingPong => "Basegame",
-                    GameType.BattleTestFlipperGame => "Flipper test",
+                    GameType.BattleFlipperGame => "Flipper",
                     GameType.Raid => "Raid",
                     _ => ""
                 },
                 SettingsCarrier.LanguageType.Finnish => gameMode switch
                 {
                     GameType.BattlePingPong => "Peruspeli",
-                    GameType.BattleTestFlipperGame => "Flipper testi",
+                    GameType.BattleFlipperGame => "Flipperi",
                     GameType.Raid => "Ryöstö",
                     _ => ""
                 },
                 _ => gameMode switch
                 {
                     GameType.BattlePingPong => "Peruspeli",
-                    GameType.BattleTestFlipperGame => "Flipper testi",
+                    GameType.BattleFlipperGame => "Flipperi",
                     GameType.Raid => "Ryöstö",
                     _ => ""
                 },

@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RewardBar : MonoBehaviour
+public class RewardBar : AltMonoBehaviour
 {
 
     [SerializeField] private Slider _rewardBarSlider;
@@ -17,10 +18,36 @@ public class RewardBar : MonoBehaviour
 
     ClanData _clanData;
 
-
-    public void Initialize(ClanData clanData)
+    private void Start()
     {
-        _clanData = clanData;
+        StartCoroutine(Initialize());
+    }
+
+    public IEnumerator Initialize()
+    {
+        ClanData clanData = null;
+        PlayerData playerData = DailyTaskManager.Instance.GetCurrentPlayerData();
+
+        if (playerData.ClanId != null)
+        {
+            StartCoroutine(GetClanData(playerData.ClanId, data => clanData = data));
+
+            bool? timeout = null;
+
+            StartCoroutine(WaitUntilTimeout(DailyTaskManager.Instance.TimeoutSeconds, data => timeout = data));
+            yield return new WaitUntil(() => (clanData != null || timeout != null));
+            if (clanData == null)
+            {
+                Debug.LogError("Failed to fetch clan data.");
+
+            }
+            else
+            {
+                _clanData = clanData;
+                //SetClanProgressBar(clanData);
+            }
+        }
+
         CreateBar();
     }
 
@@ -83,7 +110,7 @@ public class RewardBar : MonoBehaviour
 
         var clanRewardDatas = new List<DailyTaskClanReward.ClanRewardData>()
         {
-            new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 300, null, UnityEngine.Random.Range(1,250)),
+            //new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 300, null, UnityEngine.Random.Range(1,250)),
             new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 600, null, UnityEngine.Random.Range(250,500)),
             new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Box, 1200, null, UnityEngine.Random.Range(500,750)),
             new DailyTaskClanReward.ClanRewardData(false, DailyTaskClanReward.ClanRewardType.Chest, 2000, null, 1000)
