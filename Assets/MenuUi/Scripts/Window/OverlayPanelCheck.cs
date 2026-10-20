@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using MenuUI.Scripts;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -39,13 +40,16 @@ namespace MenuUi.Scripts.Window
 
         public delegate void ToggleOnlinePlayerList(bool? active = null);
         public static event ToggleOnlinePlayerList OnToggleOnlinePlayerList;
-        
+
+        public delegate void ChangePopupInfo(InfoLevel level, string message);
+        public static event ChangePopupInfo OnChangePopupInfo;
 
         private void Awake()
         {
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
+                return;
             }
             else
             {
@@ -156,6 +160,11 @@ namespace MenuUi.Scripts.Window
         public void ToggleOnlinePlayers()
         {
             OnToggleOnlinePlayerList?.Invoke();
+        }
+
+        public static void ActivateInfoPopup(InfoLevel level, string message)
+        {
+            OnChangePopupInfo?.Invoke(level, message);
         }
 
     }

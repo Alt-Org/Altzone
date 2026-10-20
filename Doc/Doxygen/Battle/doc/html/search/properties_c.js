@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['orientation_0',['Orientation',['../class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_multi_orientation_element.html#aa12c5daa091e88bdceeb0e2bbe32490d',1,'Altzone::Scripts::BattleUiShared::BattleUiMultiOrientationElement']]]
+  ['none_0',['None',['../struct_quantum_1_1_battle_player_entity_ref.html#a6fcb7ace6756508dcb613ef8a831da59',1,'Quantum.BattlePlayerEntityRef.None'],['../struct_quantum_1_1_battle_player_shield_entity_ref.html#a0e66ab6ab67e1f06c6958e716b3e0349',1,'Quantum.BattlePlayerShieldEntityRef.None']]]
 ];

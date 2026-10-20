@@ -12,7 +12,8 @@ public class ServerChatMessage
     public string recipientPlayer_id { get; set; }
     public string content { get; set; }
     public string type { get; set; }
-    public string feeling { get; set; }
+    public string responseType { get; set; }
+    public int emotion { get; set; }
     public List<ServerReactions> reactions { get; set; }
     public string createdAt { get; set; }
 

@@ -696,34 +696,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _commonReactionsPanel: {fileID: 5802966991068120548}
   _allReactionsPanel: {fileID: 4273919845466323672}
-  _usersWhoAdded: {fileID: 2516152344154220295}
   _reactionPaneldata:
-  - _reactionsContent: {fileID: 5187269538509966883}
-    _reactionField: {fileID: 0}
-  - _reactionsContent: {fileID: 1813347572630131029}
-    _reactionField: {fileID: 7096888888869140379}
-  _allReactionsPanelPopUp: {fileID: 6581492598490571273}
-  _selectedReaction: {fileID: 8001889671394096877}
+    ReactionsContent: {fileID: 0}
+    ReactionField: {fileID: 0}
   _addedReactionPrefab: {fileID: 180403975915856165, guid: cfe1da6a4c8a1c74094d8e0cf3ce5df8,
     type: 3}
   _selectedMessage: {fileID: 0}
   _reactionList:
   - Sprite: {fileID: 21300000, guid: 97d495bb5e2207e47b120d397738ae7f, type: 3}
-    Mood: 1
-  - Sprite: {fileID: 21300000, guid: 92e5938343a26954ea59ab52cfb79ebd, type: 3}
-    Mood: 6
-  - Sprite: {fileID: 21300000, guid: f28d68859cc20634394867033e704894, type: 3}
     Mood: 0
-  - Sprite: {fileID: 21300000, guid: 96f5e2572d2d8fc4bbbc6b8bc655afee, type: 3}
-    Mood: 5
-  - Sprite: {fileID: 21300000, guid: 1f86dd00cd4636342a04a6f6ba1b990a, type: 3}
+  - Sprite: {fileID: 21300000, guid: 92e5938343a26954ea59ab52cfb79ebd, type: 3}
     Mood: 3
+  - Sprite: {fileID: 21300000, guid: f28d68859cc20634394867033e704894, type: 3}
+    Mood: 1
+  - Sprite: {fileID: 21300000, guid: 96f5e2572d2d8fc4bbbc6b8bc655afee, type: 3}
+    Mood: 2
+  - Sprite: {fileID: 21300000, guid: 1f86dd00cd4636342a04a6f6ba1b990a, type: 3}
+    Mood: 4
   _reactionObject: {fileID: 7645454467474436397, guid: d360a481996e56b458ef77575cef6216,
     type: 3}
   _openMoreButton: {fileID: 5946895988784392763}
-  _openMoreButtonShowUser: {fileID: 6792898475491297878}
-  _messageObjectHandler: {fileID: 0}
-  _chatShowUsersPopUpData: {fileID: 6221334902879612320}
+  _reactionData: []
 --- !u!114 &5388152090742717096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -893,16 +886,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 477b38ea3c6f9974491f82799fbc1307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _containers: {fileID: 7096888888869140379}
-  ReactionAmounText: {fileID: 4881732945791678244}
-  _reactionField: {fileID: 7096888888869140379}
+  _panel: {fileID: 0}
   _closeButtons:
   - {fileID: 9025549648467743539}
   - {fileID: 1517700690159854783}
-  ShowUsersPopUp: {fileID: 2300524914144210914}
-  _messageObjectHandler: {fileID: 0}
-  _id: 
-  ReactionObject: {fileID: 2300524914144210914}
+  _closeAllReactionButton: {fileID: 0}
+  _listOrderButton: {fileID: 0}
+  _reactionFieldLocation: {fileID: 0}
+  _popUpAllReactions: {fileID: 0}
+  _scrollRect: {fileID: 0}
+  _userContent: {fileID: 0}
+  _userData: {fileID: 0}
+  _userInfo: []
+  _reactionAmounText: {fileID: 0}
+  _reactionList: []
+  _reactionObject: {fileID: 0}
+  _allReactions: {fileID: 0}
+  _selectedReaction: {fileID: 0}
+  _noReactions: {fileID: 0}
+  _sprites: []
+  _image: {fileID: 0}
+  _orderButtonText: {fileID: 0}
+  _textLanguageSelectorCaller: {fileID: 0}
 --- !u!114 &3600247211585323521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1145,10 +1150,10 @@ RectTransform:
   - {fileID: 6221990821476817833}
   m_Father: {fileID: 3631491141577907000}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 25, y: -25}
-  m_SizeDelta: {x: 50, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 50, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &957425376673810315
 CanvasRenderer:
@@ -3149,10 +3154,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3631491141577907000}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -25}
-  m_SizeDelta: {x: 300, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 300, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &4057587249151950951
 MonoBehaviour:

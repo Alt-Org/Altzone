@@ -118,13 +118,21 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aae2f6719052d112e72470f5c5302f3d9" id="r_aae2f6719052d112e72470f5c5302f3d9"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#aae2f6719052d112e72470f5c5302f3d9">OnGameOver</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a> winningTeam)</td></tr>
-<tr class="memdesc:aae2f6719052d112e72470f5c5302f3d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when the game ends. Updates the game session state and calls the BattleViewGameOver Event and BattleOnGameOver Signal.  <br /></td></tr>
+<tr class="memitem:a2ebc04c17dba5e8bf91dcd9566d622f4" id="r_a2ebc04c17dba5e8bf91dcd9566d622f4"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a2ebc04c17dba5e8bf91dcd9566d622f4">OnGameOverGoal</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a> winningTeam)</td></tr>
+<tr class="memdesc:a2ebc04c17dba5e8bf91dcd9566d622f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called to end the game when one team scores a goal.<br  />
+ Calls <a class="el" href="#ab6b6fc8b244d8ac785c4a080b96ddb00">HandleGameOver</a>, which handles ending the game.  <br /></td></tr>
+<tr class="memitem:a7fcddb4f338f4d6300a8109884658c77" id="r_a7fcddb4f338f4d6300a8109884658c77"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a7fcddb4f338f4d6300a8109884658c77">OnGameOverGiveUp</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a> giveUpTeam)</td></tr>
+<tr class="memdesc:a7fcddb4f338f4d6300a8109884658c77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called to end the game when one team gives up.<br  />
+ Calls <a class="el" href="#ab6b6fc8b244d8ac785c4a080b96ddb00">HandleGameOver</a>, which handles ending the game.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
 <tr class="memitem:a3b1a36f0b6ce4ea30e6a5e5c489ff8eb" id="r_a3b1a36f0b6ce4ea30e6a5e5c489ff8eb"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a3b1a36f0b6ce4ea30e6a5e5c489ff8eb">CreateMap</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f)</td></tr>
 <tr class="memdesc:a3b1a36f0b6ce4ea30e6a5e5c489ff8eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets up the game map during the 'CreateMap' game state. That includes SoulWalls and players. Other parts of the map don't need setup.  <br /></td></tr>
+<tr class="memitem:ab6b6fc8b244d8ac785c4a080b96ddb00" id="r_ab6b6fc8b244d8ac785c4a080b96ddb00"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#ab6b6fc8b244d8ac785c4a080b96ddb00">HandleGameOver</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a> winningTeam)</td></tr>
+<tr class="memdesc:ab6b6fc8b244d8ac785c4a080b96ddb00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private method for handling ending the game.<br  />
+ Called by <a class="el" href="#a2ebc04c17dba5e8bf91dcd9566d622f4">OnGameOverGoal</a> and <a class="el" href="#a7fcddb4f338f4d6300a8109884658c77">OnGameOverGiveUp</a>.<br  />
+ Sends the <a class="el" href="class_quantum_1_1_event_battle_view_game_over.html">BattleViewGameOver</a> Event and <a class="el" href="interface_quantum_1_1_i_signal_battle_on_game_over.html">BattleOnGameOver</a> Signal.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -169,14 +177,14 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a537f2ef8fefcdec16e38bd5b2575b2a2">Battle.QSimulation.Player.BattlePlayerManager.CreatePlayers()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_soul_wall_1_1_battle_soul_wall_q_system.html#aa2a11ce36ef02fd7441f532b9896ac71">Battle.QSimulation.SoulWall.BattleSoulWallQSystem.CreateSoulWalls()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_q_config.html#a1d82c4ff613e69543fff9e577cfb6c97">Battle.QSimulation.Game.BattleQConfig.GetArenaSpec()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_q_config.html#ab9b4fa45fc2e4a5ce6fbc063ee6656c1">Battle.QSimulation.Game.BattleQConfig.GetSoulWallSpec()</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a1222bcd412839e79f38326451d938676">Battle.QSimulation.Player.BattlePlayerQSystem.SpawnPlayers()</a>.</p>
+<p class="reference">References <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a537f2ef8fefcdec16e38bd5b2575b2a2">Battle.QSimulation.Player.BattlePlayerManager.CreatePlayers()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#a4366c06e0cc234ebb5a88d53cc3c98d6">Battle.QSimulation.Projectile.BattleProjectileQSystem.CreateProjectile()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_soul_wall_1_1_battle_soul_wall_q_system.html#aa2a11ce36ef02fd7441f532b9896ac71">Battle.QSimulation.SoulWall.BattleSoulWallQSystem.CreateSoulWalls()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_q_config.html#a1d82c4ff613e69543fff9e577cfb6c97">Battle.QSimulation.Game.BattleQConfig.GetArenaSpec()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_q_config.html#ab9b4fa45fc2e4a5ce6fbc063ee6656c1">Battle.QSimulation.Game.BattleQConfig.GetSoulWallSpec()</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a1222bcd412839e79f38326451d938676">Battle.QSimulation.Player.BattlePlayerQSystem.SpawnPlayers()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#ad2a90d9b5f3d6fd8c63500d20d701a1b">Update()</a>.</p>
 
 </div>
 </div>
-<a id="aae2f6719052d112e72470f5c5302f3d9" name="aae2f6719052d112e72470f5c5302f3d9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae2f6719052d112e72470f5c5302f3d9">&#9670;&#160;</a></span>OnGameOver()</h2>
+<a id="ab6b6fc8b244d8ac785c4a080b96ddb00" name="ab6b6fc8b244d8ac785c4a080b96ddb00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6b6fc8b244d8ac785c4a080b96ddb00">&#9670;&#160;</a></span>HandleGameOver()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -185,7 +193,100 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Battle.QSimulation.Game.BattleGameControlQSystem.OnGameOver </td>
+          <td class="memname">void Battle.QSimulation.Game.BattleGameControlQSystem.HandleGameOver </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_quantum_1_1_frame.html">Frame</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a></td>          <td class="paramname"><span class="paramname"><em>winningTeam</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Private method for handling ending the game.<br  />
+ Called by <a class="el" href="#a2ebc04c17dba5e8bf91dcd9566d622f4">OnGameOverGoal</a> and <a class="el" href="#a7fcddb4f338f4d6300a8109884658c77">OnGameOverGiveUp</a>.<br  />
+ Sends the <a class="el" href="class_quantum_1_1_event_battle_view_game_over.html">BattleViewGameOver</a> Event and <a class="el" href="interface_quantum_1_1_i_signal_battle_on_game_over.html">BattleOnGameOver</a> Signal. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>Current simulation frame.</td></tr>
+    <tr><td class="paramname">winningTeam</td><td>The team that won the match.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="reference">References <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#a07d5af4ac9f88d41b05a18bd8a853de1">Quantum.BattleGameSessionQSingleton.GameTimeSec</a>, and <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#ac09a9c1906acc2e9ece18d1a0425c78d">Quantum.BattleGameSessionQSingleton.State</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="#a7fcddb4f338f4d6300a8109884658c77">OnGameOverGiveUp()</a>, and <a class="el" href="#a2ebc04c17dba5e8bf91dcd9566d622f4">OnGameOverGoal()</a>.</p>
+
+</div>
+</div>
+<a id="a7fcddb4f338f4d6300a8109884658c77" name="a7fcddb4f338f4d6300a8109884658c77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7fcddb4f338f4d6300a8109884658c77">&#9670;&#160;</a></span>OnGameOverGiveUp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.QSimulation.Game.BattleGameControlQSystem.OnGameOverGiveUp </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_quantum_1_1_frame.html">Frame</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a></td>          <td class="paramname"><span class="paramname"><em>giveUpTeam</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Called to end the game when one team gives up.<br  />
+ Calls <a class="el" href="#ab6b6fc8b244d8ac785c4a080b96ddb00">HandleGameOver</a>, which handles ending the game. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>Current simulation frame.</td></tr>
+    <tr><td class="paramname">giveUpTeam</td><td>The team that gave up.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Thrown when <em>giveUpTeam</em>  is NoTeam, which is invalid give up team.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="reference">References <a class="el" href="#ab6b6fc8b244d8ac785c4a080b96ddb00">HandleGameOver()</a>, <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cfa24e614ab75c5028e5f27caea73367e9b">Quantum.NoTeam</a>, <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cfad80bfb48e09b13e2e99f53b5c12f489d">Quantum.TeamAlpha</a>, and <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cfaba3e73b8a835fdaf60a7f18a0f592f02">Quantum.TeamBeta</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a4aa4a6a193d122941721ccfa06f58ccb">Battle.QSimulation.Player.BattlePlayerQSystem.HandlePlayerAbandoned()</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a86c0f200a1dc672149e90073da8ff53f">Battle.QSimulation.Player.BattlePlayerQSystem.Update()</a>.</p>
+
+</div>
+</div>
+<a id="a2ebc04c17dba5e8bf91dcd9566d622f4" name="a2ebc04c17dba5e8bf91dcd9566d622f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ebc04c17dba5e8bf91dcd9566d622f4">&#9670;&#160;</a></span>OnGameOverGoal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.QSimulation.Game.BattleGameControlQSystem.OnGameOverGoal </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_quantum_1_1_frame.html">Frame</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
         </tr>
@@ -202,7 +303,8 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Called when the game ends. Updates the game session state and calls the BattleViewGameOver Event and BattleOnGameOver Signal. </p>
+<p>Called to end the game when one team scores a goal.<br  />
+ Calls <a class="el" href="#ab6b6fc8b244d8ac785c4a080b96ddb00">HandleGameOver</a>, which handles ending the game. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">f</td><td>Current simulation frame.</td></tr>
@@ -211,9 +313,9 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#a07d5af4ac9f88d41b05a18bd8a853de1">Quantum.BattleGameSessionQSingleton.GameTimeSec</a>, and <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#ac09a9c1906acc2e9ece18d1a0425c78d">Quantum.BattleGameSessionQSingleton.State</a>.</p>
+<p class="reference">References <a class="el" href="#ab6b6fc8b244d8ac785c4a080b96ddb00">HandleGameOver()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#aad7aaa23cd21749861bb3bcec6badbcb">Battle.QSimulation.Player.BattlePlayerQSystem.HandleGiveUpLogic()</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_goal_1_1_battle_goal_q_system.html#a777a381bfe27b22907f4a9c91d415dfb">Battle.QSimulation.Goal.BattleGoalQSystem.OnProjectileHitGoal()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_goal_1_1_battle_goal_q_system.html#a777a381bfe27b22907f4a9c91d415dfb">Battle.QSimulation.Goal.BattleGoalQSystem.OnProjectileHitGoal()</a>.</p>
 
 </div>
 </div>
@@ -250,7 +352,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="#a6f038e692f069d1bbbb4ec6da95d41f3">_debugLogger</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html#a60a7e34530eeb066aaea85039f210cab">Battle.QSimulation.BattleDebugLogger.Create()</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#ad1f1b48a82cd7e2d66f8d11ed84521ce">Quantum.BattleGameSessionQSingleton.GameInitialized</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#a07d5af4ac9f88d41b05a18bd8a853de1">Quantum.BattleGameSessionQSingleton.GameTimeSec</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_q_config.html#a1d82c4ff613e69543fff9e577cfb6c97">Battle.QSimulation.Game.BattleQConfig.GetArenaSpec()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system.html#a0308deff9bfbafe619f9550768f79008">Battle.QSimulation.Game.BattleCollisionQSystem.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#ab0d2a1de43438ef465a1181425dcddeb">Battle.QSimulation.Game.BattleGridManager.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_goal_1_1_battle_goal_q_system.html#a80e307db4402d3087eeb49bc74388c77">Battle.QSimulation.Goal.BattleGoalQSystem.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#a19dd4d6f087aa92bc241c3694aac769b">Battle.QSimulation.Player.BattlePlayerClassManager.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a5314626c1a715c91b67677462b85c870">Battle.QSimulation.Player.BattlePlayerManager.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_movement_controller.html#ac504e9888da81bae8e7abee12131a688">Battle.QSimulation.Player.BattlePlayerMovementController.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a1ca504f27f53731af461be9cbe99d6c7">Battle.QSimulation.Player.BattlePlayerQSystem.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#a0a1b7c33d54de0949aac780f422ea123">Battle.QSimulation.Projectile.BattleProjectileQSystem.Init()</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_soul_wall_1_1_battle_soul_wall_q_system.html#ac50800e34e6b030dca08686920f43dbe">Battle.QSimulation.SoulWall.BattleSoulWallQSystem.Init()</a>.</p>
+<p class="reference">References <a class="el" href="#a6f038e692f069d1bbbb4ec6da95d41f3">_debugLogger</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html#a60a7e34530eeb066aaea85039f210cab">Battle.QSimulation.BattleDebugLogger.Create()</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#ad1f1b48a82cd7e2d66f8d11ed84521ce">Quantum.BattleGameSessionQSingleton.GameInitialized</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#a07d5af4ac9f88d41b05a18bd8a853de1">Quantum.BattleGameSessionQSingleton.GameTimeSec</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_q_config.html#a1d82c4ff613e69543fff9e577cfb6c97">Battle.QSimulation.Game.BattleQConfig.GetArenaSpec()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system.html#a0308deff9bfbafe619f9550768f79008">Battle.QSimulation.Game.BattleCollisionQSystem.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_entity_manager.html#a637b539f129a8baab9b0d49f25547938">Battle.QSimulation.Game.BattleEntityManager.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#ab0d2a1de43438ef465a1181425dcddeb">Battle.QSimulation.Game.BattleGridManager.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_goal_1_1_battle_goal_q_system.html#a80e307db4402d3087eeb49bc74388c77">Battle.QSimulation.Goal.BattleGoalQSystem.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#a19dd4d6f087aa92bc241c3694aac769b">Battle.QSimulation.Player.BattlePlayerClassManager.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a5314626c1a715c91b67677462b85c870">Battle.QSimulation.Player.BattlePlayerManager.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_movement_controller.html#ac504e9888da81bae8e7abee12131a688">Battle.QSimulation.Player.BattlePlayerMovementController.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a1ca504f27f53731af461be9cbe99d6c7">Battle.QSimulation.Player.BattlePlayerQSystem.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_shield_manager.html#a78eb7dc7c59e2ef7f053d5f82ecf8078">Battle.QSimulation.Player.BattlePlayerShieldManager.Init()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#a0a1b7c33d54de0949aac780f422ea123">Battle.QSimulation.Projectile.BattleProjectileQSystem.Init()</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_soul_wall_1_1_battle_soul_wall_q_system.html#ac50800e34e6b030dca08686920f43dbe">Battle.QSimulation.SoulWall.BattleSoulWallQSystem.Init()</a>.</p>
 
 </div>
 </div>
@@ -366,7 +468,7 @@ Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="#a3b1a36f0b6ce4ea30e6a5e5c489ff8eb">CreateMap()</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#ad1f1b48a82cd7e2d66f8d11ed84521ce">Quantum.BattleGameSessionQSingleton.GameInitialized</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#a07d5af4ac9f88d41b05a18bd8a853de1">Quantum.BattleGameSessionQSingleton.GameTimeSec</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a8c958619cb118a06706ee22cef95bfb4">Battle.QSimulation.Player.BattlePlayerManager.IsAllPlayersRegistered()</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#a87d416004155e5b9a1e133afd482b8be">Quantum.BattleGameSessionQSingleton.LoadDelaySec</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#ac09a9c1906acc2e9ece18d1a0425c78d">Quantum.BattleGameSessionQSingleton.State</a>, and <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#a35439fe2e98be0ab9c9a26b9002f9200">Quantum.BattleGameSessionQSingleton.TimeUntilStartSec</a>.</p>
+<p class="reference">References <a class="el" href="#a3b1a36f0b6ce4ea30e6a5e5c489ff8eb">CreateMap()</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#ad1f1b48a82cd7e2d66f8d11ed84521ce">Quantum.BattleGameSessionQSingleton.GameInitialized</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#a07d5af4ac9f88d41b05a18bd8a853de1">Quantum.BattleGameSessionQSingleton.GameTimeSec</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a8c958619cb118a06706ee22cef95bfb4">Battle.QSimulation.Player.BattlePlayerManager.IsAllPlayersRegistered()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#ab07255dabf373493103bdb2b4afe9600">Battle.QSimulation.Projectile.BattleProjectileQSystem.Launch()</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#a87d416004155e5b9a1e133afd482b8be">Quantum.BattleGameSessionQSingleton.LoadDelaySec</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#abd8ccf638bd10959a013d7b3cc2f836e">Battle.QSimulation.Player.BattlePlayerQSystem.OnGameStart()</a>, <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#ac09a9c1906acc2e9ece18d1a0425c78d">Quantum.BattleGameSessionQSingleton.State</a>, and <a class="el" href="struct_quantum_1_1_battle_game_session_q_singleton.html#a35439fe2e98be0ab9c9a26b9002f9200">Quantum.BattleGameSessionQSingleton.TimeUntilStartSec</a>.</p>
 
 </div>
 </div>

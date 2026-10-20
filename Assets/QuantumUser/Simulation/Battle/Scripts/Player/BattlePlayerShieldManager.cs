@@ -415,7 +415,7 @@ namespace Battle.QSimulation.Player
         private static int GetShieldIndex(BattlePlayerSlot playerSlot, int characterNumber)
         {
             int playerIndex = BattlePlayerManager.PlayerHandle.Low_GetPlayerIndex(playerSlot);
-            return playerIndex * Constants.BATTLE_PLAYER_CHARACTER_COUNT + characterNumber;
+            return playerIndex * Constants.BATTLE_PLAYER_CHARACTER_MAX_COUNT + characterNumber;
         }
 
         /// @anchor BattlePlayerShieldManager-PrivateStaticMethods-ShieldEntity
