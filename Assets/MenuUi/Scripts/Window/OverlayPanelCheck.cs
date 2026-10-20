@@ -30,23 +30,18 @@ namespace MenuUi.Scripts.Window
         public bool BottomBarActive => _bottomBar.activeSelf;
 
         public delegate void ChatBarToggled(bool active);
-
         public static event ChatBarToggled OnChatBarToggled;
 
         public delegate void TopBarToggled(bool active);
-
         public static event TopBarToggled OnTopBarToggled;
 
         public delegate void BottomBarToggled(bool active);
-
         public static event BottomBarToggled OnBottomBarToggled;
 
         public delegate void ToggleOnlinePlayerList(bool? active = null);
-
         public static event ToggleOnlinePlayerList OnToggleOnlinePlayerList;
 
         public delegate void ChangePopupInfo(InfoLevel level, string message);
-
         public static event ChangePopupInfo OnChangePopupInfo;
 
         private void Awake()

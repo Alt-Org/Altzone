@@ -5,7 +5,6 @@ using TMPro;
 using static MenuUi.Scripts.Settings.BattleUiEditor.BattleUiEditor;
 using Altzone.Scripts.BattleUiShared;
 using MenuUi.Scripts.UIScaling;
-using UnityEngine.Serialization;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
@@ -17,8 +16,6 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     {
         [Header("Options popup")]
         [SerializeField] private GameObject _optionsContents;
-
-        [SerializeField] private SliderPopupHandler[] _sliderPopupHandler;
 
         [SerializeField] private Button _resetButton;
 
@@ -361,13 +358,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 UpdateArena();
             });
 
-            foreach (SliderPopupHandler handler in _sliderPopupHandler)
-            {
-                if (handler == null) continue;
+            SliderPopupHandler.OnHideOtherComponents += HideExceptSlider;
+            SliderPopupHandler.OnRestoreOtherComponents += RestoreAfterSliderDragging;
 
-                handler.DragStarted += HideExceptSlider;
-                handler.DragEnded += RestoreAfterSliderDragging;
-            }
         }
 
         private void Start()
@@ -504,11 +497,9 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _outsideFloorOkButton.onClick.RemoveAllListeners();
             _outsideFloorCancelButton.onClick.RemoveAllListeners();
 
-            foreach (SliderPopupHandler handler in _sliderPopupHandler)
-            {
-                handler.DragStarted -= HideExceptSlider;
-                handler.DragEnded -= RestoreAfterSliderDragging;
-            }
+            SliderPopupHandler.OnHideOtherComponents -= HideExceptSlider;
+            SliderPopupHandler.OnRestoreOtherComponents -= RestoreAfterSliderDragging;
+
         }
 
         private void UpdateInputSettings(BattleMovementInputType movementType, BattleRotationInputType rotationType)
