@@ -378,7 +378,10 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             }
 
             _unsavedChanges = false;
-            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info, "Muutokset on tallennettu.");
+            if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info, "Muutokset on tallennettu.");
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info, "Changes saved.");
         }
 
         public void ResetChanges()
