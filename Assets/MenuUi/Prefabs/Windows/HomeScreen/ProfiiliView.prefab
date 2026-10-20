@@ -10012,6 +10012,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7362357884820433953}
   - component: {fileID: 2696815024617696363}
+  - component: {fileID: 363398042436618552}
   - component: {fileID: 8873610032865323950}
   m_Layer: 5
   m_Name: Text (TMP)
@@ -10047,6 +10048,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4812277466866051956}
   m_CullTransparentMesh: 1
+--- !u!114 &363398042436618552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4812277466866051956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Vahvista
+  _englishText: Confirm
 --- !u!114 &8873610032865323950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10851,6 +10866,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4910236827759621814}
   - component: {fileID: 5752814727929220366}
+  - component: {fileID: 6087087556690376020}
   - component: {fileID: 958568900876767439}
   m_Layer: 5
   m_Name: Label
@@ -10886,6 +10902,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5234238888019417111}
   m_CullTransparentMesh: 1
+--- !u!114 &6087087556690376020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5234238888019417111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Pelityyli
+  _englishText: Playstyle
 --- !u!114 &958568900876767439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12683,6 +12713,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3331402556506065557}
   - component: {fileID: 3235522896431162926}
+  - component: {fileID: 1653708502002448457}
   - component: {fileID: 8791703318678442401}
   m_Layer: 5
   m_Name: Label
@@ -12718,6 +12749,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5962701437561956131}
   m_CullTransparentMesh: 1
+--- !u!114 &1653708502002448457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5962701437561956131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Muuta nimimerkki\xE4"
+  _englishText: Edit nickname
 --- !u!114 &8791703318678442401
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13434,6 +13479,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5055887626653054652}
   - component: {fileID: 529631804231427162}
+  - component: {fileID: 4791531188093496396}
   - component: {fileID: 8553010009644628597}
   m_Layer: 5
   m_Name: Text (TMP)
@@ -13469,6 +13515,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6368268927845348669}
   m_CullTransparentMesh: 1
+--- !u!114 &4791531188093496396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6368268927845348669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Peruuta
+  _englishText: Cancel
 --- !u!114 &8553010009644628597
 MonoBehaviour:
   m_ObjectHideFlags: 0
