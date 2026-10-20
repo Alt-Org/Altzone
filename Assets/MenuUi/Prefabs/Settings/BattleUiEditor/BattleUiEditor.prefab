@@ -355,10 +355,10 @@ RectTransform:
   - {fileID: 3945007866188790903}
   m_Father: {fileID: 226256505424952164}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -25}
-  m_SizeDelta: {x: 0, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8694284949379592205
 MonoBehaviour:
@@ -550,9 +550,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3208218895460828982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3913295180002791027
@@ -610,10 +610,10 @@ RectTransform:
   - {fileID: 4644007697980365712}
   m_Father: {fileID: 226256505424952164}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -105}
-  m_SizeDelta: {x: 0, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7772336474135495225
 MonoBehaviour:
@@ -962,10 +962,10 @@ RectTransform:
   - {fileID: 1111555152600792292}
   m_Father: {fileID: 3208218895460828982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -75}
-  m_SizeDelta: {x: 0, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6942146053642932833
 MonoBehaviour:
@@ -1139,7 +1139,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a7014dffb113070090997e082d59f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _optionsPopup: {fileID: 1518622967709335699}
   _valueField: {fileID: 7289168488897270945}
   _title: {fileID: 4265652358840955689}
 --- !u!1 &390663761289829022
@@ -1755,6 +1754,7 @@ GameObject:
   - component: {fileID: 6553972004451359477}
   - component: {fileID: 6046906816182183900}
   - component: {fileID: 6482478542338236442}
+  - component: {fileID: 835401995509826145}
   m_Layer: 5
   m_Name: SwipeMinDistanceText
   m_TagString: Untagged
@@ -1881,6 +1881,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &835401995509826145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469372467766848611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Vet\xE4misen aktivointiet\xE4isyys"
+  _englishText: Drag activation distance
 --- !u!1 &527616265884204076
 GameObject:
   m_ObjectHideFlags: 0
@@ -2295,6 +2309,7 @@ GameObject:
   - component: {fileID: 1246425402900228527}
   - component: {fileID: 4110996195091272055}
   - component: {fileID: 877376035802510585}
+  - component: {fileID: 6148964219040725715}
   m_Layer: 5
   m_Name: ArenaInputOptionsTabText
   m_TagString: Untagged
@@ -2319,7 +2334,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -96.61, y: -27.91}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1246425402900228527
 CanvasRenderer:
@@ -2435,6 +2450,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
+--- !u!114 &6148964219040725715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672689255497251115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Pelikentt\xE4"
+  _englishText: Game arena
 --- !u!1 &676073076432269185
 GameObject:
   m_ObjectHideFlags: 0
@@ -2789,10 +2818,10 @@ RectTransform:
   - {fileID: 1191768125903700595}
   m_Father: {fileID: 7680294516117476185}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 40, y: -45}
-  m_SizeDelta: {x: 80, y: 90}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1620813145054762214
 MonoBehaviour:
@@ -2988,6 +3017,7 @@ GameObject:
   - component: {fileID: 8170520899887576991}
   - component: {fileID: 6815557201824843427}
   - component: {fileID: 4937368760625910138}
+  - component: {fileID: 5726074918279686765}
   m_Layer: 5
   m_Name: MovementSwipeSensitivityLabelText
   m_TagString: Untagged
@@ -3114,6 +3144,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5726074918279686765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 876295006136503997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Liikkumisen herkkyys
+  _englishText: Movement sensitivity
 --- !u!1 &881669070787343710
 GameObject:
   m_ObjectHideFlags: 0
@@ -3534,9 +3578,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3208218895460828982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -200}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3930436943742020404
@@ -4142,6 +4186,7 @@ GameObject:
   - component: {fileID: 4945890984872865079}
   - component: {fileID: 3132647556973881555}
   - component: {fileID: 6466073908670532387}
+  - component: {fileID: 1993039323580368221}
   m_Layer: 5
   m_Name: RotationLabelText
   m_TagString: Untagged
@@ -4288,6 +4333,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1993039323580368221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 978330002949909381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "K\xE4\xE4nt\xE4minen"
+  _englishText: Rotation
 --- !u!1 &1042156567920544509
 GameObject:
   m_ObjectHideFlags: 0
@@ -4488,6 +4547,7 @@ GameObject:
   - component: {fileID: 68402454445900838}
   - component: {fileID: 8863238287001636867}
   - component: {fileID: 2353521098742444223}
+  - component: {fileID: 3333025192753492973}
   m_Layer: 5
   m_Name: JoystickLabelText
   m_TagString: Untagged
@@ -4614,6 +4674,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3333025192753492973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135303780060047359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Ohjausympyr\xE4"
+  _englishText: Control wheel
 --- !u!1 &1152442183725473608
 GameObject:
   m_ObjectHideFlags: 0
@@ -4648,7 +4722,7 @@ RectTransform:
   m_Father: {fileID: 236411823591390126}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4793,10 +4867,10 @@ RectTransform:
   - {fileID: 106769423885923935}
   m_Father: {fileID: 6065665067725628857}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 610, y: -80}
-  m_SizeDelta: {x: 220, y: 80}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &8469220612240918702
 MonoBehaviour:
@@ -5269,7 +5343,7 @@ RectTransform:
   m_AnchorMin: {x: 0.33333334, y: 0}
   m_AnchorMax: {x: 0.33333334, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 35, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7759847727549637279
 CanvasRenderer:
@@ -5447,9 +5521,9 @@ RectTransform:
   - {fileID: 8085666547579515115}
   m_Father: {fileID: 3424637406947107209}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 30, y: -90}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8902556665516789588
@@ -5752,6 +5826,7 @@ GameObject:
   - component: {fileID: 186304736180196083}
   - component: {fileID: 808113248395394230}
   - component: {fileID: 7621730741167947195}
+  - component: {fileID: 2166106052517440175}
   m_Layer: 5
   m_Name: TwoFingerLabelText
   m_TagString: Untagged
@@ -5878,6 +5953,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2166106052517440175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614471075740964473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Kahdella \nsormella"
+  _englishText: "Two finger \nrotation"
 --- !u!1 &1616999378378500859
 GameObject:
   m_ObjectHideFlags: 0
@@ -7179,7 +7268,7 @@ RectTransform:
   m_Father: {fileID: 3051062647500016665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.33333334, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -8303,6 +8392,7 @@ GameObject:
   - component: {fileID: 2633328544766575546}
   - component: {fileID: 8508943478596206569}
   - component: {fileID: 1215072293757773026}
+  - component: {fileID: 1412688500551081365}
   m_Layer: 5
   m_Name: MovementLabelShadowText
   m_TagString: Untagged
@@ -8429,6 +8519,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1412688500551081365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143042220890417161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Liikuttaminen
+  _englishText: Movement
 --- !u!1 &2149217032458934196
 GameObject:
   m_ObjectHideFlags: 0
@@ -8620,7 +8724,7 @@ RectTransform:
   m_Father: {fileID: 2239652592526031899}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.33333334, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -9167,6 +9271,7 @@ GameObject:
   - component: {fileID: 8249780711745780505}
   - component: {fileID: 5076756303951561671}
   - component: {fileID: 8573567558925148848}
+  - component: {fileID: 3792027243017830687}
   m_Layer: 5
   m_Name: JoystickRotationLabelShadowText
   m_TagString: Untagged
@@ -9293,6 +9398,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3792027243017830687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2355117952022449593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Ohjausympyr\xE4"
+  _englishText: Control wheel
 --- !u!1 &2374868496791342690
 GameObject:
   m_ObjectHideFlags: 0
@@ -9327,10 +9446,10 @@ RectTransform:
   - {fileID: 3732799293656643895}
   m_Father: {fileID: 8870649881943172262}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -105}
-  m_SizeDelta: {x: 0, y: 70}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &9180640940421235034
 MonoBehaviour:
@@ -9578,9 +9697,9 @@ RectTransform:
   - {fileID: 8790379159992177606}
   m_Father: {fileID: 7595154775927114704}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2446171618178920486
@@ -10313,6 +10432,7 @@ GameObject:
   - component: {fileID: 2660707266617017797}
   - component: {fileID: 5592039536698190269}
   - component: {fileID: 7719515270182287025}
+  - component: {fileID: 7588426022060046809}
   m_Layer: 5
   m_Name: FollowPointerLabelText
   m_TagString: Untagged
@@ -10439,6 +10559,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7588426022060046809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2698740377346597624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Painalluksen \nseuraus"
+  _englishText: Click follow
 --- !u!1 &2724825553288098309
 GameObject:
   m_ObjectHideFlags: 0
@@ -10834,6 +10968,7 @@ GameObject:
   - component: {fileID: 4887400674934956956}
   - component: {fileID: 790097223388319546}
   - component: {fileID: 5571374767782017440}
+  - component: {fileID: 8490365455527768833}
   m_Layer: 5
   m_Name: SwipeMinDistanceShadowText
   m_TagString: Untagged
@@ -10960,6 +11095,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8490365455527768833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2822530999739469953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Vet\xE4misen aktivointiet\xE4isyys"
+  _englishText: Drag activation distance
 --- !u!1 &2835177473088577587
 GameObject:
   m_ObjectHideFlags: 0
@@ -11791,10 +11940,10 @@ RectTransform:
   - {fileID: 3792701059543983262}
   m_Father: {fileID: 6065665067725628857}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 110, y: -80}
-  m_SizeDelta: {x: 220, y: 80}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &2742595614458605823
 MonoBehaviour:
@@ -11974,6 +12123,7 @@ GameObject:
   - component: {fileID: 4423699359405135807}
   - component: {fileID: 6638841409674056873}
   - component: {fileID: 1956763853806744623}
+  - component: {fileID: 7492800125258089622}
   m_Layer: 5
   m_Name: JoystickLabelShadowText
   m_TagString: Untagged
@@ -12100,6 +12250,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7492800125258089622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3110617308727327871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Ohjausympyr\xE4"
+  _englishText: Control wheel
 --- !u!1 &3122577390489699662
 GameObject:
   m_ObjectHideFlags: 0
@@ -12111,6 +12275,7 @@ GameObject:
   - component: {fileID: 6014009512889800476}
   - component: {fileID: 6067267748240083042}
   - component: {fileID: 7526522745600576426}
+  - component: {fileID: 3119770345823021082}
   m_Layer: 5
   m_Name: GyroscopeMinAngleLabelShadowText
   m_TagString: Untagged
@@ -12237,6 +12402,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3119770345823021082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3122577390489699662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "K\xE4\xE4nt\xE4misen aktivointikulma"
+  _englishText: Rotation activation angle
 --- !u!1 &3145598254974301521
 GameObject:
   m_ObjectHideFlags: 0
@@ -13151,10 +13330,10 @@ RectTransform:
   - {fileID: 2660707266617017797}
   m_Father: {fileID: 226256505424952164}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -265}
-  m_SizeDelta: {x: 0, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &8323648179903499349
 MonoBehaviour:
@@ -14342,9 +14521,9 @@ RectTransform:
   - {fileID: 6120678477310560847}
   m_Father: {fileID: 7680294516117476185}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -360}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7220743437944717909
@@ -14378,6 +14557,7 @@ GameObject:
   - component: {fileID: 346479273554091621}
   - component: {fileID: 223952571293629110}
   - component: {fileID: 2434415055175363826}
+  - component: {fileID: 7359102491667434166}
   m_Layer: 5
   m_Name: MovementSwipeSensitivityLabelShadowText
   m_TagString: Untagged
@@ -14504,6 +14684,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7359102491667434166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3525932986862390918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Liikkumisen herkkyys
+  _englishText: Movement sensitivity
 --- !u!1 &3556487153195260692
 GameObject:
   m_ObjectHideFlags: 0
@@ -15980,6 +16174,7 @@ GameObject:
   - component: {fileID: 440484434632821840}
   - component: {fileID: 5390300192450789364}
   - component: {fileID: 3030925004926310757}
+  - component: {fileID: 513141182375618604}
   m_Layer: 5
   m_Name: RotationSwipeMaxDistanceLabelShadowText
   m_TagString: Untagged
@@ -16106,6 +16301,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &513141182375618604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3950355273231470525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Vet\xE4misen t\xE4ysi et\xE4isyys"
+  _englishText: Drag maximum distance
 --- !u!1 &3965995968137263574
 GameObject:
   m_ObjectHideFlags: 0
@@ -16415,7 +16624,7 @@ RectTransform:
   m_Father: {fileID: 7067998075003671118}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.20444445, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -16673,10 +16882,10 @@ RectTransform:
   - {fileID: 7274943250631467550}
   m_Father: {fileID: 3208218895460828982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -125}
-  m_SizeDelta: {x: 0, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5456725898935212088
 MonoBehaviour:
@@ -17511,10 +17720,10 @@ RectTransform:
   - {fileID: 688776769867828959}
   m_Father: {fileID: 7595154775927114704}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 35, y: -155}
-  m_SizeDelta: {x: 50, y: 150}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3225124424987059620
 MonoBehaviour:
@@ -17682,9 +17891,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3208218895460828982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1684883989732485533
@@ -18275,6 +18484,7 @@ GameObject:
   - component: {fileID: 6176302724671368793}
   - component: {fileID: 2516171519476982492}
   - component: {fileID: 874753552961710787}
+  - component: {fileID: 4627799012096642032}
   m_Layer: 5
   m_Name: UiElementTransparencyLabel
   m_TagString: Untagged
@@ -18401,6 +18611,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4627799012096642032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4578625088495363621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "L\xE4pin\xE4kyvyys:"
+  _englishText: 'Transparency:'
 --- !u!1 &4633069360373269337
 GameObject:
   m_ObjectHideFlags: 0
@@ -18754,6 +18978,7 @@ GameObject:
   - component: {fileID: 106769423885923935}
   - component: {fileID: 4056333590997911725}
   - component: {fileID: 494027836218017849}
+  - component: {fileID: 8266802000942068750}
   m_Layer: 5
   m_Name: EditorInputOptionsTabText
   m_TagString: Untagged
@@ -18880,6 +19105,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8266802000942068750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4731836324686344123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Editori
+  _englishText: Editor
 --- !u!1 &4732948965018207664
 GameObject:
   m_ObjectHideFlags: 0
@@ -19073,10 +19312,10 @@ RectTransform:
   - {fileID: 68402454445900838}
   m_Father: {fileID: 226256505424952164}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -185}
-  m_SizeDelta: {x: 0, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6803895705270841569
 MonoBehaviour:
@@ -19508,6 +19747,7 @@ GameObject:
   - component: {fileID: 1335555015593309878}
   - component: {fileID: 5384126171754391846}
   - component: {fileID: 4742522174165784512}
+  - component: {fileID: 4581749939340649467}
   m_Layer: 5
   m_Name: GyroscopeRotationLabelShadowText
   m_TagString: Untagged
@@ -19634,6 +19874,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4581749939340649467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4867387750005604563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Puhelinta \nkallistamalla"
+  _englishText: Phone rotation
 --- !u!1 &4896167245489357171
 GameObject:
   m_ObjectHideFlags: 0
@@ -20592,6 +20846,7 @@ GameObject:
   - component: {fileID: 4644007697980365712}
   - component: {fileID: 8093029605083799194}
   - component: {fileID: 6465606610717434440}
+  - component: {fileID: 3031916475508536858}
   m_Layer: 5
   m_Name: PointAndClickLabelText
   m_TagString: Untagged
@@ -20718,6 +20973,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3031916475508536858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5335008743174028777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Painamalla
+  _englishText: Pressing
 --- !u!1 &5378784704981903030
 GameObject:
   m_ObjectHideFlags: 0
@@ -21177,6 +21446,7 @@ GameObject:
   - component: {fileID: 3945007866188790903}
   - component: {fileID: 6487336940435520024}
   - component: {fileID: 4414001242581521189}
+  - component: {fileID: 4864004003938735870}
   m_Layer: 5
   m_Name: SwipeMovementLabelText
   m_TagString: Untagged
@@ -21303,6 +21573,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4864004003938735870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5486580637529548684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Vet\xE4m\xE4ll\xE4"
+  _englishText: Dragging
 --- !u!1 &5504762343008558314
 GameObject:
   m_ObjectHideFlags: 0
@@ -21939,7 +22223,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a7014dffb113070090997e082d59f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _optionsPopup: {fileID: 1518622967709335699}
   _valueField: {fileID: 7587031203590422163}
   _title: {fileID: 1779868660970032156}
 --- !u!1 &5679379648726197066
@@ -22795,9 +23078,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3208218895460828982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -150}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &177230550175033349
@@ -22831,6 +23114,7 @@ GameObject:
   - component: {fileID: 2808630229281297964}
   - component: {fileID: 959156636076547284}
   - component: {fileID: 419160699511440335}
+  - component: {fileID: 5494589666050610144}
   m_Layer: 5
   m_Name: MovementInputLabelShadowText
   m_TagString: Untagged
@@ -22957,6 +23241,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5494589666050610144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5992594399588602085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Pelihahmon ohjaus
+  _englishText: Character Controls
 --- !u!1 &6010547562914590843
 GameObject:
   m_ObjectHideFlags: 0
@@ -23390,10 +23688,10 @@ RectTransform:
   - {fileID: 7139657668990118436}
   m_Father: {fileID: 3424637406947107209}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 30, y: -40}
-  m_SizeDelta: {x: 0, y: 80}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4508124222685658746
 MonoBehaviour:
@@ -23903,7 +24201,7 @@ RectTransform:
   m_AnchorMin: {x: 0.33333334, y: 0}
   m_AnchorMax: {x: 0.33333334, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 35, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2034671575766428409
 CanvasRenderer:
@@ -24513,6 +24811,7 @@ GameObject:
   - component: {fileID: 7139657668990118436}
   - component: {fileID: 2926862917271432702}
   - component: {fileID: 2315936334018058361}
+  - component: {fileID: 7574862198437205265}
   m_Layer: 5
   m_Name: MovementInputLabel
   m_TagString: Untagged
@@ -24639,6 +24938,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7574862198437205265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6349870900420274365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Pelihahmon ohjaus
+  _englishText: Character controls
 --- !u!1 &6356508549405857719
 GameObject:
   m_ObjectHideFlags: 0
@@ -24942,6 +25255,7 @@ GameObject:
   - component: {fileID: 6123921024861046606}
   - component: {fileID: 2769895701450761473}
   - component: {fileID: 3844760452319542608}
+  - component: {fileID: 4523549789235187701}
   m_Layer: 5
   m_Name: RotationLabelShadowText
   m_TagString: Untagged
@@ -25068,6 +25382,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4523549789235187701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6409506522491004213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "K\xE4\xE4nt\xE4minen"
+  _englishText: Rotation
 --- !u!1 &6420419142783535739
 GameObject:
   m_ObjectHideFlags: 0
@@ -25115,6 +25443,7 @@ GameObject:
   - component: {fileID: 3792701059543983262}
   - component: {fileID: 6067339660791408601}
   - component: {fileID: 6491243695896195447}
+  - component: {fileID: 4768983343357568972}
   m_Layer: 5
   m_Name: InputOptionsTabText
   m_TagString: Untagged
@@ -25241,6 +25570,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4768983343357568972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6425949288868955751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Ohjaus
+  _englishText: Controls
 --- !u!1 &6430896117976800241
 GameObject:
   m_ObjectHideFlags: 0
@@ -25438,10 +25781,10 @@ RectTransform:
   - {fileID: 6289145699347253131}
   m_Father: {fileID: 6065665067725628857}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 360, y: -80}
-  m_SizeDelta: {x: 280, y: 80}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &5715477574415868385
 MonoBehaviour:
@@ -25714,7 +26057,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a7014dffb113070090997e082d59f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _optionsPopup: {fileID: 1518622967709335699}
   _valueField: {fileID: 6897220296519974274}
   _title: {fileID: 3196273273246369975}
 --- !u!1 &6577124914195850922
@@ -26360,6 +26702,7 @@ GameObject:
   - component: {fileID: 5364910715497472114}
   - component: {fileID: 5459890026901414872}
   - component: {fileID: 7737391725606157225}
+  - component: {fileID: 6873506756140132967}
   m_Layer: 5
   m_Name: FollowPointerShadowText
   m_TagString: Untagged
@@ -26486,6 +26829,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6873506756140132967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6643912816462090098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Painalluksen \nseuraus"
+  _englishText: Click follow
 --- !u!1 &6653022154241887112
 GameObject:
   m_ObjectHideFlags: 0
@@ -26780,6 +27137,7 @@ GameObject:
   - component: {fileID: 3281776589267098748}
   - component: {fileID: 970764058803636621}
   - component: {fileID: 5870806320539397073}
+  - component: {fileID: 5591845532118254477}
   m_Layer: 5
   m_Name: PointAndClickLabelShadowText
   m_TagString: Untagged
@@ -26906,6 +27264,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5591845532118254477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6699487464203697603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Painamalla
+  _englishText: Pressing
 --- !u!1 &6759816313363047835
 GameObject:
   m_ObjectHideFlags: 0
@@ -27748,6 +28120,7 @@ GameObject:
   - component: {fileID: 4681809308551245357}
   - component: {fileID: 5918726315909183768}
   - component: {fileID: 3995573831461179647}
+  - component: {fileID: 1084495593696712911}
   m_Layer: 5
   m_Name: MovementLabelText
   m_TagString: Untagged
@@ -27894,6 +28267,20 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1084495593696712911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6961728300853473545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Liikuttaminen
+  _englishText: Movement
 --- !u!1 &6967953130291807490
 GameObject:
   m_ObjectHideFlags: 0
@@ -28284,6 +28671,7 @@ GameObject:
   - component: {fileID: 4640702386343791204}
   - component: {fileID: 6683997134373782357}
   - component: {fileID: 196474905649314235}
+  - component: {fileID: 8923931693366643470}
   m_Layer: 5
   m_Name: GyroscopeRotationLabelText
   m_TagString: Untagged
@@ -28410,6 +28798,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8923931693366643470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7071792754751752988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Puhelinta \nkallistamalla"
+  _englishText: Phone rotation
 --- !u!1 &7074959002949095749
 GameObject:
   m_ObjectHideFlags: 0
@@ -28421,6 +28823,7 @@ GameObject:
   - component: {fileID: 5689899572044836442}
   - component: {fileID: 3980026007404804746}
   - component: {fileID: 7641816377249550180}
+  - component: {fileID: 5686671136637826748}
   m_Layer: 5
   m_Name: RotationSwipeMaxDistanceLabelText
   m_TagString: Untagged
@@ -28547,6 +28950,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5686671136637826748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7074959002949095749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Vet\xE4misen t\xE4ysi et\xE4isyys"
+  _englishText: Drag maximum distance
 --- !u!1 &7108402729102272026
 GameObject:
   m_ObjectHideFlags: 0
@@ -28582,10 +28999,10 @@ RectTransform:
   - {fileID: 186304736180196083}
   m_Father: {fileID: 3208218895460828982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -25}
-  m_SizeDelta: {x: 0, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2233038254845772677
 MonoBehaviour:
@@ -28687,9 +29104,9 @@ RectTransform:
   - {fileID: 1034380458045934277}
   m_Father: {fileID: 8085666547579515115}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 30, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7186852671199723138
@@ -29223,6 +29640,7 @@ GameObject:
   - component: {fileID: 3436566838064786612}
   - component: {fileID: 6691292373384757349}
   - component: {fileID: 1003227182887102539}
+  - component: {fileID: 5650588105519681221}
   m_Layer: 5
   m_Name: SwipeMovementLabelShadowText
   m_TagString: Untagged
@@ -29349,6 +29767,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5650588105519681221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7290353201414789095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Vet\xE4m\xE4ll\xE4"
+  _englishText: Dragging
 --- !u!1 &7329088736090416252
 GameObject:
   m_ObjectHideFlags: 0
@@ -29360,6 +29792,7 @@ GameObject:
   - component: {fileID: 7274943250631467550}
   - component: {fileID: 4889751954793079037}
   - component: {fileID: 4277131012766576089}
+  - component: {fileID: 6653798535922905797}
   m_Layer: 5
   m_Name: JoystickRotationLabelText
   m_TagString: Untagged
@@ -29486,6 +29919,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6653798535922905797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7329088736090416252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Ohjausympyr\xE4"
+  _englishText: Control wheel
 --- !u!1 &7336430260056629409
 GameObject:
   m_ObjectHideFlags: 0
@@ -29961,9 +30408,9 @@ RectTransform:
   - {fileID: 3184963763946559734}
   m_Father: {fileID: 8475454999259803043}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 410, y: -40}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 720, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4841108364789987101
@@ -31465,7 +31912,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1680916854445050396
 RectTransform:
   m_ObjectHideFlags: 0
@@ -31661,6 +32108,7 @@ GameObject:
   - component: {fileID: 5925984263377729312}
   - component: {fileID: 3700165773061241616}
   - component: {fileID: 2972390537408850253}
+  - component: {fileID: 4206227474224133738}
   m_Layer: 5
   m_Name: TwoFingerLabelShadowText
   m_TagString: Untagged
@@ -31715,7 +32163,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Kahdella \nsormella\n"
+  m_text: "Kahdella \nsormella"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 45eaef35cdea831d7b0bc1cdd8040864, type: 2}
   m_sharedMaterial: {fileID: -6395784680899376689, guid: 45eaef35cdea831d7b0bc1cdd8040864,
@@ -31787,6 +32235,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4206227474224133738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7854738332715315433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Kahdella \nsormella"
+  _englishText: "Two finger \nrotation"
 --- !u!1 &7871870858267358734
 GameObject:
   m_ObjectHideFlags: 0
@@ -32136,7 +32598,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 0
-  m_AspectRatio: NaN
+  m_AspectRatio: 0.46153846
 --- !u!114 &1518622967709335699
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32596,10 +33058,10 @@ RectTransform:
   - {fileID: 6878264668988914545}
   m_Father: {fileID: 8870649881943172262}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -35}
-  m_SizeDelta: {x: 0, y: 70}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2920407095159568850
 MonoBehaviour:
@@ -32737,10 +33199,10 @@ RectTransform:
   - {fileID: 6913251419551193273}
   m_Father: {fileID: 8085666547579515115}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 40, y: -155}
-  m_SizeDelta: {x: 20, y: 150}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1382332438928894634
 MonoBehaviour:
@@ -33338,10 +33800,10 @@ RectTransform:
   - {fileID: 7571818473462235118}
   m_Father: {fileID: 8870649881943172262}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -175}
-  m_SizeDelta: {x: 0, y: 70}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8249813615980155081
 MonoBehaviour:
@@ -34243,10 +34705,10 @@ RectTransform:
   - {fileID: 4640702386343791204}
   m_Father: {fileID: 3208218895460828982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -175}
-  m_SizeDelta: {x: 0, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &417922025244102705
 MonoBehaviour:
@@ -34674,7 +35136,7 @@ RectTransform:
   m_AnchorMin: {x: 0.20444445, y: 0}
   m_AnchorMax: {x: 0.20444445, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 35, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7351480450895085888
 CanvasRenderer:
@@ -34830,6 +35292,7 @@ GameObject:
   - component: {fileID: 1111555152600792292}
   - component: {fileID: 8805179884116659297}
   - component: {fileID: 1114167856301866389}
+  - component: {fileID: 2062578842392211904}
   m_Layer: 5
   m_Name: SwipeRotationLabelText
   m_TagString: Untagged
@@ -34956,6 +35419,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2062578842392211904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8720126917292778447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Vet\xE4m\xE4ll\xE4"
+  _englishText: Dragging
 --- !u!1 &8765704947963910649
 GameObject:
   m_ObjectHideFlags: 0
@@ -35989,6 +36466,7 @@ GameObject:
   - component: {fileID: 4087878336950005547}
   - component: {fileID: 3716368403467681454}
   - component: {fileID: 1120123571136159385}
+  - component: {fileID: 4636100568326706617}
   m_Layer: 5
   m_Name: SwipeRotationLabelShadowText
   m_TagString: Untagged
@@ -36115,6 +36593,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4636100568326706617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9030290002096532328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Vet\xE4m\xE4ll\xE4"
+  _englishText: Dragging
 --- !u!1 &9099214781818746396
 GameObject:
   m_ObjectHideFlags: 0
@@ -36197,10 +36689,10 @@ RectTransform:
   - {fileID: 5629875100185881592}
   m_Father: {fileID: 7680294516117476185}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -225}
-  m_SizeDelta: {x: 0, y: 210}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &107845750146126375
 MonoBehaviour:
@@ -36440,6 +36932,7 @@ GameObject:
   - component: {fileID: 835964825369904118}
   - component: {fileID: 389442962482187935}
   - component: {fileID: 6617927202381618053}
+  - component: {fileID: 5493394159914759929}
   m_Layer: 5
   m_Name: GyroscopeMinAngleLabelText
   m_TagString: Untagged
@@ -36566,6 +37059,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5493394159914759929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9215728105597000013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "K\xE4\xE4nt\xE4misen aktivointikulma"
+  _englishText: Rotation activation angle
 --- !u!1001 &192572578831789774
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36617,7 +37124,7 @@ PrefabInstance:
     - target: {fileID: 7689901632215231897, guid: 03391efc6921d67428a582c27d5f6131,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 502.32556
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7689901632215231897, guid: 03391efc6921d67428a582c27d5f6131,
         type: 3}
@@ -37335,7 +37842,7 @@ PrefabInstance:
     - target: {fileID: 7689901632215231897, guid: 03391efc6921d67428a582c27d5f6131,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 502.32556
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7689901632215231897, guid: 03391efc6921d67428a582c27d5f6131,
         type: 3}
