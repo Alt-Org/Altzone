@@ -39,7 +39,7 @@ namespace Battle.QSimulation.Game
     /// [{Registered Entities}](#page-concepts-entity-management-registered-entities) are stored offscreen when [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)
     /// and are assigned an [{Entity ID}](#page-concepts-entity-management-entity-id) for accessing them.<br/>
     /// Entities can be Retrieved using
-    /// @clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID, bool)} to be used in the arena. [{InPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
+    /// @clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID)} to be used in the arena. [{InPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
     /// Entities can be Returned using
     /// @clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, BattleEntityID)}, teleporting them back offscreen. [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)
     ///
@@ -296,21 +296,20 @@ namespace Battle.QSimulation.Game
         #region Public Get Methods
 
         /// <summary>
-        /// Retrieves registered entity matching given <paramref name="id"/>.
+        /// Retrieves registered entity matching given <paramref name="id"/>
+        /// as <see cref="BattleManageEntityHandle"/>.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
         ///
-        /// Use @cref{Get(Frame\, BattleEntityID\, int\, bool)} to retreive an entity in a group.
+        /// Use @cref{Get(Frame\, BattleEntityID\, int\)} to retrieve an entity in a group.
         ///
         /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
-        /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
-        /// <param name="updateViewPlayState">Whether to update the ViewPlayState.</param>
         ///
-        /// <returns>EntityRef for retrieved entity.</returns>
+        /// <returns><see cref="BattleManageEntityHandle"/> for retrieved entity.</returns>
         public static BattleManageEntityHandle Get(Frame f, BattleEntityID id)
         {
             DevAssertValidEntityID(id, context: nameof(Get));
@@ -321,6 +320,23 @@ namespace Battle.QSimulation.Game
             return BattleManageEntityHandle.Create(f, entityList[listIndex]);
         }
 
+        /// <summary>
+        /// Retrieves registered entity matching given <paramref name="id"/>
+        /// as <typeparamref name="T"/> : <see cref="BattleManageEntityHandle.IComposite"/>.
+        /// </summary>
+        /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
+        ///
+        /// Use @cref{Get(Frame\, BattleEntityID\, int\)} to retrieve an entity in a group.
+        ///
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+        ///
+        /// <typeparam name="T">The type of <see cref="BattleManageEntityHandle.IComposite"/> that should be returned.</typeparam>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="id">Entity ID of the entity to retrieve.</param>
+        ///
+        /// <returns><see cref="BattleManageEntityHandle"/> for retrieved entity via calling another Get-method.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Get<T>(Frame f, BattleEntityID id) where T : BattleManageEntityHandle.IComposite, new()
         {
@@ -328,22 +344,22 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Retrieves  registered entity matching given <paramref name="id"/> from the group at <paramref name="offset"/>.
+        /// Retrieves registered entity matching given <paramref name="id"/> from the group at <paramref name="offset"/>
+        /// as <see cref="BattleManageEntityHandle"/>.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
         ///
-        /// Use @cref{Get(Frame\, BattleEntityID\, bool)} to retreive an entity not in any group.
+        /// Use @cref{Get(Frame\, BattleEntityID\, int\)} to retrieve an entity not in any group.
         ///
         /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
-        /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.<br/>
-        /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
+        /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
         /// <param name="offset">Offset of the desired entity within the group.</param>
         ///
-        /// <returns>EntityRef for retrieved entity.</returns>
+        /// <returns><see cref="BattleManageEntityHandle"/> for retrieved entity.</returns>
         public static BattleManageEntityHandle Get(Frame f, BattleEntityID id, int offset)
         {
             DevAssertValidEntityID(id, context: nameof(Get));
@@ -354,6 +370,23 @@ namespace Battle.QSimulation.Game
             return BattleManageEntityHandle.Create(f, entityList[listIndex]);
         }
 
+        /// <summary>
+        /// Calls a Get-method to retrieve registered entity matching given <paramref name="id"/> from the group at <paramref name="offset"/>
+        /// as <typeparamref name="T"/> : <see cref="BattleManageEntityHandle.IComposite"/>.
+        /// </summary>
+        /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
+        ///
+        /// Use @cref{Get(Frame\, BattleEntityID\, int\)} to retrieve an entity not in any group.
+        ///
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+        /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="id">Entity ID of the entity to retrieve.</param>
+        /// <param name="offset">Offset of the desired entity within the group.</param>
+        ///
+        /// <returns><see cref="BattleManageEntityHandle"/> for retrieved entity via calling another Get-method.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T Get<T>(Frame f, BattleEntityID id, int offset) where T : BattleManageEntityHandle.IComposite, new()
         {
@@ -363,12 +396,24 @@ namespace Battle.QSimulation.Game
         #endregion Public Get Methods
         /// @}
 
-        /// @anchor BattleEntityManager-GetReturnMethods
-        /// @name Get/Return Methods
+        /// @anchor BattleEntityManager-UseReturnMethods
+        /// @name Use/Return Methods
         /// Methods for retrieving and returning [{Registered Entities}](#page-concepts-entity-management-registered-entities).
         /// @{
         #region Public Use/Return Methods
 
+        /// <summary>
+        /// Sets an entity's <see cref="BattleEntityPlayState"/> to be <see cref="Quantum.BattleEntityPlayState.InPlay">BattleEntityPlayState.InPlay</see> matching given <paramref name="id"/>.
+        /// </summary>
+        /// Part of @ref BattleEntityManager-UseReturnMethods "Use/Return methods"
+        ///
+        /// Use @cref{Get(Frame\, BattleEntityID\)} to set entity's RegisteredState to be <see cref="Quantum.BattleEntityPlayState.InPlay">BattleEntityPlayState.InPlay</see>.
+        ///
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="id">Entity ID of the entity to retrieve.</param>
         public static void Use(Frame f, BattleEntityID id)
         {
             DevAssertValidEntityID(id, context: nameof(Use));
@@ -382,6 +427,19 @@ namespace Battle.QSimulation.Game
             f.Events.BattlePlayStateUpdate(entityList[listIndex], managedEntity->RegisteredState);
         }
 
+        /// <summary>
+        /// Sets an entity's <see cref="BattleEntityPlayState"/> to be <see cref="Quantum.BattleEntityPlayState.InPlay">BattleEntityPlayState.InPlay</see> matching given <paramref name="id"/> from the group at <paramref name="offset"/>.
+        /// </summary>
+        /// Part of @ref BattleEntityManager-UseReturnMethods "Use/Return methods"
+        ///
+        /// Use @cref{Get(Frame\, BattleEntityID\)} to set entity's RegisteredState to be <see cref="Quantum.BattleEntityPlayState.InPlay">BattleEntityPlayState.InPlay</see>.
+        ///
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="id">Entity ID of the entity to retrieve.</param>
+        /// <param name="offset">Offset of the desired entity within the group.</param>
         public static void Use(Frame f, BattleEntityID id, int offset)
         {
             DevAssertValidEntityID(id, context: nameof(Use));
@@ -404,7 +462,7 @@ namespace Battle.QSimulation.Game
         ///
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
         ///
-        /// Return logic handled by private @clink{Return:BattleEntityManager.Return(Frame, BattleEntityManagerDataQSingleton*, EntityRef, BattleEntityID)} method.
+        /// Return logic handled by private @clink{Return:BattleEntityManager.Return(Frame, BattleEntityManagerDataQSingleton*, EntityRef, int)} method.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to return.</param>
@@ -430,7 +488,7 @@ namespace Battle.QSimulation.Game
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
         /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
         ///
-        /// Return logic handled by private @clink{Return:BattleEntityManager.Return(Frame, BattleEntityManagerDataQSingleton*, EntityRef, BattleEntityID)} method.
+        /// Return logic handled by private @clink{Return:BattleEntityManager.Return(Frame, BattleEntityManagerDataQSingleton*, EntityRef, int)} method.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to return.</param>
@@ -505,7 +563,7 @@ namespace Battle.QSimulation.Game
 
             QList<BattleEntityLink> linkedEntities = managedEntity.CompoundGetLinkedEntities(f);
 
-            for(int i = 0; i < linkedEntities.Count; i++)
+            for (int i = 0; i < linkedEntities.Count; i++)
             {
                 EntityRef linkedEntity = linkedEntities[i].ERef;
                 if (!f.Exists(linkedEntity)) continue;
@@ -594,7 +652,7 @@ namespace Battle.QSimulation.Game
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattleEntityID AssignID(QList<EntityRef> entityList)
         {
-            return new() { Int = entityList.Count + 1};
+            return new() { Int = entityList.Count + 1 };
         }
 
         [Conditional("UNITY_EDITOR")]
@@ -634,7 +692,7 @@ namespace Battle.QSimulation.Game
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static BattleManageEntityQComponent* MakeManagedEntity(Frame f, CompoundEntityTemplate template,  bool registered)
+        private static BattleManageEntityQComponent* MakeManagedEntity(Frame f, CompoundEntityTemplate template, bool registered)
         {
             BattleManageEntityQComponent managedEntity = new();
 
@@ -675,7 +733,8 @@ namespace Battle.QSimulation.Game
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="entityManagerData">Pointer to BattleEntityManagerData singleton.</param>
-        /// <param name="entityRef">The entity to return.</param>
+        /// <param name="entityRef">The entity to be returned.</param>
+        /// <param name="listIndex">Internal list index associated with the entity being returned.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Return(Frame f, BattleEntityManagerDataQSingleton* entityManagerData, EntityRef entityRef, int listIndex)
         {
