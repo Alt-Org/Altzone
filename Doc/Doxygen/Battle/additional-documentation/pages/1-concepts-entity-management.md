@@ -8,7 +8,7 @@
 There are 3 types of **Managed Entities**:
 [{Registered}](#page-concepts-entity-management-registered-entities),
 [{Compound}](#page-concepts-entity-management-compound-entities) and
-**Registered Compound**.
+**Registered Compound**.  
 These types are tracked by the @cref{Quantum,BattleManageEntityQComponent.IsRegistered} and @cref{Quantum,BattleManageEntityQComponent.IsCompound} booleans.  
 **Registered Compound Entities** are simply both
 [{Registered}](#page-concepts-entity-management-registered-entities) and
@@ -16,7 +16,7 @@ These types are tracked by the @cref{Quantum,BattleManageEntityQComponent.IsRegi
 
 ### Compound Entities {#page-concepts-entity-management-compound-entities}
 
-**Compound Entities** are [{Managed Entities of type Compound}](#page-concepts-entity-management-managed-entities) that are composed of a **Parent** **Entity** with other **Entities** linked to it,
+**Compound Entities** are [{Managed Entities of type Compound}](#page-concepts-entity-management-managed-entities) that are composed of a **Parent** **Entity** with other **Entities** linked to it,  
 forming the **Compound**, which can then be positioned and rotated together as one unit.  
 The **Parent** has a @cref{Quantum,BattleManageEntityQComponent.CompoundLinkedEntities} list which contains **Entities** that are linked to the **Compound** **Parent**.  
 **Compound Entities** are made from a @cref{Battle.QSimulation.Game.BattleEntityManager,CompoundEntityTemplate}.
@@ -24,6 +24,8 @@ The **Parent** has a @cref{Quantum,BattleManageEntityQComponent.CompoundLinkedEn
 **Compound Entities** are handled by [{Entity Manager}](#page-concepts-entity-management-entity-manager).  
 **Compound Entities** can be registered to [{Entity Manager}](#page-concepts-entity-management-entity-manager) both individually and in groups.  
 **Compound Entities** can also be made and used without registering.
+
+<br/>
 
 ## Entity Manager {#page-concepts-entity-management-entity-manager}
 
@@ -42,7 +44,7 @@ have a [{PlayState}](#page-concepts-entity-management-registered-entities-playst
 either individually or as an [{Entity Group}](#page-concepts-entity-management-entity-group).
 [{Compound Entities}](#page-concepts-entity-management-compound-entities)
 have their own @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} method.  
-**Registered Entities** can be **Accessed**, **Used** and **Returned**.  
+Once an **Entity** has been **Registered**, it can be **Accessed**, **Used** and **Returned** using its [{Entity ID}](#page-concepts-entity-management-entity-id).  
 
 **Registered Entities** can be **Accessed** using @clink{Get:Battle.QSimulation.Game.BattleEntityManager.Get(Frame, BattleEntityID)},
 whether or not they are [{InPlay}](#page-concepts-entity-management-registered-entities-playstate) or [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate),
@@ -57,9 +59,20 @@ and @clink{Return:Battle.QSimulation.Game.BattleEntityManager.Return(Frame, Batt
 
 **Registered Entities** can always be accessed, regardless of whether they are
 [{InPlay}](#page-concepts-entity-management-registered-entities-playstate) or [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).  
-However, the **Use** method should be called to clearly indicate the intent to use the **Registered Entity** in the arena,
-and the **Return** method should be called when the **Entity** is no longer needed,
+However, the **Use** method should be called to clearly indicate the intent to use the **Registered Entity** in the arena,  
+and the **Return** method should be called when the **Entity** is no longer needed,  
 ensuring its [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) accurately reflects whether it is current in use.
+
+#### Entity ID {#page-concepts-entity-management-entity-id}
+
+Each [{Registered}](#page-concepts-entity-management-registered-entities) **%Quantum Entity** is assigned an **Entity ID** by [{Entity Manager}](#page-concepts-entity-management-entity-manager).  
+The @cref{Quantum,BattleEntityID} struct is used to represent **Entity IDs**.
+
+#### Entity Group {#page-concepts-entity-management-entity-group}
+
+**%Quantum Entities** can be [{Registered}](#page-concepts-entity-management-registered-entities) to [{Entity Manager}](#page-concepts-entity-management-entity-manager) in **Entity Groups**.  
+An **Entity Group** has one [{Entity ID}](#page-concepts-entity-management-entity-id), and individual **Entities** within the **Group**
+are accessed by using an **offset value**.
 
 #### PlayState {#page-concepts-entity-management-registered-entities-playstate}
 
@@ -68,6 +81,8 @@ When in the arena, a **Registered Entity** is **InPlay**. When not in the arena,
 When **OutOfPlay**, **Registered Entities** will be stored offscreen.  
 The **Use** and **Return** methods update the  send a @ref BattlePlayStateUpdate event to update
 the **Unity/View** code on the **ViewPlayState** so it can use and react to that information.
+
+<br/>
 
 ### Compound Entity Handling {#page-concepts-entity-management-compound-entity-handling}
 
@@ -82,22 +97,6 @@ and @clink{TeleportCompound:Battle.QSimulation.Game.BattleEntityManager.Teleport
 **Registered Compound Entities** should only be made using
 @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} methods
 which marks the resulting [{Entity ID}](#page-concepts-entity-management-entity-id) as a **Compound** allowing the **Entity Manager** to handle it correctly.
-
-<br/>
-
-## Entity ID {#page-concepts-entity-management-entity-id}
-
-Each registered **%Quantum Entity** is assigned an **Entity ID** by [{Entity Manager}](#page-concepts-entity-management-entity-manager).  
-Each **Registered** [{Compound Entity}](#page-concepts-entity-management-compound-entities) is also marked as a **Compound**.  
-The @cref{Quantum,BattleEntityID} struct is used to represent **Entity IDs**.
-
-<br/>
-
-## Entity Group {#page-concepts-entity-management-entity-group}
-
-**Entities** can be registered to [{Entity Manager}](#page-concepts-entity-management-entity-manager) in **Entity Groups**.  
-An **Entity Group** has one [{Entity ID}](#page-concepts-entity-management-entity-id), and individual **Entities** within the **Group**
-are accessed by using an **offset value**.
 
 <br/>
 
