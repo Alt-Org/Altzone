@@ -163,7 +163,7 @@ RectTransform:
   m_AnchorMin: {x: 0.1, y: 0.2}
   m_AnchorMax: {x: 0.9, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -432}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1056554375581293797
 MonoBehaviour:
@@ -3214,8 +3214,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Palkinnot
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f29e6a373bbb7344a0c136aeb1ba5f2, type: 2}
-  m_sharedMaterial: {fileID: -7474359735773672808, guid: 8f29e6a373bbb7344a0c136aeb1ba5f2,
+  m_fontAsset: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e, type: 2}
+  m_sharedMaterial: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -3240,7 +3240,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 53.75
+  m_fontSize: 54.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3394,11 +3394,11 @@ MonoBehaviour:
   _clanMilestoneRewardImage: {fileID: 3170048230720926717}
   _clanMilestoneRewardAmountText: {fileID: 7248559215467486821}
   _clanMilestoneRightDiff: 0.1
-  _actionCategoryColor: {r: 0.09019608, g: 0.35686275, b: 0.7058824, a: 1}
-  _socialCategoryColor: {r: 0.011764706, g: 0.4627451, b: 0.08235294, a: 1}
-  _storyCategoryColor: {r: 0.6666667, g: 0.28235295, b: 0, a: 1}
-  _cultureCategoryColor: {r: 0.6313726, g: 0.1254902, b: 0.11764706, a: 1}
-  _ethicalCategoryColor: {r: 0.4392157, g: 0.39607844, b: 0.003921569, a: 1}
+  _actionCategoryColor: {r: 0, g: 0.8901961, b: 1, a: 1}
+  _socialCategoryColor: {r: 0.4745098, g: 1, b: 0.41960785, a: 1}
+  _storyCategoryColor: {r: 1, g: 0.7019608, b: 0, a: 1}
+  _cultureCategoryColor: {r: 0.9372549, g: 0.31764707, b: 0.30980393, a: 1}
+  _ethicalCategoryColor: {r: 0.9764706, g: 0.7411765, b: 0.023529412, a: 1}
   _defaultColor: {r: 0, g: 0, b: 0, a: 1}
   _multipleChoicePopup: {fileID: 6447340831562771758}
   _taskMultipleChoiceColorImage: {fileID: 0}
@@ -3849,8 +3849,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 509770699458027364}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.1, y: 0.1}
-  m_AnchorMax: {x: 0.9, y: 0.9}
+  m_AnchorMin: {x: 0.1, y: 0.37231624}
+  m_AnchorMax: {x: 0.89786327, y: 0.82000005}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3884,8 +3884,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Aloita teht\xE4v\xE4"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f29e6a373bbb7344a0c136aeb1ba5f2, type: 2}
-  m_sharedMaterial: {fileID: -7474359735773672808, guid: 8f29e6a373bbb7344a0c136aeb1ba5f2,
+  m_fontAsset: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e, type: 2}
+  m_sharedMaterial: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -3910,7 +3910,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 56
+  m_fontSize: 65.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3918,7 +3918,7 @@ MonoBehaviour:
   m_fontSizeMax: 110
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -4189,7 +4189,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 69.4
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4326,7 +4326,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 69.4
+  m_fontSize: 72
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4876,8 +4876,8 @@ MonoBehaviour:
 
     Yippee!'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 7573fa126ddb0bd45846faa25129de46, type: 2}
-  m_sharedMaterial: {fileID: 4961577804787953164, guid: 7573fa126ddb0bd45846faa25129de46,
+  m_fontAsset: {fileID: 11400000, guid: bf012009a8f238b4b9348e82f56d001a, type: 2}
+  m_sharedMaterial: {fileID: 4961577804787953164, guid: bf012009a8f238b4b9348e82f56d001a,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -6117,7 +6117,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8113858690240547927
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6205,16 +6205,16 @@ MonoBehaviour:
       m_Calls: []
   m_text: Task title
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f29e6a373bbb7344a0c136aeb1ba5f2, type: 2}
-  m_sharedMaterial: {fileID: -7474359735773672808, guid: 8f29e6a373bbb7344a0c136aeb1ba5f2,
+  m_fontAsset: {fileID: 11400000, guid: dcc089e132356ac4a9eb8090bee5e304, type: 2}
+  m_sharedMaterial: {fileID: 4752717343592566078, guid: dcc089e132356ac4a9eb8090bee5e304,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4293587185
+  m_fontColor: {r: 0.94509804, g: 0.9411765, b: 0.91764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -6865,8 +6865,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Game Literacy
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e, type: 2}
-  m_sharedMaterial: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
+  m_fontAsset: {fileID: 11400000, guid: dcc089e132356ac4a9eb8090bee5e304, type: 2}
+  m_sharedMaterial: {fileID: 4752717343592566078, guid: dcc089e132356ac4a9eb8090bee5e304,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -6891,7 +6891,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45.45
+  m_fontSize: 49.25
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
