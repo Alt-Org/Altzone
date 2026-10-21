@@ -236,6 +236,7 @@ GameObject:
   - component: {fileID: 6275337144715752762}
   - component: {fileID: 4722963708828909867}
   - component: {fileID: 2554307732354820456}
+  - component: {fileID: 6433631782120375908}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -290,10 +291,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: jukebox
+  m_text: Jukebox
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
-  m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: b626ba938f201a6458410ae89c1ae466,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -336,7 +337,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -362,6 +363,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6433631782120375908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286476643452183935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Jukebox
+  _englishText: Jukebox
 --- !u!1 &355681066477010040
 GameObject:
   m_ObjectHideFlags: 0
@@ -1075,6 +1090,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: 7
   _toggle: {fileID: 5057941336545155512}
+  TogglesDrag: {fileID: 0}
 --- !u!1 &1784306841511310294
 GameObject:
   m_ObjectHideFlags: 0
@@ -1177,6 +1193,7 @@ GameObject:
   - component: {fileID: 227956174625389949}
   - component: {fileID: 8597009909921118316}
   - component: {fileID: 2188468244501158438}
+  - component: {fileID: 4340451284680768193}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -1233,8 +1250,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Klaanin teksti
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
-  m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: b626ba938f201a6458410ae89c1ae466,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1277,7 +1294,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -1303,6 +1320,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4340451284680768193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2222168549068529157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Klaanin nimi
+  _englishText: Clan name
 --- !u!1 &2490132265957831075
 GameObject:
   m_ObjectHideFlags: 0
@@ -1314,6 +1345,7 @@ GameObject:
   - component: {fileID: 722324880109718137}
   - component: {fileID: 1501077886231635954}
   - component: {fileID: 6201280709113170248}
+  - component: {fileID: 8744606919202513406}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -1368,10 +1400,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\xE4\xE4nestys"
+  m_text: "\xC4\xE4nestys"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
-  m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: b626ba938f201a6458410ae89c1ae466,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1414,7 +1446,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -1440,6 +1472,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8744606919202513406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2490132265957831075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "A\xE4nestys"
+  _englishText: Voting
 --- !u!1 &2734562403725228761
 GameObject:
   m_ObjectHideFlags: 0
@@ -1720,6 +1766,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: 1
   _toggle: {fileID: 8014363413883596454}
+  TogglesDrag: {fileID: 0}
 --- !u!1 &3029779420080005880
 GameObject:
   m_ObjectHideFlags: 0
@@ -1731,6 +1778,7 @@ GameObject:
   - component: {fileID: 8953283603783954410}
   - component: {fileID: 1331348211829525603}
   - component: {fileID: 5059445677794308361}
+  - component: {fileID: 4740411459477272620}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -1787,8 +1835,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Kolikot
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
-  m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: b626ba938f201a6458410ae89c1ae466,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1831,7 +1879,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -1857,6 +1905,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4740411459477272620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3029779420080005880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kolikot
+  _englishText: Coins
 --- !u!1 &3138592830749015444
 GameObject:
   m_ObjectHideFlags: 0
@@ -1959,6 +2021,7 @@ GameObject:
   - component: {fileID: 6217160659847245381}
   - component: {fileID: 1971310309630147860}
   - component: {fileID: 8949017097082269556}
+  - component: {fileID: 7961889794141384309}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -2015,7 +2078,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: asetukset
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
   m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
     type: 2}
   m_fontSharedMaterials: []
@@ -2082,9 +2145,23 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7961889794141384309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3316730940295225444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Asetukset
+  _englishText: Settings
 --- !u!1 &3496838983010906863
 GameObject:
   m_ObjectHideFlags: 0
@@ -2429,12 +2506,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _toggleContainer: {fileID: 5977537012365875117}
-  _targetsByStyle:
-  - {fileID: 0}
-  - {fileID: 6818781044047175173, guid: bd46108b0f4ff254a802ed992a377f5d, type: 3}
   _clanSubItemSpacers: []
   _clanSubItemRows: []
   _topBarToggleLayouts: []
+  _topBarToggleHandlers: []
+  _notInUsePanel: {fileID: 0}
 --- !u!114 &4488955048039476271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2663,6 +2739,7 @@ GameObject:
   - component: {fileID: 6195841829698744015}
   - component: {fileID: 3949604820146997293}
   - component: {fileID: 7958226303637092268}
+  - component: {fileID: 23641714519867962}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -2717,10 +2794,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: pelaajaprofiili
+  m_text: Pelaajaprofiili
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
-  m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: b626ba938f201a6458410ae89c1ae466,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2763,7 +2840,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -2789,6 +2866,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &23641714519867962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4161865036518166400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Pelaaja Profiili
+  _englishText: Player Profile
 --- !u!1 &4270587334227334620
 GameObject:
   m_ObjectHideFlags: 0
@@ -2800,6 +2891,7 @@ GameObject:
   - component: {fileID: 4216023800229246576}
   - component: {fileID: 2639612140115842223}
   - component: {fileID: 1370198841874878435}
+  - component: {fileID: 1517961089715548650}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -2856,8 +2948,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: LeaderBoard
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
-  m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: b626ba938f201a6458410ae89c1ae466,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2900,7 +2992,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -2926,6 +3018,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1517961089715548650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4270587334227334620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Sijoituslista
+  _englishText: Leaderboard
 --- !u!1 &4429807350361913849
 GameObject:
   m_ObjectHideFlags: 0
@@ -3359,6 +3465,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: 2
   _toggle: {fileID: 5531147285950418147}
+  TogglesDrag: {fileID: 0}
 --- !u!1 &5099111870554471326
 GameObject:
   m_ObjectHideFlags: 0
@@ -3730,6 +3837,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: 6
   _toggle: {fileID: 2701749676569206017}
+  TogglesDrag: {fileID: 0}
 --- !u!1 &5280752103420102816
 GameObject:
   m_ObjectHideFlags: 0
@@ -3741,6 +3849,7 @@ GameObject:
   - component: {fileID: 7481088886715498901}
   - component: {fileID: 4036606094002515443}
   - component: {fileID: 9026165465824417791}
+  - component: {fileID: 6971972395190579844}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -3795,9 +3904,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: klaanilaatta
+  m_text: Pelaaja laatta
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
   m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
     type: 2}
   m_fontSharedMaterials: []
@@ -3864,9 +3973,23 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6971972395190579844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5280752103420102816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Pelaaja laatta
+  _englishText: Player plaque
 --- !u!1 &5845568029299496389
 GameObject:
   m_ObjectHideFlags: 0
@@ -3944,14 +4067,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _togglesClanTile: 0
-  _clantileChildren: []
   _toggle: {fileID: 2721894571988628335}
   _topBarLayout: {fileID: 5977537012365875117}
   _clanTileParent: {fileID: 6213819572329168407}
+  _clanTileLayout: {fileID: 0}
+  SavedViewMore: 
   _inputArrow: {fileID: 0}
   _viewMore: {fileID: 0}
-  _clanTileLayout: {fileID: 0}
   _objectToggles: []
+  _clantileChildren: []
+  _toggleDrag: []
 --- !u!114 &1706643735515156069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4143,6 +4268,7 @@ GameObject:
   - component: {fileID: 6082496021978892077}
   - component: {fileID: 887374669348480920}
   - component: {fileID: 6697081810080415651}
+  - component: {fileID: 6753142156019049319}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -4197,10 +4323,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: klaanilaatta
+  m_text: Klaanilaatta
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
-  m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: b626ba938f201a6458410ae89c1ae466,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -4243,7 +4369,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -4269,6 +4395,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6753142156019049319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7247089667593043833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Klaanilaatta
+  _englishText: Clan tile
 --- !u!1 &7484482622873368070
 GameObject:
   m_ObjectHideFlags: 0
@@ -4458,6 +4598,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: 3
   _toggle: {fileID: 1028434246954719908}
+  TogglesDrag: {fileID: 0}
 --- !u!1 &7555591180306003883
 GameObject:
   m_ObjectHideFlags: 0
@@ -4722,6 +4863,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: 4
   _toggle: {fileID: 9144270667294880174}
+  TogglesDrag: {fileID: 0}
 --- !u!1 &8163724154041967367
 GameObject:
   m_ObjectHideFlags: 0
@@ -5023,6 +5165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: 6
   _toggle: {fileID: 9112322874935144731}
+  TogglesDrag: {fileID: 0}
 --- !u!1 &8348109178150691024
 GameObject:
   m_ObjectHideFlags: 0
@@ -5903,6 +6046,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: 0
   _toggle: {fileID: 2610165951287862342}
+  TogglesDrag: {fileID: 0}
 --- !u!1 &8808142921745767758
 GameObject:
   m_ObjectHideFlags: 0
@@ -6030,6 +6174,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: 9
   _toggle: {fileID: 2721894571988628335}
+  TogglesDrag: {fileID: 0}
 --- !u!1 &8982479281727454631
 GameObject:
   m_ObjectHideFlags: 0
@@ -6107,14 +6252,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _togglesClanTile: 0
-  _clantileChildren: []
   _toggle: {fileID: 2610165951287862342}
   _topBarLayout: {fileID: 5977537012365875117}
   _clanTileParent: {fileID: 711697141399347822}
+  _clanTileLayout: {fileID: 0}
+  SavedViewMore: 
   _inputArrow: {fileID: 6272481320531640117}
   _viewMore: {fileID: 1239755475642515276}
-  _clanTileLayout: {fileID: 0}
   _objectToggles: []
+  _clantileChildren: []
+  _toggleDrag: []
 --- !u!114 &3674222842324361847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6231,6 +6378,7 @@ GameObject:
   - component: {fileID: 2228950966843925110}
   - component: {fileID: 4896330788368524907}
   - component: {fileID: 4091455668402411567}
+  - component: {fileID: 6474774106442476814}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -6287,8 +6435,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Klaanin logo
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
-  m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: b626ba938f201a6458410ae89c1ae466,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -6331,7 +6479,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 3
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -6357,3 +6505,17 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6474774106442476814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9109465942325818506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Klaanin logo
+  _englishText: Clan logo
