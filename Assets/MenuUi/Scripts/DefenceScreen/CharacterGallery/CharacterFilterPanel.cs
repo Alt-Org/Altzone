@@ -26,7 +26,7 @@ public class CharacterFilterPanel : MonoBehaviour
     [SerializeField] private List<Toggle> _classFilterToggles = new List<Toggle>();
 
     [Header("Dropdown")]
-    [SerializeField] private TMP_Dropdown _classSortDropdown;
+    [SerializeField] private CharacterSortDropdown _classSortDropdown;
     [SerializeField] private GameObject _dropDownArrowUp;
     [SerializeField] private GameObject _dropDownArrowDown;
 
@@ -41,7 +41,7 @@ public class CharacterFilterPanel : MonoBehaviour
 
     private List<CharacterClassType> _filteredClasses = new List<CharacterClassType>();
 
-    private enum SortOrder
+    public enum SortOrder
     {
         Classes = 0,
         Alphabetical = 1,
@@ -76,10 +76,18 @@ public class CharacterFilterPanel : MonoBehaviour
         }
 
         _classSortDropdown.onValueChanged.AddListener(ChangeDropDownValue);
+
+        _classSortDropdown.DropdownStateChanged += UpdateDropdownArrow;
     }
 
-
     #region Dropdown controls
+    private void UpdateDropdownArrow(bool isExpanded)
+    {
+        _dropDownArrowUp.SetActive(isExpanded);
+        _dropDownArrowDown.SetActive(!isExpanded);
+    }
+
+    /*
     public void Update()
     {
         //control the direction of the drop down arrow
@@ -94,6 +102,7 @@ public class CharacterFilterPanel : MonoBehaviour
             _dropDownArrowDown.SetActive(true);
         }
     }
+    */
 
     private void ChangeDropDownValue(int value)
     {
