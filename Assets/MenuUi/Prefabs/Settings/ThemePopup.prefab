@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3403063159451743710}
   - component: {fileID: 7613462059642694301}
   - component: {fileID: 4102784595965050399}
+  - component: {fileID: 5172523620389970723}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -67,8 +68,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Pelaajallaatta
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 60e82e4f80e646e498eed795d845cfe2, type: 2}
-  m_sharedMaterial: {fileID: 6181749917240489737, guid: 60e82e4f80e646e498eed795d845cfe2,
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: 607ab1d3fedd2ec47a689eddcef4219e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -137,6 +138,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5172523620389970723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 388549357289046263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Pelaajalaatta
+  _englishText: Player tile
 --- !u!1 &800390666597319009
 GameObject:
   m_ObjectHideFlags: 0
@@ -2029,7 +2044,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8859466706356654352}
   m_HandleRect: {fileID: 6132479524656538590}
   m_Direction: 2
-  m_Value: 0.9999996
+  m_Value: 1
   m_Size: 0.7201717
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4573,8 +4588,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6527100726943972248, guid: f7da6b1057c593e429a95d1adc7ead69,
         type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6527100726943972248, guid: f7da6b1057c593e429a95d1adc7ead69,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6527100726943972248, guid: f7da6b1057c593e429a95d1adc7ead69,
+        type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 261
+      objectReference: {fileID: 0}
+    - target: {fileID: 6527100726943972248, guid: f7da6b1057c593e429a95d1adc7ead69,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6534120349340925584, guid: f7da6b1057c593e429a95d1adc7ead69,
         type: 3}

@@ -2868,6 +2868,7 @@ GameObject:
   - component: {fileID: 7441978275985432627}
   - component: {fileID: 1336745122527029236}
   - component: {fileID: 1824768729756271324}
+  - component: {fileID: 6145769237416769663}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2994,6 +2995,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6145769237416769663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4108614964476656164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Peruuta
+  _englishText: Cancel
 --- !u!1 &4109902175780132217
 GameObject:
   m_ObjectHideFlags: 0
@@ -3362,7 +3377,12 @@ MonoBehaviour:
   - {fileID: 8155066937501032640}
   - {fileID: 3189941284119476417}
   _acceptConfirmButtonText: {fileID: 7546954602341509280}
+  _startTaskConfirmTextFI: "Aloita teht\xE4v\xE4"
+  _startTaskConfirmTextEN: Start task
+  _changeTaskConfirmTextFI: "Vaihda teht\xE4v\xE4"
+  _changeTaskConfirmTextEN: Change Task
   _taskDescription: {fileID: 8678275544292429090}
+  _taskExecution: {fileID: 0}
   _taskGameLiteracy: {fileID: 6077883964220338481}
   _taskPointsText: {fileID: 1149775328713055978}
   _taskCoinsText: {fileID: 7538034844948227770}

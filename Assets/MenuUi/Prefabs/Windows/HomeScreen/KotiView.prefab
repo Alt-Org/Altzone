@@ -359,10 +359,10 @@ RectTransform:
   - {fileID: 25823139286904717}
   - {fileID: 6217452384852310489}
   - {fileID: 29559553281591173}
-  - {fileID: 6829260270239750260}
   - {fileID: 2569360559950811401}
-  - {fileID: 4151726032586021349}
   - {fileID: 8043209642493597535}
+  - {fileID: 6829260270239750260}
+  - {fileID: 4151726032586021349}
   m_Father: {fileID: 1700249277024366784}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1596,6 +1596,7 @@ MonoBehaviour:
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0
+  _disabledOnProd: 0
 --- !u!1 &8562513669237207619
 GameObject:
   m_ObjectHideFlags: 0

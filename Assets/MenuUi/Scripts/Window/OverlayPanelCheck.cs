@@ -59,14 +59,13 @@ namespace MenuUi.Scripts.Window
                     Destroy(gameObject);
                     return;
                 }
+
                 UpdateButtonContent();
             }
 
             if (_overlayObject == null) _overlayObject = transform.gameObject;
             _chatActive = true;
             buttons[2].transform.localScale = Vector3.one * 1.2f;
-            //buttons[2].interactable = false;
-
         }
 
         private void OnEnable()
@@ -84,7 +83,7 @@ namespace MenuUi.Scripts.Window
 
         private void OnDestroy()
         {
-            if(Instance == this) Instance = null;
+            if (Instance == this) Instance = null;
         }
 
         public void UpdateButtonContent() //Makes buttons bigger and glow when selected
@@ -102,14 +101,12 @@ namespace MenuUi.Scripts.Window
                 if (isCurrentWindow)
                 {
                     button.transform.localScale = Vector3.one * 1.2f;
-                    //button.interactable = false;
                 }
                 else
                 {
                     button.transform.localScale = Vector3.one;
                     button.interactable = true;
-
-                }//ifelse currentwindow
+                } //ifelse currentwindow
 
                 /* Opacity controller for inactive buttons
                 Image image = button.GetComponent<Image>();
@@ -128,8 +125,8 @@ namespace MenuUi.Scripts.Window
                 {
                     glow.gameObject.SetActive(isCurrentWindow);
                 }
-            }//for
-        }//updatebuttoncontent
+            } //for
+        } //updatebuttoncontent
 
         public void ToggleOverlay(bool value)
         {
@@ -166,6 +163,5 @@ namespace MenuUi.Scripts.Window
         {
             OnChangePopupInfo?.Invoke(level, message);
         }
-
     }
 }
