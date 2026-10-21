@@ -86,7 +86,7 @@ public class KojuSorting : MonoBehaviour
         if (slots.Length == 0) return;
 
         // Slot 0 is reserved and should be skipped from sorting due to the poster card occupying it
-        for (int i = 1; i < slots.Length; i++) 
+        for (int i = 1; i < slots.Length; i++)
         {
             var slot = slots[i];
 
@@ -97,6 +97,7 @@ public class KojuSorting : MonoBehaviour
                 if (child.gameObject != slot.KojuEmptyVisual)  
                 {
                     cardInSlot = child.GetComponent<FurnitureCardUI>();
+
                     if (cardInSlot != null)
                     {
                         break;
