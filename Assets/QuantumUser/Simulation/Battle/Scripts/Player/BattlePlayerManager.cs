@@ -538,26 +538,6 @@ namespace Battle.QSimulation.Player
             public BattleEntityManager.CompoundEntityTemplate PlayerCharacterEntityTemplate;
         }
 
-        /// <summary>
-        /// Private helper method for getting the BattlePlayerManagerDataQSingleton from the %Quantum %Frame.
-        /// </summary>
-        ///
-        /// See [{PlayerManagerData}](#page-concepts-player-simulation-management-playermanagerdata) for more info.
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        ///
-        /// <returns>Pointer to the PlayerManagerData singleton.</returns>
-        /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static BattlePlayerManagerDataQSingleton* GetPlayerManagerData(Frame f)
-        {
-            if (!f.Unsafe.TryGetPointerSingleton(out BattlePlayerManagerDataQSingleton* playerManagerData))
-            {
-                s_debugLogger.Error(f, "PlayerManagerData singleton not found!");
-            }
-
-            return playerManagerData;
-        }*/
-
         private static void InitializePlayerCharacterEntity(Frame f, BattlePlayerData.Ref playerData, PlayerCreationParameters parameters)
         {
             int characterGridExtendTop;
