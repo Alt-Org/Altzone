@@ -206,9 +206,19 @@ namespace Battle.QSimulation.Player
         /// <param name="position">World position to move to.</param>
         public static void Move(Frame f, BattlePlayerHandle playerHandle, FPVector2 position)
         {
+            playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerMovementController), errorContext: "Can not move player");
+
             playerHandle.LoadedCharacterData->ViewMovementVector = position - playerHandle.LoadedCharacterTransformCopy.Position;
-            BattleEntityManager.MoveCompound(f, playerHandle.LoadedCharacterEntityHandle, position, playerHandle.LoadedCharacterData->MovementRotationBaseRad);
+            BattleEntityManager.MoveCompound(f,
+                playerHandle.LoadedCharacterEntityHandle,
+                position,
+                playerHandle.LoadedCharacterData->MovementRotationBaseRad
+            );
+
             if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == EntityRef.None) return;
+
+            FP shieldRotation = playerHandle.LoadedCharacterData->MovementRotationBaseRad +
+                                playerHandle.LoadedCharacterData->MovementRotationOffsetRad;
             BattleEntityManager.MoveCompound(f,
                 BattleManageEntityHandle.Create(f, playerHandle.LoadedCharacterData->AttachedShieldEntityRef),
                 position,
