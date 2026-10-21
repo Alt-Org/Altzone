@@ -1356,7 +1356,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 1707.7499}
+  m_SizeDelta: {x: 0, y: 1266.7498}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &26010402881241068
 MonoBehaviour:
@@ -1730,6 +1730,7 @@ GameObject:
   - component: {fileID: 5676042146353842928}
   - component: {fileID: 2854420665405445479}
   - component: {fileID: 3275754443134240923}
+  - component: {fileID: 5165660915007323951}
   m_Layer: 5
   m_Name: T_EditText
   m_TagString: Untagged
@@ -1814,7 +1815,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50.9
+  m_fontSize: 38.2
   m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1858,6 +1859,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5165660915007323951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4996380361746271593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Muokkaa
+  _englishText: Modify
 --- !u!1 &5035271099310051850
 GameObject:
   m_ObjectHideFlags: 0
@@ -3307,6 +3322,7 @@ GameObject:
   - component: {fileID: 480807589716058390}
   - component: {fileID: 7980325834360931026}
   - component: {fileID: 8313829852714842520}
+  - component: {fileID: 6568860805569273133}
   m_Layer: 5
   m_Name: T_Title
   m_TagString: Untagged
@@ -3389,7 +3405,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 54.9
   m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3433,6 +3449,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6568860805569273133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7638741030548043451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Klaanin kojumainos
+  _englishText: Clan stall-ad
 --- !u!1 &8088731682210538505
 GameObject:
   m_ObjectHideFlags: 0
@@ -5504,6 +5534,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1478181402764354445, guid: faf3d3e322be9a940a310f9404492cd8,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 72
+      objectReference: {fileID: 0}
     - target: {fileID: 2082420161837013928, guid: faf3d3e322be9a940a310f9404492cd8,
         type: 3}
       propertyPath: m_Name
@@ -5526,8 +5561,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5580951551266584966, guid: faf3d3e322be9a940a310f9404492cd8,
         type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -34.04608
+      objectReference: {fileID: 0}
+    - target: {fileID: 5580951551266584966, guid: faf3d3e322be9a940a310f9404492cd8,
+        type: 3}
       propertyPath: m_SizeDelta.y
-      value: -79.99988
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5863745566099032614, guid: faf3d3e322be9a940a310f9404492cd8,
         type: 3}
@@ -5544,6 +5584,16 @@ PrefabInstance:
       propertyPath: furnitureTray
       value: 
       objectReference: {fileID: 7128106909089710255}
+    - target: {fileID: 6937725725393343144, guid: faf3d3e322be9a940a310f9404492cd8,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6937725725393343144, guid: faf3d3e322be9a940a310f9404492cd8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6509,7 +6559,7 @@ PrefabInstance:
     - target: {fileID: 4582517417214366101, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
         type: 3}
       propertyPath: m_fontSize
-      value: 49.8
+      value: 29.05
       objectReference: {fileID: 0}
     - target: {fileID: 4589623893211600443, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
         type: 3}
