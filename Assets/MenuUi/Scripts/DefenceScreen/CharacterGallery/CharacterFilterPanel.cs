@@ -41,7 +41,7 @@ public class CharacterFilterPanel : MonoBehaviour
 
     private List<CharacterClassType> _filteredClasses = new List<CharacterClassType>();
 
-    private enum SortOrder
+    public enum SortOrder
     {
         Classes = 0,
         Alphabetical = 1,
