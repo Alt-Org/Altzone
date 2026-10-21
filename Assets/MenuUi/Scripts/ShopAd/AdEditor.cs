@@ -42,7 +42,7 @@ public class AdEditor : AltMonoBehaviour
     [SerializeField] private GameObject kojuPanel;
 
     private AdStoreObject _adData;
-    private AdStoreObject _previousAdData = new(null, null);
+    private AdStoreObject _previousAdData = null;
     private string _posterName = null;
     private List<HeartPieceData> _heartPieceData = new();
 
@@ -61,6 +61,7 @@ public class AdEditor : AltMonoBehaviour
 
         if (_adData != null)
         {
+            _previousAdData = new(null, null);
             _previousAdData.BackgroundColour = _adData.BackgroundColour;
             _previousAdData.BorderFrame = _adData.BorderFrame;
             _previousAdData.Furniture = _adData.Furniture;
@@ -101,6 +102,7 @@ public class AdEditor : AltMonoBehaviour
             }
             _adGraphicHandler.SetAdPoster(_adData, _posterName, _heartPieceData);
             if (_adData.IsAdText) _adText.SetActive(true);
+            if(_previousAdData == null) _previousAdData = new(null,null);
             _previousAdData.BorderFrame = _adData.BorderFrame;
             _previousAdData.TextColour = _adData.TextColour;
             _previousAdData.TextFont = _adData.TextFont;
