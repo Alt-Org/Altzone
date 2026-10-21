@@ -104,7 +104,6 @@ namespace Battle.QSimulation.Diamond
         /// <param name="f">Current simulation frame.</param>
         /// <param name="diamond">Pointer to the diamond component.</param>
         /// <param name="diamondEntity">EntityRef of the diamond.</param>
-        /// <param name="playerHitbox">Pointer to the playerHitbox component.</param>
         /// <param name="playerEntity">EntityRef of the player.</param>
         public void BattleOnDiamondHitPlayer(Frame f, BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, EntityRef playerEntity)
         {

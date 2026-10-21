@@ -90,8 +90,8 @@ the **Unity/View** code on the **ViewPlayState** so it can use and react to that
 @clink{MakeCompound:Battle.QSimulation.Game.BattleEntityManager.MakeCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)}
 or @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} methods.  
 [{Compound Entities}](#page-concepts-entity-management-compound-entities) can be **moved** and **teleported** using the
-@clink{MoveCompound:Battle.QSimulation.Game.BattleEntityManager.MoveCompound(Frame, EntityRef, FPVector2, FP)}
-and @clink{TeleportCompound:Battle.QSimulation.Game.BattleEntityManager.TeleportCompound(Frame, EntityRef, FPVector2, FP)} methods.
+@clink{MoveCompound:Battle.QSimulation.Game.BattleEntityManager.MoveCompound(Frame, Battle.QSimulation.Game.BattleManageEntityHandle, FPVector2, FP)}
+and @clink{TeleportCompound:Battle.QSimulation.Game.BattleEntityManager.TeleportCompound(Frame, Battle.QSimulation.Game.BattleManageEntityHandle, FPVector2, FP)} methods.
 
 @note
 **Registered Compound Entities** should only be made using

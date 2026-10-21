@@ -1,0 +1,68 @@
+/// @file BattleManageEntity.qtn
+/// <summary>
+/// Contains BattleEntityLink and BattleEntityID structs.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleEntityLink}  
+///   @copybrief Quantum.BattleEntityLink
+/// - @cref{Quantum,BattleEntityID}  
+///   @copybrief Quantum.BattleEntityID
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleEntityLink
+/// <summary>
+/// Link structure used to reference %Quantum entity and its relative position.  
+/// Used by @cref{Quantum,BattleManageEntityQComponent} for entity associations.
+/// </summary>
+///
+/// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+///
+/// @bigtext{Generated from @ref BattleManageEntity.qtn}
+
+/// @var EntityRef Quantum::BattleEntityLink::ERef
+/// <summary>Linked %Quantum Entity reference.</summary>
+///
+/// @var FPVector2 Quantum::BattleEntityLink::Offset
+/// <summary>Linked entity's position relative to compound parent.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleEntityLink::SIZE
+/// @var Int32 Quantum::BattleEntityLink::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleEntityLink::GetHashCode
+///
+/// @fn void Quantum::BattleEntityLink::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleEntityID
+/// <summary>
+/// Struct used by @cref{Battle.QSimulation.Game,BattleEntityManager} to reference %Quantum entities.
+/// </summary>
+///
+/// [{Entity ID}](#page-concepts-entity-management-entity-id)
+///
+/// @bigtext{Generated from @ref BattleManageEntity.qtn}
+
+/// @var int Quantum::BattleEntityID::Int
+/// <summary>Int representation of the ID.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleEntityID::SIZE
+/// @var Int32 Quantum::BattleEntityID::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleEntityID::GetHashCode
+///
+/// @fn void Quantum::BattleEntityID::Serialize
+///
+/// @}
+
+

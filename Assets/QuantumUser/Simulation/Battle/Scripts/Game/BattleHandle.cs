@@ -349,7 +349,6 @@ namespace Battle.QSimulation.Game
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="flag">Collision flag to set.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetCollisionFlag(Frame f, BattleProjectileCollisionFlags flag)
@@ -362,7 +361,6 @@ namespace Battle.QSimulation.Game
         /// Sets whether the projectile is currently held.
         /// </summary>
         ///
-        /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="isHeld">True/False : held / not held.</param>
         public void SetHeld(bool isHeld)
         {
@@ -374,7 +372,6 @@ namespace Battle.QSimulation.Game
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="emotion">The new emotion state to assign to the projectile.</param>
         public void SetEmotion(Frame f, BattleEmotionState emotion)
         {
@@ -391,7 +388,6 @@ namespace Battle.QSimulation.Game
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
         /// <param name="attack">The new attack value to assign to the projectile.</param>
         public void SetAttack(Frame f, FP attack)
         {

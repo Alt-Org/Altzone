@@ -1,13 +1,13 @@
-/// @file BattlePlayerData.qtn
+/// @file BattlePlayerCharacterData.qtn
 /// <summary>
-/// Contains components used for player entities.
+/// Contains components used for player character entities.
 /// </summary>
 ///
 /// ## Generated Structs
-/// - @cref{Quantum,BattlePlayerDataQComponent}  
-///   @copybrief Quantum.BattlePlayerDataQComponent
-/// - @cref{Quantum,BattlePlayerDataTemplateQComponent}  
-///   @copybrief Quantum.BattlePlayerDataTemplateQComponent
+/// - @cref{Quantum,BattlePlayerCharacterDataQComponent}  
+///   @copybrief Quantum.BattlePlayerCharacterDataQComponent
+/// - @cref{Quantum,BattlePlayerCharacterDataTemplateQComponent}  
+///   @copybrief Quantum.BattlePlayerCharacterDataTemplateQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -31,7 +31,7 @@
 
 // ---------------------------------------------------------------------------------------------------- //
 
-/// @struct Quantum::BattlePlayerDataQComponent
+/// @struct Quantum::BattlePlayerCharacterDataQComponent
 /// <summary>
 /// Contains player's data, including ids, stats, position, size, hitboxlists, etc.
 /// </summary>
@@ -44,23 +44,11 @@
 /// @anchor PlayerID
 /// @name Player's refs and IDs
 /// @{
-/// @var PlayerRef Quantum::BattlePlayerDataQComponent::PlayerRef
-/// <summary>PlayerRef used to identify the player.</summary>
-/// Part of @ref PlayerID "Player's refs and IDs"
-///
-/// @var BattlePlayerSlot Quantum::BattlePlayerDataQComponent::Slot
-/// <summary>Which PlayerSlot the player is on.</summary>
-/// Part of @ref PlayerID "Player's refs and IDs"
-///
-/// @var BattleTeamNumber Quantum::BattlePlayerDataQComponent::TeamNumber
-/// <summary>Which team the player is on.</summary>
-/// Part of @ref PlayerID "Player's refs and IDs"
-///
-/// @var BattlePlayerCharacterID Quantum::BattlePlayerDataQComponent::CharacterId
+/// @var BattlePlayerCharacterID Quantum::BattlePlayerCharacterDataQComponent::Id
 /// <summary>Character's 3-digit ID number.</summary>
 /// Part of @ref PlayerID "Player's refs and IDs"
 ///
-/// @var BattlePlayerCharacterClass Quantum::BattlePlayerDataQComponent::CharacterClass
+/// @var BattlePlayerCharacterClass Quantum::BattlePlayerCharacterDataQComponent::Class
 /// <summary>Which defence class the character belongs to.</summary>
 /// Part of @ref PlayerID "Player's refs and IDs"
 /// @}
@@ -68,7 +56,7 @@
 /// @anchor PlayerStats
 /// @name Player's Stats
 /// @{
-/// @var BattlePlayerStats Quantum::BattlePlayerDataQComponent::Stats
+/// @var BattlePlayerStats Quantum::BattlePlayerCharacterDataQComponent::Stats
 /// <summary>Character's stats.</summary>
 /// Part of @ref PlayerStats "Player's Stats"
 /// @}
@@ -76,23 +64,23 @@
 /// @anchor PlayerAttributes
 /// @name Player's attributes
 /// @{
-/// @var int Quantum::BattlePlayerDataQComponent::GridExtendTop
+/// @var int Quantum::BattlePlayerCharacterDataQComponent::AttributeGridExtendTop
 /// <summary>How many GridCells the character extends above the center heart position.</summary>
 /// Part of @ref PlayerAttributes "Player's attributes"
 ///
-/// @var int Quantum::BattlePlayerDataQComponent::GridExtendBottom
+/// @var int Quantum::BattlePlayerCharacterDataQComponent::AttributeGridExtendBottom
 /// <summary>How many GridCells the character extends below the center heart position.</summary>
 /// Part of @ref PlayerAttributes "Player's attributes"
 ///
-/// @var bool Quantum::BattlePlayerDataQComponent::DisableMovement
+/// @var bool Quantum::BattlePlayerCharacterDataQComponent::AttributeDisableMovement
 /// <summary>Whether moving the character is disabled or not.</summary>
 /// Part of @ref PlayerAttributes "Player's attributes"
 ///
-/// @var bool Quantum::BattlePlayerDataQComponent::DisableRotation
+/// @var bool Quantum::BattlePlayerCharacterDataQComponent::AttributeDisableRotation
 /// <summary>Whether rotating the character is disabled or not.</summary>
 /// Part of @ref PlayerAttributes "Player's attributes"
 ///
-/// @var bool Quantum::BattlePlayerDataQComponent::SpawnBehaviour
+/// @var bool Quantum::BattlePlayerCharacterDataQComponent::AttributeSpawnBehaviour
 /// <summary>Which spawn behaviour this character uses.</summary>
 /// Part of @ref PlayerAttributes "Player's attributes"
 /// @}
@@ -101,23 +89,23 @@
 /// @name Player's current state related data
 /// @{
 ///
-/// @var bool Quantum::BattlePlayerDataQComponent::MovementEnabled
+/// @var bool Quantum::BattlePlayerCharacterDataQComponent::StateMovementEnabled
 /// <summary>Whether character's movement is enabled or not.</summary>
 /// Part of @ref PlayerState "Player's current state related data"
 ///
-/// @var bool Quantum::BattlePlayerDataQComponent::RotationEnabled
+/// @var bool Quantum::BattlePlayerCharacterDataQComponent::StateRotationEnabled
 /// <summary>Whether character's rotation is enabled or not.</summary>
 /// Part of @ref PlayerState "Player's current state related data"
 ///
-/// @var FP Quantum::BattlePlayerDataQComponent::CurrentDefence
+/// @var FP Quantum::BattlePlayerCharacterDataQComponent::StateDefenceValue
 /// <summary>Character's current defence value.</summary>
 /// Part of @ref PlayerState "Player's current state related data"
 ///
-/// @var FrameTimer Quantum::BattlePlayerDataQComponent::StunCooldown
+/// @var FrameTimer Quantum::BattlePlayerCharacterDataQComponent::StateStunCooldown
 /// <summary>Timer used for the cooldown on the character being stunned.</summary>
 /// Part of @ref PlayerState "Player's current state related data"
 ///
-/// @var FrameTimer Quantum::BattlePlayerDataQComponent::ShieldHitCooldown
+/// @var FrameTimer Quantum::BattlePlayerCharacterDataQComponent::StateShieldHitCooldown
 /// <summary>Timer used for the cooldown on the shield getting hit.</summary>
 /// Part of @ref PlayerState "Player's current state related data"
 /// @}
@@ -125,19 +113,19 @@
 /// @anchor PlayerMovement
 /// @name Player's movement related data
 /// @{
-/// @var FPVector2 Quantum::BattlePlayerDataQComponent::HasTargetPosition
+/// @var FPVector2 Quantum::BattlePlayerCharacterDataQComponent::MovementHasTargetPosition
 /// <summary>Whether the player has a target position set.</summary>
 /// Part of @ref PlayerMovement "Player's movement related data"
 ///
-/// @var FPVector2 Quantum::BattlePlayerDataQComponent::TargetPosition
+/// @var FPVector2 Quantum::BattlePlayerCharacterDataQComponent::MovementTargetPosition
 /// <summary>The position the player is moving towards.</summary>
 /// Part of @ref PlayerMovement "Player's movement related data"
 ///
-/// @var FP Quantum::BattlePlayerDataQComponent::RotationBaseRad
+/// @var FP Quantum::BattlePlayerCharacterDataQComponent::MovementRotationBaseRad
 /// <summary>Base rotation value of the character. Depends on which side of the play arena the player is on.</summary>
 /// Part of @ref PlayerMovement "Player's movement related data"
 ///
-/// @var FP Quantum::BattlePlayerDataQComponent::RotationOffsetRad
+/// @var FP Quantum::BattlePlayerCharacterDataQComponent::MovementRotationOffsetRad
 /// <summary>How much the player has rotated the character.</summary>
 /// Part of @ref PlayerMovement "Player's movement related data"
 /// @}
@@ -145,27 +133,23 @@
 /// @anchor PlayerShieldData
 /// @name Player's shield related data
 /// @{
-/// @var int Quantum::BattlePlayerDataQComponent::ShieldCount
+/// @var int Quantum::BattlePlayerCharacterDataQComponent::ShieldCount
 /// <summary>The amount of shield's this character has.</summary>
 /// Part of @ref PlayerShieldData "Player's shield related data"
 ///
-/// @var int Quantum::BattlePlayerDataQComponent::AttachedShieldNumber
-/// <summary>The shieldnumber of the currently attached shield.</summary>
-/// Part of @ref PlayerShieldData "Player's shield related data"
-///
-/// @var BattlePlayerShieldEntityRef Quantum::BattlePlayerDataQComponent::AttachedShield
-/// <summary>The BattlePlayerShieldEntityRef of the currently attached shield.</summary>
+/// @var EntityRef Quantum::BattlePlayerCharacterDataQComponent::AttachedShieldEntityRef
+/// <summary>The EntityRef of the currently attached shield.</summary>
 /// Part of @ref PlayerShieldData "Player's shield related data"
 /// @}
 
 /// @anchor PlayerAbilities
 /// @name Ability related data
 /// @{
-/// @var FrameTimer Quantum::BattlePlayerDataQComponent::AbilityCooldownSec
+/// @var FrameTimer Quantum::BattlePlayerCharacterDataQComponent::AbilityCooldownSec
 /// <summary>Cooldown for using a character's ability in seconds.</summary>
 /// Part of @ref PlayerAbilities "Ability related data"
 ///
-/// @var FrameTimer Quantum::BattlePlayerDataQComponent::AbilityActivateBufferSec
+/// @var FrameTimer Quantum::BattlePlayerCharacterDataQComponent::AbilityActivateBufferSec
 /// <summary>Buffer after an ability is used in which it will be activated if cooldown ends.</summary>
 /// Part of @ref PlayerAbilities "Ability related data"
 /// @}
@@ -173,7 +157,7 @@
 /// @anchor Bot
 /// @name Bot related data
 /// @{
-/// @var FP Quantum::BattlePlayerDataQComponent::BotMovementCooldownSec
+/// @var FP Quantum::BattlePlayerCharacterDataQComponent::BotMovementCooldownSec
 /// <summary>Cooldown between bot movements in seconds.</summary>
 /// Part of @ref Bot "Bot related data"
 /// @}
@@ -181,11 +165,11 @@
 /// @anchor View
 /// @name View related data
 /// @{
-/// @var FPVector2 Quantum::BattlePlayerDataQComponent::ViewPosition
+/// @var FPVector2 Quantum::BattlePlayerCharacterDataQComponent::ViewPosition
 /// <summary>Position used by view logic for adjusting the player's view model.</summary>
 /// part of @ref View "View related data"
 ///
-/// @var FPVector2 Quantum::BattlePlayerDataQComponent::ViewMovementVector
+/// @var FPVector2 Quantum::BattlePlayerCharacterDataQComponent::ViewMovementVector
 /// <summary>Direction used by view logic for player movement animation.</summary>
 /// part of @ref View "View related data"
 /// @}
@@ -193,53 +177,53 @@
 /// @name Quantum Built-in
 /// @{
 ///
-/// @var Int32 Quantum::BattlePlayerDataQComponent::SIZE
-/// @var Int32 Quantum::BattlePlayerDataQComponent::ALIGNMENT
+/// @var Int32 Quantum::BattlePlayerCharacterDataQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerCharacterDataQComponent::ALIGNMENT
 ///
-/// @fn Int32 Quantum::BattlePlayerDataQComponent::GetHashCode
+/// @fn Int32 Quantum::BattlePlayerCharacterDataQComponent::GetHashCode
 ///
-/// @fn void Quantum::BattlePlayerDataQComponent::Serialize
+/// @fn void Quantum::BattlePlayerCharacterDataQComponent::Serialize
 ///
 /// @}
 
 // ---------------------------------------------------------------------------------------------------- //
 
-/// @struct Quantum::BattlePlayerDataTemplateQComponent
+/// @struct Quantum::BattlePlayerCharacterDataTemplateQComponent
 /// <summary>
 /// Template for creating player character entity.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerData.qtn}
 
-/// @var int Quantum::BattlePlayerDataTemplateQComponent::GridExtendTop
+/// @var int Quantum::BattlePlayerCharacterDataTemplateQComponent::GridExtendTop
 /// <summary>How many GridCells the character extends above the center heart position.</summary>
 ///
-/// @var int Quantum::BattlePlayerDataTemplateQComponent::GridExtendBottom
+/// @var int Quantum::BattlePlayerCharacterDataTemplateQComponent::GridExtendBottom
 /// <summary>How many GridCells the character extends below the center heart position.</summary>
 ///
-/// @var BattlePlayerHitboxTemplate Quantum::BattlePlayerDataTemplateQComponent::Hitbox
+/// @var BattlePlayerHitboxTemplate Quantum::BattlePlayerCharacterDataTemplateQComponent::Hitbox
 /// <summary>BattlePlayerHitboxTemplate that contains all character colliders.</summary>
 ///
-/// @var bool Quantum::BattlePlayerDataTemplateQComponent::DisableMovement
+/// @var bool Quantum::BattlePlayerCharacterDataTemplateQComponent::DisableMovement
 /// <summary>Bool for disabling movement for character.</summary>
 ///
-/// @var bool Quantum::BattlePlayerDataTemplateQComponent::DisableRotation
+/// @var bool Quantum::BattlePlayerCharacterDataTemplateQComponent::DisableRotation
 /// <summary>Bool for disabling rotation for character.</summary>
 ///
-/// @var bool Quantum::BattlePlayerDataTemplateQComponent::SpawnBehaviour
+/// @var bool Quantum::BattlePlayerCharacterDataTemplateQComponent::SpawnBehaviour
 /// <summary>Which spawn behaviour this character uses.</summary>
 
 /// @name Quantum Built-in
 /// @{
 ///
-/// @var Int32 Quantum::BattlePlayerDataTemplateQComponent::SIZE
-/// @var Int32 Quantum::BattlePlayerDataTemplateQComponent::ALIGNMENT
+/// @var Int32 Quantum::BattlePlayerCharacterDataTemplateQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerCharacterDataTemplateQComponent::ALIGNMENT
 ///
-/// @fn Int32 Quantum::BattlePlayerDataTemplateQComponent::GetHashCode
-/// @fn void Quantum::BattlePlayerDataTemplateQComponent::ClearPointers
+/// @fn Int32 Quantum::BattlePlayerCharacterDataTemplateQComponent::GetHashCode
+/// @fn void Quantum::BattlePlayerCharacterDataTemplateQComponent::ClearPointers
 ///
-/// @fn void Quantum::BattlePlayerDataTemplateQComponent::OnRemoved
-/// @fn void Quantum::BattlePlayerDataTemplateQComponent::Serialize
+/// @fn void Quantum::BattlePlayerCharacterDataTemplateQComponent::OnRemoved
+/// @fn void Quantum::BattlePlayerCharacterDataTemplateQComponent::Serialize
 ///
 /// @}
 

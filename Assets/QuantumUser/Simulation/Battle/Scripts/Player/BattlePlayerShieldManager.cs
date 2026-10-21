@@ -51,7 +51,6 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerSlot">Slot of the specified player.</param>
         /// <param name="playerCharacterNumber">The character number of the specified character.</param>
         /// <param name="playerCharacterId">The ID of the specified character.</param>
         /// <param name="playerCharacterClass">The character class of the specified character.</param>
@@ -223,10 +222,8 @@ namespace Battle.QSimulation.Player
         /// See [{Shield Number}](#page-concepts-player-character-entity-shield-number) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerSlot">Slot of the desired player.</param>
-        /// <param name="characterNumber">The character number of the desired character.</param>
-        /// <param name="shieldNumber">The number of the shield that's being attached.</param>
-        /// <param name="teleport">Whether to teleport the attached shield or not.</param>
+        /// <param name="playerHandle">Handle for the player character who the shield is being attached to.</param>
+        /// <param name="shieldNumber">The number of the shield that's to be attached.</param>
         public static void AttachShield(Frame f, BattlePlayerHandle playerHandle, int shieldNumber)
         {
             playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerShieldManager), "");
@@ -268,10 +265,8 @@ namespace Battle.QSimulation.Player
         /// See [{Shield Number}](#page-concepts-player-character-entity-shield-number) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerSlot">Slot of the specified character.</param>
-        /// <param name="characterNumber">The character number of the specified character.</param>
-        /// <param name="shieldNumber">The number of the shield that's being retrieved.</param>
-        /// <param name="updateViewPlayState">Whether to update the view play state or not.</param>
+        /// <param name="playerHandle">Handle of the player character whose shield is being retrieved.</param>
+        /// <param name="shieldNumber">The number of the shield that's to be retrieved.</param>
         ///
         /// <returns>The BattlePlayerShieldEntityRef of the detached shield.</returns>
         public static BattlePlayerShieldHandle GetDetachedShieldEntityRef(Frame f, BattlePlayerHandle playerHandle, int shieldNumber)
@@ -304,9 +299,9 @@ namespace Battle.QSimulation.Player
         /// See [{Shield Number}](#page-concepts-player-character-entity-shield-number) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerSlot">Slot of the specified character.</param>
+        /// <param name="playerHandle">Handle of the player character whose shield is being removed.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
-        /// <param name="shieldNumber">The number of the shield that's being removed.</param>
+        /// <param name="shieldNumber">The number of the shield that's to be removed.</param>
         public static void RemoveShield(Frame f, BattlePlayerHandle playerHandle, int characterNumber, int shieldNumber)
         {
             if (!IsValidShieldNumber(f, playerHandle.PlayerData.Slot, characterNumber, shieldNumber)) return;
@@ -365,21 +360,17 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Private helper method for retrieving a shield entity based on given <paramref name="shieldNumber"/>
-        /// for specified <paramref name="playerSlot"/>'s specified <paramref name="characterNumber"/>.
+        /// for specified playerslot's specified characternumber.
         /// </summary>
         ///
         /// See [{Shield Entity}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
-        /// See [{ShieldManagerData}](#page-concepts-player-simulation-management-shieldmanagerdata) for more info.<br/>
         /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
         /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
         /// See [{Shield Number}](#page-concepts-player-character-entity-shield-number) for more info.<br/>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="shieldManagerData">Pointer to shield manager data.</param>
-        /// <param name="playerSlot">Slot of the specified player.</param>
-        /// <param name="characterNumber">The character number of the specified character.</param>
+        /// <param name="playerHandle">Handle of the character whose shield is being retrieved.</param>
         /// <param name="shieldNumber">The shield number of the shield to be retrieved.</param>
-        /// <param name="updateViewPlayState">Whether to update the view play state or not.</param>
         ///
         /// <returns>EntityRef of the retrieved shield entity.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -395,18 +386,15 @@ namespace Battle.QSimulation.Player
 
         /// <summary>
         /// Private helper method for returning a shield entity based on given <paramref name="shieldNumber"/>
-        /// for specified <paramref name="playerSlot"/>'s specified <paramref name="characterNumber"/>.
+        /// for specified playerslot's specified <paramref name="characterNumber"/>.
         /// </summary>
         ///
         /// See [{Shield Entity}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
-        /// See [{ShieldManagerData}](#page-concepts-player-simulation-management-shieldmanagerdata) for more info.<br/>
         /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
         /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
         /// See [{Shield Number}](#page-concepts-player-character-entity-shield-number) for more info.<br/>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="shieldManagerData">Pointer to shield manager data.</param>
-        /// <param name="playerSlot">Slot of the specified player.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
         /// <param name="shieldNumber">The shield number of the shield to be returned.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

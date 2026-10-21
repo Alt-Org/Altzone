@@ -454,7 +454,7 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="slot">The slot of the player for which the character is to be despawned.</param>
+        /// <param name="playerHandle">Handle of the player whose character is to be despawned.</param>
         /// <param name="characterNumber">Character number of the character being despawned.</param>
         /// <param name="kill">If true, marks the character as dead.</param>
         public static void DespawnPlayerCharacter(Frame f, BattlePlayerHandle playerHandle, int characterNumber, bool kill = false)
@@ -755,8 +755,8 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">PlayerHandle of the player the character will be spawned for.</param>
-        /// <param name="characterNumber">The character number of the character to be spawned.</param>
+        /// <param name="playerHandle">Handle of the player whose character is to be spawned.</param>
+        /// <param name="playerHandlePreviousCharacter">Handle for the player's previous character if there is one, otherwise null.</param>
         private static void SpawnPlayerCharacter(Frame f, BattlePlayerHandle playerHandle, BattlePlayerHandle? playerHandlePreviousCharacter)
         {
             playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerManager), errorContext: "Can not spawn player");

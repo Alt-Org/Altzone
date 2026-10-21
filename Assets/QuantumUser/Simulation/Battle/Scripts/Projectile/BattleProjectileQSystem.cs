@@ -70,7 +70,7 @@ namespace Battle.QSimulation.Projectile
         /// Gets the projectile's EntityRef.
         /// </summary>
         ///
-        /// Public version of @cref{GetProjectileEntityRef(Frame\, BattleProjectileSystemDataQSingleton*\, bool)}.<br/>
+        /// Public version of @cref{GetProjectileHandle(Frame\, BattleProjectileSystemDataQSingleton*\, bool)}.<br/>
         /// Used outside of @cref{BattleProjectileQSystem}.<br/>
         /// Also used internally when there's no need for a seperate reference to a @cref{Quantum,BattleProjectileSystemDataQSingleton}.
         ///
@@ -219,7 +219,6 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">The entity representing the projectile.</param>
         /// <param name="otherEntity">The entity the projectile is intersecting with.</param>
         /// <param name="normal">The collision normal of the intersection.</param>
         /// <param name="collisionMinOffset">Minimum allowed offset to prevent the projectile from going inside the other entity.</param>
@@ -424,12 +423,12 @@ namespace Battle.QSimulation.Projectile
         /// Gets the projectile's EntityRef.
         /// </summary>
         ///
-        /// Internal version of @cref{GetProjectileEntityRef(Frame)}.<br/>
+        /// Internal version of @cref{GetProjectileHandle(Frame)}.<br/>
         /// Used when there's already a reference to <paramref name="projectileSystemData"/>.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileSystemData">Pointer to the projectile system data singleton.</param>
-        /// <param name="updateViewPlayState">Whether to update the ViewPlayState.</param>
+        /// <param name="markInUse">Whether to mark the projectile as in use.</param>
         ///
         /// <returns>The EntityRef of the projectile.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -470,12 +469,11 @@ namespace Battle.QSimulation.Projectile
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="shieldCollisionData">Collision data related to the shield.</param>
+        /// <param name="projectileCollisionData">Projectile's collision data.</param>
         /// <param name="normal">The direction in which the projectile should be sent.</param>
         private static bool ProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, out FPVector2 normal)
         {
-            BattlePlayerHandle                playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
+            BattlePlayerHandle       playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
             BattlePlayerShieldHandle shieldHandle = BattlePlayerShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
 
             normal = FPVector2.Zero;

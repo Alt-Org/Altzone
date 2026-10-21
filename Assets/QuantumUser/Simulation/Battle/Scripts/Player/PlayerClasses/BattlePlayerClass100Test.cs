@@ -34,8 +34,6 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerData">Pointer to player data.</param>
-        /// <param name="playerEntity">Entity reference for the player.</param>
         ///
         /// <returns>Default <see cref="Battle.QSimulation.Player.BattlePlayerClassManager.SetupParameters">CreationParameters</see></returns>
         public override unsafe BattlePlayerClassManager.SetupParameters OnCreate(Frame f, BattlePlayerHandle playerHandle)
@@ -51,8 +49,6 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerData">Pointer to player data.</param>
-        /// <param name="playerEntity">Entity reference to the player.</param>
         /// <param name="selected">Is the character selected or not.</param>
         public override unsafe void OnGameStart(Frame f, BattlePlayerHandle playerHandle, bool selected)
         {
@@ -72,8 +68,6 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="spawnEventType">The type of "spawn" event.</param>
         /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerCharacterData">Pointer to player data.</param>
-        /// <param name="playerEntity">Entity reference for the player.</param>
         public override unsafe void OnSpawn(Frame f, BattlePlayerClassManager.SpawnEventType spawnEventType, BattlePlayerHandle playerHandle)
         {
             if (spawnEventType is BattlePlayerClassManager.SpawnEventType.Select or BattlePlayerClassManager.SpawnEventType.SpawnSelect)
@@ -97,8 +91,6 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="despawnEventType">The type of "despawn" event.</param>
         /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerCharacterData">Pointer to player data.</param>
-        /// <param name="playerEntity">Entity reference for the player.</param>
         public override unsafe void OnDespawn(Frame f, BattlePlayerClassManager.DespawnEventType despawnEventType, BattlePlayerHandle playerHandle)
         {
             StateSetPlaced(f, playerHandle.LoadedCharacterData, GetClassData(f, playerHandle.LoadedCharacterEntityHandle));
@@ -112,8 +104,6 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="playerHandle">Handle for the player.</param>
-        /// <param name="playerCharacterData">Pointer to player data.</param>
-        /// <param name="playerEntity">Entity reference for the player.</param>
         /// <param name="specialInput">Pointer to special input (unused)</param>
         public override unsafe void OnUpdate(Frame f, BattlePlayerHandle playerHandle, BattleSpecialInput* specialInput)
         {
@@ -181,8 +171,6 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerData">Pointer to player data.</param>
-        /// <param name="playerEntity">Entity reference to the player.</param>
         /// <param name="specialInput">Pointer to special input.</param>
         private unsafe void HandleAiming(Frame f, BattlePlayerHandle playerHandle, BattleSpecialInput* specialInput)
         {
@@ -237,7 +225,6 @@ namespace Battle.QSimulation.Player
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerEntity">Entity reference to the player.</param>
         /// <param name="specialInput">Pointer to special input.</param>
         private unsafe void HandleAutoAim(Frame f, BattlePlayerHandle playerHandle, BattleSpecialInput* specialInput)
         {

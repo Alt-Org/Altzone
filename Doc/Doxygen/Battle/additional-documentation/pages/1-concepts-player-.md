@@ -637,16 +637,16 @@ See [{Joining and Initializing}](#page-concepts-player-initializing) for more in
 **Characters** can be [{Alive}](#page-concepts-player-character-entity-character-state) or [{Dead}](#page-concepts-player-character-entity-character-state)
 and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate) or [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).
 
-A **Character** can be **Spawned** using @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int, bool)}.
+A **Character** can be **Spawned** using @clink{SpawnPlayerCharacter:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayerCharacter(Frame, BattlePlayerSlot, int, bool)}.
 ([{InPlay}](#page-concepts-entity-management-registered-entities-playstate))  
 The **Character** is spawned based on it's chosen [{Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour).  
 If a **Character** is [{Dead}](#page-concepts-player-character-entity-character-state), it cannot be **Spawned**.
 
-A **Character** can be **Despawned** using @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, int, bool)}.
+A **Character** can be **Despawned** using @clink{DespawnPlayerCharacter:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayerCharacter(Frame, Battle.QSimulation.Game.BattlePlayerHandle, int, bool)}.
 ([{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))  
 
-The @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int, bool)}
-and @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, int, bool)}
+The @clink{SpawnPlayerCharacter:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayerCharacter(Frame, BattlePlayerSlot, int, bool)}
+and @clink{DespawnPlayerCharacter:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayerCharacter(Frame, Battle.QSimulation.Game.BattlePlayerHandle, int, bool)}
 methods also affect the [{Player PlayState}](#page-concepts-player-playstate) of the **Player** the **Character** belongs to.
 
 <br/>
@@ -659,14 +659,6 @@ the code to access [{Player Manager Data}](#page-concepts-player-manager-data) o
 There is both a **private** @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} struct containing all the data for **use internally**
 within [{PlayerManager}](#page-concepts-player-simulation-management-playermanager), and the **public** @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle}
 exposing some parts to the **rest of the game**.
-
-<br/>
-
-#### ShieldManagerData (%Quantum Singleton) {#page-concepts-player-simulation-management-shieldmanagerdata}
-
-The @cref{Quantum, BattlePlayerShieldManagerDataQSingleton} struct is a **%Quantum Singleton Component** defined in and generated from BattlePlayerShieldManagerData.qtn
-containing all our defined data for managing **Shields**.  
-The data contained in this **%Quantum Singleton Component** is used by the [{ShieldManager}](#page-concepts-player-simulation-management-shieldmanager).
 
 <br/>
 
@@ -683,7 +675,7 @@ Handles **Initializing Shields** that are present in the game, as well as attach
 and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate) or [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).
 
 A **Shield** can be [{Attached}](#page-concepts-player-character-entity-shield-attach) to a player's **Character**
-using @clink{AttachShield:Battle.QSimulation.Player.BattlePlayerShieldManager.AttachShield(Frame, BattlePlayerSlot, int, int, bool)}.
+using @clink{AttachShield:Battle.QSimulation.Player.BattlePlayerShieldManager.AttachShield(Frame, Battle.QSimulation.Game.BattlePlayerHandle, int)}.
 This has no effect on the [{InPlay/OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).  
 If a **Character** already has a shield [{Attached}](#page-concepts-player-character-entity-shield-attach), the shield will be swapped.  
 When [{Attached}](#page-concepts-player-character-entity-shield-attach), [{InPlay/OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)
@@ -692,10 +684,10 @@ logic is handled by the [{PlayerManager}](#page-concepts-player-simulation-manag
 [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) when **Character** is [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))
 
 **Shields** can be used **Detached**
-using @clink{GetDetachedShieldEntityRef:Battle.QSimulation.Player.BattlePlayerShieldManager.GetDetachedShieldEntityRef(Frame, BattlePlayerSlot, int, int, bool)}.
+using @clink{GetDetachedShieldEntityRef:Battle.QSimulation.Player.BattlePlayerShieldManager.GetDetachedShieldEntityRef(Frame, Battle.QSimulation.Game.BattlePlayerHandle, int)}.
 The method will retrieve the shield to be used in the arena (**Detached** and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate))
 [{Attached}](#page-concepts-player-character-entity-shield-attach) or not, **Detaching** the **Shield** if needed.  
-A **Shield** can be **Removed** using @clink{RemoveShield:Battle.QSimulation.Player.BattlePlayerShieldManager.RemoveShield(Frame, BattlePlayerSlot, int, int)},
+A **Shield** can be **Removed** using @clink{RemoveShield:Battle.QSimulation.Player.BattlePlayerShieldManager.RemoveShield(Frame, Battle.QSimulation.Game.BattlePlayerHandle, int, int)},
 teleporting it out of the arena.
 (**Detached** and [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))  
 [{Attached}](#page-concepts-player-character-entity-shield-attach) or not, **Detaching** the **Shield** if needed.
@@ -711,7 +703,7 @@ This section contains **%Quantum** simulation side **Player** gameplay logic rel
 
 #### PlayerData (%Quantum Component) {#page-concepts-player-simulation-gamelogic-playerdata}
 
-The @cref{Quantum,BattlePlayerDataQComponent} struct is defined in and generated from BattlePlayerData.qtn.
+The @cref{Quantum,BattlePlayerCharacterDataQComponent} struct is defined in and generated from BattlePlayerData.qtn.
 This contains data specific to each [{Player Character Entity}](#page-concepts-player-character-and-shield-entity) used by the **%Quantum Simulation** during gameplay.
 
 <br/>

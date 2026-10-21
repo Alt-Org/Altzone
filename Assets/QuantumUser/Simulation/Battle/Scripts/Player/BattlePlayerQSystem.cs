@@ -60,7 +60,6 @@ namespace Battle.QSimulation.Player
         /// Updates give up state and calls <see cref="BattlePlayerQSystem.HandleGiveUpLogic">HandleGiveUpLogic</see> method which handles the rest of the logic.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Handle of the player who abandoned.</param>
         public static void HandlePlayerAbandoned(Frame f, BattlePlayerData.Ref playerData)
         {
             playerData.Low_Level.StatePlayerGiveUp = true;
@@ -78,7 +77,6 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
-        /// <param name="playerCollisionData">Collision data related to the player character.</param>
         public static void OnProjectileHitPlayerCharacter(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData)
         {
             if (projectileCollisionData->Projectile.Data->IsHeld) return;
@@ -152,7 +150,6 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
-        /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         public static void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData)
         {
             // checks
@@ -367,10 +364,10 @@ namespace Battle.QSimulation.Player
         /// Data related to the current player that is being processed.<br/>
         /// Is set for each player that is being processed using
         /// @cref{Battle.QSimulation.Player.BattlePlayerQSystem.UpdateData,SetPlayer}.
-        /// - @ref BattlePlayerQSystem-UpdateData-CurrentPlayerCharacter "Current Player Character Properties"<br/>
+        /// - @ref BattlePlayerQSystem-UpdateData-CurrentPlayer "Current Player Character Properties"<br/>
         /// Data related to the current player character that is being processed.<br/>
         /// Is loaded for each player character that is being processed using
-        /// @cref{Battle.QSimulation.Player.BattlePlayerQSystem.UpdateData,LoadPlayerCharacter}.
+        /// {Battle.QSimulation.Player.BattlePlayerQSystem.UpdateData,LoadPlayerCharacter}.
         private class UpdateData
         {
             /// @anchor BattlePlayerQSystem-UpdateData-CommonData
@@ -524,7 +521,6 @@ namespace Battle.QSimulation.Player
         /// Used by <see cref="BattlePlayerQSystem.HandleGiveUp">HandleGiveUp</see> and <see cref="BattlePlayerQSystem.HandlePlayerAbandoned">HandlePlayerAbandoned</see>.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerHandle">Handle of the player.</param>
         ///
         /// <returns>True if all players on a team have given up.</returns>
         private static BattleTeamNumber HandleGiveUpLogic(Frame f, BattlePlayerData.Ref playerData)

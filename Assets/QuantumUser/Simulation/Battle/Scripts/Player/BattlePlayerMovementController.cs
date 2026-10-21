@@ -50,9 +50,7 @@ namespace Battle.QSimulation.Player
         /// Always: updates player's position and rotation based on the current TargetPosition and RotationOffset.<br/>
         ///
         /// <param name="f">Current %Quantum %Frame.</param>
-        /// <param name="playerData">Pointer to player's BattlePlayerDataQComponent.</param>
-        /// <param name="playerEntityRef">Reference to player entity.</param>
-        /// <param name="transform">Pointer to player's transform component.</param>
+        /// <param name="playerHandle">Handle of the player whose movement is being updated.</param>
         /// <param name="input">Pointer to player's Quantum Input.</param>
         public static void UpdateMovement(Frame f, BattlePlayerHandle playerHandle, Input* input)
         {
@@ -200,13 +198,11 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Moves and rotates the player to the specified position and angle.
+        /// Moves the player character to the specified position.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerData">Pointer to the player's data component.</param>
-        /// <param name="playerEntityRef">Reference to player entity.</param>
-        /// <param name="playerTransform">Pointer to the player's transform2D component.</param>
+        /// <param name="playerHandle">Handle for the player character to be moved.</param>
         /// <param name="position">World position to move to.</param>
         public static void Move(Frame f, BattlePlayerHandle playerHandle, FPVector2 position)
         {
@@ -221,12 +217,11 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Instantly moves and rotates the player to the specified position and rotation.
+        /// Instantly moves the player character to the specified position.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerData">Pointer to the player's data component.</param>
-        /// <param name="playerEntityRef">Reference to player entity.</param>
+        /// <param name="playerHandle">Handle for the player character to be teleported.</param>
         /// <param name="position">New world position.</param>
         public static void Teleport(Frame f, BattlePlayerHandle playerHandle, FPVector2 position)
         {
@@ -258,7 +253,7 @@ namespace Battle.QSimulation.Player
         /// Also transforms the grid position to a world position.
         /// </summary>
         ///
-        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="playerHandle">Handle of the player character being clamped.</param>
         /// <param name="gridPosition">The grid position of the player.</param>
         /// <param name="clampedPosition">The resulting clamped world position of the player.</param>
         ///
@@ -299,7 +294,7 @@ namespace Battle.QSimulation.Player
         /// Snaps the world position of the player to the closest grid position and clamps it to the playfield of their team.
         /// </summary>
         ///
-        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="playerHandle">Handle of the player character being clamped.</param>
         /// <param name="position">The world position of the player.</param>
         /// <param name="clampedPosition">The resulting clamped and snapped world position of the player.</param>
         ///

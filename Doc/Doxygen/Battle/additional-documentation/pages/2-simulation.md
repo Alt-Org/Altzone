@@ -74,27 +74,27 @@ In **%Battle** **Managers** have **"Manager"** suffix and **Controllers** have *
 [Quantum Components🡵] are **C# structs** that are generated from `.qtn` files which can be attached to **%Quantum Entities**.  
 In %Battle [Quantum Components🡵] have **"QComponent"** suffix. [[Naming]](#index-naming)
 
-|  Namespace        | Component                                                 | Description                                                 |
-| :---------------- | :-------------------------------------------------------- | :---------------------------------------------------------- |
-| @crefd{Quantum}   | @cref{Quantum,BattleArenaBorderQComponent}                | @copybrief Quantum.BattleArenaBorderQComponent              |
-| @crefd{Quantum}   | @cref{Quantum,BattleCollisionTriggerQComponent}           | @copybrief Quantum.BattleCollisionTriggerQComponent         |
-|                                                                                                                                           |||
-| @crefd{Quantum}   | @cref{Quantum,BattleDiamondDataQComponent}                | @copybrief Quantum.BattleDiamondDataQComponent              |
-|                                                                                                                                           |||
-| @crefd{Quantum}   | @cref{Quantum,BattleGoalQComponent}                       | @copybrief Quantum.BattleGoalQComponent                     |
-|                                                                                                                                           |||
-| @crefd{Quantum}   | @cref{Quantum,BattleCompoundEntityQComponent}             | @copybrief Quantum.BattleCompoundEntityQComponent           |
-|                                                                                                                                           |||
-| @crefd{Quantum}   | @cref{Quantum,BattlePlayerDataQComponent}                 | @copybrief Quantum.BattlePlayerDataQComponent               |
-| @crefd{Quantum}   | @cref{Quantum,BattlePlayerDataTemplateQComponent}         | @copybrief Quantum.BattlePlayerDataTemplateQComponent       |
-| @crefd{Quantum}   | @cref{Quantum,BattlePlayerHitboxQComponent}               | @copybrief Quantum.BattlePlayerHitboxQComponent             |
-|                                                                                                                                           |||
-| @crefd{Quantum}   | @cref{Quantum,BattlePlayerShieldDataQComponent}           | @copybrief Quantum.BattlePlayerShieldDataQComponent         |
-| @crefd{Quantum}   | @cref{Quantum,BattlePlayerShieldDataTemplateQComponent}   | @copybrief Quantum.BattlePlayerShieldDataTemplateQComponent |
-|                                                                                                                                           |||
-| @crefd{Quantum}   | @cref{Quantum,BattleProjectileQComponent}                 | @copybrief Quantum.BattleProjectileQComponent               |
-|                                                                                                                                           |||
-| @crefd{Quantum}   | @cref{Quantum,BattleSoulWallQComponent}                   | @copybrief Quantum.BattleSoulWallQComponent                 |
+|  Namespace        | Component                                                  | Description                                                    |
+| :---------------- | :--------------------------------------------------------- | :------------------------------------------------------------- |
+| @crefd{Quantum}   | @cref{Quantum,BattleArenaBorderQComponent}                 | @copybrief Quantum.BattleArenaBorderQComponent                 |
+| @crefd{Quantum}   | @cref{Quantum,BattleCollisionTriggerQComponent}            | @copybrief Quantum.BattleCollisionTriggerQComponent            |
+|                                                                                                                                               |||
+| @crefd{Quantum}   | @cref{Quantum,BattleDiamondDataQComponent}                 | @copybrief Quantum.BattleDiamondDataQComponent                 |
+|                                                                                                                                               |||
+| @crefd{Quantum}   | @cref{Quantum,BattleGoalQComponent}                        | @copybrief Quantum.BattleGoalQComponent                        |
+|                                                                                                                                               |||
+| @crefd{Quantum}   | @cref{Quantum,BattleManageEntityQComponent}                | @copybrief Quantum.BattleManageEntityQComponent                |
+|                                                                                                                                               |||
+| @crefd{Quantum}   | @cref{Quantum,BattlePlayerCharacterDataQComponent}         | @copybrief Quantum.BattlePlayerCharacterDataQComponent         |
+| @crefd{Quantum}   | @cref{Quantum,BattlePlayerCharacterDataTemplateQComponent} | @copybrief Quantum.BattlePlayerCharacterDataTemplateQComponent |
+| @crefd{Quantum}   | @cref{Quantum,BattlePlayerHitboxQComponent}                | @copybrief Quantum.BattlePlayerHitboxQComponent                |
+|                                                                                                                                               |||
+| @crefd{Quantum}   | @cref{Quantum,BattlePlayerShieldDataQComponent}            | @copybrief Quantum.BattlePlayerShieldDataQComponent            |
+| @crefd{Quantum}   | @cref{Quantum,BattlePlayerShieldDataTemplateQComponent}    | @copybrief Quantum.BattlePlayerShieldDataTemplateQComponent    |
+|                                                                                                                                               |||
+| @crefd{Quantum}   | @cref{Quantum,BattleProjectileQComponent}                  | @copybrief Quantum.BattleProjectileQComponent                  |
+|                                                                                                                                               |||
+| @crefd{Quantum}   | @cref{Quantum,BattleSoulWallQComponent}                    | @copybrief Quantum.BattleSoulWallQComponent                    |
 
 <br/>
 
@@ -108,7 +108,6 @@ In **%Battle** **Singletons** have **"QSingleton"** suffix. [[Naming]](#index-na
 | @crefd{Quantum}   | @cref{Quantum,BattleDiamondCounterQSingleton}            | @copybrief Quantum.BattleDiamondCounterQSingleton          |
 | @crefd{Quantum}   | @cref{Quantum,BattleGameSessionQSingleton}               | @copybrief Quantum.BattleGameSessionQSingleton             |
 | @crefd{Quantum}   | @cref{Quantum,BattlePlayerManagerDataQSingleton}         | @copybrief Quantum.BattlePlayerManagerDataQSingleton       |
-| @crefd{Quantum}   | @cref{Quantum,BattlePlayerShieldManagerDataQSingleton}   | @copybrief Quantum.BattlePlayerShieldManagerDataQSingleton |
 | @crefd{Quantum}   | @cref{Quantum,BattleEntityManagerDataQSingleton}         | @copybrief Quantum.BattleEntityManagerDataQSingleton       |
 | @crefd{Quantum}   | @cref{Quantum,BattleProjectileSystemDataQSingleton}      | @copybrief Quantum.BattleProjectileSystemDataQSingleton    |
 
