@@ -76,11 +76,20 @@ are accessed by using an **offset value**.
 
 #### PlayState {#page-concepts-entity-management-registered-entities-playstate}
 
-[{Registered Entities}](#page-concepts-entity-management-registered-entities) have 2 different states, **InPlay** and **OutOfPlay**, tracked by @cref{Quantum,BattleEntityPlayState}.  
-When in the arena, a **Registered Entity** is **InPlay**. When not in the arena, it is **OutOfPlay**.  
-When **OutOfPlay**, **Registered Entities** will be stored offscreen.  
-The **Use** and **Return** methods update the  send a @ref BattlePlayStateUpdate event to update
-the **Unity/View** code on the **ViewPlayState** so it can use and react to that information.
+[{Registered Entities}](#page-concepts-entity-management-registered-entities) have 2 different states,
+@cref{Quantum.BattleEntityPlayState,InPlay} and
+@cref{Quantum.BattleEntityPlayState,OutOfPlay}
+tracked by @cref{Quantum,BattleEntityPlayState}.  
+@cref{Quantum,BattleManageEntityQComponent.RegisteredState} stores the **PlayState** 
+of the [{Registered Entity}](#page-concepts-entity-management-registered-entities).  
+When in the arena, a [{Registered Entity}](#page-concepts-entity-management-registered-entities) is @cref{Quantum.BattleEntityPlayState,InPlay}.
+When not in the arena, it is @cref{Quantum.BattleEntityPlayState,OutOfPlay}.  
+When @cref{Quantum.BattleEntityPlayState,OutOfPlay}, [{Registered Entities}](#page-concepts-entity-management-registered-entities) will be stored offscreen.
+
+The **Use** and **Return** methods update the @cref{Quantum.BattleManageEntityQComponent,RegisteredState}
+of a [{Registered Entity}](#page-concepts-entity-management-registered-entities).  
+When **PlayState** is updated @ref BattlePlayStateUpdate event is sent to update 
+the **Unity/View** code so it react to that information.
 
 <br/>
 
