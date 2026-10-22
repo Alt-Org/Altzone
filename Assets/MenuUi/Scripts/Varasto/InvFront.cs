@@ -71,7 +71,21 @@ namespace MenuUi.Scripts.Storage
         private int _sortingBy = 0; // used as a carrier for info on how to sort
         private bool _descendingOrder = false;
 
-        private const string INVENTORY_EMPTY_TEXT = "Varasto tyhjä";
+        private const string INVENTORY_EMPTY_TEXT_FI = "Varasto tyhjä";
+        private const string INVENTORY_EMPTY_TEXT_EN = "Storage empty";
+
+        private string INVENTORYEMPTYTEXT
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return INVENTORY_EMPTY_TEXT_FI;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                    return INVENTORY_EMPTY_TEXT_EN;
+                else
+                    return INVENTORY_EMPTY_TEXT_FI;
+            }
+        }
 
         private void Start()
         {
