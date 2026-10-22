@@ -1376,6 +1376,7 @@ GameObject:
   - component: {fileID: 7072671188883491543}
   - component: {fileID: 123707999915890445}
   - component: {fileID: 1729864693126481661}
+  - component: {fileID: 7754127621244717558}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1507,6 +1508,28 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7754127621244717558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3373762332864075811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "T\xE4h\xE4n jotain teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa
+    asiasta. T\xE4h\xE4n jotain teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa asiasta.
+    \r\n\r\nT\xE4h\xE4n jotain teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa asiasta.
+    T\xE4h\xE4n jotain teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa asiasta. \r\n\r\nT\xE4h\xE4n
+    jotain teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa asiasta. T\xE4h\xE4n jotain
+    teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa asiasta. "
+  _englishText: "Add here some text about carbon footprint. Add here some text about
+    carbon footprint.\r\n\r\nAdd here some text about carbon footprint. Add here
+    some text about carbon footprint. \r\n\r\nAdd here some text about carbon footprint.
+    Add here some text about carbon footprint."
 --- !u!1 &3490066668065720378
 GameObject:
   m_ObjectHideFlags: 0
