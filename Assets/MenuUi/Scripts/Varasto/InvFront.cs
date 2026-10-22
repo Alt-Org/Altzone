@@ -10,7 +10,6 @@ using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static SettingsCarrier;
 
 namespace MenuUi.Scripts.Storage
 {
@@ -74,7 +73,7 @@ namespace MenuUi.Scripts.Storage
         private const string INVENTORY_EMPTY_TEXT_FI = "Varasto tyhjä";
         private const string INVENTORY_EMPTY_TEXT_EN = "Storage empty";
 
-        private string INVENTORYEMPTYTEXT
+        private string INVENTORY_EMPTY_TEXT
         {
             get
             {
