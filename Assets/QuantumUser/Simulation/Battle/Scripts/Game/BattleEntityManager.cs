@@ -17,8 +17,8 @@ using Photon.Deterministic;
 namespace Quantum
 {
     // Adds functionality to convert between BattleEntityID and int
-    // Main struct definition in BattleEntityID.qtn
-    // Main struct documentation in qtn-BattleEntityID.dox
+    // Main struct definition in BattleManageEntity.qtn
+    // Main struct documentation in qtn-BattleManageEntity.dox
     public partial struct BattleEntityID
     {
         public const int NoneValue = 0;
