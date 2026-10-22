@@ -13,8 +13,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private RectTransform _hoverButtonLine;
         [SerializeField] private Vector2 _hoverButtonLineStart = new(0.07f, 0f);
         [SerializeField] private Vector2 _hoverButtonLineEnd = new(1f, 0.94f);
-        [SerializeField] private MainScreenController _mainScreenController;
-        [SerializeField] private RectTransform _screen;
+        public RectTransform _screen; // Given by MainScreenController
 
         public void SetButtonPositions(Camera _camera, BoxCollider2D box, Transform furniture)
         {
@@ -23,7 +22,6 @@ namespace MenuUI.Scripts.SoulHome
             PlaceHoverButton(_cancelHoverButton, EdgeViewportPoint(new(-half.x, 0f)), Vector2.left);
             PlaceHoverButton(_rotateHoverButton, EdgeViewportPoint(new(0f, -half.y)), Vector2.down);
             PlaceHoverButtonLine();
-            _mainScreenController.CheckHoverButtons();
 
             Vector3 EdgeViewportPoint(Vector2 edge) => _camera.WorldToViewportPoint(furniture.TransformPoint(box.offset + edge));
         }

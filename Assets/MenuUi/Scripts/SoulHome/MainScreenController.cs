@@ -27,6 +27,7 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _changeHandleButtonTray;
         [SerializeField]
         private GameObject _horizontalItemTray;
+        [SerializeField] private RectTransform _screen;
 
         float _prevTapTime = 0;
         float _backDelay = 0;
@@ -44,11 +45,14 @@ namespace MenuUI.Scripts.SoulHome
         internal GameObject SelectedFurnitureTray { get => _selectedFurnitureTray;}
         public GameObject TempSelectedFurnitureTray { get => _tempSelectedFurnitureTray;}
 
+        public GameObject HoverButtons { get => _hoverButtons; }
+
         // Start is called before the first frame update
         void Start()
         {
             EnhancedTouchSupport.Enable();
             EnableTray(false);
+            _hoverButtons.GetComponent<SoulHomeHoverButtonHandler>()._screen = _screen;
         }
 
         // Update is called once per frame
@@ -61,7 +65,8 @@ namespace MenuUI.Scripts.SoulHome
                 return;
             }
 
-            if (transform.Find("Screen").GetComponent<RectTransform>().rect.width != transform.Find("Screen").GetComponent<BoxCollider2D>().size.x || transform.Find("Screen").GetComponent<RectTransform>().rect.height != transform.Find("Screen").GetComponent<BoxCollider2D>().size.y)
+            if (_screen.rect.width != _screen.GetComponent<BoxCollider2D>().size.x || _screen.rect.height != _screen.GetComponent<BoxCollider2D>().size.y)
+            //if (transform.Find("Screen").GetComponent<RectTransform>().rect.width != transform.Find("Screen").GetComponent<BoxCollider2D>().size.x || transform.Find("Screen").GetComponent<RectTransform>().rect.height != transform.Find("Screen").GetComponent<BoxCollider2D>().size.y)
             {
                 StartCoroutine(SetColliderSize());
             }
@@ -498,17 +503,17 @@ namespace MenuUI.Scripts.SoulHome
             if (_soulHomeTower.ChangedFurnitureList.Count > 0 && _soulHomeController.CheckInteractableStatus())
             {
                 _changeHandleButtonTray.transform.Find("DiscardChangesButton").GetComponent<Button>().interactable = true;
-                _changeHandleButtonTray.transform.Find("ExitEditModeButton").GetComponent<Button>().interactable = true;
+                _changeHandleButtonTray.transform.Find("SaveChangesButton").GetComponent<Button>().interactable = true;
             }
             else
             {
                 _changeHandleButtonTray.transform.Find("DiscardChangesButton").GetComponent<Button>().interactable = false;
-                _changeHandleButtonTray.transform.Find("ExitEditModeButton").GetComponent<Button>().interactable = false;
+                _changeHandleButtonTray.transform.Find("SaveChangesButton").GetComponent<Button>().interactable = false;
             }
         }
         public void CheckHoverButtons()
         {
-            if(_soulHomeTower.SelectedFurniture != null && _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled) _hoverButtons.SetActive(true);
+            if(_soulHomeTower.SelectedFurniture != null /*&& _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled*/) _hoverButtons.SetActive(true);
             else _hoverButtons.SetActive(false);
         }
     }

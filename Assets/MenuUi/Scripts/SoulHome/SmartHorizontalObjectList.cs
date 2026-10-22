@@ -36,7 +36,7 @@ public class SmartHorizontalObjectList : MonoBehaviour
     private DragIntent _dragIntent = DragIntent.Pending;
     private bool _scrollEnabled = true;
 
-    public bool scroll_enabled
+    public bool scrollEnabled
     {
         get => _scrollEnabled;
         set
@@ -48,20 +48,8 @@ public class SmartHorizontalObjectList : MonoBehaviour
 
     private void Awake()
     {
-        if (!_scrollRect) _scrollRect = GetComponent<GestureScrollRect>();
-
-        _scrollRect.content = _content;
-        _scrollRect.viewport = _viewport;
-        _scrollRect.horizontal = true;
-        _scrollRect.vertical = false;
         _scrollRect.CanBeginDrag = eventData => _scrollEnabled && ResolveGesture(eventData.position) == DragIntent.Scroll;
         _scrollRect.PotentialDragStarted += eventData => BeginGesture(eventData.pressPosition);
-
-        //Content grows to the right from the left edge, its width is set from the data count.
-        _content.anchorMin = new Vector2(0f, _content.anchorMin.y);
-        _content.anchorMax = new Vector2(0f, _content.anchorMax.y);
-        _content.pivot = new Vector2(0f, _content.pivot.y);
-
         if (_pool.Count == 0) CreatePool();
     }
 

@@ -44,28 +44,17 @@ namespace MenuUI.Scripts.SoulHome
             foreach (FurnitureSetInfo setInfo in _storageFurnitureReference.Info) // creates a set filter button for each set
             {
                 GameObject _setSelectButton = Instantiate(_setSelectButtonPrefab, _setSelectButtonContainer.transform);
-                TextMeshProUGUI _setName = _setSelectButton.GetComponentInChildren<TextMeshProUGUI>();
-                if (setInfo.SetFontName != null)
-                {
-                   _setSelectButton.transform.GetChild(1).GetComponent<Image>().sprite = setInfo.SetFontName;
-                   _setSelectButton.transform.GetChild(1).GetComponent<Image>().gameObject.SetActive(true);
-                   _setName.gameObject.SetActive(false);
-                }
-                else
-                {
-                    _setName.text = setInfo.SetName;
-                    _setName.gameObject.SetActive(true); // probably not needed
-                    _setSelectButton.transform.GetChild(1).GetComponent<Image>().gameObject.SetActive(false); // probably not needed
-                }
-                _setSelectButton.GetComponent<Button>().onClick.AddListener(() => SelectSet(setInfo.SetName));
+                if (setInfo.SetFontName != null) _setSelectButton.GetComponent<SetSelectButtonHandler>().SetFontSprite(setInfo.SetFontName);
+                else _setSelectButton.GetComponent<SetSelectButtonHandler>().SetSetName(setInfo.SetName);
+                _setSelectButton.GetComponent<SetSelectButtonHandler>().Button.onClick.AddListener(() => SelectSet(setInfo.SetName));
             }
         }
 
-        private void Update()
+        /*private void Update()
         {
             // Furniture is placed and returned from many places, so check if any shown item sold out or came back.
             if (_smartList != null && VisibleListOutdated()) RebuildVisibleList();
-        }
+        }*/
 
         public void InitializeTray()
         {
@@ -81,70 +70,102 @@ namespace MenuUI.Scripts.SoulHome
             FurnitureList list = _controller.FurnitureList;
             if (list == null) return;
             FurnitureList filtered_list = new();
-            
-            if (_category == 0) _categoryText.text = "Lattia";
-            else if (_category == 1) // Displays all
+            if (_isOnDecorateMode)
             {
-                _categoryText.text = "Kaikki";
+                if (_category == 0) 
+                {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Lattia";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Floor";
+                    else _categoryText.text = "Lattia"; // Default to Finnish if language not set
+                }
+                else if (_category == 1) // Displays all
+                {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Kaikki";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "All";
+                    else _categoryText.text = "Kaikki"; // Default to Finnish if language not set
+                    if (_currentSelectedSet != null) // if has a set filter active
+                    {
+                        foreach (var _furnitureListObject in list.List)
+                        {
+                            string[] nameParts = _furnitureListObject.Name.Split('_'); // get set name from furniture name
+                            if (nameParts[1] == _currentSelectedSet)
+                            {
+                                filtered_list.List.Add(_furnitureListObject);
+                            }
+                        }
+                        FillSelectionButtonList(filtered_list); // Replaces the existing slots with the filtered list
+                        _smartList.ScrollToStart(); // Reset FurnitureTray position
+                        return;
+                    }
+                    // else will show all sets
+                    FillSelectionButtonList(list);
+                    _smartList.ScrollToStart(); // Reset FurnitureTray position
+                    return;
+                }
+                else if (_category == 2) { // Should display special - or frames on renovate mode
+                    // Special items not implemented?
+                    FillSelectionButtonList(filtered_list); // TODO - replace with special, currently shows nothing (empty list)
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Erikoiset";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Special";
+                    else _categoryText.text = "Erikoiset"; // Default to Finnish if language not set
+                    _smartList.ScrollToStart(); // Reset FurnitureTray position
+                    return;
+                }
+                else if (_category == 3) {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Katto";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Ceiling";
+                    else _categoryText.text = "Katto"; // Default to Finnish if language not set
+                }
+                else if (_category == 4) {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Seinät";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Walls";
+                    else _categoryText.text = "Seinät"; // Default to Finnish if language not set
+                }
+
                 if (_currentSelectedSet != null) // if has a set filter active
                 {
                     foreach (var _furnitureListObject in list.List)
                     {
                         string[] nameParts = _furnitureListObject.Name.Split('_'); // get set name from furniture name
-                        if (nameParts[1] == _currentSelectedSet)
+                        if (_furnitureListObject.GetListObjectType() == (FurniturePlacement)_category && nameParts[1] == _currentSelectedSet)
                         {
                             filtered_list.List.Add(_furnitureListObject);
                         }
                     }
-                    FillSelectionButtonList(filtered_list); // Replaces the existing slots with the filtered list
-                    _smartList.ScrollToStart(); // Reset FurnitureTray position
-                    return;
-                }
-                // else will show all sets
-                FillSelectionButtonList(list);
-                _smartList.ScrollToStart(); // Reset FurnitureTray position
-                return;
-            }
-            else if (_category == 2) { // Should display special - or frames on renovate mode
-                // Special items not implemented?
-                if (_isOnDecorateMode) {
-                    FillSelectionButtonList(filtered_list); // TODO - replace with special, currently shows nothing (empty list)
-                    _categoryText.text = "Erikoiset";
                 }
                 else
                 {
-                    FillSelectionButtonList(filtered_list); // TODO - replace with frames
-                    _categoryText.text = "Reunat";
-                } 
-                _smartList.ScrollToStart(); // Reset FurnitureTray position
-                return;
-            }
-            else if (_category == 3) _categoryText.text = "Katto";
-            else if (_category == 4) _categoryText.text = "Seinät";
-
-            if (_currentSelectedSet != null) // if has a set filter active // all
-            {
-                foreach (var _furnitureListObject in list.List)
-                {
-                    string[] nameParts = _furnitureListObject.Name.Split('_'); // get set name from furniture name
-                    if (_furnitureListObject.GetListObjectType() == (FurniturePlacement)_category && nameParts[1] == _currentSelectedSet)
+                    foreach (var _furnitureListObject in list.List) // Adds all furniture objects that match the category to a new list
                     {
-                        filtered_list.List.Add(_furnitureListObject);
+                        if (_furnitureListObject.GetListObjectType() == (FurniturePlacement)_category)
+                        {
+                            filtered_list.List.Add(_furnitureListObject);
+                        }
                     }
                 }
             }
             else
             {
-                foreach (var _furnitureListObject in list.List) // Adds all furniture objects that match the category to a new list
-                {
-                    if (_furnitureListObject.GetListObjectType() == (FurniturePlacement)_category)
-                    {
-                        filtered_list.List.Add(_furnitureListObject);
-                    }
+                if (_category == 0) {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Lattia";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Floor";
+                    else _categoryText.text = "Lattia"; // Default to Finnish if language not set
+                }
+                //else if (_category == 1) Does not exist in renovate mode
+                else if (_category == 2) {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Reunat";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Frames";
+                    else _categoryText.text = "Reunat"; // Default to Finnish if language not set
+                }
+                //else if (_category == 3) Does not exist in renovate mode
+                else if (_category == 4) {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Seinät";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Walls";
+                    else _categoryText.text = "Seinät"; // Default to Finnish if language not set
                 }
             }
-            
             FillSelectionButtonList(filtered_list); // Replaces the existing slots with the filtered list
+            Debug.Log("FurnitureTrayHandler: FilterTrayObjects() - Category: " + _category + ", Set: " + _currentSelectedSet);
             _smartList.ScrollToStart(); // Reset FurnitureTray position
         }
         
@@ -318,9 +339,11 @@ namespace MenuUI.Scripts.SoulHome
             if (!_isOnDecorateMode)
             {
                 _isOnDecorateMode = true;
-                _modeText.text = "Sisustus";
-                _modeButton.transform.GetChild(0).gameObject.SetActive(true);
-                _modeButton.transform.GetChild(1).gameObject.SetActive(false);
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _modeText.text = "Sisustus";
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _modeText.text = "Decorate";
+                else _modeText.text = "Sisustus"; // Default to Finnish if language not set
+                //_modeButton.transform.GetChild(0).gameObject.SetActive(true);
+                //_modeButton.transform.GetChild(1).gameObject.SetActive(false);
                 _decorateModeButtons.SetActive(true);
                 _renovateModeButtons.SetActive(false);
                 CategoryButtonClicked(_decorateModeButtons.transform.GetChild(0).GetComponent<FurnitureTrayCategoryButton>());
@@ -328,13 +351,17 @@ namespace MenuUI.Scripts.SoulHome
             else
             {
                 _isOnDecorateMode = false;
-                _modeText.text = "Remontti";
-                _modeButton.transform.GetChild(0).gameObject.SetActive(false);
-                _modeButton.transform.GetChild(1).gameObject.SetActive(true);
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _modeText.text = "Remontti";
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _modeText.text = "Renovation";
+                else _modeText.text = "Remontti"; // Default to Finnish if language not set
+                //_modeButton.transform.GetChild(0).gameObject.SetActive(false);
+                //_modeButton.transform.GetChild(1).gameObject.SetActive(true);
                 _decorateModeButtons.SetActive(false);
                 _renovateModeButtons.SetActive(true);
                 CategoryButtonClicked(_renovateModeButtons.transform.GetChild(0).GetComponent<FurnitureTrayCategoryButton>());
             }
+            _modeButton.GetComponent<ModeButtonHandler>().ToggleMode();
+            FilterTrayObjects(_currentSelectedCategory); // refresh tray slots
         }
     }
 }

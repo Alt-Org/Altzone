@@ -37,7 +37,7 @@ namespace MenuUI.Scripts.SoulHome
         private GameObject _rooms;
 
         [SerializeField]
-        private GameObject _hoverButtons;
+        //private GameObject _hoverButtons;
 
         private Bounds _roomBounds;
 
@@ -80,7 +80,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _selectedFurniture?.GetComponent<FurnitureHandling>().SetOutline(false);
                 _selectedFurniture = value;
-                _hoverButtons.SetActive(false);
+                _mainScreen.HoverButtons.SetActive(false);
                 // The tray preview belongs to the selection. If it is left behind, the next press on the screen
                 // spawns a new furniture from it (e.g. after the hover cancel button or discarding changes).
                 if (_selectedFurniture == null) _mainScreen.DeselectTrayFurniture();
@@ -336,7 +336,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (!_startFinished) return;
             // Move hover buttons with the selected furniture when scrolling the tower
-            if (_selectedFurniture != null && _hoverButtons.activeSelf) UpdateHoverButtons();
+            if (_selectedFurniture != null && _mainScreen.HoverButtons.activeSelf) UpdateHoverButtons();
         }
 
         // Places the hover buttons around the selected furniture's collider
@@ -345,7 +345,8 @@ namespace MenuUI.Scripts.SoulHome
             // Built from the box itself: Collider2D.bounds lags behind until physics syncs the transform, and is empty while disabled.
             BoxCollider2D box = _selectedFurniture.GetComponent<BoxCollider2D>();
             Transform furniture = _selectedFurniture.transform;
-            _hoverButtons.GetComponent<SoulHomeHoverButtonHandler>().SetButtonPositions(_camera, box, furniture);
+            _mainScreen.HoverButtons.GetComponent<SoulHomeHoverButtonHandler>().SetButtonPositions(_camera, box, furniture);
+            _mainScreen.CheckHoverButtons();
         }
 
         public bool FindRayPoint(Vector2 relPoint, ClickState click)
@@ -894,7 +895,7 @@ namespace MenuUI.Scripts.SoulHome
         // Hover confirm button: hides the hover buttons and outlines
         public void ConfirmFurniture()
         {
-            _hoverButtons.SetActive(false);
+            _mainScreen.HoverButtons.SetActive(false);
             if (_selectedFurniture == null) return;
             // Without a slot DeselectFurniture would send it back to the tray
             if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot == null) return;

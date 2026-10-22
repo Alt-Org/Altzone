@@ -2048,15 +2048,9 @@ MonoBehaviour:
   _soulHomeTower: {fileID: 8929454208922663643}
   _camera: {fileID: 2055968341869898131}
   _hoverButtons: {fileID: 4685726316003798928}
-  _confirmHoverButton: {fileID: 5991638182420195912}
-  _cancelHoverButton: {fileID: 2116190388733744243}
-  _rotateHoverButton: {fileID: 4292913216626964586}
-  _hoverButtonMargin: 10
-  _hoverButtonLine: {fileID: 290145036741276924}
-  _hoverButtonLineStart: {x: 0.07, y: 0}
-  _hoverButtonLineEnd: {x: 1, y: 0.94}
   _changeHandleButtonTray: {fileID: 4786222756856371447}
   _horizontalItemTray: {fileID: 8238237563156778947}
+  _screen: {fileID: 9223107660840435076}
 --- !u!114 &7260528578692763022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2252,7 +2246,9 @@ MonoBehaviour:
   _soulHomeController: {fileID: 7681122712900677425}
   _displayScreen: {fileID: 6124938095766919660}
   _rooms: {fileID: 2958044221307709069}
-  _hoverButtons: {fileID: 4685726316003798928}
+  _roomBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
 --- !u!114 &5276655090646875756
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7588,7 +7584,7 @@ GameObject:
   - component: {fileID: 532887460268449102}
   - component: {fileID: 3642664041974776369}
   m_Layer: 5
-  m_Name: RemodelIcon
+  m_Name: RenovationIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8021,7 +8017,7 @@ GameObject:
   - component: {fileID: 1334168814363171013}
   - component: {fileID: 3766464572440637777}
   m_Layer: 5
-  m_Name: ExitEditModeButton
+  m_Name: SaveChangesButton
   m_TagString: Overlay
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10209,6 +10205,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9158689894496969192}
   - component: {fileID: 2225872046755220171}
+  - component: {fileID: 1989671224627336450}
   - component: {fileID: 8681478441061731491}
   - component: {fileID: 5087444758327147452}
   - component: {fileID: 6272504443335598943}
@@ -10250,6 +10247,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8370065195635345875}
   m_CullTransparentMesh: 1
+--- !u!114 &1989671224627336450
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8370065195635345875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8dd364838d7c65428053646fdde4164, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _decorateModeImage: {fileID: 8363894350113653698}
+  _renovationModeImage: {fileID: 3642664041974776369}
 --- !u!114 &8681478441061731491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11468,39 +11479,15 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 778bbd2cd7864d642966f2ba006b802c, type: 3}
---- !u!224 &290145036741276924 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 2684499292788856164, guid: 778bbd2cd7864d642966f2ba006b802c,
-    type: 3}
-  m_PrefabInstance: {fileID: 2398040072428052888}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &2116190388733744243 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4330698468422841835, guid: 778bbd2cd7864d642966f2ba006b802c,
-    type: 3}
-  m_PrefabInstance: {fileID: 2398040072428052888}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4191997837967916318 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1975808579771407494, guid: 778bbd2cd7864d642966f2ba006b802c,
     type: 3}
   m_PrefabInstance: {fileID: 2398040072428052888}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &4292913216626964586 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1933435598867585522, guid: 778bbd2cd7864d642966f2ba006b802c,
-    type: 3}
-  m_PrefabInstance: {fileID: 2398040072428052888}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &4685726316003798928 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6935692958492708360, guid: 778bbd2cd7864d642966f2ba006b802c,
-    type: 3}
-  m_PrefabInstance: {fileID: 2398040072428052888}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &5991638182420195912 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8241903509820885968, guid: 778bbd2cd7864d642966f2ba006b802c,
     type: 3}
   m_PrefabInstance: {fileID: 2398040072428052888}
   m_PrefabAsset: {fileID: 0}
