@@ -55,6 +55,8 @@ namespace MenuUi.Scripts.Login
 
         [Header("Buttons")]
         [SerializeField] private Button _logInButton;
+        [SerializeField] private Button _guestLogInButton;
+        [SerializeField] private Button _forgotPasswordButton;
         [SerializeField] private Button _registerButton;
         [SerializeField] private Button _backButton;
         [SerializeField] private Button _backButton2;
@@ -268,6 +270,7 @@ namespace MenuUi.Scripts.Login
             _registerButton.onClick.AddListener(OpenPasswordHintPanel);
             _backButton.onClick.AddListener(CloseRegister);
             _guestLogInButton.onClick.AddListener(GuestLogin);
+            _forgotPasswordButton.onClick.AddListener(OpenPasswordHintPanel);
             _returnToLogIn.onClick.AddListener(() => _passwordHintWindow.SetActive(false));
             _returnToSignInScreenButton.onClick.AddListener(() => OpenPasswordHintPanel());
             _setHintButton.onClick.AddListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
