@@ -193,7 +193,7 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     foreach (RaycastHit2D trayTarget in hit)
                     {
-                        if (!trayTarget.collider.CompareTag("FurnitureTray") &&  !trayTarget.collider.CompareTag("FurnitureTrayItem")) continue;
+                        if (!trayTarget.collider.CompareTag("FurnitureTrayItem")) continue;
                         FurnitureTrayHandler tray = trayTarget.collider.GetComponentInParent<FurnitureTrayHandler>();
                         if (tray == null || tray.SmartList == null) continue;
                         _trayGestureList = tray.SmartList;
@@ -224,7 +224,7 @@ namespace MenuUI.Scripts.SoulHome
 
                 // A room collider behind the tray must not also process this position.
                 foreach (RaycastHit2D trayTarget in hit)
-                    if (trayTarget.collider.CompareTag("FurnitureTray") || trayTarget.collider.CompareTag("FurnitureTrayItem")) trayHit = true;
+                    if (trayTarget.collider.CompareTag("FurnitureTray")) trayHit = true;
                 foreach (RaycastHit2D hit2 in hit)
                 {
                     if (!trayHit && hit2.collider.gameObject.CompareTag("SoulHomeScreen"))

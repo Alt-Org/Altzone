@@ -18,10 +18,11 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private SmartHorizontalObjectList _smartList;
         private List<FurnitureListObject> _candidateListObjects = new(); // Matches the category/set filter
         private List<FurnitureListObject> _furnitureListObjects = new(); // What the tray shows
-        [SerializeField] private GameObject _decorateModeButtons;
+        [SerializeField] private FurnitureTrayCategoryButtonsHandler _decorateModeButtons;
         [SerializeField] private FurnitureTrayCategoryButton _decorateModeSetsButton;
+        [SerializeField, Range(0f, 1f)] private float _minimizedHeightRatio = 0.65f;
         
-        [SerializeField] private GameObject _renovateModeButtons;
+        [SerializeField] private FurnitureTrayCategoryButtonsHandler _renovateModeButtons;
         [SerializeField] private TextMeshProUGUI _categoryText;
         [SerializeField] private TextMeshProUGUI _modeText;
         [SerializeField] private GameObject _setSelectMenu;
@@ -48,6 +49,9 @@ namespace MenuUI.Scripts.SoulHome
                 else _setSelectButton.GetComponent<SetSelectButtonHandler>().SetSetName(setInfo.SetName);
                 _setSelectButton.GetComponent<SetSelectButtonHandler>().Button.onClick.AddListener(() => SelectSet(setInfo.SetName));
             }
+            _decorateModeButtons.OnCategoryButtonSelected += CategoryButtonClicked; // Connect the category button click event to the handler
+            _renovateModeButtons.OnCategoryButtonSelected += CategoryButtonClicked;
+
         }
 
         /*private void Update()
@@ -190,20 +194,11 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ToggleMinimizeTray()
         {
-            if (!_isTrayMinimized)
-            {
-                RectTransform rect = GetComponent<RectTransform>();
-                _isTrayMinimized = true;
+            RectTransform rect = GetComponent<RectTransform>();
+            _isTrayMinimized = !_isTrayMinimized;
 
-                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 300f); // Minimized height
-            }
-            else
-            {
-                RectTransform rect = GetComponent<RectTransform>();
-                _isTrayMinimized = false;
-
-                rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 462f); // Maximized height
-            }
+            rect.anchorMax = new Vector2(rect.anchorMax.x, _isTrayMinimized ? _minimizedHeightRatio : 1f);
+            rect.offsetMax = new Vector2(rect.offsetMax.x, 0f);
         }
 
         private void FillSelectionButtonList(FurnitureList furnitureList)
@@ -336,17 +331,20 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ModeButtonClicked(GameObject _modeButton)
         {
+            //if (_previousCategoryButton != null) _previousCategoryButton.DeSelect();
             if (!_isOnDecorateMode)
             {
                 _isOnDecorateMode = true;
                 if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _modeText.text = "Sisustus";
                 else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _modeText.text = "Decorate";
                 else _modeText.text = "Sisustus"; // Default to Finnish if language not set
-                //_modeButton.transform.GetChild(0).gameObject.SetActive(true);
-                //_modeButton.transform.GetChild(1).gameObject.SetActive(false);
-                _decorateModeButtons.SetActive(true);
-                _renovateModeButtons.SetActive(false);
-                CategoryButtonClicked(_decorateModeButtons.transform.GetChild(0).GetComponent<FurnitureTrayCategoryButton>());
+                _decorateModeButtons.gameObject.SetActive(true);
+                _renovateModeButtons.gameObject.SetActive(false);
+                if (!_decorateModeButtons.SelectCategory(_currentSelectedCategory))
+                {
+                    _currentSelectedCategory = 1; // All
+                    _decorateModeButtons.SelectCategory(_currentSelectedCategory);
+                }
             }
             else
             {
@@ -354,11 +352,13 @@ namespace MenuUI.Scripts.SoulHome
                 if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _modeText.text = "Remontti";
                 else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _modeText.text = "Renovation";
                 else _modeText.text = "Remontti"; // Default to Finnish if language not set
-                //_modeButton.transform.GetChild(0).gameObject.SetActive(false);
-                //_modeButton.transform.GetChild(1).gameObject.SetActive(true);
-                _decorateModeButtons.SetActive(false);
-                _renovateModeButtons.SetActive(true);
-                CategoryButtonClicked(_renovateModeButtons.transform.GetChild(0).GetComponent<FurnitureTrayCategoryButton>());
+                _decorateModeButtons.gameObject.SetActive(false);
+                _renovateModeButtons.gameObject.SetActive(true);
+                if (!_renovateModeButtons.SelectCategory(_currentSelectedCategory))
+                {
+                    _currentSelectedCategory = 0; // Floor
+                    _renovateModeButtons.SelectCategory(_currentSelectedCategory);
+                }
             }
             _modeButton.GetComponent<ModeButtonHandler>().ToggleMode();
             FilterTrayObjects(_currentSelectedCategory); // refresh tray slots
