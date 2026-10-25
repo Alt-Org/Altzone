@@ -69,8 +69,15 @@ public class ClanMemberRoleRights : MonoBehaviour
         }
         dropdown.ClearOptions();
         dropdown.AddOptions(options);
-    }
+        int defaultIndex = clan.ClanRoles.FindIndex(r => r.name == CurrentMember.Role.name);
+        if (defaultIndex != -1)
+        {
+            dropdown.value = defaultIndex;
+            dropdown.RefreshShownValue();
 
+            PopulateRolesAndRights(CurrentMember.Role);
+        }
+    }
 
     private void OnDropdownValueChanged(int index)
     {
@@ -91,8 +98,6 @@ public class ClanMemberRoleRights : MonoBehaviour
             bool isAllowed = currentRole.HasRights(right);
 
             Debug.Log($"{right} {isAllowed}");
-
-            roleText.text = $"Rooli: {currentRole.name}";
             GameObject newTextObj = Instantiate(textPrefab, contentParent);
 
             TextMeshProUGUI roleRights = newTextObj.GetComponent<TextMeshProUGUI>();
