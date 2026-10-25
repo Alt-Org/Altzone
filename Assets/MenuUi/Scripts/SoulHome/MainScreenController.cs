@@ -40,6 +40,8 @@ namespace MenuUI.Scripts.SoulHome
         private bool _trayFurnitureDragStarted;
         private bool _uiOwnsPointer;
         private readonly List<RaycastResult> _uiRaycastResults = new();
+        private BoxCollider2D _screenCollider;
+        private bool _colliderResizePending;
 
         internal bool TrayOpen { get => _trayOpen; set => _trayOpen = value; }
         internal GameObject SelectedFurnitureTray { get => _selectedFurnitureTray;}
@@ -51,6 +53,7 @@ namespace MenuUI.Scripts.SoulHome
         void Start()
         {
             EnhancedTouchSupport.Enable();
+            _screenCollider = _screen.GetComponent<BoxCollider2D>();
             EnableTray(false);
             _hoverButtons.GetComponent<SoulHomeHoverButtonHandler>()._screen = _screen;
         }
@@ -65,11 +68,7 @@ namespace MenuUI.Scripts.SoulHome
                 return;
             }
 
-            if (_screen.rect.width != _screen.GetComponent<BoxCollider2D>().size.x || _screen.rect.height != _screen.GetComponent<BoxCollider2D>().size.y)
-            //if (transform.Find("Screen").GetComponent<RectTransform>().rect.width != transform.Find("Screen").GetComponent<BoxCollider2D>().size.x || transform.Find("Screen").GetComponent<RectTransform>().rect.height != transform.Find("Screen").GetComponent<BoxCollider2D>().size.y)
-            {
-                StartCoroutine(SetColliderSize());
-            }
+            if (!_colliderResizePending && _screen.rect.size != _screenCollider.size) StartCoroutine(SetColliderSize());
 
             ClickState clickState = ClickStateHandler.GetClickState();
             if (clickState == ClickState.None || Touch.activeTouches.Count > 1)
@@ -79,14 +78,14 @@ namespace MenuUI.Scripts.SoulHome
             }
             if (clickState is not ClickState.None)
             {
-                if (ClickStateHandler.GetClickType() is ClickType.Click)RayPoint(clickState);
+                ClickType clickType = ClickStateHandler.GetClickType();
+                if (clickType is ClickType.Click) RayPoint(clickState);
                 // Mouse wheel or pinch over a menu (e.g. scrolling the set select list) belongs to that menu, not the tower zoom.
-                else if(ClickStateHandler.GetClickType() is ClickType.TwoFingerOrScroll && !IsPointerOverUi())
+                else if (clickType is ClickType.TwoFingerOrScroll && !IsPointerOverUi())
                 {
-                    Debug.LogWarning("Scroll Test");
                     float distance = ClickStateHandler.GetPinchDistance();
-                    if (ClickStateHandler.GetClickType(ClickInputDevice.Touch) is ClickType.TwoFingerOrScroll) _soulHomeTower.PinchZoom(distance, false);
-                    else _soulHomeTower.PinchZoom(distance, true);
+                    bool scroll = ClickStateHandler.GetClickType(ClickInputDevice.Touch) is not ClickType.TwoFingerOrScroll;
+                    _soulHomeTower.PinchZoom(distance, scroll);
                 }
             }
             bool doubleTap = false;
@@ -95,7 +94,8 @@ namespace MenuUI.Scripts.SoulHome
                 if(Time.time < _prevTapTime+0.2f) doubleTap = true;
                 _prevTapTime = Time.time;
             }
-            if (((AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Mouse.current.rightButton.wasReleasedThisFrame) || doubleTap) && _backDelay + 0.4f < Time.time)
+            bool rightClick = AppPlatform.IsDesktop && !AppPlatform.IsSimulator && Mouse.current != null && Mouse.current.rightButton.wasReleasedThisFrame;
+            if ((rightClick || doubleTap) && _backDelay + 0.4f < Time.time)
             {
                 if(!_soulHomeTower.EditingMode)_soulHomeTower.ZoomOut();
             }
@@ -110,6 +110,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             CancelTrayGesture();
             _soulHomeTower.ResetChanges();
+            _colliderResizePending = false; // Disabling stops the resize coroutine before it clears the flag.
         }
 
         private void CancelTrayGesture()
@@ -120,6 +121,11 @@ namespace MenuUI.Scripts.SoulHome
                 if (_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
                 else DeselectTrayFurniture();
             }
+            ResetTrayGestureState();
+        }
+
+        private void ResetTrayGestureState()
+        {
             _trayGestureList = null;
             _trayGestureFurnitureName = null;
             _trayFurnitureDragStarted = false;
@@ -165,9 +171,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (click == ClickState.End)
                 {
                     if (_trayFurnitureDragStarted && _soulHomeTower.SelectedFurniture == null) DeselectTrayFurniture();
-                    _trayGestureList = null;
-                    _trayGestureFurnitureName = null;
-                    _trayFurnitureDragStarted = false;
+                    ResetTrayGestureState();
                     _uiOwnsPointer = false;
                     if (_tempSelectedFurnitureTray != null) Destroy(_tempSelectedFurnitureTray);
                     _tempSelectedFurnitureTray = null;
@@ -177,171 +181,172 @@ namespace MenuUI.Scripts.SoulHome
 
         private void ProcessRayPoint(ClickState click)
         {
-            Ray ray = _camera.ScreenPointToRay(ClickStateHandler.GetClickPosition());
-            RaycastHit2D[] hit;
-            hit = Physics2D.GetRayIntersectionAll(ray, 1000);
-            bool overlayHit = false;
+            Vector2 position = ClickStateHandler.GetClickPosition();
+            RaycastHit2D[] hits = Physics2D.GetRayIntersectionAll(_camera.ScreenPointToRay(position), 1000);
+            if (HasTag(hits, "Overlay")) return;
+
+            if (click == ClickState.Start) BeginTrayGesture(hits, position);
+            if (_trayGestureList != null && !ContinueTrayGesture(click, position)) return;
+
+            // A room collider behind the tray must not also process this position.
+            bool trayHit = HasTag(hits, "FurnitureTray");
             bool soulHomeHit = false;
-            foreach (RaycastHit2D hit1 in hit)
+            foreach (RaycastHit2D hit in hits)
             {
-                if (hit1.collider.gameObject.CompareTag("Overlay")) overlayHit = true;
+                if (!trayHit && hit.collider.CompareTag("SoulHomeScreen"))
+                {
+                    soulHomeHit = true;
+                    HandleScreenHit(hit, click);
+                }
+                if (hit.collider.CompareTag("FurnitureTray")) HandleTrayHit(hit, click);
+                if (hit.collider.CompareTag("FurnitureTrayItem")) HandleTrayItemHit(hit, click);
             }
-            bool trayHit = false;
-            if (!overlayHit)
+            if (!trayHit) SetTrayPreviewVisible(false);
+            if (click is ClickState.End) FinishClick(soulHomeHit);
+        }
+
+        private void BeginTrayGesture(RaycastHit2D[] hits, Vector2 position)
+        {
+            foreach (RaycastHit2D hit in hits)
             {
-                if (click == ClickState.Start)
+                if (!hit.collider.CompareTag("FurnitureTrayItem")) continue;
+                FurnitureTrayHandler tray = hit.collider.GetComponentInParent<FurnitureTrayHandler>();
+                if (tray == null || tray.SmartList == null) continue;
+                _trayGestureList = tray.SmartList;
+                var slot = hit.collider.GetComponent<FurnitureTraySlotHandler>();
+                if (slot != null && slot.FurnitureList != null)
                 {
-                    foreach (RaycastHit2D trayTarget in hit)
-                    {
-                        if (!trayTarget.collider.CompareTag("FurnitureTrayItem")) continue;
-                        FurnitureTrayHandler tray = trayTarget.collider.GetComponentInParent<FurnitureTrayHandler>();
-                        if (tray == null || tray.SmartList == null) continue;
-                        _trayGestureList = tray.SmartList;
-                        var slot = trayTarget.collider.GetComponent<FurnitureTraySlotHandler>();
-                        if (slot != null && slot.FurnitureList != null)
-                        {
-                            _trayGestureFurnitureName = slot.FurnitureList.Name;
-                            break;
-                        }
-                    }
-                    if (_trayGestureList != null) _trayGestureList.BeginGesture(ClickStateHandler.GetClickPosition());
-                }
-
-                if (_trayGestureList != null)
-                {
-                    var intent = _trayGestureList.ResolveGesture(ClickStateHandler.GetClickPosition());
-                    if (intent != SmartHorizontalObjectList.DragIntent.Furniture || _trayGestureFurnitureName == null) return;
-                    if (!_trayFurnitureDragStarted)
-                    {
-                        if (click == ClickState.End) return;
-                        _trayFurnitureDragStarted = true;
-                        if (_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
-                        RevealTrayItem();
-                        _selectedFurnitureTray = GetTrayHandler().TakeFurnitureFromTray(_trayGestureFurnitureName);
-                        if (_selectedFurnitureTray == null) return;
-                    }
-                }
-
-                // A room collider behind the tray must not also process this position.
-                foreach (RaycastHit2D trayTarget in hit)
-                    if (trayTarget.collider.CompareTag("FurnitureTray")) trayHit = true;
-                foreach (RaycastHit2D hit2 in hit)
-                {
-                    if (!trayHit && hit2.collider.gameObject.CompareTag("SoulHomeScreen"))
-                    {
-                        soulHomeHit = true;
-                        if (_tempSelectedFurnitureTray != null || _selectedFurnitureTray != null)
-                        {
-                            if (_tempSelectedFurnitureTray != null)
-                            {
-                                _selectedFurnitureTray = _tempSelectedFurnitureTray;
-                                _tempSelectedFurnitureTray = null;
-                            }
-                            if (_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
-                            if (_soulHomeTower.SelectedFurniture == null) _soulHomeTower.SetFurniture(_selectedFurnitureTray);
-                        }
-                        if (_soulHomeTower.SelectedFurniture != null)
-                        {
-                            if (!_soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled)
-                            {
-                                _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = true;
-                                _soulHomeTower.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = true;
-                            }
-                        }
-
-                        Vector3 hitPoint = hit2.transform.InverseTransformPoint(hit2.point);
-                        float x = hit2.transform.GetComponent<RectTransform>().rect.width;
-                        float y = hit2.transform.GetComponent<RectTransform>().rect.height;
-                        Vector2 relPos = new((x / 2 + hitPoint.x) / x, (y / 2 + hitPoint.y) / y);
-                        bool check = _soulHomeTower.FindRayPoint(relPos, click);
-                        if (check) _backDelay = Time.time;
-                        if (_soulHomeTower.SelectedFurniture != null)
-                        {
-                            if (_selectedFurnitureTray != null && _selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
-                        }
-                    }
-                    if (hit2.collider.gameObject.CompareTag("FurnitureTray"))
-                    {
-                        trayHit = true;
-                        if (_selectedFurnitureTray == null)
-                        {
-                        }
-                        else
-                        {
-                            if (!_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = true;
-                            _selectedFurnitureTray.transform.position = hit2.point;
-
-                        }
-                        if (_soulHomeTower.SelectedFurniture != null)
-                        {
-                            if (click is ClickState.Start)
-                            {
-                                _soulHomeTower.DeselectFurniture();
-                                RevealTrayItem();
-
-                            }
-                            else if (_soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled)
-                            {
-                                _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = false;
-                                _soulHomeTower.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = false;
-                            }
-
-                            if (click is ClickState.End)
-                            {
-                                if (_selectedFurnitureTray != null)
-                                {
-                                    AddTrayItem(_selectedFurnitureTray.GetComponent<TrayFurniture>().Furniture);
-                                    Destroy(_selectedFurnitureTray);
-                                }
-                                _soulHomeTower.RemoveFurniture();
-                                _selectedFurnitureTray = null;
-                            }
-                        }
-                    }
-                    if (hit2.collider.gameObject.CompareTag("FurnitureTrayItem"))
-                    {
-                        if (click is ClickState.Start && _trayGestureList == null)
-                        {
-                            if(_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
-                            RevealTrayItem();
-                            string furnitureName = hit2.collider.GetComponent<FurnitureTraySlotHandler>().FurnitureList?.Name;
-                            GameObject furnitureObject = GetTrayHandler().TakeFurnitureFromTray(furnitureName);
-                            if(furnitureObject != null) _tempSelectedFurnitureTray = furnitureObject;
-                        }
-                    }
-                }
-                if (!trayHit)
-                {
-                    if (_selectedFurnitureTray != null && _selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = false;
-                }
-                if (click is ClickState.End)
-                {
-                    if (_selectedFurnitureTray != null)
-                    {
-                        if (_selectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem"))
-                        {
-                            if (!_selectedFurnitureTray.GetComponent<Image>().enabled) _selectedFurnitureTray.GetComponent<Image>().enabled = true;
-                            _selectedFurnitureTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                        }
-                    }
-                    if (!soulHomeHit && _soulHomeTower.SelectedFurniture != null)
-                    {
-                        if (_soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().TempSlot != null)
-                        {
-                            _soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().ResetFurniturePosition(_soulHomeTower.SelectedFurniture.GetComponent<FurnitureHandling>().TempSlot.furnitureGrid is FurnitureGrid.LeftWall);
-                            _soulHomeTower.SelectedFurniture.GetComponent<SpriteRenderer>().enabled = true;
-                            _soulHomeTower.SelectedFurniture.GetComponent<BoxCollider2D>().enabled = true;
-                            _soulHomeTower.UnfocusFurniture();
-                        }
-                        else
-                        {
-                            _soulHomeTower.DeselectFurniture();
-                            DeselectTrayFurniture();
-                        }
-                    }
-                    _tempSelectedFurnitureTray = null;
+                    _trayGestureFurnitureName = slot.FurnitureList.Name;
+                    break;
                 }
             }
+            if (_trayGestureList != null) _trayGestureList.BeginGesture(position);
+        }
+
+        // Returns false when the tray gesture keeps this position to itself (scrolling the tray, or the drag didn't get a furniture).
+        private bool ContinueTrayGesture(ClickState click, Vector2 position)
+        {
+            var intent = _trayGestureList.ResolveGesture(position);
+            if (intent != SmartHorizontalObjectList.DragIntent.Furniture || _trayGestureFurnitureName == null) return false;
+            if (_trayFurnitureDragStarted) return true;
+            if (click == ClickState.End) return false;
+
+            _trayFurnitureDragStarted = true;
+            if (_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
+            RevealTrayItem();
+            _selectedFurnitureTray = GetTrayHandler().TakeFurnitureFromTray(_trayGestureFurnitureName);
+            return _selectedFurnitureTray != null;
+        }
+
+        private void HandleScreenHit(RaycastHit2D hit, ClickState click)
+        {
+            if (_tempSelectedFurnitureTray != null)
+            {
+                _selectedFurnitureTray = _tempSelectedFurnitureTray;
+                _tempSelectedFurnitureTray = null;
+            }
+            if (_selectedFurnitureTray != null)
+            {
+                SetTrayPreviewVisible(false);
+                if (_soulHomeTower.SelectedFurniture == null) _soulHomeTower.SetFurniture(_selectedFurnitureTray);
+            }
+            if (_soulHomeTower.SelectedFurniture != null) SetFurnitureVisible(_soulHomeTower.SelectedFurniture, true);
+
+            if (_soulHomeTower.FindRayPoint(GetNormalizedScreenPoint(hit), click)) _backDelay = Time.time;
+            if (_soulHomeTower.SelectedFurniture != null) SetTrayPreviewVisible(false);
+        }
+
+        private void HandleTrayHit(RaycastHit2D hit, ClickState click)
+        {
+            if (_selectedFurnitureTray != null)
+            {
+                SetTrayPreviewVisible(true);
+                _selectedFurnitureTray.transform.position = hit.point;
+            }
+
+            GameObject selectedFurniture = _soulHomeTower.SelectedFurniture;
+            if (selectedFurniture == null) return;
+
+            if (click is ClickState.Start)
+            {
+                _soulHomeTower.DeselectFurniture();
+                RevealTrayItem();
+            }
+            else SetFurnitureVisible(selectedFurniture, false);
+
+            if (click is ClickState.End)
+            {
+                // Destroys the preview as well.
+                if (_selectedFurnitureTray != null) AddTrayItem(_selectedFurnitureTray.GetComponent<TrayFurniture>().Furniture);
+                _soulHomeTower.RemoveFurniture();
+                _selectedFurnitureTray = null;
+            }
+        }
+
+        private void HandleTrayItemHit(RaycastHit2D hit, ClickState click)
+        {
+            if (click is not ClickState.Start || _trayGestureList != null) return;
+
+            if (_soulHomeTower.SelectedFurniture != null) _soulHomeTower.DeselectFurniture();
+            RevealTrayItem();
+            var slot = hit.collider.GetComponent<FurnitureTraySlotHandler>();
+            if (slot == null || slot.FurnitureList == null) return;
+            GameObject furnitureObject = GetTrayHandler().TakeFurnitureFromTray(slot.FurnitureList.Name);
+            if (furnitureObject != null) _tempSelectedFurnitureTray = furnitureObject;
+        }
+
+        private void FinishClick(bool soulHomeHit)
+        {
+            // A preview that is still in its tray slot goes back to its place.
+            if (_selectedFurnitureTray != null && _selectedFurnitureTray.transform.parent.CompareTag("FurnitureTrayItem"))
+            {
+                SetTrayPreviewVisible(true);
+                _selectedFurnitureTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            }
+
+            GameObject selectedFurniture = _soulHomeTower.SelectedFurniture;
+            if (!soulHomeHit && selectedFurniture != null)
+            {
+                FurnitureHandling furnitureHandling = selectedFurniture.GetComponent<FurnitureHandling>();
+                if (furnitureHandling.TempSlot != null)
+                {
+                    furnitureHandling.ResetFurniturePosition(furnitureHandling.TempSlot.furnitureGrid is FurnitureGrid.LeftWall);
+                    SetFurnitureVisible(selectedFurniture, true);
+                    _soulHomeTower.UnfocusFurniture();
+                }
+                else
+                {
+                    _soulHomeTower.DeselectFurniture();
+                    DeselectTrayFurniture();
+                }
+            }
+            _tempSelectedFurnitureTray = null;
+        }
+
+        private static bool HasTag(RaycastHit2D[] hits, string tag)
+        {
+            foreach (RaycastHit2D hit in hits)
+                if (hit.collider.CompareTag(tag)) return true;
+            return false;
+        }
+
+        // Where the hit is on the Screen, from (0, 0) at its bottom left to (1, 1) at its top right.
+        private static Vector2 GetNormalizedScreenPoint(RaycastHit2D hit)
+        {
+            Rect rect = hit.transform.GetComponent<RectTransform>().rect;
+            Vector2 point = hit.transform.InverseTransformPoint(hit.point);
+            return new((point.x - rect.xMin) / rect.width, (point.y - rect.yMin) / rect.height);
+        }
+
+        private void SetTrayPreviewVisible(bool visible)
+        {
+            if (_selectedFurnitureTray != null) _selectedFurnitureTray.GetComponent<Image>().enabled = visible;
+        }
+
+        private static void SetFurnitureVisible(GameObject furniture, bool visible)
+        {
+            furniture.GetComponent<SpriteRenderer>().enabled = visible;
+            furniture.GetComponent<BoxCollider2D>().enabled = visible;
         }
 
         public void ResetChanges()
@@ -492,11 +497,10 @@ namespace MenuUI.Scripts.SoulHome
 
         private IEnumerator SetColliderSize()
         {
+            _colliderResizePending = true;
             yield return new WaitForEndOfFrame();
-            RectTransform rect = transform.Find("Screen").GetComponent<RectTransform>();
-            float x = rect.rect.width;
-            float y = rect.rect.height;
-            transform.Find("Screen").GetComponent<BoxCollider2D>().size = new(x, y);
+            _screenCollider.size = _screen.rect.size;
+            _colliderResizePending = false;
         }
         private void CheckTrayButtonStatus()
         {
