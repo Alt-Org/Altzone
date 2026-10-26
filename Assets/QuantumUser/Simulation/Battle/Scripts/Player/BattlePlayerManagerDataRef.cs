@@ -18,6 +18,7 @@ namespace Battle.QSimulation.Player
                 public BattlePlayerManagerDataQSingleton* Ptr;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static Ref GetRef(Frame f)
             {
                 if (!f.Unsafe.TryGetPointerSingleton(out BattlePlayerManagerDataQSingleton* playerManagerData))
@@ -28,6 +29,9 @@ namespace Battle.QSimulation.Player
                 return new Ref() { Ptr = playerManagerData };
             }
 
+            #region PlayerIndex Methods
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static int GetPlayerIndex(BattlePlayerSlot slot)
             {
                 int index = slot switch
@@ -43,6 +47,7 @@ namespace Battle.QSimulation.Player
                 return index;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static int GetPlayerIndex(Ref @ref, PlayerRef playerRef)
             {
                 for (int i = 0; i < Constants.BATTLE_PLAYER_SLOT_COUNT; i++)
@@ -52,11 +57,17 @@ namespace Battle.QSimulation.Player
                 return -1;
             }
 
+            #endregion PlayerIndex Methods
+
+            #region Slot and Team Methods
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattlePlayerSlot GetSlot(Ref @ref, PlayerRef playerRef)
             {
                 return GetPlayerSlot(GetPlayerIndex(@ref, playerRef));
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattlePlayerSlot GetPlayerSlot(int index)
             {
                 return index switch
@@ -70,6 +81,7 @@ namespace Battle.QSimulation.Player
                 };
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattlePlayerSlot GetTeammateSlot(BattlePlayerSlot slot)
             {
                 return slot switch
@@ -81,6 +93,7 @@ namespace Battle.QSimulation.Player
                 };
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattleTeamNumber GetTeam(BattlePlayerSlot slot)
             {
                 return slot switch
@@ -94,6 +107,7 @@ namespace Battle.QSimulation.Player
                 };
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattleTeamNumber GetOpposingTeam(BattleTeamNumber team)
             {
                 return team switch
@@ -103,10 +117,17 @@ namespace Battle.QSimulation.Player
                 };
             }
 
+            #endregion Slot and Team Methods
+
+            #region PlayerData Methods
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattlePlayerData.Ref GetPlayerData(Ref @ref, int index)
             {
                 return new BattlePlayerData.Ref(@ref.Ptr, index);
             }
+
+            #endregion PlayerData Methods
         }
     }
 }
