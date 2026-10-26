@@ -6,6 +6,7 @@ using Altzone.Scripts.Config;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.MQTT;
 using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
@@ -62,6 +63,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         public static MatchmakingType SelectedMatchmakingType { get; private set; }
         public static GameType SelectedGameType { get; private set; }
         public static MatchmakingType SelectedPremadeTargetMatchmakingType { get; private set; } = MatchmakingType.Clan2v2;
+        private static string _pendingFriendLobbyInvitePlayerId;
 
         public static void SetPremadeTargetGameType(MatchmakingType gameType)
         {
@@ -86,8 +88,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
             SignalBus.OnBattlePopupRequested += OpenWindow;
             SignalBus.OnCloseBattlePopupRequested += CloseWindow;
             LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
-            LobbyManager.OnInRoomInviteReceived += OnInRoomInviteReceived;
-            LobbyManager.OnInRoomInviteJoinFailed += OnInRoomInviteJoinFailed;
+            LobbyManager.OnFriendLobbyJoinFailed += OnFriendLobbyJoinFailed;
+            MQTTManager.OnMatchmakingInviteReceived += OnServerMatchmakingInviteReceived;
             // Register runtime popup reference for other components to find (safe to set here because serialized field is available in Awake)
             OnPopupContentsInstanceAssigned?.Invoke(PopupContentsInstance);
         }
@@ -103,8 +105,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
             SignalBus.OnBattlePopupRequested -= OpenWindow;
             SignalBus.OnCloseBattlePopupRequested -= CloseWindow;
             LobbyManager.OnMatchmakingStopped -= OnMatchmakingStopped;
-            LobbyManager.OnInRoomInviteReceived -= OnInRoomInviteReceived;
-            LobbyManager.OnInRoomInviteJoinFailed -= OnInRoomInviteJoinFailed;
+            LobbyManager.OnFriendLobbyJoinFailed -= OnFriendLobbyJoinFailed;
+            MQTTManager.OnMatchmakingInviteReceived -= OnServerMatchmakingInviteReceived;
             if (PopupContentsInstance == _popupContents)
             {
                 OnPopupContentsInstanceAssigned?.Invoke(null);
@@ -196,7 +198,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
                     SelectedMatchmakingType = matchmakingType;
                     SelectedGameType = gameType;
-                    _roomSwitcher.SwitchRoom(matchmakingType);
+                    _roomSwitcher.OpenConfirmWindow(matchmakingType);
                     return;
                 case MatchmakingType.Clan2v2:
                 case MatchmakingType.Random2v2:
@@ -342,12 +344,12 @@ namespace MenuUi.Scripts.Lobby.InLobby
             Debug.Log($"{PhotonRealtimeClient.LobbyNetworkClientState}");
         }
 
-        private void OnInRoomInviteReceived(LobbyManager.InRoomInviteInfo inviteInfo)
+        private void ShowServerMatchmakingInvite(string roomId, string inviterUserName, MatchmakingType targetGameType)
         {
-            if (inviteInfo == null || string.IsNullOrEmpty(inviteInfo.RoomName)) return;
+            if (string.IsNullOrEmpty(roomId)) return;
 
-            string inviterName = ResolveOnlinePlayerName(inviteInfo.LeaderUserName);
-            string targetMode = inviteInfo.TargetGameType == MatchmakingType.Clan2v2 ? "Clan 2v2" : "Random 2v2";
+            string inviterName = ResolveOnlinePlayerName(inviterUserName);
+            string targetMode = targetGameType == MatchmakingType.Clan2v2 ? "Clan 2v2" : "Random 2v2";
             string message = $"{inviterName} kutsui sinut Friend Lobby -huoneeseen.\n\nHaettava pelimuoto: {targetMode}.\n\nLiitytaanko huoneeseen?";
 
             bool popupShown = InviteDecisionPopupHandler.RequestInviteDecisionPrompt(
@@ -356,21 +358,54 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 "Hylkää",
                 accepted =>
                 {
-                    if (LobbyManager.Instance == null) return;
                     if (accepted)
                     {
                         OpenBattlePopupForInviteAccept();
-                        LobbyManager.Instance.AcceptInRoomInvite(inviteInfo.RoomName);
+                        LobbyManager.Instance?.JoinFriendLobbyRoom(roomId);
                     }
-                    else LobbyManager.Instance.DeclineInRoomInvite(inviteInfo.RoomName);
                 });
 
             if (!popupShown)
             {
-                Debug.LogWarning("OnInRoomInviteReceived: decision popup unavailable, declining invite to fail closed.");
-                LobbyManager.Instance?.DeclineInRoomInvite(inviteInfo.RoomName);
+                Debug.LogWarning("ShowServerMatchmakingInvite: decision popup unavailable; invite was ignored.");
                 OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Friend Lobby -kutsu saatu, mutta vahvistusikkunaa ei voitu avata. Kutsu hylättiin turvallisuussyista.");
             }
+        }
+
+        public static void SetPendingFriendLobbyInvitePlayer(string playerId)
+        {
+            _pendingFriendLobbyInvitePlayerId = playerId;
+        }
+
+        public static string ConsumePendingFriendLobbyInvitePlayer()
+        {
+            string playerId = _pendingFriendLobbyInvitePlayerId;
+            _pendingFriendLobbyInvitePlayerId = null;
+            return playerId;
+        }
+
+        private void OnServerMatchmakingInviteReceived(MQTTMatchInvite invite)
+        {
+            if (invite == null) return;
+
+            string roomId = invite.id;
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                Debug.LogWarning("OnServerMatchmakingInviteReceived: invite did not contain a room id.");
+                return;
+            }
+
+            MatchmakingType targetGameType = invite.matchType switch
+            {
+                MatchType.CLAN => MatchmakingType.Clan2v2,
+                MatchType.RANDOM => MatchmakingType.Random2v2,
+                _ => MatchmakingType.Random2v2
+            };
+
+            MQTTMatchPlayers inviter = invite.senderPlayer ?? invite.ownerPlayer;
+            string inviterName = inviter?.name ?? inviter?.playerId ?? string.Empty;
+            SetPremadeTargetGameType(targetGameType);
+            ShowServerMatchmakingInvite(roomId, inviterName, targetGameType);
         }
 
         private void OpenBattlePopupForInviteAccept()
@@ -411,7 +446,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             return userId;
         }
 
-        private void OnInRoomInviteJoinFailed(string roomName, short returnCode, string message)
+        private void OnFriendLobbyJoinFailed(string roomName, short returnCode, string message)
         {
             bool isRoomFull = returnCode == 32765
                 || (!string.IsNullOrEmpty(message) && message.ToLowerInvariant().Contains("game full"));
@@ -422,7 +457,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, popupMessage);
             // Close the battle popup since join failed and we're not in the FriendLobby room
-            try { CloseWindow(); } catch (Exception ex) { Debug.LogWarning($"OnInRoomInviteJoinFailed: failed to close popup: {ex.Message}"); }
+            try { CloseWindow(); } catch (Exception ex) { Debug.LogWarning($"OnFriendLobbyJoinFailed: failed to close popup: {ex.Message}"); }
         }
     }
 }

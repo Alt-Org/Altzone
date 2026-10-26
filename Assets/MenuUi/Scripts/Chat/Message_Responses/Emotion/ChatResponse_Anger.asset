@@ -14,38 +14,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _classType: 200
   _list:
-  - ResponseId: 0
-    Response: Tulkaa nyt joku pelaamaan, saakeli!
-  - ResponseId: 1
-    Response: "Anti menn\xE4 toinen peli, vai mit\xE4 t\xE4ss\xE4 odotellaan?"
-  - ResponseId: 2
-    Response: "Min\xE4h\xE4n sitten tulen pelaamaan kanssasi, okei?"
-  - ResponseId: 3
-    Response: "Min\xE4 haluan mukaan, piste."
-  - ResponseId: 4
-    Response: Joo, joo!
-  - ResponseId: 5
-    Response: ' Ei tarkoittaa ei!'
-  - ResponseId: 6
-    Response: Tulin paikalle, huomatkaa se!
-  - ResponseId: 7
-    Response: "Riitt\xE4\xE4 t\xE4lt\xE4 p\xE4iv\xE4lt\xE4, m\xE4 poistun."
-  - ResponseId: 8
-    Response: "T\xE4ytyy menn\xE4. Palaan sitten kun huvittaa"
-  - ResponseId: 9
-    Response: "T\xE4n\xE4\xE4n on voittoputki p\xE4\xE4ll\xE4, \xE4lk\xE4\xE4 sotkeko
-      sit\xE4!"
-  - ResponseId: 10
-    Response: "Jumankauta, voitetaan nyt edes yksi peli, h\xE4h!?"
-  - ResponseId: 11
-    Response: "Jos haluut pelata tosissaan, tuu Discordiin. Siell\xE4 homma hoituu!
+  - _responseId: 0
+    _responseFI: Tulkaa nyt joku pelaamaan, saakeli!
+    _responseEN: Come play with me now, dammit!
+  - _responseId: 1
+    _responseFI: "Anti menn\xE4 toinen peli, vai mit\xE4 t\xE4ss\xE4 odotellaan?"
+    _responseEN: Let's go to the next one or what are we waiting for here?
+  - _responseId: 2
+    _responseFI: "Min\xE4h\xE4n sitten tulen pelaamaan kanssasi, okei?"
+    _responseEN: I'm coming to play with you, understtod?
+  - _responseId: 3
+    _responseFI: "Min\xE4 haluan mukaan, piste."
+    _responseEN: I want in. FULL STOP.
+  - _responseId: 4
+    _responseFI: Joo, joo!
+    _responseEN: Yeah, yeah.
+  - _responseId: 5
+    _responseFI: Ei tarkoittaa ei!
+    _responseEN: Absolute not!
+  - _responseId: 6
+    _responseFI: Tulin paikalle, huomatkaa se!
+    _responseEN: I have arrived, acknowledge me!
+  - _responseId: 7
+    _responseFI: "Riitt\xE4\xE4 t\xE4lt\xE4 p\xE4iv\xE4lt\xE4, m\xE4 poistun."
+    _responseEN: That's enough for today, I'm leaving now.
+  - _responseId: 8
+    _responseFI: "T\xE4ytyy menn\xE4. Palaan sitten kun huvittaa"
+    _responseEN: Got to go. I'll return when I feel like it.
+  - _responseId: 9
+    _responseFI: "T\xE4n\xE4\xE4n on voittoputki p\xE4\xE4ll\xE4, \xE4lk\xE4\xE4
+      sotkeko sit\xE4!"
+    _responseEN: I'm on a winning streak, don't mess this up!
+  - _responseId: 10
+    _responseFI: "Jumankauta, voitetaan nyt edes yksi peli, h\xE4h!?"
+    _responseEN: God dammit, lets try to win at least one, understood!?
+  - _responseId: 11
+    _responseFI: "Jos haluut pelata tosissaan, tuu Discordiin. Siell\xE4 homma hoituu!
       Linkki on nettisivuilla!"
-  - ResponseId: 12
-    Response: "Miten m\xE4 oon vittu ihan yksin kokoaika?!"
-  - ResponseId: 13
-    Response: "Uskokaa tai \xE4lk\xE4\xE4, mutta tykk\xE4\xE4n t\xE4st\xE4 pelist\xE4."
-  - ResponseId: 14
-    Response: "T\xE4\xE4 peli on niin paska ja raivostuttava, mutta silti pelaan
+    _responseEN: If someone want to play seriously join Discord. That's the way to
+      get things done.
+  - _responseId: 12
+    _responseFI: "Miten m\xE4 oon vittu ihan yksin kokoaika?!"
+    _responseEN: How the frick I'm always alone?!
+  - _responseId: 13
+    _responseFI: "Uskokaa tai \xE4lk\xE4\xE4, mutta tykk\xE4\xE4n t\xE4st\xE4 pelist\xE4."
+    _responseEN: Beleave it not, but I might like this game.
+  - _responseId: 14
+    _responseFI: "T\xE4\xE4 peli on niin paska ja raivostuttava, mutta silti pelaan
       sit\xE4!"
-  - ResponseId: 15
-    Response: En osaa pelata, mutta olen silti parempi kuin te!
+    _responseEN: This game is so garbage and infuriating, but I'll still play.
+  - _responseId: 15
+    _responseFI: En osaa pelata, mutta olen silti parempi kuin te!
+    _responseEN: I don't know how to play but I'm still better than you!

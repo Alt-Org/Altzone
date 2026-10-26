@@ -25,6 +25,16 @@ namespace MenuUI.Scripts.Jukebox
             "Mykistetty\r\nAsetuksista"
         };
 
+        private List<string> _indicatorTextsEn = new()
+        {
+            "",
+            "Preview\r\nOn",
+            "Jukebox\r\nMuted",
+            "Paused",
+            "Playlist\r\nEmpty",
+            "Muted\r\nfrom\r\nSettings"
+        };
+
         public enum JukeboxDiskTextType
         {
             None = 0,
@@ -55,7 +65,10 @@ namespace MenuUI.Scripts.Jukebox
 
         public void SetIndicatorText(JukeboxDiskTextType textType)
         {
-            _indicatorText.text = _indicatorTexts[(int)textType];
+            if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                _indicatorText.text = _indicatorTexts[(int)textType];
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                _indicatorText.text = _indicatorTextsEn[(int)textType];
             ToggleIndicatorHolder(true);
         }
 

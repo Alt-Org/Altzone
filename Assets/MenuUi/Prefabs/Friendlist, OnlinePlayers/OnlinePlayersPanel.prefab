@@ -901,6 +901,7 @@ GameObject:
   - component: {fileID: 1169766360274690449}
   - component: {fileID: 1640029209092764096}
   - component: {fileID: 1408056037360030472}
+  - component: {fileID: 6462270688843228986}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -957,8 +958,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Kaverit
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3c2f07b74051d294cace0480a4dc96fd, type: 2}
-  m_sharedMaterial: {fileID: -2832907553426538675, guid: 3c2f07b74051d294cace0480a4dc96fd,
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: 607ab1d3fedd2ec47a689eddcef4219e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1027,6 +1028,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6462270688843228986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4163344045930154594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kaverit
+  _englishText: Friends
 --- !u!1 &4247607991060964686
 GameObject:
   m_ObjectHideFlags: 0
@@ -2276,6 +2291,7 @@ GameObject:
   - component: {fileID: 2457566738274051020}
   - component: {fileID: 9204275869861617794}
   - component: {fileID: 6850942301721545236}
+  - component: {fileID: 4592117232382364772}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2332,8 +2348,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Kaikki pelaajat
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3c2f07b74051d294cace0480a4dc96fd, type: 2}
-  m_sharedMaterial: {fileID: -2832907553426538675, guid: 3c2f07b74051d294cace0480a4dc96fd,
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: 607ab1d3fedd2ec47a689eddcef4219e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2358,7 +2374,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30.7
+  m_fontSize: 34.4
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2402,6 +2418,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4592117232382364772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7713912316505156842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Kaikki pelaajat
+  _englishText: All players
 --- !u!1 &7746835721553109122
 GameObject:
   m_ObjectHideFlags: 0
@@ -2614,6 +2644,7 @@ GameObject:
   - component: {fileID: 6688484358767966185}
   - component: {fileID: 2261815464638750112}
   - component: {fileID: 4319828265888318915}
+  - component: {fileID: 1864614990181579726}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2670,8 +2701,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Klaani
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3c2f07b74051d294cace0480a4dc96fd, type: 2}
-  m_sharedMaterial: {fileID: -2832907553426538675, guid: 3c2f07b74051d294cace0480a4dc96fd,
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: 607ab1d3fedd2ec47a689eddcef4219e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2740,6 +2771,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1864614990181579726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8716357385828171175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Klaani
+  _englishText: Clan
 --- !u!1 &9011285609927290981
 GameObject:
   m_ObjectHideFlags: 0

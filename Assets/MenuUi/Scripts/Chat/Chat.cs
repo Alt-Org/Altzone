@@ -117,6 +117,7 @@ public class Chat : AltMonoBehaviour
     {
         ChatChannel.OnMessageHistoryReceived += RefreshChat;
         ChatChannel.OnMessageReceived += DisplayMessage;
+        MessageObjectHandler.OnRequestCanvasUpdate += ForceUpdateCanvas;
 
         // Alustaa chatit ja asettaa kielichatin oletukseksi
         _currentContent = _clanChatContent;
@@ -158,6 +159,7 @@ public class Chat : AltMonoBehaviour
     {
         ChatChannel.OnMessageHistoryReceived -= RefreshChat;
         ChatChannel.OnMessageReceived -= DisplayMessage;
+        MessageObjectHandler.OnRequestCanvasUpdate -= ForceUpdateCanvas;
     }
 
     private void AddResponses()
@@ -396,7 +398,7 @@ public class Chat : AltMonoBehaviour
     private IEnumerator UpdateLayoutAndScroll(GameObject message, GameObject contentLayout)
     {
         yield return null;
-        message.GetComponentInChildren<ChatMessageScript>().MessageSetHeight();
+        message.GetComponent<MessageObjectHandler>().SizeCall();
 
         yield return null;
         Canvas.ForceUpdateCanvases();
@@ -407,6 +409,17 @@ public class Chat : AltMonoBehaviour
 
         yield return null;
         _currentScrollRect.verticalNormalizedPosition = 0f;
+    }
+
+    public void ForceUpdateCanvas() => StartCoroutine(ForceUpdateCanvasCoroutine());
+
+    public IEnumerator ForceUpdateCanvasCoroutine()
+    {
+        yield return null;
+        Canvas.ForceUpdateCanvases();
+        yield return null;
+        RectTransform rectTransform = _currentContent.GetComponent<RectTransform>();
+        LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
     }
 
     // Valitsee viestin

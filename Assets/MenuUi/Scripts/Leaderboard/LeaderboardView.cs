@@ -179,7 +179,7 @@ public class LeaderboardView : MonoBehaviour
                                 clanheart.SetOtherClanColors(clanData);
 
                                 // View clan button
-                                item.OpenProfileButton.onClick.RemoveAllListeners();
+                                //item.OpenProfileButton.onClick.RemoveAllListeners();
                                 item.OpenProfileButton.onClick.AddListener(() =>
                                 {
                                     DataCarrier.AddData(DataCarrier.ClanListing, serverClan); // Transfer the data for use in the leaderboard
@@ -383,10 +383,10 @@ public class LeaderboardView : MonoBehaviour
                 item.Initialize(rank, ranking);
 
                 // View player profile button
-                item.OpenProfileButton.onClick.AddListener(() =>
+                /*item.OpenProfileButton.onClick.AddListener(() =>
                 {
                     DataCarrier.AddData(DataCarrier.PlayerProfile, ranking.Player); // Transfer the data for use in the leaderboard
-                });
+                });*/
 
                 if (ranking.Player.Name == _playerName) //make the player's placement item white
                 {
@@ -488,10 +488,10 @@ public class LeaderboardView : MonoBehaviour
 
                 //open friend profile
                 //item.OpenProfileButton.onClick.RemoveAllListeners();
-                item.OpenProfileButton.onClick.AddListener(() =>
+                /*item.OpenProfileButton.onClick.AddListener(() =>
                 {
                     StartCoroutine(GetFriendProfile(friend._id, item));
-                });
+                });*/
 
                 if (friend.name == _playerName) //color player's item white
                 {

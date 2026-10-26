@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2646674471352073176}
   - component: {fileID: 2261026606916043575}
   - component: {fileID: 2546953072522480116}
+  - component: {fileID: 1829806360702237401}
   m_Layer: 5
   m_Name: BT_CHAT
   m_TagString: Untagged
@@ -120,3 +121,32 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1829806360702237401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2472968820478298304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa065b798c421034ba43b01dae74e81a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 2
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+  _longClickStartThresholdTime: 0.2
+  _longClickThresholdTime: 3
+  _uniqueName: 
+  _questionOption1Fi: "Varpaiden l\xE4mmitt\xE4mist\xE4 langattomasti."
+  _questionOption1En: Warming your toes wirelessly.
+  _questionOption2Fi: Pelaajan muuttumista taskulampuksi.
+  _questionOption2En: Turning the player into a flashlight.
+  _questionOption3Fi: "Yhteyden luomista toisiin ihmisiin ja riippuvuutta \xE4lylaitteista."
+  _questionOption3En: Connecting with other people and dependence on smart devices.
+  _answer: 3

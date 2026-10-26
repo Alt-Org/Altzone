@@ -1899,42 +1899,42 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerManagerDataQSingleton : Quantum.IComponentSingleton {
-    public const Int32 SIZE = 424;
+    public const Int32 SIZE = 504;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(80)]
+    [FieldOffset(96)]
     public Int32 PlayerCount;
-    [FieldOffset(84)]
+    [FieldOffset(100)]
     [FramePrinter.FixedArrayAttribute(typeof(PlayerRef), 4)]
     private fixed Byte _PlayerRefs_[16];
-    [FieldOffset(48)]
+    [FieldOffset(64)]
     [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerPlayState), 4)]
     private fixed Byte _PlayStates_[16];
-    [FieldOffset(132)]
-    [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
-    private fixed Byte _IsBotStates_[16];
-    [FieldOffset(116)]
-    [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
-    private fixed Byte _IsAbandonedStates_[16];
-    [FieldOffset(100)]
-    [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
-    private fixed Byte _AllowCharacterSwappingStates_[16];
     [FieldOffset(148)]
     [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
+    private fixed Byte _IsBotStates_[16];
+    [FieldOffset(132)]
+    [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
+    private fixed Byte _IsAbandonedStates_[16];
+    [FieldOffset(116)]
+    [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
+    private fixed Byte _AllowCharacterSwappingStates_[16];
+    [FieldOffset(164)]
+    [FramePrinter.FixedArrayAttribute(typeof(QBoolean), 4)]
     private fixed Byte _PlayerGiveUpStates_[16];
-    [FieldOffset(200)]
+    [FieldOffset(216)]
     [FramePrinter.FixedArrayAttribute(typeof(FrameTimer), 4)]
     private fixed Byte _RespawnTimers_[32];
-    [FieldOffset(64)]
+    [FieldOffset(80)]
     public fixed Int32 CharacterSelectedNumbers[4];
-    [FieldOffset(164)]
+    [FieldOffset(180)]
     [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 4)]
     private fixed Byte _CharacterEntityGroupIDs_[32];
     [FieldOffset(0)]
-    [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerCharacterState), 12)]
-    private fixed Byte _CharactersAllStates_[48];
-    [FieldOffset(232)]
-    [FramePrinter.FixedArrayAttribute(typeof(FPVector2), 12)]
-    private fixed Byte _CharacterAllPreviousPositions_[192];
+    [FramePrinter.FixedArrayAttribute(typeof(BattlePlayerCharacterState), 16)]
+    private fixed Byte _CharactersAllStates_[64];
+    [FieldOffset(248)]
+    [FramePrinter.FixedArrayAttribute(typeof(FPVector2), 16)]
+    private fixed Byte _CharacterAllPreviousPositions_[256];
     public FixedArray<PlayerRef> PlayerRefs {
       get {
         fixed (byte* p = _PlayerRefs_) { return new FixedArray<PlayerRef>(p, 4, 4); }
@@ -1977,12 +1977,12 @@ namespace Quantum {
     }
     public FixedArray<BattlePlayerCharacterState> CharactersAllStates {
       get {
-        fixed (byte* p = _CharactersAllStates_) { return new FixedArray<BattlePlayerCharacterState>(p, 4, 12); }
+        fixed (byte* p = _CharactersAllStates_) { return new FixedArray<BattlePlayerCharacterState>(p, 4, 16); }
       }
     }
     public FixedArray<FPVector2> CharacterAllPreviousPositions {
       get {
-        fixed (byte* p = _CharacterAllPreviousPositions_) { return new FixedArray<FPVector2>(p, 16, 12); }
+        fixed (byte* p = _CharacterAllPreviousPositions_) { return new FixedArray<FPVector2>(p, 16, 16); }
       }
     }
     public override Int32 GetHashCode() {
@@ -2083,29 +2083,29 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct BattlePlayerShieldManagerDataQSingleton : Quantum.IComponentSingleton {
-    public const Int32 SIZE = 144;
+    public const Int32 SIZE = 192;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
-    public fixed Int32 PlayerShieldCounts[12];
-    [FieldOffset(48)]
-    [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 12)]
-    private fixed Byte _PlayerShieldEntityGroupIDs_[96];
+    public fixed Int32 PlayerShieldCounts[16];
+    [FieldOffset(64)]
+    [FramePrinter.FixedArrayAttribute(typeof(BattleEntityID), 16)]
+    private fixed Byte _PlayerShieldEntityGroupIDs_[128];
     public FixedArray<BattleEntityID> PlayerShieldEntityGroupIDs {
       get {
-        fixed (byte* p = _PlayerShieldEntityGroupIDs_) { return new FixedArray<BattleEntityID>(p, 8, 12); }
+        fixed (byte* p = _PlayerShieldEntityGroupIDs_) { return new FixedArray<BattleEntityID>(p, 8, 16); }
       }
     }
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 5279;
-        fixed (Int32* p = PlayerShieldCounts) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, 12);
+        fixed (Int32* p = PlayerShieldCounts) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, 16);
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(PlayerShieldEntityGroupIDs);
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (BattlePlayerShieldManagerDataQSingleton*)ptr;
-        serializer.Stream.SerializeBuffer(&p->PlayerShieldCounts[0], 12);
+        serializer.Stream.SerializeBuffer(&p->PlayerShieldCounts[0], 16);
         FixedArray.Serialize(p->PlayerShieldEntityGroupIDs, serializer, Statics.SerializeBattleEntityID);
     }
   }
@@ -2274,9 +2274,11 @@ namespace Quantum {
   }
   public static unsafe partial class Constants {
     public const Int32 BATTLE_PLAYER_SLOT_COUNT = 4;
-    public const Int32 BATTLE_PLAYER_CHARACTER_COUNT = 3;
-    public const Int32 BATTLE_PLAYER_CHARACTER_TOTAL_COUNT = 12;
+    public const Int32 BATTLE_PLAYER_CHARACTER_MAX_COUNT = 4;
+    public const Int32 BATTLE_PLAYER_CHARACTER_MAX_TOTAL_COUNT = 16;
     public const Int32 BATTLE_EMOTION_STATE_COUNT = 5;
+    public const Int32 BATTLE_NORMAL_PLAYER_CHARACTER_COUNT = 3;
+    public const Int32 BATTLE_FLIPPER_PLAYER_CHARACTER_COUNT = 3;
     public const Int32 BATTLE_SOUND_FX_CHARACTER_ID_MULTIPLIER = 10;
     public const Int32 BATTLE_SOUND_FX_CHARACTER_COMMON_START = 100;
     public const Int32 BATTLE_SOUND_FX_CHARACTER_START = 10000;

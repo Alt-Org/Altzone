@@ -120,7 +120,7 @@ public class ClanStallPopupHandler : MonoBehaviour
         _icon.sprite = _furn.Sprite;
 
         //Furniture name
-        _name.text = _furn.Info.SetName + " " + _furn.Info.VisibleName;
+        _name.text = _furn.SetName + " " + _furn.VisibleName;
 
         //Furniture price
         _price.text = _furn.Value.ToString();
@@ -135,7 +135,7 @@ public class ClanStallPopupHandler : MonoBehaviour
         _artist.text = "• Suunnittelu: " + _furn.Info.ArtistName;
 
         //Furniture description
-        _artisticDescription.text = "• " + _furn.Info.ArtisticDescription;
+        _artisticDescription.text = "• " + _furn.Description;
     }
 
   
