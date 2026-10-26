@@ -661,7 +661,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         // Get all character stats combined
-        private int GetStatsCombined()
+        public int GetStatsCombined()
         {
             if (_customCharacter == null) return GetBaseStatsCombined();
             return _customCharacter.Speed + _customCharacter.CharacterSize + _customCharacter.Attack + _customCharacter.Defence + _customCharacter.Hp;
@@ -669,7 +669,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 
 
         // Get all character base stats combined
-        private int GetBaseStatsCombined()
+        public int GetBaseStatsCombined()
         {
             return _baseCharacter.DefaultSpeed + _baseCharacter.DefaultCharacterSize + _baseCharacter.DefaultAttack + _baseCharacter.DefaultDefence + _baseCharacter.DefaultHp; 
         }

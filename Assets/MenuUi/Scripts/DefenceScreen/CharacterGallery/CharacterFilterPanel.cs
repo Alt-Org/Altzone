@@ -296,28 +296,9 @@ public class CharacterFilterPanel : MonoBehaviour
         CheckConsciousFilters();
 
         _galleryView.CheckIfSlotsActive();
-        //organize characters (all ways of organizing are not possible currently)
-        switch (_sortOrder) {
-            case SortOrder.Classes:
-                _galleryView.OrganizeGallery(false, true);
-                break;
-            case SortOrder.Alphabetical:
-                _galleryView.OrganizeGallery(false, false);
-                break;
-            case SortOrder.AlphabeticalReverse:
-                _galleryView.OrganizeGallery(true, false);
-                break;
-            case SortOrder.LowestLevel:
-                break;
-            case SortOrder.HighestLevel:
-                break;
-            case SortOrder.RarestFirst:
-                break;
-            case SortOrder.RarestLast:
-                break;
-            case SortOrder.FavouritesFirst:
-                break;
-        }
+
+        // Send the Sort Order enum directly to the Gallery View script
+        _galleryView.OrganizeGallery(_sortOrder);
 
         Debug.Log("Close and apply");
 

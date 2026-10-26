@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
-using UnityEngine;
-using UnityEngine.UI;
-
-using TMPro;
-
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -387,46 +385,80 @@ namespace MenuUi.Scripts.CharacterGallery
         }
 
 
-        public void OrganizeGallery(bool reversed, bool alphabetical)
+        public void OrganizeGallery(CharacterFilterPanel.SortOrder sortOrder)
         {
-            _nameSortingPairs.Clear();
+            List<CharacterSortData> sortingList = new List<CharacterSortData>();
 
-            //add all characters to the list
-            foreach (CharacterSlot characterSlot in _characterSlots) {
+            // Fetch player data to access the updated stats of unlocked characters
+            PlayerData playerData = null;
+            Storefront.Get().GetPlayerData(Altzone.Scripts.Config.GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
 
-                _nameSortingPairs.Add(new NameSortingPair() { Name = GetName(characterSlot), Id = (int)characterSlot.Id });
-            }
+            // 1. Collect the data (Name, Id, and Total Level) of all characters currently in the gallery
+            foreach (CharacterSlot characterSlot in _characterSlots)
+            {
+                int level = 0;
 
-            //select the sort mode
-            if (!reversed && !alphabetical)
-            {
-                _nameSortingPairs.Sort((a, b) => a.Name.CompareTo(b.Name));
-            }
-            else if (reversed && !alphabetical)
-            {
-                _nameSortingPairs.Sort((a, b) => b.Name.CompareTo(a.Name));
-            }
-            else if (alphabetical)
-            {
-                _nameSortingPairs.Sort((a, b) => a.Id.CompareTo(b.Id));
-            }
+                // Find the specific character from the player's custom characters list
+                CustomCharacter customChar = playerData?.CustomCharacters?.Find(c => c.Id == characterSlot.Id);
 
-            //sort the list and apply
-            foreach (NameSortingPair namePair in _nameSortingPairs)
-            {
-                foreach(CharacterSlot characterSlot in _characterSlots)
+                if (customChar != null)
                 {
-                    if((int)characterSlot.Id == namePair.Id)
+                    // Player owns the character: Total level is the sum of all stats
+                    level = customChar.Hp + customChar.Speed + customChar.CharacterSize + customChar.Attack + customChar.Defence;
+                }
+                else
+                {
+                    // Character is locked: Total level is zero (or alternatively the sum of base stats)
+                    level = 0;
+                }
+
+                sortingList.Add(new CharacterSortData()
+                {
+                    Name = GetName(characterSlot),
+                    Id = (int)characterSlot.Id,
+                    TotalLevel = level
+                });
+            }
+
+            // 2. Sort the list according to the selected dropdown option
+            switch (sortOrder)
+            {
+                case CharacterFilterPanel.SortOrder.Classes:
+                    sortingList.Sort((a, b) => a.Id.CompareTo(b.Id));
+                    break;
+                case CharacterFilterPanel.SortOrder.Alphabetical:
+                    sortingList.Sort((a, b) => a.Name.CompareTo(b.Name));
+                    break;
+                case CharacterFilterPanel.SortOrder.AlphabeticalReverse:
+                    sortingList.Sort((a, b) => b.Name.CompareTo(a.Name));
+                    break;
+                case CharacterFilterPanel.SortOrder.LowestLevel:
+                    sortingList.Sort((a, b) => a.TotalLevel.CompareTo(b.TotalLevel)); // Lowest first
+                    break;
+                case CharacterFilterPanel.SortOrder.HighestLevel:
+                    sortingList.Sort((a, b) => b.TotalLevel.CompareTo(a.TotalLevel)); // Highest first
+                    break;
+            }
+
+            // 3. Reorder the UI elements (character slots) in the Unity hierarchy to match the sorted list
+            foreach (CharacterSortData data in sortingList)
+            {
+                foreach (CharacterSlot characterSlot in _characterSlots)
+                {
+                    if ((int)characterSlot.Id == data.Id)
                     {
-                        Debug.Log(namePair.Name);
                         characterSlot.transform.SetAsLastSibling();
                     }
                 }
             }
-
         }
 
-
+        private class CharacterSortData
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public int TotalLevel { get; set; } // Total level added for sorting
+        }
 
         private string GetName(CharacterSlot characterSlot)
         {
