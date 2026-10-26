@@ -201,6 +201,7 @@ namespace Altzone.Scripts.Lobby
         private bool _serverRoomStartInFlight;
         private bool _serverPhotonReadyInFlight;
         private bool _serverMatchStartHandled;
+        private bool _serverInviteJoinInFlight;
         private string _pendingServerInviteRoomId = string.Empty;
         private MQTTMatchRoomData _serverRoomData;
         private MqttMatchSet _serverMatchData;
@@ -4149,32 +4150,40 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator JoinServerMatchmakingRoom(string roomId)
         {
-            if (string.IsNullOrWhiteSpace(roomId)) yield break;
+            if (string.IsNullOrWhiteSpace(roomId) || _serverInviteJoinInFlight) yield break;
 
-            if (PhotonRealtimeClient.InRoom)
+            _serverInviteJoinInFlight = true;
+            try
             {
-                PhotonRealtimeClient.LeaveRoom();
-                yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
+                if (PhotonRealtimeClient.InRoom)
+                {
+                    PhotonRealtimeClient.LeaveRoom();
+                    yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
+                }
+
+                bool success = false;
+                MatchmakingRoomResponse joinedRoom = null;
+                yield return StartCoroutine(ServerManager.Instance.MatchmakingJoinRoom(roomId, (joined, room) =>
+                {
+                    success = joined;
+                    joinedRoom = room;
+                }));
+
+                if (!success || joinedRoom == null)
+                {
+                    OnInRoomInviteJoinFailed?.Invoke(roomId, -1, "server matchmaking room join failed");
+                    yield break;
+                }
+
+                _serverMatchmakingActive = true;
+                _currentMatchmakingGameType = (MatchmakingType)joinedRoom.matchType;
+                _currentGameType = (GameType)joinedRoom.gameType;
+                OnMatchmakingRoomEntered?.Invoke(joinedRoom.ownerPlayerId == ServerManager.Instance.Player?._id);
             }
-
-            bool success = false;
-            MatchmakingRoomResponse joinedRoom = null;
-            yield return StartCoroutine(ServerManager.Instance.MatchmakingJoinRoom(roomId, (joined, room) =>
+            finally
             {
-                success = joined;
-                joinedRoom = room;
-            }));
-
-            if (!success || joinedRoom == null)
-            {
-                OnInRoomInviteJoinFailed?.Invoke(roomId, -1, "server matchmaking room join failed");
-                yield break;
+                _serverInviteJoinInFlight = false;
             }
-
-            _serverMatchmakingActive = true;
-            _currentMatchmakingGameType = (MatchmakingType)joinedRoom.matchType;
-            _currentGameType = (GameType)joinedRoom.gameType;
-            OnMatchmakingRoomEntered?.Invoke(joinedRoom.ownerPlayerId == PhotonRealtimeClient.LocalPlayer?.UserId);
         }
 
         private IEnumerator StartServerRoomIfReady(string roomId)
@@ -4257,6 +4266,14 @@ namespace Altzone.Scripts.Lobby
         {
             if (invite == null || string.IsNullOrWhiteSpace(invite.id)) return;
 
+            if (IsAcceptedPremadeServerInvite(invite))
+            {
+                _pendingServerInviteRoomId = string.Empty;
+                Debug.Log($"Automatically joining matchmaking room '{invite.id}' with the already accepted premade teammate.");
+                StartCoroutine(JoinServerMatchmakingRoom(invite.id));
+                return;
+            }
+
             _pendingServerInviteRoomId = invite.id;
             string ownerId = invite.ownerPlayer?.playerId ?? string.Empty;
             string ownerName = invite.ownerPlayer?.name ?? string.Empty;
@@ -4268,6 +4285,55 @@ namespace Altzone.Scripts.Lobby
                 ServerManager.Instance.Player?._id ?? string.Empty,
                 matchmakingType,
                 (GameType)invite.gameType));
+        }
+
+        private bool IsAcceptedPremadeServerInvite(MQTTMatchInvite invite)
+        {
+            if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.CurrentRoom == null) return false;
+
+            string localPlayerId = ServerManager.Instance.Player?._id
+                ?? PhotonRealtimeClient.LocalPlayer?.UserId
+                ?? string.Empty;
+            string ownerPlayerId = invite.ownerPlayer?.playerId ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(localPlayerId)
+                || string.IsNullOrWhiteSpace(ownerPlayerId)
+                || string.Equals(localPlayerId, ownerPlayerId, StringComparison.Ordinal)) return false;
+
+            try
+            {
+                var room = PhotonRealtimeClient.CurrentRoom;
+                bool isPremade = room.GetCustomProperty<bool>(PhotonBattleRoom.PremadeModeKey, false);
+                int inviteState = room.GetCustomProperty<int>(
+                    PhotonBattleRoom.PremadeInviteStateKey,
+                    PhotonBattleRoom.PremadeInviteStateNone);
+                string leaderPlayerId = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeLeaderUserIdKey, string.Empty);
+                string invitedPlayerId = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeInvitedUserIdKey, string.Empty);
+                string premadePlayerId1 = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId1Key, string.Empty);
+                string premadePlayerId2 = room.GetCustomProperty<string>(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
+                MatchmakingType targetMatchmakingType = (MatchmakingType)room.GetCustomProperty<int>(
+                    PhotonBattleRoom.PremadeTargetMatchmakingTypeKey,
+                    (int)MatchmakingType.None);
+                GameType targetGameType = (GameType)room.GetCustomProperty<int>(
+                    PhotonBattleRoom.PremadeTargetGameTypeKey,
+                    (int)GameType.BattlePingPong);
+
+                bool localPlayerIsAcceptedTeammate = string.Equals(invitedPlayerId, localPlayerId, StringComparison.Ordinal)
+                    && string.Equals(premadePlayerId2, localPlayerId, StringComparison.Ordinal);
+                bool ownerIsPremadeLeader = string.Equals(leaderPlayerId, ownerPlayerId, StringComparison.Ordinal)
+                    && string.Equals(premadePlayerId1, ownerPlayerId, StringComparison.Ordinal);
+
+                return isPremade
+                    && inviteState == PhotonBattleRoom.PremadeInviteStateAccepted
+                    && localPlayerIsAcceptedTeammate
+                    && ownerIsPremadeLeader
+                    && targetMatchmakingType == (MatchmakingType)invite.matchType
+                    && targetGameType == (GameType)invite.gameType;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Could not verify automatic premade matchmaking join: {ex.Message}");
+                return false;
+            }
         }
 
         private void OnServerMatchFound(MqttMatchSet match)
