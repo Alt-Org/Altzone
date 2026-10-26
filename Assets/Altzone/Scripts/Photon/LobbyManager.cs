@@ -173,6 +173,9 @@ namespace Altzone.Scripts.Lobby
         private const float InRoomInviteDeclineCooldownSeconds = 30f;
         private const float InRoomInviteValiditySeconds = 60f;
         private const float InRoomInviteJoinTimeoutSeconds = 12f;
+        // Photon player-property updates are asynchronous. Do not tell the matchmaking backend
+        // that this client is ready until the server-assigned slot has been acknowledged locally.
+        private const float ServerPhotonPositionReadyTimeoutSeconds = 5f;
 
         private List<FriendInfo> _friendList;
 
@@ -390,6 +393,16 @@ namespace Altzone.Scripts.Lobby
         public static void NotifyGamePlayedOut()
         {
             _gamePlayedOut = true;
+
+            // The LobbyManager survives scene changes. Mark the local queue as finished as soon as
+            // the battle ends so menu UI created for the results flow cannot restore the mini
+            // matchmaking panel from stale state. Keep the server match data until its finished
+            // event arrives so the result-reporting flow can still correlate and clear it.
+            if (Instance != null && Instance._serverMatchmakingActive)
+            {
+                Instance._serverMatchmakingActive = false;
+                OnMatchmakingStopped?.Invoke();
+            }
         }
 
         public static void NotifyBattleStartUiReady()
@@ -4326,30 +4339,78 @@ namespace Altzone.Scripts.Lobby
         {
             if (_serverPhotonReadyInFlight || _serverMatchData == null) yield break;
             _serverPhotonReadyInFlight = true;
+
+            string matchId = _serverMatchData.id;
+            int expectedPosition = ApplyServerMatchPosition();
+            float positionDeadline = Time.realtimeSinceStartup + ServerPhotonPositionReadyTimeoutSeconds;
+
+            while (_serverMatchmakingActive
+                && _serverMatchData != null
+                && _serverMatchData.id == matchId
+                && PhotonRealtimeClient.InRoom
+                && PhotonRealtimeClient.CurrentRoom?.Name == matchId)
+            {
+                int localPosition = PhotonRealtimeClient.LocalPlayer?.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest)
+                    ?? PlayerPositionGuest;
+                if (PhotonLobbyRoom.IsValidPlayerPos(expectedPosition) && localPosition == expectedPosition)
+                {
+                    break;
+                }
+
+                if (Time.realtimeSinceStartup >= positionDeadline)
+                {
+                    _serverPhotonReadyInFlight = false;
+                    Debug.LogWarning($"Photon did not acknowledge server match position {expectedPosition} for match '{matchId}' in time; readiness was not confirmed.");
+                    OnFailedToStartMatchmakingGame?.Invoke();
+                    yield break;
+                }
+
+                // The room creator can receive OnJoinedRoom before its initial room properties
+                // are visible locally. Retry resolving the assigned slot, but do not confirm ready
+                // until the corresponding player property has also arrived from Photon.
+                if (!PhotonLobbyRoom.IsValidPlayerPos(expectedPosition))
+                {
+                    expectedPosition = ApplyServerMatchPosition();
+                }
+                yield return null;
+            }
+
+            if (!_serverMatchmakingActive
+                || _serverMatchData == null
+                || _serverMatchData.id != matchId
+                || !PhotonRealtimeClient.InRoom
+                || PhotonRealtimeClient.CurrentRoom?.Name != matchId)
+            {
+                _serverPhotonReadyInFlight = false;
+                yield break;
+            }
+
             bool success = false;
             yield return StartCoroutine(ServerManager.Instance.MatchmakingConfirmPhotonReady(
-                _serverMatchData.id,
+                matchId,
                 (confirmed, _) => success = confirmed));
             if (!success)
             {
                 _serverPhotonReadyInFlight = false;
-                Debug.LogWarning($"Backend did not accept Photon readiness for match '{_serverMatchData.id}'.");
+                Debug.LogWarning($"Backend did not accept Photon readiness for match '{matchId}'.");
                 OnFailedToStartMatchmakingGame?.Invoke();
             }
         }
 
-        private void ApplyServerMatchPosition()
+        private int ApplyServerMatchPosition()
         {
             string localUserId = PhotonRealtimeClient.LocalPlayer?.UserId;
-            if (string.IsNullOrWhiteSpace(localUserId) || PhotonRealtimeClient.CurrentRoom == null) return;
+            if (string.IsNullOrWhiteSpace(localUserId) || PhotonRealtimeClient.CurrentRoom == null) return PlayerPositionGuest;
 
             for (int position = PhotonBattleRoom.PlayerPosition1; position <= PhotonBattleRoom.PlayerPosition4; position++)
             {
                 string reservedUserId = PhotonRealtimeClient.CurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.GetPositionKey(position), string.Empty);
                 if (reservedUserId != localUserId) continue;
                 PhotonRealtimeClient.LocalPlayer.SetCustomProperty(PlayerPositionKey, position);
-                return;
+                return position;
             }
+
+            return PlayerPositionGuest;
         }
 
         private IEnumerator StopServerMatchmaking()
@@ -5882,6 +5943,18 @@ namespace Altzone.Scripts.Lobby
                 }
                 Player player = PhotonRealtimeClient.LocalPlayer;
                 int masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+                if (_serverMatchmakingActive && !PhotonLobbyRoom.IsValidPlayerPos(masterPosition))
+                {
+                    ApplyServerMatchPosition();
+                    float positionDeadline = Time.realtimeSinceStartup + ServerPhotonPositionReadyTimeoutSeconds;
+                    while (!PhotonLobbyRoom.IsValidPlayerPos(masterPosition)
+                        && PhotonRealtimeClient.InRoom
+                        && Time.realtimeSinceStartup < positionDeadline)
+                    {
+                        yield return null;
+                        masterPosition = player.GetCustomProperty(PlayerPositionKey, PlayerPositionGuest);
+                    }
+                }
                 if (!PhotonLobbyRoom.IsValidPlayerPos(masterPosition))
                 {
                     StartingGameFailed();
