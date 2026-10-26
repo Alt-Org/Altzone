@@ -9,6 +9,8 @@ using Prg.Scripts.Common;
 using UnityEngine.InputSystem;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Audio;
+using static MenuUI.Scripts.SoulHome.FurnitureHandling;
+using UnityEditor.Graphs;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -233,7 +235,7 @@ namespace MenuUI.Scripts.SoulHome
                         //Debug.Log("Touch: X: " + (prevp.x - lp.x));
                         if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)
                         {
-                            startScrollSlide = new Vector2(Mathf.Abs(prevp.x - lp.x) / scrollSpeed, 0); 
+                            startScrollSlide = new Vector2(Mathf.Abs(prevp.x - lp.x) / scrollSpeed, 0);
                             currentScrollSlide = startScrollSlide;
                             currentScrollSlideDirection = new Vector2(prevp.x - lp.x, 0);
                             currentScrollSlideDirection.Normalize();
@@ -390,7 +392,7 @@ namespace MenuUI.Scripts.SoulHome
                             }
                             //_furnitureList.Add(furnitureObject);
                         }
-                    } 
+                    }
 
                     if (hit2.collider.gameObject.CompareTag("Room"))
                     {
@@ -550,7 +552,7 @@ namespace MenuUI.Scripts.SoulHome
         public void ZoomIn(GameObject room)
         {
             _camera.transform.position = new(room.transform.position.x, room.transform.position.y + room.GetComponent<BoxCollider2D>().size.y / 2,_camera.transform.position.z);
-            
+
             outDelay = Time.time;
 
             Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
@@ -651,10 +653,105 @@ namespace MenuUI.Scripts.SoulHome
             int prevRoomId = (_selectedFurniture.transform.parent != null && _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
             foreach (RaycastHit2D hit2 in hitArray)
             {
+
                 if (hit2.collider.gameObject.CompareTag("Room"))
                 {
                     check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, hover, hitPoint, hitRoom);
+
+                    //Displayment of interact slots during placement
+                    if ((hover || check) && _selectedFurniture != null)
+                    {
+                        FurnitureHandling handling = _selectedFurniture.GetComponent<FurnitureHandling>();
+                        FurnitureSlot hoveredSlot = GetHoveredSlot(hitArray);
+
+                        if (hoveredSlot != null && handling.HasInteractionSlot)
+                        {
+                            RoomData room = hit2.collider.GetComponent<RoomData>();
+
+                            int W = handling.Furniture.GetFurnitureNormalSize().x;
+                            int H = handling.Furniture.GetFurnitureNormalSize().y;
+
+                            foreach (Vector2Int offset in handling.customInteractionOffsets)
+                            {
+                                Vector2Int rotatedOffset = offset;
+                                switch (handling.TempSpriteDirection)
+                                {
+                                    case Direction.Front:
+                                        rotatedOffset = offset;
+                                        rotatedOffset.x = offset.x;
+                                        rotatedOffset.y = -offset.y - H + 1;
+                                        break;
+
+                                    case Direction.Right:
+                                        rotatedOffset = new Vector2Int(offset.y + H - 1, -offset.x);
+                                        break;
+
+                                    case Direction.Left:
+                                        rotatedOffset = new Vector2Int(-offset.y, offset.x - (W - 1));
+                                        break;
+                                }
+
+                                int targetCol = hoveredSlot.column + rotatedOffset.x;
+                                int targetRow = hoveredSlot.row + rotatedOffset.y;
+
+                                HighlightSlot(room, targetCol, targetRow);
+                            }
+                        }
+                    }
+
+                    //Save interaction slots on placement
+                    if (!hover && check && _selectedFurniture != null)
+                    {
+                        FurnitureHandling handling = _selectedFurniture.GetComponent<FurnitureHandling>();
+
+                        if (handling.HasInteractionSlot)
+                        {
+                            handling.ClearInteractionSlots();
+                            FurnitureSlot hoveredSlot = GetHoveredSlot(hitArray);
+
+                            if (hoveredSlot != null)
+                            {
+                                RoomData room = hit2.collider.GetComponent<RoomData>();
+
+                                int W = handling.Furniture.GetFurnitureNormalSize().x;
+                                int H = handling.Furniture.GetFurnitureNormalSize().y;
+
+                                foreach (Vector2Int offset in handling.customInteractionOffsets)
+                                {
+                                    Vector2Int rotatedOffset = offset;
+
+                                    switch (handling.TempSpriteDirection)
+                                    {
+                                        case Direction.Front:
+                                            rotatedOffset = offset;
+                                            rotatedOffset.x = offset.x;
+                                            rotatedOffset.y = -offset.y - H + 1;
+                                            break;
+
+                                        case Direction.Right:
+                                            rotatedOffset = new Vector2Int(offset.y + H - 1, -offset.x);
+                                            break;
+
+                                        case Direction.Back:
+                                            rotatedOffset = new Vector2Int(-offset.x + W - 1, -offset.y - (H - 1));
+                                            break;
+
+                                        case Direction.Left:
+                                            rotatedOffset = new Vector2Int(-offset.y, offset.x - (W - 1));
+                                            break;
+                                    }
+
+                                    int targetCol = hoveredSlot.column + rotatedOffset.x;
+                                    int targetRow = hoveredSlot.row + rotatedOffset.y;
+
+                                    HighlightSlot(room, targetCol, targetRow);
+                                    SaveSlot(room, targetCol, targetRow, handling);
+                                }
+                            }
+                        }
+                    }
                 }
+                
             }
             if (hover)
             {
@@ -785,7 +882,7 @@ namespace MenuUI.Scripts.SoulHome
                     int roomId = furniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
                     _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), furniture.GetComponent<FurnitureHandling>().TempSlot);
                 }
-                
+
                 furniture.GetComponent<FurnitureHandling>().ResetSlot();
                 furniture.GetComponent<FurnitureHandling>().ResetDirection();
             }
@@ -965,6 +1062,73 @@ namespace MenuUI.Scripts.SoulHome
             float distanceMaxX = widthToEdge / Mathf.Tan(cameraAngle * (Mathf.PI / 180));
             //Debug.Log(widthToEdge + ":" + cameraAngle + ":" + Mathf.Tan(cameraAngle * (Mathf.PI / 180)) + ":" + distanceMaxX);
             return distanceMaxX;
+        }
+
+        private FurnitureSlot GetHoveredSlot(RaycastHit2D[] hits)
+        {
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider.CompareTag("FloorFurnitureSlot") || hit.collider.CompareTag("WallFurnitureSlot"))
+                {
+                    return hit.collider.GetComponent<FurnitureSlot>();
+                }
+            }
+            return null;
+        }
+
+        //Helper method for saving interctable slots
+        private void SaveSlot(RoomData room, int col, int row, FurnitureHandling handling)
+        {
+            if (col >= 0 && col < room.SlotColumns && row >= 0 && row < room.SlotRows)
+            {
+                FurnitureSlot slot = room.Grid[col, row].FurnitureSlot;
+                handling.AddInteractionSlot(slot);
+                slot.InteractionOwner = handling;
+            }
+        }
+
+        //Helper method for highlighting interctable slots
+        private void HighlightSlot(RoomData room, int col, int row)
+        {
+            if (col >= 0 && col < room.SlotColumns && row >= 0 && row < room.SlotRows)
+            {
+                FurnitureSlot interactSlot = room.Grid[col, row].FurnitureSlot;
+                FurnitureHandling current = _selectedFurniture.GetComponent<FurnitureHandling>();
+
+                bool overlapsFurniture = interactSlot.SlotOwner != null && interactSlot.SlotOwner != current;
+                bool overlapsInteract = interactSlot.InteractionOwner != null && interactSlot.InteractionOwner != current;
+
+                bool isValid = !overlapsFurniture && !overlapsInteract;
+
+
+                if (isValid)
+                {
+                    interactSlot.SetValidity(isValid, true);
+                }
+                else if(!isValid)
+                {
+                    interactSlot.SetValidity(false, false);
+                }
+                room.AddToValidityList(interactSlot);
+            }
+        }
+
+        private Vector2Int RotateOffset(Vector2Int offset, bool isVertical, bool facingLeftOrBack)
+        {
+
+            //Front (Default)
+            if (!isVertical && !facingLeftOrBack) return new Vector2Int(offset.x, offset.y);
+
+            //Right
+            if (isVertical && !facingLeftOrBack) return new Vector2Int(offset.y, -offset.x);
+
+            //Back
+            if (!isVertical && facingLeftOrBack) return new Vector2Int(-offset.x, -offset.y);
+
+            //Left
+            if (isVertical && facingLeftOrBack) return new Vector2Int(-offset.y, offset.x);
+
+            return offset;
         }
     }
 }
