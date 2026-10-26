@@ -1,0 +1,132 @@
+/// @file BattleHandleLink.qtn
+/// <summary>
+/// Contains link structs and link entity type enums.
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattlePlayerLinkEntityType}  
+///   @copybrief Quantum.BattlePlayerLinkEntityType
+/// - @cref{Quantum,BattlePlayerShieldLinkEntityType}  
+///   @copybrief Quantum.BattlePlayerShieldLinkEntityType
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerLinkQComponent}  
+///   @copybrief Quantum.BattlePlayerLinkQComponent
+/// - @cref{Quantum,BattlePlayerShieldLinkQComponent}  
+///   @copybrief Quantum.BattlePlayerShieldLinkQComponent
+/// - @cref{Quantum,BattleProjectileLinkQComponent}  
+///   @copybrief Quantum.BattleProjectileLinkQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattlePlayerLinkEntityType
+/// <summary>
+/// Enum used to define what type of entity the player link is on.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleHandleLink.qtn}
+
+/// @var BattlePlayerLinkEntityType Quantum::BattlePlayerLinkEntityType::Character
+/// <summary>Link is on a character entity.</summary>
+///
+/// @var BattlePlayerLinkEntityType Quantum::BattlePlayerLinkEntityType::Hitbox
+/// <summary>Link is on a hitbox entity.</summary>
+///
+/// @var BattlePlayerLinkEntityType Quantum::BattlePlayerLinkEntityType::Shield
+/// <summary>Link is on a shield entity.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerLinkQComponent
+/// <summary>
+/// Contains data used to link a character, it's hitbox and it's shield(s) together.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleHandleLink.qtn}
+
+/// @var BattlePlayerSlot Quantum::BattlePlayerLinkQComponent::Slot
+/// <summary>The slot of the player this character belongs to.</summary>
+///
+/// @var EntityRef Quantum::BattlePlayerLinkQComponent::CharacterEntityRef
+/// <summary>Reference to the character entity.</summary>
+///
+/// @var BattlePlayerLinkEntityType Quantum::BattlePlayerLinkQComponent::Type
+/// <summary>The type of entity this component belongs to.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerLinkQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerLinkQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerLinkQComponent::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerLinkQComponent::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattlePlayerShieldLinkEntityType
+/// <summary>
+/// Enum used to define what type of entity the shield link is on.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleHandleLink.qtn}
+
+/// @var BattlePlayerShieldLinkEntityType Quantum::BattlePlayerShieldLinkEntityType::Shield
+/// <summary>Link is on a shield entity.</summary>
+///
+/// @var BattlePlayerShieldLinkEntityType Quantum::BattlePlayerShieldLinkEntityType::Hitbox
+/// <summary>Link is on a hitbox entity.</summary>
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerShieldLinkQComponent
+/// <summary>
+/// Contains data used to link a shield and it's hitbox together.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleHandleLink.qtn}
+
+/// @var EntityRef Quantum::BattlePlayerShieldLinkQComponent::ERef
+/// <summary>Reference to the shield entity.</summary>
+///
+/// @var BattlePlayerShieldLinkEntityType Quantum::BattlePlayerShieldLinkQComponent::Type
+/// <summary>The type of entity this component belongs to.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerShieldLinkQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerShieldLinkQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerShieldLinkQComponent::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerShieldLinkQComponent::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleProjectileLinkQComponent
+/// <summary>
+/// Contains data used to link the projectile and it's hitbox together.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleHandleLink.qtn}
+
+/// @var EntityRef Quantum::BattleProjectileLinkQComponent::ERef
+/// <summary>Reference to the projectile entity.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleProjectileLinkQComponent::SIZE
+/// @var Int32 Quantum::BattleProjectileLinkQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleProjectileLinkQComponent::GetHashCode
+///
+/// @fn void Quantum::BattleProjectileLinkQComponent::Serialize
+///
+/// @}

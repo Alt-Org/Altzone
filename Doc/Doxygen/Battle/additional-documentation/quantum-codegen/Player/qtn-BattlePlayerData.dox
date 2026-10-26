@@ -1,0 +1,84 @@
+/// @file BattlePlayerData.qtn
+/// <summary>
+/// Contains the BattlePlayerData struct.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattlePlayerData}  
+///   @copybrief Quantum.BattlePlayerData
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerData
+/// <summary>
+/// Contains the player's data.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleHandleLink.qtn}
+
+/// @var PlayerRef Quantum::BattlePlayerData::PRef
+/// <summary>PlayerRef used to identify the player.</summary>
+///
+/// @var BattlePlayerSlot Quantum::BattlePlayerData::Slot
+/// <summary>Which PlayerSlot the player is on.</summary>
+///
+/// @var BattleTeamNumber Quantum::BattlePlayerData::Team
+/// <summary>Which team the player is on.</summary>
+///
+/// @var bool Quantum::BattlePlayerData::IsBot
+/// <summary>Whether the player is a bot or not.</summary>
+///
+/// @var bool Quantum::BattlePlayerData::IsAbandoned
+/// <summary>Whether the player has abandoned the game or not.</summary>
+
+/// @var BattlePlayerPlayState Quantum::BattlePlayerData::PlayState
+/// <summary>The player's current play state.</summary>
+
+/// @var bool Quantum::BattlePlayerData::StateAllowCharacterSwapping
+/// <summary>Whether character swapping is allowed or not.</summary>
+///
+/// @var bool Quantum::BattlePlayerData::StatePlayerGiveUp
+/// <summary>Whether the player has given up or not.</summary>
+///
+/// @var FrameTimer Quantum::BattlePlayerData::StateRespawnTimer
+/// <summary>Player's respawn timer.</summary>
+
+/// @var int Quantum::BattlePlayerData::SelectedCharacterNumber
+/// <summary>Player's currently selected character's character number.</summary>
+///
+/// @var BattleEntityID Quantum::BattlePlayerData::CharacterEntityGroupID
+/// <summary>Character's EntityGroupID.</summary>
+///
+/// @var array Quantum::BattlePlayerData::CharacterDefaultSpawnPositions
+/// <summary>
+/// Array of default spawn positions of each character.
+/// Public getter for internal @cref{Quantum.BattlePlayerData,_CharacterDefaultSpawnPositions_} array.
+/// </summary>
+
+/// @var array Quantum::BattlePlayerData::ShieldEntityGroupIDs
+/// <summary>
+/// Array of entity group IDs for all shields of this player.
+/// Public getter for internal @cref{Quantum.BattlePlayerData,_ShieldEntityGroupIDs_} array.
+/// </summary>
+
+/// @anchor PrivateArrays
+/// @name Private fixed arrays
+/// @{
+/// @var Byte Quantum.BattlePlayerData::_CharacterDefaultSpawnPositions_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerData,CharacterDefaultSpawnPositions}</summary>
+///
+/// @var Byte Quantum.BattlePlayerData::_ShieldEntityGroupIDs_
+/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerData,ShieldEntityGroupIDs}</summary>
+/// @}
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerData::SIZE
+/// @var Int32 Quantum::BattlePlayerData::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerData::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerData::Serialize
+///
+/// @}
