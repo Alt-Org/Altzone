@@ -1,0 +1,6 @@
+var struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_class100_projectile_collision_data =
+[
+    [ "OtherEntityRef", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_class100_projectile_collision_data.html#ab643444144e2317bc2945e1e21bb3f85", null ],
+    [ "Projectile", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_class100_projectile_collision_data.html#a92c021a59697b614349679c42beea8a0", null ],
+    [ "ProjectileEntityRef", "struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_class100_projectile_collision_data.html#ad3560749796d9ecc55e16345e029eb32", null ]
+];

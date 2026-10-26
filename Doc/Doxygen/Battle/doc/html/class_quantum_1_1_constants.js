@@ -36,6 +36,7 @@ var class_quantum_1_1_constants =
     [ "BATTLE_SOUND_FX_CHARACTER_SLAVEOFTHELAW_START", "class_quantum_1_1_constants.html#a6c3c05f836814a8c3048a59406b7e560", null ],
     [ "BATTLE_SOUND_FX_CHARACTER_SLEEPYHEAD_START", "class_quantum_1_1_constants.html#a43a67903ce876f61e2075c457652222f", null ],
     [ "BATTLE_SOUND_FX_CHARACTER_SOULSISTERS_START", "class_quantum_1_1_constants.html#ac8a6593a6736292e1bad87df24b4a5f2", null ],
+    [ "BATTLE_SOUND_FX_CHARACTER_START", "class_quantum_1_1_constants.html#af4cc9a3dffb6cf17f23cffea0fc3f155", null ],
     [ "BATTLE_SOUND_FX_CHARACTER_STONER_START", "class_quantum_1_1_constants.html#aa67206ad621afab397653c2b8a12edd9", null ],
     [ "BATTLE_SOUND_FX_CHARACTER_SUICIDAL_START", "class_quantum_1_1_constants.html#a38a37fdf07d370f44d711a3a512eaaf5", null ],
     [ "BATTLE_SOUND_FX_CHARACTER_SUPERSTITIOUS_START", "class_quantum_1_1_constants.html#ad1c1459ba4d165e688692992b198ef41", null ],

@@ -115,11 +115,8 @@ event BattlePlaySoundFxForPlayer
 
 synced event BattleLastRowWallDestroyed
 {
-    int WallNumber;
     BattleTeamNumber Team;
-    FP LightrayRotation;
-    BattleLightrayColor LightrayColor;
-    BattleLightraySize LightraySize;
+    int WallNumber;
 }
 
 synced event BattleDiamondLanded

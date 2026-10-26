@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts.Lobby;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,11 +16,13 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         [SerializeField] private TextMeshProUGUI _currentGameModeText;
         [SerializeField] private Button _nextButton;
         [SerializeField] private Button _previousButton;
+        private List<GameType> _gameTypes = new();
 
-        public CustomGameMode SelectedGameMode { get; private set; } = CustomGameMode.TwoVersusTwo;
+        public GameType SelectedGameMode { get; private set; } = GameType.BattlePingPong;
 
         private void Awake()
         {
+            InitializeGameTypes();
             _nextButton.onClick.AddListener(OnNextOptionClicked);
             _previousButton.onClick.AddListener(OnPreviousOptionClicked);
             _currentGameModeText.text = SelectedGameMode.GetString();
@@ -26,37 +30,25 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
 
         private void OnNextOptionClicked()
         {
-            bool isLast = SelectedGameMode == Enum.GetValues(typeof(CustomGameMode)).Cast<CustomGameMode>().Last();
-            SelectedGameMode = isLast ? 0 : SelectedGameMode + 1;
+            if (_gameTypes.Count <= 1) return;
+            bool isLast = SelectedGameMode == _gameTypes.Last();
+            SelectedGameMode = isLast ? _gameTypes.First() : _gameTypes[_gameTypes.IndexOf(SelectedGameMode) + 1];
             _currentGameModeText.text = SelectedGameMode.GetString();
         }
 
         private void OnPreviousOptionClicked()
         {
-            bool isFirst = (int)SelectedGameMode <= 0;
-            SelectedGameMode = isFirst ? Enum.GetValues(typeof(CustomGameMode)).Cast<CustomGameMode>().Last() : SelectedGameMode - 1;
+            if (_gameTypes.Count <= 1) return;
+            bool isFirst = SelectedGameMode == _gameTypes.First();
+            SelectedGameMode = isFirst ? _gameTypes.Last() : _gameTypes[_gameTypes.IndexOf(SelectedGameMode) - 1];
             _currentGameModeText.text = SelectedGameMode.GetString();
         }
-    }
 
-    public enum CustomGameMode
-    {
-        OneVersusOne,
-        TwoVersusTwo,
-        Tournament
-    }
-
-    public static class CustomGameModeExtension
-    {
-        public static string GetString(this CustomGameMode gameMode)
+        private void InitializeGameTypes()
         {
-            return gameMode switch
-            {
-                CustomGameMode.OneVersusOne => "1v1",
-                CustomGameMode.TwoVersusTwo => "2v2",
-                CustomGameMode.Tournament => "Turnaus",
-                _ => ""
-            };
+            _gameTypes = Enum.GetValues(typeof(GameType)).Cast<GameType>().ToList();
+            _gameTypes.Remove(GameType.None);
+            _gameTypes.Remove(GameType.Raid);
         }
     }
 }

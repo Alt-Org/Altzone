@@ -26,6 +26,10 @@ html.light-mode *:not(.paramname)>em {
   font-style: normal;
 }
 
+dl.params dd table.params td.paramname {
+  padding-right: 12px;
+}
+
 /*} Built-in overrides */ 
 
 /*{ Custom */ 

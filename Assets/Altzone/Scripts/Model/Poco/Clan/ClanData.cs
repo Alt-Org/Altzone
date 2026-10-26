@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Prg.Scripts.Common.Extensions;
+using System.Globalization;
 using Altzone.Scripts.Store;
 using Altzone.Scripts.Voting;
+using Newtonsoft.Json;
+using Prg.Scripts.Common.Extensions;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Newtonsoft.Json;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
@@ -30,8 +31,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public ClanInventory Inventory = new();
         [JsonIgnore]
         public List<PollData> Polls = new();
-
+        [JsonIgnore]
         public AdStoreObject _adData;
+        [JsonIgnore]
         public AdStoreObject AdData {
             get { return _adData != null ? _adData : _adData = new(null, null); }
             set { _adData = value; CallAdDataUpdate(); } }
@@ -42,6 +44,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public ClanAge ClanAge;
         public Language Language;
         public Goals Goals;
+
+        public DateTime CreatedAt = DateTime.MinValue;
 
         public int GameCoins { get => _gameCoins; set { _gameCoins = value; CallDataUpdate(); } }
 
@@ -114,6 +118,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             IsOpen = clan.isOpen;
             if (clan.polls != null) Polls = clan.polls;
             ClanRoles = clan.roles;
+            CreatedAt = DateTime.ParseExact(clan.createdAt, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
 
         public void UpdateClanData(ServerClan clan)
@@ -152,6 +157,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             else if (Polls == null) Polls = new();
             Rooms = new();
             ClanRoles = clan.roles;
+            CreatedAt = DateTime.ParseExact(clan.createdAt, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
 
         public void CallDataUpdate()

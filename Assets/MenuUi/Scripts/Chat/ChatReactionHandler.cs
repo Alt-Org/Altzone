@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Altzone.Scripts.Chat;
+using Altzone.Scripts.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,19 +18,19 @@ public class ChatReactionHandler : MonoBehaviour
     public Image ReactionImage => _reactionImage;
     public Button Button => _button;
     public LongClickButton LongClickButton => _longClickButton;
-    public Mood Mood => _mood;
+    public Emotion Mood => _mood;
     public string MessageID => _messageID;
     public int Count => _count;
     public bool Selected => _selected;
 
-    [SerializeField] private Mood _mood;
+    [SerializeField] private Emotion _mood;
     private string _messageID;
     private int _count = 0;
     private bool _selected;
     private List<ReactionSenders> _reactioners;
     public static ChatReactionHandler Instance;
 
-    public void SetReactionInfo(Sprite image, string messageID, Mood mood)
+    public void SetReactionInfo(Sprite image, string messageID, Emotion mood)
     {
         _reactionImage.sprite = image;
         _messageID = messageID;

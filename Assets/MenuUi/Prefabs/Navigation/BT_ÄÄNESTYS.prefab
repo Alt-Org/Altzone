@@ -91,6 +91,8 @@ GameObject:
   - component: {fileID: 7243477358482785458}
   - component: {fileID: 4728231669390482462}
   - component: {fileID: 152343811253911172}
+  - component: {fileID: 6381132602535675340}
+  - component: {fileID: 8920078058247374503}
   m_Layer: 5
   m_Name: "BT_\xC4\xC4NESTYS"
   m_TagString: Untagged
@@ -228,6 +230,8 @@ MonoBehaviour:
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0
+  _disabledOnProd: 0
+  Interactable: 1
 --- !u!114 &7243477358482785458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,3 +277,54 @@ MonoBehaviour:
   _categoryType: 0
   _audioName: Select
   _playType: 0
+--- !u!114 &6381132602535675340
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7195143674239219267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa065b798c421034ba43b01dae74e81a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 2
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 2
+  _educationCategoryCultureType: 0
+  _educationCategoryEthicalType: 0
+  _longClickStartThresholdTime: 0.2
+  _longClickThresholdTime: 3
+  _uniqueName: 
+  _questionOption1Fi: "Yksil\xF6n \xE4\xE4nt\xE4 ja mielipiteen ilmaisemista."
+  _questionOption1En: An individual's voice and the expression of opinions.
+  _questionOption2Fi: Banaaniksi muuttumisen halua.
+  _questionOption2En: The desire to turn into a banana.
+  _questionOption3Fi: Pakottavaa tarvetta imuroida naapurin auto.
+  _questionOption3En: An irresistible urge to vacuum your neighbour's car.
+  _answer: 1
+--- !u!114 &8920078058247374503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7195143674239219267}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 835b61347be3afd42884914ff805f122, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalTaskType: 0
+  _educationCategoryType: 3
+  _educationCategoryActionType: 3
+  _educationCategorySocialType: 1
+  _educationCategoryStoryType: 3
+  _educationCategoryCultureType: 5
+  _educationCategoryEthicalType: 0
+  _longClickStartThresholdTime: 0.2
+  _longClickThresholdTime: 3
+  _uniqueName: 

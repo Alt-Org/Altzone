@@ -37,7 +37,7 @@ public class FurnitureCardUI : MonoBehaviour
         weightText.text = $"Weight: {storageFurniture.Weight:0.0}";
         iconImage.sprite = storageFurniture.Sprite;
 
-        description = storageFurniture.Info.ArtisticDescription;
+        description = storageFurniture.Description;
         creatorName = storageFurniture.Info.ArtistName;
 
         storedRarity = storageFurniture.Rarity;

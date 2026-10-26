@@ -1,12 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using MenuUI.Scripts.TopPanel;
 using UnityEngine;
 
 public class TopBarSelector : MonoBehaviour
 {
     [SerializeField] private List<GameObject> _topBarList;
 
-    private static int s_topbar = 0;
+    public static TopBarSelector Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     void Start()
     {
@@ -39,14 +53,25 @@ public class TopBarSelector : MonoBehaviour
 
     private void SetPanel(int index)
     {
-        s_topbar = CheckIndexRange(index);
+        int topbar = CheckIndexRange(index);
 
         foreach (GameObject go in _topBarList)
         {
             go.SetActive(false);
         }
-        _topBarList[s_topbar].SetActive(true);
+        _topBarList[topbar].SetActive(true);
     }
 
-    
+    public TopBarTargets GetTopBarTargets(SettingsCarrier.TopBarStyle style = SettingsCarrier.TopBarStyle.None)
+    {
+        GameObject topbar = null;
+        if (style is SettingsCarrier.TopBarStyle.None)
+            topbar = _topBarList.FirstOrDefault(x => x.activeSelf);
+        else
+        {
+            topbar = _topBarList.FirstOrDefault(x => x.GetComponent<TopBarTargets>().style == style);
+        }
+
+        return topbar.GetComponent<TopBarTargets>();
+    }
 }

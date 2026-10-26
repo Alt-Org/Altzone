@@ -68,7 +68,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Tarina
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32005d68b7758e049915ea13427728e5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
   m_sharedMaterial: {fileID: 2893766061720350198, guid: 32005d68b7758e049915ea13427728e5,
     type: 2}
   m_fontSharedMaterials: []
@@ -264,10 +264,10 @@ RectTransform:
   - {fileID: 7388689933894289282}
   m_Father: {fileID: 3757787304165709092}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.76}
-  m_AnchorMax: {x: 1, y: 0.99}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 250, y: -100}
+  m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4044274425739229184
 CanvasRenderer:
@@ -395,6 +395,7 @@ MonoBehaviour:
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0
+  _disabledOnProd: 0
   Interactable: 1
 --- !u!1 &1790789861441900582
 GameObject:
@@ -464,7 +465,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Asetukset
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32005d68b7758e049915ea13427728e5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
   m_sharedMaterial: {fileID: 2893766061720350198, guid: 32005d68b7758e049915ea13427728e5,
     type: 2}
   m_fontSharedMaterials: []
@@ -661,10 +662,10 @@ RectTransform:
   - {fileID: 4825206258905137073}
   m_Father: {fileID: 3757787304165709092}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.25}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 250, y: -500}
+  m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3637386242422682289
 CanvasRenderer:
@@ -816,6 +817,7 @@ MonoBehaviour:
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0
+  _disabledOnProd: 0
   Interactable: 1
 --- !u!1 &4566923151685102184
 GameObject:
@@ -853,10 +855,10 @@ RectTransform:
   - {fileID: 6795870043856190277}
   m_Father: {fileID: 3757787304165709092}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.26}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 250, y: -300}
+  m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2588380012872887085
 CanvasRenderer:
@@ -1024,7 +1026,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Tutoriaali
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32005d68b7758e049915ea13427728e5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
   m_sharedMaterial: {fileID: 2893766061720350198, guid: 32005d68b7758e049915ea13427728e5,
     type: 2}
   m_fontSharedMaterials: []
@@ -1120,6 +1122,8 @@ GameObject:
   - component: {fileID: 1679873140822838420}
   - component: {fileID: 2362655421543656100}
   - component: {fileID: 3675057335209781613}
+  - component: {fileID: 6317181829782883889}
+  - component: {fileID: 8186566275508594231}
   m_Layer: 5
   m_Name: DropDownMenuPanel
   m_TagString: Untagged
@@ -1148,7 +1152,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 500, y: 800}
+  m_SizeDelta: {x: 500, y: 600}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &1679873140822838420
 CanvasRenderer:
@@ -1200,10 +1204,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97baf66a4944fc24aab9d219d438005e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _closeButtons:
-  - {fileID: 0}
-  - {fileID: 0}
+  _closeButtons: []
   _blockerHandler: {fileID: 0}
+--- !u!114 &6317181829782883889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5682549783523669658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &8186566275508594231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5682549783523669658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &5966248507977295358
 GameObject:
   m_ObjectHideFlags: 0
@@ -1272,7 +1314,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Kirjaudu ulos
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 32005d68b7758e049915ea13427728e5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b626ba938f201a6458410ae89c1ae466, type: 2}
   m_sharedMaterial: {fileID: 2893766061720350198, guid: 32005d68b7758e049915ea13427728e5,
     type: 2}
   m_fontSharedMaterials: []
@@ -1451,7 +1493,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5833761426113257757
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1471,7 +1513,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.51}
   m_AnchorMax: {x: 1, y: 0.75}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_SizeDelta: {x: -20, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7809299125838488437
 CanvasRenderer:
@@ -1599,6 +1641,7 @@ MonoBehaviour:
   _useNonDefaultWindow: 0
   _targetWindow: 0
   _isCurrentPopOutWindow: 0
+  _disabledOnProd: 0
   Interactable: 1
 --- !u!1 &8617812540249886775
 GameObject:

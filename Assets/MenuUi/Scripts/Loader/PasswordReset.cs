@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Language;
+using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
 using Newtonsoft.Json.Linq;
 using TMPro;
@@ -21,12 +22,15 @@ public class PasswordReset : MonoBehaviour
     [SerializeField] private TMP_InputField _answerField;
     [SerializeField] private Button _answerButton;
 
+    [SerializeField] private int _passwordMinLength;
     [SerializeField] private GameObject _passwordResetInputSection;
     [SerializeField] private TMP_InputField _passwordResetField;
     [SerializeField] private Button _passwordResetButton;
 
     private string _resetToken = null;
 
+    private const string ERROR_PASSWORD_TOO_SHORT_FI = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
+    private const string ERROR_PASSWORD_TOO_SHORT_EN = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
     private const string ERROR_DEFAULT_FI = "Jotain meni pieleen!";
     private const string ERROR_DEFAULT_EN = "Something went wrong!";
     private const string ERROR400_FI = "Väärä vastaus!";
@@ -39,7 +43,15 @@ public class PasswordReset : MonoBehaviour
     private const string ERROR404MISSINGUSER_EN = "Desired user not found on server!";
     private const string ERROR500_FI = "Serverivirhe!";
     private const string ERROR500_EN = "Server Error!";
-
+     public static string ERROR_PASSWORD_TOO_SHORT
+    {
+        get
+        {
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR_PASSWORD_TOO_SHORT_FI;
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR_PASSWORD_TOO_SHORT_EN;
+            else return ERROR_PASSWORD_TOO_SHORT_FI;
+        }
+    }
     public static string ERROR_DEFAULT
     {
         get
@@ -162,7 +174,7 @@ public class PasswordReset : MonoBehaviour
                         break;
                 }
 
-                ShowMessage(errorString, Color.red);
+                ShowMessage(errorString, InfoLevel.Error);
             }
             else
             {
@@ -213,7 +225,7 @@ public class PasswordReset : MonoBehaviour
                         break;
                 }
 
-                ShowMessage(errorString, Color.red);
+                ShowMessage(errorString, InfoLevel.Error);
             }
             else
             {
@@ -229,6 +241,12 @@ public class PasswordReset : MonoBehaviour
 
     private void SendNewPassword(string password)
     {
+        if (password.Length < _passwordMinLength)
+        {
+            ShowMessage(ERROR_PASSWORD_TOO_SHORT, InfoLevel.Error);
+            
+            return;
+        }
         string body = JObject.FromObject(
             new
             {
@@ -264,7 +282,7 @@ public class PasswordReset : MonoBehaviour
                         break;
                 }
 
-                ShowMessage(errorString, Color.red);
+                ShowMessage(errorString, InfoLevel.Error);
             }
             else
             {
@@ -288,8 +306,8 @@ public class PasswordReset : MonoBehaviour
         _passwordResetPanel.SetActive(false);
     }
 
-    private void ShowMessage(string message, Color textColor)
+    private void ShowMessage(string message, InfoLevel level)
     {
-        SignalBus.OnChangePopupInfoSignal(message);
+        OverlayPanelCheck.ActivateInfoPopup(level, message);
     }
 }

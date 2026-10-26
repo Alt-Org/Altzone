@@ -59,6 +59,10 @@ public class Popup : MonoBehaviour
     [SerializeField] private List<Button> _acceptButtons;
     [Space]
     [SerializeField] private TMP_Text _acceptConfirmButtonText;
+    [SerializeField] private string _startTaskConfirmTextFI;
+    [SerializeField] private string _startTaskConfirmTextEN;
+    [SerializeField] private string _changeTaskConfirmTextFI;
+    [SerializeField] private string _changeTaskConfirmTextEN;
     [Space]
     [SerializeField] private TextMeshProUGUI _taskDescription;
     [SerializeField] private TextMeshProUGUI _taskExecution;
@@ -99,6 +103,32 @@ public class Popup : MonoBehaviour
     private bool _isOnCooldown = false;
 
     private ResultType _result;
+
+    private string StartTaskConfirmText
+    {
+        get
+        {
+            if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                return _startTaskConfirmTextFI;
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                return _startTaskConfirmTextEN;
+            else
+                return _startTaskConfirmTextFI;
+        }
+    }
+
+    private string ChangeTaskConfirmText
+    {
+        get
+        {
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                return _changeTaskConfirmTextFI;
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                return _changeTaskConfirmTextEN;
+            else
+                return _changeTaskConfirmTextFI;
+        }
+    }
 
     private void Awake()
     {
@@ -148,13 +178,13 @@ public class Popup : MonoBehaviour
                 // If this is a new task
                 if (currentTaskId == null)
                 {
-                    Instance._acceptConfirmButtonText.text = "Aloita tehtävä";
+                    Instance._acceptConfirmButtonText.text = Instance.StartTaskConfirmText;
                     Instance.ResetOptionButtons();
                 }
                 // If there is already a task running
                 else
                 {
-                    Instance._acceptConfirmButtonText.text = "Vaihda tehtävä";
+                    Instance._acceptConfirmButtonText.text = Instance.ChangeTaskConfirmText;
                     
                 }
             }

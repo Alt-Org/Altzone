@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
+using MenuUi.Scripts.Window;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
+using static Altzone.Scripts.Audio.JukeboxManager;
 
 namespace MenuUI.Scripts.Jukebox
 {
@@ -21,14 +24,15 @@ namespace MenuUI.Scripts.Jukebox
         [SerializeField] private Button _addMusicInfoButton;
         [SerializeField] private GameObject _addMusicInfoPopup;
         [SerializeField] private JukeboxInfoPopupHandler _jukeboxInfoPopupHandler;
-        [SerializeField] private PopupController _jukeboxTextPopup;
+        [SerializeField] private InfoPopupController _jukeboxTextPopup;
         [SerializeField] private PopupButtonVisual _jukeboxButtonVisual; // for selection effects
 
         private Coroutine _diskSpinCoroutine;
 
         private bool _applicationQuitting = false;
 
-        private const string NoSongName = "Ei valittua biisiä";
+        private const string NoSongNameFi = "Ei valittua biisiä";
+        private const string NoSongNameEn = "No selected song";
         private const string NoCreditsNames = "...";
 
         private enum JukeboxWindowType
@@ -46,6 +50,19 @@ namespace MenuUI.Scripts.Jukebox
 
         public static event ChangeJukeboxSong OnChangeJukeboxSong;
 
+
+        private string NoSongName
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return NoSongNameFi;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                    return NoSongNameEn;
+                else
+                    return NoSongNameFi;
+            }
+        }
 
         private void Awake()
         {
@@ -66,15 +83,18 @@ namespace MenuUI.Scripts.Jukebox
         {
             StopJukeboxVisuals();
 
-            JukeboxManager.Instance.OnSetSongInfo -= SetSongInfo;
-            JukeboxManager.Instance.OnStopJukeboxVisuals -= StopJukeboxVisuals;
-            JukeboxManager.Instance.OnClearJukeboxVisuals -= ClearJukeboxVisuals;
-            JukeboxManager.Instance.OnJukeboxMute -= SetMuteImage;
-            MusicHandler.Instance.OnVolumeChange -= MainDiskIndicatorControl;
-            JukeboxManager.Instance.OnMusicTrackInfoPressed -= OpenMusicTrackInfoPopup;
-            JukeboxManager.Instance.OnPreviewStart -= JukeboxPreviewPlaybackStart;
-            JukeboxManager.Instance.OnPreviewEnd -= JukeboxPreviewPlaybackEnd;
-            JukeboxManager.Instance.OnShowTextPopup -= _jukeboxTextPopup.ActivatePopUp;
+            if (JukeboxManager.Instance && MusicHandler.Instance)
+            {
+                JukeboxManager.Instance.OnSetSongInfo -= SetSongInfo;
+                JukeboxManager.Instance.OnStopJukeboxVisuals -= StopJukeboxVisuals;
+                JukeboxManager.Instance.OnClearJukeboxVisuals -= ClearJukeboxVisuals;
+                JukeboxManager.Instance.OnJukeboxMute -= SetMuteImage;
+                MusicHandler.Instance.OnVolumeChange -= MainDiskIndicatorControl;
+                JukeboxManager.Instance.OnMusicTrackInfoPressed -= OpenMusicTrackInfoPopup;
+                JukeboxManager.Instance.OnPreviewStart -= JukeboxPreviewPlaybackStart;
+                JukeboxManager.Instance.OnPreviewEnd -= JukeboxPreviewPlaybackEnd;
+                JukeboxManager.Instance.OnShowTextPopup -= HandlePopupMessage;
+            }
         }
 
         private void Setup()
@@ -102,7 +122,7 @@ namespace MenuUI.Scripts.Jukebox
             JukeboxManager.Instance.OnMusicTrackInfoPressed += OpenMusicTrackInfoPopup;
             JukeboxManager.Instance.OnPreviewStart += JukeboxPreviewPlaybackStart;
             JukeboxManager.Instance.OnPreviewEnd += JukeboxPreviewPlaybackEnd;
-            JukeboxManager.Instance.OnShowTextPopup += _jukeboxTextPopup.ActivatePopUp;
+            JukeboxManager.Instance.OnShowTextPopup += HandlePopupMessage;
 
             if (JukeboxManager.Instance.CurrentTrackQueueData != null)
             {
@@ -332,6 +352,11 @@ namespace MenuUI.Scripts.Jukebox
             {
                 _mainDiskHandler.ToggleIndicatorHolder(false);
             }
+        }
+
+        private void HandlePopupMessage(MessageLevel level, string message)
+        {
+            OverlayPanelCheck.ActivateInfoPopup((InfoLevel)level, message);
         }
     }
 }
