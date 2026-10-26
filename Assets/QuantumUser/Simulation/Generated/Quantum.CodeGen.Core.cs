@@ -1014,7 +1014,7 @@ namespace Quantum {
     [FieldOffset(52)]
     public QBoolean StatePlayerGiveUp;
     [FieldOffset(56)]
-    public FrameTimer RespawnTimer;
+    public FrameTimer StateRespawnTimer;
     [FieldOffset(32)]
     public Int32 SelectedCharacterNumber;
     [FieldOffset(0)]
@@ -1046,7 +1046,7 @@ namespace Quantum {
         hash = hash * 31 + (Int32)PlayState;
         hash = hash * 31 + StateAllowCharacterSwapping.GetHashCode();
         hash = hash * 31 + StatePlayerGiveUp.GetHashCode();
-        hash = hash * 31 + RespawnTimer.GetHashCode();
+        hash = hash * 31 + StateRespawnTimer.GetHashCode();
         hash = hash * 31 + SelectedCharacterNumber.GetHashCode();
         hash = hash * 31 + CharacterEntityGroupID.GetHashCode();
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(CharacterDefaultSpawnPositions);
@@ -1067,7 +1067,7 @@ namespace Quantum {
         QBoolean.Serialize(&p->IsBot, serializer);
         QBoolean.Serialize(&p->StateAllowCharacterSwapping, serializer);
         QBoolean.Serialize(&p->StatePlayerGiveUp, serializer);
-        FrameTimer.Serialize(&p->RespawnTimer, serializer);
+        FrameTimer.Serialize(&p->StateRespawnTimer, serializer);
         FixedArray.Serialize(p->CharacterDefaultSpawnPositions, serializer, Statics.SerializeFPVector2);
     }
   }

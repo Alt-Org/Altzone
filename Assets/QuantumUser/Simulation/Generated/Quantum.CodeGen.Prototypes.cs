@@ -485,7 +485,7 @@ namespace Quantum.Prototypes {
     public Quantum.QEnum32<BattlePlayerPlayState> PlayState;
     public QBoolean StateAllowCharacterSwapping;
     public QBoolean StatePlayerGiveUp;
-    public Quantum.Prototypes.FrameTimerPrototype RespawnTimer;
+    public Quantum.Prototypes.FrameTimerPrototype StateRespawnTimer;
     public Int32 SelectedCharacterNumber;
     public Quantum.Prototypes.BattleEntityIDPrototype CharacterEntityGroupID;
     [ArrayLengthAttribute(4)]
@@ -502,7 +502,7 @@ namespace Quantum.Prototypes {
         result.PlayState = this.PlayState;
         result.StateAllowCharacterSwapping = this.StateAllowCharacterSwapping;
         result.StatePlayerGiveUp = this.StatePlayerGiveUp;
-        this.RespawnTimer.Materialize(frame, ref result.RespawnTimer, in context);
+        this.StateRespawnTimer.Materialize(frame, ref result.StateRespawnTimer, in context);
         result.SelectedCharacterNumber = this.SelectedCharacterNumber;
         this.CharacterEntityGroupID.Materialize(frame, ref result.CharacterEntityGroupID, in context);
         for (int i = 0, count = PrototypeValidator.CheckLength(CharacterDefaultSpawnPositions, 4, in context); i < count; ++i) {
