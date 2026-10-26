@@ -35,8 +35,8 @@ namespace Quantum
             public bool StatePlayerGiveUp
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Low_Level.StatePlayerGiveUp; }
 
-            public FrameTimer RespawnTimer
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Low_Level.RespawnTimer; }
+            public FrameTimer StateRespawnTimer
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Low_Level.StateRespawnTimer; }
 
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Low_Level.SelectedCharacterNumber; }

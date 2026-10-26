@@ -133,7 +133,7 @@ namespace Battle.QSimulation.Player
                 if (playerHandle.PlayerData.PlayState.IsOutOfPlay())
                 {
                     playerHandle.PlayerData.SetOutOfPlayRespawning();
-                    playerHandle.PlayerData.Low_Level.RespawnTimer = FrameTimer.FromSeconds(f, playerSpec.AutoRespawnTimeSec);
+                    playerHandle.PlayerData.Low_Level.StateRespawnTimer = FrameTimer.FromSeconds(f, playerSpec.AutoRespawnTimeSec);
                 }
 
                 HandleSFXCommon(f, playerHandle.PlayerData.Slot, SoundEffectTypeCommon.Death, SoundEffectTarget.All);
@@ -687,7 +687,7 @@ namespace Battle.QSimulation.Player
             }
 
             // handle auto respawning
-            if (updateData.PlayerHandle.PlayerData.PlayState.IsOutOfPlayRespawning() && !updateData.PlayerHandle.PlayerData.RespawnTimer.IsRunning(f) && updateData.PlayerHandle.PlayerData.StateAllowCharacterSwapping)
+            if (updateData.PlayerHandle.PlayerData.PlayState.IsOutOfPlayRespawning() && !updateData.PlayerHandle.PlayerData.StateRespawnTimer.IsRunning(f) && updateData.PlayerHandle.PlayerData.StateAllowCharacterSwapping)
             {
                 int characterNumber;
 

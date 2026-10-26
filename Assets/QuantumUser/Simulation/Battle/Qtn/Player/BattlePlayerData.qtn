@@ -8,10 +8,9 @@ struct BattlePlayerData
 
     BattlePlayerPlayState PlayState;
 
-    bool StateAllowCharacterSwapping;
-    bool StatePlayerGiveUp;
-
-    FrameTimer RespawnTimer;
+    bool       StateAllowCharacterSwapping;
+    bool       StatePlayerGiveUp;
+    FrameTimer StateRespawnTimer;
 
     int                                             SelectedCharacterNumber;
     BattleEntityID                                  CharacterEntityGroupID;
