@@ -2,47 +2,81 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Altzone.Scripts.Store;
+using MenuUi.Scripts.Storage;
 
 public class AdEditor : AltMonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI clanNameText;
 
     [SerializeField] private Image _backgroundImage;
-    [SerializeField] private Image _effectImage;
+    //[SerializeField] private Image _effectImage;
     [SerializeField] private Image _itemImage;
     [SerializeField] private Image _borderImage;
     [SerializeField] private AdPosterHandler _adGraphicHandler;
-
-    [SerializeField] private Color orangeColor;
-    [SerializeField] private Color yellowColor;
-    [SerializeField] private Color lightGreenColor;
-    [SerializeField] private Color lightBlueColor;
-    [SerializeField] private Color blueColor;
-    [SerializeField] private Color purpleColor;
-    [SerializeField] private Color darkPinkColor;
-    [SerializeField] private Color redColor;
+    [SerializeField] private TMP_InputField _inputField;
+    [SerializeField] private GameObject _inputFieldHolder;
+    [SerializeField] private GameObject _adText;
 
     [SerializeField] private AdDecorationReference _borderReference;
     [Header("Frame Selectors")]
     [SerializeField] private Transform _borderSelectionContent;
+    [SerializeField] private Transform _furnitureSelectionContent;
+    [SerializeField] private Transform _fontSelectionContent;
     [SerializeField] private GameObject _borderFramePrefab;
+    [SerializeField] private GameObject _furniturePrefab;
+    [SerializeField] private GameObject _fontPrefab;
     [SerializeField] private DailyTaskSelectButtons _dtSelectButtons;
     [Header("Colour Selectors")]
     [SerializeField] private Transform _backgroundColourSelectorContent;
+    [SerializeField] private Transform _textColourSelectorContent;
     [SerializeField] private GameObject _backgroundColourSelectorPrefab;
+    [SerializeField] private Color currentColor;
+    [SerializeField] private Color currentTextColor;
+
+    [Header("Panels")]
+    [SerializeField] private GameObject kojuPanel;
 
     private AdStoreObject _adData;
+    private AdStoreObject _previousAdData = null;
     private string _posterName = null;
     private List<HeartPieceData> _heartPieceData = new();
 
+    private bool colorChanged = false;
+    private bool furnitureChanged = false;
 
     void Start()    
     {
         InitializeAd();
+    }
+
+    private void OnEnable()
+    {
+        GetFurniture();
+        GetColors();
+
+        if (_adData != null)
+        {
+            _previousAdData = new(null, null);
+            _previousAdData.BackgroundColour = _adData.BackgroundColour;
+            _previousAdData.BorderFrame = _adData.BorderFrame;
+            _previousAdData.Furniture = _adData.Furniture;
+            _previousAdData.TextColour = _adData.TextColour;
+            _previousAdData.TextFont = _adData.TextFont;
+            _previousAdData.AdText = _adData.AdText;
+            _previousAdData.IsAdText = _adData.IsAdText;
+
+            if (_adData.IsAdText)
+            {
+                _inputFieldHolder.SetActive(true);
+                _inputField.text = _previousAdData.AdText;
+            }
+        }
+        _adText.SetActive(false);
     }
 
     private void OnDisable()
@@ -67,10 +101,27 @@ public class AdEditor : AltMonoBehaviour
                 _posterName = "Et ole klaanissa";
             }
             _adGraphicHandler.SetAdPoster(_adData, _posterName, _heartPieceData);
+            if (_adData.IsAdText) _adText.SetActive(true);
+            if(_previousAdData == null) _previousAdData = new(null,null);
+            _previousAdData.BorderFrame = _adData.BorderFrame;
+            _previousAdData.TextColour = _adData.TextColour;
+            _previousAdData.TextFont = _adData.TextFont;
+            _previousAdData.AdText = _adData.AdText;
+            _previousAdData.IsAdText = _adData.IsAdText;
         }));
 
-
         List<AdBorderFrameObject> frameList = _borderReference.FrameList;
+        List<AdFontObject> fontList = _borderReference.FontList;
+
+        foreach (AdFontObject font in fontList)
+        {
+            GameObject fontObject = Instantiate(_fontPrefab, _fontSelectionContent);
+            //fontObject.GetComponentInChildren<TextMeshProUGUI>().font = font.Font;
+            //fontObject.GetComponent<Image>().preserveAspect = true;
+            fontObject.GetComponent<FontPrefabHandler>().SetFont(font);
+            //float objectHeight = _fontSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+            fontObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextFont(font.Font));
+        }
 
         foreach (AdBorderFrameObject frame in frameList)
         {
@@ -83,19 +134,122 @@ public class AdEditor : AltMonoBehaviour
         }
         if (_dtSelectButtons) _dtSelectButtons.RefreshListeners();
 
+        StartCoroutine(SetFrameSelectionSize());
+
+        _inputFieldHolder.SetActive(true);
+        _inputField.onValueChanged.AddListener(delegate { ChangeText(_inputField.text); });
+        _inputField.onSelect.AddListener(delegate { _inputFieldHolder.GetComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f, 1.0f); });
+        _inputField.onDeselect.AddListener(delegate { _inputFieldHolder.GetComponent<Image>().color = new Color(0.2f, 0.2f, 0.2f, 0.2f); });
+    }
+
+    private void GetColors()
+    {
+        if (_backgroundColourSelectorContent.childCount > 0)
+        {
+            foreach (Transform bgColor in _backgroundColourSelectorContent)
+            {
+                Destroy(bgColor.gameObject);
+            }
+        }
+        if (_textColourSelectorContent.childCount > 0)
+        {
+            foreach (Transform txtColor in _textColourSelectorContent)
+            {
+                Destroy(txtColor.gameObject);
+            }
+        }
+
         List<Color> colorList = _borderReference.ColourList;
+        List<Color> textColorList = _borderReference.TextColourList;
 
         foreach (Color colour in colorList)
         {
-            GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
-            colourObject.GetComponent<Image>().color = colour;
-            float objectWidth = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width;
-            colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
-            colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeColor(colour));
-        }
-        _backgroundColourSelectorContent.GetComponent<VerticalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width * 0.1f;
+            if (colour != currentTextColor)
+            {
+                GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
+                colourObject.GetComponent<Image>().color = colour;
+                float objectWidth = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width;
+                colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
+                colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeColor(colour));
 
-        StartCoroutine(SetFrameSelectionSize());
+                if (colour == Color.black)
+                {
+                    ColorBlock colorBlock = colourObject.GetComponent<Button>().colors;
+                    colorBlock.pressedColor = new Color(0, 0, 0, 0.45f);
+                    colourObject.GetComponent<Button>().colors = colorBlock;
+                }
+            }
+            if (colour == currentTextColor)
+            {
+                Color c = colour;
+                c.a = 0.25f;
+                GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _backgroundColourSelectorContent);
+                colourObject.GetComponent<Image>().color = c;
+                float objectWidth = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.width;
+                colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
+                colourObject.GetComponent<Button>().enabled = false;
+            }
+        }
+        _backgroundColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _backgroundColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
+
+        foreach (Color textColour in textColorList)
+        {
+            if (textColour != currentColor)
+            {
+                GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _textColourSelectorContent);
+                colourObject.GetComponent<Image>().color = textColour;
+                float objectWidth = _textColourSelectorContent.GetComponent<RectTransform>().rect.width;
+                colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
+                colourObject.GetComponent<Button>().onClick.AddListener(() => ChangeTextColor(textColour));
+
+                if (textColour == Color.black)
+                {
+                    ColorBlock colorBlock = colourObject.GetComponent<Button>().colors;
+                    colorBlock.pressedColor = new Color(0, 0, 0, 0.45f);
+                    colourObject.GetComponent<Button>().colors = colorBlock;
+                }
+            }
+            if (textColour == currentColor)
+            {
+                Color c = textColour;
+                c.a = 0.25f;
+                GameObject colourObject = Instantiate(_backgroundColourSelectorPrefab, _textColourSelectorContent);
+                colourObject.GetComponent<Image>().color = c;
+                float objectWidth = _textColourSelectorContent.GetComponent<RectTransform>().rect.width;
+                colourObject.GetComponent<RectTransform>().sizeDelta = new(objectWidth, objectWidth * 0.4f);
+                colourObject.GetComponent<Button>().enabled = false;
+            }
+        }
+        _textColourSelectorContent.GetComponent<HorizontalLayoutGroup>().spacing = _textColourSelectorContent.GetComponent<RectTransform>().rect.height * 0.1f;
+    }
+
+    private void GetFurniture()
+    {
+        if (_furnitureSelectionContent.childCount > 0)
+        {
+            foreach (Transform child in _furnitureSelectionContent)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        if (AdDecorationReference.Instance.FurnitureList == null || AdDecorationReference.Instance.FurnitureList.Count <= 0)
+        {
+            return;
+        }
+        else
+        {
+            foreach (AdFurnitureObject furniture in AdDecorationReference.Instance.FurnitureList)
+            {
+                GameObject furnitureObject = Instantiate(_furniturePrefab, _furnitureSelectionContent);
+                //furnitureObject.GetComponent<Image>().preserveAspect = true;
+                //furnitureObject.GetComponent<Image>().sprite = furniture.Image;
+                furnitureObject.GetComponent<FurniturePrefabHandler>().SetFurniture(furniture);
+                //float objectHeight = _furnitureSelectionContent.GetComponent<RectTransform>().rect.height * 0.9f;
+                furnitureObject.GetComponent<Button>().onClick.AddListener(() => ChangeFurniture(furniture));
+                if (_dtSelectButtons) _dtSelectButtons.AddButton(new(furnitureObject.GetComponent<Button>(), furnitureObject.GetComponent<Image>()));
+            }
+        }
     }
 
     private IEnumerator SetFrameSelectionSize()
@@ -123,27 +277,104 @@ public class AdEditor : AltMonoBehaviour
         }));
     }
 
-    void BringToFront(Transform folder)
-    {
-        folder.SetAsLastSibling();
-    }
-
     public void ChangeColor(Color colour)
     {
+        if (!colorChanged)
+        {
+            _previousAdData.BackgroundColour = _adData.BackgroundColour;
+            colorChanged = true;
+        }
+
         _adData.BackgroundColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
+        currentColor = colour;
+        GetColors();
     }
 
     public void ChangeBorder(AdBorderFrameObject frame)
     {
         _adData.BorderFrame = frame.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
-        SaveAdData();
+    }
+
+    public void ChangeFurniture(AdFurnitureObject furniture)
+    {
+        if (!furnitureChanged)
+        {
+            _previousAdData.Furniture = _adData.Furniture;
+            furnitureChanged = true;
+        }
+
+        _adData.Furniture = furniture.Image;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+    }
+
+    public void ChangeTextColor(Color colour)
+    {
+        _inputField.textComponent.color = colour;
+        _adData.TextColour = "#" + ColorUtility.ToHtmlStringRGBA(colour);
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        currentTextColor = colour;
+        GetColors();
+    }
+
+    public void ChangeTextFont(TMP_FontAsset font)
+    {
+        _inputField.fontAsset = font;
+        _adData.TextFont = font;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+    }
+
+    public void ChangeText(string text)
+    {
+        _adData.AdText = text;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+    }
+
+    public void EnableText(bool enable)
+    {
+        _adData.IsAdText = enable;
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
 
     public void CloseEditor()
     {
-        if(gameObject.activeSelf) gameObject.SetActive(false);
+        kojuPanel.SetActive(true);
+        _inputFieldHolder.SetActive(false);
+        if (_adData.IsAdText) _adText.SetActive(true);
+        if (!_adData.IsAdText) _adText.SetActive(false);
+
+        if (gameObject.activeSelf) gameObject.SetActive(false);
+    }
+
+    public void SaveAndCloseEditor()
+    {
+        SaveAdData();
+        CloseEditor();
+    }
+
+    public void CancelAndCloseEditor()
+    {
+        if (!string.IsNullOrEmpty(_previousAdData.BackgroundColour)) _adData.BackgroundColour = _previousAdData.BackgroundColour;
+        if (ColorUtility.TryParseHtmlString(_previousAdData.BackgroundColour, out Color color)) currentColor = color;
+
+        if (!string.IsNullOrEmpty(_previousAdData.BorderFrame)) _adData.BorderFrame = _previousAdData.BorderFrame;
+        if (!_previousAdData.Furniture) _adData.Furniture = _previousAdData.Furniture;
+
+        if (!string.IsNullOrEmpty(_previousAdData.TextColour)) _adData.TextColour = _previousAdData.TextColour;
+        if (ColorUtility.TryParseHtmlString(_previousAdData.TextColour, out Color textColor)) currentTextColor = textColor;
+        _inputField.textComponent.color = currentTextColor;
+
+        if (_previousAdData.TextFont)
+        {
+            _adData.TextFont = _previousAdData.TextFont;
+            _inputField.fontAsset = _previousAdData.TextFont;
+        }
+
+        if (!string.IsNullOrEmpty(_previousAdData.AdText)) _adData.AdText = _previousAdData.AdText;
+        _adData.IsAdText = _previousAdData.IsAdText;
+
+        _adGraphicHandler.SetAdPoster(_adData, _posterName);
+        CloseEditor();
     }
 }

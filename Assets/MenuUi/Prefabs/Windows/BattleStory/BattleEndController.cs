@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Window;
 using MenuUi.Scripts.Window;
@@ -53,6 +54,8 @@ public class BattleEndController : MonoBehaviour
 
         OverlayPanelCheck.Instance.ToggleOverlay(false);
 
+        Application.quitting += EmptyDataStorage;
+
         bool? winner = DataCarrier.GetData<bool?>(DataCarrier.OwnBattleResult, false);
 
         if (winner.HasValue)
@@ -75,6 +78,11 @@ public class BattleEndController : MonoBehaviour
 
         if (winner.HasValue) StartCoroutine(PlayAnimation(winner.Value));
         else SwitchToStory();
+    }
+
+    private void OnDestroy()
+    {
+        Application.quitting -= EmptyDataStorage;
     }
 
     private IEnumerator PlayAnimation(bool winner)
@@ -133,10 +141,15 @@ public class BattleEndController : MonoBehaviour
     }
     private void LeaveToMain()
     {
+        EmptyDataStorage();
+        LobbyManager.ExitBattleStory();
+    }
+
+    private void EmptyDataStorage()
+    {
         DataCarrier.GetData<int>(DataCarrier.BattleWinner, suppressWarning: true);
         DataCarrier.GetData<bool?>(DataCarrier.OwnBattleResult, suppressWarning: true);
         DataCarrier.GetData<string>(DataCarrier.BattleOwnTeamName, suppressWarning: true);
         DataCarrier.GetData<string>(DataCarrier.BattleEnemyTeamName, suppressWarning: true);
-        LobbyManager.ExitBattleStory();
     }
 }

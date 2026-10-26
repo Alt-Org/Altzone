@@ -38,9 +38,9 @@ public class PollPopup : MonoBehaviour // Controls the popup display for polls
 
             objectInfo.Clear();
 
-            objectInfo.Add(furniturePollData.Furniture.FurnitureInfo.VisibleName.ToString());
+            objectInfo.Add(furniturePollData.Furniture.VisibleName.ToString());
             objectInfo.Add("Value: " + furniturePollData.Furniture.Value.ToString());
-            objectInfo.Add("Set Name: " + furniturePollData.Furniture.FurnitureInfo.SetName.ToString());
+            objectInfo.Add("Set Name: " + furniturePollData.Furniture.SetName.ToString());
 
             infoText.text = string.Join("\n", objectInfo);
         }

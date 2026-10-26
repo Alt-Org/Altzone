@@ -156,8 +156,8 @@ public class GameFurnitureVisualizer : MonoBehaviour
         if (gameFurniture == null)
             return (string.Empty, string.Empty);
 
-        string itemName = gameFurniture.FurnitureInfo?.VisibleName;
-        string themeName = gameFurniture.FurnitureInfo?.SetName;
+        string itemName = gameFurniture.VisibleName;
+        string themeName = gameFurniture.SetName;
 
         if (string.IsNullOrWhiteSpace(itemName) || string.IsNullOrWhiteSpace(themeName))
         {

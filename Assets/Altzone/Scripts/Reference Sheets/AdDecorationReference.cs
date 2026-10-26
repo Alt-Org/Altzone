@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game;
+using TMPro;
+using UnityEngine.Serialization;
 using UnityEngine;
 
 namespace Altzone.Scripts.ReferenceSheets
@@ -11,6 +14,10 @@ namespace Altzone.Scripts.ReferenceSheets
 
         [SerializeField] private List<AdBorderFrameObject> _frameList;
 
+        [SerializeField] public List<AdFontObject> _fontList;
+
+        private List<AdFurnitureObject> _furnitureList;
+
         [Header("Colours")]
         [SerializeField] private Color _orangeColor;
         [SerializeField] private Color _yellowColor;
@@ -20,20 +27,41 @@ namespace Altzone.Scripts.ReferenceSheets
         [SerializeField] private Color _purpleColor;
         [SerializeField] private Color _darkPinkColor;
         [SerializeField] private Color _redColor;
+        [SerializeField] private Color _blackColor;
+        [SerializeField] private Color _whiteColor;
         private List<Color> _colourList;
+        private List<Color> _textColourList;
 
         private List<AdBorderFrameObject> _validatedFrameList = null;
+        private List<AdFontObject> _validatedFontList = null;
         private static AdDecorationReference _instance = null;
         private static bool _hasInstance = false;
 
         public List<AdBorderFrameObject> FrameList {
             get
             {
-                if (_validatedFrameList == null) ValidateFrames();
                 ValidateFrames();
                 return _validatedFrameList;
             }
         } // Public accessor for _info
+
+        public List<AdFontObject> FontList
+        {
+            get
+            {
+                ValidateFonts();
+                return _validatedFontList;
+            }
+        }
+
+        public List<AdFurnitureObject> FurnitureList
+        {
+            get => _furnitureList;
+            set
+            {
+                _furnitureList = value;
+            }
+        }
 
         public List<Color> ColourList
         {
@@ -42,6 +70,8 @@ namespace Altzone.Scripts.ReferenceSheets
                 if (_colourList == null || _colourList.Count == 0)
                 {
                     _colourList = new();
+                    _colourList.Add(_whiteColor);
+                    _colourList.Add(_blackColor);
                     _colourList.Add(_orangeColor);
                     _colourList.Add(_yellowColor);
                     _colourList.Add(_lightGreenColor);
@@ -52,6 +82,28 @@ namespace Altzone.Scripts.ReferenceSheets
                     _colourList.Add(_redColor);
                 }
                 return _colourList;
+            }
+        }
+
+        public List<Color> TextColourList
+        {
+            get
+            {
+                if (_textColourList == null || _textColourList.Count == 0)
+                {
+                    _textColourList = new();
+                    _textColourList.Add(_whiteColor);
+                    _textColourList.Add(_blackColor);
+                    _textColourList.Add(_orangeColor);
+                    _textColourList.Add(_yellowColor);
+                    _textColourList.Add(_lightGreenColor);
+                    _textColourList.Add(_lightBlueColor);
+                    _textColourList.Add(_blueColor);
+                    _textColourList.Add(_purpleColor);
+                    _textColourList.Add(_darkPinkColor);
+                    _textColourList.Add(_redColor);
+                }
+                return _textColourList;
             }
         }
 
@@ -119,6 +171,31 @@ namespace Altzone.Scripts.ReferenceSheets
             }
             return null;
         }
+
+        private void ValidateFonts()
+        {
+            if (_validatedFontList != null && _validatedFontList.Count > 0) return;
+
+            HashSet<string> uniqueNames = new();
+            HashSet<TMP_FontAsset> uniqueMap = new();
+            
+            List<AdFontObject> fonts = new();
+            foreach (AdFontObject font in _fontList)
+            {
+                if (!font.IsValid()) continue;
+
+                if (!uniqueNames.Add(font.Name))
+                {
+                    continue;
+                }
+                if (!uniqueMap.Add(font.Font))
+                {
+                    continue;
+                }
+                fonts.Add(font);
+            }
+            _validatedFontList = fonts;
+        }
     }
 
     [Serializable]
@@ -133,5 +210,58 @@ namespace Altzone.Scripts.ReferenceSheets
             if (Image == null) return false;
             return true;
         }
+    }
+
+    [Serializable]
+    public class AdFontObject
+    {
+        [SerializeField, FormerlySerializedAs("Name")] private string _name;
+        [SerializeField, FormerlySerializedAs("Font")] private TMP_FontAsset _font;
+
+        public string Name => _name;
+        public TMP_FontAsset Font => _font;
+
+        public bool IsValid()
+        {
+            if (string.IsNullOrWhiteSpace(Name)) return false;
+            if (Font == null) return false;
+            return true;
+        }
+    }
+
+    [Serializable]
+    public class AdFurnitureObject
+    {
+        private string _name;
+        private string _id;
+        private Sprite _image;
+
+        public string Name{
+            get => _name;
+            set => _name = value;
+        }
+        public string Id{
+            get => _id;
+            set => _id = value;
+        }
+        public Sprite Image{
+            get => _image;
+            set => _image = value;
+        }
+
+        //public AdFurnitureObject(string name, string id, Sprite image)
+        //{
+        //    Name = name;
+        //    Id = id;
+        //    Image = image;
+        //}
+
+        //public bool IsValid()
+        //{
+        //    if (string.IsNullOrWhiteSpace(Name)) return false;
+        //    if (string.IsNullOrWhiteSpace(Id)) return false;
+        //    if (Image == null) return false;
+        //    return true;
+        //}
     }
 }

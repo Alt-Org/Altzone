@@ -31,8 +31,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public ClanInventory Inventory = new();
         [JsonIgnore]
         public List<PollData> Polls = new();
-
+        [JsonIgnore]
         public AdStoreObject _adData;
+        [JsonIgnore]
         public AdStoreObject AdData {
             get { return _adData != null ? _adData : _adData = new(null, null); }
             set { _adData = value; CallAdDataUpdate(); } }
