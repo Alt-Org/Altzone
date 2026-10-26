@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEngine;
@@ -26,39 +25,21 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private TextMeshProUGUI _categoryText;
         [SerializeField] private TextMeshProUGUI _modeText;
         [SerializeField] private GameObject _setSelectMenu;
-        [SerializeField] private GameObject _setSelectButtonContainer;
-        [SerializeField] private GameObject _setSelectButtonPrefab;
-        [SerializeField] private StorageFurnitureReference _storageFurnitureReference;
         private bool _isOnDecorateMode = true;
         private bool _isTrayMinimized = false;
-
-        private string _currentSelectedSet;
-        private int _currentSelectedCategory = 1; // shows all by default
 
         private FurnitureTrayCategoryButton _previousCategoryButton = null;
 
         public SmartHorizontalObjectList SmartList => _smartList;
+        public string _currentSelectedSet;
+        public int _currentSelectedCategory = 1; // shows all by default
 
         // Start is called before the first frame update
         void Awake()
         {
-            foreach (FurnitureSetInfo setInfo in _storageFurnitureReference.Info) // creates a set filter button for each set
-            {
-                GameObject _setSelectButton = Instantiate(_setSelectButtonPrefab, _setSelectButtonContainer.transform);
-                if (setInfo.SetFontName != null) _setSelectButton.GetComponent<SetSelectButtonHandler>().SetFontSprite(setInfo.SetFontName);
-                else _setSelectButton.GetComponent<SetSelectButtonHandler>().SetSetName(setInfo.SetName);
-                _setSelectButton.GetComponent<SetSelectButtonHandler>().Button.onClick.AddListener(() => SelectSet(setInfo.SetName));
-            }
             _decorateModeButtons.OnCategoryButtonSelected += CategoryButtonClicked; // Connect the category button click event to the handler
             _renovateModeButtons.OnCategoryButtonSelected += CategoryButtonClicked;
-
         }
-
-        /*private void Update()
-        {
-            // Furniture is placed and returned from many places, so check if any shown item sold out or came back.
-            if (_smartList != null && VisibleListOutdated()) RebuildVisibleList();
-        }*/
 
         public void InitializeTray()
         {
@@ -171,25 +152,6 @@ namespace MenuUI.Scripts.SoulHome
             FillSelectionButtonList(filtered_list); // Replaces the existing slots with the filtered list
             Debug.Log("FurnitureTrayHandler: FilterTrayObjects() - Category: " + _category + ", Set: " + _currentSelectedSet);
             _smartList.ScrollToStart(); // Reset FurnitureTray position
-        }
-        
-        public void SelectSet(string set)
-        {
-            if (set == "")
-            {
-               _currentSelectedSet = null; 
-               _decorateModeSetsButton.DeSelect();
-            }
-            
-            else
-            {
-                _currentSelectedSet = set;
-                _decorateModeSetsButton.Select(); // if set filter active, make the button "Selected"
-            }
-            
-            FilterTrayObjects(_currentSelectedCategory);
-            _setSelectMenu.SetActive(false);
-            _setSelectMenu.GetComponentInChildren<ScrollRect>().verticalNormalizedPosition = 1f; // reset scroll to the top
         }
 
         public void ToggleMinimizeTray()
