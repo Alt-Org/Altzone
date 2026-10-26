@@ -35,7 +35,7 @@ public class ClanSearchView : MonoBehaviour
     private int _totalPages;     // Total pages in pagination data
     private List<ClanListing> _listedClans = new();
     private ClanSearchFilters _filters;
-
+    private const int NormalVisibleClanCount = 16;
     private bool _isJoining;
 
     private void Awake()
@@ -69,6 +69,7 @@ public class ClanSearchView : MonoBehaviour
 
         if (_searchInputField != null)
             _searchInputField.onValueChanged.AddListener(UpdateClanNameSearch);
+            _searchInputField.onValueChanged.AddListener(OnSearchVisibilityChanged);
     }
 
     private void OnDestroy()
@@ -93,6 +94,7 @@ public class ClanSearchView : MonoBehaviour
 
         if (_searchInputField != null)
             _searchInputField.onValueChanged.RemoveListener(UpdateClanNameSearch);
+            _searchInputField.onValueChanged.RemoveListener(OnSearchVisibilityChanged);
     }
 
     private void OnEnable()
@@ -195,8 +197,32 @@ public class ClanSearchView : MonoBehaviour
 
         _loadMoreButton.transform.SetAsLastSibling();
         FilterListings();
+        LimitNormalClanList();
     }
 
+
+    private void LimitNormalClanList()
+    {
+        if (!string.IsNullOrWhiteSpace(_filters.clanName))
+            return;
+
+        int visibleCount = 0;
+
+        foreach (ClanListing clanListing in _listedClans)
+        {
+            if (!clanListing.gameObject.activeSelf)
+                continue;
+
+            if (visibleCount < NormalVisibleClanCount)
+            {
+                visibleCount++;
+            }
+            else
+            {
+                clanListing.gameObject.SetActive(false);
+            }
+        }
+    }
 
     private void UpdateFilters(ClanSearchFilters newFilters)
     {
@@ -462,6 +488,14 @@ public class ClanSearchView : MonoBehaviour
     {
         _filters.clanName = searchText.Trim();
         FilterListings();
+    }
+
+    private void OnSearchVisibilityChanged(string searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            LimitNormalClanList();
+        }
     }
 
     private ClanSearchFilters GetDefaultFilters()
