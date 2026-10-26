@@ -227,7 +227,7 @@ namespace Battle.QSimulation.Player
                 if (playerData.PlayState.IsNotInGame()) continue;
                 BattlePlayerHandle playerHandle = BattlePlayerHandle.Create(playerData);
 
-                for (int characterNumber = 0; characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT; characterNumber++)
+                for (int characterNumber = 0; characterNumber < BattlePlayerManager.PlayerCharacterCount; characterNumber++)
                 {
                     bool selected = characterNumber == playerData.SelectedCharacterNumber;
                     playerHandle.LoadCharacter(f, characterNumber);
@@ -275,7 +275,7 @@ namespace Battle.QSimulation.Player
 
                 //{ character logic
 
-                for (int characterNumber = 0; characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT; characterNumber++)
+                for (int characterNumber = 0; characterNumber < BattlePlayerManager.PlayerCharacterCount; characterNumber++)
                 {
                     updateData.PlayerHandle.LoadCharacter(f, characterNumber);
 
@@ -692,7 +692,7 @@ namespace Battle.QSimulation.Player
                 int characterNumber;
 
                 // try to spawn next character
-                for (characterNumber = 0; characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT; characterNumber++)
+                for (characterNumber = 0; characterNumber < BattlePlayerManager.PlayerCharacterCount; characterNumber++)
                 {
                     updateData.PlayerHandle.LoadCharacter(f, characterNumber);
                     if (updateData.PlayerHandle.LoadedCharacterData->State != BattlePlayerCharacterState.OutOfPlayDead)
@@ -705,7 +705,7 @@ namespace Battle.QSimulation.Player
                 }
 
                 // handle out of characters
-                if (characterNumber == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
+                if (characterNumber == BattlePlayerManager.PlayerCharacterCount)
                 {
                     s_debugLogger.LogFormat(f, "({0}) Player is out of characters!", updateData.PlayerHandle.PlayerData.Slot);
 

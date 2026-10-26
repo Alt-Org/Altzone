@@ -171,7 +171,7 @@ namespace Battle.QSimulation.Player
             }
 
             // returns player to 0 rotation when RotateMotion-input ends
-            if (!rotationInput && playerHandle.LoadedCharacterData->MovementRotationOffsetRad != 0)
+            if (!rotationInput && playerHandle.LoadedCharacterData->MovementRotationOffsetRad != 0 && !BattleParameters.GetIsTestFlipperGame(f))
             {
                 if (playerHandle.LoadedCharacterData->MovementRotationOffsetRad > 0)
                 {

@@ -68,6 +68,10 @@ namespace Battle.QSimulation.Player
                 "Stat Defence"
             });
 
+            PlayerCharacterCount = BattleParameters.GetIsTestFlipperGame(f)
+                                 ? Constants.BATTLE_FLIPPER_PLAYER_CHARACTER_COUNT
+                                 : Constants.BATTLE_NORMAL_PLAYER_CHARACTER_COUNT;
+
             // get slot information and player count
             string[]                      slotUserIDs = BattleParameters.GetPlayerSlotUserIDs(f);
             BattleParameters.PlayerType[] slotTypes   = BattleParameters.GetPlayerSlotTypes(f);
@@ -121,7 +125,7 @@ namespace Battle.QSimulation.Player
                 playerData.Low_Level.IsBot                   = playerIsBot;
                 playerData.Low_Level.SelectedCharacterNumber = BattlePlayerData.NoSelectedCharacter;
 
-                for (int i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
+                for (int i = 0; i < PlayerCharacterCount; i++)
                 {
                     FPVector2 spawnPosition = BattleGridManager.GridPositionToWorldPosition(arenaPlayerSpec.DefaultCharacterSpawnPositions[i]);
                     playerData.Low_Level.CharacterDefaultSpawnPositions[i] = spawnPosition;
@@ -261,7 +265,7 @@ namespace Battle.QSimulation.Player
                                                            ? f.GetPlayerData(playerData.PRef).Characters
                                                            : BattlePlayerBotController.GetBotCharacters(f);
 
-                BattleEntityManager.CompoundEntityTemplate[] playerCharacterEntityArray = new BattleEntityManager.CompoundEntityTemplate[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
+                BattleEntityManager.CompoundEntityTemplate[] playerCharacterEntityArray = new BattleEntityManager.CompoundEntityTemplate[PlayerCharacterCount];
 
                 //{ create playerEntity for each character
 
@@ -506,6 +510,8 @@ namespace Battle.QSimulation.Player
         }
 
         #endregion Public - Static Methods
+
+        public static int PlayerCharacterCount { get; private set; }
 
         #endregion Public
 

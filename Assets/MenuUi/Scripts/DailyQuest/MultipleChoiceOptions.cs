@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Altzone.Scripts.Model.Poco.Game;
+using UnityEngine.Serialization;
 
 //[CreateAssetMenu(fileName = "MultipleChoiceOptions")]
 public class MultipleChoiceOptions : ScriptableObject
@@ -47,8 +48,24 @@ public class MultipleChoiceOptions : ScriptableObject
     [System.Serializable]
     public class OptionData
     {
-        public string OptionText;
-        public Popup.ResultType Result;
+        [SerializeField, FormerlySerializedAs("OptionText")] private string _optionTextFI;
+        [SerializeField] private string _optionTextEN;
+        [SerializeField, FormerlySerializedAs("Result")] private Popup.ResultType _result;
+
+
+        public string OptionText
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return _optionTextFI;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                    return _optionTextEN;
+                else
+                    return _optionTextFI;
+            }
+        }
+        public Popup.ResultType Result => _result;
     }
 
     public bool IsMultipleChoice(PlayerTask data)

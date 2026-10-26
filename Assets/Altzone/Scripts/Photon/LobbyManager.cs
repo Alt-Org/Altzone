@@ -6694,7 +6694,7 @@ namespace Altzone.Scripts.Lobby
                     {
                         selectedCharacters.Add(battleCharacters[i]);
                     }
-                    SetPlayerQuantumCharacters(selectedCharacters);
+                    SetPlayerQuantumCharacters(data.GameType, selectedCharacters);
                 }
                 int retryCount=0;
                 do
@@ -6963,22 +6963,22 @@ namespace Altzone.Scripts.Lobby
 
             if (!pos1Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos1Set = true;
             }
             if (!pos2Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos2Set = true;
             }
             if (!pos3Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos3Set = true;
             }
             if (!pos4Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos4Set = true;
             }
 
@@ -7034,22 +7034,22 @@ namespace Altzone.Scripts.Lobby
 
             if (!pos1Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos1Ready = true;
             }
             if (!pos2Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos2Ready = true;
             }
             if (!pos3Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos3Ready = true;
             }
             if (!pos4Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos4Ready = true;
             }
 
@@ -7536,15 +7536,19 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
-        public void SetPlayerQuantumCharacters(List<CustomCharacter> characters)
+        public void SetPlayerQuantumCharacters(GameType gameType, List<CustomCharacter> characters)
         {
+            int characterCount = gameType == GameType.BattleFlipperGame
+                ? RuntimePlayer.FlipperCharacterCount
+                : RuntimePlayer.NormalCharacterCount;
+
             Assert.IsTrue(
-                characters.Count == RuntimePlayer.CharacterCount,
-                string.Format("Invalid number of Characters (not {0})", RuntimePlayer.CharacterCount)
+                characters.Count == characterCount,
+                string.Format("Invalid number of Characters (not {0})", characterCount)
             );
 
             CustomCharacter character;
-            for (int i = 0; i < RuntimePlayer.CharacterCount; i++) {
+            for (int i = 0; i < characterCount; i++) {
                 character = characters[i];
 
                 if(character == null || character.Id is CharacterID.None)

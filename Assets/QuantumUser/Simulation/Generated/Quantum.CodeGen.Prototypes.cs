@@ -488,10 +488,10 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.FrameTimerPrototype RespawnTimer;
     public Int32 SelectedCharacterNumber;
     public Quantum.Prototypes.BattleEntityIDPrototype CharacterEntityGroupID;
-    [ArrayLengthAttribute(3)]
-    public FPVector2[] CharacterDefaultSpawnPositions = new FPVector2[3];
-    [ArrayLengthAttribute(3)]
-    public Quantum.Prototypes.BattleEntityIDPrototype[] ShieldEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[3];
+    [ArrayLengthAttribute(4)]
+    public FPVector2[] CharacterDefaultSpawnPositions = new FPVector2[4];
+    [ArrayLengthAttribute(4)]
+    public Quantum.Prototypes.BattleEntityIDPrototype[] ShieldEntityGroupIDs = new Quantum.Prototypes.BattleEntityIDPrototype[4];
     partial void MaterializeUser(Frame frame, ref Quantum.BattlePlayerData result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.BattlePlayerData result, in PrototypeMaterializationContext context = default) {
         result.PRef = this.PRef;
@@ -505,10 +505,10 @@ namespace Quantum.Prototypes {
         this.RespawnTimer.Materialize(frame, ref result.RespawnTimer, in context);
         result.SelectedCharacterNumber = this.SelectedCharacterNumber;
         this.CharacterEntityGroupID.Materialize(frame, ref result.CharacterEntityGroupID, in context);
-        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterDefaultSpawnPositions, 3, in context); i < count; ++i) {
+        for (int i = 0, count = PrototypeValidator.CheckLength(CharacterDefaultSpawnPositions, 4, in context); i < count; ++i) {
           *result.CharacterDefaultSpawnPositions.GetPointer(i) = this.CharacterDefaultSpawnPositions[i];
         }
-        for (int i = 0, count = PrototypeValidator.CheckLength(ShieldEntityGroupIDs, 3, in context); i < count; ++i) {
+        for (int i = 0, count = PrototypeValidator.CheckLength(ShieldEntityGroupIDs, 4, in context); i < count; ++i) {
           this.ShieldEntityGroupIDs[i].Materialize(frame, ref *result.ShieldEntityGroupIDs.GetPointer(i), in context);
         }
         MaterializeUser(frame, ref result, in context);

@@ -87,7 +87,7 @@ namespace Quantum
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsValidCharacterNumber(int characterNumber)
         {
-            return characterNumber >= 0 && characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT;
+            return characterNumber >= 0 && characterNumber < BattlePlayerManager.PlayerCharacterCount;
         }
 
         [Conditional("UNITY_EDITOR")]
