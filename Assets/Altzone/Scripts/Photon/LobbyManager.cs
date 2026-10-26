@@ -199,6 +199,7 @@ namespace Altzone.Scripts.Lobby
         private bool _joinFailureAutoRequeueInFlight = false;
         private bool _serverMatchmakingActive;
         private bool _serverRoomStartInFlight;
+        private Coroutine _serverBotReplacementHolder;
         private bool _serverPhotonReadyInFlight;
         private bool _serverMatchStartHandled;
         private bool _serverInviteJoinInFlight;
@@ -4012,7 +4013,9 @@ namespace Altzone.Scripts.Lobby
                             matchmakingRoom = room;
                         },
                         teamSize: teamSize,
-                        allowBots: matchmakingType != MatchmakingType.Clan2v2,
+                        allowBots: matchmakingType is MatchmakingType.Random2v2
+                            or MatchmakingType.Clan2v2
+                            or MatchmakingType.Custom,
                         automaticInvitePlayerId: isPremadeInRoom ? automaticInvitePlayerId : null));
 
                     if (!createSucceeded || matchmakingRoom == null)
@@ -4026,7 +4029,10 @@ namespace Altzone.Scripts.Lobby
                     // Two clan members can create rooms at almost the same instant. The owner of
                     // the newer room moves to the older one so both clients converge automatically.
                     if (matchmakingType == MatchmakingType.Clan2v2 && !isPremadeInRoom
-                        && matchmakingRoom.status == InviteStatus.OPEN)
+                        && (matchmakingRoom.status == InviteStatus.OPEN
+                            || (matchmakingRoom.status == InviteStatus.READY
+                                && matchmakingRoom.bots != null
+                                && matchmakingRoom.bots.Count > 0)))
                     {
                         string createdRoomId = matchmakingRoom.id;
                         for (int attempt = 0; attempt < 4 && !joinedExistingRoom; attempt++)
@@ -4070,7 +4076,8 @@ namespace Altzone.Scripts.Lobby
                     readyAt = matchmakingRoom.readyAt,
                     players = matchmakingRoom.players?
                         .Select(playerId => new MQTTMatchPlayers { playerId = playerId })
-                        .ToList() ?? new List<MQTTMatchPlayers>()
+                        .ToList() ?? new List<MQTTMatchPlayers>(),
+                    bots = matchmakingRoom.bots ?? new List<MQTTBots>()
                 };
 
                 bool isOwner = matchmakingRoom.ownerPlayerId == ServerManager.Instance.Player?._id;
@@ -4079,7 +4086,22 @@ namespace Altzone.Scripts.Lobby
 
                 if (isOwner && matchmakingRoom.status == InviteStatus.READY)
                 {
-                    yield return StartCoroutine(StartServerRoomIfReady(matchmakingRoom.id));
+                    bool hasReplaceableBot = matchmakingRoom.matchType is MatchType.RANDOM or MatchType.CLAN
+                        && matchmakingRoom.bots != null
+                        && matchmakingRoom.bots.Count > 0;
+
+                    if (hasReplaceableBot)
+                    {
+                        if (_serverBotReplacementHolder == null)
+                        {
+                            _serverBotReplacementHolder = StartCoroutine(
+                                WaitForServerBotReplacement(matchmakingRoom.id));
+                        }
+                    }
+                    else
+                    {
+                        yield return StartCoroutine(StartServerRoomIfReady(matchmakingRoom.id));
+                    }
                 }
             }
             finally
@@ -4108,8 +4130,10 @@ namespace Altzone.Scripts.Lobby
                     .Where(room => room != null
                         && room.matchType == MatchType.CLAN
                         && room.gameType == (int)gameType
-                        && room.status == InviteStatus.OPEN
-                        && !room.allowBots
+                        && (room.status == InviteStatus.OPEN
+                            || (room.status == InviteStatus.READY
+                                && room.bots != null
+                                && room.bots.Count > 0))
                         && room.teamSize == 2
                         && room.players != null
                         && room.players.Count < room.teamSize
@@ -4239,6 +4263,56 @@ namespace Altzone.Scripts.Lobby
             }
         }
 
+        private IEnumerator WaitForServerBotReplacement(string roomId)
+        {
+            try
+            {
+                float waitStart = Time.time;
+                while (_serverMatchmakingActive
+                    && ServerManager.Instance.ActiveMatchmakingRoomId == roomId
+                    && Time.time - waitStart < MatchmakingTimeoutSeconds)
+                {
+                    if (_serverRoomData == null
+                        || _serverRoomData.id != roomId
+                        || _serverRoomData.status != InviteStatus.READY)
+                    {
+                        yield break;
+                    }
+
+                    if (_serverRoomData.bots == null || _serverRoomData.bots.Count == 0)
+                    {
+                        yield return StartCoroutine(StartServerRoomIfReady(roomId));
+                        yield break;
+                    }
+
+                    yield return new WaitForSeconds(0.25f);
+                }
+
+                if (!_serverMatchmakingActive
+                    || ServerManager.Instance.ActiveMatchmakingRoomId != roomId)
+                {
+                    yield break;
+                }
+
+                bool readSucceeded = false;
+                MatchmakingRoomResponse currentRoom = null;
+                yield return StartCoroutine(ServerManager.Instance.MatchmakingGetRoom(roomId, (success, room) =>
+                {
+                    readSucceeded = success;
+                    currentRoom = room;
+                }));
+
+                if (readSucceeded && currentRoom?.status == InviteStatus.READY)
+                {
+                    yield return StartCoroutine(StartServerRoomIfReady(roomId));
+                }
+            }
+            finally
+            {
+                _serverBotReplacementHolder = null;
+            }
+        }
+
         private void OnServerMatchmakingRoomUpdated(MQTTMatchRoomData room)
         {
             if (room == null || string.IsNullOrWhiteSpace(room.id)) return;
@@ -4253,7 +4327,27 @@ namespace Altzone.Scripts.Lobby
 
             if (isOwner && room.status == InviteStatus.READY && !_serverRoomStartInFlight)
             {
-                StartCoroutine(StartServerRoomIfReady(room.id));
+                bool hasReplaceableBot = room.matchType is MatchType.RANDOM or MatchType.CLAN
+                    && room.bots != null
+                    && room.bots.Count > 0;
+
+                if (hasReplaceableBot)
+                {
+                    if (_serverBotReplacementHolder == null)
+                    {
+                        _serverBotReplacementHolder = StartCoroutine(
+                            WaitForServerBotReplacement(room.id));
+                    }
+                }
+                else
+                {
+                    if (_serverBotReplacementHolder != null)
+                    {
+                        StopCoroutine(_serverBotReplacementHolder);
+                        _serverBotReplacementHolder = null;
+                    }
+                    StartCoroutine(StartServerRoomIfReady(room.id));
+                }
             }
             else if (room.status == InviteStatus.CANCELLED)
             {
@@ -4492,6 +4586,11 @@ namespace Altzone.Scripts.Lobby
 
         private void ResetServerMatchmakingState()
         {
+            if (_serverBotReplacementHolder != null)
+            {
+                StopCoroutine(_serverBotReplacementHolder);
+                _serverBotReplacementHolder = null;
+            }
             _serverMatchmakingActive = false;
             _serverRoomStartInFlight = false;
             _serverPhotonReadyInFlight = false;
