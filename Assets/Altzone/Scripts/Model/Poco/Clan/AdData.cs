@@ -17,6 +17,22 @@ namespace Altzone.Scripts.Store
         private Sprite _furniture;
         private string _adText;
         private bool _isAdText = true;
+        private List<AdTextObject> _textList;
+        private List<AdDecorationObject> _decorationList;
+
+        public class AdTextObject
+        {
+            private TMP_FontAsset _textFont;
+            private string _textColour;
+            private string _adText;
+            private Vector4 _adTextSize; //x min max y min max
+
+        }
+
+        public class AdDecorationObject
+        {
+            //
+        }
 
         public string BorderFrame
         {

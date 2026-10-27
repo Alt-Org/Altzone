@@ -3,44 +3,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
+public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IDragHandler
 {
-    private RectTransform rectTransform;
-    private CanvasGroup canvasGroup;
+    public RectTransform currentTransform;
+    private GameObject mainContent;
+    private Vector3 currentPossition;
 
-    private void Awake()
-    {
-        rectTransform = GetComponent<RectTransform>();
-        canvasGroup = GetComponent<CanvasGroup>();
-    }
+    private int totalChild;
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("on pointer down");
+        currentPossition = currentTransform.position;
+        mainContent = currentTransform.parent.gameObject;
+        totalChild = mainContent.transform.childCount;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        Debug.Log("on drag");
-        rectTransform.anchoredPosition += eventData.delta;
+        currentTransform.position =
+            new Vector3(currentTransform.position.x, eventData.position.y, currentTransform.position.z);
+
+        for (int i = 0; i < totalChild; i++)
+        {
+            if (i != currentTransform.GetSiblingIndex())
+            {
+                Transform otherTransform = mainContent.transform.GetChild(i);
+                int distance = (int)Vector3.Distance(currentTransform.position,
+                    otherTransform.position);
+                if (distance <= 10)
+                {
+                    Vector3 otherTransformOldPosition = otherTransform.position;
+                    otherTransform.position = new Vector3(otherTransform.position.x, currentPossition.y,
+                        otherTransform.position.z);
+                    currentTransform.position = new Vector3(currentTransform.position.x, otherTransformOldPosition.y,
+                        currentTransform.position.z);
+                    currentTransform.SetSiblingIndex(otherTransform.GetSiblingIndex());
+                    currentPossition = currentTransform.position;
+                }
+            }
+        }
     }
 
-    public void OnBeginDrag(PointerEventData eventData)
+    public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log("on begin drag");
-        canvasGroup.alpha = 0.7f;
-        canvasGroup.blocksRaycasts = false;
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        Debug.Log("on end drag");
-        canvasGroup.alpha = 1.0f;
-        canvasGroup.blocksRaycasts = true;
-    }
-
-    public void OnDrop(PointerEventData eventData)
-    {
-        throw new System.NotImplementedException();
+        currentTransform.position = currentPossition;
     }
 }

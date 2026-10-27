@@ -10,7 +10,7 @@ public class DragAndDropSpot : MonoBehaviour, IDropHandler
         Debug.Log("on drop");
         if (eventData.pointerDrag != null)
         {
-            eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition = GetComponent<RectTransform>().anchoredPosition;
+            eventData.pointerDrag.transform.position = transform.position;
         }
     }
 }
