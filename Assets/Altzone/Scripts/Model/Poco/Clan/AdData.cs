@@ -25,7 +25,7 @@ namespace Altzone.Scripts.Store
             private TMP_FontAsset _textFont;
             private string _textColour;
             private string _adText;
-            private Vector4 _adTextSize; //x min max y min max
+            private Vector4 _adTextSize;
 
         }
 
