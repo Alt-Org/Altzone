@@ -1,0 +1,138 @@
+/// @file BattleManagedEntity.qtn
+/// <summary>
+/// Contains @cref{Quantum,BattleEntityID}, @cref{Quantum,BattleManagedEntityQComponent} and @ref BattleManagedEntity.qtn "other related types".
+/// </summary>
+///
+/// ## Generated Enums
+/// - @cref{Quantum,BattleEntityPlayState}  
+///   @copybrief Quantum.BattleEntityPlayState
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleEntityID}  
+///   @copybrief Quantum.BattleEntityID
+/// - @cref{Quantum,BattleEntityLink}  
+///   @copybrief Quantum.BattleEntityLink
+/// - @cref{Quantum,BattleManagedEntityQComponent}  
+///   @copybrief Quantum.BattleManagedEntityQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleEntityID
+/// <summary>
+/// Struct used by @cref{Battle.QSimulation.Game,BattleEntityManager} to reference %Quantum entities.
+/// </summary>
+///
+/// [{Entity ID}](#page-concepts-entity-management-entity-id)
+///
+/// @bigtext{Generated from @ref BattleManagedEntity.qtn}  
+/// @bigtext{Extended in @ref BattleEntityManager.cs}
+
+/// @var int Quantum::BattleEntityID::Int
+/// <summary>Int representation of the ID.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleEntityID::SIZE
+/// @var Int32 Quantum::BattleEntityID::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleEntityID::GetHashCode
+///
+/// @fn void Quantum::BattleEntityID::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+
+/// @enum Quantum::BattleEntityPlayState
+/// <summary>
+/// Enum that defines the possible PlayStates of registered entities.
+/// </summary>
+///
+/// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.  
+/// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.
+///
+/// @bigtext{Generated from @ref BattleManagedEntity.qtn}
+
+/// @var Quantum::BattleEntityPlayState Quantum::BattleEntityPlayState::OutOfPlay
+/// The entity is OutOfPlay
+
+/// @var Quantum::BattleEntityPlayState Quantum::BattleEntityPlayState::InPlay
+/// The entity is InPlay
+
+
+/// @struct Quantum::BattleEntityLink
+/// <summary>
+/// Link structure used to reference %Quantum entity and its relative position.  
+/// Used by @cref{Quantum,BattleManagedEntityQComponent} for entity associations.
+/// </summary>
+///
+/// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+///
+/// @bigtext{Generated from @ref BattleManagedEntity.qtn}
+
+/// @var EntityRef Quantum::BattleEntityLink::ERef
+/// <summary>Linked %Quantum Entity reference.</summary>
+///
+/// @var FPVector2 Quantum::BattleEntityLink::Offset
+/// <summary>Linked entity's position relative to compound parent.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleEntityLink::SIZE
+/// @var Int32 Quantum::BattleEntityLink::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleEntityLink::GetHashCode
+///
+/// @fn void Quantum::BattleEntityLink::Serialize
+///
+/// @}
+
+
+/// @struct Quantum::BattleManagedEntityQComponent
+/// <summary>
+/// Component for %Quantum Entities managed by @cref{Battle.QSimulation.Game,BattleEntityManager}.
+/// </summary>
+
+/// @var bool Quantum::BattleManagedEntityQComponent::IsRegistered
+/// <summary>
+/// Whether entity is registered.
+/// </summary>
+///
+/// See [{Registered Entity}](#page-concepts-entity-management-registered-entities).
+
+/// @var BattleEntityPlayState Quantum::BattleManagedEntityQComponent::RegisteredState
+/// <summary>
+/// Playstate of the registered entity. Unused if not @cref{Quantum.BattleManagedEntityQComponent,IsRegistered}.
+/// </summary>
+///
+/// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate).
+
+/// @var bool Quantum::BattleManagedEntityQComponent::IsCompound
+/// <summary>
+/// Whether entity is compound.
+/// </summary>
+///
+/// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+
+/// @var list<BattleEntityLink> Quantum::BattleManagedEntityQComponent::CompoundLinkedEntities
+/// <summary>
+/// List of entities linked to the compound parent.
+/// </summary>
+///
+/// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleManagedEntityQComponent::SIZE
+/// @var Int32 Quantum::BattleManagedEntityQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleManagedEntityQComponent::GetHashCode
+/// @fn void Quantum::BattleManagedEntityQComponent::ClearPointers
+///
+/// @fn void Quantum::BattleManagedEntityQComponent::OnRemoved
+/// @fn void Quantum::BattleManagedEntityQComponent::Serialize
+/// @}
