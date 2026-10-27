@@ -154,7 +154,7 @@ namespace MenuUi.Scripts.Window
             OnChatBarToggled?.Invoke(value);
         }
 
-        public void ToggleOnlinePlayers()
+        public static void ToggleOnlinePlayers()
         {
             OnToggleOnlinePlayerList?.Invoke();
         }
