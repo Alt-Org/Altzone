@@ -17,10 +17,8 @@ public class CharacterFilterPanel : MonoBehaviour
     [SerializeField] private Toggle _filterConscious;
     [SerializeField] private Toggle _filterUnconscious;
 
-    [SerializeField] private GameObject _filterConsciousText;
-    [SerializeField] private GameObject _filterConsciousTextBold;
-    [SerializeField] private GameObject _filterUnconsciousText;
-    [SerializeField] private GameObject _filterUnconsciousTextBold;
+    [SerializeField] private TMP_Text _filterConsciousText;
+    [SerializeField] private TMP_Text _filterUnconsciousText;
 
     [SerializeField] private Toggle _toggleAll;
     [SerializeField] private List<Toggle> _classFilterToggles = new List<Toggle>();
@@ -185,52 +183,12 @@ public class CharacterFilterPanel : MonoBehaviour
     #region Turn the bold text on/off for the concious toggles
     private void ConsciousToggleBold(bool toggleIsOn)
     {
-        if (toggleIsOn)
-        {
-            _filterConsciousText.SetActive(false);
-            _filterConsciousTextBold.SetActive(true);
-        }
-        else if (!toggleIsOn)
-        {
-            _filterConsciousText.SetActive(true);
-            _filterConsciousTextBold.SetActive(false);
-        }
-
-        /*
-        TextMeshProUGUI toggleText = null;
-     
-        if (toggleIsOn)
-        {
-            //toggleText.text = _filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text;
-            //_filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text = $"<b> {toggleText} </b>";
-            toggleText = _filterAcknowledgedText;
-
-            _filterAcknowledgedText.text = $"<b> {toggleText} </b>";
-        }
-        else if (!toggleIsOn)
-        {
-            //toggleText.text = _filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text;
-            //_filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text = toggleText.ToString();
-            toggleText = _filterAcknowledgedText;
-
-            _filterAcknowledgedText.text = toggleText.text;
-
-        }*/
-
+        _filterConsciousText.fontStyle = toggleIsOn ? FontStyles.Bold : FontStyles.Normal;
     }
 
     private void UnconsciousToggleBold(bool toggleIsOn)
     {
-        if (toggleIsOn)
-        {
-            _filterUnconsciousText.SetActive(true);
-            _filterUnconsciousTextBold.SetActive(true);
-        }
-        else if (!toggleIsOn)
-        {
-            _filterUnconsciousText.SetActive(true);
-            _filterUnconsciousTextBold.SetActive(false);
-        }
+        _filterUnconsciousText.fontStyle = toggleIsOn ? FontStyles.Bold : FontStyles.Normal;
     }
     #endregion
 
