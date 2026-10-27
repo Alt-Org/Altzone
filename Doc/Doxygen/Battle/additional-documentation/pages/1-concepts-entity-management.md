@@ -65,8 +65,10 @@ ensuring its [{PlayState}](#page-concepts-entity-management-registered-entities-
 
 #### Entity ID {#page-concepts-entity-management-entity-id}
 
-Each [{Registered}](#page-concepts-entity-management-registered-entities) **%Quantum Entity** is assigned an **Entity ID** by [{Entity Manager}](#page-concepts-entity-management-entity-manager).  
-The @cref{Quantum,BattleEntityID} struct is used to represent **Entity IDs**.
+Each [{Registered}](#page-concepts-entity-management-registered-entities) **%Quantum Entity** is assigned a non-@cref{Quantum.BattleEntityID,None} **Entity ID** by [{Entity Manager}](#page-concepts-entity-management-entity-manager).  
+The @cref{Quantum,BattleEntityID} struct is used to represent **Entity IDs**.  
+
+**Entity ID** can also be @cref{Quantum.BattleEntityID,None} meaning the **Entity ID** does not refer to any [{Registered}](#page-concepts-entity-management-registered-entities) **%Quantum Entity**, which is the default state of an **Entity ID** and is considered **invalid** when non-@cref{Quantum.BattleEntityID,None} **ID** is expected.
 
 #### Entity Group {#page-concepts-entity-management-entity-group}
 
