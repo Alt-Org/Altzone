@@ -1545,7 +1545,7 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
-  public unsafe partial struct BattleManageEntityQComponent : Quantum.IComponent {
+  public unsafe partial struct BattleManagedEntityQComponent : Quantum.IComponent {
     public const Int32 SIZE = 16;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(8)]
@@ -1559,7 +1559,7 @@ namespace Quantum {
     public QListPtr<BattleEntityLink> CompoundLinkedEntities;
     public override Int32 GetHashCode() {
       unchecked { 
-        var hash = 20681;
+        var hash = 9421;
         hash = hash * 31 + IsRegistered.GetHashCode();
         hash = hash * 31 + (Int32)RegisteredState;
         hash = hash * 31 + IsCompound.GetHashCode();
@@ -1571,11 +1571,11 @@ namespace Quantum {
       if (CompoundLinkedEntities != default) f.FreeList(ref CompoundLinkedEntities);
     }
     public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
-      var p = (Quantum.BattleManageEntityQComponent*)ptr;
+      var p = (Quantum.BattleManagedEntityQComponent*)ptr;
       p->ClearPointers((Frame)frame, entity);
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
-        var p = (BattleManageEntityQComponent*)ptr;
+        var p = (BattleManagedEntityQComponent*)ptr;
         serializer.Stream.Serialize((Int32*)&p->RegisteredState);
         QBoolean.Serialize(&p->IsCompound, serializer);
         QBoolean.Serialize(&p->IsRegistered, serializer);
@@ -2336,8 +2336,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleGameSessionQSingleton>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattleGoalQComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattleGoalQComponent>();
-      BuildSignalsArrayOnComponentAdded<Quantum.BattleManageEntityQComponent>();
-      BuildSignalsArrayOnComponentRemoved<Quantum.BattleManageEntityQComponent>();
+      BuildSignalsArrayOnComponentAdded<Quantum.BattleManagedEntityQComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.BattleManagedEntityQComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattlePlayerCharacterDataQComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.BattlePlayerCharacterDataQComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.BattlePlayerCharacterDataTemplateQComponent>();
@@ -2509,7 +2509,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.BattleJoystickState), 4);
       typeRegistry.Register(typeof(Quantum.BattleLightrayColor), 4);
       typeRegistry.Register(typeof(Quantum.BattleLightraySize), 4);
-      typeRegistry.Register(typeof(Quantum.BattleManageEntityQComponent), Quantum.BattleManageEntityQComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.BattleManagedEntityQComponent), Quantum.BattleManagedEntityQComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.BattleMovementInputType), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerCharacterClass), 4);
       typeRegistry.Register(typeof(Quantum.BattlePlayerCharacterDataQComponent), Quantum.BattlePlayerCharacterDataQComponent.SIZE);
@@ -2638,7 +2638,7 @@ namespace Quantum {
         .Add<Quantum.BattleEntityManagerDataQSingleton>(Quantum.BattleEntityManagerDataQSingleton.Serialize, null, Quantum.BattleEntityManagerDataQSingleton.OnRemoved, ComponentFlags.Singleton)
         .Add<Quantum.BattleGameSessionQSingleton>(Quantum.BattleGameSessionQSingleton.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.BattleGoalQComponent>(Quantum.BattleGoalQComponent.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.BattleManageEntityQComponent>(Quantum.BattleManageEntityQComponent.Serialize, null, Quantum.BattleManageEntityQComponent.OnRemoved, ComponentFlags.None)
+        .Add<Quantum.BattleManagedEntityQComponent>(Quantum.BattleManagedEntityQComponent.Serialize, null, Quantum.BattleManagedEntityQComponent.OnRemoved, ComponentFlags.None)
         .Add<Quantum.BattlePlayerCharacterDataQComponent>(Quantum.BattlePlayerCharacterDataQComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.BattlePlayerCharacterDataTemplateQComponent>(Quantum.BattlePlayerCharacterDataTemplateQComponent.Serialize, null, Quantum.BattlePlayerCharacterDataTemplateQComponent.OnRemoved, ComponentFlags.None)
         .Add<Quantum.BattlePlayerClass100DataQComponent>(Quantum.BattlePlayerClass100DataQComponent.Serialize, null, null, ComponentFlags.None)

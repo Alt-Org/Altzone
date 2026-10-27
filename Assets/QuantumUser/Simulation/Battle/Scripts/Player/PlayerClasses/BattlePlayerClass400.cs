@@ -114,7 +114,7 @@ namespace Battle.QSimulation.Player
 
                 FPVector2 newDirection = FPVector2.Rotate(FPVector2.Up, newAngle);
 
-                BattleEntityManager.MoveCompound(f, BattleManageEntityHandle.Create(f, data->HeldProjectileEntity), playerHandle.LoadedCharacterTransformCopy.Position + newDirection * data->HeldProjectileDistance, FP._0);
+                BattleEntityManager.MoveCompound(f, BattleManagedEntityHandle.Create(f, data->HeldProjectileEntity), playerHandle.LoadedCharacterTransformCopy.Position + newDirection * data->HeldProjectileDistance, FP._0);
 
                 if (newAngle == angleTeammate)
                 {

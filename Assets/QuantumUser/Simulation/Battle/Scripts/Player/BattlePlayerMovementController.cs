@@ -220,7 +220,7 @@ namespace Battle.QSimulation.Player
             FP shieldRotation = playerHandle.LoadedCharacterData->MovementRotationBaseRad +
                                 playerHandle.LoadedCharacterData->MovementRotationOffsetRad;
             BattleEntityManager.MoveCompound(f,
-                BattleManageEntityHandle.Create(f, playerHandle.LoadedCharacterData->AttachedShieldEntityRef),
+                BattleManagedEntityHandle.Create(f, playerHandle.LoadedCharacterData->AttachedShieldEntityRef),
                 position,
                 playerHandle.LoadedCharacterData->MovementRotationBaseRad + playerHandle.LoadedCharacterData->MovementRotationOffsetRad
             );
@@ -249,7 +249,7 @@ namespace Battle.QSimulation.Player
             FP shieldRotation = playerHandle.LoadedCharacterData->MovementRotationBaseRad +
                                 playerHandle.LoadedCharacterData->MovementRotationOffsetRad;
             BattleEntityManager.TeleportCompound(f,
-                BattleManageEntityHandle.Create(f, playerHandle.LoadedCharacterData->AttachedShieldEntityRef),
+                BattleManagedEntityHandle.Create(f, playerHandle.LoadedCharacterData->AttachedShieldEntityRef),
                 position,
                 shieldRotation
             );

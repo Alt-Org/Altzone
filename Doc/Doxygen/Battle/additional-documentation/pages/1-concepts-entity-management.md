@@ -4,12 +4,12 @@
 
 ## Managed Entities {#page-concepts-entity-management-managed-entities}
 
-**%Quantum Entities** managed by the [{Entity Manager}](#page-concepts-entity-management-entity-manager) have a @cref{Quantum,BattleManageEntityQComponent}.  
+**%Quantum Entities** managed by the [{Entity Manager}](#page-concepts-entity-management-entity-manager) have a @cref{Quantum,BattleManagedEntityQComponent}.  
 There are 3 types of **Managed Entities**:
 [{Registered}](#page-concepts-entity-management-registered-entities),
 [{Compound}](#page-concepts-entity-management-compound-entities) and
 **Registered Compound**.  
-These types are tracked by the @cref{Quantum,BattleManageEntityQComponent.IsRegistered} and @cref{Quantum,BattleManageEntityQComponent.IsCompound} booleans.  
+These types are tracked by the @cref{Quantum,BattleManagedEntityQComponent.IsRegistered} and @cref{Quantum,BattleManagedEntityQComponent.IsCompound} booleans.  
 **Registered Compound Entities** are simply both
 [{Registered}](#page-concepts-entity-management-registered-entities) and
 [{Compound}](#page-concepts-entity-management-compound-entities) **Entities** at the same time.
@@ -18,7 +18,7 @@ These types are tracked by the @cref{Quantum,BattleManageEntityQComponent.IsRegi
 
 **Compound Entities** are [{Managed Entities of type Compound}](#page-concepts-entity-management-managed-entities) that are composed of a **Parent** **Entity** with other **Entities** linked to it,  
 forming the **Compound**, which can then be positioned and rotated together as one unit.  
-The **Parent** has a @cref{Quantum,BattleManageEntityQComponent.CompoundLinkedEntities} list which contains **Entities** that are linked to the **Compound** **Parent**.  
+The **Parent** has a @cref{Quantum,BattleManagedEntityQComponent.CompoundLinkedEntities} list which contains **Entities** that are linked to the **Compound** **Parent**.  
 **Compound Entities** are made from a @cref{Battle.QSimulation.Game.BattleEntityManager,CompoundEntityTemplate}.
 
 **Compound Entities** are handled by [{Entity Manager}](#page-concepts-entity-management-entity-manager).  
@@ -80,13 +80,13 @@ are accessed by using an **offset value**.
 @cref{Quantum.BattleEntityPlayState,InPlay} and
 @cref{Quantum.BattleEntityPlayState,OutOfPlay}
 tracked by @cref{Quantum,BattleEntityPlayState}.  
-@cref{Quantum,BattleManageEntityQComponent.RegisteredState} stores the **PlayState** 
+@cref{Quantum,BattleManagedEntityQComponent.RegisteredState} stores the **PlayState** 
 of the [{Registered Entity}](#page-concepts-entity-management-registered-entities).  
 When in the arena, a [{Registered Entity}](#page-concepts-entity-management-registered-entities) is @cref{Quantum.BattleEntityPlayState,InPlay}.
 When not in the arena, it is @cref{Quantum.BattleEntityPlayState,OutOfPlay}.  
 When @cref{Quantum.BattleEntityPlayState,OutOfPlay}, [{Registered Entities}](#page-concepts-entity-management-registered-entities) will be stored offscreen.
 
-The **Use** and **Return** methods update the @cref{Quantum.BattleManageEntityQComponent,RegisteredState}
+The **Use** and **Return** methods update the @cref{Quantum.BattleManagedEntityQComponent,RegisteredState}
 of a [{Registered Entity}](#page-concepts-entity-management-registered-entities).  
 When **PlayState** is updated @ref BattlePlayStateUpdate event is sent to update 
 the **Unity/View** code so it react to that information.
@@ -99,8 +99,8 @@ the **Unity/View** code so it react to that information.
 @clink{MakeCompound:Battle.QSimulation.Game.BattleEntityManager.MakeCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)}
 or @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} methods.  
 [{Compound Entities}](#page-concepts-entity-management-compound-entities) can be **moved** and **teleported** using the
-@clink{MoveCompound:Battle.QSimulation.Game.BattleEntityManager.MoveCompound(Frame, Battle.QSimulation.Game.BattleManageEntityHandle, FPVector2, FP)}
-and @clink{TeleportCompound:Battle.QSimulation.Game.BattleEntityManager.TeleportCompound(Frame, Battle.QSimulation.Game.BattleManageEntityHandle, FPVector2, FP)} methods.
+@clink{MoveCompound:Battle.QSimulation.Game.BattleEntityManager.MoveCompound(Frame, Battle.QSimulation.Game.BattleManagedEntityHandle, FPVector2, FP)}
+and @clink{TeleportCompound:Battle.QSimulation.Game.BattleEntityManager.TeleportCompound(Frame, Battle.QSimulation.Game.BattleManagedEntityHandle, FPVector2, FP)} methods.
 
 @note
 **Registered Compound Entities** should only be made using

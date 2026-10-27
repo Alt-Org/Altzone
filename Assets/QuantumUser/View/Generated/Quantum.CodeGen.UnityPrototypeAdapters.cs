@@ -81,16 +81,16 @@ namespace Quantum.Prototypes.Unity {
     }
   }
   [System.SerializableAttribute()]
-  public unsafe partial class BattleManageEntityQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattleManageEntityQComponentPrototype> {
+  public unsafe partial class BattleManagedEntityQComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BattleManagedEntityQComponentPrototype> {
     public QBoolean IsRegistered;
     public Quantum.QEnum32<BattleEntityPlayState> RegisteredState;
     public QBoolean IsCompound;
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.BattleEntityLinkPrototype[] CompoundLinkedEntities = {};
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleManageEntityQComponentPrototype prototype);
-    public override Quantum.Prototypes.BattleManageEntityQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.BattleManageEntityQComponentPrototype();
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattleManagedEntityQComponentPrototype prototype);
+    public override Quantum.Prototypes.BattleManagedEntityQComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.BattleManagedEntityQComponentPrototype();
       converter.Convert(this.IsRegistered, out result.IsRegistered);
       converter.Convert(this.RegisteredState, out result.RegisteredState);
       converter.Convert(this.IsCompound, out result.IsCompound);

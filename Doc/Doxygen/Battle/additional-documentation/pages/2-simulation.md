@@ -83,7 +83,7 @@ In %Battle [Quantum Components🡵] have **"QComponent"** suffix. [[Naming]](#in
 |                                                                                                                                               |||
 | @crefd{Quantum}   | @cref{Quantum,BattleGoalQComponent}                        | @copybrief Quantum.BattleGoalQComponent                        |
 |                                                                                                                                               |||
-| @crefd{Quantum}   | @cref{Quantum,BattleManageEntityQComponent}                | @copybrief Quantum.BattleManageEntityQComponent                |
+| @crefd{Quantum}   | @cref{Quantum,BattleManagedEntityQComponent}                | @copybrief Quantum.BattleManagedEntityQComponent                |
 |                                                                                                                                               |||
 | @crefd{Quantum}   | @cref{Quantum,BattlePlayerCharacterDataQComponent}         | @copybrief Quantum.BattlePlayerCharacterDataQComponent         |
 | @crefd{Quantum}   | @cref{Quantum,BattlePlayerCharacterDataTemplateQComponent} | @copybrief Quantum.BattlePlayerCharacterDataTemplateQComponent |

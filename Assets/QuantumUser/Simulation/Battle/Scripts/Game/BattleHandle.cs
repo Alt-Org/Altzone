@@ -7,25 +7,25 @@ using Quantum.Collections;
 
 namespace Battle.QSimulation.Game
 {
-    public unsafe struct BattleManageEntityHandle
+    public unsafe struct BattleManagedEntityHandle
     {
         public interface IComposite
         {
-            public void FromManagedEntity(Frame f, BattleManageEntityHandle managedEntity);
+            public void FromManagedEntity(Frame f, BattleManagedEntityHandle managedEntity);
         }
 
-        public static BattleManageEntityHandle Create(Frame f, EntityRef entity)
+        public static BattleManagedEntityHandle Create(Frame f, EntityRef entity)
         {
-            BattleManageEntityHandle handle = new()
+            BattleManagedEntityHandle handle = new()
             {
                 ERef = entity,
-                _component = f.Unsafe.GetPointer<BattleManageEntityQComponent>(entity)
+                _component = f.Unsafe.GetPointer<BattleManagedEntityQComponent>(entity)
             };
 
             return handle;
         }
 
-        public static implicit operator EntityRef(BattleManageEntityHandle manageEntityRef) => manageEntityRef.ERef;
+        public static implicit operator EntityRef(BattleManagedEntityHandle managedEntityRef) => managedEntityRef.ERef;
 
         public EntityRef ERef { get; private set; }
 
@@ -52,31 +52,31 @@ namespace Battle.QSimulation.Game
             return composite;
         }
 
-        public void DevAssertIsRegistered(string context) => DevAssertIsRegistered(nameof(BattleManageEntityHandle), context);
+        public void DevAssertIsRegistered(string context) => DevAssertIsRegistered(nameof(BattleManagedEntityHandle), context);
 
         public void DevAssertIsRegistered(string source, string context)
         {
             BattleDebugLogger.DevAssertFormat(source, _component->IsRegistered, "{0}, entity is not registered", context);
         }
 
-        public void DevAssertIsInPlay(string context) => DevAssertIsInPlay(nameof(BattleManageEntityHandle), context);
+        public void DevAssertIsInPlay(string context) => DevAssertIsInPlay(nameof(BattleManagedEntityHandle), context);
 
         public void DevAssertIsInPlay(string source, string context)
         {
             BattleDebugLogger.DevAssertFormat(source, _component->RegisteredState == BattleEntityPlayState.InPlay, "{0}, entity is not in play", context);
         }
 
-        public void DevAssertIsCompound(string context) => DevAssertIsCompound(nameof(BattleManageEntityHandle), context);
+        public void DevAssertIsCompound(string context) => DevAssertIsCompound(nameof(BattleManagedEntityHandle), context);
 
         public void DevAssertIsCompound(string source, string context)
         {
             BattleDebugLogger.DevAssertFormat(source, _component->IsCompound, "{0}, entity is not a compound", context);
         }
 
-        private BattleManageEntityQComponent* _component;
+        private BattleManagedEntityQComponent* _component;
     }
 
-    public unsafe struct BattlePlayerHandle : BattleManageEntityHandle.IComposite
+    public unsafe struct BattlePlayerHandle : BattleManagedEntityHandle.IComposite
     {
         public static BattlePlayerHandle Create(Frame f, BattlePlayerSlot slot)
         {
@@ -130,7 +130,7 @@ namespace Battle.QSimulation.Game
 
         public BattlePlayerData.Ref PlayerData { get; private set; }
 
-        public BattleManageEntityHandle LoadedCharacterEntityHandle { get; private set; }
+        public BattleManagedEntityHandle LoadedCharacterEntityHandle { get; private set; }
 
         public BattlePlayerCharacterDataQComponent* LoadedCharacterData { get; private set; }
 
@@ -195,7 +195,7 @@ namespace Battle.QSimulation.Game
 
         private void SetCharacter(Frame f, EntityRef entity)
         {
-            LoadedCharacterEntityHandle          = BattleManageEntityHandle.Create(f, entity);
+            LoadedCharacterEntityHandle          = BattleManagedEntityHandle.Create(f, entity);
             LoadedCharacterData                  = f.Unsafe.GetPointer<BattlePlayerCharacterDataQComponent>(entity);
             _loadedCharacterTransformInternalPtr = f.Unsafe.GetPointer<Transform2D>(entity);
         }
@@ -214,13 +214,13 @@ namespace Battle.QSimulation.Game
             CollidedHitboxTransform = null;
         }
 
-        void BattleManageEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManageEntityHandle managedEntity)
+        void BattleManagedEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManagedEntityHandle managedEntity)
         {
             SetCharacter(f, managedEntity);
         }
     }
 
-    public unsafe struct BattlePlayerShieldHandle : BattleManageEntityHandle.IComposite
+    public unsafe struct BattlePlayerShieldHandle : BattleManagedEntityHandle.IComposite
     {
         public static BattlePlayerShieldHandle Create(Frame f, EntityRef entity)
         {
@@ -228,7 +228,7 @@ namespace Battle.QSimulation.Game
 
             BattlePlayerShieldLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerShieldLinkQComponent>(entity);
 
-            BattleManageEntityHandle managedEntity = BattleManageEntityHandle.Create(f, link->ERef);
+            BattleManagedEntityHandle managedEntity = BattleManagedEntityHandle.Create(f, link->ERef);
 
             handle.SetShield(f, managedEntity);
 
@@ -250,7 +250,7 @@ namespace Battle.QSimulation.Game
 
         public readonly bool HandleHasCollidedHitbox => CollidedHitboxEntityRef != EntityRef.None;
 
-        public BattleManageEntityHandle ShieldEntityHandle {  get; private set; }
+        public BattleManagedEntityHandle ShieldEntityHandle {  get; private set; }
 
         public BattlePlayerShieldDataQComponent* ShieldData { get; private set; }
 
@@ -273,7 +273,7 @@ namespace Battle.QSimulation.Game
 
         private Transform2D* _shieldTransformInternalPtr { get; set; }
 
-        private void SetShield(Frame f, BattleManageEntityHandle managedEntity)
+        private void SetShield(Frame f, BattleManagedEntityHandle managedEntity)
         {
             ShieldEntityHandle          = managedEntity;
             ShieldData                  = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(managedEntity);
@@ -287,13 +287,13 @@ namespace Battle.QSimulation.Game
             CollidedHitboxTransform = f.Unsafe.GetPointer<Transform2D>(entity);
         }
 
-        void BattleManageEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManageEntityHandle managedEntity)
+        void BattleManagedEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManagedEntityHandle managedEntity)
         {
             SetShield(f, managedEntity);
         }
     }
 
-    public unsafe struct BattleProjectileHandle : BattleManageEntityHandle.IComposite
+    public unsafe struct BattleProjectileHandle : BattleManagedEntityHandle.IComposite
     {
         public static BattleProjectileHandle Create(Frame f, EntityRef entity)
         {
@@ -301,7 +301,7 @@ namespace Battle.QSimulation.Game
 
             BattleProjectileLinkQComponent* link = f.Unsafe.GetPointer<BattleProjectileLinkQComponent>(entity);
 
-            handle.EntityHandle          = BattleManageEntityHandle.Create(f, link->ERef);
+            handle.EntityHandle          = BattleManagedEntityHandle.Create(f, link->ERef);
             handle.Data                  = f.Unsafe.GetPointer<BattleProjectileQComponent>(link->ERef);
             handle._transformInternalPtr = f.Unsafe.GetPointer<Transform2D>(link->ERef);
 
@@ -312,7 +312,7 @@ namespace Battle.QSimulation.Game
         {
             BattleProjectileHandle handle = new();
 
-            handle.EntityHandle          = BattleManageEntityHandle.Create(f, filter.Entity);
+            handle.EntityHandle          = BattleManagedEntityHandle.Create(f, filter.Entity);
             handle.Data                  = filter.Projectile;
             handle._transformInternalPtr = filter.Transform;
 
@@ -329,7 +329,7 @@ namespace Battle.QSimulation.Game
             f.Add(linkEntityRef, projectileLink);
         }
 
-        public BattleManageEntityHandle EntityHandle { get; private set; }
+        public BattleManagedEntityHandle EntityHandle { get; private set; }
 
         public BattleProjectileQComponent* Data {  get; private set; }
 
@@ -397,7 +397,7 @@ namespace Battle.QSimulation.Game
 
         private Transform2D* _transformInternalPtr { get; set; }
 
-        void BattleManageEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManageEntityHandle managedEntity)
+        void BattleManagedEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManagedEntityHandle managedEntity)
         {
             EntityHandle          = managedEntity;
             Data                  = f.Unsafe.GetPointer<BattleProjectileQComponent>(managedEntity);

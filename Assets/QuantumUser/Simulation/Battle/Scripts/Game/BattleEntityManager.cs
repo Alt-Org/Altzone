@@ -17,8 +17,8 @@ using Photon.Deterministic;
 namespace Quantum
 {
     // Adds functionality to convert between BattleEntityID and int
-    // Main struct definition in BattleManageEntity.qtn
-    // Main struct documentation in qtn-BattleManageEntity.dox
+    // Main struct definition in BattleManagedEntity.qtn
+    // Main struct documentation in qtn-BattleManagedEntity.dox
     public partial struct BattleEntityID
     {
         public const int NoneValue = 0;
@@ -297,7 +297,7 @@ namespace Battle.QSimulation.Game
 
         /// <summary>
         /// Retrieves registered entity matching given <paramref name="id"/>
-        /// as <see cref="BattleManageEntityHandle"/>.
+        /// as <see cref="BattleManagedEntityHandle"/>.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
         ///
@@ -309,20 +309,20 @@ namespace Battle.QSimulation.Game
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
         ///
-        /// <returns><see cref="BattleManageEntityHandle"/> for retrieved entity.</returns>
-        public static BattleManageEntityHandle Get(Frame f, BattleEntityID id)
+        /// <returns><see cref="BattleManagedEntityHandle"/> for retrieved entity.</returns>
+        public static BattleManagedEntityHandle Get(Frame f, BattleEntityID id)
         {
             DevAssertValidEntityID(id, context: nameof(Get));
 
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
             int listIndex = GetListIndex(id);
 
-            return BattleManageEntityHandle.Create(f, entityList[listIndex]);
+            return BattleManagedEntityHandle.Create(f, entityList[listIndex]);
         }
 
         /// <summary>
         /// Retrieves registered entity matching given <paramref name="id"/>
-        /// as <typeparamref name="T"/> : <see cref="BattleManageEntityHandle.IComposite"/>.
+        /// as <typeparamref name="T"/> : <see cref="BattleManagedEntityHandle.IComposite"/>.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
         ///
@@ -331,21 +331,21 @@ namespace Battle.QSimulation.Game
         /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
         ///
-        /// <typeparam name="T">The type of <see cref="BattleManageEntityHandle.IComposite"/> that should be returned.</typeparam>
+        /// <typeparam name="T">The type of <see cref="BattleManagedEntityHandle.IComposite"/> that should be returned.</typeparam>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
         ///
-        /// <returns><see cref="BattleManageEntityHandle"/> for retrieved entity via calling another Get-method.</returns>
+        /// <returns><see cref="BattleManagedEntityHandle"/> for retrieved entity via calling another Get-method.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T Get<T>(Frame f, BattleEntityID id) where T : BattleManageEntityHandle.IComposite, new()
+        public static T Get<T>(Frame f, BattleEntityID id) where T : BattleManagedEntityHandle.IComposite, new()
         {
             return Get(f, id).To<T>(f);
         }
 
         /// <summary>
         /// Retrieves registered entity matching given <paramref name="id"/> from the group at <paramref name="offset"/>
-        /// as <see cref="BattleManageEntityHandle"/>.
+        /// as <see cref="BattleManagedEntityHandle"/>.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
         ///
@@ -359,20 +359,20 @@ namespace Battle.QSimulation.Game
         /// <param name="id">Entity ID of the entity to retrieve.</param>
         /// <param name="offset">Offset of the desired entity within the group.</param>
         ///
-        /// <returns><see cref="BattleManageEntityHandle"/> for retrieved entity.</returns>
-        public static BattleManageEntityHandle Get(Frame f, BattleEntityID id, int offset)
+        /// <returns><see cref="BattleManagedEntityHandle"/> for retrieved entity.</returns>
+        public static BattleManagedEntityHandle Get(Frame f, BattleEntityID id, int offset)
         {
             DevAssertValidEntityID(id, context: nameof(Get));
 
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
             int listIndex = GetListIndex(id, offset);
 
-            return BattleManageEntityHandle.Create(f, entityList[listIndex]);
+            return BattleManagedEntityHandle.Create(f, entityList[listIndex]);
         }
 
         /// <summary>
         /// Calls a Get-method to retrieve registered entity matching given <paramref name="id"/> from the group at <paramref name="offset"/>
-        /// as <typeparamref name="T"/> : <see cref="BattleManageEntityHandle.IComposite"/>.
+        /// as <typeparamref name="T"/> : <see cref="BattleManagedEntityHandle.IComposite"/>.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
         ///
@@ -386,9 +386,9 @@ namespace Battle.QSimulation.Game
         /// <param name="id">Entity ID of the entity to retrieve.</param>
         /// <param name="offset">Offset of the desired entity within the group.</param>
         ///
-        /// <returns><see cref="BattleManageEntityHandle"/> for retrieved entity via calling another Get-method.</returns>
+        /// <returns><see cref="BattleManagedEntityHandle"/> for retrieved entity via calling another Get-method.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T Get<T>(Frame f, BattleEntityID id, int offset) where T : BattleManageEntityHandle.IComposite, new()
+        public static T Get<T>(Frame f, BattleEntityID id, int offset) where T : BattleManagedEntityHandle.IComposite, new()
         {
             return Get(f, id, offset).To<T>(f);
         }
@@ -421,7 +421,7 @@ namespace Battle.QSimulation.Game
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
             int listIndex = GetListIndex(id);
 
-            BattleManageEntityQComponent* managedEntity = f.Unsafe.GetPointer<BattleManageEntityQComponent>(entityList[listIndex]);
+            BattleManagedEntityQComponent* managedEntity = f.Unsafe.GetPointer<BattleManagedEntityQComponent>(entityList[listIndex]);
 
             managedEntity->RegisteredState = BattleEntityPlayState.InPlay;
             f.Events.BattlePlayStateUpdate(entityList[listIndex], managedEntity->RegisteredState);
@@ -447,7 +447,7 @@ namespace Battle.QSimulation.Game
             QList<EntityRef> entityList = f.ResolveList(GetEntityManagerData(f)->RegisteredEntities);
             int listIndex = GetListIndex(id, offset);
 
-            BattleManageEntityQComponent* managedEntity = f.Unsafe.GetPointer<BattleManageEntityQComponent>(entityList[listIndex]);
+            BattleManagedEntityQComponent* managedEntity = f.Unsafe.GetPointer<BattleManagedEntityQComponent>(entityList[listIndex]);
 
             managedEntity->RegisteredState = BattleEntityPlayState.InPlay;
             f.Events.BattlePlayStateUpdate(entityList[listIndex], managedEntity->RegisteredState);
@@ -548,7 +548,7 @@ namespace Battle.QSimulation.Game
         /// <param name="managedEntity">Reference to the parent entity.</param>
         /// <param name="position">New position.</param>
         /// <param name="rotation">New rotation</param>
-        public static void MoveCompound(Frame f, BattleManageEntityHandle managedEntity, FPVector2 position, FP rotation)
+        public static void MoveCompound(Frame f, BattleManagedEntityHandle managedEntity, FPVector2 position, FP rotation)
         {
             managedEntity.DevAssertIsCompound(nameof(BattleEntityManager), "Can not " + nameof(MoveCompound));
 
@@ -589,7 +589,7 @@ namespace Battle.QSimulation.Game
         /// <param name="managedEntity">Reference to the parent entity.</param>
         /// <param name="position">New position.</param>
         /// <param name="rotation">New rotation</param>
-        public static void TeleportCompound(Frame f, BattleManageEntityHandle managedEntity, FPVector2 position, FP rotation)
+        public static void TeleportCompound(Frame f, BattleManagedEntityHandle managedEntity, FPVector2 position, FP rotation)
         {
             managedEntity.DevAssertIsCompound(nameof(BattleEntityManager), "Can not " + nameof(TeleportCompound));
 
@@ -679,22 +679,22 @@ namespace Battle.QSimulation.Game
         #region Private Entity Methods
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static BattleManageEntityQComponent* MakeManagedEntity(Frame f, EntityRef entityRef)
+        private static BattleManagedEntityQComponent* MakeManagedEntity(Frame f, EntityRef entityRef)
         {
-            BattleManageEntityQComponent managedEntity = new();
+            BattleManagedEntityQComponent managedEntity = new();
 
             managedEntity.IsRegistered = true;
             managedEntity.RegisteredState = BattleEntityPlayState.InPlay;
 
-            f.Add(entityRef, managedEntity, out BattleManageEntityQComponent* componentPointer);
+            f.Add(entityRef, managedEntity, out BattleManagedEntityQComponent* componentPointer);
 
             return componentPointer;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static BattleManageEntityQComponent* MakeManagedEntity(Frame f, CompoundEntityTemplate template, bool registered)
+        private static BattleManagedEntityQComponent* MakeManagedEntity(Frame f, CompoundEntityTemplate template, bool registered)
         {
-            BattleManageEntityQComponent managedEntity = new();
+            BattleManagedEntityQComponent managedEntity = new();
 
             if (registered)
             {
@@ -711,7 +711,7 @@ namespace Battle.QSimulation.Game
                 entityList.Add(entityRef);
             }
 
-            f.Add(template.ParentEntityRef, managedEntity, out BattleManageEntityQComponent* componentPointer);
+            f.Add(template.ParentEntityRef, managedEntity, out BattleManagedEntityQComponent* componentPointer);
 
             return componentPointer;
         }
@@ -743,7 +743,7 @@ namespace Battle.QSimulation.Game
 
             FPVector2 entityGridToWorldPosition = BattleGridManager.GridPositionToWorldPosition(entityGridPosition);
 
-            BattleManageEntityHandle managedEntity = BattleManageEntityHandle.Create(f, entityRef);
+            BattleManagedEntityHandle managedEntity = BattleManagedEntityHandle.Create(f, entityRef);
 
             if (managedEntity.IsCompound)
             {
@@ -754,7 +754,7 @@ namespace Battle.QSimulation.Game
                 f.Unsafe.GetPointer<Transform2D>(entityRef)->Teleport(f, entityGridToWorldPosition);
             }
 
-            f.Unsafe.GetPointer<BattleManageEntityQComponent>(managedEntity)->RegisteredState = BattleEntityPlayState.OutOfPlay;
+            f.Unsafe.GetPointer<BattleManagedEntityQComponent>(managedEntity)->RegisteredState = BattleEntityPlayState.OutOfPlay;
             f.Events.BattlePlayStateUpdate(entityRef, managedEntity.RegisteredState);
         }
 

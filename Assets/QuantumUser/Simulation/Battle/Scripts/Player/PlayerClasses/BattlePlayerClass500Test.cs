@@ -27,7 +27,7 @@ namespace Battle.QSimulation.Player
 
         public override unsafe BattlePlayerClassManager.SetupParameters OnCreate(Frame f, BattlePlayerHandle playerHandle)
         {
-            BattleManageEntityQComponent* compoundEntityComponent = f.Unsafe.GetPointer<BattleManageEntityQComponent>(playerHandle.LoadedCharacterEntityHandle);
+            BattleManagedEntityQComponent* compoundEntityComponent = f.Unsafe.GetPointer<BattleManagedEntityQComponent>(playerHandle.LoadedCharacterEntityHandle);
 
             foreach(BattleEntityLink link in f.ResolveList(compoundEntityComponent->CompoundLinkedEntities))
             {

@@ -15,7 +15,7 @@ struct BattleEntityLink
     FPVector2 Offset;
 }
 
-component BattleManageEntityQComponent
+component BattleManagedEntityQComponent
 {
     bool                  IsRegistered;
     BattleEntityPlayState RegisteredState;

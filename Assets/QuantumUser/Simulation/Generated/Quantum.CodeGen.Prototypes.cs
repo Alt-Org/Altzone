@@ -240,8 +240,8 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleManageEntityQComponent))]
-  public unsafe class BattleManageEntityQComponentPrototype : ComponentPrototype<Quantum.BattleManageEntityQComponent> {
+  [Quantum.Prototypes.Prototype(typeof(Quantum.BattleManagedEntityQComponent))]
+  public unsafe class BattleManagedEntityQComponentPrototype : ComponentPrototype<Quantum.BattleManagedEntityQComponent> {
     public QBoolean IsRegistered;
     public Quantum.QEnum32<BattleEntityPlayState> RegisteredState;
     public QBoolean IsCompound;
@@ -249,11 +249,11 @@ namespace Quantum.Prototypes {
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.BattleEntityLinkPrototype[] CompoundLinkedEntities = {};
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.BattleManageEntityQComponent component = default;
+        Quantum.BattleManagedEntityQComponent component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
-    public void Materialize(Frame frame, ref Quantum.BattleManageEntityQComponent result, in PrototypeMaterializationContext context = default) {
+    public void Materialize(Frame frame, ref Quantum.BattleManagedEntityQComponent result, in PrototypeMaterializationContext context = default) {
         result.IsRegistered = this.IsRegistered;
         result.RegisteredState = this.RegisteredState;
         result.IsCompound = this.IsCompound;
