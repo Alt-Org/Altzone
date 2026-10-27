@@ -85,23 +85,6 @@ public class CharacterFilterPanel : MonoBehaviour
         _dropDownArrowDown.SetActive(!isExpanded);
     }
 
-    /*
-    public void Update()
-    {
-        //control the direction of the drop down arrow
-        if (_classSortDropdown.IsExpanded) 
-        {
-            _dropDownArrowUp.SetActive(true);
-            _dropDownArrowDown.SetActive(false);
-        }
-        else
-        {
-            _dropDownArrowUp.SetActive(false);
-            _dropDownArrowDown.SetActive(true);
-        }
-    }
-    */
-
     private void ChangeDropDownValue(int value)
     {
         switch (value)
