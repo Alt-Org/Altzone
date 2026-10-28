@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace Altzone.Scripts.Language
 {
-    [RequireComponent(typeof(TMP_Text))]
+    [RequireComponent(typeof(TMP_Text)), ExecuteAlways]
     public class TextLanguageSelector : MonoBehaviour
     {
         [SerializeField, TextArea(1, 10)] protected string _finnishText;
@@ -78,7 +78,7 @@ namespace Altzone.Scripts.Language
 
             if (EditorGUI.EndChangeCheck())
             {
-                _script.EditorTextSet(LanguageType.Finnish);
+                _script.EditorTextSet(Localization.Language);
             }
         }
     }
