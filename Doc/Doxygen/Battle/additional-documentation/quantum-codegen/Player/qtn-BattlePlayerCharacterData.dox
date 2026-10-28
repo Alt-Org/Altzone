@@ -18,7 +18,7 @@
 ///
 /// See [{Player Character Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour) for more info.
 ///
-/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+/// @bigtext{Generated from @ref BattlePlayerCharacterData.qtn}
 
 /// @var Quantum::BattlePlayerSpawnBehaviour Quantum::BattlePlayerSpawnBehaviour::DefaultPosition
 /// <summary>Character spawns in the position defined in the arena spec.</summary>
@@ -39,7 +39,7 @@
 /// [{Player Overview}](#page-concepts-player-overview)  
 /// [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview)
 ///
-/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+/// @bigtext{Generated from @ref BattlePlayerCharacterData.qtn}
 
 /// @anchor PlayerID
 /// @name Player's refs and IDs
@@ -205,7 +205,7 @@
 /// Template for creating player character entity.
 /// </summary>
 ///
-/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+/// @bigtext{Generated from @ref BattlePlayerCharacterData.qtn}
 
 /// @var int Quantum::BattlePlayerCharacterDataTemplateQComponent::GridExtendTop
 /// <summary>How many GridCells the character extends above the center heart position.</summary>

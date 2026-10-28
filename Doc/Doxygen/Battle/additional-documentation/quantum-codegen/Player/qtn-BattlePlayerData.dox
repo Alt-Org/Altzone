@@ -9,76 +9,195 @@
 
 // ---------------------------------------------------------------------------------------------------- //
 
+// Using experimental formatting
+
 /// @struct Quantum::BattlePlayerData
 /// <summary>
 /// Contains the player's data.
 /// </summary>
 ///
-/// @bigtext{Generated from @ref BattleHandleLink.qtn}
+/// @bigtext{Generated from @ref BattlePlayerData.qtn}  
+/// @bigtext{Extended in @ref BattlePlayerData.cs}
+///
+// {
+    /// @var PlayerRef Quantum::BattlePlayerData::PRef
+    /// <summary>
+    /// PlayerRef used to identify the player in %Quantum.  
+    /// { @clink{Gameplay Level:Quantum.BattlePlayerData.Ref.PRef} access, **Low Level** modification }
+    /// </summary>
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.
 
-/// @var PlayerRef Quantum::BattlePlayerData::PRef
-/// <summary>PlayerRef used to identify the player.</summary>
-///
-/// @var BattlePlayerSlot Quantum::BattlePlayerData::Slot
-/// <summary>Which PlayerSlot the player is on.</summary>
-///
-/// @var BattleTeamNumber Quantum::BattlePlayerData::Team
-/// <summary>Which team the player is on.</summary>
-///
-/// @var bool Quantum::BattlePlayerData::IsBot
-/// <summary>Whether the player is a bot or not.</summary>
-///
-/// @var bool Quantum::BattlePlayerData::IsAbandoned
-/// <summary>Whether the player has abandoned the game or not.</summary>
+    /// @var BattlePlayerSlot Quantum::BattlePlayerData::Slot
+    /// <summary>
+    /// Which PlayerSlot the player is in.  
+    /// { @clink{Gameplay Level:Quantum.BattlePlayerData.Ref.Slot} access, **Low Level** modification }
+    /// </summary>
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.  
+    /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.
 
-/// @var BattlePlayerPlayState Quantum::BattlePlayerData::PlayState
-/// <summary>The player's current play state.</summary>
+    /// @var BattleTeamNumber Quantum::BattlePlayerData::Team
+    /// <summary>
+    /// Which Team the player is on.  
+    /// { @clink{Gameplay Level:Quantum.BattlePlayerData.Ref.Team} access, **Low Level** modification }
+    /// </summary>
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.  
+    /// See [{Player Teams}](#page-concepts-player-slots-teams) for more info.
 
-/// @var bool Quantum::BattlePlayerData::StateAllowCharacterSwapping
-/// <summary>Whether character swapping is allowed or not.</summary>
-///
-/// @var bool Quantum::BattlePlayerData::StatePlayerGiveUp
-/// <summary>Whether the player has given up or not.</summary>
-///
-/// @var FrameTimer Quantum::BattlePlayerData::StateRespawnTimer
-/// <summary>Player's respawn timer.</summary>
+    /// @var bool Quantum::BattlePlayerData::IsBot
+    /// <summary>
+    /// Whether the player is a bot or not.  
+    /// { @clink{Gameplay Level:Quantum.BattlePlayerData.Ref.IsBot} access, **Low Level** modification }
+    /// </summary>
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.
 
-/// @var int Quantum::BattlePlayerData::SelectedCharacterNumber
-/// <summary>Player's currently selected character's character number.</summary>
-///
-/// @var BattleEntityID Quantum::BattlePlayerData::CharacterEntityGroupID
-/// <summary>Character's EntityGroupID.</summary>
-///
-/// @var array Quantum::BattlePlayerData::CharacterDefaultSpawnPositions
-/// <summary>
-/// Array of default spawn positions of each character.
-/// Public getter for internal @cref{Quantum.BattlePlayerData,_CharacterDefaultSpawnPositions_} array.
-/// </summary>
+    /// @var bool Quantum::BattlePlayerData::IsAbandoned
+    /// <summary>
+    /// Whether the player has abandoned the game or not.  
+    /// { @clink{Gameplay Level:Quantum.BattlePlayerData.Ref.IsAbandoned} access, **Low Level** modification }
+    /// </summary>
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.
 
-/// @var array Quantum::BattlePlayerData::ShieldEntityGroupIDs
-/// <summary>
-/// Array of entity group IDs for all shields of this player.
-/// Public getter for internal @cref{Quantum.BattlePlayerData,_ShieldEntityGroupIDs_} array.
-/// </summary>
+    /// @var BattlePlayerPlayState Quantum::BattlePlayerData::PlayState
+    /// <summary>
+    /// The player's current play state.  
+    /// { @clink{Gameplay Level:Quantum.BattlePlayerData.Ref.PlayState} access, **Low Level** modification }
+    /// </summary>
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.  
+    /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.
 
-/// @anchor PrivateArrays
-/// @name Private fixed arrays
-/// @{
-/// @var Byte Quantum.BattlePlayerData::_CharacterDefaultSpawnPositions_
-/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerData,CharacterDefaultSpawnPositions}</summary>
-///
-/// @var Byte Quantum.BattlePlayerData::_ShieldEntityGroupIDs_
-/// <summary>Private internal array, access through @cref{Quantum.BattlePlayerData,ShieldEntityGroupIDs}</summary>
-/// @}
+    /// @anchor BattlePlayerData-StateFields
+    /// @name State Fields
+    /// @{
 
-/// @name Quantum Built-in
-/// @{
-///
-/// @var Int32 Quantum::BattlePlayerData::SIZE
-/// @var Int32 Quantum::BattlePlayerData::ALIGNMENT
-///
-/// @fn Int32 Quantum::BattlePlayerData::GetHashCode
-///
-/// @fn void Quantum::BattlePlayerData::Serialize
-///
-/// @}
+    /// @var bool Quantum::BattlePlayerData::StateAllowCharacterSwapping
+    /// <summary>
+    /// Whether character swapping is allowed or not.  
+    /// { @clink{Gameplay Level:Quantum.BattlePlayerData.Ref.StateAllowCharacterSwapping} access and modification }
+    /// </summary>
+    ///
+    /// Part of @ref BattlePlayerData-StateFields "State Fields"
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.
+
+    /// @var bool Quantum::BattlePlayerData::StatePlayerGiveUp
+    /// <summary>
+    /// Whether the player has given up or not.  
+    /// { @clink{Gameplay Level:Quantum.BattlePlayerData.Ref.StatePlayerGiveUp} access and modification }
+    /// </summary>
+    ///
+    /// Part of @ref BattlePlayerData-StateFields "State Fields"
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.
+
+    /// @var FrameTimer Quantum::BattlePlayerData::StateRespawnTimer
+    /// <summary>
+    /// Player's respawn timer.  
+    /// { @clink{Gameplay Level:Quantum.BattlePlayerData.Ref.StateRespawnTimer} access and modification }
+    /// </summary>
+    ///
+    /// Part of @ref BattlePlayerData-StateFields "State Fields"
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.
+
+    /// @}
+    //  END State Fields
+
+    /// @anchor BattlePlayerData-CharacterFields
+    /// @name Character Fields
+    /// @{
+
+    /// @var int Quantum::BattlePlayerData::SelectedCharacterNumber
+    /// <summary>
+    /// Player's currently selected character's character number.  
+    /// { @clink{Gameplay Level:Quantum.BattlePlayerData.Ref.SelectedCharacterNumber} access, **Low Level** modification }
+    /// </summary>
+    ///
+    /// Part of @ref BattlePlayerData-CharacterFields "Character Fields"
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.  
+    /// See [{Player Character Number}](#page-concepts-player-character-entity-character-number) for more info.
+
+    /// @var BattleEntityID Quantum::BattlePlayerData::CharacterEntityGroupID
+    /// <summary>
+    /// Character's EntityGroupID.  
+    /// { **Low Level** only }
+    /// </summary>
+    ///
+    /// Part of @ref BattlePlayerData-CharacterFields "Character Fields"
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.  
+    /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.  
+    /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
+
+    /// @}
+    //  END Character Fields
+
+    /// @anchor BattlePlayerData-CharacterProperties
+    /// @name Character Properties
+    /// @{
+
+    /// @var array Quantum::BattlePlayerData::CharacterDefaultSpawnPositions
+    /// <summary>
+    /// Array of default spawn positions of each character.  
+    /// { **Low Level** only }  
+    /// Public getter for internal @cref{Quantum.BattlePlayerData,_CharacterDefaultSpawnPositions_} array.
+    /// </summary>
+    ///
+    /// Part of @ref BattlePlayerData-CharacterProperties "Character Properties"
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.
+
+    /// @}
+    //  END Character Properties
+
+    /// @anchor BattlePlayerData-ShieldProperties
+    /// @name Shield Properties
+    /// @{
+
+    /// @var array Quantum::BattlePlayerData::ShieldEntityGroupIDs
+    /// <summary>
+    /// Array of entity group IDs for all shields of this player.  
+    /// { **Low Level** only }  
+    /// Public getter for internal @cref{Quantum.BattlePlayerData,_ShieldEntityGroupIDs_} array.
+    /// </summary>
+    ///
+    /// Part of @ref BattlePlayerData-ShieldProperties "Shield Properties"
+    ///
+    /// See [{Player Data}](#page-concepts-player-data) for more info.  
+    /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.  
+    /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
+
+    /// @}
+    //  END Shield Properties
+
+    /// @anchor BattlePlayerData-PrivateArrays
+    /// @name Private fixed arrays
+    /// @{
+
+    /// @var Byte Quantum.BattlePlayerData::_CharacterDefaultSpawnPositions_
+    /// <summary>Private internal array, access through @cref{Quantum.BattlePlayerData,CharacterDefaultSpawnPositions}</summary>
+
+    /// @var Byte Quantum.BattlePlayerData::_ShieldEntityGroupIDs_
+    /// <summary>Private internal array, access through @cref{Quantum.BattlePlayerData,ShieldEntityGroupIDs}</summary>
+
+    /// @}
+    //  END Private fixed arrays
+
+    /// @name Quantum Built-in
+    /// @{
+    ///
+    /// @var Int32 Quantum::BattlePlayerData::SIZE
+    /// @var Int32 Quantum::BattlePlayerData::ALIGNMENT
+    ///
+    /// @fn Int32 Quantum::BattlePlayerData::GetHashCode
+    ///
+    /// @fn void Quantum::BattlePlayerData::Serialize
+    ///
+    /// @}
+// }

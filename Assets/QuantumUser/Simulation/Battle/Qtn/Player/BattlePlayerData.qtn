@@ -1,20 +1,22 @@
 struct BattlePlayerData
 {
-    PlayerRef        PRef;
-    BattlePlayerSlot Slot;
-    BattleTeamNumber Team;
-    bool             IsBot;
-    bool             IsAbandoned;
-
+    PlayerRef             PRef;
+    BattlePlayerSlot      Slot;
+    BattleTeamNumber      Team;
+    bool                  IsBot;
+    bool                  IsAbandoned;
     BattlePlayerPlayState PlayState;
 
+    // State
     bool       StateAllowCharacterSwapping;
     bool       StatePlayerGiveUp;
     FrameTimer StateRespawnTimer;
 
+    // Character
     int                                                 SelectedCharacterNumber;
     BattleEntityID                                      CharacterEntityGroupID;
     array<FPVector2>[BATTLE_PLAYER_CHARACTER_MAX_COUNT] CharacterDefaultSpawnPositions;
 
+    // Shield
     array<BattleEntityID>[BATTLE_PLAYER_CHARACTER_MAX_COUNT] ShieldEntityGroupIDs;
 }
