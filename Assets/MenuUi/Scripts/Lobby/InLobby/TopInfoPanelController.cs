@@ -24,15 +24,15 @@ namespace MenuUi.Scripts.Lobby.InLobby
         }
         public string[] LobbyText
         {
-            set => _lobbyText.SetText(SettingsCarrier.Instance.Language, value);
+            set => _lobbyText.SetText(Localization.Language, value);
         }
         public string PlayerCountText
         {
-            set => _playerCountText.SetText(SettingsCarrier.Instance.Language, new string[1] { value });
+            set => _playerCountText.SetText(Localization.Language, new string[1] { value });
         }
         public string MatchmakingCountText
         {
-            set => _matchmakingCountText.SetText(SettingsCarrier.Instance.Language, new string[1] { value });
+            set => _matchmakingCountText.SetText(Localization.Language, new string[1] { value });
         }
 
         public void Reset()

@@ -40,9 +40,9 @@ namespace Altzone.Scripts.ReferenceSheets
         /// <returns>Class name as string.</returns>
         public string GetName(CharacterClassType classType)
         {
-            return SettingsCarrier.Instance.Language switch
+            return Localization.Language switch
             {
-                SettingsCarrier.LanguageType.Finnish => classType switch
+                LanguageType.Finnish => classType switch
                 {
                     CharacterClassType.Desensitizer => _iraAvatar.NameFinnish,
                     CharacterClassType.Trickster => _avaritiaAvatar.NameFinnish,
@@ -53,7 +53,7 @@ namespace Altzone.Scripts.ReferenceSheets
                     CharacterClassType.Intellectualizer => _superbiaAvatar.NameFinnish,
                     _ => "No class name",
                 },
-                SettingsCarrier.LanguageType.English => classType switch
+                LanguageType.English => classType switch
                 {
                     CharacterClassType.Desensitizer => _iraAvatar.NameEnglish,
                     CharacterClassType.Trickster => _avaritiaAvatar.NameEnglish,
@@ -177,9 +177,9 @@ namespace Altzone.Scripts.ReferenceSheets
         /// <returns>Class name as string.</returns>
         public string GetDescription(CharacterClassType classType)
         {
-            return SettingsCarrier.Instance.Language switch
+            return Localization.Language switch
             {
-                SettingsCarrier.LanguageType.Finnish => classType switch
+                LanguageType.Finnish => classType switch
                 {
                     CharacterClassType.Desensitizer => _iraAvatar.DescFinnish,
                     CharacterClassType.Trickster => _avaritiaAvatar.DescFinnish,
@@ -190,7 +190,7 @@ namespace Altzone.Scripts.ReferenceSheets
                     CharacterClassType.Intellectualizer => _superbiaAvatar.DescFinnish,
                     _ => "No class description",
                 },
-                SettingsCarrier.LanguageType.English => classType switch
+                LanguageType.English => classType switch
                 {
                     CharacterClassType.Desensitizer => _iraAvatar.DescEnglish,
                     CharacterClassType.Trickster => _avaritiaAvatar.DescEnglish,

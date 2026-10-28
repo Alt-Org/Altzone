@@ -131,11 +131,11 @@ namespace Altzone.Scripts.ModelV2.Internal
             get
             {
                 if(SettingsCarrier.Instance == null) return FinnishName;
-                switch (SettingsCarrier.Instance.Language)
+                switch (Localization.Language)
                 {
-                    case SettingsCarrier.LanguageType.Finnish:
+                    case LanguageType.Finnish:
                         return FinnishName;
-                    case SettingsCarrier.LanguageType.English:
+                    case LanguageType.English:
                         return EnglishName;
                     default:
                         return FinnishName;
@@ -147,11 +147,11 @@ namespace Altzone.Scripts.ModelV2.Internal
         {
             get
             {
-                switch (SettingsCarrier.Instance.Language)
+                switch (Localization.Language)
                 {
-                    case SettingsCarrier.LanguageType.Finnish:
+                    case LanguageType.Finnish:
                         return CharacterDescriptionFinnish;
-                    case SettingsCarrier.LanguageType.English:
+                    case LanguageType.English:
                         return CharacterDescriptionEnglish;
                     default:
                         return FinnishName;
@@ -162,11 +162,11 @@ namespace Altzone.Scripts.ModelV2.Internal
         {
             get
             {
-                switch (SettingsCarrier.Instance.Language)
+                switch (Localization.Language)
                 {
-                    case SettingsCarrier.LanguageType.Finnish:
+                    case LanguageType.Finnish:
                         return CharacterShortDescriptionFinnish;
-                    case SettingsCarrier.LanguageType.English:
+                    case LanguageType.English:
                         return CharacterShortDescriptionEnglish;
                     default:
                         return CharacterShortDescriptionFinnish;
@@ -178,11 +178,11 @@ namespace Altzone.Scripts.ModelV2.Internal
         {
             get
             {
-                switch (SettingsCarrier.Instance.Language)
+                switch (Localization.Language)
                 {
-                    case SettingsCarrier.LanguageType.Finnish:
+                    case LanguageType.Finnish:
                         return CharacterAbilityDescriptionFinnish;
-                    case SettingsCarrier.LanguageType.English:
+                    case LanguageType.English:
                         return CharacterAbilityDescriptionEnglish;
                     default:
                         return CharacterAbilityDescriptionFinnish;

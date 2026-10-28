@@ -80,12 +80,12 @@ public class ConfirmationPopupHandler : MonoBehaviour
             _acceptButton.onClick.RemoveAllListeners();
             _acceptButton.onClick.AddListener(() => BuyFurniturePiece());
 
-            switch (SettingsCarrier.Instance.Language)
+            switch (Localization.Language)
             {
-                case SettingsCarrier.LanguageType.Finnish:
+                case LanguageType.Finnish:
                     _confirmText.SetText("Haluatko ostaa tämän huonekalun?");
                     break;
-                case SettingsCarrier.LanguageType.English:
+                case LanguageType.English:
                     _confirmText.SetText("Are you sure you want to buy this item?");
                     break;
                 default:
@@ -98,12 +98,12 @@ public class ConfirmationPopupHandler : MonoBehaviour
             _acceptButton.onClick.RemoveAllListeners();
             _acceptButton.onClick.AddListener(() => CreatePollPopup());
 
-            switch (SettingsCarrier.Instance.Language)
+            switch (Localization.Language)
             {
-                case SettingsCarrier.LanguageType.Finnish:
+                case LanguageType.Finnish:
                     _confirmText.SetText("Haluatko äänestää tästä huonekalusta?");
                     break;
-                case SettingsCarrier.LanguageType.English:
+                case LanguageType.English:
                     _confirmText.SetText("Do you want to vote for this item?");
                     break;
                 default:
@@ -148,12 +148,12 @@ public class ConfirmationPopupHandler : MonoBehaviour
         _acceptButton.onClick.AddListener(() => BuyAvatarPiece());
         _declineButton.onClick.RemoveAllListeners();
         _declineButton.onClick.AddListener(() => ClosePopup());
-        switch (SettingsCarrier.Instance.Language)
+        switch (Localization.Language)
         {
-            case SettingsCarrier.LanguageType.Finnish:
+            case LanguageType.Finnish:
                 _confirmText.SetText("Haluatko ostaa tämän personointipalan?");
                 break;
-            case SettingsCarrier.LanguageType.English:
+            case LanguageType.English:
                 _confirmText.SetText("Do you want to buy this personification piece?");
                 break;
             default:
@@ -183,12 +183,12 @@ public class ConfirmationPopupHandler : MonoBehaviour
 
         
 
-        switch (SettingsCarrier.Instance.Language)
+        switch (Localization.Language)
         {
-            case SettingsCarrier.LanguageType.Finnish:
+            case LanguageType.Finnish:
                 _confirmText.SetText("Haluatko varmasti aloittaa äänestyksen tästä huonekalusta?\n\nHuom. Tämä ei tällä hetkellä luo vielä oikeaa äänestystä.");
                 break;
-            case SettingsCarrier.LanguageType.English:
+            case LanguageType.English:
                 _confirmText.SetText("Are you sure you want to start a vote for this item?\n\nNote. This doesn't yet start an actual proper vote.");
                 break;
             default:

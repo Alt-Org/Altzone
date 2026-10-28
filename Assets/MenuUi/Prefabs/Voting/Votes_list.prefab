@@ -502,6 +502,7 @@ MonoBehaviour:
     the shop or a change in your Stonecastle community\u2019s settings, they are
     decided here \u2014 democratically.\r\nBe the first to start a vote and lead
     your community forward!"
+  _textField: {fileID: 0}
 --- !u!1 &2536955498331057612
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,6 +1105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _finnishText: "Ei Viel\xE4 \xC4\xE4nestetty"
   _englishText: Not Yet Voted
+  _textField: {fileID: 0}
 --- !u!1 &3600083274003818494
 GameObject:
   m_ObjectHideFlags: 0
@@ -1751,6 +1753,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _finnishText: "Ei Menneit\xE4 \xC4\xE4nestyksi\xE4"
   _englishText: No Past Polls
+  _textField: {fileID: 0}
 --- !u!1 &5147840253265943783
 GameObject:
   m_ObjectHideFlags: 0
@@ -2006,6 +2009,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _finnishText: "\xC4\xE4nestetty"
   _englishText: Voted
+  _textField: {fileID: 0}
 --- !u!1 &5615737965878994850
 GameObject:
   m_ObjectHideFlags: 0
@@ -2812,6 +2816,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _finnishText: Listaukset
   _englishText: Listings
+  _textField: {fileID: 0}
 --- !u!1001 &6914930772569840661
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4594,7 +4599,7 @@ PrefabInstance:
     - target: {fileID: 5905764035603499003, guid: ffc3c1b8d099b8d0b9796fec497ba27a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 639.77496
       objectReference: {fileID: 0}
     - target: {fileID: 5905764035603499003, guid: ffc3c1b8d099b8d0b9796fec497ba27a,
         type: 3}
@@ -5071,7 +5076,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8506362394175478692, guid: 6afdfa9399c382f64863480b0add4507,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4782037915312117901}
   m_SourcePrefab: {fileID: 100100000, guid: 6afdfa9399c382f64863480b0add4507, type: 3}
 --- !u!114 &17240044826893787 stripped
 MonoBehaviour:
@@ -5091,6 +5100,39 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8865536342362932876}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &937907416862416168 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8506362394175478692, guid: 6afdfa9399c382f64863480b0add4507,
+    type: 3}
+  m_PrefabInstance: {fileID: 8865536342362932876}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4782037915312117901
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937907416862416168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: 
+  _englishText: 
+  _textField: {fileID: 3400219766425104180}
+--- !u!114 &3400219766425104180 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6068802293260380600, guid: 6afdfa9399c382f64863480b0add4507,
+    type: 3}
+  m_PrefabInstance: {fileID: 8865536342362932876}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937907416862416168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5464236341991877446 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3520803720712383946, guid: 6afdfa9399c382f64863480b0add4507,

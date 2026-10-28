@@ -30,9 +30,9 @@ namespace MenuUi.Scripts.Lobby
         {
             get
             {
-                if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if(Localization.Language is LanguageType.Finnish)
                     return _searchingForRoomTextFI;
-                else if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if(Localization.Language is LanguageType.English)
                     return _searchingForRoomTextEN;
                 else
                     return _searchingForRoomTextFI;
@@ -43,9 +43,9 @@ namespace MenuUi.Scripts.Lobby
         {
             get
             {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if (Localization.Language is LanguageType.Finnish)
                     return _joiningRoomTextFI;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if (Localization.Language is LanguageType.English)
                     return _joiningRoomTextEN;
                 else
                     return _joiningRoomTextFI;
@@ -56,9 +56,9 @@ namespace MenuUi.Scripts.Lobby
         {
             get
             {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if (Localization.Language is LanguageType.Finnish)
                     return _matchStartingTextFI;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if (Localization.Language is LanguageType.English)
                     return _matchStartingTextEN;
                 else
                     return _matchStartingTextFI;

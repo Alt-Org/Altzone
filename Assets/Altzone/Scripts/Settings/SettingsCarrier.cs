@@ -23,14 +23,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         sound
     }
 
-    public enum LanguageType
-    {
-        None,
-        Finnish,
-        English,
-        Swedish
-    }
-
     public enum TextSize
     {
         Small,
@@ -104,7 +96,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public static event TopBarChanged OnTopBarChanged;
 
     public delegate void LanguageChanged(LanguageType language);
-
     public static event LanguageChanged OnLanguageChanged;
 
     //Events for ParentalControl
@@ -180,20 +171,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public int TextSizeSmall = 22;
     public int TextSizeMedium = 26;
     public int TextSizeLarge = 30;
-
-    private LanguageType _language = LanguageType.None;
-
-    public LanguageType Language
-    {
-        get { return _language; }
-        set
-        {
-            if (value == _language) return;
-            _language = value;
-            PlayerPrefs.SetString("LanguageType", ParseLanguage(value));
-            OnLanguageChanged?.Invoke(_language);
-        }
-    }
 
     private TextSize _textSize;
 
@@ -487,8 +464,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         Application.targetFrameRate =
             PlayerPrefs.GetInt("TargetFrameRate", (int)Screen.currentResolution.refreshRateRatio.value);
         mainMenuWindowIndex = 0;
-
-        _language = ParseLanguage(PlayerPrefs.GetString("LanguageType", ""));
 
         _textSize = (TextSize)PlayerPrefs.GetInt("TextSize", 1);
         _showButtonLabels = (PlayerPrefs.GetInt("showButtonLabels", 1) == 1);

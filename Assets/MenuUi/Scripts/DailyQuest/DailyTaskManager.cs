@@ -402,7 +402,7 @@ public class DailyTaskManager : AltMonoBehaviour
         if (_currentTask == null) return;
 
         PopupData data = new(PopupData.PopupDataType.CancelTask);
-        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        if (Localization.Language == LanguageType.Finnish)
         {
             ShowPopupAndHandleResponse("Haluatko peruuttaa nykyisen tehtävän?", data);
         }

@@ -603,10 +603,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
         {
             get
             {
-                switch (SettingsCarrier.Instance.Language)
+                switch (Localization.Language)
                 {
-                    case SettingsCarrier.LanguageType.Finnish: return _finnishConflictText;
-                    case SettingsCarrier.LanguageType.English: return _englishConflictText;
+                    case LanguageType.Finnish: return _finnishConflictText;
+                    case LanguageType.English: return _englishConflictText;
                     default: return _finnishConflictText;
                 }
             }

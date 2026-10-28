@@ -8,7 +8,7 @@ public class RandomQuestionData
     {
         get
         {
-            return SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+            return Localization.Language == LanguageType.English
                 ? _englishQuestion : _question;      
         }
     }
@@ -25,7 +25,7 @@ public class RandomQuestionAnswer
     {
         get
         {
-            return SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+            return Localization.Language == LanguageType.English
                 ? _englishAnswer : _answer;
         }
     }

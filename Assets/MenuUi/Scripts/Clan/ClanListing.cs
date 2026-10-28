@@ -39,7 +39,7 @@ public class ClanListing : MonoBehaviour
             ClanData clanData = new ClanData(_clan);
 
             _clanName.text = _clan.name;
-            _clanMembers.SetText(SettingsCarrier.Instance.Language,new string[1] { _clan.playerCount.ToString() });
+            _clanMembers.SetText(Localization.Language,new string[1] { _clan.playerCount.ToString() });
             // By default the lock image is locked
             if (_clan.isOpen)
             {

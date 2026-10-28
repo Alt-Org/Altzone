@@ -225,7 +225,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         }
     }
 
-    private void UpdateLanguage(SettingsCarrier.LanguageType language)
+    private void UpdateLanguage(LanguageType language)
     {
         _taskShort.text = _taskData.Title;
     }

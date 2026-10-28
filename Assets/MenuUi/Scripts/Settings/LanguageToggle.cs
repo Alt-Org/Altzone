@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static SettingsCarrier;
 
 public class LanguageToggle : MonoBehaviour
 {
@@ -16,15 +15,15 @@ public class LanguageToggle : MonoBehaviour
 
     private void OnEnable()
     {
-        _language = SettingsCarrier.Instance.Language;
+        _language = Localization.Language;
         UpdateSprite(_language);
         _button.onClick.AddListener(ChangeLanguage);
-        SettingsCarrier.OnLanguageChanged += UpdateSprite;
+        Localization.OnLanguageChanged += UpdateSprite;
     }
 
     private void OnDisable()
     {
-        SettingsCarrier.OnLanguageChanged -= UpdateSprite;
+        Localization.OnLanguageChanged -= UpdateSprite;
         _button.onClick.RemoveListener(ChangeLanguage);
     }
 
@@ -35,10 +34,10 @@ public class LanguageToggle : MonoBehaviour
 
     private void ChangeLanguage()
     {
-        _language = SettingsCarrier.Instance.Language;
+        _language = Localization.Language;
         int index = _languages.IndexOf(_language);
         index++;
         if(index >= _languages.Count) index = 0;
-        SettingsCarrier.Instance.Language = _languages[index];
+        Localization.Language = _languages[index];
     }
 }

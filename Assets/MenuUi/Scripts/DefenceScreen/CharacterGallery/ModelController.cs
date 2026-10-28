@@ -145,7 +145,7 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
-        private void LanguageChanged(SettingsCarrier.LanguageType language) => OnReloadRequested();
+        private void LanguageChanged(LanguageType language) => OnReloadRequested();
 
         private void OnReloadRequested()
         {

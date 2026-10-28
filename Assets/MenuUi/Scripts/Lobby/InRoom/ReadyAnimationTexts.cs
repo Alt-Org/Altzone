@@ -22,11 +22,11 @@ public class ReadyAnimationTexts : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
             {
                 return _textString1FI;
             }
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
             {
                 return _textString1EN;
             }
@@ -39,11 +39,11 @@ public class ReadyAnimationTexts : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
             {
                 return _textString2FI;
             }
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
             {
                 return _textString2EN;
             }
@@ -56,11 +56,11 @@ public class ReadyAnimationTexts : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
             {
                 return _textString3FI;
             }
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
             {
                 return _textString3EN;
             }
@@ -73,11 +73,11 @@ public class ReadyAnimationTexts : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
             {
                 return _textString4FI;
             }
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
             {
                 return _textString4EN;
             }

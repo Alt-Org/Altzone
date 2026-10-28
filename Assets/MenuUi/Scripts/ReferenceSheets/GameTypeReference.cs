@@ -70,11 +70,11 @@ namespace MenuUi.Scripts.ReferenceSheets
         {
             get
             {
-                switch (SettingsCarrier.Instance.Language)
+                switch (Localization.Language)
                 {
-                    case SettingsCarrier.LanguageType.Finnish:
+                    case LanguageType.Finnish:
                         return FinnishName;
-                    case SettingsCarrier.LanguageType.English:
+                    case LanguageType.English:
                         return EnglishName;
                     default:
                         return FinnishName;
@@ -86,11 +86,11 @@ namespace MenuUi.Scripts.ReferenceSheets
         {
             get
             {
-                switch (SettingsCarrier.Instance.Language)
+                switch (Localization.Language)
                 {
-                    case SettingsCarrier.LanguageType.Finnish:
+                    case LanguageType.Finnish:
                         return FinnishDescription;
-                    case SettingsCarrier.LanguageType.English:
+                    case LanguageType.English:
                         return EnglishDescription;
                     default:
                         return FinnishDescription;

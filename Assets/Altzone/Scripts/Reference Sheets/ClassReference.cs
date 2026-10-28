@@ -127,9 +127,9 @@ namespace Altzone.Scripts.ReferenceSheets
         /// <returns>Class name as string.</returns>
         public string GetName(CharacterClassType classType)
         {
-            return SettingsCarrier.Instance.Language switch
+            return Localization.Language switch
             {
-                SettingsCarrier.LanguageType.Finnish => classType switch
+                LanguageType.Finnish => classType switch
                 {
                     CharacterClassType.Desensitizer => _desensitizerNameFinnish,
                     CharacterClassType.Trickster => _tricksterNameFinnish,
@@ -140,7 +140,7 @@ namespace Altzone.Scripts.ReferenceSheets
                     CharacterClassType.Intellectualizer => _intellectualizerNameFinnish,
                     _ => "No class name",
                 },
-                SettingsCarrier.LanguageType.English => classType switch
+                LanguageType.English => classType switch
                 {
                     CharacterClassType.Desensitizer => _desensitizerNameEnglish,
                     CharacterClassType.Trickster => _tricksterNameEnglish,
@@ -326,9 +326,9 @@ namespace Altzone.Scripts.ReferenceSheets
         /// <returns>Class name icon.</returns>
         public Sprite GetNameIcon(CharacterClassType classType)
         {
-            return SettingsCarrier.Instance.Language switch
+            return Localization.Language switch
             {
-                SettingsCarrier.LanguageType.Finnish => classType switch
+                LanguageType.Finnish => classType switch
                 {
                     CharacterClassType.Desensitizer => _desensitizerNameIconFinnish,
                     CharacterClassType.Trickster => _tricksterNameIconFinnish,
@@ -339,7 +339,7 @@ namespace Altzone.Scripts.ReferenceSheets
                     CharacterClassType.Intellectualizer => _intellectualizerNameIconFinnish,
                     _ => null,
                 },
-                SettingsCarrier.LanguageType.English => classType switch
+                LanguageType.English => classType switch
                 {
                     CharacterClassType.Desensitizer => _desensitizerNameIconEnglish,
                     CharacterClassType.Trickster => _tricksterNameIconEnglish,
@@ -388,9 +388,9 @@ namespace Altzone.Scripts.ReferenceSheets
         /// <returns>Class name as string.</returns>
         public string GetDescription(CharacterClassType classType)
         {
-            return SettingsCarrier.Instance.Language switch
+            return Localization.Language switch
             {
-                SettingsCarrier.LanguageType.Finnish => classType switch
+                LanguageType.Finnish => classType switch
                 {
                     CharacterClassType.Desensitizer => _desensitizerDescFinnish,
                     CharacterClassType.Trickster => _tricksterDescFinnish,
@@ -401,7 +401,7 @@ namespace Altzone.Scripts.ReferenceSheets
                     CharacterClassType.Intellectualizer => _intellectualizerDescFinnish,
                     _ => "No class description",
                 },
-                SettingsCarrier.LanguageType.English => classType switch
+                LanguageType.English => classType switch
                 {
                     CharacterClassType.Desensitizer => _desensitizerDescEnglish,
                     CharacterClassType.Trickster => _tricksterDescEnglish,

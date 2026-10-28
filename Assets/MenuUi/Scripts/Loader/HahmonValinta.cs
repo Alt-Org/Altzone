@@ -76,7 +76,7 @@ public class HahmonValinta : AltMonoBehaviour
         _popupWindowHandler.gameObject.SetActive(true);
 
         // Update the character name text
-        characterNameText.SetText(SettingsCarrier.Instance.Language, new string[1] { ClassReference.Instance.GetName(classType) });
+        characterNameText.SetText(Localization.Language, new string[1] { ClassReference.Instance.GetName(classType) });
 
         // Log the selected character's name
         Debug.Log("Selected character: " + classType);

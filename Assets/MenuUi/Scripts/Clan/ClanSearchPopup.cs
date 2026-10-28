@@ -83,7 +83,7 @@ public class ClanSearchPopup : MonoBehaviour
 
         _clanName.text = clanData.Name;
         _clanDescription.text = clanData.Phrase;
-        _clanMembers.SetText(SettingsCarrier.Instance.Language, new string[1] { clan.playerCount + "/" + MaxClanMembers });
+        _clanMembers.SetText(Localization.Language, new string[1] { clan.playerCount + "/" + MaxClanMembers });
         _clanHeart.SetOtherClanColors(clanData);
 
         if (_clanOpenObject != null) _clanOpenObject.SetActive(clanData.IsOpen);

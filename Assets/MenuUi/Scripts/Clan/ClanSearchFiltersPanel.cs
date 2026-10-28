@@ -295,7 +295,7 @@ public class ClanSearchFiltersPanel : MonoBehaviour
     {
         if (_openText != null)
         {
-            if (SettingsCarrier.Instance.Language is not SettingsCarrier.LanguageType.English)
+            if (Localization.Language is not LanguageType.English)
             {
                 _openText.text = _isOpen ? "Avoin" : "Lukittu";
             }

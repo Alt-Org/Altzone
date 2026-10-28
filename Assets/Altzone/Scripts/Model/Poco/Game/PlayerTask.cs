@@ -172,7 +172,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             get
             {
                 if (_title == null) return string.Empty;
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                if (Localization.Language == LanguageType.English)
                     return _title.En;
                 return _title.Fi; // default Finnish
             }
@@ -183,7 +183,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             get
             {
                 if (_description == null) return string.Empty;
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                if (Localization.Language == LanguageType.English)
                     return _description.En;
                 return _description.Fi; // default Finnish
             }
@@ -194,7 +194,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             get
             {
                 if (_execution == null) return string.Empty;
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                if (Localization.Language == LanguageType.English)
                     return _execution.En;
                 return _execution.Fi; // default Finnish
             }
@@ -205,7 +205,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             get
             {
                 if (_content == null) return string.Empty;
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                if (Localization.Language == LanguageType.English)
                     return _content.En;
                 return _content.Fi; // default Finnish
             }
@@ -216,7 +216,7 @@ namespace Altzone.Scripts.Model.Poco.Game
             get
             {
                 if (_instruction == null) return string.Empty;
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                if (Localization.Language == LanguageType.English)
                     return _instruction.En;
                 return _instruction.Fi; // default Finnish
             }
@@ -226,7 +226,7 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             get
             {
-                return GameLiteracy.Get(_gameLiteracy, SettingsCarrier.Instance.Language);
+                return GameLiteracy.Get(_gameLiteracy, Localization.Language);
             }
         }
 

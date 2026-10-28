@@ -55,7 +55,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (ServerManager.Instance.Clan != null)
             {
-                _clanName.SetText(SettingsCarrier.Instance.Language,new string[1]{ServerManager.Instance.Clan.name});
+                _clanName.SetText(Localization.Language,new string[1]{ServerManager.Instance.Clan.name});
             }
             EditModeTrayResize();
             _audioManager = AudioManager.Instance;
@@ -158,16 +158,16 @@ namespace MenuUI.Scripts.SoulHome
                 _editButton.interactable = true;
                 _editTray.GetComponent<RectTransform>().pivot = new(0, 0.5f);
                 _editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _editButtonText.SetText("Avaa\nMuokkaustila");
-                else if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _editButtonText.SetText("Open\nModification mode");
+                if(Localization.Language is LanguageType.Finnish) _editButtonText.SetText("Avaa\nMuokkaustila");
+                else if(Localization.Language is LanguageType.English) _editButtonText.SetText("Open\nModification mode");
             }
             else
             {
                 //_editButton.interactable = false;
                 //_editTray.GetComponent<RectTransform>().pivot = new(1, 0.5f);
                 //_editTray.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _editButtonText.text = "Sulje\nMuokkaustila";
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _editButtonText.SetText("Close\nModification mode");
+                if (Localization.Language is LanguageType.Finnish) _editButtonText.text = "Sulje\nMuokkaustila";
+                else if (Localization.Language is LanguageType.English) _editButtonText.SetText("Close\nModification mode");
             }
         }
 

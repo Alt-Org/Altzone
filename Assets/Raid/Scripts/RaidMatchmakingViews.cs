@@ -91,7 +91,7 @@ public class RaidMatchmakingViews : MonoBehaviour
         bool playersFound = currentPlayers > 1;
         SetText(
             matchmakingTitleText,
-            GetCurrentLanguage() == SettingsCarrier.LanguageType.English
+            GetCurrentLanguage() == LanguageType.English
                 ? (playersFound ? "Players found" : "Searching for players")
                 : (playersFound ? "Pelaajia l\u00F6ydetty" : "Etsit\u00E4\u00E4n pelaajia"));
 
@@ -251,19 +251,19 @@ public class RaidMatchmakingViews : MonoBehaviour
             return;
         }
 
-        string format = GetCurrentLanguage() == SettingsCarrier.LanguageType.English ? englishText : finnishText;
+        string format = GetCurrentLanguage() == LanguageType.English ? englishText : finnishText;
         textField.text = string.Format(format, additions ?? Array.Empty<string>());
     }
 
-    private static SettingsCarrier.LanguageType GetCurrentLanguage()
+    private static LanguageType GetCurrentLanguage()
     {
-        SettingsCarrier.LanguageType language = SettingsCarrier.Instance != null
-            ? SettingsCarrier.Instance.Language
-            : SettingsCarrier.LanguageType.Finnish;
+        LanguageType language = Localization.Instance != null
+            ? Localization.Language
+            : LanguageType.Finnish;
 
-        return language == SettingsCarrier.LanguageType.English
-            ? SettingsCarrier.LanguageType.English
-            : SettingsCarrier.LanguageType.Finnish;
+        return language == LanguageType.English
+            ? LanguageType.English
+            : LanguageType.Finnish;
     }
 }
 

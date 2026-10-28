@@ -84,7 +84,7 @@ namespace MenuUi.Scripts.Loader
 
         private void CheckLanguage()
         {
-            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.None)
+            if (Localization.Language == LanguageType.None)
                 StartCoroutine(_languageNavigation.Navigate());
             else
             {
@@ -170,7 +170,7 @@ namespace MenuUi.Scripts.Loader
             {
                 if (AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                 {
-                    if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    if(Localization.Language is LanguageType.Finnish)
                         OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorFinnishDev);
                     else OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorEnglishDev);
                     if (_clanFetched)
@@ -180,7 +180,7 @@ namespace MenuUi.Scripts.Loader
                 }
                 else
                 {
-                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    if (Localization.Language is LanguageType.Finnish)
                         OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorFinnish);
                     else OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, _mqttErrorEnglish);
                 }

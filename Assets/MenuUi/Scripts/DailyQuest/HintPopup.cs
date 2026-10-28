@@ -56,7 +56,7 @@ public class HintPopup : MonoBehaviour
         HideConfirmScreen();
         _hintScreen.SetActive(true);
 
-        _hintTitle.SetText(SettingsCarrier.Instance.Language, new[] { _currentTask.Title });
+        _hintTitle.SetText(Localization.Language, new[] { _currentTask.Title });
 
         _hintDescription.text = _currentTask.Instruction;
         

@@ -4,6 +4,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Altzone.Scripts.Language
 {
@@ -14,28 +15,35 @@ namespace Altzone.Scripts.Language
         [SerializeField, TextArea(1, 10)] protected string _englishText;
 
         protected TMP_Text _textField;
+
+
         protected virtual void OnEnable()
         {
-            _textField = GetComponent<TMP_Text>();
-            SettingsCarrier.OnLanguageChanged += SetText;
-            SetText(SettingsCarrier.Instance.Language);
+            GetText();
+            Localization.OnLanguageChanged += SetText;
+            SetText(Localization.Language);
         }
 
-        protected virtual void SetText(SettingsCarrier.LanguageType language)
+        public void GetText()
         {
-            if(!_textField) _textField = GetComponent<TMP_Text>();
-            if (language is SettingsCarrier.LanguageType.Finnish) _textField.text = _finnishText;
-            else if (language is SettingsCarrier.LanguageType.English) _textField.text = _englishText;
+            _textField = GetComponent<TMP_Text>();
+        }
+
+        protected virtual void SetText(LanguageType language)
+        {
+            if(!_textField) GetText();
+            if (language is LanguageType.Finnish) _textField.text = _finnishText;
+            else if (language is LanguageType.English) _textField.text = _englishText;
             else _textField.text = _finnishText;
         }
 
-        public void EditorTextSet(SettingsCarrier.LanguageType language)
+        public void EditorTextSet(LanguageType language)
         {
             SetText(language);
         }
     }
-
-    [CustomEditor(typeof(TextLanguageSelector))]
+#if UNITY_EDITOR
+    [CustomEditor(typeof(TextLanguageSelector), true)]
     public class TextLanguageSelectorEditor : Editor
     {
         TextLanguageSelector _script;
@@ -65,9 +73,9 @@ namespace Altzone.Scripts.Language
 
             if (EditorGUI.EndChangeCheck())
             {
-                _script.EditorTextSet(SettingsCarrier.LanguageType.Finnish);
+                _script.EditorTextSet(LanguageType.Finnish);
             }
-
         }
     }
+#endif
 }

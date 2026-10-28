@@ -120,11 +120,11 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
         }
 
         //Language System
-        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+        if (Localization.Language is LanguageType.Finnish)
         {
             _textLanguageSelectorCaller.SetText("{} reaktiota");
         }
-        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+        else if (Localization.Language is LanguageType.English)
         {
             _textLanguageSelectorCaller.SetText("{} reactions");
         }
@@ -390,11 +390,11 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
                 _userInfo = _userInfo.OrderBy(m => m._order).ToList();
 
                 //Language System
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if (Localization.Language is LanguageType.Finnish)
                 {
                     _orderButtonText.text = "Vanha";
                 }
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if (Localization.Language is LanguageType.English)
                 {
                     _orderButtonText.text =  "Old";
                 }
@@ -407,11 +407,11 @@ public class ChatShowUsersPopUpData : AltMonoBehaviour
                 _userInfo = _userInfo.OrderByDescending(m => m._order).ToList();
 
                 //Language System
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if (Localization.Language is LanguageType.Finnish)
                 {
                     _orderButtonText.text = "Uusi";
                 }
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if (Localization.Language is LanguageType.English)
                 {
                     _orderButtonText.text = "New";
                 }

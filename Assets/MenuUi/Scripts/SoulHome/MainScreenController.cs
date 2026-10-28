@@ -353,16 +353,16 @@ namespace MenuUI.Scripts.SoulHome
         {
             _soulHomeTower.ResetChanges();
             GetTray().GetComponent<FurnitureTrayHandler>().ResetChanges();
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _soulHomeController.ShowInfoPopup("Muutokset palautettu");
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _soulHomeController.ShowInfoPopup("Changes reverted.");
+            if (Localization.Language is LanguageType.Finnish) _soulHomeController.ShowInfoPopup("Muutokset palautettu");
+            else if (Localization.Language is LanguageType.English) _soulHomeController.ShowInfoPopup("Changes reverted.");
         }
 
         public void SaveChanges()
         {
             _soulHomeTower.SaveChanges();
             GetTray().GetComponent<FurnitureTrayHandler>().SaveChanges();
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _soulHomeController.ShowInfoPopup("Muutokset tallennettu");
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _soulHomeController.ShowInfoPopup("Changes saved.");
+            if (Localization.Language is LanguageType.Finnish) _soulHomeController.ShowInfoPopup("Muutokset tallennettu");
+            else if (Localization.Language is LanguageType.English) _soulHomeController.ShowInfoPopup("Changes saved.");
 
             // Checks if the interior is matching
             string furnitureStyle = null;

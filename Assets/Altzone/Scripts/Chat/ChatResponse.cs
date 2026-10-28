@@ -34,9 +34,9 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             get
             {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if (Localization.Language is LanguageType.Finnish)
                     return _responseFI;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if (Localization.Language is LanguageType.English)
                     return _responseEN;
                 else
                     return _responseFI;

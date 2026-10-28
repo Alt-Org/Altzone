@@ -168,9 +168,9 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             get
             {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if (Localization.Language is LanguageType.Finnish)
                     return FinnishName;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if (Localization.Language is LanguageType.English)
                 {
                     if (string.IsNullOrEmpty(EnglishName)) return FinnishName;
                     return EnglishName;
@@ -183,9 +183,9 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             get
             {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if (Localization.Language is LanguageType.Finnish)
                     return SetNameFinnish;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if (Localization.Language is LanguageType.English)
                 {
                     if (string.IsNullOrEmpty(SetNameEnglish)) return SetNameFinnish;
                     return SetNameEnglish;
@@ -198,9 +198,9 @@ namespace Altzone.Scripts.ReferenceSheets
         {
             get
             {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if (Localization.Language is LanguageType.Finnish)
                     return FinnishArtisticDescription;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if (Localization.Language is LanguageType.English)
                 {
                     if (string.IsNullOrEmpty(EnglishArtisticDescription)) return FinnishArtisticDescription;
                     return EnglishArtisticDescription;

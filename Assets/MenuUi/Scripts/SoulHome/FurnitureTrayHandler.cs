@@ -59,14 +59,14 @@ namespace MenuUI.Scripts.SoulHome
             {
                 if (_category == 0) 
                 {
-                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Lattia";
-                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Floor";
+                    if (Localization.Language is LanguageType.Finnish) _categoryText.text = "Lattia";
+                    else if (Localization.Language is LanguageType.English) _categoryText.text = "Floor";
                     else _categoryText.text = "Lattia"; // Default to Finnish if language not set
                 }
                 else if (_category == 1) // Displays all
                 {
-                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Kaikki";
-                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "All";
+                    if (Localization.Language is LanguageType.Finnish) _categoryText.text = "Kaikki";
+                    else if (Localization.Language is LanguageType.English) _categoryText.text = "All";
                     else _categoryText.text = "Kaikki"; // Default to Finnish if language not set
                     if (_currentSelectedSet != null) // if has a set filter active
                     {
@@ -90,20 +90,20 @@ namespace MenuUI.Scripts.SoulHome
                 else if (_category == 2) { // Should display special - or frames on renovate mode
                     // Special items not implemented?
                     FillSelectionButtonList(filtered_list); // TODO - replace with special, currently shows nothing (empty list)
-                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Erikoiset";
-                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Special";
+                    if (Localization.Language is LanguageType.Finnish) _categoryText.text = "Erikoiset";
+                    else if (Localization.Language is LanguageType.English) _categoryText.text = "Special";
                     else _categoryText.text = "Erikoiset"; // Default to Finnish if language not set
                     _smartList.ScrollToStart(); // Reset FurnitureTray position
                     return;
                 }
                 else if (_category == 3) {
-                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Katto";
-                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Ceiling";
+                    if (Localization.Language is LanguageType.Finnish) _categoryText.text = "Katto";
+                    else if (Localization.Language is LanguageType.English) _categoryText.text = "Ceiling";
                     else _categoryText.text = "Katto"; // Default to Finnish if language not set
                 }
                 else if (_category == 4) {
-                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Seinät";
-                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Walls";
+                    if (Localization.Language is LanguageType.Finnish) _categoryText.text = "Seinät";
+                    else if (Localization.Language is LanguageType.English) _categoryText.text = "Walls";
                     else _categoryText.text = "Seinät"; // Default to Finnish if language not set
                 }
 
@@ -132,20 +132,20 @@ namespace MenuUI.Scripts.SoulHome
             else
             {
                 if (_category == 0) {
-                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Lattia";
-                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Floor";
+                    if (Localization.Language is LanguageType.Finnish) _categoryText.text = "Lattia";
+                    else if (Localization.Language is LanguageType.English) _categoryText.text = "Floor";
                     else _categoryText.text = "Lattia"; // Default to Finnish if language not set
                 }
                 //else if (_category == 1) Does not exist in renovate mode
                 else if (_category == 2) {
-                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Reunat";
-                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Frames";
+                    if (Localization.Language is LanguageType.Finnish) _categoryText.text = "Reunat";
+                    else if (Localization.Language is LanguageType.English) _categoryText.text = "Frames";
                     else _categoryText.text = "Reunat"; // Default to Finnish if language not set
                 }
                 //else if (_category == 3) Does not exist in renovate mode
                 else if (_category == 4) {
-                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Seinät";
-                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Walls";
+                    if (Localization.Language is LanguageType.Finnish) _categoryText.text = "Seinät";
+                    else if (Localization.Language is LanguageType.English) _categoryText.text = "Walls";
                     else _categoryText.text = "Seinät"; // Default to Finnish if language not set
                 }
             }
@@ -297,8 +297,8 @@ namespace MenuUI.Scripts.SoulHome
             if (!_isOnDecorateMode)
             {
                 _isOnDecorateMode = true;
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _modeText.text = "Sisustus";
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _modeText.text = "Decorate";
+                if (Localization.Language is LanguageType.Finnish) _modeText.text = "Sisustus";
+                else if (Localization.Language is LanguageType.English) _modeText.text = "Decorate";
                 else _modeText.text = "Sisustus"; // Default to Finnish if language not set
                 _decorateModeButtons.gameObject.SetActive(true);
                 _renovateModeButtons.gameObject.SetActive(false);
@@ -311,8 +311,8 @@ namespace MenuUI.Scripts.SoulHome
             else
             {
                 _isOnDecorateMode = false;
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _modeText.text = "Remontti";
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _modeText.text = "Renovation";
+                if (Localization.Language is LanguageType.Finnish) _modeText.text = "Remontti";
+                else if (Localization.Language is LanguageType.English) _modeText.text = "Renovation";
                 else _modeText.text = "Remontti"; // Default to Finnish if language not set
                 _decorateModeButtons.gameObject.SetActive(false);
                 _renovateModeButtons.gameObject.SetActive(true);

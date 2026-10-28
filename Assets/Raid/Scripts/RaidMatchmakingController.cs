@@ -1235,8 +1235,8 @@ public class RaidMatchmakingController : MonoBehaviour, IConnectionCallbacks, IL
 
     private static string GetLocalizedText(string finnishText, string englishText)
     {
-        return SettingsCarrier.Instance != null
-            && SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+        return Localization.Instance != null
+            && Localization.Language == LanguageType.English
                 ? englishText
                 : finnishText;
     }

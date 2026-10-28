@@ -44,9 +44,9 @@ public class DailyTaskSymbolicQuestionHandler : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
                 return _answerNoteBaseTextFI;
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            if (Localization.Language is LanguageType.English)
                 return _answerNoteBaseTextEN;
             else
                 return _answerNoteBaseTextFI;
@@ -57,9 +57,9 @@ public class DailyTaskSymbolicQuestionHandler : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
                 return _answerNoteCorrectTextFI;
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            if (Localization.Language is LanguageType.English)
                 return _answerNoteCorrectTextEN;
             else
                 return _answerNoteCorrectTextFI;
@@ -70,9 +70,9 @@ public class DailyTaskSymbolicQuestionHandler : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
                 return _answerNoteIncorrectTextFI;
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            if (Localization.Language is LanguageType.English)
                 return _answerNoteIncorrectTextEN;
             else
                 return _answerNoteIncorrectTextFI;

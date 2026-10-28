@@ -261,9 +261,9 @@ public static class AvatarPieceExtension
 {
     public static string GetString(this AvatarPiece gameMode)
     {
-        return SettingsCarrier.Instance.Language switch
+        return Localization.Language switch
         {
-            SettingsCarrier.LanguageType.English => gameMode switch
+            LanguageType.English => gameMode switch
             {
                 AvatarPiece.Hair => "Hair",
                 AvatarPiece.Eyes => "Eyes",
@@ -274,7 +274,7 @@ public static class AvatarPieceExtension
                 AvatarPiece.Hands => "Hands",
                 _ => ""
             },
-            SettingsCarrier.LanguageType.Finnish => gameMode switch
+            LanguageType.Finnish => gameMode switch
             {
                 AvatarPiece.Hair => "Hiukset",
                 AvatarPiece.Eyes => "Silmät",

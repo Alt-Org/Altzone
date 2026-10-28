@@ -72,8 +72,8 @@ namespace MenuUi.Scripts.Loader
 
         public void SetInfoText(LogInStatus type)
         {
-            switch (SettingsCarrier.Instance.Language) {
-                case SettingsCarrier.LanguageType.English:
+            switch (Localization.Language) {
+                case LanguageType.English:
                     switch (type)
                     {
                         case LogInStatus.LogIn:
@@ -111,7 +111,7 @@ namespace MenuUi.Scripts.Loader
                             break;
                     }
                     break;
-                case SettingsCarrier.LanguageType.Finnish:
+                case LanguageType.Finnish:
                 default:
                     switch (type)
                     {
@@ -185,12 +185,12 @@ namespace MenuUi.Scripts.Loader
                 yield return new WaitForSeconds(1);
                 i++;
                 if (i == 4) i = 1;
-                switch (SettingsCarrier.Instance.Language)
+                switch (Localization.Language)
                 {
-                    case SettingsCarrier.LanguageType.English:
+                    case LanguageType.English:
                         _loadingText.text = "Loading" + new string('.', i);
                         break;
-                    case SettingsCarrier.LanguageType.Finnish:
+                    case LanguageType.Finnish:
                     default:
                         _loadingText.text = "Ladataan" + new string('.', i);
                         break;

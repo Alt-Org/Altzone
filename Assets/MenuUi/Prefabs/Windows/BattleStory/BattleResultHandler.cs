@@ -83,22 +83,22 @@ public class BattleResultHandler : MonoBehaviour
     {
         if (result)
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
             {
                 _ownResultImage.sprite = _winImageFI;
             }
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
             {
                 _ownResultImage.sprite = _winImageEN;
             }
         }
         else
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
             {
                 _ownResultImage.sprite = _loseImageFI;
             }
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
             {
                 _ownResultImage.sprite = _loseImageEN;
             }

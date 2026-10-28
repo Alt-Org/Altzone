@@ -22,9 +22,9 @@ public class DailyTaskRecogniseSymbolic : DailyTaskLongPress
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
                 return _questionOption1Fi;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
                 return _questionOption1En;
             else
                 return _questionOption1Fi;
@@ -35,9 +35,9 @@ public class DailyTaskRecogniseSymbolic : DailyTaskLongPress
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
                 return _questionOption2Fi;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
                 return _questionOption2En;
             else
                 return _questionOption2Fi;
@@ -48,9 +48,9 @@ public class DailyTaskRecogniseSymbolic : DailyTaskLongPress
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
                 return _questionOption3Fi;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
                 return _questionOption3En;
             else
                 return _questionOption3Fi;

@@ -42,7 +42,7 @@ namespace MenuUI.Scripts
 
             gameObject.SetActive(true);
 
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
             {
                 if (type is PopupType.Exit)
                 {
@@ -67,7 +67,7 @@ namespace MenuUI.Scripts
                     _secondaryAcceptButtonText.SetText("Palauta Muutokset");
                 }
             }
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
             {
                 if (type is PopupType.Exit)
                 {

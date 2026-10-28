@@ -65,9 +65,9 @@ namespace MenuUI.Scripts.Jukebox
 
         public void SetIndicatorText(JukeboxDiskTextType textType)
         {
-            if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if(Localization.Language is LanguageType.Finnish)
                 _indicatorText.text = _indicatorTexts[(int)textType];
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
                 _indicatorText.text = _indicatorTextsEn[(int)textType];
             ToggleIndicatorHolder(true);
         }

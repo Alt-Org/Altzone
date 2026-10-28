@@ -77,9 +77,9 @@ namespace MenuUi.Scripts.Storage
         {
             get
             {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if (Localization.Language is LanguageType.Finnish)
                     return INVENTORY_EMPTY_TEXT_FI;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if (Localization.Language is LanguageType.English)
                     return INVENTORY_EMPTY_TEXT_EN;
                 else
                     return INVENTORY_EMPTY_TEXT_FI;
@@ -342,16 +342,16 @@ namespace MenuUi.Scripts.Storage
 
         private void SortStored() // A very much hardcoded system for sorting, language options contain a fallback if the chosen language is null
         {
-            var lang = SettingsCarrier.Instance.Language; // using helper might be a better way [switch (lang)],
+            var lang = Localization.Language; // using helper might be a better way [switch (lang)],
 
             switch (_sortingBy)
             {
                 case 0:
-                    if (lang == SettingsCarrier.LanguageType.Finnish)
+                    if (lang == LanguageType.Finnish)
                     {
                         _sortingByText.text = "Järjestetty: Aakkoset";
                     }
-                    else if (lang == SettingsCarrier.LanguageType.English)
+                    else if (lang == LanguageType.English)
                     {
                         _sortingByText.text = "Sorting: Alphabetical";
                     }
@@ -376,11 +376,11 @@ namespace MenuUi.Scripts.Storage
                     break;
 
                 case 1:
-                    if (lang == SettingsCarrier.LanguageType.Finnish)
+                    if (lang == LanguageType.Finnish)
                     {
                         _sortingByText.text = "Järjestetty: Arvo";
                     }
-                    else if (lang == SettingsCarrier.LanguageType.English)
+                    else if (lang == LanguageType.English)
                     {
                         _sortingByText.text = "Sorting: Value";
                     }
@@ -408,11 +408,11 @@ namespace MenuUi.Scripts.Storage
                     break;
 
                 case 2:
-                    if (lang == SettingsCarrier.LanguageType.Finnish)
+                    if (lang == LanguageType.Finnish)
                     {
                         _sortingByText.text = "Järjestetty: Paino";
                     }
-                    else if (lang == SettingsCarrier.LanguageType.English)
+                    else if (lang == LanguageType.English)
                     {
                         _sortingByText.text = "Sorting: Weight";
                     }
@@ -440,11 +440,11 @@ namespace MenuUi.Scripts.Storage
                     break;
 
                 case 3:
-                    if (lang == SettingsCarrier.LanguageType.Finnish)
+                    if (lang == LanguageType.Finnish)
                     {
                         _sortingByText.text = "Järjestetty: Harvinaisuus";
                     }
-                    else if (lang == SettingsCarrier.LanguageType.English)
+                    else if (lang == LanguageType.English)
                     {
                         _sortingByText.text = "Sorting: Rarity";
                     }
@@ -472,11 +472,11 @@ namespace MenuUi.Scripts.Storage
                     break;
 
                 case 4:
-                    if (lang == SettingsCarrier.LanguageType.Finnish)
+                    if (lang == LanguageType.Finnish)
                     {
                         _sortingByText.text = "Järjestetty: Linjasto";
                     }
-                    else if (lang == SettingsCarrier.LanguageType.English)
+                    else if (lang == LanguageType.English)
                     {
                         _sortingByText.text = "Sorting: Set";
                     }
@@ -518,7 +518,7 @@ namespace MenuUi.Scripts.Storage
             ScaleSprite(_furn, _icon.rectTransform);
 
             // Name
-            var lang = SettingsCarrier.Instance.Language;
+            var lang = Localization.Language;
 
             string setNameLocalized = _furn.SetName; // Localizing name
 
@@ -529,13 +529,13 @@ namespace MenuUi.Scripts.Storage
             _name.text = setNameLocalized + " " + furnitureNameLocalized;
 
             //Artists name
-            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language == LanguageType.Finnish)
             {
                 _artist.text = _furn.Info != null
                     ? "Suunnittelu: " + _furn.Info.ArtistName
                     : "Tuntematon suunnittelija";
             }
-            else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+            else if (Localization.Language == LanguageType.English)
             {
                 _artist.text = _furn.Info != null
                     ? "Design: " + _furn.Info.ArtistName

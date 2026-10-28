@@ -263,8 +263,8 @@ public class Raid_EventLog : MonoBehaviour
 
     private static bool UseEnglish()
     {
-        return SettingsCarrier.Instance != null
-            && SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English;
+        return Localization.Instance != null
+            && Localization.Language == LanguageType.English;
     }
 
 }

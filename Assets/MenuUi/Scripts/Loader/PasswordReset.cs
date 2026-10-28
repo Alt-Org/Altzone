@@ -47,8 +47,8 @@ public class PasswordReset : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR_PASSWORD_TOO_SHORT_FI;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR_PASSWORD_TOO_SHORT_EN;
+            if (Localization.Language is LanguageType.Finnish) return ERROR_PASSWORD_TOO_SHORT_FI;
+            else if (Localization.Language is LanguageType.English) return ERROR_PASSWORD_TOO_SHORT_EN;
             else return ERROR_PASSWORD_TOO_SHORT_FI;
         }
     }
@@ -56,8 +56,8 @@ public class PasswordReset : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR_DEFAULT_FI;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR_DEFAULT_EN;
+            if (Localization.Language is LanguageType.Finnish) return ERROR_DEFAULT_FI;
+            else if (Localization.Language is LanguageType.English) return ERROR_DEFAULT_EN;
             else return ERROR_DEFAULT_FI;
         }
     }
@@ -66,8 +66,8 @@ public class PasswordReset : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR400_FI;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR400_EN;
+            if (Localization.Language is LanguageType.Finnish) return ERROR400_FI;
+            else if (Localization.Language is LanguageType.English) return ERROR400_EN;
             else return ERROR400_FI;
         }
     }
@@ -76,8 +76,8 @@ public class PasswordReset : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR401_FI;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR401_EN;
+            if (Localization.Language is LanguageType.Finnish) return ERROR401_FI;
+            else if (Localization.Language is LanguageType.English) return ERROR401_EN;
             else return ERROR401_FI;
         }
     }
@@ -85,8 +85,8 @@ public class PasswordReset : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR404CONNECTION_FI;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR404CONNECTION_EN;
+            if (Localization.Language is LanguageType.Finnish) return ERROR404CONNECTION_FI;
+            else if (Localization.Language is LanguageType.English) return ERROR404CONNECTION_EN;
             else return ERROR404CONNECTION_FI;
         }
     }
@@ -94,8 +94,8 @@ public class PasswordReset : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR404MISSINGUSER_FI;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR404MISSINGUSER_EN;
+            if (Localization.Language is LanguageType.Finnish) return ERROR404MISSINGUSER_FI;
+            else if (Localization.Language is LanguageType.English) return ERROR404MISSINGUSER_EN;
             else return ERROR404MISSINGUSER_FI;
         }
     }
@@ -103,8 +103,8 @@ public class PasswordReset : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return ERROR500_FI;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return ERROR500_EN;
+            if (Localization.Language is LanguageType.Finnish) return ERROR500_FI;
+            else if (Localization.Language is LanguageType.English) return ERROR500_EN;
             else return ERROR500_FI;
         }
     }

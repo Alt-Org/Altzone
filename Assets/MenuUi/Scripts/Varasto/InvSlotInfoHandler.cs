@@ -37,11 +37,11 @@ public class InvSlotInfoHandler : MonoBehaviour
         if (_icon.sprite == null) _icon.sprite = furn.Sprite;
 
         // Name
-        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        if (Localization.Language == LanguageType.Finnish)
         {
             _topText.text = furn.VisibleName;
         }
-        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        else if (Localization.Language == LanguageType.English)
         {
             _topText.text = furn.Info != null ? furn.Info.EnglishName : furn.VisibleName;
         }
@@ -72,11 +72,11 @@ public class InvSlotInfoHandler : MonoBehaviour
         }
 
         // In Soul Home panel text
-        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        if (Localization.Language == LanguageType.Finnish)
         {
             _inSoulHomeText.text = "Sielunkodissa";
         }
-        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        else if (Localization.Language == LanguageType.English)
         {
             _inSoulHomeText.text = "In Soul Home";
         }
@@ -96,11 +96,11 @@ public class InvSlotInfoHandler : MonoBehaviour
         }
 
         // Marked for Selling panel text
-        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        if (Localization.Language == LanguageType.Finnish)
         {
             _markedForSellingText.text = "Myynnissä";
         }
-        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        else if (Localization.Language == LanguageType.English)
         {
             _markedForSellingText.text = "In Selling";
         }
@@ -111,11 +111,11 @@ public class InvSlotInfoHandler : MonoBehaviour
         _markedForSellingPanel.SetActive(furn.ClanFurniture.VotedToSell);
 
         // In Voting panel text
-        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        if (Localization.Language == LanguageType.Finnish)
         {
             _inVotingText.text = "Äänestyksessä";
         }
-        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        else if (Localization.Language == LanguageType.English)
         {
             _inVotingText.text = "In Voting";
         }

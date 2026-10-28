@@ -105,11 +105,11 @@ public class BattleEndController : MonoBehaviour
             _battleWinnerText.text = "Voitto";
             _battleWinnerText.color = Color.blue;
 
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
             {
                 animationClip = _victoryAnimationFI;
             }
-            else if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if(Localization.Language is LanguageType.English)
             {
                 animationClip = _victoryAnimationEN;
             }
@@ -119,11 +119,11 @@ public class BattleEndController : MonoBehaviour
             _battleWinnerText.text = "Häviö";
             _battleWinnerText.color = Color.red;
 
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
             {
                 animationClip = _defeatAnimationFI;
             }
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
             {
                 animationClip = _defeatAnimationEN;
             }

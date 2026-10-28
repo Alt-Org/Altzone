@@ -50,21 +50,21 @@ namespace MenuUi.Scripts.Settings
             switch (_settingsCarrier.Textsize)
             {
                 case TextSize.Small:
-                    if(_settingsCarrier.Language is LanguageType.Finnish)
+                    if(Localization.Language is LanguageType.Finnish)
                     _currentSize.text = "Pieni";
-                    else if (_settingsCarrier.Language is LanguageType.English)
+                    else if (Localization.Language is LanguageType.English)
                         _currentSize.text = "Small";
                     break;
                 case TextSize.Medium:
-                    if (_settingsCarrier.Language is LanguageType.Finnish)
+                    if (Localization.Language is LanguageType.Finnish)
                         _currentSize.text = "Keskikokoinen";
-                    else if (_settingsCarrier.Language is LanguageType.English)
+                    else if (Localization.Language is LanguageType.English)
                         _currentSize.text = "Medium";
                     break;
                 case TextSize.Large:
-                    if (_settingsCarrier.Language is LanguageType.Finnish)
+                    if (Localization.Language is LanguageType.Finnish)
                         _currentSize.text = "Suuri";
-                    else if (_settingsCarrier.Language is LanguageType.English)
+                    else if (Localization.Language is LanguageType.English)
                         _currentSize.text = "Large";
                     break;
             }

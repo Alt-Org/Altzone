@@ -13,13 +13,13 @@ namespace MenuUi.Scripts.AvatarEditor
 
         public void SetRandomSpeechBubbleText()
         {
-            SettingsCarrier.LanguageType language = SettingsCarrier.Instance.Language;
+            LanguageType language = Localization.Language;
 
-            if (language == SettingsCarrier.LanguageType.Finnish)
+            if (language == LanguageType.Finnish)
             {
                 _phraseList = _finnishPhraseList;
             }
-            else if (language == SettingsCarrier.LanguageType.English)
+            else if (language == LanguageType.English)
             {
                 _phraseList = _englishPhraseList;
             }

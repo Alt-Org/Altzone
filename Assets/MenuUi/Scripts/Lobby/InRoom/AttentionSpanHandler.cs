@@ -64,11 +64,11 @@ public class AttentionSpanHandler : MonoBehaviour
     {
         AnimationClip animationClip = null;
 
-        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+        if (Localization.Language is LanguageType.Finnish)
         {
             animationClip = _animationClip;
         }
-        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+        else if (Localization.Language is LanguageType.English)
         {
             animationClip = _animationClip;
         }

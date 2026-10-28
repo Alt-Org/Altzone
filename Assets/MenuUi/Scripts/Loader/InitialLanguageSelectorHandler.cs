@@ -5,8 +5,6 @@ using MenuUi.Scripts.Window;
 using UnityEngine;
 using UnityEngine.UI;
 
-using static SettingsCarrier;
-
 public class InitialLanguageSelectorHandler : MonoBehaviour
 {
     [SerializeField] private Button _finnishSelectButton;
@@ -29,7 +27,7 @@ public class InitialLanguageSelectorHandler : MonoBehaviour
 
     private void SetLanguage(LanguageType type)
     {
-        SettingsCarrier.Instance.Language = type;
+        Localization.Language = type;
         if (_navigation != null) StartCoroutine(_navigation.Navigate());
     }
 }

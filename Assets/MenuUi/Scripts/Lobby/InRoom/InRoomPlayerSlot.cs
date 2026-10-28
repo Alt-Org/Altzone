@@ -70,7 +70,7 @@ public class InRoomPlayerSlot : MonoBehaviour
         if (selectedCharacterIds == null)
         {
             _playerId = string.Empty;
-            if(SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+            if(Localization.Language == LanguageType.Finnish)
                 _playerName.SetText("Avoin paikka");
             else
                 _playerName.SetText("Free slot");
@@ -125,7 +125,7 @@ public class InRoomPlayerSlot : MonoBehaviour
     {
         if (_playerId == BOT_ID) return;
         _playerId = BOT_ID;
-        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        if (Localization.Language == LanguageType.Finnish)
             _playerName.SetText("Botti");
         else
             _playerName.SetText("Bot");

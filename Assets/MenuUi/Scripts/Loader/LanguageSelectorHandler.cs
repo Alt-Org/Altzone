@@ -9,7 +9,6 @@ using static SettingsCarrier;
 
 public class LanguageSelectorHandler : MonoBehaviour
 {
-    SettingsCarrier carrier = SettingsCarrier.Instance;
     [SerializeField] private Button _decrease;
     [SerializeField] private Button _increase;
 
@@ -24,7 +23,7 @@ public class LanguageSelectorHandler : MonoBehaviour
         _increase.onClick.AddListener(() => SetLanguage(1));
 
 
-        _flagHolder.sprite = _flagsImages[(int)SettingsCarrier.Instance.Language];
+        _flagHolder.sprite = _flagsImages[(int)Localization.Language];
 
     }
 
@@ -32,8 +31,8 @@ public class LanguageSelectorHandler : MonoBehaviour
     {
 
         ///RN the code is like this because other languages do not work as is now but when they do just modify the <see cref="int max"/>.Length -2 into -1 and the index = 1 into 0 instead
-        int index = (int)carrier.Language;
-        int max = (int)(SettingsCarrier.LanguageType)Enum.GetValues(typeof(SettingsCarrier.LanguageType)).Length - 2;
+        int index = (int)Localization.Language;
+        int max = (int)(LanguageType)Enum.GetValues(typeof(LanguageType)).Length - 2;
         index += value;
 
         if (index > max)
@@ -45,8 +44,8 @@ public class LanguageSelectorHandler : MonoBehaviour
             index = max;
         }
 
-        SettingsCarrier.Instance.Language = (SettingsCarrier.LanguageType)index;
-        _flagHolder.sprite = _flagsImages[(int)SettingsCarrier.Instance.Language];
+        Localization.Language = (LanguageType)index;
+        _flagHolder.sprite = _flagsImages[(int)Localization.Language];
 
         if (_navigation != null) StartCoroutine(_navigation.Navigate());
 

@@ -148,7 +148,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     {
         _currentTask = data;
         SetTaskTitle(data);
-        SetTaskCategory(data, SettingsCarrier.Instance.Language);
+        SetTaskCategory(data, Localization.Language);
         _taskPointsReward.text = "+" + data.Points;
         _taskCoinsReward.text = "+" + data.Coins;
         _taskRewardsField.SetActive(true);
@@ -223,7 +223,7 @@ public class DailyTaskOwnTask : MonoBehaviour
         _taskTitle.gameObject.SetActive(true);
     }
 
-    private void SetTaskCategory(PlayerTask task, SettingsCarrier.LanguageType language)
+    private void SetTaskCategory(PlayerTask task, LanguageType language)
     {
         if (task.Type != TaskNormalType.Undefined)
         {
@@ -235,31 +235,31 @@ public class DailyTaskOwnTask : MonoBehaviour
             {
                 case EducationCategoryType.Action:
                     {
-                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Toiminnallinen pelilukutaito" : "Functional game literacy";
+                        _taskCategory.text = language == LanguageType.Finnish ? "Toiminnallinen pelilukutaito" : "Functional game literacy";
                         //_taskBackground.color = _actionCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Social:
                     {
-                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Sosiaalinen pelilukutaito" : "Social game literacy";
+                        _taskCategory.text = language == LanguageType.Finnish ? "Sosiaalinen pelilukutaito" : "Social game literacy";
                         //_taskBackground.color = _socialCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Story:
                     {
-                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Tarinallinen pelilukutaito" : "Story-based game literacy";
+                        _taskCategory.text = language == LanguageType.Finnish ? "Tarinallinen pelilukutaito" : "Story-based game literacy";
                         //_taskBackground.color = _storyCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Culture:
                     {
-                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Kulttuurinen pelilukutaito" : "Cultural game literacy";
+                        _taskCategory.text = language == LanguageType.Finnish ? "Kulttuurinen pelilukutaito" : "Cultural game literacy";
                         //_taskBackground.color = _cultureCategoryColor;
                         break;
                     }
                 case EducationCategoryType.Ethical:
                     {
-                        _taskCategory.text = language == SettingsCarrier.LanguageType.Finnish ? "Eettinen pelilukutaito" : "Ethical game literacy";
+                        _taskCategory.text = language == LanguageType.Finnish ? "Eettinen pelilukutaito" : "Ethical game literacy";
                         //_taskBackground.color = _ethicalCategoryColor;
                         break;
                     }
@@ -274,7 +274,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     }
     #endregion
 
-    private void UpdateLanguage(SettingsCarrier.LanguageType language)
+    private void UpdateLanguage(LanguageType language)
     {
         if (_currentTask != null)
         {
@@ -329,8 +329,8 @@ public class DailyTaskOwnTask : MonoBehaviour
 
     private void UpdateDailyStatsUI()
     {
-        _battlesPlayedText.SetText(SettingsCarrier.Instance.Language, new[] { DailyStats.Instance.GetBattlesPlayed().ToString() });
-        _tasksDoneText.SetText(SettingsCarrier.Instance.Language, new[] { DailyStats.Instance.GetTasksDone().ToString() });
+        _battlesPlayedText.SetText(Localization.Language, new[] { DailyStats.Instance.GetBattlesPlayed().ToString() });
+        _tasksDoneText.SetText(Localization.Language, new[] { DailyStats.Instance.GetTasksDone().ToString() });
     }
 
     // Currently used on DailyTask OwnTask page on ShowCurrentTaskInfoButton

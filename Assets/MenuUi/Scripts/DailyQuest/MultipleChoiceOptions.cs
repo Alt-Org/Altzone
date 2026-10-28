@@ -57,9 +57,9 @@ public class MultipleChoiceOptions : ScriptableObject
         {
             get
             {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if (Localization.Language is LanguageType.Finnish)
                     return _optionTextFI;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if (Localization.Language is LanguageType.English)
                     return _optionTextEN;
                 else
                     return _optionTextFI;

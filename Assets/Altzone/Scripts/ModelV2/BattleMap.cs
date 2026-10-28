@@ -25,12 +25,12 @@ namespace Altzone.Scripts.ModelV2
         {
             get
             {
-                switch (SettingsCarrier.Instance.Language)
+                switch (Localization.Language)
                 {
-                    case SettingsCarrier.LanguageType.Finnish:
+                    case LanguageType.Finnish:
                         if (string.IsNullOrEmpty(_mapNameFinnish)) return _mapId;
                         return _mapNameFinnish;
-                    case SettingsCarrier.LanguageType.English:
+                    case LanguageType.English:
                         if (string.IsNullOrEmpty(_mapNameEnglish)) return _mapId;
                         return _mapNameEnglish;
                     default:
@@ -69,11 +69,11 @@ namespace Altzone.Scripts.ModelV2
         public string SituationName {
             get
             {
-                switch (SettingsCarrier.Instance.Language)
+                switch (Localization.Language)
                 {
-                    case SettingsCarrier.LanguageType.Finnish:
+                    case LanguageType.Finnish:
                         return FinnishSituationName;
-                    case SettingsCarrier.LanguageType.English:
+                    case LanguageType.English:
                         return EnglishSituationName;
                     default:
                         return FinnishSituationName;

@@ -16,7 +16,7 @@ public class CategoryInfo
     {
         get
         {
-            return SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+            return Localization.Language == LanguageType.English
                 ? _englishName : _name;
         }
     }
@@ -33,7 +33,7 @@ public class CategoryInfo
     {
         get
         {
-            return SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+            return Localization.Language == LanguageType.English
                 ? _englishTitle : _title;
         }
     }
@@ -42,7 +42,7 @@ public class CategoryInfo
     {
         get
         {
-            return SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+            return Localization.Language == LanguageType.English
                 ? _englishDescription : _description;
 
         }

@@ -153,9 +153,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
     {
         public static string GetAgeText(ClanAge age)
         {
-            switch (SettingsCarrier.Instance.Language)
+            switch (Localization.Language)
             {
-                case SettingsCarrier.LanguageType.Finnish:
+                case LanguageType.Finnish:
                     return age switch
                     {
                         ClanAge.None => "Ikäryhmä",
@@ -166,7 +166,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                         ClanAge.All => "Kaikki",
                         _ => "",
                     };
-                case SettingsCarrier.LanguageType.English:
+                case LanguageType.English:
                     return age switch
                     {
                         ClanAge.None => "Age Group",
@@ -193,9 +193,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetLanguageText(Language language)
         {
-            switch (SettingsCarrier.Instance.Language)
+            switch (Localization.Language)
             {
-                case SettingsCarrier.LanguageType.Finnish:
+                case LanguageType.Finnish:
                     return language switch
                     {
                         Language.None => "Kaikki kielet",
@@ -207,7 +207,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                         Language.Ukrainian => "ukraina",
                         _ => "",
                     };
-                case SettingsCarrier.LanguageType.English:
+                case LanguageType.English:
                     return language switch
                     {
                         Language.None => "Language",
@@ -235,9 +235,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetGoalText(Goals goal)
         {
-            switch (SettingsCarrier.Instance.Language)
+            switch (Localization.Language)
             {
-                case SettingsCarrier.LanguageType.Finnish:
+                case LanguageType.Finnish:
                     return goal switch
                     {
                         Goals.None => "Tavoite",
@@ -247,7 +247,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                         Goals.Keraily => "Keraily",
                         _ => "",
                     };
-                case SettingsCarrier.LanguageType.English:
+                case LanguageType.English:
                     return goal switch
                     {
                         Goals.None => "Goals",
@@ -271,9 +271,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetActivityText(ClanActivity activity)
         {
-            switch (SettingsCarrier.Instance.Language)
+            switch (Localization.Language)
             {
-                case SettingsCarrier.LanguageType.Finnish:
+                case LanguageType.Finnish:
                     return activity switch
                     {
                         ClanActivity.None => "Aktiivisuus",
@@ -283,7 +283,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                         ClanActivity.RarelyActive => "Harvoin paikalla",
                         _ => "",
                     };
-                case SettingsCarrier.LanguageType.English:
+                case LanguageType.English:
                     return activity switch
                     {
                         ClanActivity.None => "Activity",
@@ -307,9 +307,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetRankingText(ClanRanking ranking)
         {
-            switch (SettingsCarrier.Instance.Language)
+            switch (Localization.Language)
             {
-                case SettingsCarrier.LanguageType.Finnish:
+                case LanguageType.Finnish:
                     return ranking switch
                     {
                         ClanRanking.None => "Kaikki",
@@ -319,7 +319,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                         ClanRanking.Top100 => "Top 100",
                         _ => "",
                     };
-                case SettingsCarrier.LanguageType.English:
+                case LanguageType.English:
                     return ranking switch
                     {
                         ClanRanking.None => "Ranking",
@@ -343,9 +343,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
         public static string GetMembersText(ClanMembers members)
         {
-            switch (SettingsCarrier.Instance.Language)
+            switch (Localization.Language)
             {
-                case SettingsCarrier.LanguageType.Finnish:
+                case LanguageType.Finnish:
                     return members switch
                     {
                         ClanMembers.None => "Kaikki",
@@ -356,7 +356,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
                         ClanMembers.Huge => "29+",
                         _ => "",
                     };
-                case SettingsCarrier.LanguageType.English:
+                case LanguageType.English:
                     return members switch
                     {
                         ClanMembers.None => "Member count",

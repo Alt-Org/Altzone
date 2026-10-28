@@ -59,7 +59,7 @@ public class SettingEditor : MonoBehaviour
         }
 
         SettingsCarrier.OnLanguageChanged += ChangeLanguage;
-        ChangeLanguage(SettingsCarrier.Instance.Language);
+        ChangeLanguage(Localization.Language);
 
         carrier = SettingsCarrier.Instance;
         RefreshTopBarStyleText();
@@ -80,7 +80,7 @@ public class SettingEditor : MonoBehaviour
 
         _topBarStyleButtonRight.onClick.AddListener(() => ChangeTopbarStyle(1));
         _topBarStyleButtonLeft.onClick.AddListener(() => ChangeTopbarStyle(-1));
-        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
+        _topBarStyleText.SetText(Localization.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
 
         _introSkipToggle.onValueChanged.AddListener(_ => SetIntroSkip());
 
@@ -196,19 +196,19 @@ public class SettingEditor : MonoBehaviour
         AudioManager.Instance.PlayMusic("MainMenu");
     }
 
-    private void ChangeLanguage(SettingsCarrier.LanguageType language)
+    private void ChangeLanguage(LanguageType language)
     {
         switch (language)
         {
-            case SettingsCarrier.LanguageType.Finnish:
+            case LanguageType.Finnish:
                 _languageImage.sprite = _finnishSprite;
                 break;
-            case SettingsCarrier.LanguageType.English:
+            case LanguageType.English:
                 _languageImage.sprite = _englishSprite;
                 break;
         }
 
         if (_languageCaller != null) _languageCaller.SetText(language, new string[0]);
-        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
+        _topBarStyleText.SetText(Localization.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
     }
 }

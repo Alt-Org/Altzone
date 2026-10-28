@@ -161,23 +161,23 @@ public class RaidLobbyClanListItem : MonoBehaviour
 
     private static string GetDefaultClanName()
     {
-        return GetCurrentLanguage() == SettingsCarrier.LanguageType.English ? "Clan" : "Klaani";
+        return GetCurrentLanguage() == LanguageType.English ? "Clan" : "Klaani";
     }
 
     private static string GetPlayerCountText(int playerCount, int maxPlayersPerClan)
     {
-        return GetCurrentLanguage() == SettingsCarrier.LanguageType.English
+        return GetCurrentLanguage() == LanguageType.English
             ? $"Players {playerCount}/{maxPlayersPerClan}"
             : $"Pelaajat {playerCount}/{maxPlayersPerClan}";
     }
 
-    private static SettingsCarrier.LanguageType GetCurrentLanguage()
+    private static LanguageType GetCurrentLanguage()
     {
-        SettingsCarrier.LanguageType language = SettingsCarrier.Instance ? SettingsCarrier.Instance.Language : SettingsCarrier.LanguageType.Finnish;
+        LanguageType language = Localization.Instance ? Localization.Language : LanguageType.Finnish;
 
-        return language == SettingsCarrier.LanguageType.English
-            ? SettingsCarrier.LanguageType.English
-            : SettingsCarrier.LanguageType.Finnish;
+        return language == LanguageType.English
+            ? LanguageType.English
+            : LanguageType.Finnish;
     }
 
     private AvatarFaceLoader GetPlayerAvatarFaceLoader(int index)

@@ -55,9 +55,9 @@ namespace MenuUI.Scripts.Jukebox
         {
             get
             {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                if (Localization.Language is LanguageType.Finnish)
                     return NoSongNameFi;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                else if (Localization.Language is LanguageType.English)
                     return NoSongNameEn;
                 else
                     return NoSongNameFi;

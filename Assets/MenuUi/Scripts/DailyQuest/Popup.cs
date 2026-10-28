@@ -108,9 +108,9 @@ public class Popup : MonoBehaviour
     {
         get
         {
-            if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if(Localization.Language is LanguageType.Finnish)
                 return _startTaskConfirmTextFI;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
                 return _startTaskConfirmTextEN;
             else
                 return _startTaskConfirmTextFI;
@@ -121,9 +121,9 @@ public class Popup : MonoBehaviour
     {
         get
         {
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
                 return _changeTaskConfirmTextFI;
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
                 return _changeTaskConfirmTextEN;
             else
                 return _changeTaskConfirmTextFI;
@@ -504,7 +504,7 @@ public class Popup : MonoBehaviour
         while (timeLeft > 0)
         {
             //_cooldownText.text = $"{Mathf.CeilToInt(timeLeft)}s";
-            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+            if (Localization.Language == LanguageType.English)
             {
                 _cooldownText.text = "Wrong answer, try again.";
             }

@@ -93,7 +93,7 @@ public class PlayStyle : MonoBehaviour
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                if (Localization.Language == LanguageType.English)
                     return englishText;
                 return finnishText;
             }

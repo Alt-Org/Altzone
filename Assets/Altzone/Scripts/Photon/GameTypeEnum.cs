@@ -30,16 +30,16 @@ namespace Altzone.Scripts.Lobby
     {
         public static string GetString(this GameType gameMode)
         {
-            return SettingsCarrier.Instance.Language switch
+            return Localization.Language switch
             {
-                SettingsCarrier.LanguageType.English => gameMode switch
+                LanguageType.English => gameMode switch
                 {
                     GameType.BattlePingPong => "Basegame",
                     GameType.BattleFlipperGame => "Flipper",
                     GameType.Raid => "Raid",
                     _ => ""
                 },
-                SettingsCarrier.LanguageType.Finnish => gameMode switch
+                LanguageType.Finnish => gameMode switch
                 {
                     GameType.BattlePingPong => "Peruspeli",
                     GameType.BattleFlipperGame => "Flipperi",
@@ -58,15 +58,15 @@ namespace Altzone.Scripts.Lobby
 
         public static string GetString(this PlayerCount gameMode)
         {
-            return SettingsCarrier.Instance.Language switch
+            return Localization.Language switch
             {
-                SettingsCarrier.LanguageType.English => gameMode switch
+                LanguageType.English => gameMode switch
                 {
                     PlayerCount.Two => "1v1",
                     PlayerCount.Four => "2v2",
                     _ => ""
                 },
-                SettingsCarrier.LanguageType.Finnish => gameMode switch
+                LanguageType.Finnish => gameMode switch
                 {
                     PlayerCount.Two => "1v1",
                     PlayerCount.Four => "2v2",

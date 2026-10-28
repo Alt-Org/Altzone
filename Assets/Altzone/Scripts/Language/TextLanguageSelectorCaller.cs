@@ -14,11 +14,11 @@ namespace Altzone.Scripts.Language
             _textField = GetComponent<TextMeshProUGUI>();
         }
 
-        public void SetText(SettingsCarrier.LanguageType language, string[] additions)
+        public void SetText(LanguageType language, string[] additions)
         {
             if(_textField == null) _textField = GetComponent<TextMeshProUGUI>();
-            if (language is SettingsCarrier.LanguageType.Finnish) _textField.text = string.Format(_finnishText, additions);
-            else if (language is SettingsCarrier.LanguageType.English) _textField.text = string.Format(_englishText, additions);
+            if (language is LanguageType.Finnish) _textField.text = string.Format(_finnishText, additions);
+            else if (language is LanguageType.English) _textField.text = string.Format(_englishText, additions);
             else _textField.text = _finnishText;
         }
 
@@ -28,8 +28,8 @@ namespace Altzone.Scripts.Language
             if (!string.IsNullOrWhiteSpace(text)) _textField.text = text;
             else
             {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _textField.text = _finnishText;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _textField.text = _englishText;
+                if (Localization.Language is LanguageType.Finnish) _textField.text = _finnishText;
+                else if (Localization.Language is LanguageType.English) _textField.text = _englishText;
             }
         }
     }

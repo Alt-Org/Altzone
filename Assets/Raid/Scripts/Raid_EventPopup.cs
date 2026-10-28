@@ -406,7 +406,7 @@ public class Raid_EventPopup : MonoBehaviour
 
     private string GetLocalizedText(string finnishText, string englishText)
     {
-        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+        if (Localization.Language is LanguageType.English)
         {
             return string.IsNullOrWhiteSpace(englishText) ? finnishText : englishText;
         }

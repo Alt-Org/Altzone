@@ -7,9 +7,9 @@ public static class GameLiteracy
     /// <param name="literacy">The literacy to get the displayable name for</param>
     /// <param name="language">The language to use</param>
     /// <returns>The displayable name (the game literacy's name that can be shown to player)</returns>
-    public static string Get(GameLiteracyType literacy, SettingsCarrier.LanguageType language)
+    public static string Get(GameLiteracyType literacy, LanguageType language)
     {
-        if (language == SettingsCarrier.LanguageType.English)
+        if (language == LanguageType.English)
         {
             switch (literacy)
             {

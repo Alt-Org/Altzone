@@ -274,11 +274,11 @@ public class PollObject : MonoBehaviour
 
             ResultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
 
-            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            if (Localization.Language is LanguageType.Finnish)
                 ResultText.text = isAccepted
                 ? "Hyv\u00E4ksytty".ToUpper()
                 : "Hyl\u00E4tty".ToUpper();
-            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            else if (Localization.Language is LanguageType.English)
                 ResultText.text = isAccepted
                 ? "Approved".ToUpper()
                 : "Rejected".ToUpper();
@@ -363,9 +363,9 @@ public class PollObject : MonoBehaviour
 
         bool isBuying = furniturePollData.FurniturePollType == FurniturePollType.Buying;
         TradeBackground.color = isBuying ? _green : _red;
-        if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+        if(Localization.Language is LanguageType.Finnish)
             TradeText.text = isBuying ? "OSTO" : "MYYNTI";
-        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+        else if (Localization.Language is LanguageType.English)
             TradeText.text = isBuying ? "BUY" : "SELL";
         else
             TradeText.text = isBuying ? "OSTO" : "MYYNTI";

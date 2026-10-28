@@ -48,7 +48,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>();
-            SettingsCarrier.OnLanguageChanged += ChangeLanguage;
+            Localization.OnLanguageChanged += ChangeLanguage;
 
             _button = GetComponent<Button>();
             _button.onClick.AddListener(RequestBattlePopup);
@@ -66,7 +66,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         {
             _button.onClick.RemoveListener(RequestBattlePopup);
             _openBattleUiEditorButton.onClick.RemoveListener(OnOpenBattleUiEditorButtonPressed);
-            SettingsCarrier.OnLanguageChanged -= ChangeLanguage;
+            Localization.OnLanguageChanged -= ChangeLanguage;
         }
 
 
@@ -107,7 +107,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             //SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
         }
 
-        private void ChangeLanguage(SettingsCarrier.LanguageType language)
+        private void ChangeLanguage(LanguageType language)
         {
             foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
             {

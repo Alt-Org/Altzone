@@ -186,11 +186,11 @@ public class ProfileMenu : AltMonoBehaviour
         }
 
         // Hiilijananjälki teksti
-        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        if (Localization.Language == LanguageType.Finnish)
         {
             _CarbonText.text = $"Hiilijalanjälki\n{carbonDisplay:F1}{carbonUnit}/CO2";
         }
-        else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+        else if (Localization.Language == LanguageType.English)
         {
             _CarbonText.text = $"Carbon Footprint\n{carbonDisplay:F1}{carbonUnit}/CO2";
         }
@@ -648,7 +648,7 @@ public class ProfileMenu : AltMonoBehaviour
             : _playerData.ClanJoinDate.ToString("MM-yyyy");
 
         _joiningDateText.SetText(
-            SettingsCarrier.Instance.Language,
+            Localization.Language,
             new string[] { joinDate }
         );
 
@@ -727,12 +727,12 @@ public class ProfileMenu : AltMonoBehaviour
             {
                 if (clan == null)
                 {
-                    if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+                    if (Localization.Language == LanguageType.Finnish)
                     {
                         _rolesErrorMessage.text = "Klaania ei löydetty.";
                         Debug.LogError("Klaanitietojen haku epäonnistui.");
                     }
-                    else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
+                    else if (Localization.Language == LanguageType.English)
                     {
                         _rolesErrorMessage.text = "Clan not found.";
                         Debug.LogError("Failed to fetch clan data.");

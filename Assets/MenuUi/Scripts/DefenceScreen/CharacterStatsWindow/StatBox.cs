@@ -74,27 +74,27 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             _statIcon.sprite = _statInfo.Image;
             _statBackground.color = _statInfo.StatBoxColor;
 
-            switch (SettingsCarrier.Instance.Language)
+            switch (Localization.Language)
             {
-                case SettingsCarrier.LanguageType.Finnish:
+                case LanguageType.Finnish:
                     _statName.text = _statInfo.Name;
                     _statDescription.text = _statInfo.Description;
                     break;
 
-                case SettingsCarrier.LanguageType.English:
+                case LanguageType.English:
                     _statName.text = string.IsNullOrEmpty(_statInfo.EnglishName) ? _statInfo.Name : _statInfo.EnglishName;
                     _statDescription.text = string.IsNullOrEmpty(_statInfo.EnglishDescription) ? _statInfo.Description : _statInfo.EnglishDescription;
                     break;
 
                 default:
-                    goto case SettingsCarrier.LanguageType.Finnish;
+                    goto case LanguageType.Finnish;
             }
 
             string developmentName = string.Empty;
             ValueStrength statStrenght = _controller.GetStatStrength(_statType);
-            switch (SettingsCarrier.Instance.Language)
+            switch (Localization.Language)
             {
-                case SettingsCarrier.LanguageType.Finnish:
+                case LanguageType.Finnish:
                     switch (statStrenght)
                     {
                         case ValueStrength.VeryStrong: developmentName = "Mestari"; break;
@@ -109,7 +109,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     }
                     break;
 
-                case SettingsCarrier.LanguageType.English:
+                case LanguageType.English:
                     switch (statStrenght)
                     {
                         case ValueStrength.VeryStrong: developmentName = "Master"; break;
@@ -125,7 +125,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
                     break;
 
                 default: 
-                    goto case SettingsCarrier.LanguageType.Finnish;
+                    goto case LanguageType.Finnish;
             }
             _developmentName.text = developmentName;
 

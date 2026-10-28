@@ -189,9 +189,9 @@ public class PollInfoPopup : MonoBehaviour
         if (furnitureData == null || furnitureData.Furniture == null) return;
 
         bool isBuying = furnitureData.FurniturePollType == FurniturePollType.Buying;
-        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+        if (Localization.Language is LanguageType.Finnish)
             tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
-        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+        else if (Localization.Language is LanguageType.English)
             tradeTag.text = isBuying ? "BUY" : "SELL";
         else
             tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
@@ -264,11 +264,11 @@ public class PollInfoPopup : MonoBehaviour
 
         resultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
 
-        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+        if (Localization.Language is LanguageType.Finnish)
             resultText.text = isAccepted
             ? "Hyv\u00E4ksytty".ToUpper()
             : "Hyl\u00E4tty".ToUpper();
-        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+        else if (Localization.Language is LanguageType.English)
             resultText.text = isAccepted
             ? "Approved".ToUpper()
             : "Rejected".ToUpper();
@@ -286,7 +286,7 @@ public class PollInfoPopup : MonoBehaviour
     {
         _currentPollData = pollData;
 
-        authorName.SetText(SettingsCarrier.Instance.Language, new[]{ pollData?.Organizer});
+        authorName.SetText(Localization.Language, new[]{ pollData?.Organizer});
 
         setPosterBackground.gameObject.SetActive(false);
         setFontName.gameObject.SetActive(false);

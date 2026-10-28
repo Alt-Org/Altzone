@@ -105,8 +105,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return REGISTERING_SUCCESS_FI;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return REGISTERING_SUCCESS_EN;
+                if (Localization.Language is LanguageType.Finnish) return REGISTERING_SUCCESS_FI;
+                else if (Localization.Language is LanguageType.English) return REGISTERING_SUCCESS_EN;
                 else return REGISTERING_SUCCESS_FI;
             }
         }
@@ -114,8 +114,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_DEFAULT_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_DEFAULT_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR_DEFAULT_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR_DEFAULT_EN;
                 else return ERROR_DEFAULT_FI;
             }
         }
@@ -124,8 +124,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_EMPTY_FIELD_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_EMPTY_FIELD_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR_EMPTY_FIELD_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR_EMPTY_FIELD_EN;
                 else return ERROR_EMPTY_FIELD_FI;
             }
         }
@@ -134,8 +134,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_PASSWORD_MISMATCH_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_PASSWORD_MISMATCH_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR_PASSWORD_MISMATCH_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR_PASSWORD_MISMATCH_EN;
                 else return ERROR_PASSWORD_MISMATCH_FI;
             }
         }
@@ -144,8 +144,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_USERNAME_TOO_SHORT_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_USERNAME_TOO_SHORT_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR_USERNAME_TOO_SHORT_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR_USERNAME_TOO_SHORT_EN;
                 else return ERROR_USERNAME_TOO_SHORT_FI;
             }
         }
@@ -154,8 +154,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_PASSWORD_TOO_SHORT_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_PASSWORD_TOO_SHORT_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR_PASSWORD_TOO_SHORT_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR_PASSWORD_TOO_SHORT_EN;
                 else return ERROR_PASSWORD_TOO_SHORT_FI;
             }
         }
@@ -164,8 +164,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_PRIVACY_CONCENT_NOT_GRANTED_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_PRIVACY_CONCENT_NOT_GRANTED_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR_PRIVACY_CONCENT_NOT_GRANTED_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR_PRIVACY_CONCENT_NOT_GRANTED_EN;
                 else return ERROR_PRIVACY_CONCENT_NOT_GRANTED_FI;
             }
         }
@@ -174,8 +174,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_AGE_CONSENT_NOT_GRANTED_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_AGE_CONSENT_NOT_GRANTED_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR_AGE_CONSENT_NOT_GRANTED_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR_AGE_CONSENT_NOT_GRANTED_EN;
                 else return ERROR_AGE_CONSENT_NOT_GRANTED_FI;
             }
         }
@@ -184,8 +184,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_INFORMATION_CONCENT_NOT_GRANTED_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_INFORMATION_CONCENT_NOT_GRANTED_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR_INFORMATION_CONCENT_NOT_GRANTED_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR_INFORMATION_CONCENT_NOT_GRANTED_EN;
                 else return ERROR_INFORMATION_CONCENT_NOT_GRANTED_FI;
             }
         }
@@ -194,8 +194,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR400_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR400_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR400_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR400_EN;
                 else return ERROR400_FI;
             }
         }
@@ -204,8 +204,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR401_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR401_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR401_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR401_EN;
                 else return ERROR401_FI;
             }
         }
@@ -214,8 +214,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR409_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR409_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR409_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR409_EN;
                 else return ERROR409_FI;
             }
         }
@@ -224,8 +224,8 @@ namespace MenuUi.Scripts.Login
         {
             get
             {
-                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR500_FI;
-                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR500_EN;
+                if (Localization.Language == LanguageType.Finnish) return ERROR500_FI;
+                else if (Localization.Language == LanguageType.English) return ERROR500_EN;
                 else return ERROR500_FI;
             }
         }
