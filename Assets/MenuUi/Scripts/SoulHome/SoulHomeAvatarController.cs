@@ -312,6 +312,12 @@ namespace MenuUI.Scripts.SoulHome
             UpdateSortingOrder(_currentGridPosition.y);
             _performingAnimation = false;
             UseDefaultHands(false);
+            // Climbed into a room that's sleeping off-screen, sleep with it. OnEnable continues from here when it wakes up.
+            if (_roomData.Sleeping)
+            {
+                gameObject.SetActive(false);
+                yield break;
+            }
             SelectStatus();
         }
 

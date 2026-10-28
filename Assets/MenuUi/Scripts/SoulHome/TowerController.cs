@@ -36,8 +36,12 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _rooms;
 
-        [SerializeField]
-        //private GameObject _hoverButtons;
+        [Tooltip("Rooms kept awake above and below the ones the camera sees. Characters in the other rooms are disabled."), SerializeField]
+        private int _awakeRoomMargin = 1;
+
+        private readonly List<RoomData> _sleepRooms = new();
+        private readonly List<Bounds> _sleepRoomBounds = new();
+        private bool _sleepRoomsCached = false;
 
         private Bounds _roomBounds;
 
@@ -217,56 +221,6 @@ namespace MenuUI.Scripts.SoulHome
                     }
                     transform.position = new(x, y, transform.position.z);
                 }
-                /*else if(_tempSelectedFurniture == null)
-                {
-                    Bounds roomCameraBounds = selectedRoom.GetComponent<BoxCollider2D>().bounds;
-                    float roomCameraMinX = roomCameraBounds.min.x;
-                    float roomCameraMinY = roomCameraBounds.min.y;
-                    float roomCameraMaxX = roomCameraBounds.max.x;
-                    float roomCameraMaxY = roomCameraBounds.max.y;
-                    Vector3 bl = Camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(Camera.transform.position.z)));
-                    float currentX = transform.position.x;
-                    float offsetX = Mathf.Abs(currentX - bl.x);
-                    float targetX;
-                    if (Touch.activeFingers.Count == 1)
-                    {
-                        //touch = Input.GetTouch(0);
-                        if (touch.phase == UnityEngine.InputSystem.TouchPhase.Began || prevp == Vector2.zero) prevp = touch.screenPosition;
-                        Vector2 lp = touch.screenPosition;
-                        targetX = currentX + (prevp.x - lp.x) / scrollSpeed;
-                        //Debug.Log("Touch: X: " + (prevp.x - lp.x));
-                        if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)
-                        {
-                            startScrollSlide = new Vector2(Mathf.Abs(prevp.x - lp.x) / scrollSpeed, 0); 
-                            currentScrollSlide = startScrollSlide;
-                            currentScrollSlideDirection = new Vector2(prevp.x - lp.x, 0);
-                            currentScrollSlideDirection.Normalize();
-                            prevp = Vector2.zero;
-                        }
-                        else prevp = touch.screenPosition;
-                    }
-                    else
-                    {
-                        float moveAmountY = Mouse.current.position.ReadValue().x - Mouse.current.position.ReadValueFromPreviousFrame().x;
-                        targetX = currentX - moveAmountY * scrollSpeedMouse;
-                        startScrollSlide = new Vector2(Mathf.Abs(moveAmountY) * scrollSpeedMouse, 0);
-                        currentScrollSlide = startScrollSlide;
-                        currentScrollSlideDirection = new Vector2(-1*moveAmountY, 0);
-                        currentScrollSlideDirection.Normalize();
-                    }
-                    float x;
-                    if (roomCameraMinX + offsetX < roomCameraMaxX - offsetX)
-                    {
-                        x = Mathf.Clamp(targetX, roomCameraMinX + offsetX, roomCameraMaxX - offsetX);
-                    }
-                    else
-                    {
-                        x = (roomCameraMinX + roomCameraMaxX) / 2;
-                    }
-                    transform.position = new(x, transform.position.y, transform.position.z);
-                }*/
-                //cameraMove = false;
-                //Debug.Log(currentScrollSlideDirection);
             }
             else if(!cameraMove)
             {
@@ -335,8 +289,53 @@ namespace MenuUI.Scripts.SoulHome
         void LateUpdate()
         {
             if (!_startFinished) return;
+            UpdateSleepingRooms();
             // Move hover buttons with the selected furniture when scrolling the tower
             if (_selectedFurniture != null && _mainScreen.HoverButtons.activeSelf) UpdateHoverButtons();
+        }
+
+        // Puts the rooms outside the camera view (plus a margin) to sleep. See RoomData.Sleeping.
+        private void UpdateSleepingRooms()
+        {
+            // The rooms are destroyed and created again while Soulhome reloads.
+            if (!_loadScript.LoadFinished)
+            {
+                _sleepRooms.Clear();
+                _sleepRoomBounds.Clear();
+                _sleepRoomsCached = false;
+                return;
+            }
+            // A reload can also happen while this is disabled, which leaves destroyed rooms in the cache.
+            if (!_sleepRoomsCached || (_sleepRooms.Count > 0 && _sleepRooms[0] == null)) CacheSleepRooms();
+
+            float distance = Mathf.Abs(_camera.transform.position.z);
+            float viewBottom = _camera.ViewportToWorldPoint(new Vector3(0, 0, distance)).y;
+            float viewTop = _camera.ViewportToWorldPoint(new Vector3(1, 1, distance)).y;
+            float margin = _roomBounds.size.y * _awakeRoomMargin;
+            float awakeMin = Mathf.Min(viewBottom, viewTop) - margin;
+            float awakeMax = Mathf.Max(viewBottom, viewTop) + margin;
+
+            for (int i = 0; i < _sleepRooms.Count; i++)
+            {
+                Bounds bounds = _sleepRoomBounds[i];
+                _sleepRooms[i].Sleeping = bounds.max.y < awakeMin || bounds.min.y > awakeMax;
+            }
+        }
+
+        // The rooms don't move after loading, so their bounds are read only once.
+        private void CacheSleepRooms()
+        {
+            _sleepRooms.Clear();
+            _sleepRoomBounds.Clear();
+            Physics2D.SyncTransforms(); //Collider2D.bounds lags behind until physics syncs the transform.
+            foreach (Transform roomPosition in _rooms.transform)
+            {
+                if (roomPosition.childCount == 0) continue;
+                Transform room = roomPosition.GetChild(0);
+                _sleepRooms.Add(room.GetComponent<RoomData>());
+                _sleepRoomBounds.Add(room.GetComponent<BoxCollider2D>().bounds);
+            }
+            _sleepRoomsCached = true;
         }
 
         // Places the hover buttons around the selected furniture's collider
