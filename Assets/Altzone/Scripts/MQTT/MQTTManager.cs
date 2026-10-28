@@ -64,8 +64,14 @@ namespace Altzone.Scripts.MQTT
         public delegate void VoteReceived(MQTTVotingUpdatedNotification vote);
         public static event VoteReceived OnVoteReceived;
 
+        public delegate void MatchmakingRoomDataUpdated(MQTTMatchRoomData data);
+        public static event MatchmakingRoomDataUpdated OnMatchmakingRoomDataUpdated;
+
         public delegate void MatchmakingInviteReceived(MQTTMatchInvite invite);
         public static event MatchmakingInviteReceived OnMatchmakingInviteReceived;
+
+        public delegate void MatchmakingClanInviteReceived(MQTTMatchInvite invite);
+        public static event MatchmakingClanInviteReceived OnMatchmakingClanInviteReceived;
 
         public delegate void JukeboxPlaylistUpdated(MQTTJukeBoxPlaylist playList);
         public static event JukeboxPlaylistUpdated OnJukeboxPlaylistUpdated;
@@ -155,19 +161,27 @@ namespace Altzone.Scripts.MQTT
             }
             finally
             {
-                //if (_client != null && _client.IsConnected)
+                if (_client != null && _client.IsConnected)
                 //OnMQTTConnectionEstablished?.Invoke(true);
-                while (true)
+                if (string.IsNullOrEmpty(ServerManager.Instance.Player.clan_id))
                 {
-                    if (ServerManager.Instance.Clan != null)
-                    {
-                        Debug.Log($"Clan Found: Starting subscription.");
-                        SubscribeToClanNotifications();
-                        break;
-                    }
-                    Debug.LogWarning($"Clan not found: Trying again.");
-                    await Task.Delay(1000);
+                    OnMQTTConnectionEstablished?.Invoke(true);
                 }
+                else
+                {
+                    while (true)
+                    {
+                        if (ServerManager.Instance.Clan != null)
+                        {
+                            Debug.Log($"Clan Found: Starting subscription.");
+                            SubscribeToClanNotifications();
+                            break;
+                        }
+                        Debug.LogWarning($"Clan not found: Trying again.");
+                        await Task.Delay(1000);
+                    }
+                }
+                else OnMQTTConnectionEstablished?.Invoke(false);
             }
         }
 
@@ -179,7 +193,6 @@ namespace Altzone.Scripts.MQTT
             Task matchmaking = SubscribeToMatchmaking();
 
             List<Task> tasks = new List<Task> { voting, dailyTask, jukeBox, matchmaking };
-
             while (tasks.Count > 0)
             {
                 Task finishedTask = await Task.WhenAny(tasks);
@@ -431,11 +444,20 @@ namespace Altzone.Scripts.MQTT
                 }
                 else if (result["topic"].ToString().Equals("matchmaking"))
                 {
-                    if (result["type"].ToString().Equals("INVITE_UPDATED"))
+                    switch (result["type"].ToString())
                     {
-                        MQTTMatchInvite invite = result["payload"].ToObject<MQTTMatchInvite>();
-
-                        OnMatchmakingInviteReceived?.Invoke(invite);
+                        case "ROOM_UPDATED":
+                            MQTTMatchRoomData data = result["payload"].ToObject<MQTTMatchRoomData>();
+                            OnMatchmakingRoomDataUpdated?.Invoke(data);
+                            break;
+                        case "INVITE_RECEIVED":
+                            MQTTMatchInvite invite = result["payload"].ToObject<MQTTMatchInvite>();
+                            OnMatchmakingInviteReceived?.Invoke(invite);
+                            break;
+                        case "CLAN_INVITE_RECEIVED":
+                            MQTTMatchInvite claninvite = result["payload"].ToObject<MQTTMatchInvite>();
+                            OnMatchmakingClanInviteReceived?.Invoke(claninvite);
+                            break;
                     }
                 }
                 else if (result["topic"].ToString().Equals("voting"))

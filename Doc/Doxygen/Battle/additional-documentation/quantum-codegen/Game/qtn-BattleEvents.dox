@@ -52,7 +52,7 @@
 ///   @copybrief Quantum.EventBattlePlaySoundFxForTeam
 /// - <b>event</b> @ref BattlePlaySoundFxForPlayer { BattlePlayerSlot Slot; BattleSoundFX Effect }  
 ///   @copybrief Quantum.EventBattlePlaySoundFxForPlayer
-/// - <b>synced event</b> @ref BattleLastRowWallDestroyed { int WallNumber; BattleTeamNumber Team; FP LightrayRotation; BattleLightrayColor LightrayColor; BattleLightraySize LightraySize }  
+/// - <b>synced event</b> @ref BattleLastRowWallDestroyed { BattleTeamNumber Team; int WallNumber }  
 ///   @copybrief Quantum.EventBattleLastRowWallDestroyed
 /// - <b>synced event</b> @ref BattleDiamondLanded { EntityRef ERef }  
 ///   @copybrief Quantum.EventBattleDiamondLanded

@@ -15,6 +15,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public string uniqueIdentifier { get; set; }
         public string profile_id { get; set; }
         public string clan_id { get; set; }
+        public string clan_joindate { get; set; }
         public int? currentAvatarId { get; set; }
         public string[] battleCharacter_ids { get; set; }
         public bool? above13 { get; set; }

@@ -43,7 +43,6 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private TMP_InputField _registerPasswordHintInputField;
         [SerializeField] private TMP_InputField _registerPasswordHintAnswerInputField;
 
-
         [Header("Input Fields Errors")]
         [SerializeField] private Image _logInUsernameInputFieldError;
         [SerializeField] private Image _logInPasswordInputFieldError;
@@ -74,19 +73,162 @@ namespace MenuUi.Scripts.Login
 
         private VersionType _versionType = VersionType.None;
 
-        private const string REGISTERING_SUCCESS = "Rekisteröinti onnistui!";
-        private const string ERROR_DEFAULT = "Jotain meni pieleen!";
-        private const string ERROR_EMPTY_FIELD = "Kentät eivät voi olla tyhjiä!";
-        private const string ERROR_PASSWORD_MISMATCH = "Salasananat eivät täsmää!";
-        private const string ERROR_USERNAME_TOO_SHORT = "Käyttäjänimen täytyy olla vähintään 3 merkkiä pitkä!";
-        private const string ERROR_PASSWORD_TOO_SHORT = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
-        private const string ERROR_PRIVACY_CONCENT_NOT_GRANTED = "Et ole hyväksynyt tietosuojaselostetta.";
-        private const string ERROR_AGE_CONSENT_NOT_GRANTED = "Et ole vahvistanut olevasi yli 13-vuotias tai että sinulla on huoltajan lupa pelata peliä";
-        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED = "Et ole antanut lupaa tietojen käyttää pelin hallinnoinnnissa.";
-        private const string ERROR400 = "Validointivirhe!";
-        private const string ERROR401 = "Virheellinen käyttäjänimi tai salasana!";
-        private const string ERROR409 = "Käyttäjätili on jo olemassa!";
-        private const string ERROR500 = "Serverivirhe!";
+        private const string REGISTERING_SUCCESS_FI = "Rekisteröinti onnistui!";
+        private const string REGISTERING_SUCCESS_EN = "Registration successful!";
+        private const string ERROR_DEFAULT_FI = "Jotain meni pieleen!";
+        private const string ERROR_DEFAULT_EN = "Something went wrong.";
+        private const string ERROR_EMPTY_FIELD_FI = "Kentät eivät voi olla tyhjiä!";
+        private const string ERROR_EMPTY_FIELD_EN = "The fields cannot be empty!";
+        private const string ERROR_PASSWORD_MISMATCH_FI = "Salasanat eivät täsmää!";
+        private const string ERROR_PASSWORD_MISMATCH_EN = "Passwords do not match!";
+        private const string ERROR_USERNAME_TOO_SHORT_FI = "Käyttäjänimen täytyy olla vähintään 3 merkkiä pitkä!";
+        private const string ERROR_USERNAME_TOO_SHORT_EN = "The username must be at least 3 characters long!";
+        private const string ERROR_PASSWORD_TOO_SHORT_FI = "Salasanan täytyy olla vähintään 5 merkkiä pitkä!";
+        private const string ERROR_PASSWORD_TOO_SHORT_EN = "The password must be at least 5 characters long!";
+        private const string ERROR_PRIVACY_CONCENT_NOT_GRANTED_FI = "Et ole hyväksynyt tietosuojaselostetta.";
+        private const string ERROR_PRIVACY_CONCENT_NOT_GRANTED_EN = "You have not accepted the privacy policy.";
+        private const string ERROR_AGE_CONSENT_NOT_GRANTED_FI = "Et ole vahvistanut olevasi yli 13-vuotias tai että sinulla on huoltajan lupa pelata peliä";
+        private const string ERROR_AGE_CONSENT_NOT_GRANTED_EN = "You have not confirmed that you are over 13 years of age or that you have a guardian's permission to play the game";
+        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED_FI = "Et ole antanut lupaa tietojen käyttää pelin hallinnoinnissa.";
+        private const string ERROR_INFORMATION_CONCENT_NOT_GRANTED_EN = "You have not granted permission to use the data for game management.";
+        private const string ERROR400_FI = "Validointivirhe!";
+        private const string ERROR400_EN = "Validation error!";
+        private const string ERROR401_FI = "Virheellinen käyttäjänimi tai salasana!";
+        private const string ERROR401_EN = "Invalid username or password!";
+        private const string ERROR409_FI = "Käyttäjätili on jo olemassa!";
+        private const string ERROR409_EN = "The user account already exists!";
+        private const string ERROR500_FI = "Serverivirhe!";
+        private const string ERROR500_EN = "Server error!";
+
+
+        private static string REGISTERING_SUCCESS
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) return REGISTERING_SUCCESS_FI;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) return REGISTERING_SUCCESS_EN;
+                else return REGISTERING_SUCCESS_FI;
+            }
+        }
+        private static string ERROR_DEFAULT
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_DEFAULT_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_DEFAULT_EN;
+                else return ERROR_DEFAULT_FI;
+            }
+        }
+
+        private static string ERROR_EMPTY_FIELD
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_EMPTY_FIELD_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_EMPTY_FIELD_EN;
+                else return ERROR_EMPTY_FIELD_FI;
+            }
+        }
+
+        private static string ERROR_PASSWORD_MISMATCH
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_PASSWORD_MISMATCH_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_PASSWORD_MISMATCH_EN;
+                else return ERROR_PASSWORD_MISMATCH_FI;
+            }
+        }
+
+        private static string ERROR_USERNAME_TOO_SHORT
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_USERNAME_TOO_SHORT_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_USERNAME_TOO_SHORT_EN;
+                else return ERROR_USERNAME_TOO_SHORT_FI;
+            }
+        }
+
+        private static string ERROR_PASSWORD_TOO_SHORT
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_PASSWORD_TOO_SHORT_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_PASSWORD_TOO_SHORT_EN;
+                else return ERROR_PASSWORD_TOO_SHORT_FI;
+            }
+        }
+
+        private static string ERROR_PRIVACY_CONCENT_NOT_GRANTED
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_PRIVACY_CONCENT_NOT_GRANTED_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_PRIVACY_CONCENT_NOT_GRANTED_EN;
+                else return ERROR_PRIVACY_CONCENT_NOT_GRANTED_FI;
+            }
+        }
+
+        private static string ERROR_AGE_CONSENT_NOT_GRANTED
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_AGE_CONSENT_NOT_GRANTED_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_AGE_CONSENT_NOT_GRANTED_EN;
+                else return ERROR_AGE_CONSENT_NOT_GRANTED_FI;
+            }
+        }
+
+        private static string ERROR_INFORMATION_CONCENT_NOT_GRANTED
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR_INFORMATION_CONCENT_NOT_GRANTED_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR_INFORMATION_CONCENT_NOT_GRANTED_EN;
+                else return ERROR_INFORMATION_CONCENT_NOT_GRANTED_FI;
+            }
+        }
+
+        private static string ERROR400
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR400_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR400_EN;
+                else return ERROR400_FI;
+            }
+        }
+
+        private static string ERROR401
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR401_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR401_EN;
+                else return ERROR401_FI;
+            }
+        }
+
+        private static string ERROR409
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR409_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR409_EN;
+                else return ERROR409_FI;
+            }
+        }
+
+        private static string ERROR500
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish) return ERROR500_FI;
+                else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English) return ERROR500_EN;
+                else return ERROR500_FI;
+            }
+        }
 
         private void OnEnable()
         {
@@ -138,14 +280,7 @@ namespace MenuUi.Scripts.Login
 
             ClearMessage();
 
-            _logInUsernameInputField.text = "";
-            _logInPasswordInputField.text = "";
-            _logInPasswordVisibilityToggle.isOn = false;
-            _registerUsernameInputField.text = "";
-            _registerPasswordInputField.text = "";
-            _registerPasswordVisibilityToggle.isOn = false;
-            _registerPassword2InputField.text = "";
-            _registerPassword2VisibilityToggle.isOn = false;
+            ResetAllFields();
         }
 
         private void OnDisable()
@@ -165,19 +300,20 @@ namespace MenuUi.Scripts.Login
         /// <summary>
         /// Logs the user in.
         /// </summary>
-        public void LogIn(bool guest)
+        public void LogIn()
         {
             ClearMessage();
 
             if (_logInUsernameInputField.text == string.Empty || _logInPasswordInputField.text == string.Empty)
             {
-                ShowMessage(ERROR_EMPTY_FIELD, Color.red);
+                ShowMessage(ERROR_EMPTY_FIELD, InfoLevel.Error);
                 if (_logInUsernameInputField.text == string.Empty) _logInUsernameInputFieldError.gameObject.SetActive(true);
                 else _logInPasswordInputFieldError.gameObject.SetActive(true);
                 return;
             }
             ServerLogIn(_logInUsernameInputField.text, _logInPasswordInputField.text);
         }
+
         private void ServerLogIn(string username, string password) {
             string body = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}";
 
@@ -205,7 +341,7 @@ namespace MenuUi.Scripts.Login
                             break;
                     }
 
-                    ShowMessage(errorString, Color.red);
+                    ShowMessage(errorString, InfoLevel.Error);
 
                 }
                 else
@@ -240,57 +376,7 @@ namespace MenuUi.Scripts.Login
             string password1 = _registerPasswordInputField.text;
             string password2 = _registerPassword2InputField.text;
 
-            // Checks empty fields and password requirements
-            if (_registerUsernameInputField.text == string.Empty || _registerPasswordInputField.text == string.Empty || _registerPassword2InputField.text == string.Empty)
-            {
-                ShowMessage(ERROR_EMPTY_FIELD, Color.red);
-                if (_registerUsernameInputField.text == string.Empty) _registerUsernameInputFieldError.gameObject.SetActive(true);
-                else if(_registerPasswordInputField.text == string.Empty) _registerPasswordInputFieldError.gameObject.SetActive(true);
-                else if(_registerPassword2InputField.text == string.Empty) _registerPassword2InputFieldError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (password1 != password2)
-            {
-                ShowMessage(ERROR_PASSWORD_MISMATCH, Color.red);
-                _registerPassword2InputFieldError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (password1.Length < _passwordMinLength)
-            {
-                ShowMessage(ERROR_PASSWORD_TOO_SHORT, Color.red);
-                _registerPasswordInputFieldError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (username.Length < _userNameMinLength)
-            {
-                ShowMessage(ERROR_USERNAME_TOO_SHORT, Color.red);
-                _registerUsernameInputFieldError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (!_registerAgeVerificationToggle.isOn)
-            {
-                ShowMessage(ERROR_AGE_CONSENT_NOT_GRANTED, Color.red);
-                _registerAgeVerificationToggleError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (!_privacyPolicyAuthToggle.isOn)
-            {
-                ShowMessage(ERROR_PRIVACY_CONCENT_NOT_GRANTED, Color.red);
-                _privacyPolicyToggleError.gameObject.SetActive(true);
-                return;
-            }
-
-            if (!_informationPolicyAuthToggle.isOn)
-            {
-                ShowMessage(ERROR_INFORMATION_CONCENT_NOT_GRANTED, Color.red);
-                _informationPolicyToggleError.gameObject.SetActive(true);
-                return;
-            }
+            if (!RegisterInfoValidity()) return;
 
             string body;
 
@@ -343,7 +429,7 @@ namespace MenuUi.Scripts.Login
                             break;
                     }
 
-                    ShowMessage(errorString, Color.red);
+                    ShowMessage(errorString, InfoLevel.Error);
                 }
                 else
                 {
@@ -351,7 +437,7 @@ namespace MenuUi.Scripts.Login
                     string username = _registerUsernameInputField.text;
                     string password = _registerPasswordInputField.text;
                     _returnToSignInScreenButton.onClick.Invoke();
-                    ShowMessage(REGISTERING_SUCCESS, Color.green);
+                    ShowMessage(REGISTERING_SUCCESS, InfoLevel.Info);
                     JObject result = JObject.Parse(request.downloadHandler.text);
                     //Debug.Log(request.downloadHandler.text);
                     if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
@@ -362,11 +448,88 @@ namespace MenuUi.Scripts.Login
             }));
         }
 
+        private void OpenRegister()
+        {
+            _registerWindow.SetActive(true);
+            _signInWindow.SetActive(false);
+        }
+
+        private void CloseRegister()
+        {
+            _registerWindow.SetActive(false);
+            _signInWindow.SetActive(true);
+        }
+
         private void OpenPasswordHintPanel()
         {
+            ClearMessage();
+
+            if (!RegisterInfoValidity()) return;
+
             _passwordHintWindow.SetActive(true);
             _registerPasswordHintAnswerInputField.text = string.Empty;
             _registerPasswordHintInputField.text = string.Empty;
+        }
+
+        private bool RegisterInfoValidity()
+        {
+            string username = _registerUsernameInputField.text;
+            string password1 = _registerPasswordInputField.text;
+            string password2 = _registerPassword2InputField.text;
+
+            // Checks empty fields and password requirements
+            if (_registerUsernameInputField.text == string.Empty || _registerPasswordInputField.text == string.Empty || _registerPassword2InputField.text == string.Empty)
+            {
+                ShowMessage(ERROR_EMPTY_FIELD, InfoLevel.Error);
+                if (_registerUsernameInputField.text == string.Empty) _registerUsernameInputFieldError.gameObject.SetActive(true);
+                else if (_registerPasswordInputField.text == string.Empty) _registerPasswordInputFieldError.gameObject.SetActive(true);
+                else if (_registerPassword2InputField.text == string.Empty) _registerPassword2InputFieldError.gameObject.SetActive(true);
+                return false;
+            }
+
+            if (password1 != password2)
+            {
+                ShowMessage(ERROR_PASSWORD_MISMATCH, InfoLevel.Error);
+                _registerPassword2InputFieldError.gameObject.SetActive(true);
+                return false;
+            }
+
+            if (password1.Length < _passwordMinLength)
+            {
+                ShowMessage(ERROR_PASSWORD_TOO_SHORT, InfoLevel.Error);
+                _registerPasswordInputFieldError.gameObject.SetActive(true);
+                return false;
+            }
+
+            if (username.Length < _userNameMinLength)
+            {
+                ShowMessage(ERROR_USERNAME_TOO_SHORT, InfoLevel.Error);
+                _registerUsernameInputFieldError.gameObject.SetActive(true);
+                return false;
+            }
+
+            if (!_registerAgeVerificationToggle.isOn && !_registerParentalAuthToggle.isOn)
+            {
+                ShowMessage(ERROR_AGE_CONSENT_NOT_GRANTED, InfoLevel.Error);
+                _registerAgeVerificationToggleError.gameObject.SetActive(true);
+                return false;
+            }
+
+            if (!_privacyPolicyAuthToggle.isOn)
+            {
+                ShowMessage(ERROR_PRIVACY_CONCENT_NOT_GRANTED, InfoLevel.Error);
+                _privacyPolicyToggleError.gameObject.SetActive(true);
+                return false;
+            }
+
+            if (!_informationPolicyAuthToggle.isOn)
+            {
+                ShowMessage(ERROR_INFORMATION_CONCENT_NOT_GRANTED, InfoLevel.Error);
+                _informationPolicyToggleError.gameObject.SetActive(true);
+                return false;
+            }
+
+            return true;
         }
 
         public void GuestLogin()
@@ -393,7 +556,7 @@ namespace MenuUi.Scripts.Login
                             break;
                     }
 
-                    ShowMessage(errorString, Color.red);
+                    ShowMessage(errorString, InfoLevel.Error);
                 }
                 else
                 {
@@ -408,9 +571,30 @@ namespace MenuUi.Scripts.Login
             }));
         }
 
-        private void ShowMessage(string message, Color textColor)
+        private void ShowMessage(string message, InfoLevel level)
         {
-            SignalBus.OnChangePopupInfoSignal(message);
+            OverlayPanelCheck.ActivateInfoPopup(level, message);
+        }
+
+        private void ResetAllFields()
+        {
+            _logInUsernameInputField.text = string.Empty;
+            _logInPasswordInputField.text = string.Empty;
+            _registerUsernameInputField.text = string.Empty;
+            _registerPasswordInputField.text = string.Empty;
+            _registerPassword2InputField.text = string.Empty;
+            _registerPasswordHintInputField.text = string.Empty;
+            _registerPasswordHintAnswerInputField.text = string.Empty;
+
+
+            _logInPasswordVisibilityToggle.isOn = false;
+            _registerPasswordVisibilityToggle.isOn = false;
+            _registerPassword2VisibilityToggle.isOn = false;
+            _privacyPolicyAuthToggle.isOn = false;
+            _registerAgeVerificationCheckToggle.isOn = false;
+            _registerAgeVerificationToggle.isOn = false;
+            _registerParentalAuthToggle.isOn = false;
+            _informationPolicyAuthToggle.isOn = false;
         }
 
         private void ClearMessage()

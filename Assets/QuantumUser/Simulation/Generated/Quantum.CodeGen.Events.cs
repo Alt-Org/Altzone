@@ -241,14 +241,11 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventBattleLastRowWallDestroyed BattleLastRowWallDestroyed(Int32 WallNumber, BattleTeamNumber Team, FP LightrayRotation, BattleLightrayColor LightrayColor, BattleLightraySize LightraySize) {
+      public EventBattleLastRowWallDestroyed BattleLastRowWallDestroyed(BattleTeamNumber Team, Int32 WallNumber) {
         if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventBattleLastRowWallDestroyed>(EventBattleLastRowWallDestroyed.ID);
-        ev.WallNumber = WallNumber;
         ev.Team = Team;
-        ev.LightrayRotation = LightrayRotation;
-        ev.LightrayColor = LightrayColor;
-        ev.LightraySize = LightraySize;
+        ev.WallNumber = WallNumber;
         _f.AddEvent(ev);
         return ev;
       }
@@ -868,11 +865,8 @@ namespace Quantum {
   }
   public unsafe partial class EventBattleLastRowWallDestroyed : EventBase {
     public new const Int32 ID = 20;
-    public Int32 WallNumber;
     public BattleTeamNumber Team;
-    public FP LightrayRotation;
-    public BattleLightrayColor LightrayColor;
-    public BattleLightraySize LightraySize;
+    public Int32 WallNumber;
     protected EventBattleLastRowWallDestroyed(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -890,11 +884,8 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked {
         var hash = 131;
-        hash = hash * 31 + WallNumber.GetHashCode();
         hash = hash * 31 + Team.GetHashCode();
-        hash = hash * 31 + LightrayRotation.GetHashCode();
-        hash = hash * 31 + LightrayColor.GetHashCode();
-        hash = hash * 31 + LightraySize.GetHashCode();
+        hash = hash * 31 + WallNumber.GetHashCode();
         return hash;
       }
     }

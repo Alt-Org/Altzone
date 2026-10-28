@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Player;
 using TMPro;
 using UnityEngine;
@@ -36,11 +37,9 @@ public class AvatarShopCategoryUI : MonoBehaviour
 
         foreach (CategoryGroup categoryGroup in categoryGroups)
         {
-            Transform titleTransform = categoryGroup.Group.transform.GetChild(0);
+            string title = categoryGroup.AvatarPiece.GetString();
 
-            TMP_Text titleText = titleTransform.GetComponentInChildren<TMP_Text>();
-
-            options.Add(titleText.text);
+            options.Add(title);
         }
 
         categoryDropdown.AddOptions(options);

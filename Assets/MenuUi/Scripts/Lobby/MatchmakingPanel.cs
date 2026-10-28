@@ -1,10 +1,11 @@
 using Altzone.Scripts.Lobby;
+using MenuUi.Scripts.Lobby.InLobby;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using MenuUi.Scripts.Lobby.InLobby;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.Lobby
 {
@@ -16,6 +17,53 @@ namespace MenuUi.Scripts.Lobby
         [SerializeField] private TMP_Text _matchmakingText;
         [SerializeField] private Button _cancelButton;
         [SerializeField] private TMP_Text _cancelButtonText;
+
+        [Header("Texts")]
+        [SerializeField] private string _searchingForRoomTextFI;
+        [SerializeField] private string _searchingForRoomTextEN;
+        [SerializeField] private string _joiningRoomTextFI;
+        [SerializeField] private string _joiningRoomTextEN;
+        [SerializeField] private string _matchStartingTextFI;
+        [SerializeField] private string _matchStartingTextEN;
+
+        private string SearchingForRoomText
+        {
+            get
+            {
+                if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return _searchingForRoomTextFI;
+                else if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                    return _searchingForRoomTextEN;
+                else
+                    return _searchingForRoomTextFI;
+            }
+        }
+
+        private string JoiningRoomText
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return _joiningRoomTextFI;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                    return _joiningRoomTextEN;
+                else
+                    return _joiningRoomTextFI;
+            }
+        }
+
+        private string MatchStartingText
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return _matchStartingTextFI;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                    return _matchStartingTextEN;
+                else
+                    return _matchStartingTextFI;
+            }
+        }
 
         private void Awake()
         {
@@ -116,9 +164,9 @@ namespace MenuUi.Scripts.Lobby
             }
             catch { }
 
-            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedGameType, true));
+            this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedMatchmakingType, true));
             bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
-            if (!isLeader && InLobbyController.SelectedGameType != GameType.Clan2v2 && InLobbyController.SelectedGameType != GameType.FriendLobby)
+            if (!isLeader && InLobbyController.SelectedMatchmakingType != MatchmakingType.Clan2v2 && InLobbyController.SelectedMatchmakingType != MatchmakingType.FriendLobby)
             {
                 Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
             }
@@ -130,11 +178,11 @@ namespace MenuUi.Scripts.Lobby
             {
                 if (secondsRemaining > 0)
                 {
-                    _matchmakingText.text = $"Peli alkaa {secondsRemaining}...";
+                    _matchmakingText.text = string.Format(MatchStartingText, secondsRemaining);
                 }
                 else if (secondsRemaining == 0)
                 {
-                    _matchmakingText.text = "Peli alkaa!";
+                    _matchmakingText.text = string.Format(MatchStartingText, secondsRemaining);
                 }
                 else
                 {
@@ -194,17 +242,17 @@ namespace MenuUi.Scripts.Lobby
                     return;
                 }
 
-                _matchmakingText.text = isQueue ? "Jonossa..." : "Etsitään peliä...";
+                _matchmakingText.text = isQueue ? SearchingForRoomText : JoiningRoomText;
             }
             catch
             {
-                _matchmakingText.text = "Etsitään peliä...";
+                _matchmakingText.text = SearchingForRoomText;
             }
         }
 
         private void OnFailedToStartMatchmakingGame()
         {
-            PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin aloittamisessa, lopetetaan pelin etsiminen.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Virhe pelin aloittamisessa, lopetetaan pelin etsiminen.");
         }
     }
 }

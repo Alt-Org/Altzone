@@ -124,15 +124,15 @@ namespace Altzone.Scripts.Model.Poco.Game
             Id = id;
             ServerID = character._id;
             Name = string.IsNullOrEmpty(character.name) ? character.name : GetCharacterName(Id);
-            _hp = character.hp;
+            _hp = character.hp > 6 || character.hp < 1 ? _characterBase.Hp : character.hp;
             HpSegmentCount = 0;
-            _speed = _characterBase.Speed;
+            _speed = character.speed > 6 || character.speed < 1 ? _characterBase.Speed : character.speed;
             SpeedSegmentCount = 0;
-            _characterSize = character.size;
+            _characterSize = character.size > 6 || character.size < 1 ? _characterBase.CharacterSize : character.size;
             CharacterSizeSegmentCount = 0;
-            _attack = character.attack;
+            _attack = character.attack > 6 || character.attack < 1 ? _characterBase.Attack : character.attack;
             AttackSegmentCount = 0;
-            _defence = character.defence;
+            _defence = character.defence > 6 || character.defence < 1 ? _characterBase.Defence : character.defence;
             DefenceSegmentCount = 0;
         }
 

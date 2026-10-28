@@ -7,13 +7,16 @@
 /// Handles lightray effects visual functionality.
 
 // System usings
-using System.Collections.Generic;
+using System;
 
 // Unity usings
 using UnityEngine;
 
 // Quantum usings
 using Quantum;
+
+// Battle view usings
+using Battle.View.Game;
 
 namespace Battle.View.Effect
 {
@@ -28,38 +31,54 @@ namespace Battle.View.Effect
         /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
         /// @{
 
-        /// <summary>[SerializeField] Array of the red lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</summary>
-        /// @ref BattleLightrayEffectViewController-SerializeFields
-        [SerializeField] private GameObject[] _lightraysRed;
+        /// <summary>[SerializeField] Array containing references to team alpha's <see cref="Lightray">Lightrays</see>.</summary>
+        /// Part of @ref BattleLightrayEffectViewController-SerializeFields "SerializeField variables"
+        [Tooltip("References to team alpha's lightrays")]
+        [SerializeField] private Lightray[] _lightraysTeamAlpha;
 
-        /// <summary>[SerializeField] Array of the blue lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</summary>
-        /// @ref BattleLightrayEffectViewController-SerializeFields
-        [SerializeField] private GameObject[] _lightraysBlue;
+        /// <summary>[SerializeField] Array containing references to team beta's <see cref="Lightray">Lightrays</see>.</summary>
+        /// Part of @ref BattleLightrayEffectViewController-SerializeFields "SerializeFields variables"
+        [Tooltip("References to team beta's lightrays")]
+        [SerializeField] private Lightray[] _lightraysTeamBeta;
 
         /// @}
 
         /// <summary>
-        /// Activates the light ray which correspons to the wall number and color.
+        /// Activates a lightray associated with a %SoulWall segment that belongs to a team based on <paramref name="teamNumber"/> and <paramref name="wallNumber"/>.
         /// </summary>
         ///
-        /// <param name="wallNumber">The wall number which lightray to spawn.</param>
-        /// <param name="color">The lightray's BattleLightrayColor which to spawn.</param>
-        public void SpawnLightray(int wallNumber, BattleLightrayColor color)
+        /// <param name="teamNumber">Team number of the desired team.</param>
+        /// <param name="wallNumber">The wall number corresponding to the desired lightray.</param>
+        public void ActivateLightray(BattleTeamNumber teamNumber, int wallNumber)
         {
-            switch (color)
+            Lightray lightray = teamNumber switch
             {
-                case BattleLightrayColor.Red:
-                    _lightraysRed[wallNumber].SetActive(true);
-                    _spawnedLightrays.Add(_lightraysRed[wallNumber]);
-                    break;
-                case BattleLightrayColor.Blue:
-                    _lightraysBlue[wallNumber].SetActive(true);
-                    _spawnedLightrays.Add(_lightraysBlue[wallNumber]);
-                    break;
-            }
+                BattleTeamNumber.TeamAlpha => _lightraysTeamAlpha[wallNumber],
+                BattleTeamNumber.TeamBeta  => _lightraysTeamBeta[wallNumber],
+
+                _ => throw new ArgumentException(string.Format("{0} is not a valid team number for activating light rays", teamNumber))
+            };
+
+            Sprite lightraySprite = teamNumber == BattleGameViewController.LocalPlayerTeam ? lightray.Blue : lightray.Red;
+
+            lightray.GameObject.GetComponent<SpriteRenderer>().sprite = lightraySprite;
+            lightray.GameObject.SetActive(true);
         }
 
-        /// <value>List of currently active lightrays.</value>
-        private List<GameObject> _spawnedLightrays = new();
+        /// <summary>
+        /// Private helper struct for holding a reference to a lightray gameobject and it's sprite variants.
+        /// </summary>
+        [Serializable]
+        private struct Lightray
+        {
+            /// <summary>Reference to the lightray gameobject.</summary>
+            public GameObject GameObject;
+
+            /// <summary>Reference to the blue sprite variant of the lightray.</summary>
+            public Sprite Blue;
+
+            /// <summary>Reference to the red sprite variant of the lightray.</summary>
+            public Sprite Red;
+        }
     }
 }

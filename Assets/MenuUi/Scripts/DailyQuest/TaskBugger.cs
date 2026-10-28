@@ -8,12 +8,16 @@ using UnityEngine.UI;
 public class TaskBugger : DailyTaskLongPress, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] private TextMeshProUGUI _buggedText;
-    [SerializeField] private Toggle _toggle;
+
+    [SerializeField] private string _buggedTextString;
 
     [SerializeField] private GameObject _wheelPrefab;
 
+    private string _originalText;
+
     private void OnEnable()
     {
+        _originalText = _buggedText.text;
         StartCoroutine(ToggleBug());
     }
 
@@ -63,17 +67,11 @@ public class TaskBugger : DailyTaskLongPress, IPointerDownHandler, IPointerUpHan
         yield return null;
         if (CurrentTaskIsFindBug())
         {
-            _buggedText.SetText("##Text_Parental_Internet_English");
-            _toggle.enabled = false;
-            //_button.enabled = true;
-            //_button.onClick.AddListener(ClickBuggedText);
+            _buggedText.SetText(_buggedTextString);
         }
         else
         {
-            _buggedText.SetText("Salli InternetLinkit");
-            _toggle.enabled = true;
-            //_button.enabled = false;
-            //_button.onClick.RemoveListener(ClickBuggedText);
+            _buggedText.SetText(_originalText);
         }
     }
 

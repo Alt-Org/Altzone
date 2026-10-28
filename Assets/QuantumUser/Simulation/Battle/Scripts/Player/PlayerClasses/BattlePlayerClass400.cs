@@ -35,7 +35,8 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
         /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
-        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData)
+        /// <param name="selected">Is the character selected or not.</param>
+        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData, bool selected)
         {
             BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
 
@@ -95,7 +96,10 @@ namespace Battle.QSimulation.Player
             BattlePlayerClass400DataQComponent* data = GetClassData(f, playerEntity);
             if (!data->IsHoldingProjectile) return;
 
-            playerHandle.AllowCharacterSwapping = false;
+            if (!BattleParameters.GetIsTestFlipperGame(f))
+            {
+                playerHandle.AllowCharacterSwapping = false;
+            }
 
             BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
             if (teammateHandle.PlayState.IsOutOfPlay()) return;
@@ -126,7 +130,11 @@ namespace Battle.QSimulation.Player
                     BattleProjectileQSystem.UpdateVelocity(f, projectile, newDirection, BattleProjectileQSystem.SpeedChange.Increment, passed: true);
                     BattleProjectileQSystem.SetHeld(projectile, false);
                     data->IsHoldingProjectile = false;
-                    playerHandle.AllowCharacterSwapping = true;
+
+                    if (!BattleParameters.GetIsTestFlipperGame(f))
+                    {
+                        playerHandle.AllowCharacterSwapping = true;
+                    }
                 }
             }
         }

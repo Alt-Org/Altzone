@@ -1,14 +1,15 @@
-using Altzone.Scripts.Lobby;
+using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
+using Altzone.Scripts.Lobby;
 using MenuUi.Scripts.Lobby;
 using MenuUi.Scripts.Lobby.CreateRoom;
+using MenuUi.Scripts.Lobby.InRoom;
+using MenuUi.Scripts.Lobby.SelectedCharacters;
 using MenuUi.Scripts.Signals;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System.Collections;
-using MenuUi.Scripts.Lobby.SelectedCharacters;
 
 /// <summary>
 /// Handles switching Battle Popup panels to a battle room and back to the main panel.
@@ -18,6 +19,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject _topPanel;
     [SerializeField] private GameObject _border;
+    [SerializeField] private GameObject _characterConfirmPanel;
     [SerializeField] private GameObject _mainPanel;
     [SerializeField] private GameObject _createCustomRoom;
     [SerializeField] private GameObject _custom2v2WaitingRoom;
@@ -30,6 +32,8 @@ public class BattlePopupPanelManager : MonoBehaviour
     {
         LobbyManager.OnMatchmakingRoomEntered += SwitchToMatchmakingPanel;
         SignalBus.OnCustomRoomSettingsRequested += OpenCustomRoomSettings;
+        InRoomController.OnLeaveRoom += ReturnToMain;
+        CharacterConfirmPanelHandler.OnLockCharacters += SwitchRoom;
         WireMainPanelButtons();
         WireCreateRoomButtons();
     }
@@ -38,9 +42,18 @@ public class BattlePopupPanelManager : MonoBehaviour
     {
         LobbyManager.OnMatchmakingRoomEntered -= SwitchToMatchmakingPanel;
         SignalBus.OnCustomRoomSettingsRequested -= OpenCustomRoomSettings;
+        InRoomController.OnLeaveRoom -= ReturnToMain;
+        CharacterConfirmPanelHandler.OnLockCharacters -= SwitchRoom;
     }
 
-    public void SwitchRoom(GameType gameType)
+    public void OpenConfirmWindow(MatchmakingType gameType)
+    {
+        ClosePanels();
+        _characterConfirmPanel.SetActive(true);
+        _characterConfirmPanel.GetComponent<CharacterConfirmPanelHandler>().SetInfo(gameType);
+    }
+
+    public void SwitchRoom(MatchmakingType gameType)
     {
         ClosePanels();
 
@@ -68,14 +81,14 @@ public class BattlePopupPanelManager : MonoBehaviour
 
         switch (gameType)
         {
-            case GameType.Custom:
+            case MatchmakingType.Custom:
                 // If already in a room, prefer showing the correct custom waiting room based on room's custom game mode
                 if (PhotonRealtimeClient.InRoom)
                 {
                     try
                     {
-                        int mode = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.CustomGameModeKey, (int)CustomGameMode.TwoVersusTwo);
-                        SwitchCustomRoom((CustomGameMode)mode);
+                        int mode = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.GameTypeKey, (int)GameType.BattlePingPong);
+                        SwitchCustomRoom((GameType)mode);
                     }
                     catch
                     {
@@ -87,9 +100,9 @@ public class BattlePopupPanelManager : MonoBehaviour
                     ShowMainPanel();
                 }
                 break;
-            case GameType.FriendLobby:
-            case GameType.Clan2v2:
-            case GameType.Random2v2:
+            case MatchmakingType.FriendLobby:
+            case MatchmakingType.Clan2v2:
+            case MatchmakingType.Random2v2:
                 if (inMatchmakingOrQueue)
                 {
                     SwitchToMatchmakingPanel(isLeader);
@@ -97,6 +110,7 @@ public class BattlePopupPanelManager : MonoBehaviour
                 else
                 {
                     _clanAndRandom2v2WaitingRoom.SetActive(true);
+                    _topPanel.SetActive(true);
                     // Start a short delayed check to catch race where matchmaking join finishes shortly after popup opens
                     try
                     {
@@ -137,13 +151,14 @@ public class BattlePopupPanelManager : MonoBehaviour
         // Ensure the create-room UI has its selectors initialized before showing
         if (_createCustomRoom != null)
         {
-            var createComp = _createCustomRoom.GetComponent<MenuUi.Scripts.Lobby.CreateRoom.CreateRoomCustom>();
+            var createComp = _createCustomRoom.GetComponent<CreateRoomCustom>();
             if (createComp != null && !createComp.IsCustomRoomOptionsReady)
             {
                 createComp.InitializeCustomRoomOptions();
             }
             WireCreateRoomButtons();
             _createCustomRoom.SetActive(true);
+            _topPanel.SetActive(true);
         }
     }
 
@@ -221,15 +236,17 @@ public class BattlePopupPanelManager : MonoBehaviour
         return null;
     }
 
-    private void SwitchCustomRoom(CustomGameMode mode)
+    private void SwitchCustomRoom(GameType mode)
     {
         switch (mode)
         {
-            case CustomGameMode.TwoVersusTwo:
+            case GameType.BattlePingPong:
+            case GameType.BattleFlipperGame:
                 _custom2v2WaitingRoom.SetActive(true);
+                _topPanel.SetActive(false);
                 break;
             default:
-                _mainPanel.SetActive(true);
+                ShowMainPanel();
                 break;
         }
     }
@@ -240,13 +257,14 @@ public class BattlePopupPanelManager : MonoBehaviour
         ClosePanels();
         _matchmakingPanel.SetCancelButton(isLeader);
         _matchmakingPanel.gameObject.SetActive(true);
+        _topPanel.SetActive(true);
     }
 
     public void ClosePanels()
     {
         foreach (Transform t in transform)
         {
-            if (ReferenceEquals(t.gameObject, _topPanel)) continue;
+            //if (ReferenceEquals(t.gameObject, _topPanel)) continue;
             if (ReferenceEquals(t.gameObject, _border)) continue;
             t.gameObject.SetActive(false);
         }
@@ -271,6 +289,7 @@ public class BattlePopupPanelManager : MonoBehaviour
         }
 
         _mainPanel.SetActive(true);
+        _topPanel.SetActive(true);
 
         if (_refreshMainPanelHolder != null)
         {

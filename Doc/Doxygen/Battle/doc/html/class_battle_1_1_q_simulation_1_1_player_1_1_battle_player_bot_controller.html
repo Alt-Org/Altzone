@@ -97,18 +97,22 @@ $(function(){initNavTree('class_battle_1_1_q_simulation_1_1_player_1_1_battle_pl
 <p>Handles the bot logic and implements helper methods for handling bots.  
  <a href="#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:BotInputData" id="r_BotInputData"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_controller_1_1_bot_input_data.html">BotInputData</a></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a2364c5edcad94178853fe3e7bb7dfa25" id="r_a2364c5edcad94178853fe3e7bb7dfa25"><td class="memItemLeft">static <a class="el" href="struct_quantum_1_1_battle_character_base.html">BattleCharacterBase</a>[]&#160;</td><td class="memItemRight"><a class="el" href="#a2364c5edcad94178853fe3e7bb7dfa25">GetBotCharacters</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f)</td></tr>
 <tr class="memdesc:a2364c5edcad94178853fe3e7bb7dfa25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper method to get characters for a bot.  <br /></td></tr>
-<tr class="memitem:a502c0487591e8218cae5b9454d156f05" id="r_a502c0487591e8218cae5b9454d156f05"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a502c0487591e8218cae5b9454d156f05">GetBotInput</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, bool isInPlay, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *playerData, <a class="el" href="struct_quantum_1_1_input.html">Input</a> *outBotInput)</td></tr>
-<tr class="memdesc:a502c0487591e8218cae5b9454d156f05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles bot AI by predicting the projectile and generating the input for a bot.  <br /></td></tr>
+<tr class="memitem:aca3fd73e8f7451f30d16ca3d02cbc4b5" id="r_aca3fd73e8f7451f30d16ca3d02cbc4b5"><td class="memItemLeft">static <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_controller_1_1_bot_input_data.html">BotInputData</a>&#160;</td><td class="memItemRight"><a class="el" href="#aca3fd73e8f7451f30d16ca3d02cbc4b5">GetBotInput</a> (<a class="el" href="class_quantum_1_1_frame.html">Frame</a> f, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a> playerHandle)</td></tr>
+<tr class="memdesc:aca3fd73e8f7451f30d16ca3d02cbc4b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles bot AI logic and generates <a class="el" href="struct_quantum_1_1_input.html">Quantum Input</a> and/or <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_command.html">Battle Command</a>.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Handles the bot logic and implements helper methods for handling bots. </p>
 <p><a class="el" href="page-concepts-player.html#page-concepts-player-overview" title="Overview">{Player Overview}</a><br  />
  <a class="el" href="page-concepts-player.html#page-concepts-player-simulation-overview" title="Simulation Code Overview">{Player Simulation Code Overview}</a></p>
-<p>Bot AI is handled by generating input in <a class="el" href="#a502c0487591e8218cae5b9454d156f05" title="GetBotInput">GetBotInput</a> that can be processed by the player like any other <a class="el" href="struct_quantum_1_1_input.html" title="A Quantum input struct that defines the player input data that is used in the game.">Input</a>. Bot behavior and other spec settings are defined in <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html" title="BattlePlayerBotQSpec">BattlePlayerBotQSpec</a>. </p>
+<p>Bot AI is handled by generating input in <a class="el" href="#aca3fd73e8f7451f30d16ca3d02cbc4b5" title="GetBotInput">GetBotInput</a> that can be processed by the player like any other <a class="el" href="struct_quantum_1_1_input.html" title="A Quantum input struct that defines the player input data that is used in the game.">Input</a>. Bot behavior and other spec settings are defined in <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html" title="BattlePlayerBotQSpec">BattlePlayerBotQSpec</a>. </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="a2364c5edcad94178853fe3e7bb7dfa25" name="a2364c5edcad94178853fe3e7bb7dfa25"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2364c5edcad94178853fe3e7bb7dfa25">&#9670;&#160;</a></span>GetBotCharacters()</h2>
@@ -149,8 +153,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a502c0487591e8218cae5b9454d156f05" name="a502c0487591e8218cae5b9454d156f05"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a502c0487591e8218cae5b9454d156f05">&#9670;&#160;</a></span>GetBotInput()</h2>
+<a id="aca3fd73e8f7451f30d16ca3d02cbc4b5" name="aca3fd73e8f7451f30d16ca3d02cbc4b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca3fd73e8f7451f30d16ca3d02cbc4b5">&#9670;&#160;</a></span>GetBotInput()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -159,24 +163,14 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Battle.QSimulation.Player.BattlePlayerBotController.GetBotInput </td>
+          <td class="memname"><a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_controller_1_1_bot_input_data.html">BotInputData</a> Battle.QSimulation.Player.BattlePlayerBotController.GetBotInput </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_quantum_1_1_frame.html">Frame</a></td>          <td class="paramname"><span class="paramname"><em>f</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>isInPlay</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html">BattlePlayerDataQComponent</a> *</td>          <td class="paramname"><span class="paramname"><em>playerData</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="struct_quantum_1_1_input.html">Input</a> *</td>          <td class="paramname"><span class="paramname"><em>outBotInput</em></span>&#160;)</td>
+          <td class="paramtype"><a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html">BattlePlayerManager.PlayerHandle</a></td>          <td class="paramname"><span class="paramname"><em>playerHandle</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -186,21 +180,29 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Handles bot AI by predicting the projectile and generating the input for a bot. </p>
+<p>Handles bot AI logic and generates <a class="el" href="struct_quantum_1_1_input.html">Quantum Input</a> and/or <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_command.html">Battle Command</a>. </p>
+<p>Bot behavior:</p><ul>
+<li>Selects a random character on random intervals or if none is selected.</li>
+<li>Character movement: Moves intentionally or "misclicks" based on <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#a2eeb433cb7bfd46d176ba986bbfc73fa" title="Battle.QSimulation.Player.BattlePlayerBotQSpec.MissClickChance">BattlePlayerBotQSpec.MissClickChance</a>.<ul>
+<li>Intentional movement: Predicts and intercepts the projectile, with some inaccuracy based on <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#af3037636c7eea41b6b141b1d9fc21324" title="Battle.QSimulation.Player.BattlePlayerBotQSpec.Inaccuracy">BattlePlayerBotQSpec.Inaccuracy</a>.</li>
+<li>Misclick: Performs a random movement.</li>
+</ul>
+</li>
+<li>Gives up when teammate gives up.</li>
+</ul>
 <p>Bot behavior spec settings is defined in <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html" title="BattlePlayerBotQSpec">BattlePlayerBotQSpec</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">f</td><td>Current simulation frame.</td></tr>
-    <tr><td class="paramname">isInPlay</td><td>Bool to check if bot is in play.</td></tr>
-    <tr><td class="paramname">playerData</td><td>Pointer to player's <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html" title="Contains player&#39;s data, including ids, stats, position, size, hitboxlists, etc.">BattlePlayerDataQComponent</a>.</td></tr>
-    <tr><td class="paramname">outBotInput</td><td>Pointer to where bot's Quantum <a class="el" href="struct_quantum_1_1_input.html" title="A Quantum input struct that defines the player input data that is used in the game.">Input</a> will be written.</td></tr>
+    <tr><td class="paramname">playerHandle</td><td>The player handle of the bot.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_controller_1_1_bot_input_data.html">BotInputData</a> struct, which contains the generated inputs.</dd></dl>
 
-<p class="reference">References <a class="el" href="struct_quantum_1_1_battle_grid_position.html#a39cc0c5f64c37b36598d3fd5fd8b793e">Quantum.BattleGridPosition.Col</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#a576eec162f5ef634ed082d075e10c2fc">Battle.QSimulation.Game.BattleGridManager.Columns</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_q_config.html#ae356308e5b685d1364890f62acde6eac">Battle.QSimulation.Game.BattleQConfig.GetPlayerBotSpec()</a>, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#afdf8e6ad775a25f63695598cad1370f1">Quantum.BattlePlayerDataQComponent.GridExtendBottom</a>, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#afe0f8b4972edc33d4c9c4f8d15fbb919">Quantum.BattlePlayerDataQComponent.GridExtendTop</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#af3037636c7eea41b6b141b1d9fc21324">Battle.QSimulation.Player.BattlePlayerBotQSpec.Inaccuracy</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#a716ffa23ddc40b2903c04b6a17477c7d">Battle.QSimulation.Player.BattlePlayerBotQSpec.LookAheadTimeSec</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#a2eeb433cb7bfd46d176ba986bbfc73fa">Battle.QSimulation.Player.BattlePlayerBotQSpec.MissClickChance</a>, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ab36041316c0fdbd76f97f9ac6e2c32f2">Quantum.BattlePlayerDataQComponent.MovementCooldownSec</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#a4ef6e9fd782fd6279cfae0ea1b5bd2e2">Battle.QSimulation.Player.BattlePlayerBotQSpec.MovementCooldownSecMax</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#af4a45492a57031b3b33f7ff7b1d0ebe7">Battle.QSimulation.Player.BattlePlayerBotQSpec.MovementCooldownSecMin</a>, <a class="el" href="struct_quantum_1_1_battle_grid_position.html#a3be52bbb464c0841990a7abd86ed3d02">Quantum.BattleGridPosition.Row</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#ace962d431389803751aa7f3cce96a842">Battle.QSimulation.Game.BattleGridManager.TeamAlphaFieldEnd</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#ab93b5be05e95ff896702bb8abfbc3a0d">Battle.QSimulation.Game.BattleGridManager.TeamAlphaFieldStart</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#a681a370d5605253edc59a5d517828b20">Battle.QSimulation.Game.BattleGridManager.TeamBetaFieldEnd</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#a86cb7aa2983f09c6f184b3779171f739">Battle.QSimulation.Game.BattleGridManager.TeamBetaFieldStart</a>, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#a40652aecb187597e2de2d681ef70e3a2">Quantum.BattlePlayerDataQComponent.TeamNumber</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#a1c434cd2d9ff2d4db85401ef97b851fa">Battle.QSimulation.Game.BattleGridManager.WorldPositionToGridPosition()</a>.</p>
+<p class="reference">References <a class="el" href="class_quantum_1_1_constants.html#ab6a231060b970e4d854bd535e45e672f">Quantum.Constants.BATTLE_PLAYER_CHARACTER_COUNT</a>, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#ace5586729e9e6d3a0b9b1ef6f2046009">Quantum.BattlePlayerDataQComponent.BotCharacterSwapTimerSec</a>, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#a3271d3b990c018eb51a4c75292e47e3d">Quantum.BattlePlayerDataQComponent.BotMovementCooldownSec</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#ab1a564a04ef8f3d51c1157dd05bd6f0d">Battle.QSimulation.Player.BattlePlayerBotQSpec.CharacterSwapTimeSecMax</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#aa74dfc46774ff79b4e75868bc1f2c81f">Battle.QSimulation.Player.BattlePlayerBotQSpec.CharacterSwapTimeSecMin</a>, <a class="el" href="struct_quantum_1_1_battle_grid_position.html#a39cc0c5f64c37b36598d3fd5fd8b793e">Quantum.BattleGridPosition.Col</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#a576eec162f5ef634ed082d075e10c2fc">Battle.QSimulation.Game.BattleGridManager.Columns</a>, <a class="el" href="struct_quantum_1_1_battle_player_entity_ref.html#ad079b3a0d05863994b8946c8994e724e">Quantum.BattlePlayerEntityRef.GetDataQComponent()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_q_config.html#ae356308e5b685d1364890f62acde6eac">Battle.QSimulation.Game.BattleQConfig.GetPlayerBotSpec()</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#ad3a33cbca221e93bbd4807b86a032a47">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.GetTeammateHandle()</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#aa7591dc4e1b367c7af88c3d73652a56d">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.GiveUpState</a>, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#afdf8e6ad775a25f63695598cad1370f1">Quantum.BattlePlayerDataQComponent.GridExtendBottom</a>, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#afe0f8b4972edc33d4c9c4f8d15fbb919">Quantum.BattlePlayerDataQComponent.GridExtendTop</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#af3037636c7eea41b6b141b1d9fc21324">Battle.QSimulation.Player.BattlePlayerBotQSpec.Inaccuracy</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#a716ffa23ddc40b2903c04b6a17477c7d">Battle.QSimulation.Player.BattlePlayerBotQSpec.LookAheadTimeSec</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#a2eeb433cb7bfd46d176ba986bbfc73fa">Battle.QSimulation.Player.BattlePlayerBotQSpec.MissClickChance</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#a4ef6e9fd782fd6279cfae0ea1b5bd2e2">Battle.QSimulation.Player.BattlePlayerBotQSpec.MovementCooldownSecMax</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html#af4a45492a57031b3b33f7ff7b1d0ebe7">Battle.QSimulation.Player.BattlePlayerBotQSpec.MovementCooldownSecMin</a>, <a class="el" href="struct_quantum_1_1_battle_grid_position.html#a3be52bbb464c0841990a7abd86ed3d02">Quantum.BattleGridPosition.Row</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#ace962d431389803751aa7f3cce96a842">Battle.QSimulation.Game.BattleGridManager.TeamAlphaFieldEnd</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#ab93b5be05e95ff896702bb8abfbc3a0d">Battle.QSimulation.Game.BattleGridManager.TeamAlphaFieldStart</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#a681a370d5605253edc59a5d517828b20">Battle.QSimulation.Game.BattleGridManager.TeamBetaFieldEnd</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#a86cb7aa2983f09c6f184b3779171f739">Battle.QSimulation.Game.BattleGridManager.TeamBetaFieldStart</a>, <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html#a40652aecb187597e2de2d681ef70e3a2">Quantum.BattlePlayerDataQComponent.TeamNumber</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html#a1c434cd2d9ff2d4db85401ef97b851fa">Battle.QSimulation.Game.BattleGridManager.WorldPositionToGridPosition()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a25697d20982da6a9739c1440664aabb1">Battle.QSimulation.Player.BattlePlayerQSystem.GetInput()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a3dde77d4bbf73983e3356cd4a14b64c4">Battle.QSimulation.Player.BattlePlayerQSystem.GetInput()</a>.</p>
 
 </div>
 </div>

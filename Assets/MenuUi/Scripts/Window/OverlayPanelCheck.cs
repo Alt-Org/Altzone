@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using MenuUI.Scripts;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -39,37 +40,36 @@ namespace MenuUi.Scripts.Window
 
         public delegate void ToggleOnlinePlayerList(bool? active = null);
         public static event ToggleOnlinePlayerList OnToggleOnlinePlayerList;
-        
+
+        public delegate void ChangePopupInfo(InfoLevel level, string message);
+        public static event ChangePopupInfo OnChangePopupInfo;
 
         private void Awake()
         {
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
+                return;
             }
             else
             {
-                if(gameObject.tag is "OverlayPanel") Instance = this;
-                else Destroy(gameObject);
+                if (gameObject.tag is "OverlayPanel") Instance = this;
+                else
+                {
+                    Destroy(gameObject);
+                    return;
+                }
+
                 UpdateButtonContent();
             }
 
-            if (_overlayObject == null) _overlayObject = transform.Find("UIOverlayPanel").GetComponent<GameObject>();
+            if (_overlayObject == null) _overlayObject = transform.gameObject;
             _chatActive = true;
             buttons[2].transform.localScale = Vector3.one * 1.2f;
-            //buttons[2].interactable = false;
-
         }
 
         private void OnEnable()
         {
-            GameObject panel= GameObject.FindWithTag("OverlayPanel");
-            if (panel != gameObject && panel ? true : SceneManager.GetActiveScene().name != _allowedScene.SceneName) //If OverlayPanel can be found, return, otherwise check if this panel is allowed to be set active.
-            {
-                return;
-            }
-            else _overlayObject.SetActive(true);
-
             if (Instance == this)
                 UpdateButtonContent();
 
@@ -83,7 +83,7 @@ namespace MenuUi.Scripts.Window
 
         private void OnDestroy()
         {
-            if(Instance == this) Instance = null;
+            if (Instance == this) Instance = null;
         }
 
         public void UpdateButtonContent() //Makes buttons bigger and glow when selected
@@ -101,14 +101,12 @@ namespace MenuUi.Scripts.Window
                 if (isCurrentWindow)
                 {
                     button.transform.localScale = Vector3.one * 1.2f;
-                    //button.interactable = false;
                 }
                 else
                 {
                     button.transform.localScale = Vector3.one;
                     button.interactable = true;
-
-                }//ifelse currentwindow
+                } //ifelse currentwindow
 
                 /* Opacity controller for inactive buttons
                 Image image = button.GetComponent<Image>();
@@ -127,8 +125,8 @@ namespace MenuUi.Scripts.Window
                 {
                     glow.gameObject.SetActive(isCurrentWindow);
                 }
-            }//for
-        }//updatebuttoncontent
+            } //for
+        } //updatebuttoncontent
 
         public void ToggleOverlay(bool value)
         {
@@ -161,5 +159,9 @@ namespace MenuUi.Scripts.Window
             OnToggleOnlinePlayerList?.Invoke();
         }
 
+        public static void ActivateInfoPopup(InfoLevel level, string message)
+        {
+            OnChangePopupInfo?.Invoke(level, message);
+        }
     }
 }
