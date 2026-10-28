@@ -107,6 +107,30 @@ the individual [{Player Character And Shield Entities}](#page-concepts-player-ch
 
 <br/>
 
+## Player Data {#page-concepts-player-data}
+
+**Player data** not connected to individual [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) is contained in the
+@cref{Quantum,BattlePlayerData} struct. It is defined in and generated from BattlePlayerData.qtn, and extended in BattlePlayerData.cs.  
+The [{PlayerManagerData}](#page-concepts-player-simulation-management-playermanagerdata) **%Quantum Singleton Component** contains a list of each player's **Player Data**
+which can be accessed through the [{PlayerManager}](#page-concepts-player-simulation-management-playermanager).  
+
+The **Player Data** is split into 2 different levels, the **Gameplay Level** and the **Low Level** .  
+- **Gameplay Level**
+  - Immutable data  
+    Accessed, but is not meant to be modified in gameplay logic.
+  - Mutable data  
+    Accessed and modified as needed in gameplay logic.
+- **Low Level**  
+Accessed and modified as needed in "low level" management and abstraction code. On this level, all data is mutable.  
+In practice, contains all **Player Data**, meaning everything on the **Gameplay Level** and additional **Low Level** only data which is hidden from the **Gameplay Level**.
+
+The individual @cref{Quantum,BattlePlayerData} structs in [{PlayerManagerData}](#page-concepts-player-simulation-management-playermanagerdata)
+are accessed through a @cref{Quantum,BattlePlayerData.Ref} that acts as a reference to one of them.  
+The @cref{Quantum,BattlePlayerData.Ref} struct is also a wrapper which only exposes **Gameplay Level** data directly but also grants access to the **Low Level**,
+allowing full access to the underlying @cref{Quantum,BattlePlayerData} struct for "low level" management and abstraction code.
+
+<br/>
+
 ## Player Manager Data {#page-concepts-player-manager-data}
 
 **Player data** not connected to individual [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) is handled
