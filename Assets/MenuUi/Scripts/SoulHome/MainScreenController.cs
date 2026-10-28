@@ -186,7 +186,7 @@ namespace MenuUI.Scripts.SoulHome
             if (HasTag(hits, "Overlay")) return;
 
             if (click == ClickState.Start) BeginTrayGesture(hits, position);
-            if (_trayGestureList != null && !ContinueTrayGesture(click, position)) return;
+            if (click != ClickState.Start && _trayGestureList != null && !ContinueTrayGesture(click, position)) return;
 
             // A room collider behind the tray must not also process this position.
             bool trayHit = HasTag(hits, "FurnitureTray");
