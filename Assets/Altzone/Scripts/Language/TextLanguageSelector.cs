@@ -24,6 +24,11 @@ namespace Altzone.Scripts.Language
             SetText(Localization.Language);
         }
 
+        private void OnDisable()
+        {
+            Localization.OnLanguageChanged -= SetText;
+        }
+
         public void GetText()
         {
             _textField = GetComponent<TMP_Text>();

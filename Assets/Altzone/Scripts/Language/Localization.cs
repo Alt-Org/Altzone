@@ -54,7 +54,7 @@ public class Localization : ScriptableObject
         OnLanguageChanged?.Invoke(_language);
     }
 
-    private void Initialize()
+    public void Initialize()
     {
         _language = ParseLanguage(PlayerPrefs.GetString("LanguageType", ""));
     }
@@ -100,6 +100,10 @@ public enum LanguageType
     {
         _script = target as Localization;
         _language = serializedObject.FindProperty("_language");
+        serializedObject.Update();
+        _script.Initialize();
+        serializedObject.Update();
+        serializedObject.ApplyModifiedProperties();
     }
 
     public override void OnInspectorGUI()
