@@ -95,7 +95,7 @@ namespace Battle.QSimulation.Player
 
             if (!BattleParameters.GetIsTestFlipperGame(f))
             {
-                playerHandle.PlayerData.Low_Level.StateAllowCharacterSwapping = false;
+                playerHandle.PlayerData.StateAllowCharacterSwapping = false;
             }
 
             Transform2D* transformShield = f.Unsafe.GetPointer<Transform2D>(playerHandle.LoadedCharacterData->AttachedShieldEntityRef);
@@ -137,7 +137,7 @@ namespace Battle.QSimulation.Player
 
             if (!BattleParameters.GetIsTestFlipperGame(f))
             {
-                playerHandle.PlayerData.Low_Level.StateAllowCharacterSwapping = true;
+                playerHandle.PlayerData.StateAllowCharacterSwapping = true;
             }
         }
     }

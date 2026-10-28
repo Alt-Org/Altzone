@@ -356,8 +356,8 @@ namespace Battle.QSimulation.Player
                 //} post registration setup
 
                 // set playerData for player
-                playerData.Low_Level.StateAllowCharacterSwapping = true;
-                playerData.Low_Level.StatePlayerGiveUp           = false;
+                playerData.StateAllowCharacterSwapping = true;
+                playerData.StatePlayerGiveUp           = false;
 
                 s_debugLogger.LogFormat(f, "({0}) Player created successfully", playerData.Slot);
             }

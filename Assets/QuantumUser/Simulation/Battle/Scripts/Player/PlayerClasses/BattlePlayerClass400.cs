@@ -93,7 +93,7 @@ namespace Battle.QSimulation.Player
 
             if (!BattleParameters.GetIsTestFlipperGame(f))
             {
-                playerHandle.PlayerData.Low_Level.StateAllowCharacterSwapping = false;
+                playerHandle.PlayerData.StateAllowCharacterSwapping = false;
             }
 
             BattlePlayerHandle teammateHandle = BattlePlayerHandle.Create(f, BattlePlayerManager.GetTeammateSlot(playerHandle.PlayerData.Slot));
@@ -124,7 +124,7 @@ namespace Battle.QSimulation.Player
 
                     if (!BattleParameters.GetIsTestFlipperGame(f))
                     {
-                        playerHandle.PlayerData.Low_Level.StateAllowCharacterSwapping = true;
+                        playerHandle.PlayerData.StateAllowCharacterSwapping = true;
                     }
                 }
             }

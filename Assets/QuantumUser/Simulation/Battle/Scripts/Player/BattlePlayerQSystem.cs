@@ -62,7 +62,7 @@ namespace Battle.QSimulation.Player
         /// <param name="f">Current simulation frame.</param>
         public static void HandlePlayerAbandoned(Frame f, BattlePlayerData.Ref playerData)
         {
-            playerData.Low_Level.StatePlayerGiveUp = true;
+            playerData.StatePlayerGiveUp = true;
 
             BattleTeamNumber giveUpTeam = HandleGiveUpLogic(f, playerData);
             if (giveUpTeam != BattleTeamNumber.NoTeam)
@@ -133,7 +133,7 @@ namespace Battle.QSimulation.Player
                 if (playerHandle.PlayerData.PlayState.IsOutOfPlay())
                 {
                     playerHandle.PlayerData.SetOutOfPlayRespawning();
-                    playerHandle.PlayerData.Low_Level.StateRespawnTimer = FrameTimer.FromSeconds(f, playerSpec.AutoRespawnTimeSec);
+                    playerHandle.PlayerData.StateRespawnTimer = FrameTimer.FromSeconds(f, playerSpec.AutoRespawnTimeSec);
                 }
 
                 HandleSFXCommon(f, playerHandle.PlayerData.Slot, SoundEffectTypeCommon.Death, SoundEffectTarget.All);
@@ -631,7 +631,7 @@ namespace Battle.QSimulation.Player
             if (updateData.GiveUpTeam != BattleTeamNumber.NoTeam) return;
 
             BattlePlayerData.Ref playerData = updateData.PlayerHandle.PlayerData;
-            playerData.Low_Level.StatePlayerGiveUp = !playerData.StatePlayerGiveUp;
+            playerData.StatePlayerGiveUp = !playerData.StatePlayerGiveUp;
 
             s_debugLogger.LogFormat(f, "({0}) Give up input received, new state: {1}", playerData.Slot, playerData.StatePlayerGiveUp);
 
