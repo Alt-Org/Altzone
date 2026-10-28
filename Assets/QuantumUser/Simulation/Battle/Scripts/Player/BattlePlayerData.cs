@@ -29,17 +29,18 @@ namespace Quantum
             public bool IsAbandoned
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Low_Level.IsAbandoned; }
 
-            public bool StateAllowCharacterSwapping
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Low_Level.StateAllowCharacterSwapping; }
-
-            public bool StatePlayerGiveUp
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Low_Level.StatePlayerGiveUp; }
-
-            public FrameTimer StateRespawnTimer
-            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Low_Level.StateRespawnTimer; }
 
             public int SelectedCharacterNumber
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Low_Level.SelectedCharacterNumber; }
+
+            public ref QBoolean StateAllowCharacterSwapping
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => ref Low_Level.StateAllowCharacterSwapping; }
+
+            public ref QBoolean StatePlayerGiveUp
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => ref Low_Level.StatePlayerGiveUp; }
+
+            public ref FrameTimer StateRespawnTimer
+            { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => ref Low_Level.StateRespawnTimer; }
 
             public ref BattlePlayerData Low_Level
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => ref _playerManagerData->PlayerArray[_index]; }
