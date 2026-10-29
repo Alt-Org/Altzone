@@ -162,6 +162,10 @@ namespace Altzone.Scripts.Store
 
             if (ColorUtility.TryParseHtmlString(stall.adPoster.colour, out Color colour)) _backgroundColour = stall.adPoster.colour;
 
+            _furnitureName = stall.adPoster.mainFurniture;
+
+            _furniture = AdDecorationReference.Instance.FurnitureList.FirstOrDefault(x=> x.Name == _furnitureName).Image;
+
             if (!string.IsNullOrEmpty(stall.adPoster.textField.textString))
             {
                 _adText = stall.adPoster.textField.textString;
@@ -176,7 +180,7 @@ namespace Altzone.Scripts.Store
 
             if (_textFont == null) _textFont = AdDecorationReference.Instance.FontList[0].Font;
 
-            if (!string.IsNullOrEmpty(stall.adPoster.textField.textColor)) _textColour = stall.adPoster.textField.textColor;
+            if (!string.IsNullOrEmpty(stall.adPoster.textField.textColour)) _textColour = stall.adPoster.textField.textColour;
 
             if (_textColour == null) _textColour = "#000000";
             //if (ColorUtility.TryParseHtmlString(adTextColour, out Color textColour)) _textColour = adTextColour;

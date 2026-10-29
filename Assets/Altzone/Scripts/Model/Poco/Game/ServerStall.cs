@@ -23,7 +23,7 @@ namespace Altzone.Scripts.Model.Poco
     {
         public string textString { get; set; }
         public string textFont { get; set; }
-        public string textColor { get; set; }
+        public string textColour { get; set; }
         public float[] textPosition { get; set; }
     }
 }
