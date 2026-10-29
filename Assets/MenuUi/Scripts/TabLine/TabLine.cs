@@ -129,12 +129,16 @@ namespace MenuUi.Scripts.TabLine
 
         protected virtual void SetTabOnTop(int index)
         {
-            foreach (TabLineButton tabline in _tabLineButtons)
+            for (int i = 0; i < index; i++)
             {
-                tabline.TabObjectHandler.transform.SetAsLastSibling();
+                _tabLineButtons[i].TabObjectHandler.transform.SetAsLastSibling();
             }
 
-            _tabLineButtons[index].TabObjectHandler.transform.SetAsLastSibling();
+            for (int i = _tabLineButtons.Length-1; i >= index ; i--)
+            {
+                _tabLineButtons[i].TabObjectHandler.transform.SetAsLastSibling();
+            }
+
         }
 
 
