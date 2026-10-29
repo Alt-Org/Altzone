@@ -299,8 +299,8 @@ namespace Battle.QSimulation.Game
         /// @}
 
         /// @anchor BattleEntityManager-GetReturnMethods
-        /// @name Get/Return Methods
-        /// Methods for retrieving and returning [{Registered Entities}](#page-concepts-entity-management-registered-entities).
+        /// @name Get Methods
+        /// Methods for accessing [{Registered Entities}](#page-concepts-entity-management-registered-entities).
         /// @{
         #region Public Get Methods
 
@@ -366,7 +366,7 @@ namespace Battle.QSimulation.Game
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="id">Entity ID of the entity to retrieve.</param>
-        /// <param name="offset">Offset of the desired entity within the group.</param>
+        /// <param name="offset">Offset of the desired entity within a group.</param>
         ///
         /// <returns><see cref="BattleManagedEntityHandle"/> for retrieved entity.</returns>
         public static BattleManagedEntityHandle Get(Frame f, BattleEntityID id, int offset)
@@ -380,7 +380,7 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Calls a Get-method to retrieve registered entity matching given <paramref name="id"/> from the group at <paramref name="offset"/>
+        /// Retrieves registered entity matching given <paramref name="id"/> from the group at <paramref name="offset"/>
         /// as <typeparamref name="T"/> : <see cref="BattleManagedEntityHandle.IComposite"/>.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
@@ -407,17 +407,18 @@ namespace Battle.QSimulation.Game
 
         /// @anchor BattleEntityManager-UseReturnMethods
         /// @name Use/Return Methods
-        /// Methods for retrieving and returning [{Registered Entities}](#page-concepts-entity-management-registered-entities).
+        /// Methods for using and returning [{Registered Entities}](#page-concepts-entity-management-registered-entities).
         /// @{
         #region Public Use/Return Methods
 
         /// <summary>
-        /// Sets an entity's <see cref="BattleEntityPlayState"/> to be <see cref="Quantum.BattleEntityPlayState.InPlay">BattleEntityPlayState.InPlay</see> matching given <paramref name="id"/>.
+        /// Marks registered entity matching given <paramref name="id"/> as being InPlay.
         /// </summary>
         /// Part of @ref BattleEntityManager-UseReturnMethods "Use/Return methods"
         ///
-        /// Use @cref{Get(Frame\, BattleEntityID\)} to set entity's RegisteredState to be <see cref="Quantum.BattleEntityPlayState.InPlay">BattleEntityPlayState.InPlay</see>.
+        /// Use @cref{Use(Frame\, BattleEntityID\, int\)} to mark an entity in a group.
         ///
+        /// See [{InPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
         /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
         ///
@@ -437,12 +438,13 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Sets an entity's <see cref="BattleEntityPlayState"/> to be <see cref="Quantum.BattleEntityPlayState.InPlay">BattleEntityPlayState.InPlay</see> matching given <paramref name="id"/> from the group at <paramref name="offset"/>.
+        /// Marks registered entity matching given <paramref name="id"/> from a group at <paramref name="offset"/> as being InPlay.
         /// </summary>
         /// Part of @ref BattleEntityManager-UseReturnMethods "Use/Return methods"
         ///
-        /// Use @cref{Get(Frame\, BattleEntityID\)} to set entity's RegisteredState to be <see cref="Quantum.BattleEntityPlayState.InPlay">BattleEntityPlayState.InPlay</see>.
+        /// Use @cref{Use(Frame\, BattleEntityID\)} to mark an entity not in any group.
         ///
+        /// See [{InPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
         /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
         ///
@@ -463,12 +465,13 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Returns registered entity matching given <paramref name="id"/> back offscreen.
+        /// Returns registered entity matching given <paramref name="id"/> as being OutOfPlay.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
         ///
         /// Use @cref{Return(Frame\, BattleEntityID\, int)} to return an entity in a group.
         ///
+        /// See [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
         ///
         /// Return logic handled by private @clink{Return:BattleEntityManager.Return(Frame, BattleEntityManagerDataQSingleton*, EntityRef, int)} method.
@@ -488,12 +491,13 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Returns registered entity matching given <paramref name="id"/> from the group at <paramref name="offset"/> back offscreen.
+        /// Returns registered entity matching given <paramref name="id"/> from a group at <paramref name="offset"/> as being OutOfPlay.
         /// </summary>
         /// Part of @ref BattleEntityManager-GetReturnMethods "Get/Return methods"
         ///
         /// Use @cref{Return(Frame\, BattleEntityID)} to return an entity not in any group.
         ///
+        /// See [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)<br/>
         /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
         /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
         ///
@@ -533,17 +537,13 @@ namespace Battle.QSimulation.Game
         ///
         /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
         ///
-        /// Used internally when registering compounds using RegisterCompound methods.<br/>
-        /// @cref{RegisterCompound(Frame\, CompoundEntityTemplate)}<br/>
-        /// @cref{RegisterCompound(Frame\, CompoundEntityTemplate[])}
-        ///
         /// @note
         /// Registered Compound Entities should only be made using
         /// @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} methods
         /// which marks the resulting [{Entity ID}](#page-concepts-entity-management-entity-id) as a Compound allowing the Entity Manager to handle it correctly.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="template">Compound entity template used to make compounds.</param>
+        /// <param name="template">Compound entity template used to make the compound.</param>
         public static void MakeCompound(Frame f, CompoundEntityTemplate template) => MakeManagedEntity(f, template, registered: false);
 
         /// <summary>
@@ -658,12 +658,30 @@ namespace Battle.QSimulation.Game
 
         #region Private Id Methods
 
+        /// <summary>
+        /// Private helper method for assigning a new BattleEntityID to an entity that is to be registered.
+        /// </summary>
+        ///
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.
+        ///
+        /// <param name="entityList">List of registered entities.</param>
+        ///
+        /// <returns>The assigned BattleEntityID.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static BattleEntityID AssignID(QList<EntityRef> entityList)
         {
             return new() { Int = entityList.Count + 1 };
         }
 
+        /// <summary>
+        /// Private helper method for asserting that a <paramref name="id"/> is a valid non-None <see cref="BattleEntityID"/>
+        /// </summary>
+        ///
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
+        ///
+        /// <param name="id">Entity ID asserted to be valid.</param>
+        /// <param name="context">Context included in the assert error message to indicate where the assertion was called from.</param>
         [Conditional("UNITY_EDITOR")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void DevAssertValidEntityID(BattleEntityID id, string context)
@@ -671,12 +689,34 @@ namespace Battle.QSimulation.Game
             s_debugLogger.DevAssertFormat(id.Int != BattleEntityID.NoneValue, "Invalid ID, Can not {0} none EntityID", context);
         }
 
+        /// <summary>
+        /// Private helper method for retrieving registered entity's index, in the list of registered entities, based on <paramref name="id"/>.
+        /// </summary>
+        ///
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.
+        ///
+        /// <param name="id">Entity ID of the desired list index.</param>
+        ///
+        /// <returns>The list index associated with the <paramref name="id"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetListIndex(BattleEntityID id)
         {
             return id.Int - 1;
         }
 
+        /// <summary>
+        /// Private helper method for retrieving registered entity's index, in the list of registered entities, based on group <paramref name="id"/> with an <paramref name="offset"/>.
+        /// </summary>
+        ///
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.<br/>
+        /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.<br/>
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.
+        ///
+        /// <param name="id">Entity ID of the desired list index.</param>
+        /// <param name="offset">Offset of the desired list index within the group.</param>
+        ///
+        /// <returns>The list index associated with the group <paramref name="id"/> at an <paramref name="offset"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetListIndex(BattleEntityID id, int offset)
         {
@@ -687,21 +727,49 @@ namespace Battle.QSimulation.Game
 
         #region Private Entity Methods
 
+        /// <summary>
+        /// Private helper method for making a given <paramref name="entityRef"/> to a managed entity of type registered.
+        /// </summary>
+        ///
+        /// Use @cref{MakeManagedEntity(Frame\, CompoundEntityTemplate\, bool)} to make a managed entity of type compound or registered compound.
+        ///
+        /// See [{Managed Entities}](#page-concepts-entity-management-managed-entities) for more info.
+        ///
+        /// Used by<br/>
+        /// @cref{Register(Frame\, EntityRef)}<br/>
+        /// @cref{Register(Frame\, EntityRef[])}
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="entityRef">The entity to be made registered.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static BattleManagedEntityQComponent* MakeManagedEntity(Frame f, EntityRef entityRef)
+        private static void MakeManagedEntity(Frame f, EntityRef entityRef)
         {
             BattleManagedEntityQComponent managedEntity = new();
 
             managedEntity.IsRegistered = true;
             managedEntity.RegisteredState = BattleEntityPlayState.InPlay;
 
-            f.Add(entityRef, managedEntity, out BattleManagedEntityQComponent* componentPointer);
-
-            return componentPointer;
+            f.Add(entityRef, managedEntity);
         }
 
+        /// <summary>
+        /// Private helper method for making a managed entity of type compound or registered compound based on a compound <paramref name="template"/>.
+        /// </summary>
+        ///
+        /// Use @cref{MakeManagedEntity(Frame\, EntityRef)} to make a managed entity of type registered.
+        ///
+        /// See [{Managed Entities}](#page-concepts-entity-management-managed-entities) for more info.
+        ///
+        /// Used by<br/>
+        /// @cref{MakeCompound(Frame\, CompoundEntityTemplate)}<br/>
+        /// @cref{RegisterCompound(Frame\, CompoundEntityTemplate)}<br/>
+        /// @cref{RegisterCompound(Frame\, CompoundEntityTemplate[])}
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="template">Compound entity template used to make the compound.</param>
+        /// <param name="registered">Whether the compound is registered.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static BattleManagedEntityQComponent* MakeManagedEntity(Frame f, CompoundEntityTemplate template, bool registered)
+        private static void MakeManagedEntity(Frame f, CompoundEntityTemplate template, bool registered)
         {
             BattleManagedEntityQComponent managedEntity = new();
 
@@ -720,9 +788,7 @@ namespace Battle.QSimulation.Game
                 entityList.Add(entityRef);
             }
 
-            f.Add(template.ParentEntityRef, managedEntity, out BattleManagedEntityQComponent* componentPointer);
-
-            return componentPointer;
+            f.Add(template.ParentEntityRef, managedEntity);
         }
 
         /// <summary>
