@@ -2687,6 +2687,22 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+
+    public void SaveAdData(AdStoreObject adData)
+    {
+        Storefront.Get().GetClanData(Clan._id, data =>
+        {
+            data.AdData = adData;
+            StartCoroutine(ServerManager.Instance.UpdateClanAdPoster(adData, success =>
+            {
+                if (success)
+                {
+                    Storefront.Get().SaveClanData(data, clanData => data = clanData);
+                }
+            }));
+        });
+    }
+
     #endregion
 
     #region Leaderboard

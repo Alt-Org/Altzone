@@ -263,21 +263,6 @@ public class AdEditor : AltMonoBehaviour
         }
     }
 
-    private void SaveAdData()
-    {
-        StartCoroutine(GetClanData(data =>
-        {
-            data.AdData = _adData;
-            StartCoroutine(ServerManager.Instance.UpdateClanAdPoster(_adData, success =>
-            {
-                if (success)
-                {
-                    StartCoroutine(SaveClanData(clanData => data = clanData, data));
-                }
-            }));
-        }));
-    }
-
     public void ChangeColor(Color colour)
     {
         if (!colorChanged)
@@ -351,7 +336,7 @@ public class AdEditor : AltMonoBehaviour
 
     public void SaveAndCloseEditor()
     {
-        SaveAdData();
+        ServerManager.Instance.SaveAdData(_adData);
         CloseEditor();
     }
 
