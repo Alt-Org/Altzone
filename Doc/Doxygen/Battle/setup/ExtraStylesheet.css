@@ -1,38 +1,45 @@
-/*{ Built-in overrides */ 
+/*{ Tags */
 
+/* Code tag: style */
 html.dark-mode code {
   color: white;
 }
-
-html.dark-mode *:not(.paramname)>em {
-  color: white;
-}
-
 html.light-mode code {
   font-weight: bold;
 }
 
+/* Em tag (not .paramname): style */
+html.dark-mode *:not(.paramname)>em {
+  color: white;
+}
 html.light-mode *:not(.paramname)>em {
   font-weight: bold;
 }
 
+/*} Tags */
+
+/*{ Built-in overrides */
+
+/* Code Span: style */
 .tt {
    background-color: var(--fragment-background-color);
    padding: 1px 5px;
    border: 1px solid var(--fragment-border-color);
 }
 
+/* Doxygen Group Text: no italic */
 .groupText > p {
   font-style: normal;
 }
 
+/* Doxygen Parameter Table: style */
 dl.params dd table.params td.paramname {
   padding-right: 12px;
 }
 
-/*} Built-in overrides */ 
+/*} Built-in overrides */
 
-/*{ Custom */ 
+/*{ Custom */
 
 .brief-h {
   font-size: 1.1rem;
@@ -46,4 +53,4 @@ dl.params dd table.params td.paramname {
   color: var(--page-link-color);
 }
 
-/*} Custom */ 
+/*} Custom */
