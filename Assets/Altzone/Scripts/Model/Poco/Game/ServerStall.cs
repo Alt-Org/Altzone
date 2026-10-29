@@ -15,6 +15,15 @@ namespace Altzone.Scripts.Model.Poco
         public string border { get; set; }
         public string colour { get; set; }
         public string mainFurniture { get; set; }
+        public ServerAdText textField { get; set; }
 
+    }
+
+    public class ServerAdText
+    {
+        public string textString { get; set; }
+        public string textFont { get; set; }
+        public string textColor { get; set; }
+        public float[] textPosition { get; set; }
     }
 }

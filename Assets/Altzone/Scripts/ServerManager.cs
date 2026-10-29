@@ -2506,7 +2506,7 @@ public class ServerManager : MonoBehaviour
                 Debug.LogWarning(result);
                 ServerStall stall = result["data"]["Stall"].ToObject<ServerStall>();
 
-                AdStoreObject adObject = new AdStoreObject(stall.adPoster.border, stall.adPoster.colour);
+                AdStoreObject adObject = new(stall);
 
 
 
@@ -2659,10 +2659,19 @@ public class ServerManager : MonoBehaviour
             {
                 border = ad.BorderFrame,
                 colour = ad.BackgroundColour,
+                mainFurniture = ad.FurnitureName,
+                textField = new
+                {
+                    textString = ad.AdText,
+                    textFont = ad.TextFont.name,
+                    textColour = ad.TextColour,
+                }  
                 //tag = data.Tag,
             },
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
+
+        Debug.LogWarning(body);
 
         yield return StartCoroutine(WebRequests.Patch(DEVADDRESS + "stall/adPoster", body, AccessToken, request =>
         {

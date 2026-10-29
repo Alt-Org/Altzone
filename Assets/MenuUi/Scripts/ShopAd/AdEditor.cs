@@ -65,6 +65,7 @@ public class AdEditor : AltMonoBehaviour
             _previousAdData.BackgroundColour = _adData.BackgroundColour;
             _previousAdData.BorderFrame = _adData.BorderFrame;
             _previousAdData.Furniture = _adData.Furniture;
+            _previousAdData.FurnitureName = _adData.FurnitureName;
             _previousAdData.TextColour = _adData.TextColour;
             _previousAdData.TextFont = _adData.TextFont;
             _previousAdData.AdText = _adData.AdText;
@@ -306,6 +307,7 @@ public class AdEditor : AltMonoBehaviour
         }
 
         _adData.Furniture = furniture.Image;
+        _adData.FurnitureName = furniture.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
 
