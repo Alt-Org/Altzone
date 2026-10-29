@@ -1356,7 +1356,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 1266.7498}
+  m_SizeDelta: {x: 0, y: 1707.7499}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &26010402881241068
 MonoBehaviour:
@@ -1815,7 +1815,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.2
+  m_fontSize: 50.9
   m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3405,7 +3405,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 54.9
+  m_fontSize: 72
   m_fontSizeBase: 45
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3962,6 +3962,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
+      propertyPath: m_overflowMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2100000, guid: bfc928a5c36b5814cadd14fa862b2f1d, type: 2}
@@ -4245,6 +4250,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSizeMin
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
+      propertyPath: m_overflowMode
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
@@ -4534,6 +4544,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
+      propertyPath: m_overflowMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2100000, guid: bfc928a5c36b5814cadd14fa862b2f1d, type: 2}
@@ -4817,6 +4832,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSizeMin
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
+      propertyPath: m_overflowMode
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
@@ -5106,6 +5126,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
+      propertyPath: m_overflowMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2100000, guid: bfc928a5c36b5814cadd14fa862b2f1d, type: 2}
@@ -5389,6 +5414,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSizeMin
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
+      propertyPath: m_overflowMode
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
@@ -5870,6 +5900,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
+      propertyPath: m_overflowMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2100000, guid: bfc928a5c36b5814cadd14fa862b2f1d, type: 2}
@@ -6153,6 +6188,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSizeMin
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
+      propertyPath: m_overflowMode
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
@@ -6442,6 +6482,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
+      propertyPath: m_overflowMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2100000, guid: bfc928a5c36b5814cadd14fa862b2f1d, type: 2}
@@ -6694,6 +6739,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4582517417214366101, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 56.85
       objectReference: {fileID: 0}
     - target: {fileID: 4589623893211600443, guid: b3cd90fae2bb6c74494dc4e34dcdec1d,
         type: 3}
@@ -7226,6 +7276,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
+      propertyPath: m_overflowMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2100000, guid: bfc928a5c36b5814cadd14fa862b2f1d, type: 2}
@@ -7512,6 +7567,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
+      propertyPath: m_overflowMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 2100000, guid: bfc928a5c36b5814cadd14fa862b2f1d, type: 2}
@@ -7795,6 +7855,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_fontSizeMin
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
+        type: 3}
+      propertyPath: m_overflowMode
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2294432065809037680, guid: 97cd4458e32112c48b2bfb241be4cef0,
         type: 3}
