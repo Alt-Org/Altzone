@@ -6,7 +6,6 @@ using Altzone.Scripts.Model.Poco;
 using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
-using WebSocketSharp;
 
 namespace Altzone.Scripts.Store
 {
