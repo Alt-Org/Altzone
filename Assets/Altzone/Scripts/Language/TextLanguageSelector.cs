@@ -49,7 +49,7 @@ namespace Altzone.Scripts.Language
     }
 #if UNITY_EDITOR
     [CustomEditor(typeof(TextLanguageSelector), true)]
-    public class TextLanguageSelectorEditor : Editor
+    public class TextLanguageSelectorEditor : UnityEditor.Editor
     {
         TextLanguageSelector _script;
         SerializedProperty _finnishText;
