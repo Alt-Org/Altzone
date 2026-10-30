@@ -234,12 +234,12 @@ namespace Altzone.Scripts.ReferenceSheets
     public class FurnitureInfoObject
     {
         public string Name;
-        public string EnglishName;
         public Sprite Image;
         public Sprite SidewaysImage;
         public Sprite PosterImage;
         public Sprite RibbonImage;
         public string VisibleName;
+        public string EnglishName;
         public string ArtisticDescription;
         public string EnglishArtisticDescription;
         public string DiagnoseNumber;
