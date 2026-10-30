@@ -91,7 +91,7 @@ public enum LanguageType
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(Localization), true)]
-    public class LocalizationEditor : UnityEditor.Editor
+    public class LocalizationEditor : Editor
 {
     Localization _script;
     SerializedProperty _language;

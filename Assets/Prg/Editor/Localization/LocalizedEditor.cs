@@ -14,7 +14,7 @@ using Debug = Prg.Debug;
 using Debug = UnityEngine.Debug;
 #endif
 
-namespace Editor.Prg.Localization
+namespace PrgEditor.Localization
 {
     /// <summary>
     /// Custom Editor for <c>Localized</c> text component.<br />

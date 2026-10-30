@@ -14,7 +14,7 @@ using UnityEngine.UI;
 using Debug = Prg.Debug;
 using FileUtil = Prg.Util.FileUtil;
 
-namespace Editor.Prg.Localization
+namespace PrgEditor.Localization
 {
     /// <summary>
     /// A helper editor script for finding components used in <c>i18n</c> and <c>l10n</c>.<br />

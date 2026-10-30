@@ -15,7 +15,7 @@ using Debug = UnityEngine.Debug;
 #endif
 using FileUtil = Prg.Util.FileUtil;
 
-namespace Editor.Prg.Localization
+namespace PrgEditor.Localization
 {
     [CustomEditor(typeof(LocaleWords))]
     public class LocaleWordsEditor : UnityEditor.Editor

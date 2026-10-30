@@ -11,7 +11,7 @@ using Debug = Prg.Debug;
 using Debug = UnityEngine.Debug;
 #endif
 
-namespace Editor.Prg.Localization
+namespace PrgEditor.Localization
 {
     /// <summary>
     /// Editor utility for localization process operational support for selected prefab(s).

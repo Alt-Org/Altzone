@@ -14,7 +14,7 @@ using Debug = Prg.Debug;
 using Debug = UnityEngine.Debug;
 #endif
 
-namespace Editor.Prg.Localization
+namespace PrgEditor.Localization
 {
     /// <summary>
     /// UNITY Editor menu commands for localization.
