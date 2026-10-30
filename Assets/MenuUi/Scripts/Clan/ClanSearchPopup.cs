@@ -77,7 +77,7 @@ public class ClanSearchPopup : MonoBehaviour
     public void Show(ServerClan clan, UnityAction onJoin)
     {
         if (clan == null) return;
-        ClanData clanData = new ClanData(clan);
+        ClanData clanData = new ClanData(clan, true);
 
         gameObject.SetActive(true);  
 

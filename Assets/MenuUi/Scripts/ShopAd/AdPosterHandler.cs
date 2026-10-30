@@ -48,6 +48,7 @@ public class AdPosterHandler : AltMonoBehaviour
 
     private void FetchAdData()
     {
+        if (!gameObject.activeInHierarchy) return;
         StartCoroutine(GetClanData(data =>
         {
             if (data != null)
