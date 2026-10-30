@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Security.Claims;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
@@ -334,56 +335,56 @@ namespace MenuUi.Scripts.CharacterGallery
             _scrollRect.VerticalNormalizedPosition = 1; // setting scroll to the top so that it's not possibly scrolled too far
         }
 
-        public void FilterClasses(List<CharacterClassType> classType)
+        /// <summary>
+        /// Applies class and state filters to the character gallery, updating the visibility of each character slot.
+        /// Test characters bypass the class filter but respect the state filter.
+        /// </summary>
+        /// <param name="classTypes">List of CharacterClassTypes that should be visible.</param>
+        /// <param name="consciousIsOn">If true, shows unlocked (conscious) characters.</param>
+        /// <param name="unconsciousIsOn">If true, shows locked (unconscious) characters.</param>
+        public void ApplyFilters(List<CharacterClassType> classTypes, bool consciousIsOn, bool unconsciousIsOn)
         {
+            // If neither toggle is selected, default to showing all character states
+            bool showAllStates = !consciousIsOn && !unconsciousIsOn;
 
-            int i = 0;
-            foreach (CharacterSlot characterSlot in _characterSlots) //go trough all characters
+            foreach (CharacterSlot characterSlot in _characterSlots)
             {
-                foreach (CharacterClassType classTypeList in classType) //set all wanted character classes active
+                bool shouldShow = true;
+
+                // 1. Check the CLASS filter
+                CharacterClassType slotClass = CustomCharacter.GetClass(characterSlot.Character.Id);
+                bool isTestCharacter = CustomCharacter.IsTestCharacter(characterSlot.Id);
+
+                if (!isTestCharacter && !classTypes.Contains(slotClass))
                 {
-                    if (CustomCharacter.GetClass(characterSlot.Character.Id) == classType[i])
+                    shouldShow = false;
+                }
+
+                // 2. Check the STATE filter (only if a specific state is requested)
+                if (!showAllStates)
+                {
+                    if (characterSlot.IsLocked)
                     {
-                        if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
+                        if (!unconsciousIsOn)
+                        {
+                            shouldShow = false;
+                        }
                     }
-                    i++;
+                    else
+                    {
+                        if (!consciousIsOn)
+                        {
+                            shouldShow = false;
+                        }
+                    }
                 }
-                i = 0;
+
+                // 3. Apply the visibility state based on the combined filter results
+                characterSlot.gameObject.SetActive(shouldShow);
             }
+
+            _scrollRect.VerticalNormalizedPosition = 1;
         }
-
-        public void FilterUnlocked(bool unlockedIsOn, bool lockedIsOn)
-        {
-
-            if (unlockedIsOn && lockedIsOn) //all active 
-            {
-                return;
-            }
-            else if (unlockedIsOn && !lockedIsOn) //set all locked inactive 
-            {
-                foreach (CharacterSlot characterSlot in _characterSlots)
-                {
-                    if(characterSlot.IsLocked)
-                        characterSlot.gameObject.SetActive(false);
-                }
-            }
-            else if (!unlockedIsOn && lockedIsOn) //set all unlocked inactive 
-            {
-                foreach (CharacterSlot characterSlot in _characterSlots)
-                {
-                    if (!characterSlot.IsLocked)
-                    characterSlot.gameObject.SetActive(false);
-                }
-            }
-            else if (!unlockedIsOn && !lockedIsOn) //set all inactive 
-            {
-                foreach (CharacterSlot characterSlot in _characterSlots)
-                {
-                    characterSlot.gameObject.SetActive(false);
-                }
-            }
-        }
-
 
         public void OrganizeGallery(CharacterFilterPanel.SortOrder sortOrder)
         {

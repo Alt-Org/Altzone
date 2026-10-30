@@ -167,56 +167,15 @@ public class CharacterFilterPanel : MonoBehaviour
     private void ConsciousToggleBold(bool toggleIsOn)
     {
         _filterConsciousText.fontStyle = toggleIsOn ? FontStyles.Bold : FontStyles.Normal;
+        if (toggleIsOn && _filterUnconscious.isOn) _filterUnconscious.isOn = false;
     }
 
     private void UnconsciousToggleBold(bool toggleIsOn)
     {
         _filterUnconsciousText.fontStyle = toggleIsOn ? FontStyles.Bold : FontStyles.Normal;
+        if (toggleIsOn && _filterConscious.isOn) _filterConscious.isOn = false;
     }
     #endregion
-
-
-    #region Check filters
-    private void CheckConsciousFilters()
-    {
-        if (_filterConscious.isOn && _filterUnconscious.isOn)
-        {
-            _galleryView.FilterUnlocked(true, true);
-        }
-        else if (_filterConscious.isOn && !_filterUnconscious.isOn)
-        {
-            _galleryView.FilterUnlocked(true, false);
-        }
-        else if (_filterUnconscious.isOn && !_filterConscious.isOn)
-        {
-            _galleryView.FilterUnlocked(false, true);
-        }
-        else if (!_filterUnconscious.isOn && !_filterConscious.isOn)
-        {
-            _galleryView.FilterUnlocked(false, false);
-        }
-    }
-
-    private void CheckClassFilters()
-    {
-        _filteredClasses.Clear();
-
-        int i = 0;
-
-        foreach(Toggle toggle in _classFilterToggles)
-        {
-            if (toggle.isOn)
-            {
-                _filteredClasses.Add(CharacterClassType.Desensitizer + i);
-            }
-            i += 100;
-        }
-
-        _galleryView.FilterClasses(_filteredClasses);
-    }
-    #endregion
-
-
 
     #region Open, close and apply
     public void Open()
@@ -231,18 +190,25 @@ public class CharacterFilterPanel : MonoBehaviour
 
     private void CloseAndApply()
     {
-        // set filters
-        _galleryView.ResetFilter();
-        CheckClassFilters();
-        CheckConsciousFilters();
+        // Collect which classes have been selected
+        _filteredClasses.Clear();
+        int i = 0;
+        foreach (Toggle toggle in _classFilterToggles)
+        {
+            if (toggle.isOn)
+            {
+                _filteredClasses.Add(CharacterClassType.Desensitizer + i);
+            }
+            i += 100;
+        }
 
-        _galleryView.CheckIfSlotsActive();
+        // Send all filter information (categories and lock states) to GalleryView at once
+        _galleryView.ApplyFilters(_filteredClasses, _filterConscious.isOn, _filterUnconscious.isOn);
 
-        // Send the Sort Order enum directly to the Gallery View script
+        // Send sort order to GalleryView
         _galleryView.OrganizeGallery(_sortOrder);
 
         Debug.Log("Close and apply");
-
         _filterPopUp.SetActive(false);
     }
     #endregion
