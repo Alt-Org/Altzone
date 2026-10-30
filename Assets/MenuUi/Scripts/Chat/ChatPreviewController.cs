@@ -19,7 +19,6 @@ public class ChatPreviewController : MonoBehaviour
     [SerializeField] private GameObject _chatMessagesArea;
     [SerializeField] private GameObject _chatMessagesContent;
     [SerializeField] private Button _toggleChatButton;
-    [SerializeField] private Button _toggleOnlinePlayersButton;
     //[SerializeField] private TextMeshProUGUI _activeChatChannelText;
 
     private GameObject[] _chatMessageGameobjects;
@@ -36,16 +35,6 @@ public class ChatPreviewController : MonoBehaviour
     private Vector2[] _chatButtonDefaultAnchors;
     private Vector2[] _chatButtonShrinkAnchors;
 
-    //online players button
-    public AnimationClip _onlinePlayersButtonShrinkAnim;
-    public AnimationClip _onlinePlayersButtonExpandAnim;
-    private Animation _onlinePlayersButtonAnim;
-
-
-    private RectTransform _onlinePlayersButtonRect;
-    private Vector2[] _onlinePlayersButtonDefaultAnchors;
-    private Vector2[] _onlinePlayersButtonShrinkAnchors;
-
     //public TextMeshProUGUI ActiveChatChannelText { get => _activeChatChannelText; set => _activeChatChannelText = value; }
 
     private void Awake()
@@ -54,7 +43,6 @@ public class ChatPreviewController : MonoBehaviour
         _backgroundImage = GetComponent<Image>();
         _toggleChatButton.onClick.AddListener(() => ToggleChatMessages(!_isEnabled, true));
 
-        _onlinePlayersButtonAnim = _toggleOnlinePlayersButton.GetComponent<Animation>();
         _chatMessageGameobjects = new GameObject[chatMessageAmount];
 
         for (int i = 0; i < chatMessageAmount; i++)
@@ -69,23 +57,12 @@ public class ChatPreviewController : MonoBehaviour
         _chatButtonDefaultAnchors = new Vector2[2];
         _chatButtonShrinkAnchors = new Vector2[2];
 
-        _onlinePlayersButtonRect = _toggleOnlinePlayersButton.GetComponent<RectTransform>();
-
-        _onlinePlayersButtonDefaultAnchors = new Vector2[2];
-        _onlinePlayersButtonShrinkAnchors = new Vector2[2];
-
         // These anchors are the positions of the image that shrinks and expands the chat when pressed. Default is default pos & Shrink is the shrunken pos.
 
         _chatButtonDefaultAnchors[0] = _chatButtonRect.anchorMin;
         _chatButtonDefaultAnchors[1] = _chatButtonRect.anchorMax;
         _chatButtonShrinkAnchors[0] = new Vector2(0.85f, 0f);
         _chatButtonShrinkAnchors[1] = new Vector2(1f, 0.6f);
-
-
-        _onlinePlayersButtonDefaultAnchors[0] = _onlinePlayersButtonRect.anchorMin;
-        _onlinePlayersButtonDefaultAnchors[1] = _onlinePlayersButtonRect.anchorMax;
-        _onlinePlayersButtonShrinkAnchors[0] = new Vector2(0.85f, 0.6f);
-        _onlinePlayersButtonShrinkAnchors[1] = new Vector2(1f, 1.2f);
     }
 
     private void Start()

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
@@ -19,7 +20,7 @@ public class PollInfoPopup : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] private TMP_Text weightText;
     [SerializeField] private TMP_Text valueText;
-    [SerializeField] private TMP_Text authorName;
+    [SerializeField] private TextLanguageSelectorCaller authorName;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text artistNameText;
     [SerializeField] private Image rarityImage;
@@ -188,7 +189,12 @@ public class PollInfoPopup : MonoBehaviour
         if (furnitureData == null || furnitureData.Furniture == null) return;
 
         bool isBuying = furnitureData.FurniturePollType == FurniturePollType.Buying;
-        tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
+        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
+        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            tradeTag.text = isBuying ? "BUY" : "SELL";
+        else
+            tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
 
         FurnitureInfo info = furnitureData.Furniture.FurnitureInfo;
 
@@ -258,7 +264,16 @@ public class PollInfoPopup : MonoBehaviour
 
         resultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
 
-        resultText.text = isAccepted
+        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            resultText.text = isAccepted
+            ? "Hyv\u00E4ksytty".ToUpper()
+            : "Hyl\u00E4tty".ToUpper();
+        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            resultText.text = isAccepted
+            ? "Approved".ToUpper()
+            : "Rejected".ToUpper();
+        else
+            resultText.text = isAccepted
             ? "Hyv\u00E4ksytty".ToUpper()
             : "Hyl\u00E4tty".ToUpper();
 
@@ -271,7 +286,7 @@ public class PollInfoPopup : MonoBehaviour
     {
         _currentPollData = pollData;
 
-        authorName.text = $"Luonut: {pollData?.Organizer}";
+        authorName.SetText(SettingsCarrier.Instance.Language, new[]{ pollData?.Organizer});
 
         setPosterBackground.gameObject.SetActive(false);
         setFontName.gameObject.SetActive(false);
