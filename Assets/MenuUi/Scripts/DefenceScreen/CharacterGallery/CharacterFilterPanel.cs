@@ -17,16 +17,14 @@ public class CharacterFilterPanel : MonoBehaviour
     [SerializeField] private Toggle _filterConscious;
     [SerializeField] private Toggle _filterUnconscious;
 
-    [SerializeField] private GameObject _filterConsciousText;
-    [SerializeField] private GameObject _filterConsciousTextBold;
-    [SerializeField] private GameObject _filterUnconsciousText;
-    [SerializeField] private GameObject _filterUnconsciousTextBold;
+    [SerializeField] private TMP_Text _filterConsciousText;
+    [SerializeField] private TMP_Text _filterUnconsciousText;
 
     [SerializeField] private Toggle _toggleAll;
     [SerializeField] private List<Toggle> _classFilterToggles = new List<Toggle>();
 
     [Header("Dropdown")]
-    [SerializeField] private TMP_Dropdown _classSortDropdown;
+    [SerializeField] private CharacterSortDropdown _classSortDropdown;
     [SerializeField] private GameObject _dropDownArrowUp;
     [SerializeField] private GameObject _dropDownArrowDown;
 
@@ -41,7 +39,7 @@ public class CharacterFilterPanel : MonoBehaviour
 
     private List<CharacterClassType> _filteredClasses = new List<CharacterClassType>();
 
-    private enum SortOrder
+    public enum SortOrder
     {
         Classes = 0,
         Alphabetical = 1,
@@ -76,23 +74,15 @@ public class CharacterFilterPanel : MonoBehaviour
         }
 
         _classSortDropdown.onValueChanged.AddListener(ChangeDropDownValue);
+
+        _classSortDropdown.DropdownStateChanged += UpdateDropdownArrow;
     }
 
-
     #region Dropdown controls
-    public void Update()
+    private void UpdateDropdownArrow(bool isExpanded)
     {
-        //control the direction of the drop down arrow
-        if (_classSortDropdown.IsExpanded) 
-        {
-            _dropDownArrowUp.SetActive(true);
-            _dropDownArrowDown.SetActive(false);
-        }
-        else
-        {
-            _dropDownArrowUp.SetActive(false);
-            _dropDownArrowDown.SetActive(true);
-        }
+        _dropDownArrowUp.SetActive(isExpanded);
+        _dropDownArrowDown.SetActive(!isExpanded);
     }
 
     private void ChangeDropDownValue(int value)
@@ -176,97 +166,16 @@ public class CharacterFilterPanel : MonoBehaviour
     #region Turn the bold text on/off for the concious toggles
     private void ConsciousToggleBold(bool toggleIsOn)
     {
-        if (toggleIsOn)
-        {
-            _filterConsciousText.SetActive(false);
-            _filterConsciousTextBold.SetActive(true);
-        }
-        else if (!toggleIsOn)
-        {
-            _filterConsciousText.SetActive(true);
-            _filterConsciousTextBold.SetActive(false);
-        }
-
-        /*
-        TextMeshProUGUI toggleText = null;
-     
-        if (toggleIsOn)
-        {
-            //toggleText.text = _filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text;
-            //_filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text = $"<b> {toggleText} </b>";
-            toggleText = _filterAcknowledgedText;
-
-            _filterAcknowledgedText.text = $"<b> {toggleText} </b>";
-        }
-        else if (!toggleIsOn)
-        {
-            //toggleText.text = _filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text;
-            //_filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text = toggleText.ToString();
-            toggleText = _filterAcknowledgedText;
-
-            _filterAcknowledgedText.text = toggleText.text;
-
-        }*/
-
+        _filterConsciousText.fontStyle = toggleIsOn ? FontStyles.Bold : FontStyles.Normal;
+        if (toggleIsOn && _filterUnconscious.isOn) _filterUnconscious.isOn = false;
     }
 
     private void UnconsciousToggleBold(bool toggleIsOn)
     {
-        if (toggleIsOn)
-        {
-            _filterUnconsciousText.SetActive(true);
-            _filterUnconsciousTextBold.SetActive(true);
-        }
-        else if (!toggleIsOn)
-        {
-            _filterUnconsciousText.SetActive(true);
-            _filterUnconsciousTextBold.SetActive(false);
-        }
+        _filterUnconsciousText.fontStyle = toggleIsOn ? FontStyles.Bold : FontStyles.Normal;
+        if (toggleIsOn && _filterConscious.isOn) _filterConscious.isOn = false;
     }
     #endregion
-
-
-    #region Check filters
-    private void CheckConsciousFilters()
-    {
-        if (_filterConscious.isOn && _filterUnconscious.isOn)
-        {
-            _galleryView.FilterUnlocked(true, true);
-        }
-        else if (_filterConscious.isOn && !_filterUnconscious.isOn)
-        {
-            _galleryView.FilterUnlocked(true, false);
-        }
-        else if (_filterUnconscious.isOn && !_filterConscious.isOn)
-        {
-            _galleryView.FilterUnlocked(false, true);
-        }
-        else if (!_filterUnconscious.isOn && !_filterConscious.isOn)
-        {
-            _galleryView.FilterUnlocked(false, false);
-        }
-    }
-
-    private void CheckClassFilters()
-    {
-        _filteredClasses.Clear();
-
-        int i = 0;
-
-        foreach(Toggle toggle in _classFilterToggles)
-        {
-            if (toggle.isOn)
-            {
-                _filteredClasses.Add(CharacterClassType.Desensitizer + i);
-            }
-            i += 100;
-        }
-
-        _galleryView.FilterClasses(_filteredClasses);
-    }
-    #endregion
-
-
 
     #region Open, close and apply
     public void Open()
@@ -281,37 +190,25 @@ public class CharacterFilterPanel : MonoBehaviour
 
     private void CloseAndApply()
     {
-        // set filters
-        _galleryView.ResetFilter();
-        CheckClassFilters();
-        CheckConsciousFilters();
-
-        _galleryView.CheckIfSlotsActive();
-        //organize characters (all ways of organizing are not possible currently)
-        switch (_sortOrder) {
-            case SortOrder.Classes:
-                _galleryView.OrganizeGallery(false, true);
-                break;
-            case SortOrder.Alphabetical:
-                _galleryView.OrganizeGallery(false, false);
-                break;
-            case SortOrder.AlphabeticalReverse:
-                _galleryView.OrganizeGallery(true, false);
-                break;
-            case SortOrder.LowestLevel:
-                break;
-            case SortOrder.HighestLevel:
-                break;
-            case SortOrder.RarestFirst:
-                break;
-            case SortOrder.RarestLast:
-                break;
-            case SortOrder.FavouritesFirst:
-                break;
+        // Collect which classes have been selected
+        _filteredClasses.Clear();
+        int i = 0;
+        foreach (Toggle toggle in _classFilterToggles)
+        {
+            if (toggle.isOn)
+            {
+                _filteredClasses.Add(CharacterClassType.Desensitizer + i);
+            }
+            i += 100;
         }
 
-        Debug.Log("Close and apply");
+        // Send all filter information (categories and lock states) to GalleryView at once
+        _galleryView.ApplyFilters(_filteredClasses, _filterConscious.isOn, _filterUnconscious.isOn);
 
+        // Send sort order to GalleryView
+        _galleryView.OrganizeGallery(_sortOrder);
+
+        Debug.Log("Close and apply");
         _filterPopUp.SetActive(false);
     }
     #endregion
