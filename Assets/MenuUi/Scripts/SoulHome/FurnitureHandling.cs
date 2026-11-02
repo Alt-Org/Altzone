@@ -147,15 +147,33 @@ namespace MenuUI.Scripts.SoulHome
         {
             Vector2 position = Vector2.zero;
             //transform.localPosition = Vector2.zero;
+            FurnitureSlot slot = transform.parent.GetComponent<FurnitureSlot>();
 
-            float width = transform.parent.GetComponent<FurnitureSlot>().width * Furniture.GetFurnitureSize().x;
+            float width = slot.width * Furniture.GetFurnitureSize().x;
 
-            if (!reverse)
-                position.x = (width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2;
+            if(_furniture != null && _furniture.Place is FurniturePlacement.FloorByWall)
+            {
+                if (_tempSpriteDirection is Direction.Left)
+                {
+                    position.x = 0 - slot.width / 2;
+                }
+                else if (_tempSpriteDirection is Direction.Right)
+                {
+                    position.x = width - slot.width / 2;
+                }
+                else
+                {
+                    position.x = (width / 2) - slot.width / 2;
+                }
+            }
             else
-                position.x = ((width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2)*-1;
-            position.y = -1 * (transform.parent.GetComponent<FurnitureSlot>().height / 2);
-            //}
+            {
+                if (!reverse)
+                    position.x = (width / 2) - slot.width / 2;
+                else
+                    position.x = ((width / 2) - slot.width / 2) * -1;
+            }
+            position.y = -1 * (slot.height / 2);
 
             transform.localPosition = position;
         }
