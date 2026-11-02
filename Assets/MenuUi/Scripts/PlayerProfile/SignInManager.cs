@@ -561,7 +561,7 @@ namespace MenuUi.Scripts.Login
                 else
                 {
                     Debug.Log("Registering successful!");
-                    JObject result = JObject.Parse(request.downloadHandler.text);;
+                    JObject result = JObject.Parse(request.downloadHandler.text);
                     if (ServerManager.Instance.isLoggedIn) ServerManager.Instance.LogOut();
                     ServerManager.Instance.SetProfileValues(result, string.Empty);
                     GameConfig.Get().GameVersionType = VersionType.Education;
