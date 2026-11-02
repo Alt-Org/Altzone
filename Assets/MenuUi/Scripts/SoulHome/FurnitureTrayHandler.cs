@@ -68,7 +68,7 @@ namespace MenuUI.Scripts.SoulHome
                     if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Kaikki";
                     else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "All";
                     else _categoryText.text = "Kaikki"; // Default to Finnish if language not set
-                    if (_currentSelectedSet != null) // if has a set filter active
+                    if (!string.IsNullOrEmpty(_currentSelectedSet)) // if has a set filter active
                     {
                         foreach (var _furnitureListObject in list.List)
                         {
@@ -107,7 +107,7 @@ namespace MenuUI.Scripts.SoulHome
                     else _categoryText.text = "Seinät"; // Default to Finnish if language not set
                 }
 
-                if (_currentSelectedSet != null) // if has a set filter active
+                if (!string.IsNullOrEmpty(_currentSelectedSet)) // if has a set filter active
                 {
                     foreach (var _furnitureListObject in list.List)
                     {
