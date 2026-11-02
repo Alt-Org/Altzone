@@ -432,6 +432,19 @@ public class ServerManager : MonoBehaviour
     /// </remarks>
     public void SetProfileValues(JObject profileJSON, string username)
     {
+        SetAccessTokens(profileJSON);
+
+        JToken player = profileJSON["Player"];
+        Assert.IsNotNull(player);
+        PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
+
+        Assert.IsNotNull(username);
+        PlayerPrefs.SetString("userName", username ?? string.Empty);
+        //StartCoroutine(LogIn());
+    }
+
+    public void SetAccessTokens(JObject profileJSON)
+    {
         JToken accessToken = profileJSON["accessToken"];
         Assert.IsNotNull(accessToken);
         AccessToken = (string)accessToken;
@@ -447,14 +460,6 @@ public class ServerManager : MonoBehaviour
         JToken refreshTokenExpires = profileJSON["refreshTokenExpires"];
         Assert.IsNotNull(refreshTokenExpires);
         RefreshTokenExpiration = refreshTokenExpires.Value<int>();
-
-        JToken player = profileJSON["Player"];
-        Assert.IsNotNull(player);
-        PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
-
-        Assert.IsNotNull(username);
-        PlayerPrefs.SetString("userName", username ?? string.Empty);
-        //StartCoroutine(LogIn());
     }
 
     /// <summary>
@@ -1598,7 +1603,7 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
 
-                ServerManager.Instance.SetProfileValues(result, string.Empty);
+                Instance.SetAccessTokens(result);
 
                 if (callback != null)
                     callback(true);
