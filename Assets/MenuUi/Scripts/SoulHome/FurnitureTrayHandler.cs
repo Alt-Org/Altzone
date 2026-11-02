@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,143 +10,232 @@ namespace MenuUI.Scripts.SoulHome
     public class FurnitureTrayHandler : MonoBehaviour
     {
         [SerializeField]
-        private GameObject _traySlotObject;
-        [SerializeField]
         private SoulHomeFurnitureReference _furnitureRefrence;
-        [SerializeField]
-        private GameObject _trayContent;
-        private List<GameObject> _changedTrayItemList = new();
-        private GameObject _hiddenSlot = null;
         [SerializeField]
         private SoulHomeController _controller;
 
-        private List<Furniture> _furnitureList = new();
+        [SerializeField] private SmartHorizontalObjectList _smartList;
+        private List<FurnitureListObject> _candidateListObjects = new(); // Matches the category/set filter
+        private List<FurnitureListObject> _furnitureListObjects = new(); // What the tray shows
+        [SerializeField] private FurnitureTrayCategoryButtonsHandler _decorateModeButtons;
+        [SerializeField] private FurnitureTrayCategoryButton _decorateModeSetsButton;
+        [SerializeField, Range(0f, 1f)] private float _minimizedHeightRatio = 0.65f;
+        
+        [SerializeField] private FurnitureTrayCategoryButtonsHandler _renovateModeButtons;
+        [SerializeField] private TextMeshProUGUI _categoryText;
+        [SerializeField] private TextMeshProUGUI _modeText;
+        [SerializeField] private GameObject _setSelectMenu;
+        private bool _isOnDecorateMode = true;
+        private bool _isTrayMinimized = false;
 
-        [SerializeField]
-        private FurnitureTrayHandler _otherTray;
-        [SerializeField]
-        private bool _vertical = false;
+        private FurnitureTrayCategoryButton _previousCategoryButton = null;
 
-        public GameObject HiddenSlot { get => _hiddenSlot;}
-        public List<GameObject> ChangedTrayItemList { get => _changedTrayItemList;}
+        public SmartHorizontalObjectList SmartList => _smartList;
+        public string _currentSelectedSet;
+        public int _currentSelectedCategory = 1; // shows all by default
 
         // Start is called before the first frame update
         void Awake()
         {
-            if(_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
-        }
-
-        private void OnEnable()
-        {
-            SetEditInfo();
-        }
-
-        public GameObject GetTrayContent()
-        {
-            return _trayContent;
+            _decorateModeButtons.OnCategoryButtonSelected += CategoryButtonClicked; // Connect the category button click event to the handler
+            _renovateModeButtons.OnCategoryButtonSelected += CategoryButtonClicked;
         }
 
         public void InitializeTray()
         {
             FurnitureList list = _controller.FurnitureList;
-            Debug.Log("Count: "+list.Count);
-            if (list == null && list.Count < 1) return;
+            if (list == null) return;
 
-            foreach (FurnitureListObject listObject in list.Get())
-            {
-                GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(listObject.Name);
-                if (furnitureObject == null) continue;
-
-                if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
-                GameObject furnitureSlot = Instantiate(_traySlotObject, _trayContent.transform);
-                furnitureSlot.GetComponent<FurnitureTraySlotHandler>().Name.text = listObject.Name;
-
-                float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
-                furnitureSlot.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
-                furnitureSlot.GetComponent<ResizeCollider>().Resize();
-
-                GameObject trayFurniture = Instantiate(furnitureObject, furnitureSlot.transform);
-                furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList = listObject;
-                if(listObject.Count - listObject.GetInRoomCount() <= 0) furnitureSlot.SetActive(false);
-            }
-
+            FillSelectionButtonList(list);
         }
 
-        public void AddFurnitureInitial(Furniture furniture)
+        public void FilterTrayObjects(int _category)
         {
-            if (furniture == null) return;
-
-            GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(furniture.Name);
-            if (furnitureObject == null) return;
-
-            _furnitureList.Add(furniture);
-
-            if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
-            GameObject furnitureSlot = Instantiate(_traySlotObject, _trayContent.transform);
-            furnitureSlot.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = furniture.Name;
-
-            float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
-            furnitureSlot.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
-            furnitureSlot.GetComponent<ResizeCollider>().Resize();
-
-            GameObject trayFurniture = Instantiate(furnitureObject, furnitureSlot.transform);
-            trayFurniture.GetComponent<TrayFurniture>().Furniture = furniture;
-        }
-        public void AddFurnitureToTray(Furniture furniture)
-        {
-            if (furniture == null) return;
-            //Debug.LogWarning("Check");
-            if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
-
-            //furniture.ResetPosition();
-
-            //Debug.LogWarning("Name: " + furniture.Name);
-            //Debug.LogWarning("Name: " + furniture.Position);
-            foreach (Transform furnitureSlot in _trayContent.transform)
+            _currentSelectedCategory = _category;
+            FurnitureList list = _controller.FurnitureList;
+            if (list == null) return;
+            FurnitureList filtered_list = new();
+            if (_isOnDecorateMode)
             {
-                FurnitureListObject list = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList;
-                if (list.Name.Equals(furniture.Name))
+                if (_category == 0) 
                 {
-                    foreach (Furniture furnitureInList in list.List)
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Lattia";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Floor";
+                    else _categoryText.text = "Lattia"; // Default to Finnish if language not set
+                }
+                else if (_category == 1) // Displays all
+                {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Kaikki";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "All";
+                    else _categoryText.text = "Kaikki"; // Default to Finnish if language not set
+                    if (_currentSelectedSet != null) // if has a set filter active
                     {
-                        if(furnitureInList.Id == furniture.Id) furnitureInList.ResetPosition();
+                        foreach (var _furnitureListObject in list.List)
+                        {
+                            string[] nameParts = _furnitureListObject.Name.Split('_'); // get set name from furniture name
+                            if (nameParts[1] == _currentSelectedSet)
+                            {
+                                filtered_list.List.Add(_furnitureListObject);
+                            }
+                        }
+                        FillSelectionButtonList(filtered_list); // Replaces the existing slots with the filtered list
+                        _smartList.ScrollToStart(); // Reset FurnitureTray position
+                        return;
                     }
-
-                    int count = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().UpdateFurnitureCount();
-                    //Debug.LogWarning("Total Count: " + furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList.Count);
-                    //Debug.LogWarning("Count: " + count);
-                    GameObject furnitureObject = CheckChangeList(furniture);
-                    if (furnitureObject != null)
-                    {
-                        if (count == furnitureSlot.GetComponent<FurnitureTraySlotHandler>().SavedCount) _changedTrayItemList.Remove(furnitureSlot.gameObject);
-                    }
-                    else
-                    {
-                        if (count != furnitureSlot.GetComponent<FurnitureTraySlotHandler>().SavedCount) _changedTrayItemList.Add(furnitureSlot.gameObject);
-                    }
+                    // else will show all sets
+                    FillSelectionButtonList(list);
+                    _smartList.ScrollToStart(); // Reset FurnitureTray position
                     return;
                 }
+                else if (_category == 2) { // Should display special - or frames on renovate mode
+                    // Special items not implemented?
+                    FillSelectionButtonList(filtered_list); // TODO - replace with special, currently shows nothing (empty list)
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Erikoiset";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Special";
+                    else _categoryText.text = "Erikoiset"; // Default to Finnish if language not set
+                    _smartList.ScrollToStart(); // Reset FurnitureTray position
+                    return;
+                }
+                else if (_category == 3) {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Katto";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Ceiling";
+                    else _categoryText.text = "Katto"; // Default to Finnish if language not set
+                }
+                else if (_category == 4) {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Seinät";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Walls";
+                    else _categoryText.text = "Seinät"; // Default to Finnish if language not set
+                }
+
+                if (_currentSelectedSet != null) // if has a set filter active
+                {
+                    foreach (var _furnitureListObject in list.List)
+                    {
+                        string[] nameParts = _furnitureListObject.Name.Split('_'); // get set name from furniture name
+                        if (_furnitureListObject.GetListObjectType() == (FurniturePlacement)_category && nameParts[1] == _currentSelectedSet)
+                        {
+                            filtered_list.List.Add(_furnitureListObject);
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var _furnitureListObject in list.List) // Adds all furniture objects that match the category to a new list
+                    {
+                        if (_furnitureListObject.GetListObjectType() == (FurniturePlacement)_category)
+                        {
+                            filtered_list.List.Add(_furnitureListObject);
+                        }
+                    }
+                }
             }
+            else
+            {
+                if (_category == 0) {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Lattia";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Floor";
+                    else _categoryText.text = "Lattia"; // Default to Finnish if language not set
+                }
+                //else if (_category == 1) Does not exist in renovate mode
+                else if (_category == 2) {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Reunat";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Frames";
+                    else _categoryText.text = "Reunat"; // Default to Finnish if language not set
+                }
+                //else if (_category == 3) Does not exist in renovate mode
+                else if (_category == 4) {
+                    if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _categoryText.text = "Seinät";
+                    else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _categoryText.text = "Walls";
+                    else _categoryText.text = "Seinät"; // Default to Finnish if language not set
+                }
+            }
+            FillSelectionButtonList(filtered_list); // Replaces the existing slots with the filtered list
+            Debug.Log("FurnitureTrayHandler: FilterTrayObjects() - Category: " + _category + ", Set: " + _currentSelectedSet);
+            _smartList.ScrollToStart(); // Reset FurnitureTray position
+        }
+
+        public void ToggleMinimizeTray()
+        {
+            RectTransform rect = GetComponent<RectTransform>();
+            _isTrayMinimized = !_isTrayMinimized;
+
+            rect.anchorMax = new Vector2(rect.anchorMax.x, _isTrayMinimized ? _minimizedHeightRatio : 1f);
+            rect.offsetMax = new Vector2(rect.offsetMax.x, 0f);
+        }
+
+        private void FillSelectionButtonList(FurnitureList furnitureList)
+        {
+            _candidateListObjects = furnitureList.Get();
+            RebuildVisibleList();
+        }
+
+        // Sold out furniture is left out of the list, so it doesn't leave an empty gap in the tray.
+        private void RebuildVisibleList()
+        {
+            _furnitureListObjects.Clear();
+            foreach (FurnitureListObject listObject in _candidateListObjects)
+            {
+                if (listObject.GetAvailableCount() > 0) _furnitureListObjects.Add(listObject);
+            }
+            _smartList.Setup<FurnitureListObject>(_furnitureListObjects);
+        }
+
+        private bool VisibleListOutdated()
+        {
+            int visibleIndex = 0;
+            foreach (FurnitureListObject listObject in _candidateListObjects)
+            {
+                if (listObject.GetAvailableCount() <= 0) continue;
+                if (visibleIndex >= _furnitureListObjects.Count || _furnitureListObjects[visibleIndex] != listObject) return true;
+                visibleIndex++;
+            }
+            return visibleIndex != _furnitureListObjects.Count;
+        }
+
+        // Updates which furniture is shown and the amounts on the visible slots.
+        private void RefreshTray()
+        {
+            if (_smartList == null) return;
+            if (VisibleListOutdated()) RebuildVisibleList();
+            else _smartList.Refresh();
+        }
+
+        public void AddFurnitureToTray(Furniture furniture)
+        {
+            if (furniture == null || _controller.FurnitureList == null) return;
+
+            foreach (FurnitureListObject list in _controller.FurnitureList.Get())
+            {
+                if (!list.Name.Equals(furniture.Name)) continue;
+                foreach (Furniture furnitureInList in list.List)
+                {
+                    if (furnitureInList.Id == furniture.Id) furnitureInList.ResetPosition();
+                }
+                break;
+            }
+            RefreshTray();
         }
 
         public GameObject TakeFurnitureFromTray(string furnitureName)
         {
             if (string.IsNullOrWhiteSpace(furnitureName)) return null;
 
-            if (_trayContent == null) _trayContent = transform.Find("Scroll View").GetChild(0).GetChild(0).gameObject;
-
-            foreach (Transform furnitureSlot in _trayContent.transform)
+            foreach (FurnitureListObject list in _furnitureListObjects)
             {
-                FurnitureListObject list = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList;
                 if (list.Name.Equals(furnitureName))
                 {
                     foreach (Furniture furnitureInList in list.List)
                     {
                         if (furnitureInList.Position.Equals(new(-1, -1)))
                         {
+                            // an extra furnitur icon gets instantiated
+                            // make sure not to delete the furniture slot even if count 0
                             GameObject furnitureObject = _furnitureRefrence.GetSoulHomeTrayFurnitureObject(furnitureInList.Name);
                             if (furnitureObject == null) return null;
-                            GameObject newObject = Instantiate(furnitureObject, furnitureSlot.transform);
+                            GameObject newObject = Instantiate(furnitureObject, transform);
+                            // The preview must not steal raycasts from the gesture's original target.
+                            foreach (Graphic graphic in newObject.GetComponentsInChildren<Graphic>(true))
+                                graphic.raycastTarget = false;
                             newObject.GetComponent<TrayFurniture>().Furniture = furnitureInList;
                             return newObject;
                         }
@@ -162,143 +251,79 @@ namespace MenuUI.Scripts.SoulHome
         {
             if(trayFurniture == null) return false;
 
-            //return RemoveFurniture(trayFurniture.GetComponent<TrayFurniture>().Furniture);
+            RefreshTray();
 
-            int trayFurnitureAmount = _trayContent.transform.childCount;
-
-            foreach (Transform furnitureSlot in _trayContent.transform)
+            string furnitureName = trayFurniture.GetComponent<TrayFurniture>().Furniture.Name;
+            foreach (FurnitureListObject list in _candidateListObjects)
             {
-                if (furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList.Name.Equals(trayFurniture.GetComponent<TrayFurniture>().Furniture.Name))
-                {
-                    int count = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().UpdateFurnitureCount();
-                    if (CheckChangeList(furnitureSlot.gameObject))
-                    {
-                        if (count == furnitureSlot.GetComponent<FurnitureTraySlotHandler>().SavedCount) _changedTrayItemList.Remove(furnitureSlot.gameObject);
-                    }
-                    else
-                    {
-                        if (count != furnitureSlot.GetComponent<FurnitureTraySlotHandler>().SavedCount) _changedTrayItemList.Add(furnitureSlot.gameObject);
-                        _hiddenSlot = null;
-                    }
-                    return true;
-                }
+                if (list.Name == furnitureName) return true;
             }
             return false;
-        }
-
-        public void HideFurnitureSlot(GameObject trayFurniture)
-        {
-            if (!trayFurniture.transform.parent.CompareTag("FurnitureTrayItem")) return;
-            _hiddenSlot = trayFurniture.transform.parent.gameObject;
-            _hiddenSlot.SetActive(false);
-        }
-
-        public void RevealFurnitureSlot()
-        {
-            if (_hiddenSlot != null)
-            {
-                _hiddenSlot.SetActive(true);
-                if (!_hiddenSlot.transform.GetChild(1).GetComponent<Image>().enabled) _hiddenSlot.transform.GetChild(1).GetComponent<Image>().enabled = true;
-                _hiddenSlot.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-            }
-        }
-
-        public bool CheckAndRevealHiddenSlot(GameObject trayFurniture)
-        {
-            if(_hiddenSlot == null) return false;
-            if (Object.ReferenceEquals(_hiddenSlot.transform.GetChild(1).GetComponent<TrayFurniture>().Furniture, trayFurniture.GetComponent<TrayFurniture>().Furniture))
-            {
-                RevealFurnitureSlot();
-                return true;
-            }
-            return false;
-        }
-
-        public bool CheckChangeList(GameObject item)
-        {
-            int amount = _changedTrayItemList.Count;
-            foreach (GameObject furnitureSlot in _changedTrayItemList)
-            {
-                if (Object.ReferenceEquals(furnitureSlot, item)) return true;
-            }
-            return false;
-        }
-
-        public GameObject CheckChangeList(Furniture furniture)
-        {
-            foreach (GameObject furnitureSlot in _changedTrayItemList)
-            {
-                FurnitureListObject list = furnitureSlot.GetComponent<FurnitureTraySlotHandler>().FurnitureList;
-
-                foreach (Furniture furnitureInList in list.List)
-                {
-                    if (Object.ReferenceEquals(furnitureInList, furniture)) return furnitureSlot;
-                }
-            }
-            return null;
         }
 
         public void ResetChanges()
         {
-            int amount = _changedTrayItemList.Count;
-            for (int i = 0; i < amount; i++)
-            {
-                _changedTrayItemList[i].GetComponent<FurnitureTraySlotHandler>().UpdateFurnitureCount();
-            }
-            _changedTrayItemList.Clear();
+            RefreshTray();
         }
 
         public void SaveChanges()
         {
-            int amount = _changedTrayItemList.Count;
-            for (int i = 0; i < amount; i++)
+            RefreshTray();
+
+            // Daily task: all furniture has been placed, nothing is left in the tray.
+            bool itemsLeft = false;
+            if (_controller.FurnitureList != null)
             {
-                _changedTrayItemList[i].GetComponent<FurnitureTraySlotHandler>().SaveCount();
-            }
-            _changedTrayItemList.Clear();
-
-            int itemsLeft = 0;
-            foreach (Transform furnitureSlot in _trayContent.transform)
-            {
-                if (furnitureSlot.gameObject.activeSelf) itemsLeft++;
-            }
-
-            if (itemsLeft == 0) gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
-        }
-
-        private void SetEditInfo()
-        {
-            _hiddenSlot = _otherTray.HiddenSlot;
-            _changedTrayItemList = _otherTray.ChangedTrayItemList;
-        }
-
-        public void SetTrayContentSize()
-        {
-            if (!_vertical)
-            {
-                int childCount = _trayContent.transform.childCount;
-                float slotSize = _trayContent.GetComponent<RectTransform>().rect.height * 0.9f;
-                for (int i = 0; i < childCount; i++)
+                foreach (FurnitureListObject listObject in _controller.FurnitureList.Get())
                 {
-                    GameObject slotObject = _trayContent.transform.GetChild(i).gameObject;
-                    slotObject.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
-                    slotObject.GetComponent<BoxCollider2D>().size = new(slotSize, slotSize);
-                    slotObject.GetComponent<ResizeCollider>().Resize();
+                    if (listObject.GetAvailableCount() > 0) { itemsLeft = true; break; }
+                }
+            }
+
+            if (!itemsLeft) gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
+        }
+
+        public void CategoryButtonClicked(FurnitureTrayCategoryButton button) // sets button and child icon color
+        {
+            if (button == null) return;
+            if (_previousCategoryButton != null) _previousCategoryButton.DeSelect();
+            _previousCategoryButton = button;
+            button.Select();
+        }
+
+        public void ModeButtonClicked(GameObject _modeButton)
+        {
+            //if (_previousCategoryButton != null) _previousCategoryButton.DeSelect();
+            if (!_isOnDecorateMode)
+            {
+                _isOnDecorateMode = true;
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _modeText.text = "Sisustus";
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _modeText.text = "Decorate";
+                else _modeText.text = "Sisustus"; // Default to Finnish if language not set
+                _decorateModeButtons.gameObject.SetActive(true);
+                _renovateModeButtons.gameObject.SetActive(false);
+                if (!_decorateModeButtons.SelectCategory(_currentSelectedCategory))
+                {
+                    _currentSelectedCategory = 1; // All
+                    _decorateModeButtons.SelectCategory(_currentSelectedCategory);
                 }
             }
             else
             {
-                int childCount = _trayContent.transform.childCount;
-                float slotSize = (GetComponent<RectTransform>().rect.width * 0.5f) - 50f;
-                for (int i = 0; i < childCount; i++)
+                _isOnDecorateMode = false;
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish) _modeText.text = "Remontti";
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English) _modeText.text = "Renovation";
+                else _modeText.text = "Remontti"; // Default to Finnish if language not set
+                _decorateModeButtons.gameObject.SetActive(false);
+                _renovateModeButtons.gameObject.SetActive(true);
+                if (!_renovateModeButtons.SelectCategory(_currentSelectedCategory))
                 {
-                    GameObject slotObject = _trayContent.transform.GetChild(i).gameObject;
-                    _trayContent.GetComponent<GridLayoutGroup>().cellSize = new(slotSize, slotSize); ;
-                    slotObject.GetComponent<RectTransform>().sizeDelta = new(slotSize, slotSize);
-                    slotObject.GetComponent<BoxCollider2D>().size = new(slotSize, slotSize);
-                    slotObject.GetComponent<ResizeCollider>().Resize();
+                    _currentSelectedCategory = 0; // Floor
+                    _renovateModeButtons.SelectCategory(_currentSelectedCategory);
                 }
             }
+            _modeButton.GetComponent<ModeButtonHandler>().ToggleMode();
+            FilterTrayObjects(_currentSelectedCategory); // refresh tray slots
         }
     }
 }

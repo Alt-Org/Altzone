@@ -36,7 +36,7 @@ public class ClanListing : MonoBehaviour
     {
         if (_clan != null)
         {
-            ClanData clanData = new ClanData(_clan);
+            ClanData clanData = new ClanData(_clan, true);
 
             _clanName.text = _clan.name;
             _clanMembers.SetText(SettingsCarrier.Instance.Language,new string[1] { _clan.playerCount.ToString() });

@@ -65,6 +65,7 @@ public class AdEditor : AltMonoBehaviour
             _previousAdData.BackgroundColour = _adData.BackgroundColour;
             _previousAdData.BorderFrame = _adData.BorderFrame;
             _previousAdData.Furniture = _adData.Furniture;
+            _previousAdData.FurnitureName = _adData.FurnitureName;
             _previousAdData.TextColour = _adData.TextColour;
             _previousAdData.TextFont = _adData.TextFont;
             _previousAdData.AdText = _adData.AdText;
@@ -262,21 +263,6 @@ public class AdEditor : AltMonoBehaviour
         }
     }
 
-    private void SaveAdData()
-    {
-        StartCoroutine(GetClanData(data =>
-        {
-            data.AdData = _adData;
-            StartCoroutine(ServerManager.Instance.UpdateClanAdPoster(_adData, success =>
-            {
-                if (success)
-                {
-                    StartCoroutine(SaveClanData(clanData => data = clanData, data));
-                }
-            }));
-        }));
-    }
-
     public void ChangeColor(Color colour)
     {
         if (!colorChanged)
@@ -306,6 +292,7 @@ public class AdEditor : AltMonoBehaviour
         }
 
         _adData.Furniture = furniture.Image;
+        _adData.FurnitureName = furniture.Name;
         _adGraphicHandler.SetAdPoster(_adData, _posterName);
     }
 
@@ -349,7 +336,7 @@ public class AdEditor : AltMonoBehaviour
 
     public void SaveAndCloseEditor()
     {
-        SaveAdData();
+        ServerManager.Instance.SaveAdData(_adData);
         CloseEditor();
     }
 

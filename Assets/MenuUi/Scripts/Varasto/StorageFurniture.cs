@@ -50,43 +50,9 @@ namespace MenuUi.Scripts.Storage
         public string Name { get => _name;}
         public string Id { get => _id;}
         public Sprite Sprite { get => _info.Image;}
-        public string VisibleName
-        {
-            get
-            {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
-                    return _info.VisibleName;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
-                    return _info.EnglishName;
-                else
-                    return _info.VisibleName;
-            }
-        }
-        public string SetName
-        {
-            get
-            {
-                if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
-                    return _info.SetName;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
-                    return _info.SetNameEnglish;
-                else
-                    return _info.SetName;
-            }
-        }
-
-        public string Description
-        {
-            get
-            {
-                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
-                    return _info.ArtisticDescription;
-                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
-                    return _info.EnglishArtisticDescription;
-                else
-                    return _info.ArtisticDescription;
-            }
-        }
+        public string VisibleName => _info.VisibleName;
+        public string SetName => _info.SetName;
+        public string Description => _info.ArtisticDescription;
 
         public FurnitureRarity Rarity { get => _rarity; }
         public Vector2Int Position { get => _position; set => _position = value; }
