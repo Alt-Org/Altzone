@@ -337,7 +337,6 @@ namespace MenuUi.Scripts.CharacterGallery
 
         /// <summary>
         /// Applies class and state filters to the character gallery, updating the visibility of each character slot.
-        /// Test characters bypass the class filter but respect the state filter.
         /// </summary>
         /// <param name="classTypes">List of CharacterClassTypes that should be visible.</param>
         /// <param name="consciousIsOn">If true, shows unlocked (conscious) characters.</param>
@@ -353,11 +352,10 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 // 1. Check the CLASS filter
                 CharacterClassType slotClass = CustomCharacter.GetClass(characterSlot.Character.Id);
-                bool isTestCharacter = CustomCharacter.IsTestCharacter(characterSlot.Id);
 
-                if (!isTestCharacter && !classTypes.Contains(slotClass))
+                if (!classTypes.Contains(slotClass))
                 {
-                    shouldShow = false;
+                    shouldShow = false; // Class not selected -> hide
                 }
 
                 // 2. Check the STATE filter (only if a specific state is requested)
