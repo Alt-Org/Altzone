@@ -1580,6 +1580,8 @@ public class ServerManager : MonoBehaviour
 
     #endregion
 
+    #region AccessToken
+
     private IEnumerator RefreshAccessToken(Action<bool> callback)
     {
         Debug.LogWarning(((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() - RefreshTokenExpiration);
@@ -1615,6 +1617,8 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+
+    #endregion
 
     #region DailyTasks
 
