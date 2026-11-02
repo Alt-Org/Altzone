@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -211,18 +211,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 case MatchmakingType.Clan2v2:
                     if (PhotonLobbyRoom.CountRealPlayers() == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
                     {
-                        // Prevent starting matchmaking when this room is actually a queue room
-                        try
-                        {
-                            var curr = PhotonRealtimeClient.LobbyCurrentRoom;
-                            if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
-                            {
-                                Debug.Log("StartPlaying suppressed: current room is a queue room (Clan2v2).");
-                                RestoreStartButton();
-                                return;
-                            }
-                        }
-                        catch { }
                         this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType));
                     }
                     else
@@ -232,18 +220,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     }
                     break;
                 case MatchmakingType.Random2v2:
-                    // Prevent starting matchmaking when this room is a queue room
-                    try
-                    {
-                        var curr = PhotonRealtimeClient.LobbyCurrentRoom;
-                        if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
-                        {
-                            Debug.Log("StartPlaying suppressed: current room is a queue room (Random2v2).");
-                            RestoreStartButton();
-                            return;
-                        }
-                    }
-                    catch { }
                     this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType));
                     break;
             }

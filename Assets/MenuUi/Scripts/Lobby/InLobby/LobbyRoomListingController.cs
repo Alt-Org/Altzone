@@ -53,7 +53,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
             _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoom);
                 _createRoomFromMainMenuButton.onClick.RemoveAllListeners();
                 _createRoomFromMainMenuButton.onClick.AddListener(() => SignalBus.OnCustomRoomSettingsRequestedSignal());
-            LobbyManager.OnClanMemberDisconnected += HandleClanMemberDisconnected;
             LobbyManager.OnKickedOutOfTheRoom += HandleKickedOutOfRoom;
         }
 
@@ -90,7 +89,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private void OnDestroy()
         {
-            LobbyManager.OnClanMemberDisconnected -= HandleClanMemberDisconnected;
             LobbyManager.OnKickedOutOfTheRoom -= HandleKickedOutOfRoom;
             _createRoomCustom.CreateRoomButton.onClick.RemoveAllListeners();
             _createRoomFromMainMenuButton.onClick.RemoveAllListeners();
@@ -475,11 +473,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
             }
 
             return string.Equals(storedPasswordValue.Trim(), normalizedInput, StringComparison.Ordinal);
-        }
-
-        private void HandleClanMemberDisconnected()
-        {
-            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Pelin etsiminen lopetetaan. Klaanin jäsen sulki pelin.");
         }
 
         private void HandleKickedOutOfRoom(ReasonType reason)
