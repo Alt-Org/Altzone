@@ -12,7 +12,6 @@ using System;
 using Quantum;
 using Photon.Deterministic;
 
-
 namespace Battle.QSimulation.Game
 {
     /// <summary>

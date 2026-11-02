@@ -1,9 +1,15 @@
+
+// System usings
 using System.Runtime.CompilerServices;
-using Battle.QSimulation.Player;
-using Battle.QSimulation.Projectile;
-using Photon.Deterministic;
+
+// Quantum usings
 using Quantum;
 using Quantum.Collections;
+using Photon.Deterministic;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Player;
+using Battle.QSimulation.Projectile;
 
 namespace Battle.QSimulation.Game
 {

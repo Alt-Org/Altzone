@@ -13,7 +13,6 @@ using Input = Quantum.Input;
 
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
-using Battle.QSimulation.Projectile;
 
 namespace Battle.QSimulation.Player
 {

@@ -4,7 +4,6 @@
 /// </summary>
 
 // System usings
-using System;
 using System.Runtime.CompilerServices;
 
 // Unity usings

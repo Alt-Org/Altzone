@@ -7,17 +7,17 @@
 using System.Runtime.CompilerServices;
 
 // Unity usings
-using Battle.QSimulation.Diamond;
-using Battle.QSimulation.Goal;
-using Battle.QSimulation.Player;
-
-// Battle QSimulation usings
-using Battle.QSimulation.Projectile;
-using Battle.QSimulation.SoulWall;
+using UnityEngine.Scripting;
 
 // Quantum usings
 using Quantum;
-using UnityEngine.Scripting;
+
+// Battle QSimulation usings
+using Battle.QSimulation.Diamond;
+using Battle.QSimulation.Goal;
+using Battle.QSimulation.Player;
+using Battle.QSimulation.Projectile;
+using Battle.QSimulation.SoulWall;
 
 namespace Battle.QSimulation.Game
 {

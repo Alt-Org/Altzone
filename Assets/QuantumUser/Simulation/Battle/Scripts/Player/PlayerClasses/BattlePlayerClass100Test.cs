@@ -3,13 +3,16 @@
 /// Contains @cref{Battle.QSimulation.Player,BattlePlayerClass100Test} class which handles player character class logic for the 100/Desensitizer class.
 /// </summary>
 
-// Quantum usings
+// System usings
 using System.Runtime.CompilerServices;
+
+// Quantum usings
+using Photon.Deterministic;
+using Quantum;
+
 // Battle QSimulation usings
 using Battle.QSimulation.Game;
 using Battle.QSimulation.Projectile;
-using Photon.Deterministic;
-using Quantum;
 
 namespace Battle.QSimulation.Player
 {
