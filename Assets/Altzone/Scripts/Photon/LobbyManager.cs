@@ -93,7 +93,7 @@ namespace Altzone.Scripts.Lobby
         #region Private Fields
 
         private const long STARTDELAY = 2000;
-        private const float MatchmakingTimeoutSeconds = 20f;
+        private const float MatchmakingTimeoutSeconds = 10f;
 
         private QuantumRunner _runner = null;
         private BattleRoomInfo _roomInfo = null;
@@ -1238,14 +1238,32 @@ namespace Altzone.Scripts.Lobby
         private void OnServerMatchFound(MqttMatchSet match)
         {
             if (match == null || string.IsNullOrWhiteSpace(match.id)) return;
+
+            ServerManager serverManager = ServerManager.Instance;
+            if (!_serverMatchmakingActive || serverManager == null || !serverManager.HasActiveMatchmakingRoom)
+            {
+                Debug.LogWarning($"Ignoring backend match '{match.id}' because the player has not entered a matchmaking room.");
+                return;
+            }
+
+            string localPlayerId = serverManager.Player?._id;
+            bool localPlayerIsInMatch = !string.IsNullOrWhiteSpace(localPlayerId)
+                && match.teams != null
+                && match.teams.Any(team => team?.players != null
+                    && team.players.Any(player => player?.playerId == localPlayerId));
+            if (!localPlayerIsInMatch)
+            {
+                Debug.LogWarning($"Ignoring backend match '{match.id}' because it does not include the local player.");
+                return;
+            }
+
             if (_serverMatchData != null && _serverMatchData.id == match.id && _serverPhotonReadyInFlight) return;
 
-            _serverMatchmakingActive = true;
             _serverMatchData = match;
             _serverMatchStartConfirmedByBackend = false;
             _currentMatchmakingGameType = (MatchmakingType)match.matchType;
             _currentGameType = (GameType)match.gameType;
-            ServerManager.Instance.SetActiveMatchmakingMatch(match.id);
+            serverManager.SetActiveMatchmakingMatch(match.id);
             StartCoroutine(JoinServerPhotonRoom(match));
         }
 
