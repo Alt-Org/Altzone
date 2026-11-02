@@ -1,49 +1,71 @@
-/*{ Built-in overrides */ 
+/*{ Tags */
 
+/* Code tag: style */
 html.dark-mode code {
-  color: white;
+    color: white;
 }
-
-html.dark-mode *:not(.paramname)>em {
-  color: white;
-}
-
 html.light-mode code {
-  font-weight: bold;
+    font-weight: bold;
 }
 
+/* Em tag (not .paramname): style */
+html.dark-mode *:not(.paramname)>em {
+    color: white;
+}
 html.light-mode *:not(.paramname)>em {
-  font-weight: bold;
+    font-weight: bold;
 }
 
+/*} Tags */
+
+/*{ Built-in overrides */
+
+/* Doxygen - Code Span: style */
 .tt {
-   background-color: var(--fragment-background-color);
-   padding: 1px 5px;
-   border: 1px solid var(--fragment-border-color);
+    background-color: var(--fragment-background-color);
+    padding: 1px 5px;
+    border: 1px solid var(--fragment-border-color);
 }
 
+/* Doxygen - Page > Brief: style */
+.contents > P:first-child {
+    font-size: 1.1rem;
+}
+
+/* Doxygen - Page > Detailed Description > brief repeat: style */
+.textblock > P:first-child {
+    font-size: 1.1rem;
+}
+
+/* Doxygen - Group Text: no italic */
 .groupText > p {
-  font-style: normal;
+    font-style: normal;
 }
 
+/* Doxygen - Member > Brief: style*/
+.memdoc > p:first-child {
+    font-size: 1.1rem;
+}
+
+/* Doxygen - Parameter Table: style */
 dl.params dd table.params td.paramname {
-  padding-right: 12px;
+    padding-right: 12px;
 }
 
-/*} Built-in overrides */ 
+/*} Built-in overrides */
 
-/*{ Custom */ 
+/*{ Custom */
 
 .brief-h {
-  font-size: 1.1rem;
+    font-size: 1.1rem;
 }
 
 .big-text {
-  font-size: 1.1rem;
+    font-size: 1.1rem;
 }
 
 .fake-link {
-  color: var(--page-link-color);
+    color: var(--page-link-color);
 }
 
-/*} Custom */ 
+/*} Custom */
