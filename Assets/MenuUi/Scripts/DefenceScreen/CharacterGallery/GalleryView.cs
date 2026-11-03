@@ -383,7 +383,7 @@ namespace MenuUi.Scripts.CharacterGallery
             _scrollRect.VerticalNormalizedPosition = 1;
         }
 
-        public void OrganizeGallery(CharacterFilterPanel.SortOrder sortOrder)
+        public void OrganizeGallery(CharacterSortOrder sortOrder)
         {
             List<CharacterSortData> sortingList = new List<CharacterSortData>();
 
@@ -421,19 +421,19 @@ namespace MenuUi.Scripts.CharacterGallery
             // 2. Sort the list according to the selected dropdown option
             switch (sortOrder)
             {
-                case CharacterFilterPanel.SortOrder.Classes:
+                case CharacterSortOrder.Classes:
                     sortingList.Sort((a, b) => a.Id.CompareTo(b.Id));
                     break;
-                case CharacterFilterPanel.SortOrder.Alphabetical:
+                case CharacterSortOrder.Alphabetical:
                     sortingList.Sort((a, b) => a.Name.CompareTo(b.Name));
                     break;
-                case CharacterFilterPanel.SortOrder.AlphabeticalReverse:
+                case CharacterSortOrder.AlphabeticalReverse:
                     sortingList.Sort((a, b) => b.Name.CompareTo(a.Name));
                     break;
-                case CharacterFilterPanel.SortOrder.LowestLevel:
+                case CharacterSortOrder.LowestLevel:
                     sortingList.Sort((a, b) => a.TotalLevel.CompareTo(b.TotalLevel)); // Lowest first
                     break;
-                case CharacterFilterPanel.SortOrder.HighestLevel:
+                case CharacterSortOrder.HighestLevel:
                     sortingList.Sort((a, b) => b.TotalLevel.CompareTo(a.TotalLevel)); // Highest first
                     break;
             }

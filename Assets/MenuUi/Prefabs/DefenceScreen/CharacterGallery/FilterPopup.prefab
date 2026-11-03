@@ -1224,7 +1224,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38
+  m_fontSize: 36.4
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4397,7 +4397,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 35.8
+  m_fontSize: 37.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5369,6 +5369,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3438391178968131846}
   - component: {fileID: 3357727531618957649}
+  - component: {fileID: 4857190751450270720}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
@@ -5446,6 +5447,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &4857190751450270720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5716899673990530144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84326b3b10d00364ab57ea24700c9226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _toggle: {fileID: 3357727531618957649}
+  _notInUsePanel: {fileID: 2593603152134428077}
 --- !u!1 &5718080512790565129
 GameObject:
   m_ObjectHideFlags: 0
@@ -6312,7 +6327,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 83.85
+  m_fontSize: 87.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6483,7 +6498,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 54
+  m_fontSize: 56.35
   m_fontSizeBase: 80
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8154,6 +8169,11 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 40
       objectReference: {fileID: 0}
+    - target: {fileID: 6699832907098985500, guid: 7afbe7fc11286b544aab47947e93f468,
+        type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7140401699805581674, guid: 7afbe7fc11286b544aab47947e93f468,
         type: 3}
       propertyPath: m_Name
@@ -8172,6 +8192,12 @@ PrefabInstance:
 --- !u!224 &104259942170084720 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4727651568002154935, guid: 7afbe7fc11286b544aab47947e93f468,
+    type: 3}
+  m_PrefabInstance: {fileID: 4677438810891453639}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2593603152134428077 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7140401699805581674, guid: 7afbe7fc11286b544aab47947e93f468,
     type: 3}
   m_PrefabInstance: {fileID: 4677438810891453639}
   m_PrefabAsset: {fileID: 0}
