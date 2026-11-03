@@ -9,6 +9,7 @@ using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Tilemaps.TilemapRenderer;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -60,7 +61,9 @@ namespace MenuUi.Scripts.CharacterGallery
         //list for sorting the slots
         List<NameSortingPair> _nameSortingPairs = new List<NameSortingPair>();
 
+        List<CharacterSortData> _sortingList = null;
 
+        private CharacterSortOrder _sortOrder;
 
         private void Awake()
         {
@@ -385,37 +388,21 @@ namespace MenuUi.Scripts.CharacterGallery
 
         public void OrganizeGallery(CharacterSortOrder sortOrder)
         {
-            List<CharacterSortData> sortingList = new List<CharacterSortData>();
-
-            // Fetch player data to access the updated stats of unlocked characters
-            PlayerData playerData = null;
-            Storefront.Get().GetPlayerData(Altzone.Scripts.Config.GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
-
-            // 1. Collect the data (Name, Id, and Total Level) of all characters currently in the gallery
-            foreach (CharacterSlot characterSlot in _characterSlots)
+            _sortOrder = sortOrder;
+            List<CharacterSortData> sortingList;
+            if (_sortingList == null)
             {
-                int level = 0;
+                sortingList = new List<CharacterSortData>();
 
-                // Find the specific character from the player's custom characters list
-                CustomCharacter customChar = playerData?.CustomCharacters?.Find(c => c.Id == characterSlot.Id);
-
-                if (customChar != null)
+                // 1. Collect the data (Name, Id, and Total Level) of all characters currently in the gallery
+                foreach (CharacterSlot characterSlot in _characterSlots)
                 {
-                    // Player owns the character: Total level is the sum of all stats
-                    level = customChar.GetStatsCombined();
+                    sortingList.Add(new CharacterSortData(characterSlot, () => OrganizeGallery()));
                 }
-                else
-                {
-                    // Character is locked: Total level is zero (or alternatively the sum of base stats)
-                    level = 0;
-                }
-
-                sortingList.Add(new CharacterSortData()
-                {
-                    Name = GetName(characterSlot),
-                    Id = (int)characterSlot.Id,
-                    TotalLevel = level
-                });
+            }
+            else
+            {
+                sortingList = _sortingList;
             }
 
             // 2. Sort the list according to the selected dropdown option
@@ -451,21 +438,51 @@ namespace MenuUi.Scripts.CharacterGallery
             }
         }
 
+        public void OrganizeGallery() => OrganizeGallery(_sortOrder);
+
         private class CharacterSortData
         {
             public int Id { get; set; }
             public string Name { get; set; }
             public int TotalLevel { get; set; } // Total level added for sorting
-        }
 
-        private string GetName(CharacterSlot characterSlot)
-        {
-            PlayerCharacterPrototype info;
-            info = PlayerCharacterPrototypes.GetCharacter(((int)characterSlot.Id).ToString());
+            private Action _action;
 
-            Debug.Log(info.Name);
-            return info.Name;
-            
+            public CharacterSortData(CharacterSlot characterSlot, Action action)
+            {
+                Name = characterSlot.Name;
+                Id = (int)characterSlot.Id;
+
+                PlayerData playerData = null;
+                Storefront.Get().GetPlayerData(Altzone.Scripts.Config.GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+
+                int level = 0;
+
+                // Find the specific character from the player's custom characters list
+                CustomCharacter customChar = playerData?.CustomCharacters?.Find(c => c.Id == characterSlot.Id);
+
+                if (customChar != null)
+                {
+                    // Player owns the character: Total level is the sum of all stats
+                    level = customChar.GetStatsCombined();
+                }
+                else
+                {
+                    // Character is locked: Total level is zero (or alternatively the sum of base stats)
+                    level = 0;
+                }
+
+                TotalLevel = level;
+
+                _action = action;
+                customChar.OnStatUpdated += UpdateStats;
+            }
+
+            private void UpdateStats(CustomCharacter character, StatType statType)
+            {
+                TotalLevel = character.GetStatsCombined();
+                _action.Invoke();
+            }
         }
 
         public void CheckIfSlotsActive() //if all character slots are inactive, make all active
