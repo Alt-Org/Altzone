@@ -11,6 +11,7 @@ namespace MenuUI.Scripts.SoulHome
         public int column;
         public FurnitureGrid furnitureGrid;
         public int roomId;
+        private RoomData _roomData;
         public float maxDepthScale;
         public float maxRow;
         public float height;
@@ -66,13 +67,15 @@ namespace MenuUI.Scripts.SoulHome
         public bool RotatedNonBlock { get => _rotatedNonBlock; }
         public bool TempRotatedNonBlock { get => _tempRotatedNonBlock;}
         public bool Ladder { get => _ladder; set => _ladder = value; }
+        public RoomData RoomData { get => _roomData;}
 
-        public void InitializeSlot(int row, int column, int id, FurnitureGrid furnitureGrid, float scale, float maxRow, float width, float height)
+        public void InitializeSlot(RoomData room, int row, int column, int id, FurnitureGrid furnitureGrid, float scale, float maxRow, float width, float height)
         {
             this.row = row;
             this.column = column;
             this.furnitureGrid = furnitureGrid;
             roomId = id;
+            _roomData = room;
             maxDepthScale = scale;
             this.maxRow = maxRow;
             this.width = width;
