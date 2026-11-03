@@ -486,4 +486,14 @@ namespace Altzone.Scripts.Model.Poco.Game
             return valid;
         }
     }
+
+    public static class CustomCharacterExtension
+    {
+        // Get all character stats combined
+        public static int GetStatsCombined(this CustomCharacter customcharacter)
+        {
+            if (customcharacter == null) return customcharacter.CharacterBase.GetBaseStatsCombined();
+            return customcharacter.Speed + customcharacter.CharacterSize + customcharacter.Attack + customcharacter.Defence + customcharacter.Hp;
+        }
+    }
 }

@@ -402,7 +402,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 if (customChar != null)
                 {
                     // Player owns the character: Total level is the sum of all stats
-                    level = customChar.Hp + customChar.Speed + customChar.CharacterSize + customChar.Attack + customChar.Defence;
+                    level = customChar.GetStatsCombined();
                 }
                 else
                 {
