@@ -1,0 +1,18 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+[RequireComponent(typeof(Button))]
+public class LogOutButtonHandler : MonoBehaviour
+{
+    private void Start()
+    {
+        GetComponent<Button>().onClick.AddListener(LogOut);
+    }
+
+    public void LogOut()
+    {
+        ServerManager.Instance.LogOut();
+    }
+}

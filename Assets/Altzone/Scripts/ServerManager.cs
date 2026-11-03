@@ -801,7 +801,10 @@ public class ServerManager : MonoBehaviour
 
             if (((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() >= AccessTokenExpiration - 5)
             {
-                yield return RefreshAccessToken(b =>{});
+                yield return RefreshAccessToken(b =>
+                {
+                    if (!b) LogOut();
+                });
             }
 
             bool? list = null;
@@ -1584,10 +1587,11 @@ public class ServerManager : MonoBehaviour
 
     private IEnumerator RefreshAccessToken(Action<bool> callback)
     {
-        Debug.LogWarning(((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() - RefreshTokenExpiration);
+        Debug.Log("Access token expired. Attempting token refresh.");
 
         if (((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() >= RefreshTokenExpiration)
         {
+            Debug.Log("Refresh token expired. New Login required.");
             callback?.Invoke(false);
             yield break;
         }
