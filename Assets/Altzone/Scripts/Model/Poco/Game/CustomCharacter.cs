@@ -499,6 +499,7 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public void RemoveDelegates()
         {
+            if (OnStatUpdated == null) return;
             foreach (Delegate d in OnStatUpdated.GetInvocationList())
             {
                 OnStatUpdated -= (StatUpdatedHandler)d;
