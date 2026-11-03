@@ -18,10 +18,14 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         [SerializeField] private Button _previousButton;
         private List<GameType> _gameTypes = new();
 
-        public GameType SelectedGameMode { get; private set; } = GameType.BattlePingPong;
+        public static GameType SelectedGameMode { get; private set; } = GameType.BattleFlipperGame;
+
+        public delegate void GameModeChange(GameType type);
+        public static event GameModeChange OnGameModeChange;
 
         private void Awake()
         {
+            SelectedGameMode = GameType.BattleFlipperGame;
             InitializeGameTypes();
             _nextButton.onClick.AddListener(OnNextOptionClicked);
             _previousButton.onClick.AddListener(OnPreviousOptionClicked);
@@ -34,6 +38,7 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
             bool isLast = SelectedGameMode == _gameTypes.Last();
             SelectedGameMode = isLast ? _gameTypes.First() : _gameTypes[_gameTypes.IndexOf(SelectedGameMode) + 1];
             _currentGameModeText.text = SelectedGameMode.GetString();
+            OnGameModeChange?.Invoke(SelectedGameMode);
         }
 
         private void OnPreviousOptionClicked()
@@ -42,6 +47,7 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
             bool isFirst = SelectedGameMode == _gameTypes.First();
             SelectedGameMode = isFirst ? _gameTypes.Last() : _gameTypes[_gameTypes.IndexOf(SelectedGameMode) - 1];
             _currentGameModeText.text = SelectedGameMode.GetString();
+            OnGameModeChange?.Invoke(SelectedGameMode);
         }
 
         private void InitializeGameTypes()
