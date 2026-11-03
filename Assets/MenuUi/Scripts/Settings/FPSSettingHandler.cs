@@ -19,11 +19,24 @@ public class FPSSettingHandler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        int savedFPS = PlayerPrefs.GetInt("TargetFrameRate", _highFPS);
+
+        bool isNative = PlayerPrefs.GetInt("TargetFrameRateNative", 0) == 1;
+
+        if (!isNative && savedFPS != _lowFPS && savedFPS != _highFPS)
+        {
+            PlayerPrefs.SetInt("TargetFrameRate", _highFPS);
+            PlayerPrefs.SetInt("TargetFrameRateNative", 0);
+            PlayerPrefs.Save();
+
+            Application.targetFrameRate = _highFPS;
+        }
+
         SetFPSText();
 
         _fpsLock = GetComponentInParent<FpsLock30>();
 
-        if(!_fpsLock)
+        if (!_fpsLock)
         {
             Debug.LogWarning("No FpsLock30 found");
         }
@@ -35,23 +48,29 @@ public class FPSSettingHandler : MonoBehaviour
     private void ChangeFPS(bool up)
     {
         int currentFPS = PlayerPrefs.GetInt("TargetFrameRate", _highFPS);
-        int nextFPS = currentFPS;
 
-        if(!_fpsLock)
+        if (currentFPS != _lowFPS && currentFPS != _highFPS)
+        {
+            currentFPS = _highFPS;
+        }
+
+        if (!_fpsLock)
         {
             Debug.LogWarning("No FpsLock30 found");
             return;
         }
 
-        if(currentFPS == (int)Screen.currentResolution.refreshRateRatio.value)          // In case of FPS being set to native, we need to change it to -1 for switch to work
+        if (PlayerPrefs.GetInt("TargetFrameRateNative", 0) == 1)
         {
             currentFPS = -1;
         }
 
+        int nextFPS = currentFPS;
+
         switch (currentFPS)
         {
             case -1:
-                if(up)
+                if (up)
                 {
                     nextFPS = _lowFPS;
                 }
@@ -59,6 +78,7 @@ public class FPSSettingHandler : MonoBehaviour
                 {
                     nextFPS = _highFPS;
                 }
+
                 break;
             case _lowFPS:
                 if (up)
@@ -69,6 +89,7 @@ public class FPSSettingHandler : MonoBehaviour
                 {
                     nextFPS = -1;
                 }
+
                 break;
             case _highFPS:
                 if (up)
@@ -79,12 +100,13 @@ public class FPSSettingHandler : MonoBehaviour
                 {
                     nextFPS = _lowFPS;
                 }
+
                 break;
         }
 
-        if(nextFPS < 0)
+        if (nextFPS < 0)
         {
-            _fpsLock.ChangeFrameRateToNative();             // Saving FPS to PlayerPrefs is handled in FPSLock -script. No need to worry about it here
+            _fpsLock.ChangeFrameRateToNative(); // Saving FPS to PlayerPrefs is handled in FPSLock -script. No need to worry about it here
         }
         else
         {
@@ -96,15 +118,10 @@ public class FPSSettingHandler : MonoBehaviour
 
     private void SetFPSText()
     {
-        int FPS = PlayerPrefs.GetInt("TargetFrameRate", _highFPS);
+        int fps = PlayerPrefs.GetInt("TargetFrameRate", _highFPS);
 
-        if(FPS >= 0)
-        {
-            _currentFPS.text = FPS.ToString();
-        }
-        else
-        {
-            _currentFPS.text = "NAT";
-        }
+        bool isNative = PlayerPrefs.GetInt("TargetFrameRateNative", 0) == 1;
+
+        _currentFPS.text = isNative ? "NAT" : fps.ToString();
     }
 }

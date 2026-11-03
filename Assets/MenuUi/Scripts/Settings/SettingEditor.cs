@@ -151,13 +151,16 @@ public class SettingEditor : MonoBehaviour
 
     public void SetIntroSkipToggle()
     {
-        _introSkipToggle.isOn = (PlayerPrefs.GetInt("SkipIntroVideo", 0) != 0);
+        bool playIntro = PlayerPrefs.GetInt("SkipIntroVideo", 0) == 0;
+        _introSkipToggle.SetIsOnWithoutNotify(playIntro);
     }
 
     public void SetIntroSkip()
     {
-        if (_introSkipToggle.isOn) PlayerPrefs.SetInt("SkipIntroVideo", 1);
-        else PlayerPrefs.SetInt("SkipIntroVideo", 0);
+        PlayerPrefs.SetInt("SkipIntroVideo", _introSkipToggle.isOn ? 0 : 1);
+        PlayerPrefs.Save();
+
+        Debug.Log($"Introvideo: Toggle={_introSkipToggle.isOn}, " + $"SkipIntroVideo={PlayerPrefs.GetInt("SkipIntroVideo")}");
     }
 
     public void SetShowButtonLabelsToggle()
