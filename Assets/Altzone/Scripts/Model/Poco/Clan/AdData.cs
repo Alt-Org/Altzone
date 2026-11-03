@@ -163,7 +163,7 @@ namespace Altzone.Scripts.Store
 
             _furnitureName = stall.adPoster.mainFurniture;
 
-            _furniture = AdDecorationReference.Instance.FurnitureList.FirstOrDefault(x=> x.Name == _furnitureName).Image;
+            _furniture = StorageFurnitureReference.Instance.GetFurnitureData(stall.adPoster.mainFurniture)?.Image;
 
             if (!string.IsNullOrEmpty(stall.adPoster.textField.textString))
             {
