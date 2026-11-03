@@ -83,6 +83,9 @@ namespace MenuUI.Scripts.SoulHome
         public Sprite FurnitureSpriteBack { get => _furnitureSpriteBack; set { if (!Application.isPlaying) _furnitureSpriteBack = value; } }
         public bool SpriteCanBeFlipped { get => _spriteCanBeFlipped;}
 
+        public delegate void FurnitureRotated(Direction direction);
+        public event FurnitureRotated OnFurnitureRotated;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -311,7 +314,7 @@ namespace MenuUI.Scripts.SoulHome
             SetFurnitureSprite(_tempSpriteDirection);
         }
 
-            private void SetFurnitureSprite(Direction direction)
+        private void SetFurnitureSprite(Direction direction)
         {
             GetComponent<SpriteRenderer>().flipX = false;
             if (direction == Direction.Front) GetComponent<SpriteRenderer>().sprite = _furnitureSpriteFront;
@@ -340,6 +343,8 @@ namespace MenuUI.Scripts.SoulHome
                     GetComponent<SpriteRenderer>().flipX = true;
                 }
             }
+
+            OnFurnitureRotated?.Invoke(direction);
         }
 
         public void ResetDirection()
