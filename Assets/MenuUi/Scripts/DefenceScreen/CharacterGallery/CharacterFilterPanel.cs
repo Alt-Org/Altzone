@@ -1,47 +1,14 @@
 using System.Collections.Generic;
+using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Model.Poco.Game;
 using MenuUi.Scripts.CharacterGallery;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterFilterPanel : MonoBehaviour
+namespace MenuUi.Scripts.CharacterGallery
 {
-    [Header("Popup open buttons")]
-    [SerializeField] private GameObject _filterPopUp;
-    [SerializeField] private Button _openFilterPopUpButton1;
-    [SerializeField] private Button _openFilterPopUpButton2;
-    [SerializeField] private Button _openFilterPopUpButton3;
-
-    [Header("Filter toggles")]
-    [SerializeField] private Toggle _filterConscious;
-    [SerializeField] private Toggle _filterUnconscious;
-
-    [SerializeField] private GameObject _filterConsciousText;
-    [SerializeField] private GameObject _filterConsciousTextBold;
-    [SerializeField] private GameObject _filterUnconsciousText;
-    [SerializeField] private GameObject _filterUnconsciousTextBold;
-
-    [SerializeField] private Toggle _toggleAll;
-    [SerializeField] private List<Toggle> _classFilterToggles = new List<Toggle>();
-
-    [Header("Dropdown")]
-    [SerializeField] private TMP_Dropdown _classSortDropdown;
-    [SerializeField] private GameObject _dropDownArrowUp;
-    [SerializeField] private GameObject _dropDownArrowDown;
-
-    [Header("Popup close buttons")]
-    [SerializeField] private Button _closeButton;
-    [SerializeField] private Button _cancelButton;
-    [SerializeField] private Button _confirmButton;
-
-    [Header("GalleryView")]
-    [SerializeField] private GalleryView _galleryView;
-
-
-    private List<CharacterClassType> _filteredClasses = new List<CharacterClassType>();
-
-    private enum SortOrder
+    public enum CharacterSortOrder
     {
         Classes = 0,
         Alphabetical = 1,
@@ -53,266 +20,246 @@ public class CharacterFilterPanel : MonoBehaviour
         FavouritesFirst = 7
     }
 
-    private SortOrder _sortOrder = SortOrder.Classes;
-
-
-    private void Start()
+    public class CharacterFilterPanel : MonoBehaviour
     {
-        _openFilterPopUpButton1.onClick.AddListener(Open);
-        _openFilterPopUpButton2.onClick.AddListener(Open);
-        _openFilterPopUpButton3.onClick.AddListener(Open);
+        [Header("Popup open buttons")]
+        [SerializeField] private GameObject _filterPopUp;
+        [SerializeField] private Button _openFilterPopUpButton1;
+        [SerializeField] private Button _openFilterPopUpButton2;
+        [SerializeField] private Button _openFilterPopUpButton3;
 
-        _closeButton.onClick.AddListener(Close);
-        _cancelButton.onClick.AddListener(Close);
+        [Header("Filter toggles")]
+        [SerializeField] private Toggle _filterConscious;
+        [SerializeField] private Toggle _filterUnconscious;
 
-        _confirmButton.onClick.AddListener(CloseAndApply);
+        [SerializeField] private TMP_Text _filterConsciousText;
+        [SerializeField] private TMP_Text _filterUnconsciousText;
 
-        _filterConscious.onValueChanged.AddListener(ConsciousToggleBold);
-        _filterUnconscious.onValueChanged.AddListener(UnconsciousToggleBold);
+        [SerializeField] private Toggle _toggleAll;
+        [SerializeField] private List<Toggle> _classFilterToggles = new List<Toggle>();
 
-        foreach (Toggle toggle in _classFilterToggles)
+        [Header("Dropdown")]
+        [SerializeField] private CharacterSortDropdown _classSortDropdown;
+        [SerializeField] private GameObject _dropDownArrowUp;
+        [SerializeField] private GameObject _dropDownArrowDown;
+
+        [Header("Popup close buttons")]
+        [SerializeField] private Button _closeButton;
+        [SerializeField] private Button _cancelButton;
+        [SerializeField] private Button _confirmButton;
+
+        [Header("GalleryView")]
+        [SerializeField] private GalleryView _galleryView;
+
+
+        private List<CharacterClassType> _filteredClasses = new List<CharacterClassType>();
+
+        private CharacterSortOrder _sortOrder = CharacterSortOrder.Classes;
+
+
+        private void Start()
         {
-            toggle.onValueChanged.AddListener(CheckClassToggles);
-        }
+            _openFilterPopUpButton1.onClick.AddListener(Open);
+            _openFilterPopUpButton2.onClick.AddListener(Open);
+            _openFilterPopUpButton3.onClick.AddListener(Open);
 
-        _classSortDropdown.onValueChanged.AddListener(ChangeDropDownValue);
-    }
+            _closeButton.onClick.AddListener(Close);
+            _cancelButton.onClick.AddListener(Close);
 
+            _confirmButton.onClick.AddListener(CloseAndApply);
 
-    #region Dropdown controls
-    public void Update()
-    {
-        //control the direction of the drop down arrow
-        if (_classSortDropdown.IsExpanded) 
-        {
-            _dropDownArrowUp.SetActive(true);
-            _dropDownArrowDown.SetActive(false);
-        }
-        else
-        {
-            _dropDownArrowUp.SetActive(false);
-            _dropDownArrowDown.SetActive(true);
-        }
-    }
+            _filterConscious.onValueChanged.AddListener(ConsciousToggleBold);
+            _filterUnconscious.onValueChanged.AddListener(UnconsciousToggleBold);
 
-    private void ChangeDropDownValue(int value)
-    {
-        switch (value)
-        {
-            case 0:
-                _sortOrder = SortOrder.Classes;
-                break;
-            case 1:
-                _sortOrder = SortOrder.Alphabetical;
-                break;
-            case 2:
-                _sortOrder = SortOrder.AlphabeticalReverse;
-                break;
-            case 3:
-                _sortOrder = SortOrder.LowestLevel;
-                break;
-            case 4:
-                _sortOrder = SortOrder.HighestLevel;
-                break;
-            case 5:
-                _sortOrder = SortOrder.RarestFirst;
-                break;
-            case 6:
-                _sortOrder = SortOrder.RarestLast;
-                break;
-            case 7:
-                _sortOrder = SortOrder.FavouritesFirst;
-                break;
-
-        }
-    }
-    #endregion
-
-    #region Controls for _toggleAll
-    private void CheckClassToggles(bool toggleIsOn) //if all class toggles are on, set _toggleAll on (and in reverse)
-    {
-        if (!toggleIsOn)
-        {
-            _toggleAll.isOn = false;
-            return;
-        }
-
-        int i = 0;
-        foreach (Toggle toggle in _classFilterToggles)
-        {
-            if (toggle.isOn)
-                i++;
-        }
-
-        if (i < 7)
-        {
-            _toggleAll.isOn = false;
-        }
-        else if(i == 7)
-        {
-            _toggleAll.isOn = true;
-        }
-    }
-
-    public void ToggleAllCheck() //toggle all class filters on or off
-    {
-        if (_toggleAll.isOn)
-        {
             foreach (Toggle toggle in _classFilterToggles)
             {
-                toggle.isOn = true;
+                toggle.onValueChanged.AddListener(CheckClassToggles);
+            }
+
+            _classSortDropdown.onValueChanged.AddListener(ChangeDropDownValue);
+
+            _classSortDropdown.DropdownStateChanged += UpdateDropdownArrow;
+        }
+
+        #region Dropdown controls
+        private void UpdateDropdownArrow(bool isExpanded)
+        {
+            _dropDownArrowUp.SetActive(isExpanded);
+            _dropDownArrowDown.SetActive(!isExpanded);
+        }
+
+        private void ChangeDropDownValue(int value)
+        {
+            switch (value)
+            {
+                case 0:
+                    _sortOrder = CharacterSortOrder.Classes;
+                    break;
+                case 1:
+                    _sortOrder = CharacterSortOrder.Alphabetical;
+                    break;
+                case 2:
+                    _sortOrder = CharacterSortOrder.AlphabeticalReverse;
+                    break;
+                case 3:
+                    _sortOrder = CharacterSortOrder.LowestLevel;
+                    break;
+                case 4:
+                    _sortOrder = CharacterSortOrder.HighestLevel;
+                    break;
+                case 5:
+                    _sortOrder = CharacterSortOrder.RarestFirst;
+                    break;
+                case 6:
+                    _sortOrder = CharacterSortOrder.RarestLast;
+                    break;
+                case 7:
+                    _sortOrder = CharacterSortOrder.FavouritesFirst;
+                    break;
+
             }
         }
-        else if (!_toggleAll.isOn)
+        #endregion
+
+        #region Controls for _toggleAll
+        private void CheckClassToggles(bool toggleIsOn) //if all class toggles are on, set _toggleAll on (and in reverse)
         {
+            if (!toggleIsOn)
+            {
+                _toggleAll.isOn = false;
+                return;
+            }
+
+            int i = 0;
             foreach (Toggle toggle in _classFilterToggles)
             {
-                toggle.isOn = false;
+                if (toggle.isOn)
+                    i++;
             }
-        }
-    }
-    #endregion
 
-    #region Turn the bold text on/off for the concious toggles
-    private void ConsciousToggleBold(bool toggleIsOn)
-    {
-        if (toggleIsOn)
-        {
-            _filterConsciousText.SetActive(false);
-            _filterConsciousTextBold.SetActive(true);
-        }
-        else if (!toggleIsOn)
-        {
-            _filterConsciousText.SetActive(true);
-            _filterConsciousTextBold.SetActive(false);
-        }
-
-        /*
-        TextMeshProUGUI toggleText = null;
-     
-        if (toggleIsOn)
-        {
-            //toggleText.text = _filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text;
-            //_filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text = $"<b> {toggleText} </b>";
-            toggleText = _filterAcknowledgedText;
-
-            _filterAcknowledgedText.text = $"<b> {toggleText} </b>";
-        }
-        else if (!toggleIsOn)
-        {
-            //toggleText.text = _filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text;
-            //_filterAcknowledged.GetComponentInChildren<TextMeshProUGUI>().text = toggleText.ToString();
-            toggleText = _filterAcknowledgedText;
-
-            _filterAcknowledgedText.text = toggleText.text;
-
-        }*/
-
-    }
-
-    private void UnconsciousToggleBold(bool toggleIsOn)
-    {
-        if (toggleIsOn)
-        {
-            _filterUnconsciousText.SetActive(true);
-            _filterUnconsciousTextBold.SetActive(true);
-        }
-        else if (!toggleIsOn)
-        {
-            _filterUnconsciousText.SetActive(true);
-            _filterUnconsciousTextBold.SetActive(false);
-        }
-    }
-    #endregion
-
-
-    #region Check filters
-    private void CheckConsciousFilters()
-    {
-        if (_filterConscious.isOn && _filterUnconscious.isOn)
-        {
-            _galleryView.FilterUnlocked(true, true);
-        }
-        else if (_filterConscious.isOn && !_filterUnconscious.isOn)
-        {
-            _galleryView.FilterUnlocked(true, false);
-        }
-        else if (_filterUnconscious.isOn && !_filterConscious.isOn)
-        {
-            _galleryView.FilterUnlocked(false, true);
-        }
-        else if (!_filterUnconscious.isOn && !_filterConscious.isOn)
-        {
-            _galleryView.FilterUnlocked(false, false);
-        }
-    }
-
-    private void CheckClassFilters()
-    {
-        _filteredClasses.Clear();
-
-        int i = 0;
-
-        foreach(Toggle toggle in _classFilterToggles)
-        {
-            if (toggle.isOn)
+            if (i < 7)
             {
-                _filteredClasses.Add(CharacterClassType.Desensitizer + i);
+                _toggleAll.isOn = false;
             }
-            i += 100;
+            else if (i == 7)
+            {
+                _toggleAll.isOn = true;
+            }
         }
 
-        _galleryView.FilterClasses(_filteredClasses);
-    }
-    #endregion
+        public void ToggleAllCheck() //toggle all class filters on or off
+        {
+            if (_toggleAll.isOn)
+            {
+                foreach (Toggle toggle in _classFilterToggles)
+                {
+                    toggle.isOn = true;
+                }
+            }
+            else if (!_toggleAll.isOn)
+            {
+                foreach (Toggle toggle in _classFilterToggles)
+                {
+                    toggle.isOn = false;
+                }
+            }
+        }
+        #endregion
 
-
-
-    #region Open, close and apply
-    public void Open()
-    {
-        _filterPopUp.SetActive(true);
-    }
-
-    private void Close()
-    {
-        _filterPopUp.SetActive(false);
-    }
-
-    private void CloseAndApply()
-    {
-        // set filters
-        _galleryView.ResetFilter();
-        CheckClassFilters();
-        CheckConsciousFilters();
-
-        _galleryView.CheckIfSlotsActive();
-        //organize characters (all ways of organizing are not possible currently)
-        switch (_sortOrder) {
-            case SortOrder.Classes:
-                _galleryView.OrganizeGallery(false, true);
-                break;
-            case SortOrder.Alphabetical:
-                _galleryView.OrganizeGallery(false, false);
-                break;
-            case SortOrder.AlphabeticalReverse:
-                _galleryView.OrganizeGallery(true, false);
-                break;
-            case SortOrder.LowestLevel:
-                break;
-            case SortOrder.HighestLevel:
-                break;
-            case SortOrder.RarestFirst:
-                break;
-            case SortOrder.RarestLast:
-                break;
-            case SortOrder.FavouritesFirst:
-                break;
+        #region Turn the bold text on/off for the concious toggles
+        private void ConsciousToggleBold(bool toggleIsOn)
+        {
+            _filterConsciousText.fontStyle = toggleIsOn ? FontStyles.Bold : FontStyles.Normal;
+            if (toggleIsOn && _filterUnconscious.isOn) _filterUnconscious.isOn = false;
         }
 
-        Debug.Log("Close and apply");
+        private void UnconsciousToggleBold(bool toggleIsOn)
+        {
+            _filterUnconsciousText.fontStyle = toggleIsOn ? FontStyles.Bold : FontStyles.Normal;
+            if (toggleIsOn && _filterConscious.isOn) _filterConscious.isOn = false;
+        }
+        #endregion
 
-        _filterPopUp.SetActive(false);
+        #region Open, close and apply
+        public void Open()
+        {
+            _filterPopUp.SetActive(true);
+        }
+
+        private void Close()
+        {
+            _filterPopUp.SetActive(false);
+        }
+
+        private void CloseAndApply()
+        {
+            // Collect which classes have been selected
+            _filteredClasses.Clear();
+            int i = 0;
+            foreach (Toggle toggle in _classFilterToggles)
+            {
+                if (toggle.isOn)
+                {
+                    _filteredClasses.Add(CharacterClassType.Desensitizer + i);
+                }
+                i += 100;
+            }
+
+            // Send all filter information (categories and lock states) to GalleryView at once
+            _galleryView.ApplyFilters(_filteredClasses, _filterConscious.isOn, _filterUnconscious.isOn);
+
+            // Send sort order to GalleryView
+            _galleryView.OrganizeGallery(_sortOrder);
+
+            Debug.Log("Close and apply");
+            _filterPopUp.SetActive(false);
+        }
+        #endregion
     }
-    #endregion
+
+    public static class CustomSortOrderExtension
+    {
+        public static string GetString(this CharacterSortOrder gameMode)
+        {
+            return SettingsCarrier.Instance.Language switch
+            {
+                SettingsCarrier.LanguageType.English => gameMode switch
+                {
+                    CharacterSortOrder.Classes => "Sort by Class",
+                    CharacterSortOrder.Alphabetical => "Decending Alphapetical",
+                    CharacterSortOrder.AlphabeticalReverse => "Accending Alphapetical",
+                    CharacterSortOrder.LowestLevel => "Lowest Level",
+                    CharacterSortOrder.HighestLevel => "Highest Level",
+                    CharacterSortOrder.RarestFirst => "Rarest First",
+                    CharacterSortOrder.RarestLast => "Rarest Last",
+                    CharacterSortOrder.FavouritesFirst => "Favourites",
+                    _ => ""
+                },
+                SettingsCarrier.LanguageType.Finnish => gameMode switch
+                {
+                    CharacterSortOrder.Classes => "Järjestele luokittain",
+                    CharacterSortOrder.Alphabetical => "A-Ö",
+                    CharacterSortOrder.AlphabeticalReverse => "Ö-A",
+                    CharacterSortOrder.LowestLevel => "Matalin taso",
+                    CharacterSortOrder.HighestLevel => "Korkein Taso",
+                    CharacterSortOrder.RarestFirst => "Harvinaisin ensin",
+                    CharacterSortOrder.RarestLast => "Yleisin ensin",
+                    CharacterSortOrder.FavouritesFirst => "Suosikit",
+                    _ => ""
+                },
+                _ => gameMode switch
+                {
+                    CharacterSortOrder.Classes => "Sort by Class",
+                    CharacterSortOrder.Alphabetical => "Decending Alphapetical",
+                    CharacterSortOrder.AlphabeticalReverse => "Accending Alphapetical",
+                    CharacterSortOrder.LowestLevel => "Lowest Level",
+                    CharacterSortOrder.HighestLevel => "Highest Level",
+                    CharacterSortOrder.RarestFirst => "Rarest First",
+                    CharacterSortOrder.RarestLast => "Rarest Last",
+                    CharacterSortOrder.FavouritesFirst => "Favourites",
+                    _ => ""
+                },
+            };
+        }
+    }
 }
