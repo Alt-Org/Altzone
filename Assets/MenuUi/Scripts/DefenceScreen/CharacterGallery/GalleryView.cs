@@ -475,6 +475,7 @@ namespace MenuUi.Scripts.CharacterGallery
                 TotalLevel = level;
 
                 _action = action;
+                customChar.RemoveDelegates();
                 customChar.OnStatUpdated += UpdateStats;
             }
 

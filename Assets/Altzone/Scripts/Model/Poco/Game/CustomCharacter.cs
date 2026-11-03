@@ -496,6 +496,14 @@ namespace Altzone.Scripts.Model.Poco.Game
             }
             return valid;
         }
+
+        public void RemoveDelegates()
+        {
+            foreach (Delegate d in OnStatUpdated.GetInvocationList())
+            {
+                OnStatUpdated -= (StatUpdatedHandler)d;
+            }
+        }
     }
 
     public static class CustomCharacterExtension
