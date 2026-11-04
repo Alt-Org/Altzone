@@ -2,6 +2,8 @@
 
 @bigtext{@subpage page-concepts-entity-management}
 
+@bigtext{@subpage page-concepts-battle-handle}
+
 @bigtext{@subpage page-concepts-commands}
 
 @bigtext{@subpage page-concepts-player}
