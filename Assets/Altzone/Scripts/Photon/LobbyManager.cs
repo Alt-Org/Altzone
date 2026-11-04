@@ -908,7 +908,7 @@ namespace Altzone.Scripts.Lobby
             int maxPlayers = PhotonRealtimeClient.CurrentRoom.MaxPlayers;
             int[] candidatePositions = maxPlayers >= 4
                 ? new[] { PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition2, PhotonBattleRoom.PlayerPosition3, PhotonBattleRoom.PlayerPosition4 }
-                : new[] { PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition2 };
+                : new[] { PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition3 };
 
             foreach (int position in candidatePositions)
             {
@@ -5247,14 +5247,16 @@ namespace Altzone.Scripts.Lobby
                     }
                     catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: block composition validation failed: {ex.Message}"); }
 
+                    int maxPlayers = PhotonRealtimeClient.CurrentRoom.MaxPlayers;
+
                     foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
                     {
                         int position = PhotonBattleRoom.PlayerPositionGuest;
 
                         if (player.Value.UserId == positionValue1) position = PhotonBattleRoom.PlayerPosition1;
-                        else if (player.Value.UserId == positionValue2) position = PhotonBattleRoom.PlayerPosition2;
+                        else if (player.Value.UserId == positionValue2 && maxPlayers == 4) position = PhotonBattleRoom.PlayerPosition2;
                         else if (player.Value.UserId == positionValue3) position = PhotonBattleRoom.PlayerPosition3;
-                        else if (player.Value.UserId == positionValue4) position = PhotonBattleRoom.PlayerPosition4;
+                        else if (player.Value.UserId == positionValue4 && maxPlayers == 4) position = PhotonBattleRoom.PlayerPosition4;
                         else
                         {
                             // Prefer player's existing position if it can be reclaimed from empty/Bot value.
@@ -5272,6 +5274,7 @@ namespace Altzone.Scripts.Lobby
                             // Fall back to side-effect-free room scanning to avoid VerifyPlayerPositions clearing bot slots.
                             if (!PhotonLobbyRoom.IsValidPlayerPos(position))
                             {
+                                Debug.LogWarning("Fallback for position.");
                                 position = GetFirstFreePositionWithoutVerification(); // TODO: if Clan2v2 ensure that player ends on the correct side
                             }
 
