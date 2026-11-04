@@ -21,24 +21,27 @@ namespace MenuUi.Scripts.UIScaling
             float topLine;
             if (!_ignoreOverlayStatus && Application.isPlaying && (OverlayPanelCheck.Instance == null || !OverlayPanelCheck.Instance.TopBarActive)) topLine = unsafeAreaLine;
             else topLine = unsafeAreaLine - CalculateTopPanelHeight();
-            _bottomPanelRectTransfrom.anchorMax = new(1,bottomLine);
+            _bottomPanelRectTransfrom.anchorMax = new(1, bottomLine);
             _unsafeAreaRectTransfrom.anchorMin = new(0, unsafeAreaLine);
-            _topPanelRectTransfrom.anchorMin = new (0, topLine);
-            _topPanelRectTransfrom.anchorMax = new (1, unsafeAreaLine);
-            _contentPanelRectTransfrom.anchorMin = new (0, bottomLine);
+            _topPanelRectTransfrom.anchorMin = new(0, topLine);
+            _topPanelRectTransfrom.anchorMax = new(1, unsafeAreaLine);
+            _contentPanelRectTransfrom.anchorMin = new(0, bottomLine);
             _contentPanelRectTransfrom.anchorMax = new(1, topLine);
-            if(_fullPanelPopupsTransform != null) _fullPanelPopupsTransform.anchorMax = new Vector2(1, unsafeAreaLine);
+            if (_fullPanelPopupsTransform != null) _fullPanelPopupsTransform.anchorMax = new Vector2(1, unsafeAreaLine);
+
+            Debug.Log($"WindowPanelScaler: " + $"Object={_contentPanelRectTransfrom.name}, " + $"anchorMin={_contentPanelRectTransfrom.anchorMin}, " + $"anchorMax={_contentPanelRectTransfrom.anchorMax}, " + $"size={_contentPanelRectTransfrom.rect.size}");
         }
 
         protected override void UpdateBottomLineChat(bool value)
         {
             if (_ignoreOverlayStatus) return;
             float bottomLine = CalculateBottomPanelHeight();
-            if(!OverlayPanelCheck.Instance.BottomBarActive) bottomLine = 0;
+            if (!OverlayPanelCheck.Instance.BottomBarActive) bottomLine = 0;
             else if (!value) bottomLine /= 2f;
             _bottomPanelRectTransfrom.anchorMax = new(1, bottomLine);
             _contentPanelRectTransfrom.anchorMin = new(0, bottomLine);
         }
+
         protected override void UpdateBottomLine(bool value)
         {
             if (_ignoreOverlayStatus) return;
