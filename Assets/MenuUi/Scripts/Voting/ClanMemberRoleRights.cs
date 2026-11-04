@@ -35,7 +35,14 @@ public class ClanMemberRoleRights : MonoBehaviour
     [SerializeField] private TextMeshProUGUI roleText;
     [SerializeField] private TMP_Dropdown dropdown;
 
+    [SerializeField] private TMP_InputField nameInput;
+    [SerializeField] private Button saveRoleButton;
+    [SerializeField] private Button cancelRoleButton;
+    [SerializeField] private GameObject newRoleContainer;
+
+
     private ClanData _clanData = null;
+    private ClanRoles _draft;
 
     public void OpenPopup() => popup.SetActive(true);
     public void ClosePopup() => popup.SetActive(false);
@@ -67,6 +74,7 @@ public class ClanMemberRoleRights : MonoBehaviour
         foreach (var role in clan.ClanRoles) {
             options.Add(role.name);
         }
+        options.Add("Add role");
         dropdown.ClearOptions();
         dropdown.AddOptions(options);
         int defaultIndex = clan.ClanRoles.FindIndex(r => r.name == CurrentMember.Role.name);
@@ -81,8 +89,12 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     private void OnDropdownValueChanged(int index)
     {
+        if (index >= _clanData.ClanRoles.Count) {
+            NewRole();
+            return;
+        }
+        newRoleContainer.SetActive(false);
         ClanRoles selectedRole = _clanData.ClanRoles[index];
-
         PopulateRolesAndRights(selectedRole);
     }
 
@@ -126,6 +138,19 @@ public class ClanMemberRoleRights : MonoBehaviour
     }
 
     private void NewRole() {
-        return;
+        _draft = new ClanRoles
+        {
+            name = "",
+            clanRoleType = "named",
+            rights = new ClanRoles.ClanRights(),
+        };
+
+        newRoleContainer.SetActive(true);
+        nameInput.text = "";
+        saveRoleButton.interactable = true;
+
+        PopulateRolesAndRights(_draft);
+
+        // Start a poll PollManager.CreateRolePoll()
     }
 }
