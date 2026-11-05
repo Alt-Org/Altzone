@@ -11,20 +11,17 @@ using UnityEngine.U2D.Animation;
 
 namespace MenuUI.Scripts.SoulHome
 {
-    public enum AvatarStatus
-    {
-        Idle,
-        Wander
-    }
-
     public class SoulHomeAvatarController : MonoBehaviour, ISoulHomeObjectClick
     {
-        [SerializeField] private float _minIdleTimer = 2f;
-        [SerializeField] private float _maxIdleTimer = 4f;
+        [Tooltip("Time between decisions is random between these, so the decisions of all characters are spread out.")]
+        [SerializeField] private float _minDecisionTime = 5f;
+        [SerializeField] private float _maxDecisionTime = 10f;
+        [Header("Decision Weights")]
+        [SerializeField] private float _stayWeight = 30f;
+        [SerializeField] private float _walkWeight = 50f;
+        [SerializeField] private float _changeRoomWeight = 20f;
+        [Space]
         [SerializeField] private float _speed = 5;
-        [SerializeField] private float _roomChangeCooldown = 20f;
-        // Percentage chance of avatar changing rooms when moving
-        [SerializeField] private float _roomChangeChance = 50f;
         [SerializeField]
         private SortingGroup _sortingGroup;
         [SerializeField]
@@ -44,7 +41,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private CharacterClassType _class = CharacterClassType.None;
 
-        private AvatarStatus _status;
+        private static readonly Vector2Int LadderGridPosition = new(2, 1);
 
         private Transform _points;
         private RoomData _roomData;
@@ -56,56 +53,41 @@ namespace MenuUI.Scripts.SoulHome
         private string _lHandLabel;
         private string _rHandLabel;
 
-        private Coroutine _statusCoroutine;
+        private bool _isMoving = false;
+        private RoomData _pendingRoom;
+        private Vector2Int _pendingTarget;
         private GridNode[,] _grid => _roomData.Grid;
         private Vector2Int _currentGridPosition;
-        private List<Vector2Int> _walkableSlots => _roomData.WalkableSlots;
         private int _gridWidth => _roomData.Grid.GetLength(0);
         private int _gridHeight => _roomData.Grid.GetLength(1);
         private List<Vector2> _rawPath;
         private bool hasInitialized = false;
-        private float _timeSinceRoomChange = 0f;
 
         private List<Vector2> _smoothPath = new();
-        public AvatarStatus Status
-        {
-            get => _status;
-            set
-            {
-                if (_status == value) return;
-                _status = value;
-                OnStatusChanged();
-            }
-        }
+
+        public float NextDecisionTime { get; private set; }
+        private bool IsBusy => _performingAnimation || _isMoving;
 
         void Start()
         {
             //_animator.keepAnimatorStateOnDisable = true;
             _animator.writeDefaultValuesOnDisable = true;
-            
 
-            if (transform.parent.CompareTag("Room"))
+            if (!hasInitialized) return;
+
+            _rig = GetComponentInChildren<AvatarRig>();
+            if (_rig == null)
             {
-                _points = transform.parent.Find("FurniturePoints").Find("FloorFurniturePoints");
-                _roomData = transform.parent.GetComponent<RoomData>();
-
-                SetAvatar(_points, _roomData);
-                OnStatusChanged();
-
-                _rig = GetComponentInChildren<AvatarRig>();
-                hasInitialized = true;
-                if (_rig == null)
-                {
-                    UnityEngine.Debug.LogError("Failed to get AvatarRig");
-                    return;
-                }
-
-                _lHandResolver = _rig.Resolvers[AvatarPart.L_Hand];
-                _rHandResolver = _rig.Resolvers[AvatarPart.R_Hand];
-                _lHandLabel = _lHandResolver.GetLabel();
-                _rHandLabel = _rHandResolver.GetLabel();
-                _validatedInteractAnimation = ValidateAnimations(_interactAnimation);
+                UnityEngine.Debug.LogError("Failed to get AvatarRig");
+                return;
             }
+
+            _lHandResolver = _rig.Resolvers[AvatarPart.L_Hand];
+            _rHandResolver = _rig.Resolvers[AvatarPart.R_Hand];
+            _lHandLabel = _lHandResolver.GetLabel();
+            _rHandLabel = _rHandResolver.GetLabel();
+            _validatedInteractAnimation = ValidateAnimations(_interactAnimation);
+            StartIdle();
         }
         private void OnEnable()
         {
@@ -117,113 +99,130 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             _performingAnimation = false;
+            _pendingRoom = null;
 
-            // if in middle of climbing ladder, looks funny without this
             transform.position = GridToWorld(_currentGridPosition);
-            OnStatusChanged();
-        }
-
-        private void Update()
-        {
-            _timeSinceRoomChange += Time.deltaTime;
+            UpdateSortingOrder(_currentGridPosition.y);
+            StartIdle();
         }
 
         public void InitializeAvatar(PlayerData data)
         {
             _class = (CharacterClassType)BaseCharacter.GetClass(data.SelectedCharacterId);
+
+            // Done here instead of Start, because Start doesn't run while the room is sleeping and the decisions still need the room.
+            if (!transform.parent.CompareTag("Room")) return;
+            SetRoom(transform.parent.GetComponent<RoomData>());
+            SetAvatar(_points, _roomData);
+            hasInitialized = true;
+            // The first decisions are spread over the whole interval so the characters don't all decide at once.
+            NextDecisionTime = Time.time + Random.Range(0f, _maxDecisionTime);
         }
 
         private void OnDisable()
         {
             StopAllCoroutines();
-        }
-
-        private void SelectStatus()
-        {
-            if (Status == AvatarStatus.Idle) Status = AvatarStatus.Wander;
-            else if (Status == AvatarStatus.Wander) Status = AvatarStatus.Idle;
-        }
-
-        private void OnStatusChanged()
-        {
-            if (_statusCoroutine != null)
-            {
-                StopCoroutine(_statusCoroutine);
-            }
-
-            switch (_status)
-            {
-                case AvatarStatus.Idle:
-                    _statusCoroutine = StartCoroutine(HandleIdle());
-                    break;
-                case AvatarStatus.Wander:
-                    HandleWander();
-                    break;
-                default:
-                    SelectStatus();
-                    break;
-            }
-        }
-
-        private IEnumerator HandleIdle()
-        {
-            float idleTime = Random.Range(_minIdleTimer, _maxIdleTimer);
-            float elapsed = 0f;
-            _animator.Play(_idleAnimation.name);
-            UseDefaultHands(false);
+            _isMoving = false;
             _performingAnimation = false;
-
-            while (elapsed < idleTime)
-            {
-                elapsed += Time.deltaTime;
-
-                yield return null;
-            }
-
-            SelectStatus();
         }
 
-        private void HandleWander(Vector2Int? targetGridPosition = null)
+        public void Decide()
         {
-            bool changeRoom = ShouldChangeRoom() && targetGridPosition == null;
+            NextDecisionTime = Time.time + Random.Range(_minDecisionTime, _maxDecisionTime);
+            if (!hasInitialized) return;
 
-            _travelPoints.Clear();
+            // Finish the room change that was cut off mid-climb before anything else
+            if (_pendingRoom != null && !isActiveAndEnabled)
+            {
+                RoomData pendingRoom = _pendingRoom;
+                _pendingRoom = null;
+                MoveOffScreen(pendingRoom, _pendingTarget);
+                return;
+            }
+            if (IsBusy) return;
+
+            float roll = Random.Range(0f, _stayWeight + _walkWeight + _changeRoomWeight);
+            if (roll < _stayWeight) return;
+
+            RoomData targetRoom = roll < _stayWeight + _walkWeight ? _roomData : GetRoomToMoveTo();
+            if (targetRoom == null) targetRoom = _roomData; //No room above or below, walk in this room instead.
+
+            List<Vector2Int> slots = targetRoom.WalkableSlots;
+            if (slots.Count == 0 && targetRoom == _roomData) return;
+            Vector2Int target = slots.Count > 0 ? slots[Random.Range(0, slots.Count)] : LadderGridPosition;
+
+            if (isActiveAndEnabled) StartMove(targetRoom, target);
+            else MoveOffScreen(targetRoom, target);
+        }
+
+        private void StartMove(RoomData targetRoom, Vector2Int target)
+        {
+            bool changeRoom = targetRoom != _roomData;
+            // A room change walks to the ladder first and continues to the target after climbing.
+            if (!SetPath(changeRoom ? LadderGridPosition : target)) return;
+
+            _isMoving = true;
+            StartCoroutine(MoveRoutine(changeRoom ? targetRoom : null, target));
+        }
+
+        // Disabled characters don't walk, they jump straight to where the move would end.
+        private void MoveOffScreen(RoomData room, Vector2Int target)
+        {
+            SetRoom(room);
+            _currentGridPosition = target;
+            transform.position = GridToWorld(target);
+            if (gameObject.activeSelf == room.Sleeping) gameObject.SetActive(!room.Sleeping);
+        }
+
+        private void SetRoom(RoomData room)
+        {
+            if (transform.parent != room.transform) transform.SetParent(room.transform, true);
+            _roomData = room;
+            _points = room.transform.Find("FurniturePoints").Find("FloorFurniturePoints");
+        }
+
+        // Finds a path inside the current room and sets it as the travel points. Returns false if there is no path.
+        private bool SetPath(Vector2Int target)
+        {
             //Stopwatch stopwatch = Stopwatch.StartNew();
-            if (_walkableSlots.Count > 0)
-            {
-                if (changeRoom)
-                {
-                    targetGridPosition = new(2, 1);
-                }
+            List<GridNode> nodePath = FindPath(_currentGridPosition, target);
+            if (nodePath == null) return false;
 
-                Vector2Int target = targetGridPosition ?? _walkableSlots[Random.Range(0, _walkableSlots.Count)];
-                List<GridNode> nodePath = FindPath(_currentGridPosition, target);
-                if (nodePath != null)
-                {
-                    _rawPath = GetTravelPoints(nodePath);
-                    _smoothPath = SmoothPath(_rawPath);
-                    _travelPoints = _smoothPath;
-                    //_travelPoints = GetTravelPoints(nodePath);
-                    _currentGridPosition = target;
-                    //stopwatch.Stop();
-                    //UnityEngine.Debug.Log($"calculating path took {stopwatch.Elapsed.TotalMilliseconds} milliseconds");
-                    _statusCoroutine = StartCoroutine(MoveRoutine(changeRoom));
-                }
-                else
-                {
-                    SelectStatus();
-                }
-            }
-            else
-            {
-                SelectStatus();
-            }
+            _rawPath = GetTravelPoints(nodePath);
+            _smoothPath = SmoothPath(_rawPath);
+            _travelPoints = _smoothPath;
+            //_travelPoints = GetTravelPoints(nodePath);
+            _currentGridPosition = target;
+            //stopwatch.Stop();
+            //UnityEngine.Debug.Log($"calculating path took {stopwatch.Elapsed.TotalMilliseconds} milliseconds");
+            return true;
         }
 
-        private IEnumerator MoveRoutine(bool changeRoom)
+        // The path to the first target is already set. targetRoom is null when staying in the same room.
+        private IEnumerator MoveRoutine(RoomData targetRoom, Vector2Int target)
         {
-            if (_performingAnimation) yield break;
+            yield return FollowPath();
 
+            if (targetRoom != null)
+            {
+                yield return ClimbLadder(targetRoom, target);
+                // Climbed into a room that's sleeping off-screen, sleep with it at the target. OnEnable continues from there when it wakes up.
+                if (_roomData.Sleeping)
+                {
+                    _currentGridPosition = target;
+                    _isMoving = false;
+                    gameObject.SetActive(false);
+                    yield break;
+                }
+                if (SetPath(target)) yield return FollowPath();
+            }
+
+            _isMoving = false;
+            StartIdle();
+        }
+
+        private IEnumerator FollowPath()
+        {
             while (_travelPoints.Count > 0)
             {
                 Vector2 targetPos = _travelPoints[0];
@@ -261,31 +260,18 @@ namespace MenuUI.Scripts.SoulHome
                 _travelPoints.RemoveAt(0);
             }
             UseDefaultHands(false);
-            if (changeRoom)
-            {
-                ChangeRoom();
-            }
-            else
-            {
-                SelectStatus();
-            }
         }
 
-        private void ChangeRoom()
-        {
-            Transform targetRoomTransform = GetRoomToMoveTo();
-
-            StartCoroutine(ClimbLadder(targetRoomTransform));
-        }
-
-        private IEnumerator ClimbLadder(Transform targetRoomTransform)
+        private IEnumerator ClimbLadder(RoomData targetRoom, Vector2Int target)
         {
             _performingAnimation = true;
+            // If the room goes to sleep mid-climb, the next decision finishes the room change.
+            _pendingRoom = targetRoom;
+            _pendingTarget = target;
 
-            RoomData targetRoomData = targetRoomTransform.GetComponent<RoomData>();
-            Transform targetRoomPoints = targetRoomTransform.Find("FurniturePoints").Find("FloorFurniturePoints");
+            Transform targetRoomPoints = targetRoom.transform.Find("FurniturePoints").Find("FloorFurniturePoints");
 
-            Vector3 targetWorldPosition = targetRoomPoints.GetChild(1).GetChild(2).position;
+            Vector3 targetWorldPosition = targetRoomPoints.GetChild(LadderGridPosition.y).GetChild(LadderGridPosition.x).position;
 
             bool movingDown = targetWorldPosition.y < transform.position.y;
 
@@ -301,65 +287,43 @@ namespace MenuUI.Scripts.SoulHome
 
                 yield return null;
             }
-            _timeSinceRoomChange = 0f;
 
-            transform.SetParent(targetRoomTransform, true);
-            _roomData = targetRoomData;
-            _points = targetRoomPoints;
+            _pendingRoom = null;
+            SetRoom(targetRoom);
 
             transform.position = targetWorldPosition;
-            _currentGridPosition = new(2, 1);
+            _currentGridPosition = LadderGridPosition;
             UpdateSortingOrder(_currentGridPosition.y);
             _performingAnimation = false;
             UseDefaultHands(false);
-            // Climbed into a room that's sleeping off-screen, sleep with it. OnEnable continues from here when it wakes up.
-            if (_roomData.Sleeping)
-            {
-                gameObject.SetActive(false);
-                yield break;
-            }
-            SelectStatus();
         }
 
-        private bool ShouldChangeRoom()
+        // Returns a random room directly above or below, or null if there are none.
+        private RoomData GetRoomToMoveTo()
         {
-            if (_timeSinceRoomChange > _roomChangeCooldown)
-            {
-                if (_roomChangeChance > Random.Range(0, 100))
-                {
-                    return true;
-                }
-            }
-            return false;
+            Transform roomPosition = _roomData.transform.parent;
+            Transform roomPositions = roomPosition.parent;
+            int index = roomPosition.GetSiblingIndex();
+
+            RoomData upperRoom = GetRoomAt(roomPositions, index - 1);
+            RoomData lowerRoom = GetRoomAt(roomPositions, index + 1);
+
+            if (upperRoom != null && lowerRoom != null) return Random.value > 0.5f ? upperRoom : lowerRoom;
+            return upperRoom != null ? upperRoom : lowerRoom;
         }
 
-        private Transform GetRoomToMoveTo()
+        // Room positions above the clan's room count are left empty.
+        private RoomData GetRoomAt(Transform roomPositions, int index)
         {
-            Transform roomPositions = transform.parent.parent.parent;
-            int lowerRoomIndex = transform.parent.parent.GetSiblingIndex() + 1;
-            int upperRoomIndex = transform.parent.parent.GetSiblingIndex() - 1;
-            bool upIsValid = upperRoomIndex >= 0;
-            bool downIsValid = lowerRoomIndex < roomPositions.childCount;
+            if (index < 0 || index >= roomPositions.childCount) return null;
+            Transform roomPosition = roomPositions.GetChild(index);
+            return roomPosition.childCount > 0 ? roomPosition.GetChild(0).GetComponent<RoomData>() : null;
+        }
 
-            int targetIndex = -1;
-
-            if (upIsValid && downIsValid)
-            {
-                if (Random.value > 0.5f)
-                    targetIndex = upperRoomIndex;
-                else
-                    targetIndex = lowerRoomIndex;
-            }
-            else if (upIsValid)
-            {
-                targetIndex = upperRoomIndex;
-            }
-            else if (downIsValid)
-            {
-                targetIndex = lowerRoomIndex;
-            }
-
-            return roomPositions.GetChild(targetIndex).GetChild(0).transform;
+        private void StartIdle()
+        {
+            _animator.Play(_idleAnimation.name);
+            UseDefaultHands(false);
         }
 
         private void UpdateSortingOrder(int gridRow)
@@ -654,7 +618,6 @@ namespace MenuUI.Scripts.SoulHome
 
             transform.position = position;
             _currentGridPosition = new Vector2Int(column, row);
-            Status = AvatarStatus.Idle;
             _travelPoints.Clear();
         }
 
@@ -665,7 +628,6 @@ namespace MenuUI.Scripts.SoulHome
             {
                 yield break;
             }
-            StopCoroutine(_statusCoroutine);
 
             int index = Random.Range(0, _validatedInteractAnimation.Count);
             AnimationClip selectedClip = _validatedInteractAnimation[index].Clip;
@@ -685,9 +647,7 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             _performingAnimation = false;
-            UseDefaultHands(false);
-
-            SelectStatus();
+            StartIdle();
         }
         private List<AvatarAnimation> ValidateAnimations(List<AvatarAnimation> animationToValidate)
         {
@@ -727,22 +687,86 @@ namespace MenuUI.Scripts.SoulHome
 
         public void HandleClick()
         {
-            if (_performingAnimation || _validatedInteractAnimation.Count == 0)
+            if (_performingAnimation || _validatedInteractAnimation == null || _validatedInteractAnimation.Count == 0)
             {
                 return;
             }
 
-            if (_statusCoroutine != null)
+            if (_isMoving)
             {
-                StopCoroutine(_statusCoroutine);
+                // Stops where it is, so the next path starts from here instead of the old target.
+                _isMoving = false;
+                _currentGridPosition = WorldToGrid(transform.position);
             }
+            StopAllCoroutines();
 
             StartCoroutine(InteractAnimation());
         }
 
         #if UNITY_EDITOR
 
-        private void OnDrawGizmos()
+        private static GUIStyle _debugLabelStyle;
+
+        /// <summary>
+        /// Draws the character's state in the Scene view. Called by <see cref="SoulHomeLoad"/> instead of OnDrawGizmos,
+        /// because OnDrawGizmos isn't called for the disabled characters in sleeping rooms.
+        /// </summary>
+        public void DrawDebugGizmos()
+        {
+            if (!hasInitialized || _roomData == null) return;
+
+            string state;
+            Color color;
+            if (!gameObject.activeInHierarchy) { state = _roomData.Sleeping ? "Sleeping" : "Disabled"; color = Color.gray; }
+            else if (_pendingRoom != null) { state = "Climbing"; color = Color.magenta; }
+            else if (_performingAnimation) { state = "Animating"; color = Color.yellow; }
+            else if (_isMoving) { state = "Walking"; color = Color.cyan; }
+            else { state = "Idle"; color = Color.green; }
+
+            Vector3 position = transform.position;
+            Vector3 destination = GridToWorld(_currentGridPosition);
+
+            Gizmos.color = color;
+            Gizmos.DrawWireSphere(position, 0.5f);
+
+            // Where the character is heading. For a disabled character this is where it shows up when its room wakes up.
+            Gizmos.DrawWireCube(destination, new Vector3(0.6f, 0.6f, 0.1f));
+            if (Vector3.Distance(position, destination) > 0.05f) Gizmos.DrawLine(position, destination);
+
+            // Room change cut off mid-climb, finished by the next decision.
+            if (_pendingRoom != null && !gameObject.activeInHierarchy)
+            {
+                Gizmos.color = Color.magenta;
+                Transform pendingPoints = _pendingRoom.transform.Find("FurniturePoints").Find("FloorFurniturePoints");
+                Gizmos.DrawLine(position, pendingPoints.GetChild(_pendingTarget.y).GetChild(_pendingTarget.x).position);
+            }
+
+            // Draw the Current Travel Path
+            if (gameObject.activeInHierarchy && _travelPoints != null && _travelPoints.Count > 0)
+            {
+                Gizmos.color = Color.cyan;
+                Vector2 lastPoint = transform.position; // Start the line from avatar's current position
+
+                foreach (Vector2 point in _travelPoints)
+                {
+                    // Draw line to the next node
+                    Gizmos.DrawLine(lastPoint, point);
+                    // Draw a small sphere at the node center
+                    Gizmos.DrawSphere(point, 0.1f);
+                    lastPoint = point;
+                }
+            }
+
+            _debugLabelStyle ??= new GUIStyle(UnityEditor.EditorStyles.boldLabel);
+            _debugLabelStyle.normal.textColor = color;
+            float nextDecision = Mathf.Max(0f, NextDecisionTime - Time.time);
+            UnityEditor.Handles.Label(position + Vector3.up,
+                $"{state}\nNext: {nextDecision:0.0}s",
+                _debugLabelStyle);
+        }
+
+        // The grid and penalties of the character's room, only for the selected character so the rooms don't fill up with numbers.
+        private void OnDrawGizmosSelected()
         {
             if (_grid == null) return;
 
@@ -766,22 +790,6 @@ namespace MenuUI.Scripts.SoulHome
                         // Draw the penalty number
                         UnityEditor.Handles.Label(worldPos, node.penalty.ToString());
                     }
-                }
-            }
-
-            // Draw the Current Travel Path
-            if (_travelPoints != null && _travelPoints.Count > 0)
-            {
-                Gizmos.color = Color.cyan;
-                Vector2 lastPoint = transform.position; // Start the line from avatar's current position
-
-                foreach (Vector2 point in _travelPoints)
-                {
-                    // Draw line to the next node
-                    Gizmos.DrawLine(lastPoint, point);
-                    // Draw a small sphere at the node center
-                    Gizmos.DrawSphere(point, 0.1f);
-                    lastPoint = point;
                 }
             }
 

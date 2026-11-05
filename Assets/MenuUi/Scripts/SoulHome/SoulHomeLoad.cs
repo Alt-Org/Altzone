@@ -27,6 +27,7 @@ namespace MenuUI.Scripts.SoulHome {
         [Tooltip("Instead of getting furniture from the server, generate random furniture."), SerializeField] private bool _ignoreFurniture;
         [Tooltip("Is the representation isometric or not?"), SerializeField] private bool _isometric;
         [Tooltip("Use random colours when using random info"), SerializeField] private bool _randomColour;
+        [Tooltip("Draws the state of every character in the Scene view"), SerializeField] private bool _drawAvatarDebug = true;
 
         [SerializeField] private GameObject _roomPositions;
         [SerializeField] private GameObject _roomPrefab;
@@ -54,6 +55,7 @@ namespace MenuUI.Scripts.SoulHome {
         private string _localPlayerId;
 
         private AvatarRig _localPlayerRig;
+        private readonly List<SoulHomeAvatarController> _avatars = new();
 
         private long _frameTimeStart;
 
@@ -98,6 +100,29 @@ namespace MenuUI.Scripts.SoulHome {
         {
             _clanPlayerFetcher.OnLocalAvatarUpdated -= OnLocalAvatarUpdated;
         }
+
+        private void Update()
+        {
+            if (!_loadFinished) return;
+
+            float time = Time.time;
+            foreach (SoulHomeAvatarController avatar in _avatars)
+            {
+                if (time >= avatar.NextDecisionTime) avatar.Decide();
+            }
+        }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (!_drawAvatarDebug) return;
+
+            foreach (SoulHomeAvatarController avatar in _avatars)
+            {
+                if (avatar != null) avatar.DrawDebugGizmos();
+            }
+        }
+#endif
 
         private void UpdateOnLoginStatusChanged(bool isLoggedIn)
         {
@@ -157,6 +182,7 @@ namespace MenuUI.Scripts.SoulHome {
             _furnitureList = null;
             _localPlayerId = null;
             _localPlayerRig = null;
+            _avatars.Clear();
         }
 
         private IEnumerator TrackedCoroutine(IEnumerator coroutine)
@@ -493,7 +519,9 @@ namespace MenuUI.Scripts.SoulHome {
 
                     PlayerData playerData = _clanPlayerFetcher.Players[i];
 
-                    avatarParent.GetComponent<SoulHomeAvatarController>().InitializeAvatar(playerData);
+                    SoulHomeAvatarController avatarController = avatarParent.GetComponent<SoulHomeAvatarController>();
+                    avatarController.InitializeAvatar(playerData);
+                    _avatars.Add(avatarController);
 
                     if (playerData?.Id == _localPlayerId)
                     {
