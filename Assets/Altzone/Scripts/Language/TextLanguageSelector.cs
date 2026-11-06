@@ -1,21 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
-using Altzone.Scripts.Model.Poco.Game;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
+using ReadOnlyAttribute = Unity.Collections.ReadOnlyAttribute;
 
 namespace Altzone.Scripts.Language
 {
     [RequireComponent(typeof(TMP_Text)), ExecuteAlways]
     public class TextLanguageSelector : MonoBehaviour
     {
+        [SerializeField, ReadOnly] protected TMP_Text _textField;
+
         [SerializeField, TextArea(1, 10)] protected string _finnishText;
         [SerializeField, TextArea(1, 10)] protected string _englishText;
 
-        protected TMP_Text _textField;
+        private bool _textFieldFound = false;
 
+        public bool TextFieldFound { get => _textFieldFound;}
 
         protected virtual void OnEnable()
         {
@@ -31,7 +33,13 @@ namespace Altzone.Scripts.Language
 
         public void GetText()
         {
-            _textField = GetComponent<TMP_Text>();
+            TMP_Text textField = GetComponent<TMP_Text>();
+            if (textField)
+            {
+                _textField = textField;
+                _textFieldFound = true;
+            }
+            else _textFieldFound = false;
         }
 
         protected virtual void SetText(LanguageType language)
@@ -54,12 +62,14 @@ namespace Altzone.Scripts.Language
         TextLanguageSelector _script;
         SerializedProperty _finnishText;
         SerializedProperty _englishText;
+        SerializedProperty _textField;
 
         public void OnEnable()
         {
             _script = target as TextLanguageSelector;
             _finnishText = serializedObject.FindProperty("_finnishText");
             _englishText = serializedObject.FindProperty("_englishText");
+            _textField = serializedObject.FindProperty("_textField");
         }
 
         public override void OnInspectorGUI()
@@ -69,6 +79,19 @@ namespace Altzone.Scripts.Language
             EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.PropertyField(serializedObject.FindProperty("m_Script"));
             EditorGUI.EndDisabledGroup();
+
+            EditorGUILayout.Space();
+
+            if (_script.TextFieldFound)
+            {
+                EditorGUI.BeginDisabledGroup(true);
+                EditorGUILayout.PropertyField(_textField);
+                EditorGUI.EndDisabledGroup();
+            }
+            else
+            {
+                EditorGUILayout.PropertyField(_textField);
+            }
 
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(_finnishText);
