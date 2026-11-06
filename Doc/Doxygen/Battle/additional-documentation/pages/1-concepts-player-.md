@@ -677,12 +677,9 @@ methods also affect the [{Player PlayState}](#page-concepts-player-playstate) of
 
 #### PlayerHandle {#page-concepts-player-simulation-management-playerhandle}
 
-The @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle} struct defined in [{PlayerManager}](#page-concepts-player-simulation-management-playermanager) allows
-the code to access [{Player Manager Data}](#page-concepts-player-manager-data) of each individual **Player**.
-
-There is both a **private** @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} struct containing all the data for **use internally**
-within [{PlayerManager}](#page-concepts-player-simulation-management-playermanager), and the **public** @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle}
-exposing some parts to the **rest of the game**.
+The @cref{Battle.QSimulation.Game,BattlePlayerHandle} is a special case [{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle),
+as it also contains data on the player, who is not an entity.
+Other than that, it functions the same as any other [{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle).
 
 <br/>
 

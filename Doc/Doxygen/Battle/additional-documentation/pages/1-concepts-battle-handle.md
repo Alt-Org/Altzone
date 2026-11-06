@@ -6,7 +6,7 @@ and <span style = color:var(--warning-color-text);>**should not be stored across
 
 As stated before, **Handles** are collections of data that make sense to group together for ease of use, usually consisting of references to the actual data.  
 In code, a **Handle** is simply a **struct** that contains data/references and can implement properties and methods for accessing and managing that data.  
-One type of method that should be implemented is one or more **static Create** methods for creating handle instances.
+One type of method that should be implemented is one or more **static Create methods** for creating **Handle instances**.  
 Obviously, the **Create** methods take in arguments used for creating the instance,
 which in many cases are **Identifiers** that are used to **fetch data** for the collection during the creation process.
 
@@ -16,7 +16,7 @@ struct Battle(name)Handle
 {
   public static Battle(name)Handle Create(/*arguments and/or identifiers*/)
 
-  // Fields for the data/references
+  // Fields/Properties for the data/references
   ...
 
   // Implementation for the properties and methods
@@ -34,11 +34,11 @@ for a collection of data that is composed of an **%Quantum EntityRef** and point
 Each **Entity Type Handle** usually has a [{Create method}](#page-concepts-battle-handle)
 that takes an **EntityRef** as an [{Identifier}](#page-concepts-battle-handle) used to fetch the **Components**.
 
-If an **Entity Type Handle** has a [{Handle Link Component}](#page-concepts-battle-handle-link-component),
-any [{Linked/Associated}](#page-concepts-battle-handle-link-component) **Entity** can be used as an argument.  
-Each **Entity Type Handle** that has a [{Handle Link Component}](#page-concepts-battle-handle-link-component) should implement a **static CreateLink** method
-for creating and adding it's respective [{Handle Link Component}](#page-concepts-battle-handle-link-component) to a given **Entity** that should be
-[{Linked/Associated}](#page-concepts-battle-handle-link-component).
+An **Entity Type Handle** can have a [{Handle Link Component}](#page-concepts-battle-handle-entity-type-handle-link-component),
+allowing the use of any [{Linked/Associated}](#page-concepts-battle-handle-entity-type-handle-link-component) **Entities** as an argument.  
+Each **Entity Type Handle** that has a [{Handle Link Component}](#page-concepts-battle-handle-entity-type-handle-link-component) should implement a **static CreateLink** method
+for creating and adding it's respective [{Handle Link Component}](#page-concepts-battle-handle-entity-type-handle-link-component) to a given **Entity** that should be
+[{Linked/Associated}](#page-concepts-battle-handle-entity-type-handle-link-component).
 
 **Entity Type Handles** can also be extended to contain other data/references and
 implement other properties and methods overlapping with the more general [{Battle Handle}](#page-concepts-battle-handle).
@@ -61,12 +61,14 @@ struct Battle(entity type)Handle
 
 ```
 
-<br/>
+### Handle Link Component {#page-concepts-battle-handle-entity-type-handle-link-component}
 
-## Player Handle {#page-concepts-battle-handle-player-handle}
-
-The @cref{Battle.QSimulation.Game,BattlePlayerHandle} is a special case **Entity Type Handle**, as it also contains data on the player, who is not an entity.
-Other than that, it functions the same as any other [{Entity Type Handle}](#page-concepts-battle-handle-entity-type-handle).
+Each **Entity Type** that has a [{Entity Type Handle}](#page-concepts-battle-handle-entity-type-handle) can also have a **Link Component** associated with it.  
+The **Link Component** can be attached to any **Entity** associated with it's respective **Entity Type**.  
+**Link Components** contain [{Identifiers}](#page-concepts-battle-handle)
+that are used during the respective [{Entity Type Handle}](#page-concepts-battle-handle-entity-type-handle) **Creation Process**.  
+In practice, this forms a **link/association** between some **Entity** and a specific **Entity Type**, which allows for the **Creation** of an [{Entity Type Handle}](#page-concepts-battle-handle-entity-type-handle)
+for an **Entity Type** from any **Entity** that is associated with it.
 
 <br/>
 
@@ -86,7 +88,8 @@ for a [{Managed entity}](#page-concepts-entity-management-managed-entities) of a
 A **Managed Composite Entity Type Handles** contains a [{Managed Entity Handle}](#page-concepts-battle-handle-managed-entity-handle)
 instead of directly containing a **%Quantum EntityRef**, forming the **Composite**, and implements the @cref{Battle.QSimulation.Game,BattleManagedEntityHandle.IComposite} interface.
 
-**Managed Composite Entity Type Handles** should protect the **Transform Component**,
+If a [{Managed Entity}](#page-concepts-entity-management-managed-entities) is [{Registered}](#page-concepts-entity-management-registered-entities),
+it's corresponding **Managed Composite Entity Type Handle** should protect the **Transform Component**,
 giving an error when there is a **possible attempt to modify the transform** when the [{Managed Entity}](#page-concepts-entity-management-managed-entities)
 is [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).
 
@@ -135,17 +138,6 @@ struct Battle(entity type)Handle : BattleManagedEntityHandle.IComposite
 
 <br/>
 
-## Handle Link Component {#page-concepts-battle-handle-link-component}
-
-Each **Entity Type** that has a [{Entity Type Handle}](#page-concepts-battle-handle-entity-type-handle) can also have a **Link Component** associated with it.  
-The **Link Component** can be attached to any **Entity** associated with it's respective **Entity Type**.  
-**Link Components** contain [{Identifiers}](#page-concepts-battle-handle)
-that are used during the respective [{Entity Type Handle}](#page-concepts-battle-handle-entity-type-handle) **Creation Process**.  
-In practice, this forms a **link/association** between some **Entity** and a specific **Entity Type**, which allows for the **Creation** of an [{Entity Type Handle}](#page-concepts-battle-handle-entity-type-handle)
-for an **Entity Type** from any **Entity** that is associated with it.
-
-<br/>
-
 ---
 
 <br/>
@@ -158,7 +150,7 @@ for an **Entity Type** from any **Entity** that is associated with it.
    Handles [{Managed entities}](#page-concepts-entity-management-managed-entities).
  - @cref{Battle.QSimulation.Game,BattlePlayerHandle}:
    [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle),
-   ([Special Case](#page-concepts-battle-handle-player-handle))  
+   ([Special Case](#page-concepts-player-simulation-management-playerhandle))  
    Handles players.
  - @cref{Battle.QSimulation.Game,BattlePlayerShieldHandle}:
    [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle)  
