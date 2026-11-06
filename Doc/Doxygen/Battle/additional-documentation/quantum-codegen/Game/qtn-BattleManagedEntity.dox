@@ -98,28 +98,28 @@
 
 /// @var bool Quantum::BattleManagedEntityQComponent::IsRegistered
 /// <summary>
-/// Whether entity is registered.
+/// Whether the <b>{Managed Entity}</b> is of type <b>{Registered}</b> or not.
 /// </summary>
 ///
 /// See [{Registered Entity}](#page-concepts-entity-management-registered-entities).
 
 /// @var BattleEntityPlayState Quantum::BattleManagedEntityQComponent::RegisteredState
 /// <summary>
-/// Playstate of the registered entity. Unused if not @cref{Quantum.BattleManagedEntityQComponent,IsRegistered}.
+/// The <b>{PlayState}</b> of a <b>{Registered Entity}</b>. Unused if not @cref{Quantum.BattleManagedEntityQComponent,IsRegistered}.
 /// </summary>
 ///
 /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate).
 
 /// @var bool Quantum::BattleManagedEntityQComponent::IsCompound
 /// <summary>
-/// Whether entity is compound.
+/// Whether the <b>{Managed Entity}</b> is of type <b>{Compound}</b> or not.
 /// </summary>
 ///
 /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
 
 /// @var list<BattleEntityLink> Quantum::BattleManagedEntityQComponent::CompoundLinkedEntities
 /// <summary>
-/// List of entities linked to the compound parent.
+/// <b>List of Entities linked</b> to the <b>{Compound}</b> parent. Unused if not @cref{Quantum.BattleManagedEntityQComponent,IsCompound}.
 /// </summary>
 ///
 /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.

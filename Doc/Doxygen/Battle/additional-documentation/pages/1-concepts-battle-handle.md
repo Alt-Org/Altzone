@@ -74,7 +74,7 @@ for an **Entity Type** from any **Entity** that is associated with it.
 
 ## Managed Entity Handle {#page-concepts-battle-handle-managed-entity-handle}
 
-The @cref{Battle.QSimulation.Game,BattleManagedEntityHandle} is a type of [{Entity Type Handle}](#page-concepts-battle-handle-type-handle)
+The @cref{Battle.QSimulation.Game,BattleManagedEntityHandle} is a type of [{Entity Type Handle}](#page-concepts-battle-handle-entity-type-handle)
 used to handle [{Managed entities}](#page-concepts-entity-management-managed-entities).  
 The @cref{Battle.QSimulation.Game,BattleManagedEntityHandle} also contains the @cref{Battle.QSimulation.Game.BattleManagedEntityHandle,IComposite} interface
 that is implemented by [{Managed Composite Type Handles}](#page-concepts-battle-handle-managed-composite-type-handle).
@@ -108,7 +108,7 @@ struct Battle(entity type)Handle : BattleManagedEntityHandle.IComposite
   // Should be implemented if the Entity Type Handle has a {Handle Link Component}
   public static void CreateLink(Frame f, EntityRef entityRef, EntityRef linkEntityRef)
 
-  //{ Transform Component access should be implemented with protection
+  //{ Transform Component access should be implemented with protection if the {Managed Entity} is {Registered}
 
   // pointer for mutable access with protection
   public Transform2D* TransformPtr
@@ -126,7 +126,7 @@ struct Battle(entity type)Handle : BattleManagedEntityHandle.IComposite
   // private internal storage for the transform pointer
   private Transform2D* _transformInternalPtr { get; set; }
 
-  //} Transform Component access should be implemented with protection
+  //} Transform Component access should be implemented with protection if the {Managed Entity} is {Registered}
 
   void BattleManagedEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManagedEntityHandle managedEntity)
 

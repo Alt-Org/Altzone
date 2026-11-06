@@ -13,13 +13,46 @@ using Battle.QSimulation.Projectile;
 
 namespace Battle.QSimulation.Game
 {
+    /// <summary>
+    /// <b>{Entity Type Handle}</b> for handling <b>{Managed Entities}</b>
+    /// </summary>
+    ///
+    /// This **Type Handle** differs from the usual implementation, as it wraps the **EntityRef**
+    /// and the @cref{Quantum,BattleManagedEntityQComponent} instead of containing a collection of data.<br/>
+    /// The BattleManagedEntityHandle can be used as an **EntityRef** and exposes the data of the underlying @cref{Quantum,BattleManagedEntityQComponent}.
+    ///
+    ///
+    /// See [{Entity Type Handle}](#page-concepts-battle-handle-entity-type-handle) for more info.<br/>
+    /// See [{Managed entities}](#page-concepts-entity-management-managed-entities) for more info.
     public unsafe struct BattleManagedEntityHandle
     {
+        /// <summary>
+        /// The interface implemented by <b>{Managed Composite Entity Type Handles}</b>
+        /// </summary>
+        ///
+        /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
         public interface IComposite
         {
+            /// <summary>
+            /// Used internally by <see cref="BattleManagedEntityHandle"/><b>.To</b> method in order to upgrade
+            /// the <see cref="BattleManagedEntityHandle"/> to a specific <b>{Managed Composite Entity Type Handle}</b>.
+            /// </summary>
+            ///
+            /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
+            ///
+            /// <param name="f">Current simulation frame.</param>
+            /// <param name="managedEntity">The managed entity handle being upgraded.</param>
             public void FromManagedEntity(Frame f, BattleManagedEntityHandle managedEntity);
         }
 
+        /// <summary>
+        /// Method for creating a new handle.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="entity">Entity the handle is being created for.</param>
+        ///
+        /// <returns>The created handle.</returns>
         public static BattleManagedEntityHandle Create(Frame f, EntityRef entity)
         {
             BattleManagedEntityHandle handle = new()
@@ -31,26 +64,61 @@ namespace Battle.QSimulation.Game
             return handle;
         }
 
-        public static implicit operator EntityRef(BattleManagedEntityHandle managedEntityRef) => managedEntityRef.ERef;
+        /// <summary>
+        /// Implements implicit cast from <see cref="BattleManagedEntityHandle"/> to <b>EntityRef</b>.
+        /// </summary>
+        ///
+        /// <param name="managedEntityHandle">Managed Entity Handle to be cast.</param>
+        public static implicit operator EntityRef(BattleManagedEntityHandle managedEntityHandle) => managedEntityHandle.ERef;
 
+        /// <summary>
+        /// The underlying entity.
+        /// </summary>
         public EntityRef ERef { get; private set; }
 
+        /// <summary>
+        /// Whether the <b>{Managed Entity}</b> is of type <b>{Registered}</b> or not.
+        /// </summary>
         public bool IsRegistered => _component->IsRegistered;
 
+        /// <summary>
+        /// The <b>{PlayState}</b> of a <b>{Registered Entity}</b>. Unused if not <see cref="IsRegistered"/>.
+        /// </summary>
         public BattleEntityPlayState RegisteredState { get
         {
             DevAssertIsRegistered("Can not read the play state");
             return _component->RegisteredState;
         }}
 
+        /// <summary>
+        /// Whether the <b>{Managed Entity}</b> is of type <b>{Compound}</b> or not.
+        /// </summary>
         public bool IsCompound => _component->IsCompound;
 
+        /// <summary>
+        /// Fetches the <b>list of Entities linked</b> to the <b>{Compound}</b> parent. Should not be used if not <see cref="IsCompound"/>.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>The fetched <b>list of linked Entities</b>.</returns>
         public QList<BattleEntityLink> CompoundGetLinkedEntities(Frame f)
         {
             DevAssertIsCompound("Can not " + nameof(CompoundGetLinkedEntities));
             return f.ResolveList(_component->CompoundLinkedEntities);
         }
 
+        /// <summary>
+        /// Upgrades the <see cref="BattleManagedEntityHandle"/> to a <b>{Managed Composite Entity Type Handle}</b> of type <typeparamref name="T"/>.
+        /// </summary>
+        ///
+        /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
+        ///
+        /// <typeparam name="T">The type of <b>{Managed Composite Entity Type Handle}</b> to upgrade to.</typeparam>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns>The upgraded <b>{Managed Composite Entity Type Handle}</b>.</returns>
         public T To<T>(Frame f) where T : IComposite, new()
         {
             T composite = new();
@@ -58,30 +126,77 @@ namespace Battle.QSimulation.Game
             return composite;
         }
 
+        /// <summary>
+        /// Asserts that <see cref="IsRegistered"/>.
+        /// </summary>
+        ///
+        /// <param name="context">Context included in the assert error message to indicate where the assertion was called from.</param>
         public void DevAssertIsRegistered(string context) => DevAssertIsRegistered(nameof(BattleManagedEntityHandle), context);
 
+        /// <summary>
+        /// Asserts that <see cref="IsRegistered"/>.
+        /// </summary>
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "{Error Message Source}" for more info.
+        ///
+        /// <param name="source">Specifies the <b>{Source}</b> of the assert error message.</param>
+        /// <param name="context">Context included in the assert error message to indicate where the assertion was called from.</param>
         public void DevAssertIsRegistered(string source, string context)
         {
             BattleDebugLogger.DevAssertFormat(source, _component->IsRegistered, "{0}, entity is not registered", context);
         }
 
+        /// <summary>
+        /// Asserts that <see cref="RegisteredState"/> is <see cref="BattleEntityPlayState.InPlay">InPlay</see>.
+        /// </summary>
+        ///
+        /// <param name="context">Context included in the assert error message to indicate where the assertion was called from.</param>
         public void DevAssertIsInPlay(string context) => DevAssertIsInPlay(nameof(BattleManagedEntityHandle), context);
 
+        /// <summary>
+        /// Asserts that <see cref="RegisteredState"/> is <see cref="BattleEntityPlayState.InPlay">InPlay</see>.
+        /// </summary>
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "{Error Message Source}" for more info.
+        ///
+        /// <param name="source">Specifies the <b>{Source}</b> of the assert error message.</param>
+        /// <param name="context">Context included in the assert error message to indicate where the assertion was called from.</param>
         public void DevAssertIsInPlay(string source, string context)
         {
             BattleDebugLogger.DevAssertFormat(source, _component->RegisteredState == BattleEntityPlayState.InPlay, "{0}, entity is not in play", context);
         }
 
+        /// <summary>
+        /// Asserts that <see cref="IsCompound"/>.
+        /// </summary>
+        ///
+        /// <param name="context">Context included in the assert error message to indicate where the assertion was called from.</param>
         public void DevAssertIsCompound(string context) => DevAssertIsCompound(nameof(BattleManagedEntityHandle), context);
 
+        /// <summary>
+        /// Asserts that <see cref="IsCompound"/>.
+        /// </summary>
+        ///
+        /// See @ref BattleDebugLogger-LogMethodsDoc "{Error Message Source}" for more info.
+        ///
+        /// <param name="source">Specifies the <b>{Source}</b> of the assert error message.</param>
+        /// <param name="context">Context included in the assert error message to indicate where the assertion was called from.</param>
         public void DevAssertIsCompound(string source, string context)
         {
             BattleDebugLogger.DevAssertFormat(source, _component->IsCompound, "{0}, entity is not a compound", context);
         }
 
+        /// <summary>
+        /// Private internal pointer to the underlying <see cref="BattleManagedEntityQComponent"/>.
+        /// </summary>
         private BattleManagedEntityQComponent* _component;
     }
 
+    /// <summary>
+    /// <b>{Managed Composite Entity Type Handle}</b> for handling players.
+    /// </summary>
+    ///
+    /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
     public unsafe struct BattlePlayerHandle : BattleManagedEntityHandle.IComposite
     {
         public static BattlePlayerHandle Create(Frame f, BattlePlayerSlot slot)
@@ -226,6 +341,11 @@ namespace Battle.QSimulation.Game
         }
     }
 
+    /// <summary>
+    /// <b>{Managed Composite Entity Type Handle}</b> for handling shields.
+    /// </summary>
+    ///
+    /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
     public unsafe struct BattlePlayerShieldHandle : BattleManagedEntityHandle.IComposite
     {
         public static BattlePlayerShieldHandle Create(Frame f, EntityRef entity)
@@ -299,6 +419,11 @@ namespace Battle.QSimulation.Game
         }
     }
 
+    /// <summary>
+    /// <b>{Managed Composite Entity Type Handle}</b> for handling projectiles.
+    /// </summary>
+    ///
+    /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
     public unsafe struct BattleProjectileHandle : BattleManagedEntityHandle.IComposite
     {
         public static BattleProjectileHandle Create(Frame f, EntityRef entity)

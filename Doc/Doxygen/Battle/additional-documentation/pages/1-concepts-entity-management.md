@@ -4,7 +4,8 @@
 
 ## Managed Entities {#page-concepts-entity-management-managed-entities}
 
-**%Quantum Entities** managed by the [{Entity Manager}](#page-concepts-entity-management-entity-manager) have a @cref{Quantum,BattleManagedEntityQComponent}.  
+**%Quantum Entities** managed by the [{Entity Manager}](#page-concepts-entity-management-entity-manager) have a [{Managed Entity Handle}](#page-concepts-battle-handle-managed-entity-handle)
+and a @cref{Quantum,BattleManagedEntityQComponent}.  
 There are 3 types of **Managed Entities**:
 [{Registered}](#page-concepts-entity-management-registered-entities),
 [{Compound}](#page-concepts-entity-management-compound-entities) and
@@ -19,11 +20,11 @@ These types are tracked by the @cref{Quantum,BattleManagedEntityQComponent.IsReg
 **Compound Entities** are [{Managed Entities of type Compound}](#page-concepts-entity-management-managed-entities) that are composed of a **Parent** **Entity** with other **Entities** linked to it,  
 forming the **Compound**, which can then be positioned and rotated together as one unit.  
 The **Parent** has a @cref{Quantum,BattleManagedEntityQComponent.CompoundLinkedEntities} list which contains **Entities** that are linked to the **Compound** **Parent**.  
-**Compound Entities** are made from a @cref{Battle.QSimulation.Game.BattleEntityManager,CompoundEntityTemplate}.
+**Compound Entities** are **Made** from a @cref{Battle.QSimulation.Game.BattleEntityManager,CompoundEntityTemplate}.
 
-**Compound Entities** are handled by [{Entity Manager}](#page-concepts-entity-management-entity-manager).  
-**Compound Entities** can be registered to [{Entity Manager}](#page-concepts-entity-management-entity-manager) both individually and in groups.  
-**Compound Entities** can also be made and used without registering.
+**Compound Entities** are [{Handled By Entity Manager}](#page-concepts-entity-management-compound-entity-handling).  
+**Compound Entities** can be [{Registered To Entity Manager}](#page-concepts-entity-management-registered-entities) both individually and in groups.  
+**Compound Entities** can also be [{Made}](#page-concepts-entity-management-compound-entity-handling) and used **without Registering**.
 
 <br/>
 
@@ -97,7 +98,7 @@ the **Unity/View** code so it react to that information.
 
 ### Compound Entity Handling {#page-concepts-entity-management-compound-entity-handling}
 
-[{Compound Entities}](#page-concepts-entity-management-compound-entities) can be made using
+[{Compound Entities}](#page-concepts-entity-management-compound-entities) can be **Made** using
 @clink{MakeCompound:Battle.QSimulation.Game.BattleEntityManager.MakeCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)}
 or @clink{RegisterCompound:Battle.QSimulation.Game.BattleEntityManager.RegisterCompound(Frame, Battle.QSimulation.Game.BattleEntityManager.CompoundEntityTemplate)} methods.  
 [{Compound Entities}](#page-concepts-entity-management-compound-entities) can be **moved** and **teleported** using the
