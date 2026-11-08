@@ -28,6 +28,7 @@ namespace MenuUI.Scripts.SoulHome {
         [Tooltip("Is the representation isometric or not?"), SerializeField] private bool _isometric;
         [Tooltip("Use random colours when using random info"), SerializeField] private bool _randomColour;
         [Tooltip("Draws the state of every character in the Scene view"), SerializeField] private bool _drawAvatarDebug = true;
+        [Tooltip("Rooms created while the tower loads, counted from the bottom where the camera starts. The rest are created when the camera gets near them, see TowerController."), SerializeField] private int _initialRoomCount = 3;
 
         [SerializeField] private GameObject _roomPositions;
         [SerializeField] private GameObject _roomPrefab;
@@ -57,9 +58,16 @@ namespace MenuUI.Scripts.SoulHome {
         private AvatarRig _localPlayerRig;
         private readonly List<SoulHomeAvatarController> _avatars = new();
 
+        private const int AvatarsPerRoom = 3;
+        // Indexed by room position. Null until the room is created.
+        private RoomData[] _loadedRooms;
+        private int _loadedRoomCount = 0;
+        private Bounds _firstRoomBounds;
+
         private long _frameTimeStart;
 
         public bool LoadFinished { get => _loadFinished;}
+        public int LoadedRoomCount { get => _loadedRoomCount;}
 
         // Start is called before the first frame update
         void Start()
@@ -183,6 +191,8 @@ namespace MenuUI.Scripts.SoulHome {
             _localPlayerId = null;
             _localPlayerRig = null;
             _avatars.Clear();
+            _loadedRooms = null;
+            _loadedRoomCount = 0;
         }
 
         private IEnumerator TrackedCoroutine(IEnumerator coroutine)
@@ -303,49 +313,24 @@ namespace MenuUI.Scripts.SoulHome {
         public IEnumerator LoadRooms()
         {
             yield return new WaitUntil(() => _soulHomeRooms != null);
-            List<GameObject> roompositions = new List<GameObject>();
-            int i=0;
-            foreach (Transform child in _roomPositions.transform)
+
+            int roomCount = Mathf.Min(_soulHomeRooms.Room.Count, _roomPositions.transform.childCount);
+            if (roomCount < _soulHomeRooms.Room.Count) Debug.LogError($"Soulhome has {_soulHomeRooms.Room.Count} rooms but only {roomCount} room positions.");
+            _loadedRooms = new RoomData[roomCount];
+            _loadedRoomCount = 0;
+
+            // All positions are set right away so the tower has its full height, the rooms themselves are created later.
+            float roomHeight = _roomPrefab.GetComponent<BoxCollider2D>().size.y;
+            for (int i = 0; i < roomCount; i++)
             {
-                roompositions.Add(child.gameObject);
+                _roomPositions.transform.GetChild(i).localPosition = new(0, i * roomHeight, 0);
             }
-            foreach (Room room in _soulHomeRooms.Room)
+
+            // The camera starts at the bottom of the tower, so only the bottom rooms are created
+            int initialRooms = Mathf.Min(Mathf.Max(_initialRoomCount, 1), roomCount);
+            for (int i = 0; i < initialRooms; i++)
             {
-                GameObject roomObject = Instantiate (_roomPrefab, roompositions[i].transform);
-                Room roomInfo = /*roomObject.GetComponent<RoomData>().RoomInfo =*/ room;
-                //roomObject.GetComponent<RoomData>().RoomInfo.Id = room.Id;
-                //roomObject.GetComponent<RoomData>().Controller = _soulHomeController;
-                roompositions[i].transform.localPosition = new(0,i* roomObject.GetComponent<BoxCollider2D>().size.y, 0);
-                if (_isometric) {
-                    roomObject.transform.Find("Floor").gameObject.GetComponent<Image>().color = roomInfo.Floor;
-                    roomObject.transform.Find("Wall").GetChild(0).gameObject.GetComponent<Image>().color = roomInfo.Walls;
-                    roomObject.transform.Find("Wall2").GetChild(0).gameObject.GetComponent<Image>().color = roomInfo.Walls;
-                }
-                else
-                {
-                    /*GameObject floor = roomObject.transform.Find("Room").Find("Floor").gameObject;
-                    floor.GetComponent<SpriteRenderer>().color = room.Floor;
-                    foreach (SpriteRenderer floorPiece in floor.transform.GetComponentsInChildren<SpriteRenderer>())
-                    {
-                        floorPiece.color = roomInfo.Floor;
-                    }
-                    roompositions[i].transform.GetChild(0).Find("BackWall").gameObject.GetComponent<SpriteRenderer>().color = roomInfo.Walls;
-
-                    Color newColour = roomInfo.Walls;
-                    newColour.r *= 0.8f;
-                    newColour.g *= 0.8f;
-                    newColour.b *= 0.8f;
-
-                    roompositions[i].transform.GetChild(0).Find("RightWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;
-                    roompositions[i].transform.GetChild(0).Find("LeftWall").gameObject.GetComponent<SpriteRenderer>().color = newColour;*/
-                }
-                roomObject.GetComponent<RoomData>().InitializeSoulHomeRoom(room,_soulHomeController, _towerCamera, (_soulHomeRooms.Room.Count <= i+1));
-                if (i == 0)
-                {
-                    BoxCollider2D collider = roomObject.GetComponent<BoxCollider2D>();
-                    _towerController.RoomBounds = collider.bounds;
-                }
-                i++;
+                LoadRoom(i);
                 if (FrameCheck())
                 {
                     yield return null;
@@ -354,6 +339,70 @@ namespace MenuUI.Scripts.SoulHome {
             }
             SetSoulhomeHeight();
             _roomsReady = true;
+        }
+
+        private void LoadRoom(int index)
+        {
+            Room room = _soulHomeRooms.Room[index];
+            GameObject roomObject = Instantiate(_roomPrefab, _roomPositions.transform.GetChild(index));
+            if (_isometric)
+            {
+                roomObject.transform.Find("Floor").gameObject.GetComponent<Image>().color = room.Floor;
+                roomObject.transform.Find("Wall").GetChild(0).gameObject.GetComponent<Image>().color = room.Walls;
+                roomObject.transform.Find("Wall2").GetChild(0).gameObject.GetComponent<Image>().color = room.Walls;
+            }
+
+            RoomData roomData = roomObject.GetComponent<RoomData>();
+            roomData.InitializeSoulHomeRoom(room, _soulHomeController, _towerCamera, index >= _soulHomeRooms.Room.Count - 1);
+            _loadedRooms[index] = roomData;
+            _loadedRoomCount++;
+
+            if (index == 0)
+            {
+                _firstRoomBounds = roomObject.GetComponent<BoxCollider2D>().bounds;
+                _towerController.RoomBounds = _firstRoomBounds;
+            }
+        }
+
+        private bool IsRoomLoaded(int index) => _loadedRooms != null && index >= 0 && index < _loadedRooms.Length && _loadedRooms[index] != null;
+
+        /// <summary>
+        /// Called by the <see cref="TowerController"/> every frame with the world Y range around the camera view.
+        /// Creates the missing room in that range that's closest to the middle of it, one room per call so the frame time stays even while scrolling.
+        /// </summary>
+        public void LoadRoomsInRange(float minY, float maxY)
+        {
+            if (!_loadFinished || _loadedRooms == null || _loadedRoomCount >= _loadedRooms.Length) return;
+
+            // Every room is the same size, so the bounds of the others are the first room's bounds moved to their position.
+            float firstRoomY = _roomPositions.transform.GetChild(0).position.y;
+            float centerY = (minY + maxY) / 2;
+            int closestRoom = -1;
+            float closestDistance = float.MaxValue;
+
+            for (int i = 0; i < _loadedRooms.Length; i++)
+            {
+                if (_loadedRooms[i] != null) continue;
+
+                float offset = _roomPositions.transform.GetChild(i).position.y - firstRoomY;
+                float bottom = _firstRoomBounds.min.y + offset;
+                float top = _firstRoomBounds.max.y + offset;
+                if (top < minY || bottom > maxY) continue;
+
+                float distance = Mathf.Abs((bottom + top) / 2 - centerY);
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestRoom = i;
+                }
+            }
+            if (closestRoom < 0) return;
+
+            LoadRoom(closestRoom);
+            if (closestRoom < _roomAmount)
+            {
+                for (int j = 0; j < AvatarsPerRoom; j++) SpawnAvatarInRoom(closestRoom);
+            }
         }
 
         public void SetSoulhomeHeight()
@@ -511,33 +560,40 @@ namespace MenuUI.Scripts.SoulHome {
 
             for (int i = 0; i < _roomAmount; i++)
             {
-                for (int j = 0; j < 3; j++)
+                // The characters of the rooms that aren't created yet are spawned with the room, see LoadRoomsInRange.
+                if (!IsRoomLoaded(i)) continue;
+
+                for (int j = 0; j < AvatarsPerRoom; j++)
                 {
-                    GameObject avatarParent = Instantiate(_avatarPlaceholder, _roomPositions.transform.GetChild(i).GetChild(0));
-                    GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
-                    AvatarRig rig = avatar.GetComponent<AvatarRig>();
-
-                    PlayerData playerData = _clanPlayerFetcher.Players[i];
-
-                    SoulHomeAvatarController avatarController = avatarParent.GetComponent<SoulHomeAvatarController>();
-                    avatarController.InitializeAvatar(playerData);
-                    _avatars.Add(avatarController);
-
-                    if (playerData?.Id == _localPlayerId)
-                    {
-                        _localPlayerRig = rig;
-                    }
-
-                    rig.ApplyAvatarToRig(playerData);
+                    SpawnAvatarInRoom(i);
                     if (FrameCheck())
                     {
                         yield return null;
                         _frameTimeStart = DateTime.Now.Ticks;
                     }
                 }
-                
             }
             _loadFinished = true;
+        }
+
+        private void SpawnAvatarInRoom(int roomIndex)
+        {
+            GameObject avatarParent = Instantiate(_avatarPlaceholder, _loadedRooms[roomIndex].transform);
+            GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
+            AvatarRig rig = avatar.GetComponent<AvatarRig>();
+
+            PlayerData playerData = _clanPlayerFetcher.Players[roomIndex];
+
+            SoulHomeAvatarController avatarController = avatarParent.GetComponent<SoulHomeAvatarController>();
+            avatarController.InitializeAvatar(playerData);
+            _avatars.Add(avatarController);
+
+            if (playerData?.Id == _localPlayerId)
+            {
+                _localPlayerRig = rig;
+            }
+
+            rig.ApplyAvatarToRig(playerData);
         }
 
 

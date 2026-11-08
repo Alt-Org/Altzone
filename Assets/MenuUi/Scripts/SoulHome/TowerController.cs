@@ -38,6 +38,8 @@ namespace MenuUI.Scripts.SoulHome
 
         [Tooltip("Rooms kept awake above and below the ones the camera sees. Characters in the other rooms are disabled."), SerializeField]
         private int _awakeRoomMargin = 1;
+        [Tooltip("Rooms created ahead above and below the ones the camera sees. Rooms further away aren't created until the camera gets this close."), SerializeField]
+        private int _loadRoomMargin = 2;
 
         private readonly List<RoomData> _sleepRooms = new();
         private readonly List<Bounds> _sleepRoomBounds = new();
@@ -289,13 +291,14 @@ namespace MenuUI.Scripts.SoulHome
         void LateUpdate()
         {
             if (!_startFinished) return;
-            UpdateSleepingRooms();
+            UpdateRoomsAroundView();
             // Move hover buttons with the selected furniture when scrolling the tower
             if (_selectedFurniture != null && _mainScreen.HoverButtons.activeSelf) UpdateHoverButtons();
         }
 
-        // Puts the rooms outside the camera view (plus a margin) to sleep. See RoomData.Sleeping.
-        private void UpdateSleepingRooms()
+        // Puts the rooms outside the camera view (plus a margin) to sleep, see RoomData.Sleeping,
+        // and has the rooms that aren't created yet created when the camera gets near them, see SoulHomeLoad.LoadRoomsInRange.
+        private void UpdateRoomsAroundView()
         {
             // The rooms are destroyed and created again while Soulhome reloads.
             if (!_loadScript.LoadFinished)
@@ -306,20 +309,27 @@ namespace MenuUI.Scripts.SoulHome
                 return;
             }
             // A reload can also happen while this is disabled, which leaves destroyed rooms in the cache.
-            if (!_sleepRoomsCached || (_sleepRooms.Count > 0 && _sleepRooms[0] == null)) CacheSleepRooms();
+            // The count changes when a room is created.
+            if (!_sleepRoomsCached || _sleepRooms.Count != _loadScript.LoadedRoomCount
+                || (_sleepRooms.Count > 0 && _sleepRooms[0] == null)) CacheSleepRooms();
 
             float distance = Mathf.Abs(_camera.transform.position.z);
             float viewBottom = _camera.ViewportToWorldPoint(new Vector3(0, 0, distance)).y;
             float viewTop = _camera.ViewportToWorldPoint(new Vector3(1, 1, distance)).y;
-            float margin = _roomBounds.size.y * _awakeRoomMargin;
-            float awakeMin = Mathf.Min(viewBottom, viewTop) - margin;
-            float awakeMax = Mathf.Max(viewBottom, viewTop) + margin;
+            float viewMin = Mathf.Min(viewBottom, viewTop);
+            float viewMax = Mathf.Max(viewBottom, viewTop);
+            float roomHeight = _roomBounds.size.y;
+            float awakeMin = viewMin - roomHeight * _awakeRoomMargin;
+            float awakeMax = viewMax + roomHeight * _awakeRoomMargin;
 
             for (int i = 0; i < _sleepRooms.Count; i++)
             {
                 Bounds bounds = _sleepRoomBounds[i];
                 _sleepRooms[i].Sleeping = bounds.max.y < awakeMin || bounds.min.y > awakeMax;
             }
+
+            // Done after the sleep update, so a new room is cached on the next frame, after its characters have run Start.
+            _loadScript.LoadRoomsInRange(viewMin - roomHeight * _loadRoomMargin, viewMax + roomHeight * _loadRoomMargin);
         }
 
         // The rooms don't move after loading, so their bounds are read only once.
