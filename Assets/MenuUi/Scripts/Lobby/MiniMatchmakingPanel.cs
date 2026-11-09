@@ -26,7 +26,6 @@ namespace MenuUi.Scripts.Lobby
 
         private bool _isMatchmaking;
         private bool _isBattleStarting;
-        private float _matchmakingStartTime;
         private RectTransform _rectTransform;
         private Vector2 _savedAnchorMin;
         private Vector2 _savedAnchorMax;
@@ -86,7 +85,6 @@ namespace MenuUi.Scripts.Lobby
             if (LobbyManager.IsServerMatchmakingActive)
             {
                 _isMatchmaking = true;
-                _matchmakingStartTime = Time.time;
                 SetCancelButton(LobbyManager.IsLocalServerMatchmakingOwner);
                 SetMatchmakingTextForCurrentRoom();
             }
@@ -126,10 +124,7 @@ namespace MenuUi.Scripts.Lobby
 
             if (_isMatchmaking && _elapsedTimeText != null)
             {
-                float elapsed = Time.time - _matchmakingStartTime;
-                int minutes = (int)(elapsed / 60f);
-                int seconds = (int)(elapsed % 60f);
-                _elapsedTimeText.text = $"{minutes:00}:{seconds:00}";
+                MatchmakingPanel.UpdateElapsedTimeText(_elapsedTimeText);
             }
 
             if (_isMatchmaking && _matchmakingCountText != null)
@@ -209,7 +204,6 @@ namespace MenuUi.Scripts.Lobby
         private void OnMatchmakingRoomEntered(bool isLeader)
         {
             _isMatchmaking = true;
-            _matchmakingStartTime = Time.time;
 
             if (_matchmakingText != null)
             {
@@ -296,7 +290,6 @@ namespace MenuUi.Scripts.Lobby
             {
                 _isMatchmaking = true;
                 _isBattleStarting = false;
-                _matchmakingStartTime = Time.time;
                 SetMatchmakingTextForCurrentRoom();
                 SetCancelButton(LobbyManager.IsLocalServerMatchmakingOwner);
             }

@@ -153,6 +153,32 @@ namespace Altzone.Scripts.Lobby
 
         public static LobbyManager Instance { get; private set; }
         public bool IsStartFinished {set => _isStartFinished = value; }
+        private static float? _matchmakingStartTime;
+
+        public static int? MatchmakingElapsedSeconds => _matchmakingStartTime is float startTime
+            ? (int)(Time.time - startTime)
+            : (int?)null;
+
+        private static void NotifyMatchmakingRoomEntered(bool isLeader)
+        {
+            _matchmakingStartTime = Time.time;
+            OnMatchmakingRoomEntered?.Invoke(isLeader);
+        }
+
+        private static void NotifyMatchmakingStopped()
+        {
+            _matchmakingStartTime = null;
+            OnMatchmakingStopped?.Invoke();
+        }
+
+        private static void NotifyGameStartCancelled()
+        {
+            if (_matchmakingStartTime.HasValue)
+                _matchmakingStartTime = Time.time;
+
+            OnGameStartCancelled?.Invoke();
+        }
+
         public static bool IsServerMatchmakingActive => Instance != null && Instance._serverMatchmakingActive;
         public static int ServerMatchmakingPlayerCount => Instance?._serverRoomData?.players?.Count ?? 0;
         public static bool IsLocalServerMatchmakingOwner => Instance?._serverRoomData?.ownerPlayerId == ServerManager.Instance?.Player?._id;
@@ -294,7 +320,7 @@ namespace Altzone.Scripts.Lobby
             if (Instance != null && Instance._serverMatchmakingActive)
             {
                 Instance._serverMatchmakingActive = false;
-                OnMatchmakingStopped?.Invoke();
+                NotifyMatchmakingStopped();
             }
         }
 
@@ -884,7 +910,7 @@ namespace Altzone.Scripts.Lobby
                 };
 
                 bool isOwner = matchmakingRoom.ownerPlayerId == ServerManager.Instance.Player?._id;
-                OnMatchmakingRoomEntered?.Invoke(isOwner);
+                NotifyMatchmakingRoomEntered(isOwner);
                 OnRoomLeaderChanged?.Invoke(isOwner);
 
                 if (isOwner && matchmakingRoom.status == InviteStatus.READY)
@@ -1005,7 +1031,7 @@ namespace Altzone.Scripts.Lobby
                 _serverMatchmakingActive = true;
                 _currentMatchmakingGameType = (MatchmakingType)joinedRoom.matchType;
                 _currentGameType = (GameType)joinedRoom.gameType;
-                OnMatchmakingRoomEntered?.Invoke(joinedRoom.ownerPlayerId == ServerManager.Instance.Player?._id);
+                NotifyMatchmakingRoomEntered(joinedRoom.ownerPlayerId == ServerManager.Instance.Player?._id);
             }
             finally
             {
@@ -1125,7 +1151,7 @@ namespace Altzone.Scripts.Lobby
             _serverMatchmakingActive = true;
             _serverRoomData = room;
             bool isOwner = room.ownerPlayerId == ServerManager.Instance.Player?._id;
-            OnMatchmakingRoomEntered?.Invoke(isOwner);
+            NotifyMatchmakingRoomEntered(isOwner);
             OnRoomLeaderChanged?.Invoke(isOwner);
 
             if (isOwner && room.status == InviteStatus.READY && !_serverRoomStartInFlight)
@@ -1155,7 +1181,7 @@ namespace Altzone.Scripts.Lobby
             else if (room.status == InviteStatus.CANCELLED)
             {
                 ResetServerMatchmakingState();
-                OnMatchmakingStopped?.Invoke();
+                NotifyMatchmakingStopped();
             }
         }
 
@@ -1469,7 +1495,7 @@ namespace Altzone.Scripts.Lobby
 
             if (PhotonRealtimeClient.InRoom) PhotonRealtimeClient.LeaveRoom();
             ResetServerMatchmakingState();
-            OnMatchmakingStopped?.Invoke();
+            NotifyMatchmakingStopped();
         }
 
         private void ResetServerMatchmakingState()
@@ -3414,7 +3440,7 @@ namespace Altzone.Scripts.Lobby
                     StopCoroutine(_startQuantumHolder);
                     _startQuantumHolder = null;
                 }
-                OnGameStartCancelled?.Invoke();
+                NotifyGameStartCancelled();
             }
 
             Room room = PhotonRealtimeClient.CurrentRoom;
@@ -3450,7 +3476,7 @@ namespace Altzone.Scripts.Lobby
             {
                 ApplyServerMatchPosition();
                 bool isLeader = PhotonRealtimeClient.LocalPlayer != null && PhotonRealtimeClient.LocalPlayer.IsMasterClient;
-                OnMatchmakingRoomEntered?.Invoke(isLeader);
+                NotifyMatchmakingRoomEntered(isLeader);
                 OnRoomLeaderChanged?.Invoke(isLeader);
 
                 if (_serverMatchStartConfirmedByBackend
@@ -3490,7 +3516,7 @@ namespace Altzone.Scripts.Lobby
             if (PhotonRealtimeClient.InMatchmakingRoom)
             {
                 bool isLeader = PhotonRealtimeClient.LocalPlayer != null && PhotonRealtimeClient.LocalPlayer.IsMasterClient;
-                OnMatchmakingRoomEntered?.Invoke(isLeader);
+                NotifyMatchmakingRoomEntered(isLeader);
                 OnRoomLeaderChanged?.Invoke(isLeader);
                 if (isLeader && _verifyPositionsHolder == null)
                 {
@@ -3550,7 +3576,7 @@ namespace Altzone.Scripts.Lobby
             }
             else
             {
-                OnMatchmakingRoomEntered?.Invoke(true);
+                NotifyMatchmakingRoomEntered(true);
             }
         }
         public void OnJoinedLobby() { if (_serviceHolder == null) _serviceHolder = StartCoroutine(Service()); LobbyOnJoinedLobby?.Invoke(); }
@@ -3647,7 +3673,7 @@ namespace Altzone.Scripts.Lobby
 
                     _countdownActive = false;
                     _matchHasStartedInCurrentRoom = false;
-                    OnGameStartCancelled?.Invoke();
+                    NotifyGameStartCancelled();
                     OnGameCountdownUpdate?.Invoke(-1);
                     OnLobbyWindowChangeRequest?.Invoke(LobbyWindowTarget.LobbyRoom);
 
@@ -3722,7 +3748,7 @@ namespace Altzone.Scripts.Lobby
                         if (missing)
                         {
                             _matchHasStartedInCurrentRoom = false;
-                            OnGameStartCancelled?.Invoke();
+                            NotifyGameStartCancelled();
 
                             if (PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient)
                             {

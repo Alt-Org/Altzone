@@ -15,6 +15,7 @@ namespace MenuUi.Scripts.Lobby
     public class MatchmakingPanel : MonoBehaviour
     {
         [SerializeField] private TMP_Text _matchmakingText;
+        [SerializeField] private TMP_Text _elapsedTimeText;
         [SerializeField] private Button _cancelButton;
         [SerializeField] private TMP_Text _cancelButtonText;
 
@@ -105,6 +106,20 @@ namespace MenuUi.Scripts.Lobby
 
             SetMatchmakingTextForCurrentRoom();
             SetCancelButton(LobbyManager.IsLocalServerMatchmakingOwner);
+        }
+
+        private void Update()
+        {
+            if (_elapsedTimeText != null)
+                UpdateElapsedTimeText(_elapsedTimeText);
+        }
+
+        internal static void UpdateElapsedTimeText(TMP_Text text)
+        {
+            if (LobbyManager.MatchmakingElapsedSeconds is int elapsed)
+                text.text = $"{elapsed / 60:00}:{elapsed % 60:00}";
+            else
+                text.text = string.Empty;
         }
 
         private void OnDisable()
