@@ -250,7 +250,7 @@ namespace MenuUi.Scripts.Login
             if (SceneManager.GetActiveScene().buildIndex == 0)
             {
                 _backButton.onClick.RemoveAllListeners();
-                _backButton.onClick.AddListener(ReturnToLogIn);
+                _backButton.onClick.AddListener(() => Debug.Log("ReturnToMainMenu"));
             }
             _autoLoginToggle.SetState(PlayerPrefs.GetInt("AutomaticLogin", 0) != 0);
             _turboEducationToggle.SetState(GameConfig.Get().GameVersionType is VersionType.TurboEducation);
@@ -264,15 +264,13 @@ namespace MenuUi.Scripts.Login
                 SetVersionState(true);
             }*/
             _logInPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_logInPasswordInputField, value));
-            _logInButton.onClick.AddListener(LogIn);
+            _logInButton.onClick.AddListener(() => LogIn());
             _registerPasswordVisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPasswordInputField, value));
             _registerPassword2VisibilityToggle.onValueChanged.AddListener((value) => SetPasswordVisibilityState(_registerPassword2InputField, value));
-            _registerButton.onClick.AddListener(OpenPasswordHintPanel);
-            _backButton.onClick.AddListener(CloseRegister);
+            _registerButton.onClick.AddListener(() => OpenRegister());
             _guestLogInButton.onClick.AddListener(GuestLogin);
             _forgotPasswordButton.onClick.AddListener(OpenPasswordHintPanel);
-            _returnToLogIn.onClick.AddListener(() => _passwordHintWindow.SetActive(false));
-            _returnToSignInScreenButton.onClick.AddListener(() => OpenPasswordHintPanel());
+            _returnToSignInScreenButton.onClick.AddListener(() => CloseRegister());
             _setHintButton.onClick.AddListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
             _backButton2.onClick.AddListener(() => _registerWindow.SetActive(false));
             _registerPasswordHintAnswerInputField.onValueChanged.AddListener((value) => CheckHintValidity());
@@ -298,7 +296,9 @@ namespace MenuUi.Scripts.Login
             _logInPasswordVisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_logInPasswordInputField, value));
             _registerPasswordVisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_registerPasswordInputField, value));
             _registerPassword2VisibilityToggle.onValueChanged.RemoveListener((value) => SetPasswordVisibilityState(_registerPassword2InputField, value));
-            _registerButton.onClick.RemoveListener(OpenPasswordHintPanel);
+            _registerButton.onClick.RemoveListener(OpenRegister);
+            _logInButton.onClick.RemoveListener(LogIn);
+            _returnToSignInScreenButton.onClick.RemoveListener(CloseRegister);
             _setHintButton.onClick.RemoveListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
             _skipHintButton.onClick.RemoveListener(() => Register());
             _registerPasswordHintAnswerInputField.onValueChanged.RemoveListener((value) => CheckHintValidity());
