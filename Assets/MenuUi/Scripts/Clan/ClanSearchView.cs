@@ -228,6 +228,8 @@ public class ClanSearchView : MonoBehaviour
     {
         _filters = newFilters;
         FilterListings();
+        ResuffleClans();
+        LimitNormalClanList();
     }
 
     private void FilterListings()
@@ -243,6 +245,19 @@ public class ClanSearchView : MonoBehaviour
                 || !CheckMemberCount(clanListing.Clan.playerCount, _filters.memberCount)
                 || !CheckValues(clanListing.Clan.labels, _filters.values);
             clanListing.gameObject.SetActive(!hidelisting);
+        }
+    }
+
+    private void ResuffleClans()
+    {
+        _listedClans.Shuffle();
+
+        foreach (ClanListing clanListing in _listedClans)
+        {
+            if(clanListing.Clan.playerCount < 30)
+                clanListing.transform.SetAsFirstSibling();
+            else
+                clanListing.transform.SetAsLastSibling();
         }
     }
 
