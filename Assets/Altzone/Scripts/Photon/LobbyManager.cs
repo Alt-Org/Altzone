@@ -387,28 +387,26 @@ namespace Altzone.Scripts.Lobby
 
         public bool JoinFriendLobbyRoom(string roomName)
         {
-            if (string.IsNullOrEmpty(roomName)) return;
+            if (string.IsNullOrWhiteSpace(roomName)) return false;
 
             if (roomName == _pendingServerInviteRoomId)
             {
+                if (_serverInviteJoinInFlight) return false;
+
                 _pendingServerInviteRoomId = string.Empty;
                 StartCoroutine(JoinServerMatchmakingRoom(roomName));
-                return;
+                return true;
             }
 
-            if (!PhotonRealtimeClient.InLobby || PhotonRealtimeClient.InRoom) return;
+            if (!PhotonRealtimeClient.InLobby || PhotonRealtimeClient.InRoom) return false;
 
-            _pendingFriendLobbyJoinRoomName = roomName;
+            _pendingAcceptedInRoomInviteRoomName = roomName;
             Debug.Log($"JoinFriendLobbyRoom: joining server-invited room '{roomName}'.");
             if (PhotonRealtimeClient.JoinRoom(roomName)) return true;
 
-            _pendingInRoomInviteRoomName = string.Empty;
-            _pendingAcceptedInRoomInviteRoomName = roomName;
-            _pendingAcceptedInRoomInviteStartTime = Time.time;
-            _lastAutoInviteRoomName = roomName;
-            _lastAutoInviteJoinTime = Time.time;
-            Debug.Log($"AcceptInRoomInvite: joining room '{roomName}'.");
-            PhotonRealtimeClient.JoinRoom(roomName, new[] { localUserId });
+            _pendingAcceptedInRoomInviteRoomName = string.Empty;
+            OnFriendLobbyJoinFailed?.Invoke(roomName, -1, "join operation could not be started");
+            return false;
         }
 
         public void DeclineInRoomInvite(string roomName)
@@ -1024,7 +1022,7 @@ namespace Altzone.Scripts.Lobby
 
                 if (!success || joinedRoom == null)
                 {
-                    OnInRoomInviteJoinFailed?.Invoke(roomId, -1, "server matchmaking room join failed");
+                    OnFriendLobbyJoinFailed?.Invoke(roomId, -1, "server matchmaking room join failed");
                     yield break;
                 }
 
@@ -1198,16 +1196,6 @@ namespace Altzone.Scripts.Lobby
             }
 
             _pendingServerInviteRoomId = invite.id;
-            string ownerId = invite.ownerPlayer?.playerId ?? string.Empty;
-            string ownerName = invite.ownerPlayer?.name ?? string.Empty;
-            MatchmakingType matchmakingType = (MatchmakingType)invite.matchType;
-            OnInRoomInviteReceived?.Invoke(new InRoomInviteInfo(
-                invite.id,
-                ownerId,
-                ownerName,
-                ServerManager.Instance.Player?._id ?? string.Empty,
-                matchmakingType,
-                (GameType)invite.gameType));
         }
 
         private bool IsAcceptedPremadeServerInvite(MQTTMatchInvite invite)
@@ -3637,7 +3625,7 @@ namespace Altzone.Scripts.Lobby
                 string failedRoomName = _pendingAcceptedInRoomInviteRoomName;
                 _pendingAcceptedInRoomInviteRoomName = string.Empty;
                 _pendingAcceptedInRoomInviteStartTime = -100f;
-                OnInRoomInviteJoinFailed?.Invoke(failedRoomName, returnCode, message);
+                OnFriendLobbyJoinFailed?.Invoke(failedRoomName, returnCode, message);
                 return;
             }
 

@@ -170,10 +170,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
             yield return StartCoroutine(ServerManager.Instance.MatchmakingCreateRoom(
                 targetMatchmakingType,
                 gameType,
-                (success, roomId) =>
+                (success, room) =>
                 {
-                    roomRegistered = success;
-                    serverRoomId = roomId;
+                    roomRegistered = success && !string.IsNullOrWhiteSpace(room?.id);
+                    serverRoomId = room?.id;
                 },
                 teamSize: 2,
                 allowBots: false));

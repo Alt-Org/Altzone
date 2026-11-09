@@ -37,6 +37,10 @@ namespace Altzone.Scripts.MQTT
         public List<MQTTBots> bots { get; set; }
         public int teamSize { get; set; }
         public bool allowBots { get; set; }
+        public string createdAt { get; set; }
+        public string updatedAt { get; set; }
+        public string readyAt { get; set; }
+        public string matchId { get; set; }
         public string sentAt { get; set; }
     }
 
