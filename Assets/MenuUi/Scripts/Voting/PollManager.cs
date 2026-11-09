@@ -188,9 +188,9 @@ public static class PollManager // Handles the polls from creation to loading to
     }
 
     // Temporary stub for creating role poll
-    public static void CreateRolePoll(string targetPlayerId, string roleName, string roleId = null)
+    public static void CreateRolePoll(string targetPlayerId, ClanRoles newRole, string roleId = null)
     {
-        Debug.Log($"TODO CreateRolePoll -> targetPlayerId={targetPlayerId}, roleName={roleName}, roleId={roleId}");
+        Debug.Log($"TODO CreateRolePoll -> targetPlayerId={targetPlayerId}, roleName={newRole.name}, roleId={roleId}");
     }
 
 

@@ -264,11 +264,11 @@ public class ClanRoleSelectPopupController : MonoBehaviour
     {
         if (_member == null || _selectedRole == null) return;
 
-        PollManager.CreateRolePoll(
-            targetPlayerId: _member.Id,
-            roleName: _selectedRole.name,
-            roleId: _selectedRole._id
-        );
+        // PollManager.CreateRolePoll(
+        //     targetPlayerId: _member.Id,
+        //     roleName: _selectedRole.name,
+        //     roleId: _selectedRole._id
+        // );
 
         ShowPollStartedPopup();
 

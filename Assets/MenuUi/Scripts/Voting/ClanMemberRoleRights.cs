@@ -151,6 +151,6 @@ public class ClanMemberRoleRights : MonoBehaviour
 
         PopulateRolesAndRights(_draft);
 
-        // Start a poll PollManager.CreateRolePoll()
+        PollManager.CreateRolePoll(_currentMember.Id, _draft);
     }
 }
