@@ -145,10 +145,10 @@ public class InRoomPlayerSlot : MonoBehaviour
     public void SetReadyState(bool value)
     {
         bool oldValue = _readyToggle.isOn;
-        Debug.LogWarning(oldValue);
+
         _readyToggle.SetIsOnWithoutNotify(value);
         _readyToggle.GetComponent<Image>().color = value ? _readyColor: _unreadyColor;
-        Debug.LogWarning(oldValue);
+
         if (oldValue == value) return;
         if (_isOwn && value)
         {

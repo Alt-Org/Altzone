@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2072043906135418685}
   - component: {fileID: 6361905624939135072}
   - component: {fileID: 7992219333642302253}
+  - component: {fileID: 2117580920066144948}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -137,6 +138,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2117580920066144948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162078192436629282}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Odotetaan pelaajia...
+  _englishText: Waiting for players...
 --- !u!1 &253986466987795142
 GameObject:
   m_ObjectHideFlags: 0
@@ -173,7 +188,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 485.40002, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6518412883693785633
 CanvasRenderer:
@@ -238,6 +253,7 @@ GameObject:
   - component: {fileID: 6881799632893908503}
   - component: {fileID: 2568380817151891375}
   - component: {fileID: 1842092409762643650}
+  - component: {fileID: 1431238774558524195}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -364,6 +380,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1431238774558524195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064372650018324163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Ritsa
+  _englishText: Slingshot
 --- !u!1 &1381093669495122996
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,6 +405,7 @@ GameObject:
   - component: {fileID: 5398738764283676241}
   - component: {fileID: 3325076648636329956}
   - component: {fileID: 7444428675304627910}
+  - component: {fileID: 4221577249457974150}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -501,6 +532,23 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4221577249457974150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381093669495122996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Tutustu defenssiluokkien erilaisiin kykyihin, mist\xE4 aloitetaan?"
+  _englishText: 'Familiarice yourself with different abilities of the defence classes.
+
+    Where
+    do you want to start?'
 --- !u!1 &1470232872175077656
 GameObject:
   m_ObjectHideFlags: 0
@@ -599,7 +647,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &283785858228243198
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1073,6 +1121,7 @@ GameObject:
   - component: {fileID: 5431288544774918895}
   - component: {fileID: 8498077579125180824}
   - component: {fileID: 2638244588697547119}
+  - component: {fileID: 7567652447964551620}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1199,6 +1248,23 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7567652447964551620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3828035427080718266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Tutustu defenssiluokkien erilaisiin kykyihin, mist\xE4 aloitetaan?"
+  _englishText: 'Familiarice yourself with different abilities of the defence classes.
+
+    Where
+    do you want to start?'
 --- !u!1 &3873164822046019066
 GameObject:
   m_ObjectHideFlags: 0
@@ -1369,7 +1435,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38.35
+  m_fontSize: 42.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1666,6 +1732,7 @@ GameObject:
   - component: {fileID: 1170335194887696169}
   - component: {fileID: 961044849597478829}
   - component: {fileID: 1718026189318897667}
+  - component: {fileID: 8633574968816366019}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1792,6 +1859,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8633574968816366019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4881663512271234137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Ampuminen
+  _englishText: Deflecting
 --- !u!1 &5065372922435703342
 GameObject:
   m_ObjectHideFlags: 0
@@ -2045,6 +2126,7 @@ GameObject:
   - component: {fileID: 6100600890531642355}
   - component: {fileID: 1642619778212091303}
   - component: {fileID: 2661005108525462273}
+  - component: {fileID: 3956368518968479960}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2171,6 +2253,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3956368518968479960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5664273169535072952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "K\xE4\xE4nt\xE4minen"
+  _englishText: Rotating
 --- !u!1 &5830738151218081118
 GameObject:
   m_ObjectHideFlags: 0
@@ -2206,9 +2302,9 @@ RectTransform:
   m_Father: {fileID: 8769682247217066254}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -85.79999, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &496460964347253762
 CanvasRenderer:
@@ -2412,12 +2508,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _text1: {fileID: 4841123158537323879}
   _text2: {fileID: 837338013325124610}
-  _textString1: "T\xE4ss\xE4 sit\xE4 odotellaan... *huokaus*"
-  _textString2: Toivottavasti olen edes oikeassa paikassa...
-  _textString3: "Eik\xF6, miksi juuri nyt pit\xE4\xE4 hikoiluttaa... Parempi olla
+  _textString1FI: "T\xE4ss\xE4 sit\xE4 odotellaan... *huokaus*"
+  _textString1EN: Here we are... waiting... *sigh*
+  _textString2FI: Toivottavasti olen edes oikeassa paikassa...
+  _textString2EN: Hopefully I'm at least in the correct place...
+  _textString3FI: "Eik\xE4, miksi juuri nyt pit\xE4\xE4 hikoiluttaa... Parempi olla
     n\xE4ytt\xE4m\xE4tt\xE4, ett\xE4 hermostuttaa..."
-  _textString4: "Heh, tulinpa ajoissa! Nyt kaipaan kyll\xE4 muuta ajateltavaa t\xE4ss\xE4
+  _textString3EN: Oh dear, why am I sweating so much... Better to not show that I'm
+    nerveous...
+  _textString4FI: "Heh, tulinpa ajoissa! Nyt kaipaan kyll\xE4 muuta ajateltavaa t\xE4ss\xE4
     odotellessa."
+  _textString4EN: Well, at least I'm in time. Now I do desire something other to
+    think while waiting.
 --- !u!1 &7569075990863662697
 GameObject:
   m_ObjectHideFlags: 0
@@ -2429,6 +2531,7 @@ GameObject:
   - component: {fileID: 2295490896184138026}
   - component: {fileID: 7175095108377946721}
   - component: {fileID: 1934846308219651471}
+  - component: {fileID: 5136989133939330834}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2555,6 +2658,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5136989133939330834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7569075990863662697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: Liikuttaminen
+  _englishText: Movement
 --- !u!1 &7777920678710104794
 GameObject:
   m_ObjectHideFlags: 0
@@ -2775,6 +2892,7 @@ GameObject:
   - component: {fileID: 5992675658788154609}
   - component: {fileID: 5856974474526635310}
   - component: {fileID: 4123121320225934829}
+  - component: {fileID: 6814006501489860529}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -2901,6 +3019,22 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6814006501489860529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8597456677986695065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Animaatio py\xF6rii,\nodota hetki..."
+  _englishText: 'Animation playing,
+
+    wait a moment...'
 --- !u!1 &8732171792581901005
 GameObject:
   m_ObjectHideFlags: 0
@@ -2937,7 +3071,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: -0.1}
   m_AnchorMax: {x: 0, y: 0.9}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 485.40002, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1158072164067892578
 CanvasRenderer:

@@ -35,10 +35,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void Awake()
         {
-            if (_root == null)
-            {
-                InitializePanel();
-            }
+            InitializePanel();
         }
 
         private void OnDestroy()
@@ -128,7 +125,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
         private void InitializePanel()
         {
-            _root = gameObject;
+            if (_root == null)
+            {
+                _root = gameObject;
+            }
 
             if (_closeButton == null)
             {

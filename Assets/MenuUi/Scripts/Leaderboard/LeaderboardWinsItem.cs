@@ -9,6 +9,7 @@ public class LeaderboardWinsItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private TextMeshProUGUI _winsText;
     [SerializeField] private ClanHeartColorSetter _clanHeart;
+    [SerializeField] private TextMeshProUGUI _clanNameText;
     [SerializeField] private AvatarFaceLoader _avatarFaceLoader;
     [SerializeField] private Image _itemBackground;
     [field: SerializeField] public Button OpenProfileButton { get; private set; }

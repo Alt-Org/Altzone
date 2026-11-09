@@ -35,7 +35,7 @@ public class KojuFurnitureData : MonoBehaviour
         if (data.FurnitureInfo != null)
         {
             furnitureImage.sprite = data.FurnitureInfo.Image;
-            furnitureName.text = data.FurnitureInfo.VisibleName;
+            furnitureName.text = data.VisibleName;
         }
 
         RefreshUI();

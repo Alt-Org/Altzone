@@ -129,6 +129,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public const string BattleSwipeMaxDistanceKey = "BattleSwipeMaxDistance";
     public const string BattleSwipeSensitivityKey = "BattleSwipeSensitivity";
     public const string BattleGyroMinAngleKey = "BattleGyroMinAngle";
+    public const string BattleArenaStoneWallCharacterKey = "BattleStoneWallCharacter";
+    public const string BattleOuterEdgeWithoutFloorKey = "BattleOuterEdgeWithoutFloor";
 
     public const int BattleArenaScaleDefault = 100;
     public const int BattleArenaPosXDefault = 50;
@@ -433,6 +435,39 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         MainMenuMusic
     }
 
+    private bool _battleArenaArenaStoneWallCharacter;
+
+    public bool BattleArenaStoneWallCharacter
+    {
+        get => _battleArenaArenaStoneWallCharacter;
+        set
+        {
+            if (_battleArenaArenaStoneWallCharacter == value) return;
+            _battleArenaArenaStoneWallCharacter = value;
+
+            PlayerPrefs.SetInt(
+                BattleArenaStoneWallCharacterKey,
+                value ? 1 : 0);
+        }
+    }
+
+    private bool _battleArenaArenaOuterEdgeWithoutFloor;
+
+    public bool BattleArenaOuterEdgeWithoutFloor
+    {
+        get => _battleArenaArenaOuterEdgeWithoutFloor;
+        set
+        {
+            if (_battleArenaArenaOuterEdgeWithoutFloor == value) return;
+
+            _battleArenaArenaOuterEdgeWithoutFloor = value;
+
+            PlayerPrefs.SetInt(
+                BattleOuterEdgeWithoutFloorKey,
+                value ? 1 : 0);
+        }
+    }
+
     // Functions
     private void Awake()
     {
@@ -485,6 +520,9 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _battleSwipeSensitivity = PlayerPrefs.GetFloat(BattleSwipeSensitivityKey, BattleSwipeSensitivityDefault);
         _battleGyroMinAngle = PlayerPrefs.GetFloat(BattleGyroMinAngleKey, BattleGyroMinAngleDefault);
 
+        _battleArenaArenaStoneWallCharacter = PlayerPrefs.GetInt(BattleArenaStoneWallCharacterKey, 1) == 0;
+        _battleArenaArenaOuterEdgeWithoutFloor = PlayerPrefs.GetInt(BattleOuterEdgeWithoutFloorKey, 0) == 1;
+
         _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
 
         _statDebuggingMode = /*PlayerPrefs.GetInt(StatDebuggingModeKey, 1) == 1*/true;
@@ -501,12 +539,12 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         ChatListener.OnActiveChannelChanged += SaveChatChannel;
 
         //ParentalControl settings
-        _allowLinks = (PlayerPrefs.GetInt("AllowLinks", 1) ==1);
-        _chatMessages = (PlayerPrefs.GetInt("AllowChat", 1) ==1);
+        _allowLinks = (PlayerPrefs.GetInt("AllowLinks", 1) == 1);
+        _chatMessages = (PlayerPrefs.GetInt("AllowChat", 1) == 1);
         _allowEmojis = (PlayerPrefs.GetInt("AllowEmojis", 1) == 1);
-        _allowTreasureHunt = (PlayerPrefs.GetInt("AllowTreasureHunt", 1) ==1);
+        _allowTreasureHunt = (PlayerPrefs.GetInt("AllowTreasureHunt", 1) == 1);
         _monthlyLimit = (PlayerPrefs.GetFloat("MonthlyLimit"));
-        _activatePurchasesSeparately = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 1) ==1);
+        _activatePurchasesSeparately = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 1) == 1);
         _maxPlayTime = (PlayerPrefs.GetFloat("MaxPlayTime"));
         _endMidMatch = (PlayerPrefs.GetInt("EndMidMatch", 1) == 1);
         _endAfterMatch = (PlayerPrefs.GetInt("EndAfterMatch", 1) == 1);
@@ -837,7 +875,6 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             if (_allowLinks)
             {
                 PlayerPrefs.SetInt("AllowLinks", 1);
-
             }
             else
             {
@@ -924,12 +961,15 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         {
             if (_monthlyLimit == value) return;
             _monthlyLimit = value;
-            if (_monthlyLimit > 0) {
+            if (_monthlyLimit > 0)
+            {
                 PlayerPrefs.SetFloat("MonthlyLimit", (float)value);
-            } else
+            }
+            else
             {
                 PlayerPrefs.SetFloat("MonthlyLimit", 0);
             }
+
             OnMonthlyLimitChange?.Invoke();
         }
     }
@@ -972,7 +1012,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 PlayerPrefs.SetFloat("MaxPlayTime", (float)value);
             }
 
-            else if (_maxPlayTime > 25) {
+            else if (_maxPlayTime > 25)
+            {
                 PlayerPrefs.SetFloat("MaxPlayTime", 24);
             }
             else

@@ -26,7 +26,7 @@ namespace MenuUi.Scripts.Window
 
         protected IEnumerator Navigate(WindowDef naviTarget)
         {
-            if (_disabledOnProd && !AppPlatform.IsEditor && !AppPlatform.IsDevelopmentBuild) yield break;
+            if (_disabledOnProd && !(AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)) yield break;
             Debug.Log($"naviTarget {naviTarget} isCurrentPopOutWindow {_isCurrentPopOutWindow}", naviTarget);
             var windowManager = WindowManager.Get();
             if (windowManager.FindIndex(naviTarget) == 0) yield break;

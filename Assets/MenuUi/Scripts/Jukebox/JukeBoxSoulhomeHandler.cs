@@ -4,6 +4,7 @@ using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.Window;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 using static Altzone.Scripts.Audio.JukeboxManager;
 
@@ -30,7 +31,8 @@ namespace MenuUI.Scripts.Jukebox
 
         private bool _applicationQuitting = false;
 
-        private const string NoSongName = "Ei valittua biisiä";
+        private const string NoSongNameFi = "Ei valittua biisiä";
+        private const string NoSongNameEn = "No selected song";
         private const string NoCreditsNames = "...";
 
         private enum JukeboxWindowType
@@ -48,6 +50,19 @@ namespace MenuUI.Scripts.Jukebox
 
         public static event ChangeJukeboxSong OnChangeJukeboxSong;
 
+
+        private string NoSongName
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return NoSongNameFi;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                    return NoSongNameEn;
+                else
+                    return NoSongNameFi;
+            }
+        }
 
         private void Awake()
         {

@@ -26,9 +26,9 @@ public class CarbonButtonHandler : MonoBehaviour
         if (_buttonText != null)
         {
             if (carbonValue >= 1000f)
-                _buttonText.text = $"{carbonValue / 1000f:F1}kg/CO2";
+                _buttonText.text = $"{carbonValue / 1000f:F1}kg";
             else
-                _buttonText.text = $"{carbonValue:F0}g/CO2";
+                _buttonText.text = $"{carbonValue:F1}g";
         }
     }
 }

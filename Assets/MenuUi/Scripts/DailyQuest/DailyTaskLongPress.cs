@@ -87,10 +87,7 @@ public class DailyTaskLongPress : DailyTaskProgressListener, IPointerDownHandler
             if (timer >= _longClickThresholdTime)
             {
                 ProgressWheelHandler.Instance.DeactivateProgressWheel();
-                if (_uniqueName == "")
-                    UpdateProgress("1");
-                else
-                    UpdateProgress(_uniqueName);
+                HandleLongPress();
 
                 yield break;
             }
@@ -98,6 +95,14 @@ public class DailyTaskLongPress : DailyTaskProgressListener, IPointerDownHandler
             yield return null;
         }
     }
+
+    protected virtual void HandleLongPress()
+    {
+        if (_uniqueName == "")
+            UpdateProgress("1");
+        else
+            UpdateProgress(_uniqueName);
+    } 
 
     private void InstantiateProgressWheel()
     {

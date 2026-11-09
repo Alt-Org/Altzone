@@ -63,19 +63,11 @@ namespace Altzone.Scripts.Battle.Photon
         public const string PremadeTargetGameTypeKey = "ptg";
         public const string PremadeLeaderUserIdKey = "plid";
         public const string PremadeLeaderUsernameKey = "pln";
-        public const string PremadeInvitedUserIdKey = "piu";
-        public const string PremadeInviteStateKey = "pis";
-        public const string PremadeInviteTimestampKey = "pits";
         public const string PremadeUserId1Key = "pm1";
         public const string PremadeUsername1Key = "pmn1";
         public const string PremadeUserId2Key = "pm2";
         public const string PremadeUsername2Key = "pmn2";
 
-        public const int PremadeInviteStateNone = 0;
-        public const int PremadeInviteStatePending = 1;
-        public const int PremadeInviteStateAccepted = 2;
-        public const int PremadeInviteStateDeclined = 3;
-        public const int PremadeInviteStateExpired = 4;
         public const string TestModeKey = "tm";
 
         public static string PlayerPositionKey1 { get => PlayerPosition1.ToString(); }
@@ -454,7 +446,7 @@ namespace Altzone.Scripts.Battle.Photon
         {
             if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2 && (MatchmakingType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(MatchmakingKey) is not MatchmakingType.Custom)
             {
-                return playerPos is >= PlayerPosition1 and <= PlayerPosition2;
+                return playerPos is PlayerPosition1 or PlayerPosition3;
             }
             else
             {

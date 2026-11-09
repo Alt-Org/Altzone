@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
-using UnityEngine;
-using UnityEngine.UI;
-
-using TMPro;
-
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ModelV2;
 using Altzone.Scripts.ReferenceSheets;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using static UnityEngine.Tilemaps.TilemapRenderer;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -62,7 +61,9 @@ namespace MenuUi.Scripts.CharacterGallery
         //list for sorting the slots
         List<NameSortingPair> _nameSortingPairs = new List<NameSortingPair>();
 
+        List<CharacterSortData> _sortingList = null;
 
+        private CharacterSortOrder _sortOrder;
 
         private void Awake()
         {
@@ -336,106 +337,153 @@ namespace MenuUi.Scripts.CharacterGallery
             _scrollRect.VerticalNormalizedPosition = 1; // setting scroll to the top so that it's not possibly scrolled too far
         }
 
-        public void FilterClasses(List<CharacterClassType> classType)
+        /// <summary>
+        /// Applies class and state filters to the character gallery, updating the visibility of each character slot.
+        /// </summary>
+        /// <param name="classTypes">List of CharacterClassTypes that should be visible.</param>
+        /// <param name="consciousIsOn">If true, shows unlocked (conscious) characters.</param>
+        /// <param name="unconsciousIsOn">If true, shows locked (unconscious) characters.</param>
+        public void ApplyFilters(List<CharacterClassType> classTypes, bool consciousIsOn, bool unconsciousIsOn)
         {
+            // If neither toggle is selected, default to showing all character states
+            bool showAllStates = !consciousIsOn && !unconsciousIsOn;
 
-            int i = 0;
-            foreach (CharacterSlot characterSlot in _characterSlots) //go trough all characters
+            foreach (CharacterSlot characterSlot in _characterSlots)
             {
-                foreach (CharacterClassType classTypeList in classType) //set all wanted character classes active
+                bool shouldShow = true;
+
+                // 1. Check the CLASS filter
+                CharacterClassType slotClass = CustomCharacter.GetClass(characterSlot.Character.Id);
+
+                if (!classTypes.Contains(slotClass))
                 {
-                    if (CustomCharacter.GetClass(characterSlot.Character.Id) == classType[i])
+                    shouldShow = false; // Class not selected -> hide
+                }
+
+                // 2. Check the STATE filter (only if a specific state is requested)
+                if (!showAllStates)
+                {
+                    if (characterSlot.IsLocked)
                     {
-                        if (!characterSlot.gameObject.activeSelf) characterSlot.gameObject.SetActive(true);
+                        if (!unconsciousIsOn)
+                        {
+                            shouldShow = false;
+                        }
                     }
-                    i++;
-                }
-                i = 0;
-            }
-        }
-
-        public void FilterUnlocked(bool unlockedIsOn, bool lockedIsOn)
-        {
-
-            if (unlockedIsOn && lockedIsOn) //all active 
-            {
-                return;
-            }
-            else if (unlockedIsOn && !lockedIsOn) //set all locked inactive 
-            {
-                foreach (CharacterSlot characterSlot in _characterSlots)
-                {
-                    if(characterSlot.IsLocked)
-                        characterSlot.gameObject.SetActive(false);
-                }
-            }
-            else if (!unlockedIsOn && lockedIsOn) //set all unlocked inactive 
-            {
-                foreach (CharacterSlot characterSlot in _characterSlots)
-                {
-                    if (!characterSlot.IsLocked)
-                    characterSlot.gameObject.SetActive(false);
-                }
-            }
-            else if (!unlockedIsOn && !lockedIsOn) //set all inactive 
-            {
-                foreach (CharacterSlot characterSlot in _characterSlots)
-                {
-                    characterSlot.gameObject.SetActive(false);
-                }
-            }
-        }
-
-
-        public void OrganizeGallery(bool reversed, bool alphabetical)
-        {
-            _nameSortingPairs.Clear();
-
-            //add all characters to the list
-            foreach (CharacterSlot characterSlot in _characterSlots) {
-
-                _nameSortingPairs.Add(new NameSortingPair() { Name = GetName(characterSlot), Id = (int)characterSlot.Id });
-            }
-
-            //select the sort mode
-            if (!reversed && !alphabetical)
-            {
-                _nameSortingPairs.Sort((a, b) => a.Name.CompareTo(b.Name));
-            }
-            else if (reversed && !alphabetical)
-            {
-                _nameSortingPairs.Sort((a, b) => b.Name.CompareTo(a.Name));
-            }
-            else if (alphabetical)
-            {
-                _nameSortingPairs.Sort((a, b) => a.Id.CompareTo(b.Id));
-            }
-
-            //sort the list and apply
-            foreach (NameSortingPair namePair in _nameSortingPairs)
-            {
-                foreach(CharacterSlot characterSlot in _characterSlots)
-                {
-                    if((int)characterSlot.Id == namePair.Id)
+                    else
                     {
-                        Debug.Log(namePair.Name);
+                        if (!consciousIsOn)
+                        {
+                            shouldShow = false;
+                        }
+                    }
+                }
+
+                // 3. Apply the visibility state based on the combined filter results
+                characterSlot.gameObject.SetActive(shouldShow);
+            }
+
+            _scrollRect.VerticalNormalizedPosition = 1;
+        }
+
+        public void OrganizeGallery(CharacterSortOrder sortOrder)
+        {
+            _sortOrder = sortOrder;
+            List<CharacterSortData> sortingList;
+            if (_sortingList == null)
+            {
+                sortingList = new List<CharacterSortData>();
+
+                // 1. Collect the data (Name, Id, and Total Level) of all characters currently in the gallery
+                foreach (CharacterSlot characterSlot in _characterSlots)
+                {
+                    sortingList.Add(new CharacterSortData(characterSlot, () => OrganizeGallery()));
+                }
+            }
+            else
+            {
+                sortingList = _sortingList;
+            }
+
+            // 2. Sort the list according to the selected dropdown option
+            switch (sortOrder)
+            {
+                case CharacterSortOrder.Classes:
+                    sortingList.Sort((a, b) => a.Id.CompareTo(b.Id));
+                    break;
+                case CharacterSortOrder.Alphabetical:
+                    sortingList.Sort((a, b) => a.Name.CompareTo(b.Name));
+                    break;
+                case CharacterSortOrder.AlphabeticalReverse:
+                    sortingList.Sort((a, b) => b.Name.CompareTo(a.Name));
+                    break;
+                case CharacterSortOrder.LowestLevel:
+                    sortingList.Sort((a, b) => a.TotalLevel.CompareTo(b.TotalLevel)); // Lowest first
+                    break;
+                case CharacterSortOrder.HighestLevel:
+                    sortingList.Sort((a, b) => b.TotalLevel.CompareTo(a.TotalLevel)); // Highest first
+                    break;
+            }
+
+            // 3. Reorder the UI elements (character slots) in the Unity hierarchy to match the sorted list
+            foreach (CharacterSortData data in sortingList)
+            {
+                foreach (CharacterSlot characterSlot in _characterSlots)
+                {
+                    if ((int)characterSlot.Id == data.Id)
+                    {
                         characterSlot.transform.SetAsLastSibling();
                     }
                 }
             }
-
         }
 
+        public void OrganizeGallery() => OrganizeGallery(_sortOrder);
 
-
-        private string GetName(CharacterSlot characterSlot)
+        private class CharacterSortData
         {
-            PlayerCharacterPrototype info;
-            info = PlayerCharacterPrototypes.GetCharacter(((int)characterSlot.Id).ToString());
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public int TotalLevel { get; set; } // Total level added for sorting
 
-            Debug.Log(info.Name);
-            return info.Name;
-            
+            private Action _action;
+
+            public CharacterSortData(CharacterSlot characterSlot, Action action)
+            {
+                Name = characterSlot.Name;
+                Id = (int)characterSlot.Id;
+
+                PlayerData playerData = null;
+                Storefront.Get().GetPlayerData(Altzone.Scripts.Config.GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
+
+                int level = 0;
+
+                // Find the specific character from the player's custom characters list
+                CustomCharacter customChar = playerData?.CustomCharacters?.Find(c => c.Id == characterSlot.Id);
+
+                if (customChar != null)
+                {
+                    // Player owns the character: Total level is the sum of all stats
+                    level = customChar.GetStatsCombined();
+                }
+                else
+                {
+                    // Character is locked: Total level is zero (or alternatively the sum of base stats)
+                    level = 0;
+                }
+
+                TotalLevel = level;
+
+                _action = action;
+                customChar.RemoveDelegates();
+                customChar.OnStatUpdated += UpdateStats;
+            }
+
+            private void UpdateStats(CustomCharacter character, StatType statType)
+            {
+                TotalLevel = character.GetStatsCombined();
+                _action.Invoke();
+            }
         }
 
         public void CheckIfSlotsActive() //if all character slots are inactive, make all active

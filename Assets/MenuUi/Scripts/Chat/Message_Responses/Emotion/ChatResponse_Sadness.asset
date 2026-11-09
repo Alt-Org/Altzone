@@ -14,39 +14,59 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _classType: 100
   _list:
-  - ResponseId: 0
-    Response: "Eik\xF6 kukaan haluis pelaa mun kanssa? Tuntuu kurjalta istua t\xE4\xE4ll\xE4
+  - _responseId: 0
+    _responseFI: "Eik\xF6 kukaan haluis pelaa mun kanssa? Tuntuu kurjalta istua t\xE4\xE4ll\xE4
       yksin\u2026"
-  - ResponseId: 1
-    Response: Voisin pelaa uudestaa, jos joku huolii mut
-  - ResponseId: 2
-    Response: "Voin tulla, jos siit\xE4 ei oo teille liikaa vaivaa"
-  - ResponseId: 3
-    Response: Huoliiko joku mut, jos haluun pelaa?
-  - ResponseId: 4
-    Response: Joo, vaikka.
-  - ResponseId: 5
-    Response: Ei varmaan.
-  - ResponseId: 6
-    Response: "M\xE4 olisin nyt t\xE4\xE4l, jos ket\xE4\xE4 kiinnostaa"
-  - ResponseId: 7
-    Response: "Joo, t\xE4\xE4 oli nyt t\xE4ss\xE4 t\xE4lt\xE4 er\xE4\xE4"
-  - ResponseId: 8
-    Response: "Poistun nyt, mut jos haluutte, voin tulla takasin sit my\xF6hemmin
+    _responseEN: Doesn't anyone want to play this game with me? Feels bad to sit
+      here alone...
+  - _responseId: 1
+    _responseFI: Voisin pelaa uudestaa, jos joku huolii mut
+    _responseEN: I could play again if someones willing to take me
+  - _responseId: 2
+    _responseFI: "Voin tulla, jos siit\xE4 ei oo teille liikaa vaivaa"
+    _responseEN: I can come, as long it doen't bother you guys too much
+  - _responseId: 3
+    _responseFI: Huoliiko joku mut, jos haluun pelaa?
+    _responseEN: Is someone willing to play with the poor old me?
+  - _responseId: 4
+    _responseFI: Joo, vaikka.
+    _responseEN: Yeah, I guess.
+  - _responseId: 5
+    _responseFI: Ei varmaan.
+    _responseEN: Don't think so.
+  - _responseId: 6
+    _responseFI: "M\xE4 olisin nyt t\xE4\xE4l, jos ket\xE4\xE4 kiinnostaa"
+    _responseEN: I'm here, if anyone cares.
+  - _responseId: 7
+    _responseFI: "Joo, t\xE4\xE4 oli nyt t\xE4ss\xE4 t\xE4lt\xE4 er\xE4\xE4"
+    _responseEN: Yeah, I think that was that.
+  - _responseId: 8
+    _responseFI: "Poistun nyt, mut jos haluutte, voin tulla takasin sit my\xF6hemmin
       viel\xE4"
-  - ResponseId: 9
-    Response: "Kohta varmaa h\xE4vit\xE4\xE4n, ku ollaa voitettu ihan liikaa"
-  - ResponseId: 10
-    Response: "Ei t\xE4\xE4 t\xE4st\xE4 kyll\xE4 en\xE4\xE4 parane. Me vaan h\xE4vit\xE4\xE4n
+    _responseEN: I'll leave now, but if you want I guess I could come back later.
+  - _responseId: 9
+    _responseFI: "Kohta varmaa h\xE4vit\xE4\xE4n, ku ollaa voitettu ihan liikaa"
+    _responseEN: We've been winning too much, the next one is quaranteed to be a
+      loss.
+  - _responseId: 10
+    _responseFI: "Ei t\xE4\xE4 t\xE4st\xE4 kyll\xE4 en\xE4\xE4 parane. Me vaan h\xE4vit\xE4\xE4n
       kokoaika."
-  - ResponseId: 11
-    Response: "Ois kiva n\xE4hd\xE4 teit\xE4 Discordissa, jos ket\xE4\xE4n kiinnostaa.
+    _responseEN: There's no way this'll get better... We're just losing again and
+      again.
+  - _responseId: 11
+    _responseFI: "Ois kiva n\xE4hd\xE4 teit\xE4 Discordissa, jos ket\xE4\xE4n kiinnostaa.
       Linkki l\xF6ytyis nettisivuilta."
-  - ResponseId: 12
-    Response: Kukaan ei haluu pelaa mun kanssa. Oon ihan yksin.
-  - ResponseId: 13
-    Response: "On t\xE4\xE4 ihan kiva peli"
-  - ResponseId: 14
-    Response: "Ei oo kyll\xE4 mulle t\xE4\xE4 peli, tuun t\xE4st\xE4 vaan surulliseks."
-  - ResponseId: 15
-    Response: "\xC4lk\xE4\xE4 vihatko mua, mut m\xE4 en osaa pelaa"
+    _responseEN: It could be nice to see you in Discord... if anyones interested.
+      Links in the website.
+  - _responseId: 12
+    _responseFI: Kukaan ei haluu pelaa mun kanssa. Oon ihan yksin.
+    _responseEN: Nobody wants to play with me... I'm all alone.
+  - _responseId: 13
+    _responseFI: "On t\xE4\xE4 ihan kiva peli"
+    _responseEN: I guess this is a decent game.
+  - _responseId: 14
+    _responseFI: "Ei oo kyll\xE4 mulle t\xE4\xE4 peli, tuun t\xE4st\xE4 vaan surulliseks."
+    _responseEN: Yeah... this ain't the game for me... it just makes me sad.
+  - _responseId: 15
+    _responseFI: "\xC4lk\xE4\xE4 vihatko mua, mut m\xE4 en osaa pelaa"
+    _responseEN: Don't hate me but I have no idea what I'm doing.

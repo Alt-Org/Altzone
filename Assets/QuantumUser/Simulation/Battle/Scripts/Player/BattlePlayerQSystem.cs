@@ -227,7 +227,7 @@ namespace Battle.QSimulation.Player
             {
                 if (playerHandle.PlayState.IsNotInGame()) continue;
 
-                for (int characterNumber = 0; characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT; characterNumber++)
+                for (int characterNumber = 0; characterNumber < BattlePlayerManager.PlayerCharacterCount; characterNumber++)
                 {
                     bool selected = characterNumber == playerHandle.SelectedCharacterNumber;
                     BattlePlayerEntityRef entityRef = playerHandle.GetCharacterEntityRef(f, characterNumber);
@@ -277,7 +277,7 @@ namespace Battle.QSimulation.Player
 
                 //{ character logic
 
-                for (int characterNumber = 0; characterNumber < Constants.BATTLE_PLAYER_CHARACTER_COUNT; characterNumber++)
+                for (int characterNumber = 0; characterNumber < BattlePlayerManager.PlayerCharacterCount; characterNumber++)
                 {
                     BattlePlayerCharacterState characterState = updateData.PlayerHandle.GetCharacterState(characterNumber);
                     if (characterState is BattlePlayerCharacterState.OutOfPlay or BattlePlayerCharacterState.OutOfPlayDead) continue;
@@ -734,7 +734,7 @@ namespace Battle.QSimulation.Player
                 int i;
 
                 // try to spawn next character
-                for (i = 0; i < Constants.BATTLE_PLAYER_CHARACTER_COUNT; i++)
+                for (i = 0; i < BattlePlayerManager.PlayerCharacterCount; i++)
                 {
                     if (updateData.PlayerHandle.GetCharacterState(i) != BattlePlayerCharacterState.OutOfPlayDead)
                     {
@@ -746,7 +746,7 @@ namespace Battle.QSimulation.Player
                 }
 
                 // handle out of characters
-                if (i == Constants.BATTLE_PLAYER_CHARACTER_COUNT)
+                if (i == BattlePlayerManager.PlayerCharacterCount)
                 {
                     s_debugLogger.LogFormat(f, "({0}) Player is out of characters!", updateData.PlayerHandle.Slot);
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Altzone.Scripts.Chat;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Altzone.Scripts.ReferenceSheets
 {
@@ -24,8 +25,23 @@ namespace Altzone.Scripts.ReferenceSheets
     [Serializable]
     public class ChatResponseObject
     {
-        public ResponseType ResponseId;
-        public string Response;
+        [SerializeField, FormerlySerializedAs("ResponseId")] private ResponseType _responseId;
+        [SerializeField, FormerlySerializedAs("Response")] private string _responseFI;
+        [SerializeField] private string _responseEN;
+
+        public ResponseType ResponseId => _responseId;
+        public string Response
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return _responseFI;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                    return _responseEN;
+                else
+                    return _responseFI;
+            }
+        }
     }
 
 }
