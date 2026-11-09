@@ -19,11 +19,16 @@ namespace MenuUI.Scripts.TopPanel
 
         public SettingsCarrier.TopBarStyle style;
 
-        [Header("Items (1:1)")] [SerializeField]
-        private List<Row> _rows = new List<Row>();
-        public List<Row> Rows { get => _rows; }
-        [Header("Spacer (created if null)")] [SerializeField]
-        private GameObject _flexibleSpacerPrefab;
+        [Header("Items (1:1)")]
+        [SerializeField] private List<Row> _rows = new List<Row>();
+
+        public List<Row> Rows
+        {
+            get => _rows;
+        }
+
+        [Header("Spacer (created if null)")]
+        [SerializeField] private GameObject _flexibleSpacerPrefab;
 
         private List<GameObject> _spacerList = new();
 
@@ -49,7 +54,10 @@ namespace MenuUI.Scripts.TopPanel
 
         [SerializeField] private List<TileManagement> _tileManagement;
 
-        public List<TileManagement> PTileManagement { get => _tileManagement; }
+        public List<TileManagement> PTileManagement
+        {
+            get => _tileManagement;
+        }
 
         private const bool DebugOn = true;
 
@@ -82,6 +90,7 @@ namespace MenuUI.Scripts.TopPanel
             {
                 return;
             }
+
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyFromSettings()");
 
             Debug.Log($"[TB] APPLY style={style} " +
@@ -230,11 +239,12 @@ namespace MenuUI.Scripts.TopPanel
 
             foreach (Row i in _rows)
             {
-                if(i.item is TopBarDefs.TopBarItem.Tile)
+                if (i.item is TopBarDefs.TopBarItem.Tile)
                 {
                     clanPanelOn = i.visibilityTarget.activeSelf;
                     clanTileRow = _tileManagement.FirstOrDefault(x => x.Tile is TopBarDefs.TopBarItem.Tile);
                 }
+
                 if (i.item is TopBarDefs.TopBarItem.Tile2nd)
                 {
                     playerPanelOn = i.visibilityTarget.activeSelf;
@@ -263,6 +273,7 @@ namespace MenuUI.Scripts.TopPanel
                             break;
                         }
                     }
+
                     if (isClanSubItem)
                         continue;
                 }
@@ -279,6 +290,7 @@ namespace MenuUI.Scripts.TopPanel
                             break;
                         }
                     }
+
                     if (isClanSubItemF2nd)
                         continue;
                 }
@@ -298,7 +310,7 @@ namespace MenuUI.Scripts.TopPanel
             //Spacer System
             if (_spacerList.Count == 0)
             {
-                for(int i = 0; i < _rows.Count - 1 ; i++)
+                for (int i = 0; i < _rows.Count - 1; i++)
                 {
                     GameObject spacer = EnsureSpacer(parentRT);
                     _spacerList.Add(spacer);
@@ -307,10 +319,10 @@ namespace MenuUI.Scripts.TopPanel
 
             for (int i = 0; i < _spacerList.Count; i++)
             {
-                if(i < spaceredRows.Count)
+                if (i < spaceredRows.Count)
                 {
                     _spacerList[i].SetActive(true);
-                    _spacerList[i].transform.SetSiblingIndex(i*2+1);
+                    _spacerList[i].transform.SetSiblingIndex(i * 2 + 1);
                 }
                 else
                 {
@@ -318,20 +330,25 @@ namespace MenuUI.Scripts.TopPanel
                     _spacerList[i].transform.SetAsLastSibling();
                 }
             }
+
             int sectionCount = 1;
             foreach (Row row in spaceredRows)
             {
                 if (row.item is TopBarDefs.TopBarItem.Tile or TopBarDefs.TopBarItem.Tile2nd) sectionCount += 3;
                 else sectionCount++;
             }
+
             float topbarWidth = parentRT.rect.width;
-            float sectionWidth = Mathf.Min((topbarWidth - 10 * spaceredRows.Count*2) /sectionCount, parentRT.rect.height);
+            float sectionWidth = Mathf.Min((topbarWidth - 10 * spaceredRows.Count * 2) / sectionCount,
+                parentRT.rect.height);
 
             foreach (Row row in spaceredRows)
             {
-                if (row.item is TopBarDefs.TopBarItem.Tile or TopBarDefs.TopBarItem.Tile2nd) row.visibilityTarget.GetComponent<LayoutElement>().minWidth = sectionWidth*3;
+                if (row.item is TopBarDefs.TopBarItem.Tile or TopBarDefs.TopBarItem.Tile2nd)
+                    row.visibilityTarget.GetComponent<LayoutElement>().minWidth = sectionWidth * 3;
                 else row.visibilityTarget.GetComponent<LayoutElement>().minWidth = sectionWidth;
             }
+
             _dropdownButton.GetComponent<LayoutElement>().minWidth = sectionWidth;
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(parentRT);
@@ -366,6 +383,7 @@ namespace MenuUI.Scripts.TopPanel
             {
                 return;
             }
+
             if (DebugOn) Debug.Log($"[TopBarDebug] TopBarTargets : ApplyOrderFromSettings()");
 
             if (!IsValid(out RectTransform parentRT)) return;
@@ -431,7 +449,7 @@ namespace MenuUI.Scripts.TopPanel
                     return;
 
                 clanTileRow.TilePanelRoot.gameObject.SetActive(true);
-                    
+
                 foreach (var objects in clanTileRow.TileObjects)
                 {
                     MoveToSlot(objects.Child, objects.SlotContainer);
@@ -439,7 +457,6 @@ namespace MenuUI.Scripts.TopPanel
             }
             else
             {
-
                 if (clanTileRow.TilePanelRoot == null)
                     return;
 
@@ -450,7 +467,6 @@ namespace MenuUI.Scripts.TopPanel
                     MoveToTopBar(objects.Child, _topBarContent);
                 }
             }
-
         }
 
         private void MoveUnderClanPanel(Transform item)

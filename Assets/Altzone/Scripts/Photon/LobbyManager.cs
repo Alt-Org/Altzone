@@ -908,7 +908,7 @@ namespace Altzone.Scripts.Lobby
             int maxPlayers = PhotonRealtimeClient.CurrentRoom.MaxPlayers;
             int[] candidatePositions = maxPlayers >= 4
                 ? new[] { PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition2, PhotonBattleRoom.PlayerPosition3, PhotonBattleRoom.PlayerPosition4 }
-                : new[] { PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition2 };
+                : new[] { PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition3 };
 
             foreach (int position in candidatePositions)
             {
@@ -5247,14 +5247,16 @@ namespace Altzone.Scripts.Lobby
                     }
                     catch (Exception ex) { Debug.LogWarning($"WaitForMatchmakingPlayers: block composition validation failed: {ex.Message}"); }
 
+                    int maxPlayers = PhotonRealtimeClient.CurrentRoom.MaxPlayers;
+
                     foreach (var player in PhotonRealtimeClient.CurrentRoom.Players)
                     {
                         int position = PhotonBattleRoom.PlayerPositionGuest;
 
                         if (player.Value.UserId == positionValue1) position = PhotonBattleRoom.PlayerPosition1;
-                        else if (player.Value.UserId == positionValue2) position = PhotonBattleRoom.PlayerPosition2;
+                        else if (player.Value.UserId == positionValue2 && maxPlayers == 4) position = PhotonBattleRoom.PlayerPosition2;
                         else if (player.Value.UserId == positionValue3) position = PhotonBattleRoom.PlayerPosition3;
-                        else if (player.Value.UserId == positionValue4) position = PhotonBattleRoom.PlayerPosition4;
+                        else if (player.Value.UserId == positionValue4 && maxPlayers == 4) position = PhotonBattleRoom.PlayerPosition4;
                         else
                         {
                             // Prefer player's existing position if it can be reclaimed from empty/Bot value.
@@ -5272,6 +5274,7 @@ namespace Altzone.Scripts.Lobby
                             // Fall back to side-effect-free room scanning to avoid VerifyPlayerPositions clearing bot slots.
                             if (!PhotonLobbyRoom.IsValidPlayerPos(position))
                             {
+                                Debug.LogWarning("Fallback for position.");
                                 position = GetFirstFreePositionWithoutVerification(); // TODO: if Clan2v2 ensure that player ends on the correct side
                             }
 
@@ -6963,22 +6966,22 @@ namespace Altzone.Scripts.Lobby
 
             if (!pos1Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos1Set = true;
             }
             if (!pos2Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos2Set = true;
             }
             if (!pos3Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos3Set = true;
             }
             if (!pos4Set)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos4Set = true;
             }
 
@@ -7034,22 +7037,22 @@ namespace Altzone.Scripts.Lobby
 
             if (!pos1Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey1, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos1Ready = true;
             }
             if (!pos2Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey2, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos2Ready = true;
             }
             if (!pos3Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey3, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos3Ready = true;
             }
             if (!pos4Ready)
             {
-                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot"))
+                if (PhotonRealtimeClient.CurrentRoom.GetCustomProperty(PhotonBattleRoom.PlayerPositionKey4, "").Equals("Bot") || AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)
                     pos4Ready = true;
             }
 

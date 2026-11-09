@@ -223,7 +223,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
                 // Setting custom characters for quantum
                 List<CustomCharacter> selectedCharacters = GetSelectedCustomCharacters(playerData);
-                GameType gameType = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.GameTypeKey, GameType.BattlePingPong);
+                GameType gameType = (GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.GameTypeKey, (int)GameType.BattlePingPong);
                 LobbyManager.Instance.SetPlayerQuantumCharacters(gameType, selectedCharacters);
                 if (_selectedCharactersEditable != null) _selectedCharactersEditable.SetCharacters();
                 _reloadCharacters = false;

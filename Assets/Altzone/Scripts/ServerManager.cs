@@ -43,6 +43,8 @@ public class ServerManager : MonoBehaviour
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
     private string _accessToken;
+    private int _refreshTokenExpiration;
+    private string _refreshToken;
     public bool isLoggedIn = false;
     [SerializeField] private bool _skipServerFurniture = false;
     private static string ADDRESS = "https://altzone.fi/api/";
@@ -99,7 +101,46 @@ public class ServerManager : MonoBehaviour
             PlayerPrefs.SetString("accessToken", value);
         }
     }
-    public int AccessTokenExpiration { get => _accessTokenExpiration; set => _accessTokenExpiration = value; }
+    public int AccessTokenExpiration
+    {
+        get
+        {
+            if (_accessTokenExpiration != 0) return _accessTokenExpiration;
+            else return PlayerPrefs.GetInt("accessTokenExpiration", 0);
+        }
+        private set
+        {
+            _accessTokenExpiration = value;
+            PlayerPrefs.SetInt("accessTokenExpiration", value);
+        }
+    }
+
+    public string RefreshToken
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(_refreshToken)) return _refreshToken;
+            else return PlayerPrefs.GetInt("AutomaticLogin", 0) == 1 ? PlayerPrefs.GetString("refreshToken", string.Empty) : string.Empty;
+        }
+         private set
+        {
+            _refreshToken = value;
+            PlayerPrefs.SetString("refreshToken", value);
+        }
+    }
+    public int RefreshTokenExpiration
+    {
+        get
+        {
+            if (_refreshTokenExpiration != 0) return _refreshTokenExpiration;
+            else return PlayerPrefs.GetInt("refreshTokenExpiration", 0);
+        }
+        private set
+        {
+            _refreshTokenExpiration = value;
+            PlayerPrefs.SetInt("refreshTokenExpiration", value);
+        }
+    }
     public ServerPlayer Player { get => _player; set => _player = value; }
     public ServerClan Clan
     {
@@ -190,6 +231,26 @@ public class ServerManager : MonoBehaviour
         }
         else
         {
+            bool? canContinue = null;
+            if (((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() >= AccessTokenExpiration)
+            {
+                yield return RefreshAccessToken(b =>
+                {
+                    canContinue = b;
+                });
+            }
+            else
+            {
+                canContinue = true;
+            }
+
+            yield return new WaitUntil(() => canContinue.HasValue);
+            if ((bool)!canContinue)
+            {
+                OnLogInFailed?.Invoke();
+                yield break;
+            }
+
             bool gettingPlayer = true;
             bool gettingCharacter = true;
             bool gettingTasks = true;
@@ -371,13 +432,7 @@ public class ServerManager : MonoBehaviour
     /// </remarks>
     public void SetProfileValues(JObject profileJSON, string username)
     {
-        JToken accessToken = profileJSON["accessToken"];
-        Assert.IsNotNull(accessToken);
-        AccessToken = (string)accessToken;
-
-        JToken tokenExpires = profileJSON["tokenExpires"];
-        Assert.IsNotNull(tokenExpires);
-        AccessTokenExpiration = tokenExpires.Value<int>();
+        SetAccessTokens(profileJSON);
 
         JToken player = profileJSON["Player"];
         Assert.IsNotNull(player);
@@ -386,6 +441,25 @@ public class ServerManager : MonoBehaviour
         Assert.IsNotNull(username);
         PlayerPrefs.SetString("userName", username ?? string.Empty);
         //StartCoroutine(LogIn());
+    }
+
+    public void SetAccessTokens(JObject profileJSON)
+    {
+        JToken accessToken = profileJSON["accessToken"];
+        Assert.IsNotNull(accessToken);
+        AccessToken = (string)accessToken;
+
+        JToken tokenExpires = profileJSON["tokenExpires"];
+        Assert.IsNotNull(tokenExpires);
+        AccessTokenExpiration = tokenExpires.Value<int>();
+
+        JToken refreshToken = profileJSON["refreshToken"];
+        Assert.IsNotNull(refreshToken);
+        RefreshToken = (string)refreshToken;
+
+        JToken refreshTokenExpires = profileJSON["refreshTokenExpires"];
+        Assert.IsNotNull(refreshTokenExpires);
+        RefreshTokenExpiration = refreshTokenExpires.Value<int>();
     }
 
     /// <summary>
@@ -724,6 +798,15 @@ public class ServerManager : MonoBehaviour
                 heartBeat = callback;
             });
             yield return new WaitUntil(() => heartBeat != null);
+
+            if (((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() >= AccessTokenExpiration - 5)
+            {
+                yield return RefreshAccessToken(b =>
+                {
+                    if (!b) LogOut();
+                });
+            }
+
             bool? list = null;
             if (heartBeat == true)
             {
@@ -1570,6 +1653,47 @@ public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    #endregion
+
+    #region AccessToken
+
+    private IEnumerator RefreshAccessToken(Action<bool> callback)
+    {
+        Debug.Log("Access token expired. Attempting token refresh.");
+
+        if (((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() >= RefreshTokenExpiration)
+        {
+            Debug.Log("Refresh token expired. New Login required.");
+            callback?.Invoke(false);
+            yield break;
+        }
+
+        string body = JObject.FromObject(
+            new
+            {
+                refreshToken = RefreshToken,
+            }
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "auth/refresh", body, null, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+
+                Instance.SetAccessTokens(result);
+
                 if (callback != null)
                     callback(true);
             }
@@ -2589,7 +2713,7 @@ public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData
                 Debug.LogWarning(result);
                 ServerStall stall = result["data"]["Stall"].ToObject<ServerStall>();
 
-                AdStoreObject adObject = new AdStoreObject(stall.adPoster.border, stall.adPoster.colour);
+                AdStoreObject adObject = new(stall);
 
 
 
@@ -2742,10 +2866,19 @@ public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData
             {
                 border = ad.BorderFrame,
                 colour = ad.BackgroundColour,
+                mainFurniture = ad.FurnitureName,
+                textField = new
+                {
+                    textString = ad.AdText,
+                    textFont = ad.TextFont.name,
+                    textColour = ad.TextColour,
+                }  
                 //tag = data.Tag,
             },
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
+
+        Debug.LogWarning(body);
 
         yield return StartCoroutine(WebRequests.Patch(DEVADDRESS + "stall/adPoster", body, AccessToken, request =>
         {
@@ -2761,6 +2894,22 @@ public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData
             }
         }));
     }
+
+    public void SaveAdData(AdStoreObject adData)
+    {
+        Storefront.Get().GetClanData(Clan._id, data =>
+        {
+            data.AdData = adData;
+            StartCoroutine(ServerManager.Instance.UpdateClanAdPoster(adData, success =>
+            {
+                if (success)
+                {
+                    Storefront.Get().SaveClanData(data, clanData => data = clanData);
+                }
+            }));
+        });
+    }
+
     #endregion
 
     #region Leaderboard

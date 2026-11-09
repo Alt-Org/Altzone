@@ -55,6 +55,12 @@ MonoBehaviour:
   _matchmakingText: {fileID: 5801137028666540098}
   _cancelButton: {fileID: 6341036706957288553}
   _cancelButtonText: {fileID: 4860461173590562963}
+  _searchingForRoomTextFI: 
+  _searchingForRoomTextEN: 
+  _joiningRoomTextFI: 
+  _joiningRoomTextEN: 
+  _matchStartingTextFI: Peli alkaa {0}...
+  _matchStartingTextEN: 
 --- !u!1 &1329238029855591716
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,8 +538,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Pelaajia online: ##'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e, type: 2}
-  m_sharedMaterial: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: 607ab1d3fedd2ec47a689eddcef4219e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -558,7 +564,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 59.1
+  m_fontSize: 33.25
   m_fontSizeBase: 55.15
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -978,8 +984,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Lopeta pelin etsiminen
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e, type: 2}
-  m_sharedMaterial: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: 607ab1d3fedd2ec47a689eddcef4219e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1004,7 +1010,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48
+  m_fontSize: 29.35
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1115,8 +1121,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Etsit\xE4\xE4n peli\xE4..."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e, type: 2}
-  m_sharedMaterial: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: 607ab1d3fedd2ec47a689eddcef4219e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1141,7 +1147,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48
+  m_fontSize: 29.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1252,8 +1258,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Joukkue:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 394fb2628c0df214d92079770f57dd8e, type: 2}
-  m_sharedMaterial: {fileID: 4752717343592566078, guid: 394fb2628c0df214d92079770f57dd8e,
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: 607ab1d3fedd2ec47a689eddcef4219e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1278,7 +1284,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48
+  m_fontSize: 29.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

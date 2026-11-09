@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using MenuUi.Scripts.Storage;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Config;
 using Altzone.Scripts;
 
@@ -56,7 +59,8 @@ public class ItemMover : MonoBehaviour
     {
         if (assignedSlot != null)
         {
-            popup?.OpenRemovePopup(gameObject);
+            //popup?.OpenRemovePopup(gameObject);
+            popup?.Open(gameObject);
         }
         else if (HasFreeSlot())
         {
@@ -80,6 +84,11 @@ public class ItemMover : MonoBehaviour
         return false;
     }
 
+    public KojuItemSlot AssignedSlot
+    {
+        get => assignedSlot;
+    }
+
     // Call when user confirms the moving of a furniture
     public void ExecuteMove()
     {
@@ -88,8 +97,6 @@ public class ItemMover : MonoBehaviour
             // Move from tray to panel
             foreach (var slot in panelSlots)
             {
-                if (slot.transform.GetSiblingIndex() == 0) continue; // Skips the slot meant for the poster card
-
                 if (!slot.IsOccupied)
                 {
                     assignedSlot = slot;
@@ -98,6 +105,13 @@ public class ItemMover : MonoBehaviour
 
                     // Notify trayPopulator this item was moved
                     OnItemMovedToPanel?.Invoke(currentFurniture);
+                    
+                    AdFurnitureObject adFurnitureObject = new AdFurnitureObject();
+                    adFurnitureObject.Name = currentFurniture.Name;
+                    adFurnitureObject.Id = currentFurniture.Id;
+                    adFurnitureObject.Image = currentFurniture.Sprite;
+                    if (!AdDecorationReference.Instance.FurnitureList.Contains(adFurnitureObject)) AdDecorationReference.Instance.FurnitureList.Add(adFurnitureObject);
+
                     return;
                 }
             }
@@ -121,33 +135,35 @@ public class ItemMover : MonoBehaviour
                 // Notify trayPopulator this item was returned
                 trayPopulator?.HandleItemReturnedToTray(currentFurniture);
 
-                var store = Storefront.Get();
-                store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>
-                {
-                    if (player != null && !string.IsNullOrEmpty(player.ClanId))
-                    {
-                        store.GetClanData(player.ClanId, clan =>
-                        {
-                            if (clan != null)
-                            {
-                                store.SaveClanData(clan, saved =>
-                                {
-                                    Debug.Log("Clan data saved after moving item back to tray.");
-                                });
-                            }
-                            else
-                            {
-                                Debug.LogWarning("Clan data not found for saving.");
-                            }
-                        });
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Player data or ClanId missing for saving clan data.");
-                    }
-                });
+                AdFurnitureObject removableFurniture = AdDecorationReference.Instance.FurnitureList.Find((x) => x.Name == currentFurniture.Name);
+                AdDecorationReference.Instance.FurnitureList.Remove(removableFurniture);
+
+                //var store = Storefront.Get();
+                //store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, player =>
+                //{
+                //    if (player != null && !string.IsNullOrEmpty(player.ClanId))
+                //    {
+                //        store.GetClanData(player.ClanId, clan =>
+                //        {
+                //            if (clan != null)
+                //            {
+                //                store.SaveClanData(clan, saved =>
+                //                {
+                //                    Debug.Log("Clan data saved after moving item back to tray.");
+                //                });
+                //            }
+                //            else
+                //            {
+                //                Debug.LogWarning("Clan data not found for saving.");
+                //            }
+                //        });
+                //    }
+                //    else
+                //    {
+                //        Debug.LogWarning("Player data or ClanId missing for saving clan data.");
+                //    }
+                //});
             }
         }
     }
-
 }

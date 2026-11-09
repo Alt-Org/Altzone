@@ -7,6 +7,7 @@ using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Common;
 using Altzone.Scripts.Config;
+using Altzone.Scripts.Language;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
@@ -38,6 +39,7 @@ public class ProfileMenu : AltMonoBehaviour
     [SerializeField] private TextMeshProUGUI _playerName;
     [SerializeField] private TextMeshProUGUI _playerPlayStyleText;
     [SerializeField] private TextMeshProUGUI _playerClanNameText;
+    [SerializeField] private TextLanguageSelectorCaller _joiningDateText;
     [SerializeField] private TextMeshProUGUI _rolesErrorMessage;
     //[SerializeField] private TextMeshProUGUI _TimePlayedText;
     //[SerializeField] private TextMeshProUGUI _activityText;
@@ -641,6 +643,15 @@ public class ProfileMenu : AltMonoBehaviour
         ToggleProfileViewMode();
 
         _playerName.text = _playerData.Name;
+        string joinDate = _playerData.ClanJoinDate == DateTime.MinValue
+            ? "-"
+            : _playerData.ClanJoinDate.ToString("MM-yyyy");
+
+        _joiningDateText.SetText(
+            SettingsCarrier.Instance.Language,
+            new string[] { joinDate }
+        );
+
         RefreshPlayerPlayStyleUI();
         //_activityText.text = _playerData.points.ToString();
 

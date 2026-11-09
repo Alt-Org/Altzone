@@ -435,4 +435,12 @@ namespace Altzone.Scripts.Model.Poco.Game
             return ClassType;
         }
     }
+
+    public static class BaseCharacterExtension
+    {
+        public static int GetBaseStatsCombined(this BaseCharacter basecharacter)
+        {
+            return basecharacter.DefaultSpeed + basecharacter.DefaultCharacterSize + basecharacter.DefaultAttack + basecharacter.DefaultDefence + basecharacter.DefaultHp;
+        }
+    }
 }

@@ -68,8 +68,7 @@ MonoBehaviour:
   m_text: 30g
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
-  m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 6c39a08b9bdffae4b905988ec5054da8, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -134,7 +133,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &471555723132654436
@@ -297,9 +296,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Hiilijalanj\xE4lki\n2kg co2"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
-  m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: bfc928a5c36b5814cadd14fa862b2f1d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -364,7 +362,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 1.4686334, z: -32.7041, w: 2.677982}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!114 &4400026952820102909
@@ -850,6 +848,7 @@ GameObject:
   - component: {fileID: 8772033954231726415}
   - component: {fileID: 3230432461269792279}
   - component: {fileID: 6643937947140170305}
+  - component: {fileID: 254145651273144374}
   m_Layer: 5
   m_Name: Label
   m_TagString: Untagged
@@ -906,9 +905,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Hiilijalanj\xE4lki"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4438142ee16a9964295981e68e2baab6, type: 2}
-  m_sharedMaterial: {fileID: -2998110953030337146, guid: 4438142ee16a9964295981e68e2baab6,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 75612455eacd35e4ab1512c448982302, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -973,9 +971,23 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &254145651273144374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431777416680914563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Hiilijalanj\xE4lki"
+  _englishText: Carbon footprint
 --- !u!1 &1437706944107895919
 GameObject:
   m_ObjectHideFlags: 0
@@ -1361,6 +1373,7 @@ GameObject:
   - component: {fileID: 7072671188883491543}
   - component: {fileID: 123707999915890445}
   - component: {fileID: 1729864693126481661}
+  - component: {fileID: 7754127621244717558}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1492,6 +1505,28 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7754127621244717558
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3373762332864075811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "T\xE4h\xE4n jotain teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa
+    asiasta. T\xE4h\xE4n jotain teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa asiasta.
+    \r\n\r\nT\xE4h\xE4n jotain teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa asiasta.
+    T\xE4h\xE4n jotain teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa asiasta. \r\n\r\nT\xE4h\xE4n
+    jotain teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa asiasta. T\xE4h\xE4n jotain
+    teksti\xE4 hiilijalanj\xE4ljest\xE4 ja tietoa asiasta. "
+  _englishText: "Add here some text about carbon footprint. Add here some text about
+    carbon footprint.\r\n\r\nAdd here some text about carbon footprint. Add here
+    some text about carbon footprint. \r\n\r\nAdd here some text about carbon footprint.
+    Add here some text about carbon footprint."
 --- !u!1 &3490066668065720378
 GameObject:
   m_ObjectHideFlags: 0
@@ -2146,8 +2181,7 @@ MonoBehaviour:
   m_text: 1.2kg
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
-  m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 6c39a08b9bdffae4b905988ec5054da8, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2212,7 +2246,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &6717176021538706627
@@ -2283,8 +2317,7 @@ MonoBehaviour:
   m_text: 5g
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
-  m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 6c39a08b9bdffae4b905988ec5054da8, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2349,7 +2382,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &6843625524596184539
@@ -2759,8 +2792,7 @@ MonoBehaviour:
   m_text: 750g
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
-  m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 6c39a08b9bdffae4b905988ec5054da8, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2825,7 +2857,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &7714014142615631317
@@ -3081,8 +3113,7 @@ MonoBehaviour:
   m_text: 250g
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
-  m_sharedMaterial: {fileID: -2998110953030337146, guid: 575dbda903adc434caffae39c1b59109,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 6c39a08b9bdffae4b905988ec5054da8, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3147,7 +3178,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &8605403484345588808
@@ -3162,6 +3193,7 @@ GameObject:
   - component: {fileID: 8901590098463175344}
   - component: {fileID: 3023368203902898065}
   - component: {fileID: 6352201710892807174}
+  - component: {fileID: 4721045306113326545}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -3218,8 +3250,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Hiilijalanj\xE4lki\n2kg co2"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ecff5251dfb671a42b33c27d895f275b, type: 2}
-  m_sharedMaterial: {fileID: 3258143769697088577, guid: ecff5251dfb671a42b33c27d895f275b,
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
+  m_sharedMaterial: {fileID: 2244547485891194162, guid: 607ab1d3fedd2ec47a689eddcef4219e,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -3300,6 +3332,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14f2fc62acdfb004fa3ecef7dc8cf857, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4721045306113326545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8605403484345588808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _finnishText: "Hiilijalanj\xE4lki\n2kg co2"
+  _englishText: 'Carbon footprint
+
+    2kg co2'
 --- !u!1 &8682830852409983259
 GameObject:
   m_ObjectHideFlags: 0
