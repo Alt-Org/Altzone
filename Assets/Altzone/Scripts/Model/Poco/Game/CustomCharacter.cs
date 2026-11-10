@@ -59,6 +59,9 @@ namespace Altzone.Scripts.Model.Poco.Game
         public const int STATMAXLEVEL = 6;
         public const int STATMINLEVEL = 1;
 
+        public delegate void StatUpdatedHandler(CustomCharacter character, StatType statType);
+        public event StatUpdatedHandler OnStatUpdated;
+
         [JsonConstructor]
         private CustomCharacter()
         {
@@ -283,7 +286,11 @@ namespace Altzone.Scripts.Model.Poco.Game
                     Debug.LogError("Invalid stat type. Provide proper stat type.");
                     return false;
             }
-            if (increase) return true;
+            if (increase)
+            {
+                OnStatUpdated?.Invoke(this, statType);
+                return true;
+            }
             else return false;
         }
 
@@ -384,7 +391,11 @@ namespace Altzone.Scripts.Model.Poco.Game
                     Debug.LogError("Invalid stat type. Provide proper stat type.");
                     return false;
             }
-            if (decrease) return true;
+            if (decrease)
+            {
+                OnStatUpdated?.Invoke(this, statType);
+                return true;
+            }
             else return false;
         }
 
@@ -484,6 +495,25 @@ namespace Altzone.Scripts.Model.Poco.Game
                 valid = false;
             }
             return valid;
+        }
+
+        public void RemoveDelegates()
+        {
+            if (OnStatUpdated == null) return;
+            foreach (Delegate d in OnStatUpdated.GetInvocationList())
+            {
+                OnStatUpdated -= (StatUpdatedHandler)d;
+            }
+        }
+    }
+
+    public static class CustomCharacterExtension
+    {
+        // Get all character stats combined
+        public static int GetStatsCombined(this CustomCharacter customcharacter)
+        {
+            if (customcharacter == null) return customcharacter.CharacterBase.GetBaseStatsCombined();
+            return customcharacter.Speed + customcharacter.CharacterSize + customcharacter.Attack + customcharacter.Defence + customcharacter.Hp;
         }
     }
 }

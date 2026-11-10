@@ -9,8 +9,9 @@ using Altzone.Scripts.ReferenceSheets;
 using MenuUi.Scripts.CharacterGallery;
 using MenuUi.Scripts.Signals;
 using MenuUi.Scripts.SwipeNavigation;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using UnityEngine;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {
@@ -353,7 +354,7 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             }
             else
             {
-                PopupSignalBus.OnChangePopupInfoSignal("Ei tarpeeksi kyyneliä.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Ei tarpeeksi kyyneliä.");
                 return false;
             }
         }
@@ -518,18 +519,18 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             {
                 if (!CheckCombinedLevelCap())
                 {
-                    if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
+                    if (showPopupMessages) OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Et voi päivittää taitoa, taitojen summa on enintään {CustomCharacter.STATMAXCOMBINED}.");
                     return false;
                 }
                 else if (GetStatStrength(statType) == ValueStrength.None)
                 {
-                    if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Tätä taitoa ei voi muokata.");
+                    if (showPopupMessages) OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Tätä taitoa ei voi muokata.");
                     return false;
                 }
             }
             if (!CheckStatLevelCap(statType))
             {
-                if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
+                if (showPopupMessages) OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Et voi päivittää taitoa, maksimitaso on {CustomCharacter.STATMAXLEVEL}.");
                 return false;
             }
 
@@ -612,18 +613,18 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             if(!SettingsCarrier.Instance.StatDebuggingMode){
                 if (showPopupMessages && !(GetStat(statType) > GetBaseStat(statType)))
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Et voi vähentää pohjataitoa.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Et voi vähentää pohjataitoa.");
                     return false;
                 }
                 else if (GetStatStrength(statType) == ValueStrength.None)
                 {
-                    PopupSignalBus.OnChangePopupInfoSignal($"Tätä taitoa ei voi muokata.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Tätä taitoa ei voi muokata.");
                     return false;
                 }
             }
             if (GetStat(statType) <= CustomCharacter.STATMINLEVEL)
             {
-                if (showPopupMessages) PopupSignalBus.OnChangePopupInfoSignal($"Et voi päivittää taitoa, minimi on {CustomCharacter.STATMINLEVEL}.");
+                if (showPopupMessages) OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, $"Et voi päivittää taitoa, minimi on {CustomCharacter.STATMINLEVEL}.");
                 return false;
             }
 
@@ -658,26 +659,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return success;
         }
 
-
-        // Get all character stats combined
-        private int GetStatsCombined()
-        {
-            if (_customCharacter == null) return GetBaseStatsCombined();
-            return _customCharacter.Speed + _customCharacter.CharacterSize + _customCharacter.Attack + _customCharacter.Defence + _customCharacter.Hp;
-        }
-
-
-        // Get all character base stats combined
-        private int GetBaseStatsCombined()
-        {
-            return _baseCharacter.DefaultSpeed + _baseCharacter.DefaultCharacterSize + _baseCharacter.DefaultAttack + _baseCharacter.DefaultDefence + _baseCharacter.DefaultHp; 
-        }
-
-
         // Checks if stat levels combined are less than level cap
         private bool CheckCombinedLevelCap()
         {
-            if (GetStatsCombined() < CustomCharacter.STATMAXCOMBINED)
+            if (_customCharacter.GetStatsCombined() < CustomCharacter.STATMAXCOMBINED)
             {
                 return true;
             }

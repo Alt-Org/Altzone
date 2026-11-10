@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using MenuUi.Scripts.Signals;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 
 namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
 {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using MenuUI.Scripts;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,8 +19,6 @@ namespace MenuUi.Scripts.Window
         [SerializeField] private GameObject _bottomBar;
         [SerializeField] private GameObject _chatBox;
         [SerializeField] private GameObject _buttonsBar;
-
-        [SerializeField] private Button _onlineToggleButton;
 
         private bool _chatActive = true;
 
@@ -39,13 +38,16 @@ namespace MenuUi.Scripts.Window
 
         public delegate void ToggleOnlinePlayerList(bool? active = null);
         public static event ToggleOnlinePlayerList OnToggleOnlinePlayerList;
-        
+
+        public delegate void ChangePopupInfo(InfoLevel level, string message);
+        public static event ChangePopupInfo OnChangePopupInfo;
 
         private void Awake()
         {
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
+                return;
             }
             else
             {
@@ -55,32 +57,24 @@ namespace MenuUi.Scripts.Window
                     Destroy(gameObject);
                     return;
                 }
+
                 UpdateButtonContent();
             }
 
             if (_overlayObject == null) _overlayObject = transform.gameObject;
             _chatActive = true;
             buttons[2].transform.localScale = Vector3.one * 1.2f;
-            //buttons[2].interactable = false;
-
         }
 
         private void OnEnable()
         {
             if (Instance == this)
                 UpdateButtonContent();
-
-            _onlineToggleButton.onClick.AddListener(ToggleOnlinePlayers);
-        }
-
-        private void OnDisable()
-        {
-            _onlineToggleButton?.onClick.RemoveAllListeners();
         }
 
         private void OnDestroy()
         {
-            if(Instance == this) Instance = null;
+            if (Instance == this) Instance = null;
         }
 
         public void UpdateButtonContent() //Makes buttons bigger and glow when selected
@@ -98,14 +92,12 @@ namespace MenuUi.Scripts.Window
                 if (isCurrentWindow)
                 {
                     button.transform.localScale = Vector3.one * 1.2f;
-                    //button.interactable = false;
                 }
                 else
                 {
                     button.transform.localScale = Vector3.one;
                     button.interactable = true;
-
-                }//ifelse currentwindow
+                } //ifelse currentwindow
 
                 /* Opacity controller for inactive buttons
                 Image image = button.GetComponent<Image>();
@@ -124,8 +116,8 @@ namespace MenuUi.Scripts.Window
                 {
                     glow.gameObject.SetActive(isCurrentWindow);
                 }
-            }//for
-        }//updatebuttoncontent
+            } //for
+        } //updatebuttoncontent
 
         public void ToggleOverlay(bool value)
         {
@@ -153,10 +145,14 @@ namespace MenuUi.Scripts.Window
             OnChatBarToggled?.Invoke(value);
         }
 
-        public void ToggleOnlinePlayers()
+        public static void ToggleOnlinePlayers()
         {
             OnToggleOnlinePlayerList?.Invoke();
         }
 
+        public static void ActivateInfoPopup(InfoLevel level, string message)
+        {
+            OnChangePopupInfo?.Invoke(level, message);
+        }
     }
 }

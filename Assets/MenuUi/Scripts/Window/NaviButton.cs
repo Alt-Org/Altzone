@@ -18,6 +18,7 @@ namespace MenuUi.Scripts.Window
 
         private void Start()
         {
+            if (_disabledOnProd && !AppPlatform.IsEditor && !AppPlatform.IsDevelopmentBuild) return;
             Debug.Log($"{name}", gameObject);
             var button = GetComponent<Button>();
             if (_naviTarget == null)

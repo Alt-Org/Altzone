@@ -91,7 +91,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (furniture != null)
             {
-                if(!_soulHomeTower.EditingMode || _soulHomeTower.Rotated)FurnitureName.gameObject.SetActive(true);
+                if(!_soulHomeTower.EditingMode)FurnitureName.gameObject.SetActive(true);
                 string furnitureName = furniture.Name;
                 FurnitureName.GetComponent<TextMeshProUGUI>().text = furnitureName;
             }
@@ -209,7 +209,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ShowInfoPopup(string popupText)
         {
-            SignalBus.OnChangePopupInfoSignal(popupText);
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info, popupText);
         }
 
         private void SetSongName(MusicTrack song)

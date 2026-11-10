@@ -36,12 +36,14 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _rooms;
 
+        [SerializeField]
+        //private GameObject _hoverButtons;
+
         private Bounds _roomBounds;
 
         private List<GameObject> _changedFurnitureList = new();
 
         private bool _startFinished = false;
-        private bool _rotated = false;
         private float _prevPinchDistance = 0;
 
         private GameObject _selectedFurniture;
@@ -78,6 +80,10 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _selectedFurniture?.GetComponent<FurnitureHandling>().SetOutline(false);
                 _selectedFurniture = value;
+                _mainScreen.HoverButtons.SetActive(false);
+                // The tray preview belongs to the selection. If it is left behind, the next press on the screen
+                // spawns a new furniture from it (e.g. after the hover cancel button or discarding changes).
+                if (_selectedFurniture == null) _mainScreen.DeselectTrayFurniture();
                 //if (_tempSelectedFurniture != _selectedFurniture) _tempSelectedFurniture = value;
                 if(_selectedFurniture != null) _selectedFurniture.GetComponent<FurnitureHandling>().SetOutline(true);
                 _soulHomeController.SetFurniture(_selectedFurniture?.GetComponent<FurnitureHandling>().Furniture);
@@ -86,7 +92,6 @@ namespace MenuUI.Scripts.SoulHome
         public GameObject TempSelectedFurniture { get => _tempSelectedFurniture;}
         public List<GameObject> ChangedFurnitureList { get => _changedFurnitureList; set => _changedFurnitureList = value; }
         public bool EditingMode { get => editingMode;}
-        public bool Rotated { get => _rotated;}
         public Bounds RoomBounds { get => _roomBounds; set {  _roomBounds = value; } }
 
         void OnEnable()
@@ -96,10 +101,9 @@ namespace MenuUI.Scripts.SoulHome
             {
                 StartCoroutine(RemoveLoadScreen());
                 _camera.aspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-                HandleScreenRotation();
             }
             else StartCoroutine(StartActions());
-            _rotated = false;
+
         }
         void OnDisable()
         {
@@ -328,6 +332,23 @@ namespace MenuUI.Scripts.SoulHome
             if(ClickStateHandler.GetClickState() is ClickState.End && _selectedFurniture == null && _tempSelectedFurniture != null) _tempSelectedFurniture = null;
         }
 
+        void LateUpdate()
+        {
+            if (!_startFinished) return;
+            // Move hover buttons with the selected furniture when scrolling the tower
+            if (_selectedFurniture != null && _mainScreen.HoverButtons.activeSelf) UpdateHoverButtons();
+        }
+
+        // Places the hover buttons around the selected furniture's collider
+        private void UpdateHoverButtons()
+        {
+            // Built from the box itself: Collider2D.bounds lags behind until physics syncs the transform, and is empty while disabled.
+            BoxCollider2D box = _selectedFurniture.GetComponent<BoxCollider2D>();
+            Transform furniture = _selectedFurniture.transform;
+            _mainScreen.HoverButtons.GetComponent<SoulHomeHoverButtonHandler>().SetButtonPositions(_camera, box, furniture);
+            _mainScreen.CheckHoverButtons();
+        }
+
         public bool FindRayPoint(Vector2 relPoint, ClickState click)
         {
             //if (click == ClickState.Start) cameraMove = true;
@@ -499,7 +520,7 @@ namespace MenuUI.Scripts.SoulHome
                     _grabbingFurniture = false;
                 }
 
-                if(_selectedFurniture)_mainScreen.SetHoverButtons(_camera.WorldToViewportPoint(_selectedFurniture.transform.position));
+                if(_selectedFurniture) UpdateHoverButtons();
 
             }
             else if (click is ClickState.End && furnitureObject == null)
@@ -871,53 +892,20 @@ namespace MenuUI.Scripts.SoulHome
             //if(!editingMode) ResetChanges();
         }
 
+        // Hover confirm button: hides the hover buttons and outlines
+        public void ConfirmFurniture()
+        {
+            _mainScreen.HoverButtons.SetActive(false);
+            if (_selectedFurniture == null) return;
+            // Without a slot DeselectFurniture would send it back to the tray
+            if (_selectedFurniture.GetComponent<FurnitureHandling>().TempSlot == null) return;
+            DeselectFurniture();
+        }
+
         public void RotateFurniture()
         {
             _selectedFurniture.GetComponent<FurnitureHandling>().RotateFurniture();
             PlaceFurnitureToCurrent(false);
-        }
-
-        private void HandleScreenRotation()
-        {
-            float newAspect = _displayScreen.GetComponent<RectTransform>().rect.x / _displayScreen.GetComponent<RectTransform>().rect.y;
-            if (_camera.aspect.Equals(newAspect)) return;
-            _camera.aspect = newAspect;
-
-            _camera.fieldOfView = 90;
-
-            /*if (SelectedRoom != null)
-                transform.position = new(transform.position.x, transform.position.y, -1 * GetCameraYDistance());
-            else
-                transform.position = new(transform.position.x, transform.position.y, -1 * GetCameraMaxDistance());*/
-
-            _maxCameraDistance = GetCameraMaxDistance();
-            _minCameraDistance = GetCameraMinDistance();
-            if(!_rotated)
-                transform.position = new(transform.position.x, transform.position.y, GetCameraXDistance());
-            else
-                transform.position = new(transform.position.x, transform.position.y, GetCameraYDistance());
-
-            ClampCameraDistance(0);
-
-            Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
-            float currentX = transform.position.x;
-            float currentY = transform.position.y;
-            float offsetX = Mathf.Abs(currentX - bl.x);
-            float offsetY = Mathf.Abs(currentY - bl.y);
-
-            float y;
-            if (cameraMinY + offsetY < cameraMaxY - offsetY)
-                y = Mathf.Clamp(currentY, cameraMinY + offsetY, cameraMaxY - offsetY);
-            else
-                y = (cameraMinY + cameraMaxY) / 2;
-            float x;
-            if (cameraMinX + offsetX < cameraMaxX - offsetX)
-                x = Mathf.Clamp(currentX, cameraMinX + offsetX, cameraMaxX - offsetX);
-            else
-                x = (cameraMinX+cameraMaxX)/2;
-            //Debug.Log("CurrentX:"+currentX+", CameraMinX:"+ cameraMinX + ", OffsetX:" + offsetX + ", CameraMaxX:" + cameraMaxX +", OffsetX:" + offsetX);
-            transform.position = new(x, y, transform.position.z);
-
         }
 
         public void SetCameraBounds()

@@ -48,7 +48,7 @@ namespace MenuUi.Scripts.MainMenu
             OverlayPanelCheck.Instance?.ToggleOverlay(true);
 
             AudioManager.Instance?.PlayMusic(AudioCategoryType.MainMenu);
-            if(JukeboxManager.Instance.JukeboxDisabled) JukeboxManager.Instance?.EnableJukeBox();
+            if(JukeboxManager.Instance != null && JukeboxManager.Instance.JukeboxDisabled) JukeboxManager.Instance.EnableJukeBox();
 
             if (!LobbyManager.IsActive) LobbyManager.Instance.Activate();
             if (LobbyManager.Instance.RunnerActive) LobbyManager.CloseRunner();

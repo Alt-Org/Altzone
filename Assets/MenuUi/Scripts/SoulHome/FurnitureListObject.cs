@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Altzone.Scripts.Model.Poco.Game; // --------------------------------
 using UnityEngine;
 
 namespace MenuUI.Scripts.SoulHome
@@ -35,6 +36,12 @@ namespace MenuUI.Scripts.SoulHome
             }
         }
 
+        public FurniturePlacement GetListObjectType()
+        {
+            if (_count == 0) return FurniturePlacement.FloorNonblock;
+            else return _list[0].Place;
+        }
+
         public int GetInRoomCount()
         {
             int count = 0;
@@ -43,6 +50,12 @@ namespace MenuUI.Scripts.SoulHome
                 if(!furniture.Position.Equals(new(-1,-1))) count++;
             }
             return count;
+        }
+
+        /// <summary>How many of these are left in the tray (not placed in a room).</summary>
+        public int GetAvailableCount()
+        {
+            return _count - GetInRoomCount();
         }
     }
 

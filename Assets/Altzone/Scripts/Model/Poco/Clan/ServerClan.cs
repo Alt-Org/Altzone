@@ -26,6 +26,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public bool isOpen { get; set; }
         public int? furnitureCount { get; set; }
         public int? raidRoomCount { get; set; }
+        public string createdAt { get; set; }
         public List<PollData> polls { get; set; }
         public ClanLogo clanLogo { get; set; }
         public List<ClanRoles> roles { get; set; }

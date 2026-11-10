@@ -20,6 +20,7 @@ public class BarMeter : MonoBehaviour
         if (_slider != null)
         {
             _slider.minValue = 0f;
+            _maxValue = _slider.GetComponent<RectTransform>().rect.height;
             _slider.maxValue = _maxValue;
         }
     }
@@ -51,7 +52,7 @@ public class BarMeter : MonoBehaviour
         {
             float normalized = _slider.normalizedValue;
             Vector2 pos = _statueTransform.anchoredPosition;
-            pos.y = Mathf.Lerp(_minY, _maxY, normalized);
+            pos.y = Mathf.Lerp(_minY, _slider.GetComponent<RectTransform>().rect.height, normalized);
             _statueTransform.anchoredPosition = pos;
         }
     }

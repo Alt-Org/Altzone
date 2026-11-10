@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['400_20projector_0',['Player Character Class 400 - Projector',['../page-concepts-player-class-400-projector.html',1,'page-concepts-player']]]
+  ['100_20desensitizer_0',['Player Character Class 100 - Desensitizer',['../page-concepts-player-class-100.html',1,'page-concepts-player']]]
 ];

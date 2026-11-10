@@ -22,16 +22,21 @@ MonoBehaviour:
     CultureType: 1
     EthicalType: 0
     Options:
-    - OptionText: Toimintapeli
-      Result: 3
-    - OptionText: Strategiapeli
-      Result: 1
-    - OptionText: Urheilupeli
-      Result: 3
-    - OptionText: Puzzlepeli
-      Result: 3
-    - OptionText: Roolipeli
-      Result: 3
+    - _optionTextFI: Toimintapeli
+      _optionTextEN: Action Game
+      _result: 3
+    - _optionTextFI: Strategiapeli
+      _optionTextEN: Strategy Game
+      _result: 1
+    - _optionTextFI: Urheilupeli
+      _optionTextEN: Sport Game
+      _result: 3
+    - _optionTextFI: Puzzlepeli
+      _optionTextEN: Puzzle Game
+      _result: 3
+    - _optionTextFI: Roolipeli
+      _optionTextEN: Role-Playing Game
+      _result: 3
   - Name: Where Game Happens
     Category: 2
     ActionType: 0
@@ -40,9 +45,12 @@ MonoBehaviour:
     CultureType: 1
     EthicalType: 0
     Options:
-    - OptionText: "Ihmisen sis\xE4ll\xE4"
-      Result: 1
-    - OptionText: Kaupassa
-      Result: 0
-    - OptionText: Vuorovaikutustilanteessa
-      Result: 0
+    - _optionTextFI: "Ihmisen sis\xE4ll\xE4"
+      _optionTextEN: Inside Human
+      _result: 1
+    - _optionTextFI: Kaupassa
+      _optionTextEN: In Store
+      _result: 3
+    - _optionTextFI: Vuorovaikutustilanteessa
+      _optionTextEN: In Peoples Interaction
+      _result: 3

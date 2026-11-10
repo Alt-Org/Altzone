@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['logtarget_0',['LogTarget',['../class_battle_1_1_q_simulation_1_1_battle_debug_logger.html#ac9d36f41d47f34b39c1edda2ce86673d',1,'Battle::QSimulation::BattleDebugLogger']]],
-  ['logtype_1',['LogType',['../class_battle_1_1_q_simulation_1_1_battle_debug_logger.html#a420b7aeddeffdb4587fcc9bbac68727f',1,'Battle::QSimulation::BattleDebugLogger']]]
+  ['classoption_0',['ClassOption',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#a510eb9ce8544a9439541e09efea4c431',1,'Battle::QSimulation::Player::BattlePlayerClassManager']]],
+  ['classstate_1',['ClassState',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#a913415630181d9063dbebba2e9134e34',1,'Battle::QSimulation::Player::BattlePlayerClassManager']]]
 ];

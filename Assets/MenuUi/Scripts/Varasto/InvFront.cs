@@ -10,7 +10,6 @@ using Altzone.Scripts.ReferenceSheets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using static SettingsCarrier;
 
 namespace MenuUi.Scripts.Storage
 {
@@ -71,7 +70,21 @@ namespace MenuUi.Scripts.Storage
         private int _sortingBy = 0; // used as a carrier for info on how to sort
         private bool _descendingOrder = false;
 
-        private const string INVENTORY_EMPTY_TEXT = "Varasto tyhjä";
+        private const string INVENTORY_EMPTY_TEXT_FI = "Varasto tyhjä";
+        private const string INVENTORY_EMPTY_TEXT_EN = "Storage empty";
+
+        private string INVENTORY_EMPTY_TEXT
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return INVENTORY_EMPTY_TEXT_FI;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                    return INVENTORY_EMPTY_TEXT_EN;
+                else
+                    return INVENTORY_EMPTY_TEXT_FI;
+            }
+        }
 
         private void Start()
         {
@@ -507,26 +520,10 @@ namespace MenuUi.Scripts.Storage
             // Name
             var lang = SettingsCarrier.Instance.Language;
 
-            string setNameLocalized; // Localizing name
-            if (lang == SettingsCarrier.LanguageType.Finnish)
-            {
-                setNameLocalized = _furn.Info.SetName; // Finnish default (Setname)
-            }
-            else if (lang == SettingsCarrier.LanguageType.English)
-            {
-                setNameLocalized = !string.IsNullOrEmpty(_furn.Info.SetNameEnglish)
-                    ? _furn.Info.SetNameEnglish
-                    : _furn.Info.SetName;
-            }
-            else
-            {
-                setNameLocalized = _furn.Info.SetName; // Fallback if the language is null
-            }
+            string setNameLocalized = _furn.SetName; // Localizing name
 
             // Set the furniture name based on the localization
-            string furnitureNameLocalized = lang == SettingsCarrier.LanguageType.English
-                ? _furn.Info.EnglishName   // Englishname for english
-                : _furn.Info.VisibleName;  // Visiblename for Finnish
+            string furnitureNameLocalized = _furn.VisibleName;
 
             // Combine set name and furniture name
             _name.text = setNameLocalized + " " + furnitureNameLocalized;
@@ -552,26 +549,9 @@ namespace MenuUi.Scripts.Storage
                     : "Unknown Artist";
             }
 
-            //Artistic description
-            if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
-            {
-                _artisticDescription.text = _furn.Info != null
-                    ? _furn.Info.ArtisticDescription
-                    : null;
-            }
-            else if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
-            {
-                _artisticDescription.text = _furn.Info != null
-                    ? _furn.Info.EnglishArtisticDescription
-                    : null;
-            }
-            else
-            {
-                // Fallback if the language is null
-                _artisticDescription.text = _furn.Info != null
-                    ? _furn.Info.ArtisticDescription
-                    : null;
-            }
+            _artisticDescription.text = _furn.Info != null
+                                ? _furn.Description
+                                : null;
 
             // Weight
             _weight.text = _furn.Weight + " KG";

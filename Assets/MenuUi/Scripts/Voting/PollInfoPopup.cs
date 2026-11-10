@@ -1,15 +1,17 @@
+using System;
+using System.Collections;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.Language;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Voting;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Voting;
-using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Model.Poco.Clan;
-using MenuUI.Scripts;
-using System;
-using System.Collections;
-using Altzone.Scripts.Model.Poco.Player;
 
 public class PollInfoPopup : MonoBehaviour
 {
@@ -200,14 +202,12 @@ public class PollInfoPopup : MonoBehaviour
         furnitureSection.SetActive(true);
 
         bool isBuying = furnitureData.FurniturePollType == FurniturePollType.Buying;
-
-        tradeTag.text = Language == SettingsCarrier.LanguageType.English
-            ? isBuying
-                ? "Buy".ToUpper()
-                : "Sell".ToUpper()
-            : isBuying
-                ? "Osto".ToUpper()
-                : "Myynti".ToUpper();
+        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
+        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            tradeTag.text = isBuying ? "BUY" : "SELL";
+        else
+            tradeTag.text = isBuying ? "OSTO" : "MYYNTI";
 
         FurnitureInfo info = furnitureData.Furniture.FurnitureInfo;
 
@@ -295,13 +295,18 @@ public class PollInfoPopup : MonoBehaviour
 
         resultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
 
-        resultText.text = Language == SettingsCarrier.LanguageType.English
-            ? isAccepted
-                ? "Accepted".ToUpper()
-                : "Denied".ToUpper()
-            : isAccepted
-                ? "Hyv\u00E4ksytty".ToUpper()
-                : "Hyl\u00E4tty".ToUpper();
+        if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            resultText.text = isAccepted
+            ? "Hyv\u00E4ksytty".ToUpper()
+            : "Hyl\u00E4tty".ToUpper();
+        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            resultText.text = isAccepted
+            ? "Approved".ToUpper()
+            : "Rejected".ToUpper();
+        else
+            resultText.text = isAccepted
+            ? "Hyv\u00E4ksytty".ToUpper()
+            : "Hyl\u00E4tty".ToUpper();
 
         resultObject.SetActive(true);
 
@@ -419,11 +424,7 @@ public class PollInfoPopup : MonoBehaviour
         {
             if (!result)
             {
-                string error = Language == SettingsCarrier.LanguageType.English
-                    ? "Voting failed"
-                    : "Äänen antaminen epäonnistui";
-
-                SignalBus.OnChangePopupInfoSignal(error);
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error,"Äänen antaminen epäonnistui");
                 return;
             }
             voteButtons.SetActive(false);

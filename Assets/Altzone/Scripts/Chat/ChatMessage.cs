@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Altzone.Scripts.Common;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 using static ServerChatMessage;
 
@@ -19,6 +21,7 @@ namespace Altzone.Scripts.Chat
         [SerializeField] private string _username;
         private AvatarData _avatar;
         [SerializeField] private string _message;
+        [SerializeField] private ResponseType _responseType;
         [SerializeField] private ChatChannel _channel;
         [SerializeField] private Emotion _mood;
         private List<ServerReactions> _reactions;
@@ -61,14 +64,22 @@ namespace Altzone.Scripts.Chat
             if(message.sender.avatar != null) _avatar = new(message.sender.name, message.sender.avatar);
             _message = message.content;
             _channel = ChatListener.Instance.GetChatChannel(message.type);
-            if(message.feeling != null)
+            if(message.responseType != null)
+                if(Enum.TryParse(message.responseType, out _responseType))
+                {
+                    List<ChatResponseObject> responceList = CharacterResponseList.Instance.GetChatResponses((Emotion)message.emotion);
+                    ChatResponseObject convertedResponse = responceList.FirstOrDefault(c => c.ResponseId == _responseType);
+                    _message = convertedResponse.Response;
+                } 
+            /*if(message.feeling != null)
                 if(!Enum.TryParse(message.feeling, out _mood))
                 {
                     if (Enum.TryParse(message.feeling, out Mood mood))
                         {
                         _mood = (Emotion)mood;
                         }
-                }
+                }*/
+            _mood = (Emotion)message.emotion;
             _reactions = message.reactions;
             _timestamp = DateTime.ParseExact(message.createdAt, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }

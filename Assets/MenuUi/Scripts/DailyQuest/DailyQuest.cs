@@ -22,7 +22,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     [Header("Universal")]
     [SerializeField] private GameObject _coinIndicator;
-    [SerializeField] private Image _TaskImage;
+    [SerializeField] private Image _taskImage;
 
     [Header("Windows")]
     [SerializeField] private GameObject _availableWindow;
@@ -169,9 +169,9 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
         _taskPoints.text = "+" + _taskData.Points.ToString();
         _taskCoins.text = "+" + _taskData.Coins.ToString();
         _taskAmount.text = _taskData.Amount.ToString();
-        _coinIndicator.SetActive(_taskData.Coins >= 0);
+        //_coinIndicator.SetActive(_taskData.Coins >= 0);
 
-        _TaskImage.sprite = _cardImageReference.GetTaskImage(_taskData);
+        _taskImage.sprite = _cardImageReference.GetTaskImage(_taskData);
 
 
         ShowWindowWithType(TaskWindowType.Available);

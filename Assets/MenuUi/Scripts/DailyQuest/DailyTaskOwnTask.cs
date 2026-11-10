@@ -121,6 +121,7 @@ public class DailyTaskOwnTask : MonoBehaviour
     {
         // Clear the page
         ClearCurrentTask();
+        UpdateDailyStatsUI();
 
         // Then update new task data
         PlayerTask taskData = DailyTaskProgressManager.Instance.CurrentPlayerTask;
@@ -130,8 +131,6 @@ public class DailyTaskOwnTask : MonoBehaviour
         float progress = (float)taskData.TaskProgress / (float)taskData.Amount;
         StartCoroutine(SetDailyTask(taskData));
         SetTaskProgress(progress);
-
-        UpdateDailyStatsUI();
 
         // Don't allow canceling task on turboeducation if the task is forced
         if (GameConfig.Get().GameVersionType == VersionType.TurboEducation && DailyTaskManager.Instance.CurrentTaskForced)

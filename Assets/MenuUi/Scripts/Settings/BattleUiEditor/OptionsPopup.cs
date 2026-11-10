@@ -1,81 +1,105 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
 using TMPro;
 using static MenuUi.Scripts.Settings.BattleUiEditor.BattleUiEditor;
 using Altzone.Scripts.BattleUiShared;
+using MenuUi.Scripts.UIScaling;
 using BattleUiElementType = SettingsCarrier.BattleUiElementType;
 using BattleMovementInputType = SettingsCarrier.BattleMovementInputType;
 using BattleRotationInputType = SettingsCarrier.BattleRotationInputType;
+
 
 namespace MenuUi.Scripts.Settings.BattleUiEditor
 {
     public class OptionsPopup : MonoBehaviour
     {
-        [ Header("Options popup")]
+        [Header("Options popup")]
         [SerializeField] private GameObject _optionsContents;
+
         [SerializeField] private Button _resetButton;
-        [SerializeField] private Button _closeButton;
 
         [Header("Grid options")]
         [SerializeField] private Toggle _showGridToggle;
+
         [SerializeField] public Toggle _alignToGridToggle;
         [SerializeField] public Toggle _incrementalScalingToggle;
-        [Space]
-        [SerializeField] private Slider _gridColumnsSlider;
+        [Space] [SerializeField] private Slider _gridColumnsSlider;
         [SerializeField] private TMP_InputField _gridColumnsInputField;
-        [Space]
-        [SerializeField] private Slider _gridRowsSlider;
+        [Space] [SerializeField] private Slider _gridRowsSlider;
         [SerializeField] private TMP_InputField _gridRowsInputField;
-        [Space]
-        [SerializeField] private Slider _gridHueSlider;
+        [Space] [SerializeField] private Slider _gridHueSlider;
         [SerializeField] private TMP_InputField _gridHueInputField;
-        [Space]
-        [SerializeField] private Slider _gridTransparencySlider;
+        [Space] [SerializeField] private Slider _gridTransparencySlider;
         [SerializeField] private TMP_InputField _gridTransparencyInputField;
         [SerializeField] private GridController _grid;
 
         [Header("Input options")]
         [SerializeField] private Toggle _swipeMovementToggle;
+
         [SerializeField] private Toggle _pointAndClickMovementToggle;
         [SerializeField] private Toggle _joystickMovementToggle;
         [SerializeField] private Toggle _followPointerMovementToggle;
-        [Space]
-        [SerializeField] private Toggle _twoFingerRotationToggle;
+        [Space] [SerializeField] private Toggle _twoFingerRotationToggle;
+        [SerializeField] private GameObject _spacerAfterTwoFinger;
         [SerializeField] private Toggle _swipeRotationToggle;
+        [SerializeField] private GameObject _spacerAfterSwipeRotation;
         [SerializeField] private Toggle _joystickRotationToggle;
+        [SerializeField] private GameObject _spacerAfterJoystickRotation;
         [SerializeField] private Toggle _gyroscopeRotationToggle;
-        [Space]
-        [SerializeField] private GameObject _swipeMinDistanceHolder;
+        [SerializeField] private GameObject _spacerAftergyroscopeRotation;
+        [Space] [SerializeField] private GameObject _swipeMinDistanceHolder;
         [SerializeField] private Slider _swipeMinDistanceSlider;
         [SerializeField] private TMP_InputField _swipeMinDistanceInputField;
-        [Space]
-        [SerializeField] private GameObject _swipeMaxDistanceHolder;
+        [Space] [SerializeField] private GameObject _swipeMaxDistanceHolder;
         [SerializeField] private Slider _rotationSwipeMaxDistanceSlider;
         [SerializeField] private TMP_InputField _rotationSwipeMaxDistanceInputField;
-        [Space]
-        [SerializeField] private GameObject _movementSwipeSensitivityHolder;
+        [Space] [SerializeField] private GameObject _movementSwipeSensitivityHolder;
         [SerializeField] private Slider _movementSwipeSensitivitySlider;
         [SerializeField] private TMP_InputField _movementSwipeSensitivityInputField;
-        [Space]
-        [SerializeField] private GameObject _gyroscopeMinAngleHolder;
+        [Space] [SerializeField] private GameObject _gyroscopeMinAngleHolder;
         [SerializeField] private Slider _gyroscopeMinAngleSlider;
         [SerializeField] private TMP_InputField _gyroscopeMinAngleInputField;
+        [Space] [SerializeField] private GameObject _swipeInstructionImage;
+        [SerializeField] private RectTransform _instructionImageRow;
+        [SerializeField] private GameObject _pointAndClickInstructionImage;
+        [SerializeField] private GameObject _joystickInstructionImage;
+        [SerializeField] private GameObject _followPointerInstructionImage;
+        [Space] [SerializeField] private GameObject _twoFingerRotationInstructionImage;
+        [SerializeField] private GameObject _swipeRotationInstructionImage;
+        [SerializeField] private GameObject _joystickRotationInstructionImage;
+        [SerializeField] private GameObject _gyroscopeRotationInstructionImage;
 
         [Header("Arena options")]
+        [SerializeField] private GameObject _arenaBackgroundBlackImage;
+
         [SerializeField] private RectTransform _arenaImage;
-        [Space]
-        [SerializeField] private Slider _arenaScaleSlider;
+        [Space] [SerializeField] private Slider _arenaScaleSlider;
         [SerializeField] private TMP_InputField _arenaScaleInputField;
-        [Space]
-        [SerializeField] private Slider _arenaPosXSlider;
+        [Space] [SerializeField] private Slider _arenaPosXSlider;
         [SerializeField] private TMP_InputField _arenaPosXInputField;
-        [Space]
-        [SerializeField] private Slider _arenaPosYSlider;
+        [Space] [SerializeField] private Slider _arenaPosYSlider;
         [SerializeField] private TMP_InputField _arenaPosYInputField;
+        [SerializeField] private Toggle _stoneWallToggle;
+        [SerializeField] private Toggle _outerEdgeWithoutFloorToggle;
+        [SerializeField] private Button _infoImageButton;
+
+        [Header("StoneWall Figure")]
+        [SerializeField] private GameObject _stoneWallTopCharacterImage;
+
+        [SerializeField] private GameObject _stoneWallBottomCharacterImage;
+        [SerializeField] private RectTransform _stoneWallTopCharacterRect;
+        [SerializeField] private RectTransform _stoneWallBottomCharacterRect;
+
+        [Header("Outer Edge Without Floor")]
+        [SerializeField] private GameObject _outsideFloorPopup;
+
+        [SerializeField] private Button _outsideFloorOkButton;
+        [SerializeField] private Button _outsideFloorCancelButton;
 
         [Header("References")]
         [SerializeField] private BattleUiEditor _battleUiEditor;
+
         [SerializeField] private SaveReset _saveReset;
 
         private const string GridColumnLinesKey = "BattleUiEditorGridColumns";
@@ -90,12 +114,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         private const int GridHueDefault = 33;
         private const int GridTransparencyDefault = 50;
 
-        private const float GameAspectRatio = 9f / 16f;
+        private const float GameAspectRatio = 9f / 19f;
+        private readonly Dictionary<Graphic, Color> _originalColors = new();
 
         private void Awake()
         {
+            float unsafeAreaHeight = PanelScaler.CalculateUnsafeAreaHeight();
+
+            EditorRectTransform.offsetMin = Vector2.zero;
+            EditorRectTransform.offsetMax = Vector2.zero;
+
             _resetButton.onClick.AddListener(_saveReset.OnResetButtonClicked);
-            _closeButton.onClick.AddListener(CloseOptionsPopup);
 
             // Show grid toggle listener
             _showGridToggle.onValueChanged.AddListener((value) =>
@@ -110,6 +139,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _battleUiEditor.UpdateInputFieldText(value, _gridColumnsInputField);
                 UpdateGridColumnLines();
             });
+
             _gridColumnsInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_gridColumnsInputField, _gridColumnsSlider);
@@ -122,6 +152,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _battleUiEditor.UpdateInputFieldText(value, _gridRowsInputField);
                 UpdateGridRowLines();
             });
+
             _gridRowsInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_gridRowsInputField, _gridRowsSlider);
@@ -135,6 +166,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _grid.SetGridHue(value);
                 PlayerPrefs.SetInt(GridHueKey, (int)value);
             });
+
             _gridHueInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_gridHueInputField, _gridHueSlider);
@@ -149,6 +181,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _grid.SetGridTransparency(value);
                 PlayerPrefs.SetInt(GridTransparencyKey, (int)value);
             });
+
             _gridTransparencyInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_gridTransparencyInputField, _gridTransparencySlider);
@@ -157,21 +190,52 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             });
 
             // Input options listeners
-            _swipeMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger); });
-            _pointAndClickMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.PointAndClick, BattleRotationInputType.TwoFinger); });
-            _joystickMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.Joystick, BattleRotationInputType.Joystick); });
-            _followPointerMovementToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(BattleMovementInputType.FollowPointer, BattleRotationInputType.TwoFinger); });
+            _swipeMovementToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) UpdateInputSettings(BattleMovementInputType.Swipe, BattleRotationInputType.TwoFinger);
+            });
 
-            _twoFingerRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.TwoFinger); });
-            _swipeRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Swipe); });
-            _joystickRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Joystick); });
-            _gyroscopeRotationToggle.onValueChanged.AddListener((value) => { if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Gyroscope); });
+            _pointAndClickMovementToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) UpdateInputSettings(BattleMovementInputType.PointAndClick, BattleRotationInputType.TwoFinger);
+            });
+
+            _joystickMovementToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) UpdateInputSettings(BattleMovementInputType.Joystick, BattleRotationInputType.Joystick);
+            });
+
+            _followPointerMovementToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) UpdateInputSettings(BattleMovementInputType.FollowPointer, BattleRotationInputType.TwoFinger);
+            });
+
+            _twoFingerRotationToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.TwoFinger);
+            });
+
+            _swipeRotationToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Swipe);
+            });
+
+            _joystickRotationToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Joystick);
+            });
+
+            _gyroscopeRotationToggle.onValueChanged.AddListener((value) =>
+            {
+                if (value) UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, BattleRotationInputType.Gyroscope);
+            });
 
             _swipeMinDistanceSlider.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.UpdateInputFieldText(value, _swipeMinDistanceInputField);
                 SettingsCarrier.Instance.BattleSwipeMinDistance = value;
             });
+
             _swipeMinDistanceInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_swipeMinDistanceInputField, _swipeMinDistanceSlider);
@@ -183,6 +247,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _battleUiEditor.UpdateInputFieldText(value, _rotationSwipeMaxDistanceInputField);
                 SettingsCarrier.Instance.BattleSwipeMaxDistance = value;
             });
+
             _rotationSwipeMaxDistanceInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_rotationSwipeMaxDistanceInputField, _rotationSwipeMaxDistanceSlider);
@@ -194,6 +259,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _battleUiEditor.UpdateInputFieldText(value, _movementSwipeSensitivityInputField);
                 SettingsCarrier.Instance.BattleSwipeSensitivity = value;
             });
+
             _movementSwipeSensitivityInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_movementSwipeSensitivityInputField, _movementSwipeSensitivitySlider);
@@ -205,24 +271,61 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 _battleUiEditor.UpdateInputFieldText(value, _gyroscopeMinAngleInputField);
                 SettingsCarrier.Instance.BattleGyroMinAngle = value;
             });
+
             _gyroscopeMinAngleInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_gyroscopeMinAngleInputField, _gyroscopeMinAngleSlider);
                 SettingsCarrier.Instance.BattleGyroMinAngle = _gyroscopeMinAngleSlider.value;
             });
 
-            // Arena scale listeners
+            // Arena options listeners
+            _stoneWallToggle.onValueChanged.AddListener((value) =>
+            {
+                _stoneWallTopCharacterImage.SetActive(value);
+                _stoneWallBottomCharacterImage.SetActive(value);
+
+                SettingsCarrier.Instance.BattleArenaStoneWallCharacter = value;
+
+                if (value) UpdateArena();
+            });
+
+            _outerEdgeWithoutFloorToggle.onValueChanged.AddListener((value) =>
+            {
+                _arenaBackgroundBlackImage.SetActive(value);
+                SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor = value;
+            });
+
+            _infoImageButton.onClick.AddListener(() => _outsideFloorPopup.SetActive(true));
+
             _arenaScaleSlider.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.UpdateInputFieldText(value, _arenaScaleInputField);
                 SettingsCarrier.Instance.BattleArenaScale = (int)value;
                 UpdateArena();
             });
+
             _arenaScaleInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_arenaScaleInputField, _arenaScaleSlider);
                 SettingsCarrier.Instance.BattleArenaScale = (int)_arenaScaleSlider.value;
                 UpdateArena();
+            });
+
+            //Outside Floor Popup options listeners
+            _outsideFloorOkButton.onClick.AddListener(() =>
+            {
+                _outsideFloorPopup.SetActive(false);
+                _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(true);
+                SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor = true;
+                SetOuterEdgeWithoutFloor(true);
+            });
+
+            _outsideFloorCancelButton.onClick.AddListener(() =>
+            {
+                _outsideFloorPopup.SetActive(false);
+                _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(false);
+                SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor = false;
+                SetOuterEdgeWithoutFloor(false);
             });
 
             // Arena pos x listeners
@@ -232,6 +335,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SettingsCarrier.Instance.BattleArenaPosX = (int)value;
                 UpdateArena();
             });
+
             _arenaPosXInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_arenaPosXInputField, _arenaPosXSlider);
@@ -246,12 +350,17 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 SettingsCarrier.Instance.BattleArenaPosY = (int)value;
                 UpdateArena();
             });
+
             _arenaPosYInputField.onValueChanged.AddListener((value) =>
             {
                 _battleUiEditor.VerifyAndUpdateSliderValue(_arenaPosYInputField, _arenaPosYSlider);
                 SettingsCarrier.Instance.BattleArenaPosY = (int)_arenaPosYSlider.value;
                 UpdateArena();
             });
+
+            SliderPopupHandler.OnHideOtherComponents += HideExceptSlider;
+            SliderPopupHandler.OnRestoreOtherComponents += RestoreAfterSliderDragging;
+
         }
 
         private void Start()
@@ -271,7 +380,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _grid.SetColumnLines((int)_gridColumnsSlider.value);
             _grid.SetShow(_showGridToggle.isOn);
 
-            // Loading saved input settings
+            // Loading saved input settings for MovementOptions
             switch (SettingsCarrier.Instance.BattleMovementInput)
             {
                 case BattleMovementInputType.Swipe:
@@ -283,7 +392,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 case BattleMovementInputType.Joystick:
                     _joystickMovementToggle.SetIsOnWithoutNotify(true);
                     break;
+                case BattleMovementInputType.FollowPointer:
+                    _followPointerMovementToggle.SetIsOnWithoutNotify(true);
+                    break;
             }
+
 
             UpdateInputSettings(SettingsCarrier.Instance.BattleMovementInput, SettingsCarrier.Instance.BattleRotationInput);
 
@@ -307,6 +420,19 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _arenaScaleSlider.value = SettingsCarrier.Instance.BattleArenaScale;
             _arenaPosXSlider.value = SettingsCarrier.Instance.BattleArenaPosX;
             _arenaPosYSlider.value = SettingsCarrier.Instance.BattleArenaPosY;
+
+            //Loading StoneWallCharacter settings.
+            bool stoneWallCharacter = SettingsCarrier.Instance.BattleArenaStoneWallCharacter;
+            _stoneWallToggle.SetIsOnWithoutNotify(stoneWallCharacter);
+            _stoneWallTopCharacterImage.SetActive(stoneWallCharacter);
+            _stoneWallBottomCharacterImage.SetActive(stoneWallCharacter);
+
+            //Loading OuterEdgeWithoutFloor settings.
+            bool outerEdgeWithoutFloor = SettingsCarrier.Instance.BattleArenaOuterEdgeWithoutFloor;
+            _outerEdgeWithoutFloorToggle.SetIsOnWithoutNotify(outerEdgeWithoutFloor);
+            SetOuterEdgeWithoutFloor(outerEdgeWithoutFloor);
+
+            UpdateArena();
         }
 
         private void OnDestroy()
@@ -334,6 +460,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _swipeMovementToggle.onValueChanged.RemoveAllListeners();
             _pointAndClickMovementToggle.onValueChanged.RemoveAllListeners();
             _joystickMovementToggle.onValueChanged.RemoveAllListeners();
+            _followPointerMovementToggle.onValueChanged.RemoveAllListeners();
 
             _twoFingerRotationToggle.onValueChanged.RemoveAllListeners();
             _swipeRotationToggle.onValueChanged.RemoveAllListeners();
@@ -352,7 +479,11 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             _gyroscopeMinAngleSlider.onValueChanged.RemoveAllListeners();
             _gyroscopeMinAngleInputField.onValueChanged.RemoveAllListeners();
 
-            // Removing arena scale listeners
+            // Removing arena options listeners
+            _stoneWallToggle.onValueChanged.RemoveAllListeners();
+            _outerEdgeWithoutFloorToggle.onValueChanged.RemoveAllListeners();
+            _infoImageButton.onClick.RemoveAllListeners();
+
             _arenaScaleSlider.onValueChanged.RemoveAllListeners();
             _arenaScaleInputField.onValueChanged.RemoveAllListeners();
 
@@ -361,6 +492,14 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             _arenaPosYSlider.onValueChanged.RemoveAllListeners();
             _arenaPosYInputField.onValueChanged.RemoveAllListeners();
+
+            //Removing Outside Floor Popup listeners
+            _outsideFloorOkButton.onClick.RemoveAllListeners();
+            _outsideFloorCancelButton.onClick.RemoveAllListeners();
+
+            SliderPopupHandler.OnHideOtherComponents -= HideExceptSlider;
+            SliderPopupHandler.OnRestoreOtherComponents -= RestoreAfterSliderDragging;
+
         }
 
         private void UpdateInputSettings(BattleMovementInputType movementType, BattleRotationInputType rotationType)
@@ -369,39 +508,80 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
             SettingsCarrier.Instance.BattleMovementInput = movementType;
             SettingsCarrier.Instance.BattleRotationInput = rotationType;
 
-            // If joystick movement was selected instantianting the joysticks if they are not yet instantiated
-            if (movementType == BattleMovementInputType.Joystick)
+            // Instantiate movement joystick if needed
+            if (movementType == BattleMovementInputType.Joystick && _battleUiEditor._instantiatedMoveJoystick == null)
             {
-                if (_battleUiEditor._instantiatedMoveJoystick == null)
-                {
-                    _battleUiEditor._instantiatedMoveJoystick = _battleUiEditor.InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
-                    _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedMoveJoystick);
-                }
+                _battleUiEditor._instantiatedMoveJoystick = _battleUiEditor.InstantiateBattleUiElement(BattleUiElementType.MoveJoystick).GetComponent<BattleUiMovableElement>();
 
-                if (_battleUiEditor._instantiatedRotateJoystick == null)
-                {
-                    _battleUiEditor._instantiatedRotateJoystick = _battleUiEditor.InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
-                    _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedRotateJoystick);
-                }
+                _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedMoveJoystick);
             }
 
-            // Toggling rotation toggles isOn based on rotation type and visibility based on movement type
+            // Instantiate rotation joystick if needed
+            if (rotationType == BattleRotationInputType.Joystick && _battleUiEditor._instantiatedRotateJoystick == null)
+            {
+                _battleUiEditor._instantiatedRotateJoystick = _battleUiEditor.InstantiateBattleUiElement(BattleUiElementType.RotateJoystick).GetComponent<BattleUiMovableElement>();
+
+                _battleUiEditor.SetDataToUiElement(_battleUiEditor._instantiatedRotateJoystick);
+            }
+
+            //Rotation togglle visibility
+            bool twoFingerVisibility = movementType == BattleMovementInputType.Swipe || movementType == BattleMovementInputType.PointAndClick || movementType == BattleMovementInputType.FollowPointer;
+
+            bool swipeRotationVisibility = movementType == BattleMovementInputType.PointAndClick;
+
+            bool joystickRotationVisibility = movementType == BattleMovementInputType.Joystick;
+
+            bool gyroscopeRotationVisibility = true;
+
+            //Toggle states
             _twoFingerRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.TwoFinger);
-            _twoFingerRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Swipe || movementType == BattleMovementInputType.PointAndClick || movementType == BattleMovementInputType.FollowPointer);
 
             _swipeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Swipe);
-            _swipeRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.PointAndClick);
 
             _joystickRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Joystick);
-            _joystickRotationToggle.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
 
             _gyroscopeRotationToggle.SetIsOnWithoutNotify(rotationType == BattleRotationInputType.Gyroscope);
+
+            //Toggle visibility
+            _twoFingerRotationToggle.gameObject.SetActive(twoFingerVisibility);
+            _swipeRotationToggle.gameObject.SetActive(swipeRotationVisibility);
+            _joystickRotationToggle.gameObject.SetActive(joystickRotationVisibility);
+
+            //Gyroscope toggle visibility
+            _gyroscopeRotationToggle.gameObject.SetActive(gyroscopeRotationVisibility);
+            _spacerAftergyroscopeRotation?.SetActive(gyroscopeRotationVisibility);
+
+            //Spacer visibilty
+            _spacerAfterTwoFinger?.SetActive(twoFingerVisibility);
+            _spacerAfterSwipeRotation?.SetActive(swipeRotationVisibility);
+            _spacerAfterJoystickRotation?.SetActive(joystickRotationVisibility);
+            _spacerAftergyroscopeRotation?.SetActive(true);
 
             // Setting visibility for the swipe and gyroscope additional options
             _swipeMinDistanceHolder.SetActive(movementType == BattleMovementInputType.Swipe || rotationType == BattleRotationInputType.Swipe);
             _swipeMaxDistanceHolder.SetActive(rotationType == BattleRotationInputType.Swipe);
             _movementSwipeSensitivityHolder.SetActive(movementType == BattleMovementInputType.Swipe);
             _gyroscopeMinAngleHolder.SetActive(rotationType == BattleRotationInputType.Gyroscope);
+
+            // Movement instruction images
+            if (_swipeInstructionImage != null) _swipeInstructionImage.SetActive(movementType == BattleMovementInputType.Swipe);
+
+            if (_pointAndClickInstructionImage != null) _pointAndClickInstructionImage.SetActive(movementType == BattleMovementInputType.PointAndClick);
+
+            if (_joystickInstructionImage != null) _joystickInstructionImage.SetActive(movementType == BattleMovementInputType.Joystick);
+
+            if (_followPointerInstructionImage != null) _followPointerInstructionImage.SetActive(movementType == BattleMovementInputType.FollowPointer);
+
+            // Rotation instruction images
+            if (_twoFingerRotationInstructionImage != null) _twoFingerRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.TwoFinger);
+
+            if (_swipeRotationInstructionImage != null) _swipeRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Swipe);
+
+            if (_joystickRotationInstructionImage != null) _joystickRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Joystick);
+
+            if (_gyroscopeRotationInstructionImage != null) _gyroscopeRotationInstructionImage.SetActive(rotationType == BattleRotationInputType.Gyroscope);
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_instructionImageRow);
 
             // Setting visibility to joysticks
             if (_battleUiEditor._instantiatedMoveJoystick != null) _battleUiEditor._instantiatedMoveJoystick.gameObject.SetActive(movementType == BattleMovementInputType.Joystick);
@@ -422,41 +602,46 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
         private void UpdateArena()
         {
-            float screenAspectRatio = Screen.width / (float)Screen.height;
-
             // For some reason the editor has different aspect ratio calculated from rect size in local space than in world space because of the editor scaling
             // Getting editor corners in world space
             Vector3[] editorCorners = new Vector3[4];
             EditorRectTransform.GetWorldCorners(editorCorners);
 
             // Calculating world space size and aspect ratio
-            Vector2 editorWorldSize = new(editorCorners[(int)CornerType.TopRight].x - editorCorners[(int)CornerType.TopLeft].x,
-                       editorCorners[(int)CornerType.TopRight].y - editorCorners[(int)CornerType.BottomRight].y);
+            Vector2 editorWorldSize = new(editorCorners[(int)CornerType.TopRight].x - editorCorners[(int)CornerType.TopLeft].x, editorCorners[(int)CornerType.TopRight].y - editorCorners[(int)CornerType.BottomRight].y);
             float editorWorldAspectRatio = editorWorldSize.x / editorWorldSize.y;
 
             // Calculating a height for the editor from the world aspect ratio so that it works in calculations
             float editorAspectRatioHeight = EditorRect.width / editorWorldAspectRatio;
+
+            // Available editor area
+            float availableWidth = EditorRect.width;
+            float availableHeight = editorAspectRatioHeight;
+            float availableAspectRatio = availableWidth / availableHeight;
 
             // Calculating arena scale.
             // If phone aspect ratio is same or thinner than the game aspect ratio we calculate arena width and height based on
             // editor width, but if it's thicker we calculate based on height so that the arena won't overlap or be too small.
             float arenaWidth;
             float arenaHeight;
-            if (screenAspectRatio <= GameAspectRatio)
+
+            if (availableAspectRatio <= GameAspectRatio)
             {
-                arenaWidth = _arenaScaleSlider.value * 0.01f * EditorRect.width;
+                // Narrow screen
+                arenaWidth = _arenaScaleSlider.value * 0.01f * availableWidth;
                 arenaHeight = arenaWidth / GameAspectRatio;
             }
             else
             {
-                arenaHeight = _arenaScaleSlider.value * 0.01f * editorAspectRatioHeight;
+                // Wide screen
+                arenaHeight = _arenaScaleSlider.value * 0.01f * availableHeight;
                 arenaWidth = arenaHeight * GameAspectRatio;
             }
 
             // Calculating arena position
             Vector2 position = Vector2.zero;
-            position.x += _arenaPosXSlider.value * 0.01f * (EditorRect.width - arenaWidth);
-            position.y += (100f - _arenaPosYSlider.value) * 0.01f * (editorAspectRatioHeight - arenaHeight);
+            position.x = _arenaPosXSlider.value * 0.01f * (availableWidth - arenaWidth);
+            position.y = (100f - _arenaPosYSlider.value) * 0.01f * (availableHeight - arenaHeight);
 
             // Calculating arena anchors
             Vector2 anchorMin = Vector2.zero;
@@ -474,13 +659,42 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
 
             _arenaImage.offsetMin = Vector2.zero;
             _arenaImage.offsetMax = Vector2.zero;
+
+            // Stone wall characters
+
+            float arenaCenterX = (_arenaImage.anchorMin.x + _arenaImage.anchorMax.x) * 0.5f;
+
+            // Top stone
+            _stoneWallTopCharacterRect.pivot = new Vector2(0.5f, 1f);
+
+            _stoneWallTopCharacterRect.anchorMin = new Vector2(arenaCenterX, _arenaImage.anchorMax.y);
+
+            _stoneWallTopCharacterRect.anchorMax = new Vector2(arenaCenterX, _arenaImage.anchorMax.y);
+
+            _stoneWallTopCharacterRect.anchoredPosition = Vector2.zero;
+
+            // Bottom stone
+            _stoneWallBottomCharacterRect.pivot = new Vector2(0.5f, 1f);
+
+            _stoneWallBottomCharacterRect.anchorMin = new Vector2(arenaCenterX, _arenaImage.anchorMin.y);
+
+            _stoneWallBottomCharacterRect.anchorMax = new Vector2(arenaCenterX, _arenaImage.anchorMin.y);
+
+            _stoneWallBottomCharacterRect.anchoredPosition = Vector2.zero;
+
+            // Scale
+            _stoneWallTopCharacterRect.localScale = Vector3.one;
+            _stoneWallBottomCharacterRect.localScale = Vector3.one;
+
+            _stoneWallTopCharacterRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, arenaWidth);
+            _stoneWallBottomCharacterRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, arenaWidth);
         }
 
         public void ToggleOptionsPopup()
         {
             if (_optionsContents.activeSelf)
             {
-                CloseOptionsPopup();
+                //CloseOptionsPopup();
             }
             else
             {
@@ -492,11 +706,58 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
         {
             _battleUiEditor.OnUiElementSelected(null);
             _optionsContents.SetActive(true);
+            _battleUiEditor.SetTopButtons(close: true, save: false, preview: false, options: true);
         }
 
-        public void CloseOptionsPopup()
+        public void OnCloseButtonClicked()
         {
             _optionsContents.SetActive(false);
+            _battleUiEditor.SetTopButtons(true, true, true, true);
+        }
+
+        private void SetOuterEdgeWithoutFloor(bool enabled)
+        {
+            _arenaBackgroundBlackImage.SetActive(enabled);
+        }
+
+        public void HideExceptSlider(Transform activeSlider, Transform valueField, Transform title)
+        {
+            _originalColors.Clear();
+
+            Graphic[] graphics = _optionsContents.GetComponentsInChildren<Graphic>(true);
+
+            foreach (Graphic graphic in graphics)
+            {
+                bool belongsToSLider = graphic.transform == activeSlider || graphic.transform.IsChildOf(activeSlider);
+
+                bool BelongsToValueField = graphic.transform == valueField || graphic.transform.IsChildOf(valueField);
+
+                bool BelongsToTitle = graphic.transform == title || graphic.transform.IsChildOf(title);
+
+                if (belongsToSLider || BelongsToValueField || BelongsToTitle)
+                {
+                    continue;
+                }
+
+                _originalColors[graphic] = graphic.color;
+
+                Color color = graphic.color;
+                color.a = 0f;
+                graphic.color = color;
+            }
+        }
+
+        public void RestoreAfterSliderDragging()
+        {
+            foreach (var item in _originalColors)
+            {
+                if (item.Key != null)
+                {
+                    item.Key.color = item.Value;
+                }
+            }
+
+            _originalColors.Clear();
         }
     }
 }

@@ -1,5 +1,4 @@
 using Prg.Editor.Dependencies;
-using Prg.Editor.Localization;
 using Prg.Editor.Logging;
 using Prg.Editor.Util;
 using UnityEditor;
@@ -7,7 +6,7 @@ using UnityEditor;
 namespace Prg.Editor
 {
     /// <summary>
-    /// Container to populate 'Window' menu items for this game in Editor. 
+    /// Container to populate 'Window' menu items for this game in Editor.
     /// </summary>
     internal static class WindowMenuItems
     {
@@ -15,33 +14,10 @@ namespace Prg.Editor
         // You can add a separator in between two menu items by making sure there is at least 10 digits in between the priority of the menu items.
 
         private const string MenuRoot = "Window/ALT-Zone/";
-        private const string Localization = MenuRoot + "Localization/";
         private const string Dependencies = MenuRoot + "Dependencies/";
         private const string MissingReferences = Dependencies + "Missing References : ";
         private const string Logging = MenuRoot + "Logging/";
         private const string Util = MenuRoot + "Util/";
-
-        #region Localization
-
-        [MenuItem(Localization + "Load Translations (bin)", false, 10)]
-        private static void LoadTranslations() => LocalizerMenu.LoadTranslations();
-
-        [MenuItem(Localization + "Save Translations (tsv->bin)", false, 11)]
-        private static void SaveTranslations() => LocalizerMenu.SaveTranslations();
-
-        [MenuItem(Localization + "Show Translations (bin)", false, 12)]
-        private static void ShowTranslations() => LocalizerMenu.ShowTranslations();
-
-        [MenuItem(Localization + "Check Selected Asset(s)", false, 13)]
-        private static void CheckUsedTranslationsInAssets() => LocalizerMenu.CheckUsedTranslationsInAssets();
-
-        [MenuItem(Localization + "Open In Google Drive", false, 14)]
-        private static void OpenInGoogleDrive() => LocalizerMenu.OpenInGoogleDrive();
-
-        [MenuItem(Localization + "Show Localization Window", false, 14)]
-        private static void SearchLocalizationKeys() => SmartTextSearchEditorWindow.SearchLocalizationKeys();
-
-        #endregion
 
         #region Dependencies
 

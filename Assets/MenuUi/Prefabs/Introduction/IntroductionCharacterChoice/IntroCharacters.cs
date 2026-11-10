@@ -37,7 +37,7 @@ public class IntroCharacters : MonoBehaviour
         }
     }
 
-    private void SelectInitialAvatar(CharacterClassType classType)
+    public static void SelectInitialAvatar(CharacterClassType classType)
     {
         OnInitialAvatarSelection?.Invoke(classType);
     }

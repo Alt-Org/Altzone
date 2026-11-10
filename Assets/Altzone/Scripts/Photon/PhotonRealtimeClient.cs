@@ -673,7 +673,7 @@ public static class PhotonRealtimeClient
         }
     }
 
-    private static RoomOptions GetRoomOptions(MatchmakingType lobbyType, MatchmakingType matchmakingType = MatchmakingType.None, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string clanName = "", string clanId = "", int soulhomeRank = -1, int customGameMode = -1, bool showToFriends = false, bool showToClan = false, string leaderId = null)
+    private static RoomOptions GetRoomOptions(MatchmakingType lobbyType, MatchmakingType matchmakingType = MatchmakingType.None, bool isMatchmaking = false, string mapId = "", Emotion startingEmotion = Emotion.Blank, string roomName = "", string password = "", string visibleName = "", string clanName = "", string clanId = "", int soulhomeRank = -1, int customGameMode = -1, int playerCount = -1, bool showToFriends = false, bool showToClan = false, string leaderId = null)
     {
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
@@ -691,50 +691,49 @@ public static class PhotonRealtimeClient
         if (lobbyType == MatchmakingType.FriendLobby)
         {
             customRoomProperties.Add(PhotonBattleRoom.PremadeModeKey, true);
-            customRoomProperties.Add(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)matchmakingType);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeTargetMatchmakingTypeKey, (int)matchmakingType);
+            customRoomProperties.Add(PhotonBattleRoom.PremadeTargetGameTypeKey, customGameMode);
             customRoomProperties.Add(PhotonBattleRoom.PremadeLeaderUserIdKey, LocalPlayer.UserId);
             customRoomProperties.Add(PhotonBattleRoom.PremadeLeaderUsernameKey, LocalPlayer.NickName);
-            customRoomProperties.Add(PhotonBattleRoom.PremadeInvitedUserIdKey, "");
-            customRoomProperties.Add(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStateNone);
-            customRoomProperties.Add(PhotonBattleRoom.PremadeInviteTimestampKey, 0L);
             customRoomProperties.Add(PhotonBattleRoom.PremadeUserId1Key, LocalPlayer.UserId);
             customRoomProperties.Add(PhotonBattleRoom.PremadeUsername1Key, LocalPlayer.NickName);
             customRoomProperties.Add(PhotonBattleRoom.PremadeUserId2Key, "");
             customRoomProperties.Add(PhotonBattleRoom.PremadeUsername2Key, "");
 
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeModeKey);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeTargetMatchmakingTypeKey);
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeTargetGameTypeKey);
-            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeInvitedUserIdKey);
-            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeInviteStateKey);
-            propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeInviteTimestampKey);
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeLeaderUserIdKey);
             propertiesShowingToLobby.Add(PhotonBattleRoom.PremadeLeaderUsernameKey);
         }
 
-        int maxPlayers;
+        int maxPlayers = playerCount;
 
-        switch (lobbyType)
+        if (maxPlayers <= 0)
         {
-            default:
-            case MatchmakingType.Custom:
-                maxPlayers = 4;
-                break;
-            case MatchmakingType.Random2v2:
-            case MatchmakingType.Clan2v2:
-                if (isMatchmaking)
-                {
+            switch (lobbyType)
+            {
+                default:
+                case MatchmakingType.Custom:
                     maxPlayers = 4;
-                }
-                else
-                {
+                    break;
+                case MatchmakingType.Random2v2:
+                case MatchmakingType.Clan2v2:
+                    if (isMatchmaking)
+                    {
+                        maxPlayers = 4;
+                    }
+                    else
+                    {
+                        maxPlayers = 2;
+                    }
+                    break;
+                case MatchmakingType.FriendLobby:
                     maxPlayers = 2;
-                }
-                break;
-            case MatchmakingType.FriendLobby:
-                maxPlayers = 2;
-                break;
+                    break;
+            }
         }
-        if (maxPlayers == 4)
+        if (maxPlayers == 4 || lobbyType is MatchmakingType.Custom)
         {
             customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey3, "");
             customRoomProperties.Add(PhotonBattleRoom.PlayerPositionKey4, "");
@@ -756,6 +755,12 @@ public static class PhotonRealtimeClient
         {
             customRoomProperties.Add(PhotonBattleRoom.PasswordKey, HashRoomPassword(password));
             propertiesShowingToLobby.Add(PhotonBattleRoom.PasswordKey);
+        }
+
+        if (!string.IsNullOrEmpty(visibleName))
+        {
+            customRoomProperties.Add(PhotonBattleRoom.VisibleRoomNameKey, visibleName);
+            propertiesShowingToLobby.Add(PhotonBattleRoom.VisibleRoomNameKey);
         }
 
         if (!string.IsNullOrEmpty(clanName))
@@ -853,7 +858,7 @@ public static class PhotonRealtimeClient
         );
     }
 
-    public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null, int customGameMode = -1, bool showToFriends = false, bool showToClan = false, string displayName = null)
+    public static bool CreateCustomLobbyRoom(string roomName, string mapId, Emotion startingEmotion, string password = "", string[] expectedUsers = null, int customGameMode = -1, int playerCount = -1, bool showToFriends = false, bool showToClan = false, string displayName = null)
     {
         // Use provided displayName for lobby-visible name if given, otherwise fall back to the roomName
         string leaderId = null;
@@ -881,10 +886,12 @@ public static class PhotonRealtimeClient
             lobbyType: MatchmakingType.Custom,
             mapId: mapId,
             startingEmotion: startingEmotion,
-            roomName: displayName ?? roomName,
+            roomName: roomName,
+            visibleName: displayName,
             password: password,
             clanId: showToClan ? clanId : null,
             customGameMode: customGameMode,
+            playerCount: playerCount,
             showToFriends: showToFriends,
             showToClan: showToClan,
             leaderId: leaderId
@@ -897,9 +904,11 @@ public static class PhotonRealtimeClient
         );
     }
 
-    public static bool CreateInRoomPremadeLobbyRoom(MatchmakingType matchmakingType= MatchmakingType.None, GameType gameType = GameType.BattlePingPong, string[] expectedUsers = null)
+    public static bool CreateInRoomPremadeLobbyRoom(MatchmakingType matchmakingType = MatchmakingType.None, GameType gameType = GameType.BattlePingPong, string roomId = null)
     {
-        string roomName = $"FriendLobby_{LocalPlayer.UserId}_{matchmakingType}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+        string roomName = string.IsNullOrWhiteSpace(roomId)
+            ? $"FriendLobby_{LocalPlayer.UserId}_{matchmakingType}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}"
+            : roomId;
         RoomOptions roomOptions = GetRoomOptions(
             lobbyType: MatchmakingType.FriendLobby,
             matchmakingType: matchmakingType,
@@ -909,89 +918,8 @@ public static class PhotonRealtimeClient
 
         return CreateRoom(
             roomName: roomName,
-            roomOptions: roomOptions,
-            expectedUsers: expectedUsers
+            roomOptions: roomOptions
         );
-    }
-
-    public static bool SendPremadeInvite(string invitedUserId, MatchmakingType targetGameType = MatchmakingType.Random2v2)
-    {
-        if (string.IsNullOrEmpty(invitedUserId))
-        {
-            Debug.LogWarning("SendPremadeInvite: invitedUserId is null or empty.");
-            return false;
-        }
-
-        if (Client == null || !Client.IsConnectedAndReady)
-        {
-            Debug.LogWarning("SendPremadeInvite: Photon client is not connected or ready.");
-            return false;
-        }
-
-        // If already in a room, set expected users and room props
-        if (InRoom && CurrentRoom != null)
-        {
-            if (!LocalLobbyPlayer.IsMasterClient)
-            {
-                Debug.LogWarning("SendPremadeInvite: only master client can send in-room invites.");
-                return false;
-            }
-
-            try
-            {
-                LobbyCurrentRoom.ClearExpectedUsers();
-                LobbyCurrentRoom.SetExpectedUsers(new[] { invitedUserId });
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning($"SendPremadeInvite: failed to set expected users: {ex.Message}");
-            }
-
-            string localUserId = LocalPlayer?.UserId ?? string.Empty;
-            string localUsername = LocalPlayer?.NickName ?? string.Empty;
-
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeModeKey, true);
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUserIdKey, localUserId);
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeLeaderUsernameKey, localUsername);
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInvitedUserIdKey, invitedUserId);
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteStateKey, PhotonBattleRoom.PremadeInviteStatePending);
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeInviteTimestampKey, DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeTargetGameTypeKey, (int)targetGameType);
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId1Key, localUserId);
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername1Key, localUsername);
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUserId2Key, string.Empty);
-            CurrentRoom.SetCustomProperty(PhotonBattleRoom.PremadeUsername2Key, string.Empty);
-
-            return true;
-        }
-
-        // Not in a room yet: create a premade friend lobby room with the invited user as expected user
-        string roomName = $"FriendLobby_{LocalPlayer?.UserId}_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
-        RoomOptions roomOptions = GetRoomOptions(lobbyType: MatchmakingType.FriendLobby, roomName: roomName);
-
-        try
-        {
-            if (roomOptions.CustomRoomProperties == null)
-            {
-                roomOptions.CustomRoomProperties = new PhotonHashtable();
-            }
-            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeInvitedUserIdKey] = invitedUserId;
-            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeInviteStateKey] = PhotonBattleRoom.PremadeInviteStatePending;
-            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeInviteTimestampKey] = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeLeaderUserIdKey] = LocalPlayer?.UserId ?? string.Empty;
-            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeLeaderUsernameKey] = LocalPlayer?.NickName ?? string.Empty;
-            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeTargetGameTypeKey] = (int)targetGameType;
-            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeUserId1Key] = LocalPlayer?.UserId ?? string.Empty;
-            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeUsername1Key] = LocalPlayer?.NickName ?? string.Empty;
-            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeUserId2Key] = string.Empty;
-            roomOptions.CustomRoomProperties[PhotonBattleRoom.PremadeUsername2Key] = string.Empty;
-        }
-        catch (Exception ex)
-        {
-            Debug.LogWarning($"SendPremadeInvite: failed to prepare room options: {ex.Message}");
-        }
-
-        return CreateRoom(roomName: roomName, roomOptions: roomOptions, expectedUsers: new[] { invitedUserId });
     }
 
     public static bool CreateRoom(string roomName = "", RoomOptions roomOptions = null, TypedLobby typedLobby = null, string[] expectedUsers = null)
@@ -1017,7 +945,7 @@ public static class PhotonRealtimeClient
         return Client.OpCreateRoom(opParams);
     }
 
-    public static bool JoinRandomOrCreateClan2v2Room(string clanName = "", string clanId = "", int soulhomeRank = -1, string[] expectedUsers = null, bool isMatchmaking = false)
+    public static bool JoinRandomOrCreateClan2v2Room(GameType gameType, int playerCount,string clanName = "", string clanId = "", int soulhomeRank = -1, string[] expectedUsers = null, bool isMatchmaking = false)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
@@ -1027,10 +955,12 @@ public static class PhotonRealtimeClient
 
         RoomOptions roomOptions = GetRoomOptions(
             lobbyType: MatchmakingType.Clan2v2,
+            customGameMode: (int)gameType,
             isMatchmaking: isMatchmaking,
             clanName: clanName,
             clanId: clanId,
-            soulhomeRank: soulhomeRank
+            soulhomeRank: soulhomeRank,
+            playerCount: playerCount
         );
 
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs("", roomOptions, expectedUsers);
@@ -1044,7 +974,7 @@ public static class PhotonRealtimeClient
         return Client.OpJoinRandomOrCreateRoom(joinRandomRoomArgs, enterRoomArgs);
     }
 
-    public static bool JoinRandomOrCreateCustomRoom(string roomName, string mapId, Emotion startingEmotion, string[] expectedUsers = null, int customGameMode = -1)
+    public static bool JoinRandomOrCreateCustomRoom(GameType gameType, string roomName, int playerCount, string mapId, Emotion startingEmotion, string[] expectedUsers = null)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
@@ -1056,12 +986,13 @@ public static class PhotonRealtimeClient
             roomName: roomName, // For join random or create custom room we use GUID for room name so setting it to room options
             mapId: mapId,
             startingEmotion: startingEmotion,
-            customGameMode: customGameMode
+            customGameMode: (int)gameType,
+            playerCount: playerCount
         );
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs("", roomOptions, expectedUsers);
 
         JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
-        joinRandomRoomArgs.ExpectedCustomRoomProperties = new PhotonHashtable{ { PhotonBattleRoom.MatchmakingKey, MatchmakingType.Custom } };
+        joinRandomRoomArgs.ExpectedCustomRoomProperties = new PhotonHashtable{ { PhotonBattleRoom.MatchmakingKey, MatchmakingType.Custom }, { PhotonBattleRoom.GameTypeKey, gameType } };
         joinRandomRoomArgs.ExpectedMaxPlayers = roomOptions.MaxPlayers;
         joinRandomRoomArgs.Lobby = enterRoomArgs.Lobby;
         joinRandomRoomArgs.ExpectedUsers = expectedUsers;
@@ -1069,7 +1000,7 @@ public static class PhotonRealtimeClient
         return Client.OpJoinRandomOrCreateRoom(joinRandomRoomArgs, enterRoomArgs);
     }
 
-    public static bool JoinRandomOrCreateRandom2v2Room(string[] expectedUsers = null, bool isMatchmaking = false)
+    public static bool JoinRandomOrCreateRandom2v2Room(GameType gameType, int playerCount, string[] expectedUsers = null, bool isMatchmaking = false)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
@@ -1079,13 +1010,15 @@ public static class PhotonRealtimeClient
 
         RoomOptions roomOptions = GetRoomOptions(
             lobbyType: MatchmakingType.Random2v2,
+            customGameMode: (int)gameType,
+            playerCount: playerCount,
             isMatchmaking: isMatchmaking
         );
 
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs("", roomOptions, expectedUsers);
 
         JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
-        joinRandomRoomArgs.ExpectedCustomRoomProperties = new PhotonHashtable{ { PhotonBattleRoom.MatchmakingKey, MatchmakingType.Random2v2 }, { PhotonBattleRoom.IsMatchmakingKey, isMatchmaking } };
+        joinRandomRoomArgs.ExpectedCustomRoomProperties = new PhotonHashtable{ { PhotonBattleRoom.MatchmakingKey, MatchmakingType.Random2v2 }, { PhotonBattleRoom.IsMatchmakingKey, isMatchmaking }, { PhotonBattleRoom.GameTypeKey, gameType } };
         joinRandomRoomArgs.ExpectedMaxPlayers = roomOptions.MaxPlayers;
         joinRandomRoomArgs.Lobby = enterRoomArgs.Lobby;
         joinRandomRoomArgs.ExpectedUsers = expectedUsers;
@@ -1095,7 +1028,7 @@ public static class PhotonRealtimeClient
 
     // Server-side matchmaking room assignment using shared bucket properties.
     // Room names are allocated by the server when creating new rooms.
-    public static bool JoinOrCreateMatchmakingRoom(MatchmakingType gameType, string[] expectedUsers = null, string clanName = "", string clanId = "", int soulhomeRank = -1)
+    public static bool JoinOrCreateMatchmakingRoom(MatchmakingType matchmakingType, GameType gameType, int playerCount, string[] expectedUsers = null, string clanName = "", string clanId = "", int soulhomeRank = -1)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
@@ -1103,11 +1036,11 @@ public static class PhotonRealtimeClient
             return false;
         }
 
-        RoomOptions roomOptions = GetRoomOptions(gameType, MatchmakingType.None, true, "", Emotion.Blank, "", "", clanName, clanId, soulhomeRank);
+        RoomOptions roomOptions = GetRoomOptions(matchmakingType, MatchmakingType.None, true, "", Emotion.Blank, "", "","", clanName, clanId, soulhomeRank, (int)gameType, playerCount);
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs("", roomOptions, expectedUsers);
 
         JoinRandomRoomArgs joinRandomRoomArgs = new JoinRandomRoomArgs();
-        var expectedProps = new PhotonHashtable{ { PhotonBattleRoom.MatchmakingKey, gameType }, { PhotonBattleRoom.IsMatchmakingKey, true } };
+        var expectedProps = new PhotonHashtable{ { PhotonBattleRoom.MatchmakingKey, matchmakingType }, { PhotonBattleRoom.IsMatchmakingKey, true }, { PhotonBattleRoom.GameTypeKey, gameType } };
         if (!string.IsNullOrEmpty(clanName)) expectedProps.Add(PhotonBattleRoom.ClanNameKey, clanName);
         if (!string.IsNullOrEmpty(clanId)) expectedProps.Add(PhotonBattleRoom.ClanIdKey, clanId);
         if (soulhomeRank >= 0) expectedProps.Add(PhotonBattleRoom.SoulhomeRank, soulhomeRank);
@@ -1120,7 +1053,7 @@ public static class PhotonRealtimeClient
     }
 
     // Join or create a persistent queue room that can hold many players waiting for matches.
-    public static bool JoinOrCreateQueueRoom(MatchmakingType gameType, int maxQueueSize = 500)
+    public static bool JoinOrCreateQueueRoom(MatchmakingType matchmakingType, GameType gameType, int maxQueueSize = 500)
     {
         if (Client.Server != ServerConnection.MasterServer || !Client.IsConnectedAndReady)
         {
@@ -1131,8 +1064,9 @@ public static class PhotonRealtimeClient
         // Build minimal room options suitable for a queue room
         PhotonHashtable customRoomProperties = new PhotonHashtable
         {
-            { PhotonBattleRoom.MatchmakingKey, gameType },
+            { PhotonBattleRoom.MatchmakingKey, matchmakingType },
             { PhotonBattleRoom.IsMatchmakingKey, false },
+            { PhotonBattleRoom.GameTypeKey, gameType },
             { PhotonBattleRoom.IsQueueKey, true }
         };
 
@@ -1146,7 +1080,7 @@ public static class PhotonRealtimeClient
             EmptyRoomTtl = ServerSettings.EmptyRoomTtlInSeconds * 1000,
             PublishUserId = true,
             CustomRoomProperties = customRoomProperties,
-            CustomRoomPropertiesForLobby = new string[] { PhotonBattleRoom.MatchmakingKey, PhotonBattleRoom.IsQueueKey }
+            CustomRoomPropertiesForLobby = new string[] { PhotonBattleRoom.MatchmakingKey, PhotonBattleRoom.IsQueueKey, PhotonBattleRoom.GameTypeKey }
         };
 
         EnterRoomArgs enterRoomArgs = GetEnterRoomArgs($"Queue_{gameType}", roomOptions, null);

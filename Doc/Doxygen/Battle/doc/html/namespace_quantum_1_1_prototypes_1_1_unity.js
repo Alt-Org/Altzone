@@ -1,9 +1,16 @@
 var namespace_quantum_1_1_prototypes_1_1_unity =
 [
-    [ "BattlePlayerClassProjectorDataQComponentPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_class_projector_data_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_class_projector_data_q_component_prototype" ],
+    [ "BattleCompoundEntityQComponentPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_compound_entity_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_compound_entity_q_component_prototype" ],
+    [ "BattleEntityLinkPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_entity_link_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_entity_link_prototype" ],
+    [ "BattleEntityManagerDataQSingletonPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_entity_manager_data_q_singleton_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_entity_manager_data_q_singleton_prototype" ],
+    [ "BattlePlayerClass400DataQComponentPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_class400_data_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_class400_data_q_component_prototype" ],
+    [ "BattlePlayerClass600DataQComponentPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_class600_data_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_class600_data_q_component_prototype" ],
     [ "BattlePlayerDataQComponentPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_data_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_data_q_component_prototype" ],
+    [ "BattlePlayerEntityRefPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_entity_ref_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_entity_ref_prototype" ],
     [ "BattlePlayerHitboxQComponentPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_hitbox_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_hitbox_q_component_prototype" ],
-    [ "BattlePlayerManagerDataQSingletonPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_manager_data_q_singleton_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_manager_data_q_singleton_prototype" ],
+    [ "BattlePlayerShieldDataQComponentPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_shield_data_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_shield_data_q_component_prototype" ],
+    [ "BattlePlayerShieldEntityRefPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_shield_entity_ref_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_shield_entity_ref_prototype" ],
+    [ "BattleProjectileTriggerQComponentPrototype", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_projectile_trigger_q_component_prototype.html", "class_quantum_1_1_prototypes_1_1_unity_1_1_battle_projectile_trigger_q_component_prototype" ],
     [ "Boolean", "namespace_quantum_1_1_prototypes_1_1_unity.html#a6bc45bb74410d7b1a77f026dcf6c408c", null ],
     [ "Byte", "namespace_quantum_1_1_prototypes_1_1_unity.html#ab6bb9ac35cd56fdc4d993eca66e5442d", null ],
     [ "FieldOffsetAttribute", "namespace_quantum_1_1_prototypes_1_1_unity.html#ac71d063123c34749a709d54fcdfc9bc8", null ],

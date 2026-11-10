@@ -68,7 +68,6 @@ public class SettingEditor : MonoBehaviour
     private void RefreshTopBarStyleText()
     {
         string styleName = carrier.TopBarStyleSetting.ToString();
-        Debug.Log($"[STYLE TEXT] setting text to {styleName}");
 
         _topBarStyleText.SetText(styleName);
     }
@@ -81,8 +80,7 @@ public class SettingEditor : MonoBehaviour
 
         _topBarStyleButtonRight.onClick.AddListener(() => ChangeTopbarStyle(1));
         _topBarStyleButtonLeft.onClick.AddListener(() => ChangeTopbarStyle(-1));
-        _topBarStyleText.SetText(SettingsCarrier.Instance.Language,
-            new string[1] { carrier.TopBarStyleSetting.ToString() });
+        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
 
         _introSkipToggle.onValueChanged.AddListener(_ => SetIntroSkip());
 
@@ -144,16 +142,6 @@ public class SettingEditor : MonoBehaviour
         }
     }
 
-    public void SetFPSButtons()
-    {
-        if (Application.targetFrameRate == (int)Screen.currentResolution.refreshRateRatio.value)
-            fpsButtons[0].isOn = true;
-        else if (Application.targetFrameRate == 60)
-            fpsButtons[1].isOn = true;
-        else if (Application.targetFrameRate == 30)
-            fpsButtons[2].isOn = true;
-    }
-
     private float RoundToTwoDecimals(float toRound)
     {
         // Rounding the volume to two decimals so that we dont get extremely specific volumes. aka: 57.2124865223% volume
@@ -185,8 +173,6 @@ public class SettingEditor : MonoBehaviour
 
     public void ChangeTopbarStyle(int value)
     {
-        //Debug.Log($"[STYLE TEXT] ChangeTopbarStyle clicked value={value}");
-
         if (carrier == null) carrier = SettingsCarrier.Instance;
         if (carrier == null) return;
 
@@ -200,36 +186,10 @@ public class SettingEditor : MonoBehaviour
 
         var newStyle = (SettingsCarrier.TopBarStyle)index;
 
-        //Debug.Log($"[STYLE TEXT] newStyle={newStyle}");
-
         _topBarStyleText.SetText(newStyle.ToString());
 
         carrier.TopBarStyleSetting = newStyle;
     }
-
-    // public void ChangeTopbarStyle(int value)
-    // {
-    //     /// Uses the <see cref="TopBarStyle"/>  to get data we need
-    //     int index = (int)carrier.TopBarStyleSetting;
-    //     int max = (int)(SettingsCarrier.TopBarStyle)Enum.GetValues(typeof(SettingsCarrier.TopBarStyle)).Length - 1;
-    //
-    //     index += value;
-    //
-    //     if (index > max)
-    //     {
-    //         index = 0;
-    //     }
-    //     else if (index < 0)
-    //     {
-    //         index = max;
-    //     }
-    //
-    //     carrier.TopBarStyleSetting = (SettingsCarrier.TopBarStyle)index;
-    //
-    //
-    //     _topBarStyleText.SetText(SettingsCarrier.Instance.Language,
-    //         new string[1] { carrier.TopBarStyleSetting.ToString() });
-    // }
 
     public void PlayMainMenuMusic()
     {
@@ -249,7 +209,6 @@ public class SettingEditor : MonoBehaviour
         }
 
         if (_languageCaller != null) _languageCaller.SetText(language, new string[0]);
-        _topBarStyleText.SetText(SettingsCarrier.Instance.Language,
-            new string[1] { carrier.TopBarStyleSetting.ToString() });
+        _topBarStyleText.SetText(SettingsCarrier.Instance.Language, new string[1] { carrier.TopBarStyleSetting.ToString() });
     }
 }

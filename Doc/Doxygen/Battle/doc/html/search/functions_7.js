@@ -1,15 +1,21 @@
 var searchData=
 [
-  ['handlecharacterswapping_0',['HandleCharacterSwapping',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#aeb04dbaf6759fa13410ef2f7ec2d7ff6',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
-  ['handledrag_1',['HandleDrag',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_joystick_component.html#a5b164b48132873d2ec9799f13e20ca28',1,'Battle::View::UI::BattleUiJoystickComponent']]],
-  ['handlegiveupinput_2',['HandleGiveUpInput',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a1a41be298794e296b701401e57bb9139',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
-  ['handlegiveuplogic_3',['HandleGiveUpLogic',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#aad7aaa23cd21749861bb3bcec6badbcb',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
-  ['handleinplay_4',['HandleInPlay',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#ab49da1aa71fd7feddc0b48e31493200a',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
-  ['handleintersection_5',['HandleIntersection',['../class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#ab034ab349bbed35ff4ebb662449bdc69',1,'Battle::QSimulation::Projectile::BattleProjectileQSystem']]],
-  ['handleoutofplay_6',['HandleOutOfPlay',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a27782b745ef505049fe98a115b6af851',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
-  ['handleplayerabandoned_7',['HandlePlayerAbandoned',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a4aa4a6a193d122941721ccfa06f58ccb',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
-  ['handlesfxcharacter_8',['HandleSFXCharacter',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a1e8b45614908dcec7987d91f4d2d0956',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
-  ['handlesfxcommon_9',['HandleSFXCommon',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a251101f620b79b2527d5142e929a9169',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
-  ['handletrail_10',['HandleTrail',['../class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a073e65e89120c4d58a4b9cf4f3cd56f2',1,'Battle::View::Projectile::BattleProjectileViewController']]],
-  ['hide_11',['Hide',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_load_screen_handler.html#a243893b298cc077e86d1498821d23790',1,'Battle::View::UI::BattleUiLoadScreenHandler']]]
+  ['handleaiming_0',['HandleAiming',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class100_test.html#a05a0bb208f965373dcbb3f2451e45466',1,'Battle::QSimulation::Player::BattlePlayerClass100Test']]],
+  ['handleautoaim_1',['HandleAutoAim',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class100_test.html#a067d1ee1260b7191493da28aae55ccae',1,'Battle::QSimulation::Player::BattlePlayerClass100Test']]],
+  ['handlecallbacks_2',['HandleCallbacks',['../class_battle_1_1_view_1_1_battle_view_registry.html#a0bbc9f96b1648f790f0ae29fc10b8113',1,'Battle::View::BattleViewRegistry']]],
+  ['handlecharacterswapping_3',['HandleCharacterSwapping',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a13909541a06029e503a4135a7c4f33c3',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
+  ['handlecharacterupdate_4',['HandleCharacterUpdate',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a7c838e1c869c294ef28e847e7f55fa5c',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
+  ['handledrag_5',['HandleDrag',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_joystick_component.html#a006a13dafd10b71597d00b724d56932b',1,'Battle::View::UI::BattleUiJoystickComponent']]],
+  ['handlegameover_6',['HandleGameOver',['../class_battle_1_1_q_simulation_1_1_game_1_1_battle_game_control_q_system.html#ab6b6fc8b244d8ac785c4a080b96ddb00',1,'Battle::QSimulation::Game::BattleGameControlQSystem']]],
+  ['handlegiveup_7',['HandleGiveUp',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#ae1341f2da5db72c8a4c31232f67f1f81',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
+  ['handlegiveuplogic_8',['HandleGiveUpLogic',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a26aa1b742f914c6efaa3e49dbbc315e7',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
+  ['handleintersection_9',['HandleIntersection',['../class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#ab034ab349bbed35ff4ebb662449bdc69',1,'Battle::QSimulation::Projectile::BattleProjectileQSystem']]],
+  ['handlenoncharacterupdate_10',['HandleNonCharacterUpdate',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a78fee5f2f3199ece557492b1726a8f26',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
+  ['handleplayerabandoned_11',['HandlePlayerAbandoned',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a4aa4a6a193d122941721ccfa06f58ccb',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
+  ['handleplayerspritesheetproperty_12',['HandlePlayerSpriteSheetProperty',['../class_battle_1_1_view_1_1_battle_sprite_sheet_drawer.html#ab6c053199f15cbf3d1ecaa0311661c73',1,'Battle::View::BattleSpriteSheetDrawer']]],
+  ['handlesfx_13',['HandleSFX',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#aac588747800bf953766b6450c2008d07',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
+  ['handlesfxcharacter_14',['HandleSFXCharacter',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a7b5ce095f10af973c08f0ccb1918a982',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
+  ['handlesfxcommon_15',['HandleSFXCommon',['../class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#ade583bbc883e1ea7c71b541d0e28a5dd',1,'Battle::QSimulation::Player::BattlePlayerQSystem']]],
+  ['handletrail_16',['HandleTrail',['../class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a073e65e89120c4d58a4b9cf4f3cd56f2',1,'Battle::View::Projectile::BattleProjectileViewController']]],
+  ['hide_17',['Hide',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_load_screen_handler.html#a243893b298cc077e86d1498821d23790',1,'Battle::View::UI::BattleUiLoadScreenHandler']]]
 ];

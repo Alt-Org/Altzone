@@ -16,9 +16,16 @@ namespace Altzone.Scripts.Lobby
     {
         None = -1,
         BattlePingPong = 0,
-        BattleTestFlipperGame = 1,
+        BattleFlipperGame = 1,
         Raid = 10,
     }
+
+    public enum PlayerCount
+    {
+        Two = 2,
+        Four = 4
+    }
+
     public static class CustomGameModeExtension
     {
         public static string GetString(this GameType gameMode)
@@ -28,22 +35,47 @@ namespace Altzone.Scripts.Lobby
                 SettingsCarrier.LanguageType.English => gameMode switch
                 {
                     GameType.BattlePingPong => "Basegame",
-                    GameType.BattleTestFlipperGame => "Flipper test",
+                    GameType.BattleFlipperGame => "Flipper",
                     GameType.Raid => "Raid",
                     _ => ""
                 },
                 SettingsCarrier.LanguageType.Finnish => gameMode switch
                 {
                     GameType.BattlePingPong => "Peruspeli",
-                    GameType.BattleTestFlipperGame => "Flipper testi",
+                    GameType.BattleFlipperGame => "Flipperi",
                     GameType.Raid => "Ryöstö",
                     _ => ""
                 },
                 _ => gameMode switch
                 {
                     GameType.BattlePingPong => "Peruspeli",
-                    GameType.BattleTestFlipperGame => "Flipper testi",
+                    GameType.BattleFlipperGame => "Flipperi",
                     GameType.Raid => "Ryöstö",
+                    _ => ""
+                },
+            };
+        }
+
+        public static string GetString(this PlayerCount gameMode)
+        {
+            return SettingsCarrier.Instance.Language switch
+            {
+                SettingsCarrier.LanguageType.English => gameMode switch
+                {
+                    PlayerCount.Two => "1v1",
+                    PlayerCount.Four => "2v2",
+                    _ => ""
+                },
+                SettingsCarrier.LanguageType.Finnish => gameMode switch
+                {
+                    PlayerCount.Two => "1v1",
+                    PlayerCount.Four => "2v2",
+                    _ => ""
+                },
+                _ => gameMode switch
+                {
+                    PlayerCount.Two => "1v1",
+                    PlayerCount.Four => "2v2",
                     _ => ""
                 },
             };

@@ -1,5 +1,9 @@
 var searchData=
 [
-  ['uicontroller_0',['UiController',['../class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a6ae5a08aee70da2064ed2e9a3b80f45c',1,'Battle::View::Game::BattleGameViewController']]],
-  ['uielementtype_1',['UiElementType',['../class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_movable_element.html#a7cd2988b371824aefee9012ebe76fafc',1,'Altzone::Scripts::BattleUiShared::BattleUiMovableElement']]]
+  ['selectedcharacternumber_0',['SelectedCharacterNumber',['../struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#ad8f1bdb7c6dc0865f7e22b7dd6edbc7b',1,'Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.SelectedCharacterNumber'],['../struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle_internal.html#ada00db169e7ff9f60414864f6e76e693',1,'Battle.QSimulation.Player.BattlePlayerManager.PlayerHandleInternal.SelectedCharacterNumber']]],
+  ['selectedcharacterstate_1',['SelectedCharacterState',['../struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a7231a577516eff8f8afd27d06bfeeaf3',1,'Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.SelectedCharacterState'],['../struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle_internal.html#a93a3099a4a7ae3ae28fbd9678a0d13ed',1,'Battle.QSimulation.Player.BattlePlayerManager.PlayerHandleInternal.SelectedCharacterState']]],
+  ['shieldgameobject_2',['ShieldGameObject',['../class_battle_1_1_view_1_1_player_1_1_battle_player_shield_view_controller.html#a89905a0df0e0bcfd29cd87ab25ecad0d',1,'Battle::View::Player::BattlePlayerShieldViewController']]],
+  ['slot_3',['Slot',['../struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a9b2cbb6d07c9828dc7bff7ab6c70fdc2',1,'Battle::QSimulation::Player::BattlePlayerManager::PlayerHandle']]],
+  ['specialjoystickmovableelement_4',['SpecialJoystickMovableElement',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_joystick_handler.html#a90a204bb5d0ab4aa1b8618c7ea177d5f',1,'Battle::View::UI::BattleUiJoystickHandler']]],
+  ['spritesheet_5',['SpriteSheet',['../class_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller.html#a53b8de9f82f30567db00be088c85ac33',1,'Battle::View::Player::BattlePlayerCharacterViewController']]]
 ];

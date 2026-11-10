@@ -8,26 +8,31 @@ namespace MenuUI.Scripts.Jukebox
 {
     public class JukeboxInfoPopupHandler : MonoBehaviour
     {
-        [Header("Close buttons")] [SerializeField]
-        private Button _closeButton;
+        [Header("Close buttons")]
+        [SerializeField] private Button _closeButton;
 
         [SerializeField] private Button _closeBackgroundButton;
 
-        [Header("Track info")] [SerializeField]
-        private TextAutoScroll _trackNameAutoScroll;
+        [Header("Track info")]
+        [SerializeField] private TextAutoScroll _trackNameAutoScroll;
 
         [SerializeField] private TextAutoScroll _trackCreditsNamesAutoScroll;
 
-        [Header("Disk image")] [SerializeField]
-        private JukeboxSecondaryDiskHandler _secondaryDiskHandler;
+        [Header("Disk image")]
+        [SerializeField] private JukeboxSecondaryDiskHandler _secondaryDiskHandler;
 
-        [Header("Preview")] [SerializeField] private JukeboxPreviewHandler _previewHandler;
-        [Header("Favorite")] [SerializeField] private FavoriteHandlerBase _favoriteHandler;
+        [Header("Preview")]
+        [SerializeField] private JukeboxPreviewHandler _previewHandler;
 
-        [Header("Add to playlist")] [SerializeField]
-        private Button _addButton;
+        [Header("Favorite")]
+        [SerializeField] private FavoriteHandlerBase _favoriteHandler;
 
-        [Header("Weblinks")] [SerializeField] private GameObject _webLinkButtonPrefab;
+        [Header("Add to playlist")]
+        [SerializeField] private Button _addButton;
+
+        [Header("Weblinks")]
+        [SerializeField] private GameObject _webLinkButtonPrefab;
+
         [SerializeField] private Transform _webLinksContentTransform;
 
         private MusicTrack _musicTrack = null;

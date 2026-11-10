@@ -276,13 +276,19 @@ public class PollObject : MonoBehaviour
 
             ResultObject.GetComponent<Image>().color = isAccepted ? _green : _red;
 
-            ResultText.text = Language == SettingsCarrier.LanguageType.English
-                ? isAccepted
-                    ? "Accepted".ToUpper()
-                    : "Denied".ToUpper()
-                : isAccepted
-                    ? "Hyv\u00E4ksytty".ToUpper()
-                    : "Hyl\u00E4tty".ToUpper();
+            if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                ResultText.text = isAccepted
+                ? "Hyv\u00E4ksytty".ToUpper()
+                : "Hyl\u00E4tty".ToUpper();
+            else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                ResultText.text = isAccepted
+                ? "Approved".ToUpper()
+                : "Rejected".ToUpper();
+            else
+                ResultText.text = isAccepted
+                ? "Hyv\u00E4ksytty".ToUpper()
+                : "Hyl\u00E4tty".ToUpper();
+
 
             ResultObject.SetActive(true);
             VoteBar.gameObject.SetActive(false);
@@ -365,13 +371,12 @@ public class PollObject : MonoBehaviour
 
         bool isBuying = furniturePollData.FurniturePollType == FurniturePollType.Buying;
         TradeBackground.color = isBuying ? _green : _red;
-        TradeText.text = Language == SettingsCarrier.LanguageType.English
-            ? isBuying
-                ? "Buy".ToUpper()
-                : "Sell".ToUpper()
-            : isBuying
-                ? "Osto".ToUpper()
-                : "Myynti".ToUpper();
+        if(SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+            TradeText.text = isBuying ? "OSTO" : "MYYNTI";
+        else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+            TradeText.text = isBuying ? "BUY" : "SELL";
+        else
+            TradeText.text = isBuying ? "OSTO" : "MYYNTI";
 
         Price.text = furniturePollData.Furniture.Value.ToString();
 

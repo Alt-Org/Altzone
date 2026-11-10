@@ -94,7 +94,7 @@ $(function(){initNavTree('class_battle_1_1_view_1_1_effect_1_1_battle_lightray_e
 </div><!--header-->
 <div class="contents">
 
-<p><span class="brief-h">Lightray effect view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script🡵</a>.</span><br  />
+<p><span class="brief-h"><a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html" title="Private helper struct for holding a reference to a lightray gameobject and it&#39;s sprite variants.">Lightray</a> effect view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script🡵</a>.</span><br  />
  Handles lightray effects visual functionality.  
  <a href="#details">More...</a></p>
 <div class="dynheader">
@@ -103,29 +103,32 @@ Inheritance diagram for Battle.View.Effect.BattleLightrayEffectViewController:</
 <div class="center"><iframe scrolling="no" loading="lazy" frameborder="0" src="class_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller__inherit__graph.svg" width="198" height="128"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:Lightray" id="r_Lightray"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html">Lightray</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private helper struct for holding a reference to a lightray gameobject and it's sprite variants.  <a href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html#details">More...</a><br /></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a70ffc393f830e5684432961603cbb697" id="r_a70ffc393f830e5684432961603cbb697"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a70ffc393f830e5684432961603cbb697">SpawnLightray</a> (int wallNumber, <a class="el" href="namespace_quantum.html#a79d0fc3424513a7e430e7609e39109ab">BattleLightrayColor</a> color)</td></tr>
-<tr class="memdesc:a70ffc393f830e5684432961603cbb697"><td class="mdescLeft">&#160;</td><td class="mdescRight">Activates the light ray which correspons to the wall number and color.  <br /></td></tr>
+<tr class="memitem:a1273290d21a7d07c1cfaab59a1bf3666" id="r_a1273290d21a7d07c1cfaab59a1bf3666"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a1273290d21a7d07c1cfaab59a1bf3666">ActivateLightray</a> (<a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a> teamNumber, int wallNumber)</td></tr>
+<tr class="memdesc:a1273290d21a7d07c1cfaab59a1bf3666"><td class="mdescLeft">&#160;</td><td class="mdescRight">Activates a lightray associated with a SoulWall segment that belongs to a team based on <em>teamNumber</em>  and <em>wallNumber</em> .  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:aeda763f3e92f8e0bb700d48549c0c8fe" id="r_aeda763f3e92f8e0bb700d48549c0c8fe"><td class="memItemLeft">List&lt; GameObject &gt;&#160;</td><td class="memItemRight"><a class="el" href="#aeda763f3e92f8e0bb700d48549c0c8fe">_spawnedLightrays</a> = new()</td></tr>
-<tr class="memdesc:aeda763f3e92f8e0bb700d48549c0c8fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of currently active lightrays. <br /></td></tr>
 <tr id="pri-attribs-0" class="groupHeader"><td colspan="2"><div class="groupHeader">SerializeField variables</div></td></tr>
 <tr><td colspan="2" class="ititle"><div class="groupText"><p><a class="anchor" id="BattleLightrayEffectViewController-SerializeFields"></a> <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields🡵</a> are serialized variables exposed to the Unity editor. </p>
 </div></td></tr>
-<tr class="memitem:aae8377bacaa9c48db042067890fbf263" id="r_aae8377bacaa9c48db042067890fbf263"><td class="memItemLeft">GameObject[]&#160;</td><td class="memItemRight"><a class="el" href="#aae8377bacaa9c48db042067890fbf263">_lightraysRed</a></td></tr>
-<tr class="memdesc:aae8377bacaa9c48db042067890fbf263"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SerializeField] Array of the red lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject🡵</a> references.  <br /></td></tr>
-<tr class="memitem:a59fd31467ce83c7ba6710a4f695428cc" id="r_a59fd31467ce83c7ba6710a4f695428cc"><td class="memItemLeft">GameObject[]&#160;</td><td class="memItemRight"><a class="el" href="#a59fd31467ce83c7ba6710a4f695428cc">_lightraysBlue</a></td></tr>
-<tr class="memdesc:a59fd31467ce83c7ba6710a4f695428cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SerializeField] Array of the blue lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject🡵</a> references.  <br /></td></tr>
+<tr class="memitem:a377a4e1c46970864e97a9af2c2699310" id="r_a377a4e1c46970864e97a9af2c2699310"><td class="memItemLeft"><a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html">Lightray</a>[]&#160;</td><td class="memItemRight"><a class="el" href="#a377a4e1c46970864e97a9af2c2699310">_lightraysTeamAlpha</a></td></tr>
+<tr class="memdesc:a377a4e1c46970864e97a9af2c2699310"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SerializeField] Array containing references to team alpha's <a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html">Lightrays</a>.  <br /></td></tr>
+<tr class="memitem:a31032413199ecdfe28e4128cec82d934" id="r_a31032413199ecdfe28e4128cec82d934"><td class="memItemLeft"><a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html">Lightray</a>[]&#160;</td><td class="memItemRight"><a class="el" href="#a31032413199ecdfe28e4128cec82d934">_lightraysTeamBeta</a></td></tr>
+<tr class="memdesc:a31032413199ecdfe28e4128cec82d934"><td class="mdescLeft">&#160;</td><td class="mdescRight">[SerializeField] Array containing references to team beta's <a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html">Lightrays</a>.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><span class="brief-h">Lightray effect view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script🡵</a>.</span><br  />
+<div class="textblock"><p><span class="brief-h"><a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html" title="Private helper struct for holding a reference to a lightray gameobject and it&#39;s sprite variants.">Lightray</a> effect view <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script🡵</a>.</span><br  />
  Handles lightray effects visual functionality. </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
-<a id="a70ffc393f830e5684432961603cbb697" name="a70ffc393f830e5684432961603cbb697"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a70ffc393f830e5684432961603cbb697">&#9670;&#160;</a></span>SpawnLightray()</h2>
+<a id="a1273290d21a7d07c1cfaab59a1bf3666" name="a1273290d21a7d07c1cfaab59a1bf3666"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1273290d21a7d07c1cfaab59a1bf3666">&#9670;&#160;</a></span>ActivateLightray()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -134,14 +137,14 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Battle.View.Effect.BattleLightrayEffectViewController.SpawnLightray </td>
+          <td class="memname">void Battle.View.Effect.BattleLightrayEffectViewController.ActivateLightray </td>
           <td>(</td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>wallNumber</em></span>, </td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a></td>          <td class="paramname"><span class="paramname"><em>teamNumber</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespace_quantum.html#a79d0fc3424513a7e430e7609e39109ab">BattleLightrayColor</a></td>          <td class="paramname"><span class="paramname"><em>color</em></span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>wallNumber</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -151,22 +154,22 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Activates the light ray which correspons to the wall number and color. </p>
+<p>Activates a lightray associated with a SoulWall segment that belongs to a team based on <em>teamNumber</em>  and <em>wallNumber</em> . </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">wallNumber</td><td>The wall number which lightray to spawn.</td></tr>
-    <tr><td class="paramname">color</td><td>The lightray's <a class="el" href="namespace_quantum.html#a79d0fc3424513a7e430e7609e39109ab" title="Lightray color enum used by the Lightray effect in the game.">BattleLightrayColor</a> which to spawn.</td></tr>
+    <tr><td class="paramname">teamNumber</td><td>Team number of the desired team.</td></tr>
+    <tr><td class="paramname">wallNumber</td><td>The wall number corresponding to the desired lightray.</td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="#a59fd31467ce83c7ba6710a4f695428cc">_lightraysBlue</a>, <a class="el" href="#aae8377bacaa9c48db042067890fbf263">_lightraysRed</a>, and <a class="el" href="#aeda763f3e92f8e0bb700d48549c0c8fe">_spawnedLightrays</a>.</p>
+<p class="reference">References <a class="el" href="#a377a4e1c46970864e97a9af2c2699310">_lightraysTeamAlpha</a>, <a class="el" href="#a31032413199ecdfe28e4128cec82d934">_lightraysTeamBeta</a>, <a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html#aa0439bcae41f24020a134caa9bd0b6dc">Battle.View.Effect.BattleLightrayEffectViewController.Lightray.GameObject</a>, <a class="el" href="class_battle_1_1_view_1_1_game_1_1_battle_game_view_controller.html#a56c2fafbe09c9d4a3815401e954acf98">Battle.View.Game.BattleGameViewController.LocalPlayerTeam</a>, <a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html#afe1e37b5e4741be3df61fde8b42e3958">Battle.View.Effect.BattleLightrayEffectViewController.Lightray.Red</a>, <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cfad80bfb48e09b13e2e99f53b5c12f489d">Quantum.TeamAlpha</a>, and <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cfaba3e73b8a835fdaf60a7f18a0f592f02">Quantum.TeamBeta</a>.</p>
 
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
-<a id="a59fd31467ce83c7ba6710a4f695428cc" name="a59fd31467ce83c7ba6710a4f695428cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a59fd31467ce83c7ba6710a4f695428cc">&#9670;&#160;</a></span>_lightraysBlue</h2>
+<a id="a377a4e1c46970864e97a9af2c2699310" name="a377a4e1c46970864e97a9af2c2699310"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a377a4e1c46970864e97a9af2c2699310">&#9670;&#160;</a></span>_lightraysTeamAlpha</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -175,7 +178,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">GameObject [] Battle.View.Effect.BattleLightrayEffectViewController._lightraysBlue</td>
+          <td class="memname"><a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html">Lightray</a> [] Battle.View.Effect.BattleLightrayEffectViewController._lightraysTeamAlpha</td>
         </tr>
       </table>
   </td>
@@ -185,15 +188,15 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>[SerializeField] Array of the blue lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject🡵</a> references. </p>
-<p><a class="el" href="#BattleLightrayEffectViewController-SerializeFields" title="BattleLightrayEffectViewController-SerializeFields">BattleLightrayEffectViewController-SerializeFields</a> </p>
+<p>[SerializeField] Array containing references to team alpha's <a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html">Lightrays</a>. </p>
+<p>Part of <a class="el" href="#BattleLightrayEffectViewController-SerializeFields" title="BattleLightrayEffectViewController-SerializeFields">SerializeField variables</a> </p>
 
-<p class="reference">Referenced by <a class="el" href="#a70ffc393f830e5684432961603cbb697">SpawnLightray()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a1273290d21a7d07c1cfaab59a1bf3666">ActivateLightray()</a>.</p>
 
 </div>
 </div>
-<a id="aae8377bacaa9c48db042067890fbf263" name="aae8377bacaa9c48db042067890fbf263"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae8377bacaa9c48db042067890fbf263">&#9670;&#160;</a></span>_lightraysRed</h2>
+<a id="a31032413199ecdfe28e4128cec82d934" name="a31032413199ecdfe28e4128cec82d934"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a31032413199ecdfe28e4128cec82d934">&#9670;&#160;</a></span>_lightraysTeamBeta</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -202,7 +205,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">GameObject [] Battle.View.Effect.BattleLightrayEffectViewController._lightraysRed</td>
+          <td class="memname"><a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html">Lightray</a> [] Battle.View.Effect.BattleLightrayEffectViewController._lightraysTeamBeta</td>
         </tr>
       </table>
   </td>
@@ -212,36 +215,10 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>[SerializeField] Array of the red lightray <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject🡵</a> references. </p>
-<p><a class="el" href="#BattleLightrayEffectViewController-SerializeFields" title="BattleLightrayEffectViewController-SerializeFields">BattleLightrayEffectViewController-SerializeFields</a> </p>
+<p>[SerializeField] Array containing references to team beta's <a class="el" href="struct_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller_1_1_lightray.html">Lightrays</a>. </p>
+<p>Part of <a class="el" href="#BattleLightrayEffectViewController-SerializeFields" title="BattleLightrayEffectViewController-SerializeFields">SerializeFields variables</a> </p>
 
-<p class="reference">Referenced by <a class="el" href="#a70ffc393f830e5684432961603cbb697">SpawnLightray()</a>.</p>
-
-</div>
-</div>
-<a id="aeda763f3e92f8e0bb700d48549c0c8fe" name="aeda763f3e92f8e0bb700d48549c0c8fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeda763f3e92f8e0bb700d48549c0c8fe">&#9670;&#160;</a></span>_spawnedLightrays</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">List&lt;GameObject&gt; Battle.View.Effect.BattleLightrayEffectViewController._spawnedLightrays = new()</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>List of currently active lightrays.</p>
-
-<p class="reference">Referenced by <a class="el" href="#a70ffc393f830e5684432961603cbb697">SpawnLightray()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a1273290d21a7d07c1cfaab59a1bf3666">ActivateLightray()</a>.</p>
 
 </div>
 </div>

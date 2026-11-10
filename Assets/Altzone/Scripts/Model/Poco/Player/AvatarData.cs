@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 
@@ -252,6 +254,49 @@ namespace Altzone.Scripts.Model.Poco.Player
                 case AvatarPiece.Hands: HandsColor = color; break;
             }
         }
+    }
+}
+
+public static class AvatarPieceExtension
+{
+    public static string GetString(this AvatarPiece gameMode)
+    {
+        return SettingsCarrier.Instance.Language switch
+        {
+            SettingsCarrier.LanguageType.English => gameMode switch
+            {
+                AvatarPiece.Hair => "Hair",
+                AvatarPiece.Eyes => "Eyes",
+                AvatarPiece.Nose => "Nose",
+                AvatarPiece.Mouth => "Mouth",
+                AvatarPiece.Clothes => "Clothes",
+                AvatarPiece.Feet => "Feet",
+                AvatarPiece.Hands => "Hands",
+                _ => ""
+            },
+            SettingsCarrier.LanguageType.Finnish => gameMode switch
+            {
+                AvatarPiece.Hair => "Hiukset",
+                AvatarPiece.Eyes => "Silmät",
+                AvatarPiece.Nose => "Nenä",
+                AvatarPiece.Mouth => "Suu",
+                AvatarPiece.Clothes => "Vaatteet",
+                AvatarPiece.Feet => "Jalat",
+                AvatarPiece.Hands => "Kädet",
+                _ => ""
+            },
+            _ => gameMode switch
+            {
+                AvatarPiece.Hair => "Hiukset",
+                AvatarPiece.Eyes => "Silmät",
+                AvatarPiece.Nose => "Nenä",
+                AvatarPiece.Mouth => "Suu",
+                AvatarPiece.Clothes => "Vaatteet",
+                AvatarPiece.Feet => "Jalat",
+                AvatarPiece.Hands => "Kädet",
+                _ => ""
+            },
+        };
     }
 }
 

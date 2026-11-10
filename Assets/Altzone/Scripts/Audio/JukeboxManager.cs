@@ -72,6 +72,13 @@ namespace Altzone.Scripts.Audio
             Dislike
         }
 
+        public enum MessageLevel
+        {
+            Info,
+            Warning,
+            Error
+        }
+
         private bool _serverOperationAvailable = true;
         #endregion
 
@@ -121,7 +128,7 @@ namespace Altzone.Scripts.Audio
         public delegate void PreviewEnd();
         public event PreviewEnd OnPreviewEnd;
 
-        public delegate void ShowTextPopup(string text);
+        public delegate void ShowTextPopup(MessageLevel level, string text);
         public event ShowTextPopup OnShowTextPopup;
 
         public delegate void MusicTrackInfoPressed(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType);
@@ -398,7 +405,7 @@ namespace Altzone.Scripts.Audio
             }
 
             _serverOperationAvailable = true;
-            OnShowTextPopup?.Invoke($"Kappale: {trackName}, poistettu.");
+            OnShowTextPopup?.Invoke(MessageLevel.Info,$"Kappale: {trackName}, poistettu.");
             successCallback?.Invoke(true);
         }
 
@@ -417,14 +424,14 @@ namespace Altzone.Scripts.Audio
             if (timeout != null || callback != null && !callback.Value)
             {
                 Debug.LogWarning("Failed to add music track to clan playlist or max amount of tracks has been added!");
-                OnShowTextPopup?.Invoke($"Enimmäismäärä kappaleita lisätty!");
+                OnShowTextPopup?.Invoke(MessageLevel.Warning, $"Enimmäismäärä kappaleita lisätty!");
                 _serverOperationAvailable = true;
                 done(false);
 
                 yield break;
             }
 
-            OnShowTextPopup?.Invoke($"Kappale: {musicTrack.Name}, lisätty.");
+            OnShowTextPopup?.Invoke(MessageLevel.Info, $"Kappale: {musicTrack.Name}, lisätty.");
 
             _serverOperationAvailable = true;
             done?.Invoke(true);
