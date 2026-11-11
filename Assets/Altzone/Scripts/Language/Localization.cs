@@ -56,6 +56,8 @@ public class Localization : ScriptableObject
         }
     }
 
+    public List<LanguageSelector> LanguageList { get => _languageList;}
+
     public void SaveLanguage()
     {
         PlayerPrefs.SetString("LanguageType", ParseLanguage(_language));
@@ -169,35 +171,32 @@ public class LocalizationEditor : Editor
         // Create property container element.
         var container = new VisualElement();
 
-        //EditorGUI.BeginDisabledGroup(true);
         PropertyField scriptField = new PropertyField(serializedObject.FindProperty("m_Script"));
         scriptField.SetEnabled(false);
         container.Add(scriptField);
-        //EditorGUI.EndDisabledGroup();
 
-
-        /*EditorGUI.BeginChangeCheck();
-        EditorGUILayout.PropertyField(_language);
-
-        serializedObject.ApplyModifiedProperties();
-
-        if (EditorGUI.EndChangeCheck())
+        PopupField<LanguageType> popup = new()
         {
-            _script.SaveLanguage();
-        }*/
+            label = _language.displayName
+        };
 
-        PropertyField languageField = new(_language);
-        languageField.RegisterCallback<ChangeEvent<string>>(type =>
+        List<LanguageSelector> selectorList = _script.LanguageList.Where(x => x.Selected).ToList();
+
+        foreach (LanguageSelector type in selectorList)
         {
-            Enum.TryParse(type.newValue, out LanguageType valueInt);
-            _language.enumValueIndex = (int)valueInt;
+            popup.choices.Add(type.Language);
+        }
+        popup.value = (LanguageType)_language.enumValueIndex;
+
+        popup.RegisterCallback<ChangeEvent<LanguageType>>(type =>
+        {
+            _language.enumValueIndex = (int)type.newValue;
             serializedObject.ApplyModifiedProperties();
             _script.SaveLanguage();
         });
-        container.Add(languageField);
 
+        container.Add(popup);
 
-        //EditorGUILayout.PropertyField(_languageList);
         PropertyField languageList = new(_languageList);
         container.Add(languageList);
 
