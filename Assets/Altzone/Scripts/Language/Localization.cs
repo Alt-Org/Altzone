@@ -187,8 +187,10 @@ public class LocalizationEditor : Editor
         }*/
 
         PropertyField languageField = new(_language);
-        languageField.RegisterCallback<ChangeEvent<LanguageType>>(type =>
+        languageField.RegisterCallback<ChangeEvent<string>>(type =>
         {
+            Enum.TryParse(type.newValue, out LanguageType valueInt);
+            _language.enumValueIndex = (int)valueInt;
             serializedObject.ApplyModifiedProperties();
             _script.SaveLanguage();
         });
