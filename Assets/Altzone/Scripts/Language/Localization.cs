@@ -238,7 +238,15 @@ public class LocalizationEditor : Editor
             {
                 _popup.choices.Add(type.Language);
             }
-            _popup.value = (LanguageType)_language.enumValueIndex;
+
+            if(!_popup.choices.Contains((LanguageType)_language.enumValueIndex))
+            {
+                if (_popup.choices.Count > 0)
+                {
+                    _popup.value = _popup.choices[0];
+                    _language.enumValueIndex = (int)_popup.value;
+                }
+            }
 
             return _popup;
         }
