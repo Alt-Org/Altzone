@@ -1,9 +1,9 @@
-/// @file BattlePlayerCharacterClassBaseViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerCharacterClassBaseViewController} class,
-/// which is an abstract base class for the character class view controllers to extend.<br/>
-/// Works together with @cref{Battle.View.Player,BattlePlayerCharacterViewController}, which handles the shared player character view logic.
-/// </summary>
+//! @file BattlePlayerCharacterClassBaseViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.Player,BattlePlayerCharacterClassBaseViewController} class,
+//! which is an abstract base class for the character class view controllers to extend.<br/>
+//! Works together with @cref{Battle.View.Player,BattlePlayerCharacterViewController}, which handles the shared player character view logic.
+//! </summary>
 
 // Unity usings
 using UnityEngine;

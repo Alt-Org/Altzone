@@ -1,8 +1,8 @@
-/// @file BattlePlayerMovementController.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerMovementController} class
-/// which contains the primary method for handling player movement as well as individual helper methods for moving and rotating players.
-/// </summary>
+//! @file BattlePlayerMovementController.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Player,BattlePlayerMovementController} class
+//! which contains the primary method for handling player movement as well as individual helper methods for moving and rotating players.
+//! </summary>
 
 // Unity usings
 using UnityEngine;

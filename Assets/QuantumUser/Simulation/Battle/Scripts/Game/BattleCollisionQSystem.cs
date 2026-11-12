@@ -1,7 +1,7 @@
-/// @file BattleCollisionQSystem.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Game,BattleCollisionQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles all collisions in the game.
-/// </summary>
+//! @file BattleCollisionQSystem.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Game,BattleCollisionQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles all collisions in the game.
+//! </summary>
 
 // System usings
 using System.Runtime.CompilerServices;

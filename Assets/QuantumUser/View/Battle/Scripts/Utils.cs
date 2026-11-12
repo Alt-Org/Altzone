@@ -1,10 +1,10 @@
-/// @file Utils.cs
-/// <summary>
-/// Contains @cref{Battle.View,Utils} class which has utility methods for view.
-/// </summary>
-///
-/// This script:<br/>
-/// Static utility script.
+//! @file Utils.cs
+//! <summary>
+//! Contains @cref{Battle.View,Utils} class which has utility methods for view.
+//! </summary>
+//!
+//! This script:<br/>
+//! Static utility script.
 
 using Quantum;
 

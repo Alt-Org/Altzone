@@ -1,10 +1,10 @@
-/// @file BattleGameViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.Game,BattleGameViewController} class which controls the %Battle %UI elements.
-/// </summary>
-///
-/// This script:<br/>
-/// Initializes %Battle %UI elements, and controls their visibility and functionality.
+//! @file BattleGameViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.Game,BattleGameViewController} class which controls the %Battle %UI elements.
+//! </summary>
+//!
+//! This script:<br/>
+//! Initializes %Battle %UI elements, and controls their visibility and functionality.
 
 //#define DEBUG_OVERLAY_ENABLED_OVERRIDE
 //#define DEBUG_CONSOLE_ENABLED
@@ -48,10 +48,10 @@ namespace Battle.View.Game
     /// Accesses all of the @ref UIHandlerReferences through the BattleUiController reference variable <see cref="BattleGameViewController._uiController">_uiController</see>.<br/>
     public class BattleGameViewController : QuantumCallbacks
     {
-        /// @anchor BattleGameViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleGameViewController-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
         #region SerializeFields
 
         /// <summary>[SerializeField] Reference to BattleGridViewController which handles visual functionality for the %Battle arena's grid.</summary>
@@ -85,7 +85,7 @@ namespace Battle.View.Game
         [SerializeField] private BattlePlayerInput _playerInput;
 
         #endregion SerializeFields
-        /// @}
+        //! @}
 
         #region Public
 
@@ -124,9 +124,10 @@ namespace Battle.View.Game
 
         #region Public - Methods
 
-        /// @name UiInput methods
-        /// UiInput methods are called when the player gives an %UI input, such as presses a button. These methods shouldn't be called any other way.
-        /// @{
+        //! @anchor BattleGameViewController-UiInputMethods
+        //! @name UiInput Methods
+        //! UiInput methods are called when the player gives an %UI input, such as presses a button. These methods shouldn't be called any other way.
+        //! @{
         #region Public - Methods - UiInput
 
         /// <summary>
@@ -200,7 +201,7 @@ namespace Battle.View.Game
         }
 
         #endregion Public - Methods - UiInput
-        /// @}
+        //! @}
 
         #endregion Public - Methods
 
@@ -212,9 +213,9 @@ namespace Battle.View.Game
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
-        /// @name EndOfGameData variables
-        /// Private variables which contain end of game data to pass on to LobbyManager.
-        /// @{
+        //! @name EndOfGameData variables
+        //! Private variables which contain end of game data to pass on to LobbyManager.
+        //! @{
 
         /// <value>Bool to indicate whether the game has ended yet.</value>
         private bool _endOfGameDataHasEnded = false;
@@ -225,7 +226,7 @@ namespace Battle.View.Game
         /// <value>The game's length as seconds.</value>
         private FP _endOfGameDataGameLengthSec;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake@u-exlink</a> method. Handles subscribing to QuantumEvents.
@@ -294,9 +295,10 @@ namespace Battle.View.Game
             QuantumEvent.Subscribe<EventBattleDebugOnScreenMessage>(this, QEventDebugOnScreenMessage);
         }
 
-        /// @name QuantumEvent handlers
-        /// QuantumEvent handler methods are called by QuantumEvents. These methods shouldn't be called any other way.
-        /// @{
+        //! @anchor BattleGameViewController-QuantumEventHandlers
+        //! @name QuantumEvent Handlers
+        //! QuantumEvent handler methods are called by QuantumEvents. These methods shouldn't be called any other way.
+        //! @{
         #region QuantumEvent handlers
 
         /// <summary>
@@ -760,7 +762,7 @@ namespace Battle.View.Game
         }
 
         #endregion
-        /// @}
+        //! @}
 
 
 

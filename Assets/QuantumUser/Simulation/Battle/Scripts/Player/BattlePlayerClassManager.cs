@@ -1,9 +1,9 @@
-/// @file BattlePlayerClassManager.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerClassManager} class which handles player class logic.
-/// Also contains @cref{Battle.QSimulation.Player,BattlePlayerClassBase} and @cref{Battle.QSimulation.Player,BattlePlayerClassBase<T>} classes
-/// which player class implementations derive from.
-/// </summary>
+//! @file BattlePlayerClassManager.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Player,BattlePlayerClassManager} class which handles player class logic.
+//! Also contains @cref{Battle.QSimulation.Player,BattlePlayerClassBase} and @cref{Battle.QSimulation.Player,BattlePlayerClassBase<T>} classes
+//! which player class implementations derive from.
+//! </summary>
 
 // System usings
 using System.Collections.Generic;

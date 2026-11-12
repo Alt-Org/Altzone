@@ -1,8 +1,8 @@
-/// @file BattlePlayerShieldClass400ViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController} class,
-/// which is a <see cref="Battle.View.Player.BattlePlayerShieldClass400ViewController">shield class %view controller</see> for the Projector character class.
-/// </summary>
+//! @file BattlePlayerShieldClass400ViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.Player,BattlePlayerShieldClass400ViewController} class,
+//! which is a <see cref="Battle.View.Player.BattlePlayerShieldClass400ViewController">shield class %view controller</see> for the Projector character class.
+//! </summary>
 
 // Unity usings
 using UnityEngine;
@@ -28,17 +28,17 @@ namespace Battle.View.Player
     /// @bigtext{See [{Player Character Class 400 - Projector}](#page-concepts-player-class-400) for more info.}
     public class BattlePlayerShieldClass400ViewController : BattlePlayerShieldClassBaseViewController
     {
-        /// @anchor BattlePlayerShieldClass400ViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattlePlayerShieldClass400ViewController-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>Indicates if the moving shield should be flipped.</summary>
         /// Part of @ref BattlePlayerShieldClass400ViewController-SerializeFields "SerializeFields"
         [Tooltip("Indicates if the moving shield should be flipped.")]
         [SerializeField] private bool _movingShieldFlipped;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Gets the character class associated with this Class.<br/>

@@ -1,7 +1,7 @@
-/// @file BattlePlayerManager.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerManager} partial class which handles player logic.<br/>
-/// </summary>
+//! @file BattlePlayerManager.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Player,BattlePlayerManager} partial class which handles player logic.<br/>
+//! </summary>
 
 //#define DEBUG_PLAYER_STAT_OVERRIDE
 

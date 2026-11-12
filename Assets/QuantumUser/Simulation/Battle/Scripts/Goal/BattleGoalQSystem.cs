@@ -1,7 +1,7 @@
-/// @file BattleGoalQSystem.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Goal,BattleGoalQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which triggers the end of the game when the projectile hits a goal.
-/// </summary>
+//! @file BattleGoalQSystem.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Goal,BattleGoalQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which triggers the end of the game when the projectile hits a goal.
+//! </summary>
 
 // Unity usings
 using UnityEngine.Scripting;

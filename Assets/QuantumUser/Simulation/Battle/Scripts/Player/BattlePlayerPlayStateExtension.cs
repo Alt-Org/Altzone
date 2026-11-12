@@ -1,7 +1,7 @@
-/// @file BattlePlayerPlayStateExtension.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerPlayStateExtension} class which has extension methods for BattlePlayerPlayState enum.
-/// </summary>
+//! @file BattlePlayerPlayStateExtension.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Player,BattlePlayerPlayStateExtension} class which has extension methods for BattlePlayerPlayState enum.
+//! </summary>
 
 using Quantum;
 

@@ -1,7 +1,7 @@
-/// @file BattleStoneCharacterViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.SoulWall,BattleStoneCharacterViewController} class which handles stone characters visual functionality.
-/// </summary>
+//! @file BattleStoneCharacterViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.SoulWall,BattleStoneCharacterViewController} class which handles stone characters visual functionality.
+//! </summary>
 
 // Unity usings
 using UnityEngine;
@@ -20,10 +20,10 @@ namespace Battle.View.SoulWall
     /// </summary>
     public class BattleStoneCharacterViewController : MonoBehaviour
     {
-        /// @anchor BattleStoneCharacterViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleStoneCharacterViewController-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Array of the top stone character parts <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject@u-exlink</a> references.</summary>
         /// @ref BattleStoneCharacterViewController-SerializeFields "SerializeFields"
@@ -60,7 +60,7 @@ namespace Battle.View.SoulWall
         [Tooltip("Animator for TeamBeta StoneCharacter")]
         [SerializeField] private Animator _teamBetaAnimator;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Destroys (deactivates) the part of a stone character that is associated with a %SoulWall segment and belongs to a team based on

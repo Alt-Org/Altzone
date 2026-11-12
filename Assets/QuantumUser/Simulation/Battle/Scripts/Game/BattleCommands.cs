@@ -1,9 +1,9 @@
-/// @file BattleCommands.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Game,BattleCommand} class and all battle commands
-///
-/// See [{Custom Quantum Commands}](#page-concepts-commands) for more info.
-/// </summary>
+//! @file BattleCommands.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Game,BattleCommand} class and all battle commands
+//!
+//! See [{Custom Quantum Commands}](#page-concepts-commands) for more info.
+//! </summary>
 
 // System usings
 using System.Runtime.CompilerServices;

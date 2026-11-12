@@ -1,10 +1,10 @@
-/// @file BattleLightrayEffectViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.Effect,BattleLightrayEffectViewController} class which handles lightray effects visual functionality.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles lightray effects visual functionality.
+//! @file BattleLightrayEffectViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.Effect,BattleLightrayEffectViewController} class which handles lightray effects visual functionality.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles lightray effects visual functionality.
 
 // System usings
 using System;
@@ -26,10 +26,10 @@ namespace Battle.View.Effect
     /// </summary>
     public class BattleLightrayEffectViewController : MonoBehaviour
     {
-        /// @anchor BattleLightrayEffectViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleLightrayEffectViewController-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Array containing references to team alpha's <see cref="Lightray">Lightrays</see>.</summary>
         /// Part of @ref BattleLightrayEffectViewController-SerializeFields "SerializeField variables"
@@ -41,7 +41,7 @@ namespace Battle.View.Effect
         [Tooltip("References to team beta's lightrays")]
         [SerializeField] private Lightray[] _lightraysTeamBeta;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Activates a lightray associated with a %SoulWall segment that belongs to a team based on <paramref name="teamNumber"/> and <paramref name="wallNumber"/>.

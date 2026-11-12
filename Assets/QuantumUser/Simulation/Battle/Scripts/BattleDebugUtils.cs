@@ -1,8 +1,8 @@
-/// @file BattleDebugUtils.cs
-/// <summary>
-/// Debug utility code.<br/>
-/// Contains @cref{Battle.QSimulation,BattleInputDebugUtils} class which provides input debugging utilities.
-/// </summary>
+//! @file BattleDebugUtils.cs
+//! <summary>
+//! Debug utility code.<br/>
+//! Contains @cref{Battle.QSimulation,BattleInputDebugUtils} class which provides input debugging utilities.
+//! </summary>
 
 // Quantum usings
 using Quantum;

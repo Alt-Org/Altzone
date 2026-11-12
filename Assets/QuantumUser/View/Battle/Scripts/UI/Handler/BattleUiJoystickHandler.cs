@@ -1,10 +1,10 @@
-/// @file BattleUiJoystickHandler.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiJoystickHandler} class which handles the on-screen joysticks.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles %Battle Ui joystick functionality.
+//! @file BattleUiJoystickHandler.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiJoystickHandler} class which handles the on-screen joysticks.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles %Battle Ui joystick functionality.
 
 // Unity usings
 using UnityEngine;
@@ -22,10 +22,10 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiJoystickHandler : MonoBehaviour
     {
-        /// @anchor BattleUiJoystickHandler-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiJoystickHandler-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to BattleUiController.</summary>
         /// @ref BattleUiJoystickHandler-SerializeFields
@@ -55,7 +55,7 @@ namespace Battle.View.UI
         /// @ref BattleUiJoystickHandler-SerializeFields
         [SerializeField] private BattleUiJoystickComponent _specialJoystickComponent;
 
-        /// @}
+        //! @}
 
         /// <summary>Whether the Move Joystick is currently visible</summary>
         public bool IsMoveJoystickVisible => _moveJoystickMovableElement.gameObject.activeSelf;

@@ -1,7 +1,7 @@
-/// @file BattleGameControlQSystem.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Game,BattleGameControlQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls the overall game flow in %Quantum simulation.
-/// </summary>
+//! @file BattleGameControlQSystem.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Game,BattleGameControlQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls the overall game flow in %Quantum simulation.
+//! </summary>
 
 //#define DEBUG_LOG_STATE
 

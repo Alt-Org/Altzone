@@ -1,11 +1,11 @@
-/// @file BattleScreenEffectViewController.cs
-/// <summary>
-/// Handles screen overlay and particle effect changes.
-/// </summary>
-///
-/// This script:<br/>
-/// Changes screen overlay's color.<br/>
-/// Toggles particle systems on both sides of the screen to active/inactive.
+//! @file BattleScreenEffectViewController.cs
+//! <summary>
+//! Handles screen overlay and particle effect changes.
+//! </summary>
+//!
+//! This script:<br/>
+//! Changes screen overlay's color.<br/>
+//! Toggles particle systems on both sides of the screen to active/inactive.
 
 // Unity usings
 using UnityEngine;
@@ -18,10 +18,10 @@ namespace Battle.View.Effect
     /// </summary>
     public class BattleScreenEffectViewController : MonoBehaviour
     {
-        /// @anchor BattleScreenEffectViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleScreenEffectViewController-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] The screen overlay GameObject.</summary>
         /// @ref BattleScreenEffectViewController-SerializeFields
@@ -35,7 +35,7 @@ namespace Battle.View.Effect
         /// @ref BattleScreenEffectViewController-SerializeFields
         [SerializeField] private Color[] _colors;
 
-        /// @}
+        //! @}
 
         /// <value>Are screen effects active or not.</value>
         public bool IsActive {get ; private set ; } = false;

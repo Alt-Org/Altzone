@@ -1,10 +1,10 @@
-/// @file BattleCameraTest.cs
-/// <summary>
-/// Contains @cref{Battle.View.Game,BattleCameraTest} class for BattleCamera testing.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles %Battle camera testing functionality.
+//! @file BattleCameraTest.cs
+//! <summary>
+//! Contains @cref{Battle.View.Game,BattleCameraTest} class for BattleCamera testing.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles %Battle camera testing functionality.
 
 // Unity usings
 using UnityEngine;
@@ -17,10 +17,10 @@ namespace Battle.View.Game
     /// </summary>
     public class BattleCameraTest : MonoBehaviour
     {
-        /// @anchor BattleCameraTest-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleCameraTest-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] If the camera should be active or not.</summary>
         /// @ref BattleCameraTest-SerializeFields
@@ -38,7 +38,7 @@ namespace Battle.View.Game
         /// @ref BattleCameraTest-SerializeFields
         [SerializeField] private bool _rotate;
 
-        /// @}
+        //! @}
 
         /// <value>Previous #_active value.</value>
         private bool _activePrev;

@@ -1,10 +1,10 @@
-/// @file BattleUiAnnouncementHandler.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiAnnouncementHandler} class which handles showing the announcement/countdown text.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles showing the announcement/countdown text.
+//! @file BattleUiAnnouncementHandler.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiAnnouncementHandler} class which handles showing the announcement/countdown text.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles showing the announcement/countdown text.
 
 // Unity usings
 using UnityEngine;
@@ -18,10 +18,10 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiAnnouncementHandler : MonoBehaviour
     {
-        /// @anchor BattleUiAnnouncementHandler-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiAnnouncementHandler-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to the GameObject which can be used to hide or show the announcement.</summary>
         /// @ref BattleUiAnnouncementHandler-SerializeFields
@@ -31,7 +31,7 @@ namespace Battle.View.UI
         /// @ref BattleUiAnnouncementHandler-SerializeFields
         [SerializeField] private TextMeshProUGUI _announcerText;
 
-        /// @}
+        //! @}
 
         /// <summary>Different types of announcement text which can be displayed.</summary>
         public enum TextType

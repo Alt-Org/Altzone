@@ -1,7 +1,7 @@
-/// @file BattlePlayerCharacterViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerCharacterViewController} class which handles player character view logic.
-/// </summary>
+//! @file BattlePlayerCharacterViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.Player,BattlePlayerCharacterViewController} class which handles player character view logic.
+//! </summary>
 
 // System usings
 using System;
@@ -274,10 +274,10 @@ namespace Battle.View.Player
             public readonly int GetIndex() => (int)EnumValue;
         }
 
-        /// @anchor BattlePlayerCharacterViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattlePlayerCharacterViewController-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
         #region SerializeFields
 
         //{ editor
@@ -353,7 +353,7 @@ namespace Battle.View.Player
         //} settings
 
         #endregion SerializeFields
-        /// @}
+        //! @}
 
         #region Public
 
@@ -362,10 +362,10 @@ namespace Battle.View.Player
         /// See [{BattleSpriteSheet}](#page-concepts-battle-sprite-sheet-sprite-sheet) for more info.
         public BattleSpriteSheet SpriteSheet => _spriteSheet;
 
-        /// @anchor BattlePlayerCharacterViewController-Public-SpriteControlMethods
-        /// @name Public Sprite Control Methods
-        /// Methods for controlling sprites.
-        /// @{
+        //! @anchor BattlePlayerCharacterViewController-Public-SpriteControlMethods
+        //! @name Public Sprite Control Methods
+        //! Methods for controlling sprites.
+        //! @{
         #region Public - Sprite Control Methods
 
         /// <summary>
@@ -499,11 +499,11 @@ namespace Battle.View.Player
         }
 
         #endregion Public - Sprite Control Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattlePlayerCharacterViewController-Public-GameflowMethods
-        /// @name Public Gameflow Methods
-        /// @{
+        //! @anchor BattlePlayerCharacterViewController-Public-GameflowMethods
+        //! @name Public Gameflow Methods
+        //! @{
         #region Public - Gameflow Methods
 
         /// <summary>
@@ -655,14 +655,14 @@ namespace Battle.View.Player
         }
 
         #endregion Public - Gameflow Methods
-        /// @}
+        //! @}
 
         #endregion Public
 
         #region Private
 
-        /// @name Constant Private SpriteRenderer Index Attributes
-        /// @{
+        //! @name Constant Private SpriteRenderer Index Attributes
+        //! @{
 
         /// <summary>Constant for the head sprite renderer's index.</summary>
         private const int SpriteRendererHeadIndex = 0;
@@ -675,7 +675,7 @@ namespace Battle.View.Player
         /// <summary>Constant for the shadow sprite renderer's index.</summary>
         private const int SpriteRendererShadowIndex = 4;
 
-        /// @}
+        //! @}
 
         /// <summary>Enum used to define player animation states.</summary>
         private enum AnimationState
@@ -750,9 +750,9 @@ namespace Battle.View.Player
         /// <summary>Normal scale of the gameobject.</summary>
         private Vector3 _normalScale;
 
-        /// @anchor BattlePlayerCharacterViewController-Private-GameflowMethods
-        /// @name Private Gameflow Methods
-        /// @{
+        //! @anchor BattlePlayerCharacterViewController-Private-GameflowMethods
+        //! @name Private Gameflow Methods
+        //! @{
         #region Private Gameflow Methods
 
         /// <summary>
@@ -769,12 +769,12 @@ namespace Battle.View.Player
         }
 
         #endregion Private Gameflow Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattlePlayerCharacterViewController-Private-QuantumEventHandlers
-        /// @name Private QuantumEvent Handlers
-        /// Methods for handling QuantumEvents.
-        /// @{
+        //! @anchor BattlePlayerCharacterViewController-Private-QuantumEventHandlers
+        //! @name Private QuantumEvent Handlers
+        //! Methods for handling QuantumEvents.
+        //! @{
         #region Private QuantumEvent Handlers
 
         /// <summary>
@@ -862,10 +862,10 @@ namespace Battle.View.Player
         }
 
         #endregion Private QuantumEvent Handlers
-        /// @}
+        //! @}
 
-        /// @name Other Private Methods
-        /// @{
+        //! @name Other Private Methods
+        //! @{
 
         /// <summary>
         /// Private method for playing the breathing and running animations.
@@ -1060,7 +1060,7 @@ namespace Battle.View.Player
             return _animationTimer / interval;
         }
 
-        /// @}
+        //! @}
 
         #endregion Private
     }

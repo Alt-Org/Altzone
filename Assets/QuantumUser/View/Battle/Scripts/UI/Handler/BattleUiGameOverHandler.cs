@@ -1,10 +1,10 @@
-/// @file BattleUiGameOverHandler.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiGameOverHandler} class which handles showing the game over popup.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles showing the game over popup.
+//! @file BattleUiGameOverHandler.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiGameOverHandler} class which handles showing the game over popup.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles showing the game over popup.
 
 // Unity usings
 using UnityEngine;
@@ -18,10 +18,10 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiGameOverHandler : MonoBehaviour
     {
-        /// @anchor BattleUiGameOverHandler-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiGameOverHandler-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to BattleUiController.</summary>
         /// @ref BattleUiGameOverHandler-SerializeFields
@@ -35,7 +35,7 @@ namespace Battle.View.UI
         /// @ref BattleUiGameOverHandler-SerializeFields
         [SerializeField] private Button _button;
 
-        /// @}
+        //! @}
 
         /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => _view.activeSelf;
