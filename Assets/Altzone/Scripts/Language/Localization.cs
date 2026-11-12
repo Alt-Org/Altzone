@@ -138,10 +138,18 @@ public class LanguageSelector
     public LanguageType Language => _language;
     public bool Selected => _selected;
 
+    public delegate void UpdateLanguageList();
+    public static event UpdateLanguageList OnUpdateLanguageList;
+
     public LanguageSelector(LanguageType type)
     {
         _language = type;
         _selected = true;
+    }
+
+    public void UpdateSelection()
+    {
+        OnUpdateLanguageList?.Invoke();
     }
 }
 
@@ -152,6 +160,7 @@ public class LocalizationEditor : Editor
     Localization _script;
     SerializedProperty _language;
     SerializedProperty _languageList;
+    PopupField<LanguageType> _popup;
 
     public void OnEnable()
     {
@@ -162,6 +171,12 @@ public class LocalizationEditor : Editor
         _script.Initialize();
         serializedObject.Update();
         serializedObject.ApplyModifiedProperties();
+        LanguageSelector.OnUpdateLanguageList += UpdateLanguageSelectionListCall;
+    }
+
+    private void OnDisable()
+    {
+        LanguageSelector.OnUpdateLanguageList -= UpdateLanguageSelectionListCall;
     }
 
     public override VisualElement CreateInspectorGUI()
@@ -175,25 +190,7 @@ public class LocalizationEditor : Editor
         scriptField.SetEnabled(false);
         container.Add(scriptField);
 
-        PopupField<LanguageType> popup = new()
-        {
-            label = _language.displayName
-        };
-
-        List<LanguageSelector> selectorList = _script.LanguageList.Where(x => x.Selected).ToList();
-
-        foreach (LanguageSelector type in selectorList)
-        {
-            popup.choices.Add(type.Language);
-        }
-        popup.value = (LanguageType)_language.enumValueIndex;
-
-        popup.RegisterCallback<ChangeEvent<LanguageType>>(type =>
-        {
-            _language.enumValueIndex = (int)type.newValue;
-            serializedObject.ApplyModifiedProperties();
-            _script.SaveLanguage();
-        });
+        PopupField<LanguageType> popup = UpdateLanguageSelectionList();
 
         container.Add(popup);
 
@@ -202,6 +199,53 @@ public class LocalizationEditor : Editor
 
         return container;
     }
+
+    private PopupField<LanguageType> UpdateLanguageSelectionList()
+    {
+        if (_popup == null)
+        {
+            PopupField<LanguageType> popup = new()
+            {
+                label = _language.displayName
+            };
+
+            List<LanguageSelector> selectorList = _script.LanguageList.Where(x => x.Selected).ToList();
+
+            foreach (LanguageSelector type in selectorList)
+            {
+                popup.choices.Add(type.Language);
+            }
+            popup.value = (LanguageType)_language.enumValueIndex;
+
+            popup.RegisterCallback<ChangeEvent<LanguageType>>(type =>
+            {
+                _language.enumValueIndex = (int)type.newValue;
+                serializedObject.ApplyModifiedProperties();
+                _script.SaveLanguage();
+            });
+
+            _popup ??= popup;
+
+            return popup;
+        }
+        else
+        {
+            List<LanguageSelector> selectorList = _script.LanguageList.Where(x => x.Selected).ToList();
+
+            _popup.choices.Clear();
+
+            foreach (LanguageSelector type in selectorList)
+            {
+                _popup.choices.Add(type.Language);
+            }
+            _popup.value = (LanguageType)_language.enumValueIndex;
+
+            return _popup;
+        }
+    }
+
+    private void UpdateLanguageSelectionListCall() => UpdateLanguageSelectionList();
+
 }
 
 [CustomPropertyDrawer(typeof(LanguageSelector))]
@@ -215,6 +259,12 @@ public class LanguageSelectorEditor : PropertyDrawer
         var languageProperty = property.FindPropertyRelative("_language");
         var selectedProperty = property.FindPropertyRelative("_selected");
         var selectedField = new PropertyField(selectedProperty, ((LanguageType)languageProperty.enumValueIndex).ToString());
+
+        selectedField.RegisterCallback<ChangeEvent<bool>>(type =>
+        {
+            LanguageSelector selector = property.boxedValue as LanguageSelector;
+            selector.UpdateSelection();
+        });
 
         container.Add(selectedField);
 
