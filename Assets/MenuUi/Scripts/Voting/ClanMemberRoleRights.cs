@@ -32,8 +32,9 @@ public class ClanMemberRoleRights : MonoBehaviour
     [SerializeField] private GameObject textPrefab;
     [SerializeField] private Transform contentParent;
     [SerializeField] private GameObject popup;
-    [SerializeField] private TextMeshProUGUI roleText;
-    [SerializeField] private TMP_Dropdown dropdown;
+    [SerializeField] private TextMeshProUGUI currentRoleText;
+    [SerializeField] private TMP_Dropdown roleDropdown;
+    [SerializeField] private TMP_Dropdown roleRightsDropdown;
 
     [SerializeField] private TMP_InputField nameInput;
     [SerializeField] private Button saveRoleButton;
@@ -49,7 +50,9 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     void Start()
     {
-        dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
+        roleDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
+        roleDropdown.onValueChanged.AddListener(OnRolerightsDropdownValueChanged);
+
         if (CurrentMember.Role.name != null)
         {
             DataStore store = Storefront.Get();
@@ -75,13 +78,13 @@ public class ClanMemberRoleRights : MonoBehaviour
             options.Add(role.name);
         }
         options.Add("Add role");
-        dropdown.ClearOptions();
-        dropdown.AddOptions(options);
+        roleDropdown.ClearOptions();
+        roleDropdown.AddOptions(options);
         int defaultIndex = clan.ClanRoles.FindIndex(r => r.name == CurrentMember.Role.name);
         if (defaultIndex != -1)
         {
-            dropdown.value = defaultIndex;
-            dropdown.RefreshShownValue();
+            roleDropdown.value = defaultIndex;
+            roleDropdown.RefreshShownValue();
 
             PopulateRolesAndRights(CurrentMember.Role);
         }
@@ -98,34 +101,50 @@ public class ClanMemberRoleRights : MonoBehaviour
         PopulateRolesAndRights(selectedRole);
     }
 
+    private void OnRolerightsDropdownValueChanged(int index)
+    {
+        MemberRights selectedRight = (MemberRights)index;
+        Debug.Log($"Selected role is {selectedRight}");
+    }
+
     private void PopulateRolesAndRights(ClanRoles currentRole)
     {
-        foreach (Transform child in contentParent)
-        {
-            Destroy(child.gameObject);
-        }
+        List<string> options = new List<string>();
+
+        roleRightsDropdown.ClearOptions();
+        // int defaultIndex = clan.ClanRoles.FindIndex(r => r.name == CurrentMember.Role.name);
+        // if (defaultIndex != -1)
+        // {
+        //     roleRightsDropdown.value = defaultIndex;
+        //     roleRightsDropdown.RefreshShownValue();
+
+        //     PopulateRolesAndRights(CurrentMember.Role);
+        // }
 
         foreach (MemberRights right in Enum.GetValues(typeof(MemberRights)))
         {
-            bool isAllowed = currentRole.HasRights(right);
+            options.Add(right.ToString());
 
-            Debug.Log($"{right} {isAllowed}");
-            GameObject newTextObj = Instantiate(textPrefab, contentParent);
+            //     bool isAllowed = currentRole.HasRights(right);
 
-            TextMeshProUGUI roleRights = newTextObj.GetComponent<TextMeshProUGUI>();
-            Button roleButton = newTextObj.GetComponentInChildren<Button>();
+            //     Debug.Log($"{right} {isAllowed}");
+            //     GameObject newTextObj = Instantiate(textPrefab, contentParent);
 
-            if (roleRights != null)
-            {
-                string statusColor = isAllowed ? "green" : "red";
-                roleRights.text = $"{right}: <color={statusColor}>{isAllowed}</color>";
-                roleButton.GetComponent<Image>().color = isAllowed ? Color.green : Color.red;
-                roleButton.onClick.AddListener(() =>
-                {
-                    OnButtonClicked(right, isAllowed, currentRole);
-                });
-            }
+            //     TextMeshProUGUI roleRights = newTextObj.GetComponent<TextMeshProUGUI>();
+            //     Button roleButton = newTextObj.GetComponentInChildren<Button>();
+
+            //     if (roleRights != null)
+            //     {
+            //         string statusColor = isAllowed ? "green" : "red";
+            //         roleRights.text = $"{right}: <color={statusColor}>{isAllowed}</color>";
+            //         roleButton.GetComponent<Image>().color = isAllowed ? Color.green : Color.red;
+            //         roleButton.onClick.AddListener(() =>
+            //         {
+            //             OnButtonClicked(right, isAllowed, currentRole);
+            //         });
+            //     }
         }
+        roleRightsDropdown.AddOptions(options);
     }
 
     private void OnButtonClicked(MemberRights rightName, bool allowed, ClanRoles currentRole)
