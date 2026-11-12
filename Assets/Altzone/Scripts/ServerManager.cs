@@ -432,34 +432,71 @@ public class ServerManager : MonoBehaviour
     /// </remarks>
     public void SetProfileValues(JObject profileJSON, string username)
     {
-        SetAccessTokens(profileJSON);
+        if (profileJSON.ContainsKey("data"))
+        {
+            JToken profile = profileJSON["data"]["Profile"];
 
-        JToken player = profileJSON["Player"];
-        Assert.IsNotNull(player);
-        PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
+            SetAccessTokens(profileJSON);
 
-        Assert.IsNotNull(username);
-        PlayerPrefs.SetString("userName", username ?? string.Empty);
-        //StartCoroutine(LogIn());
+            Assert.IsNotNull(profile);
+            PlayerPrefs.SetString("playerId", (string)profile["_id"] ?? string.Empty);
+
+            Assert.IsNotNull(username);
+            PlayerPrefs.SetString("userName", username ?? string.Empty);
+        }
+        else
+        {
+            SetAccessTokens(profileJSON);
+
+            JToken player = profileJSON["Player"];
+            Assert.IsNotNull(player);
+            PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
+
+            Assert.IsNotNull(username);
+            PlayerPrefs.SetString("userName", username ?? string.Empty);
+        }
     }
 
     public void SetAccessTokens(JObject profileJSON)
     {
-        JToken accessToken = profileJSON["accessToken"];
-        Assert.IsNotNull(accessToken);
-        AccessToken = (string)accessToken;
+        if (profileJSON.ContainsKey("data"))
+        {
+            JToken profile = profileJSON["data"]["Profile"];
 
-        JToken tokenExpires = profileJSON["tokenExpires"];
-        Assert.IsNotNull(tokenExpires);
-        AccessTokenExpiration = tokenExpires.Value<int>();
+            JToken accessToken = profile["accessToken"];
+            Assert.IsNotNull(accessToken);
+            AccessToken = (string)accessToken;
 
-        JToken refreshToken = profileJSON["refreshToken"];
-        Assert.IsNotNull(refreshToken);
-        RefreshToken = (string)refreshToken;
+            JToken tokenExpires = profile["tokenExpires"];
+            Assert.IsNotNull(tokenExpires);
+            AccessTokenExpiration = tokenExpires.Value<int>();
 
-        JToken refreshTokenExpires = profileJSON["refreshTokenExpires"];
-        Assert.IsNotNull(refreshTokenExpires);
-        RefreshTokenExpiration = refreshTokenExpires.Value<int>();
+            JToken refreshToken = profile["refreshToken"];
+            Assert.IsNotNull(refreshToken);
+            RefreshToken = (string)refreshToken;
+
+            JToken refreshTokenExpires = profile["refreshTokenExpires"];
+            Assert.IsNotNull(refreshTokenExpires);
+            RefreshTokenExpiration = refreshTokenExpires.Value<int>();
+        }
+        else
+        {
+            JToken accessToken = profileJSON["accessToken"];
+            Assert.IsNotNull(accessToken);
+            AccessToken = (string)accessToken;
+
+            JToken tokenExpires = profileJSON["tokenExpires"];
+            Assert.IsNotNull(tokenExpires);
+            AccessTokenExpiration = tokenExpires.Value<int>();
+
+            JToken refreshToken = profileJSON["refreshToken"];
+            Assert.IsNotNull(refreshToken);
+            RefreshToken = (string)refreshToken;
+
+            JToken refreshTokenExpires = profileJSON["refreshTokenExpires"];
+            Assert.IsNotNull(refreshTokenExpires);
+            RefreshTokenExpiration = refreshTokenExpires.Value<int>();
+        }
     }
 
     /// <summary>
