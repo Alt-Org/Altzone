@@ -20,6 +20,12 @@ When referencing **code symbols**, make sure to reference the correct **generate
 
 <br/>
 
+### Documentation comment blocks {#page-documentation-codegen-base-guidelines-documentation-comment-blocks}
+[Doxygen🡵] supports multiple **documentation comment** formats. See [[Documenting with Doxygen]](#page-documentation-doxygen-comment-blocks) for more information on these.  
+You should only use the `///` format.
+
+<br/>
+
 ### Documentation commands {#page-documentation-codegen-base-guidelines-commands}
 [Doxygen🡵] supports various **commands** that can be used when documenting **%Quantum generated code**. See [[Documenting with Doxygen]](#page-documentation-doxygen-commands) for more information on these.  
 All **commands** are allowed in `.dox` files, so you should choose the most appropriate format.

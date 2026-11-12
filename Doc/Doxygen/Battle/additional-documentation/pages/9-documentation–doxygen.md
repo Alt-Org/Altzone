@@ -19,7 +19,9 @@ It will appear lower down on the individual **documentation page** of the thing 
 <br/>
 
 ## Documentation comment blocks {#page-documentation-doxygen-comment-blocks}
-[Doxygen🡵] supports multiple **documentation comment** formats (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/docblocks.html#specialblock)). You should only use the `///` format.
+[Doxygen🡵] supports multiple **documentation comment** formats (see [Doxygen documentation🡵](https://www.doxygen.nl/manual/docblocks.html#specialblock)). You should use the `///` and `//!` formats depending on context.  
+See [[Documenting source code]](#page-documentation-source-code-base-guidelines-comment-blocks)  
+See [[Documenting Quantum generated code]](#page-documentation-source-code-base-guidelines-comment-blocks)  
 
 <br/>
 
