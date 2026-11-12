@@ -21,11 +21,6 @@ public class ClanMemberRoleRights : MonoBehaviour
         set
         {
             _currentMember = value;
-
-            if (_currentMember != null)
-            {
-                PopulateRolesAndRights(_currentMember.Role);
-            }
         }
     }
 
@@ -35,6 +30,7 @@ public class ClanMemberRoleRights : MonoBehaviour
     [SerializeField] private TextMeshProUGUI currentRoleText;
     [SerializeField] private TMP_Dropdown roleDropdown;
     [SerializeField] private TMP_Dropdown roleRightsDropdown;
+    [SerializeField] private Toggle rightAllowedToggle;
 
     [SerializeField] private TMP_InputField nameInput;
     [SerializeField] private Button saveRoleButton;
@@ -44,6 +40,8 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     private ClanData _clanData = null;
     private ClanRoles _draft;
+    private ClanRoles _selectedRole;
+    private MemberRights _selectedRight;
 
     public void OpenPopup() => popup.SetActive(true);
     public void ClosePopup() => popup.SetActive(false);
@@ -52,23 +50,29 @@ public class ClanMemberRoleRights : MonoBehaviour
     {
         roleDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
         roleDropdown.onValueChanged.AddListener(OnRolerightsDropdownValueChanged);
+        newRoleContainer.SetActive(false);
 
         if (CurrentMember.Role.name != null)
         {
-            DataStore store = Storefront.Get();
-            PlayerData player = null;
-            store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
-
-            store.GetClanData(player.ClanId, data => _clanData = data);
-
-            foreach (var role in _clanData.ClanRoles) {
-                Debug.Log($"Clan Role: {role.name}");
-            }
-
-            Debug.Log("Starting");
-            PopulateRoles(_clanData);
-            PopulateRolesAndRights(CurrentMember.Role);
+            Debug.LogWarning($"No current member seleceted?");
         }
+        LoadClanData();
+
+        PopulateRightsDropdown();
+        PopulateRoles(_clanData);
+        SelectCurrentMemberRole();
+    }
+
+    private void LoadClanData()
+    {
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+        if (player == null) return;
+
+        store.GetClanData(player.ClanId, data => _clanData = data);
+        Debug.Log("did a thing");
     }
 
     private void PopulateRoles(ClanData clan)
@@ -80,72 +84,72 @@ public class ClanMemberRoleRights : MonoBehaviour
         options.Add("Add role");
         roleDropdown.ClearOptions();
         roleDropdown.AddOptions(options);
-        int defaultIndex = clan.ClanRoles.FindIndex(r => r.name == CurrentMember.Role.name);
-        if (defaultIndex != -1)
-        {
-            roleDropdown.value = defaultIndex;
-            roleDropdown.RefreshShownValue();
+    }
 
-            PopulateRolesAndRights(CurrentMember.Role);
+    private void PopulateRightsDropdown()
+    {
+        var options = new List<string>();
+        foreach (MemberRights right in Enum.GetValues(typeof(MemberRights)))
+        {
+            options.Add(right.ToString());
         }
+
+        roleRightsDropdown.ClearOptions();
+        roleRightsDropdown.AddOptions(options);
+    }
+
+    private void SelectCurrentMemberRole()
+    {
+        int index = _clanData.ClanRoles.FindIndex(r => r.name == CurrentMember.Role.name);
+        if (index == -1) return;
+
+        roleDropdown.SetValueWithoutNotify(index);
+        roleDropdown.RefreshShownValue();
+
+        ShowRole(_clanData.ClanRoles[index]);
+    }
+
+    private void ShowRole(ClanRoles role)
+    {
+        _selectedRole = role;
+
+        if (currentRoleText != null)
+        {
+            currentRoleText.text = string.IsNullOrEmpty(role.name) ? "New role" : role.name;
+        }
+
+        RefreshRightToggle();
+    }
+
+    private void RefreshRightToggle()
+    {
+        if (_selectedRole == null) return;
+
+        bool isAllowed = _selectedRole.HasRights(_selectedRight);
     }
 
     private void OnDropdownValueChanged(int index)
     {
+        // Last option is new role, if index higher than ClanRoles.Count, treat as new role
         if (index >= _clanData.ClanRoles.Count) {
             NewRole();
             return;
         }
         newRoleContainer.SetActive(false);
-        ClanRoles selectedRole = _clanData.ClanRoles[index];
-        PopulateRolesAndRights(selectedRole);
+        ShowRole(_clanData.ClanRoles[index]);
     }
 
     private void OnRolerightsDropdownValueChanged(int index)
     {
+        if (_selectedRole == null) return;
+
+        // Toggles rights locally for now (for a draft this is what gets sent in the poll)
+        Debug.Log($"Right {_selectedRight} for role '{_selectedRole.name}'");
+
         MemberRights selectedRight = (MemberRights)index;
         Debug.Log($"Selected role is {selectedRight}");
     }
 
-    private void PopulateRolesAndRights(ClanRoles currentRole)
-    {
-        List<string> options = new List<string>();
-
-        roleRightsDropdown.ClearOptions();
-        // int defaultIndex = clan.ClanRoles.FindIndex(r => r.name == CurrentMember.Role.name);
-        // if (defaultIndex != -1)
-        // {
-        //     roleRightsDropdown.value = defaultIndex;
-        //     roleRightsDropdown.RefreshShownValue();
-
-        //     PopulateRolesAndRights(CurrentMember.Role);
-        // }
-
-        foreach (MemberRights right in Enum.GetValues(typeof(MemberRights)))
-        {
-            options.Add(right.ToString());
-
-            //     bool isAllowed = currentRole.HasRights(right);
-
-            //     Debug.Log($"{right} {isAllowed}");
-            //     GameObject newTextObj = Instantiate(textPrefab, contentParent);
-
-            //     TextMeshProUGUI roleRights = newTextObj.GetComponent<TextMeshProUGUI>();
-            //     Button roleButton = newTextObj.GetComponentInChildren<Button>();
-
-            //     if (roleRights != null)
-            //     {
-            //         string statusColor = isAllowed ? "green" : "red";
-            //         roleRights.text = $"{right}: <color={statusColor}>{isAllowed}</color>";
-            //         roleButton.GetComponent<Image>().color = isAllowed ? Color.green : Color.red;
-            //         roleButton.onClick.AddListener(() =>
-            //         {
-            //             OnButtonClicked(right, isAllowed, currentRole);
-            //         });
-            //     }
-        }
-        roleRightsDropdown.AddOptions(options);
-    }
 
     private void OnButtonClicked(MemberRights rightName, bool allowed, ClanRoles currentRole)
     {
@@ -153,7 +157,6 @@ public class ClanMemberRoleRights : MonoBehaviour
         Debug.Log($"Clicked button for right: {rightName}, Status: {allowed}");
 
         currentRole.SetRights(rightName, !allowed);
-        PopulateRolesAndRights(currentRole);
     }
 
     private void NewRole() {
@@ -167,8 +170,6 @@ public class ClanMemberRoleRights : MonoBehaviour
         newRoleContainer.SetActive(true);
         nameInput.text = "";
         saveRoleButton.interactable = true;
-
-        PopulateRolesAndRights(_draft);
 
         PollManager.CreateRolePoll(_currentMember.Id, _draft);
     }
