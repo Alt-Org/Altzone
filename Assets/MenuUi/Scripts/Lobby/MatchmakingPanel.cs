@@ -111,15 +111,15 @@ namespace MenuUi.Scripts.Lobby
         private void Update()
         {
             if (_elapsedTimeText != null)
-                UpdateElapsedTimeText(_elapsedTimeText);
+                _elapsedTimeText.text = GetElapsedTimeText();
         }
 
-        internal static void UpdateElapsedTimeText(TMP_Text text)
+        internal static string GetElapsedTimeText()
         {
             if (LobbyManager.MatchmakingElapsedSeconds is int elapsed)
-                text.text = $"{elapsed / 60:00}:{elapsed % 60:00}";
+                return $"{elapsed / 60:00}:{elapsed % 60:00}";
             else
-                text.text = string.Empty;
+                return string.Empty;
         }
 
         private void OnDisable()
@@ -232,7 +232,7 @@ namespace MenuUi.Scripts.Lobby
                 return;
             }
 
-            _matchmakingText.text = "Jonossa...";
+            _matchmakingText.text = SearchingForRoomText;
         }
 
         private void OnFailedToStartMatchmakingGame()

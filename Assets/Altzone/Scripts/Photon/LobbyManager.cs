@@ -154,13 +154,19 @@ namespace Altzone.Scripts.Lobby
         public static LobbyManager Instance { get; private set; }
         public bool IsStartFinished {set => _isStartFinished = value; }
         private static float? _matchmakingStartTime;
+        private static int? _matchmakingStoppedElapsedSeconds;
 
-        public static int? MatchmakingElapsedSeconds => _matchmakingStartTime is float startTime
-            ? (int)(Time.time - startTime)
-            : (int?)null;
+        public static int? MatchmakingElapsedSeconds => _matchmakingStoppedElapsedSeconds
+            ?? (_matchmakingStartTime is float startTime ? (int)(Time.time - startTime) : (int?)null);
+
+        private static void FreezeMatchmakingTimer()
+        {
+            _matchmakingStoppedElapsedSeconds = MatchmakingElapsedSeconds;
+        }
 
         private static void NotifyMatchmakingRoomEntered(bool isLeader)
         {
+            _matchmakingStoppedElapsedSeconds = null;
             _matchmakingStartTime = Time.time;
             OnMatchmakingRoomEntered?.Invoke(isLeader);
         }
@@ -168,11 +174,13 @@ namespace Altzone.Scripts.Lobby
         private static void NotifyMatchmakingStopped()
         {
             _matchmakingStartTime = null;
+            _matchmakingStoppedElapsedSeconds = null;
             OnMatchmakingStopped?.Invoke();
         }
 
         private static void NotifyGameStartCancelled()
         {
+            _matchmakingStoppedElapsedSeconds = null;
             if (_matchmakingStartTime.HasValue)
                 _matchmakingStartTime = Time.time;
 
@@ -1271,6 +1279,7 @@ namespace Altzone.Scripts.Lobby
 
             if (_serverMatchData != null && _serverMatchData.id == match.id && _serverPhotonReadyInFlight) return;
 
+            FreezeMatchmakingTimer();
             _serverMatchData = match;
             _serverMatchStartConfirmedByBackend = false;
             _currentMatchmakingGameType = (MatchmakingType)match.matchType;
@@ -2395,6 +2404,8 @@ namespace Altzone.Scripts.Lobby
                 if (sendTime == 0) sendTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 long timeToStart = (sendTime + STARTDELAY) - DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 long startTime = sendTime + timeToStart;
+
+                FreezeMatchmakingTimer();
 
                 // Notify listeners about start time (if any)
                 if (OnStartTimeSet != null)
@@ -3686,6 +3697,7 @@ namespace Altzone.Scripts.Lobby
                         _gamePlayedOut = false;
                         _lastCountdownStartTime = Time.time;
                     }
+                    if (countdown >= 0) FreezeMatchmakingTimer();
                     OnGameCountdownUpdate?.Invoke(countdown);
                     break;
                 case PhotonRealtimeClient.PhotonEvent.StartGame:

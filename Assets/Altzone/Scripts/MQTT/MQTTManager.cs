@@ -173,7 +173,6 @@ namespace Altzone.Scripts.MQTT
             {
                 if (_client != null && _client.IsConnected)
                 {
-                    await SubscribeToMatchmaking();
                     if (string.IsNullOrEmpty(ServerManager.Instance.Player.clan_id))
                     {
                         _subscriptionsDone = true;

@@ -1,6 +1,7 @@
 using System.Linq;
 using Altzone.Scripts.Lobby;
 using MenuUi.Scripts.Lobby.InLobby;
+using MenuUI.Scripts;
 using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
@@ -23,6 +24,14 @@ namespace MenuUi.Scripts.Lobby
         [SerializeField] private TMP_Text _player2NameText;
         [SerializeField] private Button _cancelButton;
         [SerializeField] private Button _panelButton;
+
+        [Header("Texts")]
+        [SerializeField] private string _searchingForRoomTextFI;
+        [SerializeField] private string _searchingForRoomTextEN;
+
+        private string SearchingForRoomText => SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English
+            ? _searchingForRoomTextEN
+            : _searchingForRoomTextFI;
 
         private bool _isMatchmaking;
         private bool _isBattleStarting;
@@ -124,7 +133,7 @@ namespace MenuUi.Scripts.Lobby
 
             if (_isMatchmaking && _elapsedTimeText != null)
             {
-                MatchmakingPanel.UpdateElapsedTimeText(_elapsedTimeText);
+                _elapsedTimeText.text = MatchmakingPanel.GetElapsedTimeText();
             }
 
             if (_isMatchmaking && _matchmakingCountText != null)
@@ -312,7 +321,7 @@ namespace MenuUi.Scripts.Lobby
                 return;
             }
 
-            _matchmakingText.text = "Jonossa...";
+            _matchmakingText.text = SearchingForRoomText;
         }
 
         private void OnFailedToStartMatchmakingGame()
