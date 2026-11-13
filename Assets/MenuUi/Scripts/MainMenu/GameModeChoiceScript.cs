@@ -86,7 +86,9 @@ public class GameModeChoiceScript : MonoBehaviour
 
         if (amountOfModes > 0)
         {
-            currentModeInt = _list.FindIndex(x => x.gameType == _gameModeButton.SelectedGameType);
+            currentModeInt = _list.FindIndex(x => x.gameType == _gameModeButton.SelectedGameType
+                && x.matchmakingType == _gameModeButton.SelectedMatchmakingType
+                && x.teamSize == _gameModeButton.SelectedTeamSize);
             if (currentModeInt < 0) currentModeInt = 0;
             SetData();
         }

@@ -24,15 +24,35 @@ namespace Altzone.Scripts.MQTT
     }
 
     [Serializable]
+    public class MatchmakingRoomResponse
+    {
+        public string id { get; set; }
+        public MatchType matchType { get; set; }
+        public int gameType { get; set; }
+        public InviteStatus status { get; set; }
+        public string ownerPlayerId { get; set; }
+        public string clanId { get; set; }
+        public string roomId { get; set; }
+        public List<string> players { get; set; }
+        public List<MQTTBots> bots { get; set; }
+        public int teamSize { get; set; }
+        public bool allowBots { get; set; }
+        public string createdAt { get; set; }
+        public string updatedAt { get; set; }
+        public string readyAt { get; set; }
+        public string matchId { get; set; }
+        public string sentAt { get; set; }
+    }
+
+    [Serializable]
     public class MQTTMatchInvite
     {
         public string id { get; set; }
         public MatchType matchType { get; set; }
+        public int gameType { get; set; }
         public InviteStatus status { get; set; }
-        public MQTTMatchPlayers ownerPlayer{ get; set; }
+        public MQTTMatchPlayers ownerPlayer { get; set; }
         public MQTTMatchPlayers senderPlayer { get; set; }
-        public string clanId { get; set; }
-        public List<MQTTMatchPlayers> players { get; set; }
         public int teamSize { get; set; }
         public bool allowBots { get; set; }
         public string sentAt { get; set; }
@@ -44,11 +64,14 @@ namespace Altzone.Scripts.MQTT
         public string id { get; set; }
         public MatchType matchType { get; set; }
         public int gameType { get; set; }
+        public MatchStatus status { get; set; }
         public int teamSize { get; set; }
         public List<MQTTMatchTeams> teams { get; set; }
         public string startedAt { get; set; }
+        public List<string> readyPlayerIds { get; set; }
+        public string battleStartedAt { get; set; }
         public string finishedAt { get; set; }
-        public MatchResult winningSide { get; set; }
+        public MatchResult result { get; set; }
     }
 
     public enum MatchType

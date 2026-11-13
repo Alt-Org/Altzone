@@ -15,6 +15,7 @@ namespace MenuUi.Scripts.Lobby
     public class MatchmakingPanel : MonoBehaviour
     {
         [SerializeField] private TMP_Text _matchmakingText;
+        [SerializeField] private TMP_Text _elapsedTimeText;
         [SerializeField] private Button _cancelButton;
         [SerializeField] private TMP_Text _cancelButtonText;
 
@@ -104,8 +105,21 @@ namespace MenuUi.Scripts.Lobby
             LobbyManager.OnMatchmakingStopped += OnMatchmakingStopped;
 
             SetMatchmakingTextForCurrentRoom();
-            bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
-            SetCancelButton(isLeader);
+            SetCancelButton(LobbyManager.IsLocalServerMatchmakingOwner);
+        }
+
+        private void Update()
+        {
+            if (_elapsedTimeText != null)
+                _elapsedTimeText.text = GetElapsedTimeText();
+        }
+
+        internal static string GetElapsedTimeText()
+        {
+            if (LobbyManager.MatchmakingElapsedSeconds is int elapsed)
+                return $"{elapsed / 60:00}:{elapsed % 60:00}";
+            else
+                return string.Empty;
         }
 
         private void OnDisable()
@@ -153,19 +167,8 @@ namespace MenuUi.Scripts.Lobby
         {
             Debug.Log("MatchmakingPanel: Cancel button pressed (OnCancelButtonPressed)");
             if (_cancelButton != null) _cancelButton.interactable = false;
-            try
-            {
-                var lobbyRoom = PhotonRealtimeClient.LobbyCurrentRoom;
-                if (lobbyRoom != null && lobbyRoom.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey, false))
-                {
-                    Debug.Log("MatchmakingPanel: leaving queue room immediately due to user cancel.");
-                    PhotonRealtimeClient.LeaveRoom();
-                }
-            }
-            catch { }
-
             this.Publish(new LobbyManager.StopMatchmakingEvent(InLobbyController.SelectedMatchmakingType, true));
-            bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+            bool isLeader = LobbyManager.IsLocalServerMatchmakingOwner;
             if (!isLeader && InLobbyController.SelectedMatchmakingType != MatchmakingType.Clan2v2 && InLobbyController.SelectedMatchmakingType != MatchmakingType.FriendLobby)
             {
                 Signals.SignalBus.OnCloseBattlePopupRequestedSignal();
@@ -204,8 +207,7 @@ namespace MenuUi.Scripts.Lobby
             SetMatchmakingTextForCurrentRoom();
             if (_cancelButton != null)
             {
-                bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
-                SetCancelButton(isLeader);
+                SetCancelButton(LobbyManager.IsLocalServerMatchmakingOwner);
             }
         }
 
@@ -224,30 +226,13 @@ namespace MenuUi.Scripts.Lobby
         {
             if (_matchmakingText == null) return;
 
-            try
+            if (!LobbyManager.IsServerMatchmakingActive)
             {
-                bool inMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
-
-                var room = PhotonRealtimeClient.LobbyCurrentRoom;
-                bool isQueue = false;
-                if (room != null)
-                {
-                    isQueue = room.GetCustomProperty<bool>(Altzone.Scripts.Battle.Photon.PhotonBattleRoom.IsQueueKey);
-                    if (isQueue) inMatchmakingOrQueue = true;
-                }
-
-                if (!inMatchmakingOrQueue)
-                {
-                    _matchmakingText.text = string.Empty;
-                    return;
-                }
-
-                _matchmakingText.text = isQueue ? SearchingForRoomText : JoiningRoomText;
+                _matchmakingText.text = string.Empty;
+                return;
             }
-            catch
-            {
-                _matchmakingText.text = SearchingForRoomText;
-            }
+
+            _matchmakingText.text = SearchingForRoomText;
         }
 
         private void OnFailedToStartMatchmakingGame()

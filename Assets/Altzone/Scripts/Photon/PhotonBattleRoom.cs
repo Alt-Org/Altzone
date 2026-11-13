@@ -29,6 +29,7 @@ namespace Altzone.Scripts.Battle.Photon
         public const string BattleID = "bid";
         public const string VisibleRoomNameKey = "rn";
         public const string PlayerPositionKey = "pp";
+        public const string TeamSizeKey = "teamSize";
         public const string PlayerCountKey = "pc";
         public const string PlayerCharacterIdKey = "mk";
         public const string PlayerCharacterIdsKey = "ci";
@@ -48,7 +49,7 @@ namespace Altzone.Scripts.Battle.Photon
         public const string GameTypeKey = "gt";
         public const string BotFillKey = "bf";
         public const string IsMatchmakingKey = "mm";
-        public const string IsQueueKey = "iq";
+        public const string ServerMatchStartedKey = "sms";
         public const string SoulhomeRank = "sr";
         public const string SoulhomeRankVariance = "rv";
         public const string ClanNameKey = "c";
@@ -61,6 +62,10 @@ namespace Altzone.Scripts.Battle.Photon
         public const string PremadeModeKey = "pm";
         public const string PremadeTargetMatchmakingTypeKey = "ptm";
         public const string PremadeTargetGameTypeKey = "ptg";
+        public const string PremadeInvitedUserIdKey = "piu";
+        public const string PremadeInviteStateKey = "pis";
+        public const int PremadeInviteStateNone = 0;
+        public const int PremadeInviteStateAccepted = 2;
         public const string PremadeLeaderUserIdKey = "plid";
         public const string PremadeLeaderUsernameKey = "pln";
         public const string PremadeUserId1Key = "pm1";
@@ -182,7 +187,11 @@ namespace Altzone.Scripts.Battle.Photon
             if (usedPlayerPositions.Contains(wantedPlayerPos))
             {
                 int[] playerPositions;
-                if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+                if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(TeamSizeKey, 2) == 1)
+                {
+                    playerPositions = new[] { PlayerPosition1, PlayerPosition3 };
+                }
+                else if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
                 {
                     playerPositions = new[] { PlayerPosition2, PlayerPosition1 };
                 }
@@ -217,6 +226,13 @@ namespace Altzone.Scripts.Battle.Photon
         public HashSet<int> GetUsedPlayerPositions()
         {
             HashSet<int> usedPlayerPositions = new();
+
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(TeamSizeKey, 2) == 1)
+            {
+                if (!CheckIfPositionIsFree(PlayerPosition1)) usedPlayerPositions.Add(PlayerPosition1);
+                if (!CheckIfPositionIsFree(PlayerPosition3)) usedPlayerPositions.Add(PlayerPosition3);
+                return usedPlayerPositions;
+            }
 
             // Filling hashset with used player positions
             if (CheckIfPositionIsFree(PlayerPosition1) == false) usedPlayerPositions.Add(PlayerPosition1);
@@ -444,6 +460,10 @@ namespace Altzone.Scripts.Battle.Photon
 
         public bool IsValidPlayerPos(int playerPos)
         {
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(TeamSizeKey, 2) == 1)
+            {
+                return playerPos is PlayerPosition1 or PlayerPosition3;
+            }
             if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2 && (MatchmakingType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(MatchmakingKey) is not MatchmakingType.Custom)
             {
                 return playerPos is PlayerPosition1 or PlayerPosition3;
@@ -482,6 +502,11 @@ namespace Altzone.Scripts.Battle.Photon
 
         public int GetPlayerIndex(int playerPos)
         {
+            if (PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(TeamSizeKey, 2) == 1)
+            {
+                Assert.IsTrue(playerPos is PlayerPosition1 or PlayerPosition3, "1v1 uses Battle positions 1 and 3");
+                return playerPos - 1;
+            }
             if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
             {
                 Assert.IsTrue(playerPos >= PlayerPosition1 && playerPos <= PlayerPosition2,
