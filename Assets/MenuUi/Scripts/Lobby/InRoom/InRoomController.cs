@@ -197,7 +197,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 case MatchmakingType.Clan2v2:
                     if (PhotonLobbyRoom.CountRealPlayers() == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
                     {
-                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType));
+                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType, teamSize: InLobbyController.SelectedTeamSize));
                     }
                     else
                     {
@@ -206,7 +206,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     }
                     break;
                 case MatchmakingType.Random2v2:
-                    this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType));
+                    this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType, teamSize: InLobbyController.SelectedTeamSize));
                     break;
             }
         }

@@ -60,6 +60,7 @@ namespace MenuUi.Scripts.ReferenceSheets
         public Sprite Middleground;
         public MatchmakingType matchmakingType;
         public GameType gameType;
+        [Range(1, 2)] public int teamSize = 2;
         public bool Enabled;
         public string FinnishName;
         public string FinnishDescription;

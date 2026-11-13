@@ -280,13 +280,13 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private IEnumerator CreateClan2v2Room(GameType gameType)  // soulhome value for matchmaking
         {
-            this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Clan2v2, gameType));
+            this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Clan2v2, gameType, teamSize: InLobbyController.SelectedTeamSize));
             yield break;
         }
 
         private IEnumerator CreateRandom2v2Room(GameType gameType)  // soulhome value for matchmaking
         {
-            this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Random2v2, gameType));
+            this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Random2v2, gameType, teamSize: InLobbyController.SelectedTeamSize));
             yield break;
         }
 

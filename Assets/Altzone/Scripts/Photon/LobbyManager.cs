@@ -788,7 +788,7 @@ namespace Altzone.Scripts.Lobby
 
 
         #region Matchmaking
-        private IEnumerator StartServerMatchmaking(MatchmakingType matchmakingType, GameType gameType, bool isPremadeInRoom)
+        private IEnumerator StartServerMatchmaking(MatchmakingType matchmakingType, GameType gameType, bool isPremadeInRoom, int teamSize)
         {
             _currentMatchmakingGameType = matchmakingType;
             _currentGameType = gameType;
@@ -820,7 +820,6 @@ namespace Altzone.Scripts.Lobby
                     yield return new WaitUntil(() => PhotonRealtimeClient.InLobby);
                 }
 
-                int teamSize = gameType == GameType.BattleFlipperGame ? 1 : 2;
                 bool joinedExistingRoom = false;
                 MatchmakingRoomResponse matchmakingRoom = null;
 
@@ -828,6 +827,7 @@ namespace Altzone.Scripts.Lobby
                 {
                     yield return StartCoroutine(TryJoinOpenClanMatchmakingRoom(
                         gameType,
+                        teamSize,
                         roomIdBefore: null,
                         (success, room) =>
                         {
@@ -876,6 +876,7 @@ namespace Altzone.Scripts.Lobby
                             MatchmakingRoomResponse joinedRoom = null;
                             yield return StartCoroutine(TryJoinOpenClanMatchmakingRoom(
                                 gameType,
+                                teamSize,
                                 createdRoomId,
                                 (success, room) =>
                                 {
@@ -947,6 +948,7 @@ namespace Altzone.Scripts.Lobby
 
         private IEnumerator TryJoinOpenClanMatchmakingRoom(
             GameType gameType,
+            int teamSize,
             string roomIdBefore,
             Action<bool, MatchmakingRoomResponse> callback)
         {
@@ -969,7 +971,7 @@ namespace Altzone.Scripts.Lobby
                             || (room.status == InviteStatus.READY
                                 && room.bots != null
                                 && room.bots.Count > 0))
-                        && room.teamSize == 2
+                        && room.teamSize == teamSize
                         && room.players != null
                         && room.players.Count < room.teamSize
                         && !room.players.Contains(playerId)
@@ -1378,6 +1380,7 @@ namespace Altzone.Scripts.Lobby
             string matchId = _serverMatchData.id;
             int expectedPosition = ApplyServerMatchPosition();
             float positionDeadline = Time.realtimeSinceStartup + ServerPhotonPositionReadyTimeoutSeconds;
+            float nextPositionRetry = Time.realtimeSinceStartup + 0.5f;
 
             while (_serverMatchmakingActive
                 && _serverMatchData != null
@@ -1395,17 +1398,18 @@ namespace Altzone.Scripts.Lobby
                 if (Time.realtimeSinceStartup >= positionDeadline)
                 {
                     _serverPhotonReadyInFlight = false;
-                    Debug.LogWarning($"Photon did not acknowledge server match position {expectedPosition} for match '{matchId}' in time; readiness was not confirmed.");
+                    Debug.LogWarning($"Photon did not acknowledge server match position {expectedPosition} for match '{matchId}' in time (local position: {localPosition}, client state: {PhotonRealtimeClient.NetworkClientState}); readiness was not confirmed.");
                     OnFailedToStartMatchmakingGame?.Invoke();
                     yield break;
                 }
 
-                // The room creator can receive OnJoinedRoom before its initial room properties
-                // are visible locally. Retry resolving the assigned slot, but do not confirm ready
-                // until the corresponding player property has also arrived from Photon.
-                if (!PhotonLobbyRoom.IsValidPlayerPos(expectedPosition))
+                // Retry both resolving the reserved slot and publishing the player property.
+                // A resolved slot does not mean the initial property operation was sent or
+                // remained applied. Keep waiting for the Photon cache before confirming ready.
+                if (Time.realtimeSinceStartup >= nextPositionRetry)
                 {
                     expectedPosition = ApplyServerMatchPosition();
+                    nextPositionRetry = Time.realtimeSinceStartup + 0.5f;
                 }
                 yield return null;
             }
@@ -1889,7 +1893,8 @@ namespace Altzone.Scripts.Lobby
             _matchmakingHolder = StartCoroutine(StartServerMatchmaking(
                 data.SelectedMatchmakingType,
                 data.SelectedGameType,
-                data.IsPremadeInRoom));
+                data.IsPremadeInRoom,
+                data.TeamSize));
         }
 
         private void OnStopMatchmakingEvent(StopMatchmakingEvent data)
@@ -1936,6 +1941,7 @@ namespace Altzone.Scripts.Lobby
 
                 // Checking that every player has a player position key and if not waiting until they have one (every one who joins room will reserve position for themselves)
                 Room room = PhotonRealtimeClient.CurrentRoom;
+                bool is1v1 = room.GetCustomProperty<int>(PhotonBattleRoom.TeamSizeKey, 2) == 1;
                 List<Player> players = room.Players.Values.ToList();
                 List<int> missingPlayers = new();
 
@@ -2060,7 +2066,7 @@ namespace Altzone.Scripts.Lobby
                     {
                         string positionKey = PhotonBattleRoom.GetPositionKey(j);
                         string positionValue = PhotonRealtimeClient.LobbyCurrentRoom?.GetCustomProperty<string>(positionKey);
-                        if (positionValue == "Bot")
+                        if (positionValue == "Bot" && (!is1v1 || j is 1 or 3))
                         {
                             playerTypes[j - 1] = PlayerType.Bot;
                             playerUserNames[j - 1] = "Bot";
@@ -2114,7 +2120,10 @@ namespace Altzone.Scripts.Lobby
                     if(PhotonBattleRoom.IsBotFillActive())
                     for (int i=0; i < playerTypes.Length; i++)
                     {
-                            if (playerTypes[i] == PlayerType.None) { playerTypes[i] = PlayerType.Bot;}
+                            if (playerTypes[i] == PlayerType.None && (!is1v1 || i is 0 or 2))
+                            {
+                                playerTypes[i] = PlayerType.Bot;
+                            }
                     }
 
                     data = new()
@@ -3999,12 +4008,14 @@ namespace Altzone.Scripts.Lobby
             public readonly MatchmakingType SelectedMatchmakingType;
             public readonly GameType SelectedGameType;
             public readonly bool IsPremadeInRoom;
+            public readonly int TeamSize;
 
-            public StartMatchmakingEvent(MatchmakingType matchmakingType, GameType gameType, bool isPremadeInRoom = false)
+            public StartMatchmakingEvent(MatchmakingType matchmakingType, GameType gameType, bool isPremadeInRoom = false, int teamSize = 2)
             {
                 SelectedMatchmakingType = matchmakingType;
                 SelectedGameType = gameType;
                 IsPremadeInRoom = isPremadeInRoom;
+                TeamSize = Mathf.Clamp(teamSize, 1, 2);
             }
 
             public override string ToString()

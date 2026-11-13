@@ -19,7 +19,8 @@ MonoBehaviour:
     Middleground: {fileID: 21300000, guid: d0a0c0bb4dbc640458c7b1a5180ed539, type: 3}
     matchmakingType: 2
     gameType: 0
-    Enabled: 0
+    teamSize: 2
+    Enabled: 1
     FinnishName: Kohtaaminen 2v2
     FinnishDescription: "Pelaa satunnaisten pelaajien kanssa satunnaistiimeiss\xE4"
     EnglishName: Encounter 2v2
@@ -30,7 +31,8 @@ MonoBehaviour:
     Middleground: {fileID: 21300000, guid: c7d45312a7e0c884684fb7f526da5dd6, type: 3}
     matchmakingType: 3
     gameType: 0
-    Enabled: 1
+    teamSize: 2
+    Enabled: 0
     FinnishName: Duo 2v2
     FinnishDescription: Pelaa duon kanssa
     EnglishName: Duo 2v2
@@ -41,6 +43,7 @@ MonoBehaviour:
     Middleground: {fileID: 21300000, guid: c7d45312a7e0c884684fb7f526da5dd6, type: 3}
     matchmakingType: 2
     gameType: 1
+    teamSize: 1
     Enabled: 1
     FinnishName: 
     FinnishDescription: Testaa vartiosto pelimuotoa
@@ -52,6 +55,7 @@ MonoBehaviour:
     Middleground: {fileID: 21300000, guid: c7d45312a7e0c884684fb7f526da5dd6, type: 3}
     matchmakingType: 3
     gameType: 1
+    teamSize: 2
     Enabled: 0
     FinnishName: Vartiosto Duo
     FinnishDescription: Testaa vartiosto pelimuotoa kaverin kanssa
@@ -63,6 +67,7 @@ MonoBehaviour:
     Middleground: {fileID: 21300000, guid: d0a0c0bb4dbc640458c7b1a5180ed539, type: 3}
     matchmakingType: 0
     gameType: 1
+    teamSize: 2
     Enabled: 0
     FinnishName: Flipper Testi
     FinnishDescription: Testaa Flipper pelimuotoa
@@ -74,6 +79,7 @@ MonoBehaviour:
     Middleground: {fileID: 21300000, guid: d8f98be7e9df2aa4a8b7ce458bcd40e7, type: 3}
     matchmakingType: 0
     gameType: 0
+    teamSize: 2
     Enabled: 1
     FinnishName: Mukautettu
     FinnishDescription: Taistele kuin haluat
@@ -85,6 +91,7 @@ MonoBehaviour:
     Middleground: {fileID: 21300000, guid: d8f98be7e9df2aa4a8b7ce458bcd40e7, type: 3}
     matchmakingType: -1
     gameType: 10
+    teamSize: 2
     Enabled: 0
     FinnishName: "Ry\xF6st\xF6 (Testi)"
     FinnishDescription: "Ry\xF6v\xE4\xE4 tavaraa klaanillesi"

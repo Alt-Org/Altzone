@@ -263,7 +263,7 @@ namespace MenuUi.Scripts.Lobby
         {
             // Reopen the battle popup and hide this mini panel
             Hide();
-            Signals.SignalBus.OnBattlePopupRequestedSignal(InLobbyController.SelectedMatchmakingType);
+            Signals.SignalBus.OnBattlePopupRequestedSignal(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedPremadeTargetMatchmakingType, InLobbyController.SelectedGameType, InLobbyController.SelectedTeamSize);
         }
 
         private void OnGameCountdownUpdate(int secondsRemaining)

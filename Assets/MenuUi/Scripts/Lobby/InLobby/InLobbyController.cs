@@ -17,11 +17,11 @@ namespace MenuUi.Scripts.Signals
 {
     public static partial class SignalBus
     {
-        public delegate void BattlePopupRequestedHandler(MatchmakingType lobbygameType, MatchmakingType actualGameType, GameType gameType);
+        public delegate void BattlePopupRequestedHandler(MatchmakingType lobbygameType, MatchmakingType actualGameType, GameType gameType, int teamSize);
         public static event BattlePopupRequestedHandler OnBattlePopupRequested;
-        public static void OnBattlePopupRequestedSignal(MatchmakingType lobbygameType, MatchmakingType actualGameType = MatchmakingType.None, GameType gameType = GameType.BattlePingPong)
+        public static void OnBattlePopupRequestedSignal(MatchmakingType lobbygameType, MatchmakingType actualGameType = MatchmakingType.None, GameType gameType = GameType.BattlePingPong, int teamSize = 2)
         {
-            OnBattlePopupRequested?.Invoke(lobbygameType, actualGameType, gameType);
+            OnBattlePopupRequested?.Invoke(lobbygameType, actualGameType, gameType, teamSize);
         }
 
         public delegate void CloseBattlePopupRequestedHandler();
@@ -62,6 +62,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         public static InLobbyController Instance { get; private set; }
         public static MatchmakingType SelectedMatchmakingType { get; private set; }
         public static GameType SelectedGameType { get; private set; }
+        public static int SelectedTeamSize { get; private set; } = 2;
         public static MatchmakingType SelectedPremadeTargetMatchmakingType { get; private set; } = MatchmakingType.Clan2v2;
         private static string _pendingFriendLobbyInvitePlayerId;
 
@@ -171,8 +172,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
         }*/
 
 
-        private void OpenWindow(MatchmakingType matchmakingType, MatchmakingType actualMatchmakingType = MatchmakingType.None, GameType gameType = GameType.BattlePingPong)
+        private void OpenWindow(MatchmakingType matchmakingType, MatchmakingType actualMatchmakingType = MatchmakingType.None, GameType gameType = GameType.BattlePingPong, int teamSize = 2)
         {
+            SelectedTeamSize = Mathf.Clamp(teamSize, 1, 2);
             _popupContents.SetActive(true);
             // Ensure top info shows current values when popup opens
             RefreshTopInfo();
@@ -209,7 +211,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         if (currRoom != null)
                         {
                             var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey);
-                            currentRoomGameTypeMatches = gt == (int)matchmakingType;
+                            currentRoomGameTypeMatches = gt == (int)matchmakingType
+                                && currRoom.GetCustomProperty<int>(PhotonBattleRoom.TeamSizeKey, 2) == SelectedTeamSize;
                         }
                     }
                     catch { }

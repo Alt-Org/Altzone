@@ -2224,6 +2224,12 @@ public class ServerManager : MonoBehaviour
             body["teamSize"] = teamSize;
         }
 
+        if (matchmakingType != MatchmakingType.Custom)
+        {
+            // The backend defaults omitted teamSize to 1, including RANDOM and CLAN.
+            body["teamSize"] = teamSize;
+        }
+
         if (!string.IsNullOrWhiteSpace(automaticInvitePlayerId))
         {
             body["automaticInvite"] = JObject.FromObject(new { type = "PLAYER", playerId = automaticInvitePlayerId });

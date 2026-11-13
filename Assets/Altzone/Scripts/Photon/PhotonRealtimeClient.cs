@@ -948,8 +948,10 @@ public static class PhotonRealtimeClient
 
         PhotonHashtable properties = roomOptions.CustomRoomProperties ?? new PhotonHashtable();
         properties[PhotonBattleRoom.BattleID] = match.id;
+        properties[PhotonBattleRoom.TeamSizeKey] = match.teamSize;
 
-        string[] slots = new string[maxPlayers];
+        // Battle always uses slots 1/2 for A and 3/4 for B, including 1v1.
+        string[] slots = new string[4];
         List<string> expectedUsers = new();
         bool hasBots = false;
 
@@ -957,12 +959,13 @@ public static class PhotonRealtimeClient
         {
             foreach (MQTTMatchTeams team in match.teams)
             {
-                int slotIndex = string.Equals(team.side, "B", StringComparison.OrdinalIgnoreCase) ? match.teamSize : 0;
+                int slotIndex = string.Equals(team.side, "B", StringComparison.OrdinalIgnoreCase) ? 2 : 0;
+                int teamSlotEnd = slotIndex + Math.Min(match.teamSize, 2);
                 if (team.players != null)
                 {
                     foreach (MQTTMatchPlayers player in team.players)
                     {
-                        if (player == null || string.IsNullOrWhiteSpace(player.playerId) || slotIndex >= slots.Length) continue;
+                        if (player == null || string.IsNullOrWhiteSpace(player.playerId) || slotIndex >= teamSlotEnd) continue;
                         slots[slotIndex++] = player.playerId;
                         if (!expectedUsers.Contains(player.playerId)) expectedUsers.Add(player.playerId);
                     }
@@ -972,7 +975,7 @@ public static class PhotonRealtimeClient
                 {
                     foreach (MQTTBots bot in team.bots)
                     {
-                        if (slotIndex >= slots.Length) break;
+                        if (slotIndex >= teamSlotEnd) break;
                         slots[slotIndex++] = "Bot";
                         hasBots = true;
                     }
