@@ -220,7 +220,7 @@ namespace Battle.QSimulation.Game
             BattlePlayerHandle handle = new();
 
             handle.PlayerData = BattlePlayerManager.GetPlayerData(f, link->Slot);
-            handle.SetCharacter(f, link->CharacterEntityRef);
+            handle.SetCharacter(f, BattleManagedEntityHandle.Create(f, link->CharacterEntityRef));
 
             if (link->Type == BattlePlayerLinkEntityType.Hitbox) handle.SetHitbox(f, entityRef);
 
@@ -278,22 +278,6 @@ namespace Battle.QSimulation.Game
             SetCharacter(f, BattleEntityManager.Get(f, PlayerData.Low_Level.CharacterEntityGroupID, characterNumber));
         }
 
-        public void LoadCharacter(Frame f, EntityRef entity)
-        {
-            BattlePlayerLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerLinkQComponent>(entity);
-
-            SetCharacter(f, link->CharacterEntityRef);
-
-            if (link->Type == BattlePlayerLinkEntityType.Hitbox)
-            {
-                SetHitbox(f, entity);
-            }
-            else
-            {
-                UnsetHitbox();
-            }
-        }
-
         public BattlePlayerHandle LoadCharacterCopy(Frame f, int characterNumber)
         {
             BattlePlayerData.DevAssertIsValidCharacterNumber(nameof(BattlePlayerHandle), characterNumber);
@@ -314,18 +298,18 @@ namespace Battle.QSimulation.Game
 
         private Transform2D* _loadedCharacterTransformInternalPtr {  get; set; }
 
-        private void SetCharacter(Frame f, EntityRef entity)
+        private void SetCharacter(Frame f, BattleManagedEntityHandle entityHandle)
         {
-            LoadedCharacterEntityHandle          = BattleManagedEntityHandle.Create(f, entity);
-            LoadedCharacterData                  = f.Unsafe.GetPointer<BattlePlayerCharacterDataQComponent>(entity);
-            _loadedCharacterTransformInternalPtr = f.Unsafe.GetPointer<Transform2D>(entity);
+            LoadedCharacterEntityHandle          = BattleManagedEntityHandle.Create(f, entityHandle);
+            LoadedCharacterData                  = f.Unsafe.GetPointer<BattlePlayerCharacterDataQComponent>(entityHandle);
+            _loadedCharacterTransformInternalPtr = f.Unsafe.GetPointer<Transform2D>(entityHandle);
         }
 
-        private void SetHitbox(Frame f, EntityRef entity)
+        private void SetHitbox(Frame f, EntityRef entityRef)
         {
-            CollidedHitboxEntityRef = entity;
-            CollidedHitboxComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(entity);
-            CollidedHitboxTransform = f.Unsafe.GetPointer<Transform2D>(entity);
+            CollidedHitboxEntityRef = entityRef;
+            CollidedHitboxComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(entityRef);
+            CollidedHitboxTransform = f.Unsafe.GetPointer<Transform2D>(entityRef);
         }
 
         private void UnsetHitbox()
@@ -337,6 +321,9 @@ namespace Battle.QSimulation.Game
 
         void BattleManagedEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManagedEntityHandle managedEntity)
         {
+            BattlePlayerLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerLinkQComponent>(managedEntity);
+
+            PlayerData = BattlePlayerManager.GetPlayerData(f, link->Slot);
             SetCharacter(f, managedEntity);
         }
     }
