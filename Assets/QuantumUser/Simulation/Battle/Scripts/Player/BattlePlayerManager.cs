@@ -345,9 +345,10 @@ namespace Battle.QSimulation.Player
 
                 //{ post registration setup
 
+                BattlePlayerHandle playerHandle = BattlePlayerHandle.Create(playerData);
+
                 for (int playerCharacterNumber = 0; playerCharacterNumber < playerCharacterEntityArray.Length; playerCharacterNumber++)
                 {
-                    BattlePlayerHandle playerHandle = BattlePlayerHandle.Create(playerData);
                     playerHandle.LoadCharacter(f, playerCharacterNumber);
 
                     SetupPlayerCharacter(f, playerHandle);
