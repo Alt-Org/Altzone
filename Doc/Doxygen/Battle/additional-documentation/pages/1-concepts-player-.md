@@ -678,8 +678,66 @@ methods also affect the [{Player PlayState}](#page-concepts-player-playstate) of
 #### PlayerHandle {#page-concepts-player-simulation-management-playerhandle}
 
 The @cref{Battle.QSimulation.Game,BattlePlayerHandle} is a special case [{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle),
-as it also contains data on the player, who is not an entity.
-Other than that, it functions the same as any other [{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle).
+as it contains data on the **Player** itself, who is not an entity, and optionally, data on one [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character).  
+As stated before, the @cref{Battle.QSimulation.Game,BattlePlayerHandle} can be used to **Handle** the **Player** itself detached from any **Character**.
+
+A @cref{Battle.QSimulation.Game,BattlePlayerHandle} for the **Player** itself with **no** [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character)
+can be **Created** using the @clink{Create:Battle.QSimulation.Game.BattlePlayerHandle.Create(Frame,BattlePlayerSlot)} method.
+
+When a [{Character is Loaded}](#page-concepts-player-simulation-management-playerhandle-loaded-character), it functions the same as any other
+[{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for the [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character).
+
+##### Linked/Associated Entities {#page-concepts-player-simulation-management-playerhandle-linked-entities}
+
+Each [{Player Character}](#page-concepts-player-character-and-shield-entity) has **Entities** that are **Linked/Associated** with the **Character** and the **Player** itself
+using a @cref{Quantum,BattlePlayerLinkQComponent}, a [{Link Component}](#page-concepts-battle-handle-entity-type-handle-link-component).  
+Each **Linked/Associated Entity** has a @cref{Quantum,BattlePlayerLinkEntityType}.
+
+| Linked/Associated Entity                                                                                                                                                                                              | @cref{Quantum,BattlePlayerLinkEntityType}           |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------- |
+| The main [{Player Character Entity}](#page-concepts-player-character-and-shield-entity).                                                                                                                              | @cref{Quantum.BattlePlayerLinkEntityType,Character} |
+| The **Hitbox Entities** of the main [{Player Character Entity}](#page-concepts-player-character-and-shield-entity).                                                                                                   | @cref{Quantum.BattlePlayerLinkEntityType,Hitbox}    |
+| The [{Player Shield Entity}](#page-concepts-player-character-and-shield-entity) associated with the main [{Player Character Entity}](#page-concepts-player-character-and-shield-entity).                              | @cref{Quantum.BattlePlayerLinkEntityType,Shield}    |
+| The **Hitbox Entities** of the [{Player Shield Entities}](#page-concepts-player-character-and-shield-entity) associated with the main [{Player Character Entity}](#page-concepts-player-character-and-shield-entity). | @cref{Quantum.BattlePlayerLinkEntityType,Shield}    |
+
+If a [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) is **Created** from a **Linked/Associated Entity** of **Type** @cref{Quantum.BattlePlayerLinkEntityType,Hitbox},
+the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) will have an [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playerhandle-collided-hitbox).  
+If a [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) is **Created** from a **Linked/Associated Entity** of **Type** @cref{Quantum.BattlePlayerLinkEntityType,Character}
+or @cref{Quantum.BattlePlayerLinkEntityType,Shield}, the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle)
+will just have a [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character).
+
+##### Loaded Character {#page-concepts-player-simulation-management-playerhandle-loaded-character}
+
+Each [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) can have **one** or **none** of the
+[{3 Characters}](#page-concepts-player-character-and-shield-entity) the **Player** controls **Loaded**.  
+When a **Character is Loaded**, the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle)
+functions as a [{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for the **Loaded Character**.
+
+A [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) for the **Player** with a **Character already Loaded**
+can be **Created** using the @clink{Create:Battle.QSimulation.Game.BattlePlayerHandle.Create(Frame,EntityRef)} method with a
+[{Linked/Associated Entity}](#page-concepts-player-simulation-management-playerhandle-linked-entities) as an argument.
+
+A **Character** can be **Loaded** using the @cref{Battle.QSimulation.Game.BattlePlayerHandle,LoadCharacter} method.  
+The @cref{Battle.QSimulation.Game.BattlePlayerHandle,LoadCharacter} method can obviously be called after the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle)
+is **Created**, upgrading the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) from only handling the **Player** itself to also handling one of the **Characters**.  
+If there already is a **Loaded Character**, another **Character** can still be **Loaded**, replacing the currently **Loaded Character**.
+
+**Multiple Characters** can be **Handled** using the @cref{Battle.QSimulation.Game.BattlePlayerHandle,LoadCharacterCopy} method.  
+The @cref{Battle.QSimulation.Game.BattlePlayerHandle,LoadCharacterCopy} method returns a copy of the
+[{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) with the desired **Character Loaded**.
+
+Whether a [{Character}](#page-concepts-player-character-and-shield-entity) is **Loaded** or not can be **Checked** using the
+@cref{Battle.QSimulation.Game.BattlePlayerHandle,HandleHasCharacterLoaded} property.  
+If a [{Character}](#page-concepts-player-character-and-shield-entity) should be **Loaded**, it can be **Asserted** using the
+@cref{Battle.QSimulation.Game.BattlePlayerHandle,DevAssertPlayerHandleHasCharacterLoaded} method.
+
+##### Available Collided Hitbox {#page-concepts-player-simulation-management-playerhandle-collided-hitbox}
+
+When there is a collision involving a [{Player Character}](#page-concepts-player-character-and-shield-entity), the **Player Hitbox Entity** that was collided with is relevant.  
+So, if a [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) is **Created** using the @clink{Create:Battle.QSimulation.Game.BattlePlayerHandle.Create(Frame,EntityRef)}
+method with a [{Linked/Associated Entity}](#page-concepts-player-simulation-management-playerhandle-linked-entities)
+of **Type** @cref{Quantum.BattlePlayerLinkEntityType,Hitbox} as an argument,
+the **Hitbox Entity** is captured and made **Available** through the @cref{Battle.QSimulation.Game.BattlePlayerHandle,CollidedHitboxEntityRef} field.
 
 <br/>
 

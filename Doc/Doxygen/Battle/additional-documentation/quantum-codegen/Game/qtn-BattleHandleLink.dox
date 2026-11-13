@@ -21,19 +21,22 @@
 
 /// @enum Quantum::BattlePlayerLinkEntityType
 /// <summary>
-/// Enum used to define what type of entity the player link is on.
+/// Enum used to define the type of <b>Entity {Linked/Associated with the Player}</b>.
 /// </summary>
+///
+/// See [{Player Character and Shield Entities}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
+/// See [{Linked/Associated Entities}](#page-concepts-player-simulation-management-playerhandle-linked-entities) for more info.<br/>
 ///
 /// @bigtext{Generated from @ref BattleHandleLink.qtn}
 
 /// @var BattlePlayerLinkEntityType Quantum::BattlePlayerLinkEntityType::Character
-/// <summary>Link is on a character entity.</summary>
+/// <summary><b>{Linked/Associated} Entity</b> is a <b>{Character Entity}</b>.</summary>
 ///
 /// @var BattlePlayerLinkEntityType Quantum::BattlePlayerLinkEntityType::Hitbox
-/// <summary>Link is on a hitbox entity.</summary>
+/// <summary><b>{Linked/Associated} Entity</b> is a <b>{Character Hitbox Entity}</b>.</summary>
 ///
 /// @var BattlePlayerLinkEntityType Quantum::BattlePlayerLinkEntityType::Shield
-/// <summary>Link is on a shield entity.</summary>
+/// <summary><b>{Linked/Associated} Entity</b> is a <b>{Shield Entity}</b> or a <b>{Shield Hitbox Entity}</b>.</summary>
 
 // ---------------------------------------------------------------------------------------------------- //
 
