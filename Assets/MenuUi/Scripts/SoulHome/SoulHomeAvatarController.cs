@@ -83,14 +83,14 @@ namespace MenuUI.Scripts.SoulHome
         public float NextDecisionTime { get; private set; }
 
         /// <summary>
-        /// Follows <see cref="RoomData.Sleeping"/> of the character's room, which is set while the room is far from the camera.
-        /// The rig with the animator and sprites is turned off, but this object stays active so <see cref="Update"/> keeps making decisions,
+        /// Set by RoomData.Sleeping
+        /// The rig with the animator and sprites is turned off, but this object stays active so Update keeps making decisions,
         /// which a sleeping character finishes instantly.
         /// </summary>
         public bool Sleeping
         {
             get => _sleeping;
-            private set
+            set
             {
                 if (_sleeping == value) return;
                 _sleeping = value;
@@ -132,10 +132,7 @@ namespace MenuUI.Scripts.SoulHome
         }
         private void Update()
         {
-            if (!hasInitialized) return;
-
-            Sleeping = _roomData.Sleeping;
-            if (Time.time >= NextDecisionTime) Decide();
+            if (hasInitialized && Time.time >= NextDecisionTime) Decide();
         }
 
         // Also called when the Soulhome window is opened again.
@@ -180,6 +177,7 @@ namespace MenuUI.Scripts.SoulHome
             if (!transform.parent.CompareTag("Room")) return;
             SetRoom(transform.parent.GetComponent<RoomData>());
             SetAvatar(_points, _roomData);
+            Sleeping = _roomData.Sleeping;
             hasInitialized = true;
             // The first decisions are spread over the whole interval so the characters don't all decide at once.
             NextDecisionTime = Time.time + Random.Range(0f, _maxDecisionTime);

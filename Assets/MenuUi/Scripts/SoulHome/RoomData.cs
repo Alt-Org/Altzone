@@ -90,6 +90,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private List<FurnitureSlot> _currentSlotValidity;
         private List<Vector2Int> _walkableSlots = new();
+        private bool _sleeping = false;
 
         public Room RoomInfo { get => _roomInfo;}
         public int SlotRows { get => _slotRows;}
@@ -100,8 +101,21 @@ namespace MenuUI.Scripts.SoulHome
 
         /// <summary>
         /// Set by the <see cref="TowerController"/> when the room is far enough from the view.
+        /// Tells the characters in the room to sleep or wake up.
         /// </summary>
-        public bool Sleeping { get; set; } = false;
+        public bool Sleeping
+        {
+            get => _sleeping;
+            set
+            {
+                if (_sleeping == value) return;
+                _sleeping = value;
+                foreach (Transform child in transform)
+                {
+                    if (child.TryGetComponent(out SoulHomeAvatarController avatar)) avatar.Sleeping = value;
+                }
+            }
+        }
 
         void Start()
         {
