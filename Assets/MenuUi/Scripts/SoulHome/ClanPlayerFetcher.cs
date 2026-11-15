@@ -61,7 +61,8 @@ public class ClanPlayerFetcher : MonoBehaviour
             }
 
             _players[i] = data;
-            OnLocalAvatarUpdated(data);
+            //OnLocalAvatarUpdated(data); // might cause a crash if called before the player's room is created
+            OnLocalAvatarUpdated?.Invoke(data);
             break;
         }
     }

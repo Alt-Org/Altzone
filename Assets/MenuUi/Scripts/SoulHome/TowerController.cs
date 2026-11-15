@@ -36,7 +36,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private GameObject _rooms;
 
-        [Tooltip("Rooms kept awake above and below the ones the camera sees. Characters in the other rooms are disabled."), SerializeField]
+        [Tooltip("Rooms kept awake above and below the ones the camera sees. Characters in the other rooms are put to sleep."), SerializeField]
         private int _awakeRoomMargin = 1;
         [Tooltip("Rooms created ahead above and below the ones the camera sees. Rooms further away aren't created until the camera gets this close."), SerializeField]
         private int _loadRoomMargin = 2;

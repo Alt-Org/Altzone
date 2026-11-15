@@ -27,7 +27,6 @@ namespace MenuUI.Scripts.SoulHome {
         [Tooltip("Instead of getting furniture from the server, generate random furniture."), SerializeField] private bool _ignoreFurniture;
         [Tooltip("Is the representation isometric or not?"), SerializeField] private bool _isometric;
         [Tooltip("Use random colours when using random info"), SerializeField] private bool _randomColour;
-        [Tooltip("Draws the state of every character in the Scene view"), SerializeField] private bool _drawAvatarDebug = true;
         [Tooltip("Rooms created while the tower loads, counted from the bottom where the camera starts. The rest are created when the camera gets near them, see TowerController."), SerializeField] private int _initialRoomCount = 3;
 
         [SerializeField] private GameObject _roomPositions;
@@ -38,7 +37,7 @@ namespace MenuUI.Scripts.SoulHome {
         [SerializeField] private GameObject _avatarPlaceholder;
         [SerializeField] private Camera _towerCamera;
         [SerializeField] private ClanPlayerFetcher _clanPlayerFetcher;
-        [SerializeField] private SpriteLibraryAsset _avatarSpriteLibrary;
+        [SerializeField] private SpriteLibraryAsset _avatarSpriteLibrary; // not used?
 
         private List<Furniture> _furnitureList = null;
 
@@ -53,10 +52,6 @@ namespace MenuUI.Scripts.SoulHome {
 
         private int _runningCoroutines = 0;
 
-        private string _localPlayerId;
-
-        private AvatarRig _localPlayerRig;
-        private readonly List<SoulHomeAvatarController> _avatars = new();
 
         private const int AvatarsPerRoom = 3;
         // Indexed by room position. Null until the room is created.
@@ -73,7 +68,6 @@ namespace MenuUI.Scripts.SoulHome {
         void Start()
         {
             RefreshSoulHome();
-            _localPlayerId = ServerManager.Instance.Player._id;
             ServerManager.OnLogInStatusChanged += UpdateOnLoginStatusChanged;
         }
 
@@ -84,11 +78,9 @@ namespace MenuUI.Scripts.SoulHome {
 
         private void OnEnable()
         {
-            _clanPlayerFetcher.OnLocalAvatarUpdated += OnLocalAvatarUpdated;
             if (_loginStatusChanged)
             {
                 _loginStatusChanged = false;
-                _localPlayerId = ServerManager.Instance.Player._id;
                 RefreshSoulHome();
             }
             else if (_refreshInProgress)
@@ -103,34 +95,6 @@ namespace MenuUI.Scripts.SoulHome {
                 RefreshSoulHome();
             }
         }
-
-        private void OnDisable()
-        {
-            _clanPlayerFetcher.OnLocalAvatarUpdated -= OnLocalAvatarUpdated;
-        }
-
-        private void Update()
-        {
-            if (!_loadFinished) return;
-
-            float time = Time.time;
-            foreach (SoulHomeAvatarController avatar in _avatars)
-            {
-                if (time >= avatar.NextDecisionTime) avatar.Decide();
-            }
-        }
-
-#if UNITY_EDITOR
-        private void OnDrawGizmos()
-        {
-            if (!_drawAvatarDebug) return;
-
-            foreach (SoulHomeAvatarController avatar in _avatars)
-            {
-                if (avatar != null) avatar.DrawDebugGizmos();
-            }
-        }
-#endif
 
         private void UpdateOnLoginStatusChanged(bool isLoggedIn)
         {
@@ -188,9 +152,6 @@ namespace MenuUI.Scripts.SoulHome {
             _furnituresSet = false;
             _loadFinished = false;
             _furnitureList = null;
-            _localPlayerId = null;
-            _localPlayerRig = null;
-            _avatars.Clear();
             _loadedRooms = null;
             _loadedRoomCount = 0;
         }
@@ -576,35 +537,11 @@ namespace MenuUI.Scripts.SoulHome {
             _loadFinished = true;
         }
 
+        // Room i has the characters of player i.
         private void SpawnAvatarInRoom(int roomIndex)
         {
-            GameObject avatarParent = Instantiate(_avatarPlaceholder, _loadedRooms[roomIndex].transform);
-            GameObject avatar = avatarParent.transform.GetChild(0).gameObject;
-            AvatarRig rig = avatar.GetComponent<AvatarRig>();
-
-            PlayerData playerData = _clanPlayerFetcher.Players[roomIndex];
-
-            SoulHomeAvatarController avatarController = avatarParent.GetComponent<SoulHomeAvatarController>();
-            avatarController.InitializeAvatar(playerData);
-            _avatars.Add(avatarController);
-
-            if (playerData?.Id == _localPlayerId)
-            {
-                _localPlayerRig = rig;
-            }
-
-            rig.ApplyAvatarToRig(playerData);
-        }
-
-
-        private void OnLocalAvatarUpdated(PlayerData playerData)
-        {
-            if (_localPlayerRig == null)
-            {
-                return;
-            }
-
-            _localPlayerRig.ApplyAvatarToRig(playerData);
+            GameObject avatarObject = Instantiate(_avatarPlaceholder, _loadedRooms[roomIndex].transform);
+            avatarObject.GetComponent<SoulHomeAvatarController>().InitializeAvatar(_clanPlayerFetcher.Players[roomIndex], _clanPlayerFetcher);
         }
 
         private bool FrameCheck()

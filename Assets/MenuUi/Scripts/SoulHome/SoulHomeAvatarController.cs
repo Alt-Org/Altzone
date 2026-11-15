@@ -11,6 +11,14 @@ using UnityEngine.U2D.Animation;
 
 namespace MenuUI.Scripts.SoulHome
 {
+    public enum AvatarStatus
+    {
+        Idle,
+        Wander,
+        ClimbLadder,
+        Interact
+    }
+
     public class SoulHomeAvatarController : MonoBehaviour, ISoulHomeObjectClick
     {
         [Tooltip("Time between decisions is random between these, so the decisions of all characters are spread out.")]
@@ -35,9 +43,12 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private List<AvatarAnimation> _interactAnimation;
 
-        private List<AvatarAnimation> _validatedInteractAnimation;
+#pragma warning disable CS0414 // Only read in the editor.
+        [Tooltip("Draws the character's state in the Scene view.")]
+        [SerializeField] private bool _drawDebug = true;
+#pragma warning restore CS0414
 
-        private bool _performingAnimation = false;
+        private List<AvatarAnimation> _validatedInteractAnimation;
 
         private CharacterClassType _class = CharacterClassType.None;
 
@@ -47,13 +58,16 @@ namespace MenuUI.Scripts.SoulHome
         private RoomData _roomData;
         private List<Vector2> _travelPoints = new();
 
+        private string _playerId;
+        private ClanPlayerFetcher _playerFetcher;
+
         private AvatarRig _rig;
         private SpriteResolver _lHandResolver;
         private SpriteResolver _rHandResolver;
         private string _lHandLabel;
         private string _rHandLabel;
 
-        private bool _isMoving = false;
+        private bool _sleeping = false;
         private RoomData _pendingRoom;
         private Vector2Int _pendingTarget;
         private GridNode[,] _grid => _roomData.Grid;
@@ -65,8 +79,35 @@ namespace MenuUI.Scripts.SoulHome
 
         private List<Vector2> _smoothPath = new();
 
+        public AvatarStatus Status { get; private set; } = AvatarStatus.Idle;
         public float NextDecisionTime { get; private set; }
-        private bool IsBusy => _performingAnimation || _isMoving;
+
+        /// <summary>
+        /// Follows <see cref="RoomData.Sleeping"/> of the character's room, which is set while the room is far from the camera.
+        /// The rig with the animator and sprites is turned off, but this object stays active so <see cref="Update"/> keeps making decisions,
+        /// which a sleeping character finishes instantly.
+        /// </summary>
+        public bool Sleeping
+        {
+            get => _sleeping;
+            private set
+            {
+                if (_sleeping == value) return;
+                _sleeping = value;
+                if (value)
+                {
+                    // A room change cut off mid-climb keeps _pendingRoom, the next decision finishes it.
+                    StopAllCoroutines();
+                    Status = AvatarStatus.Idle;
+                    _animator.gameObject.SetActive(false);
+                }
+                else
+                {
+                    _animator.gameObject.SetActive(true);
+                    WakeUp();
+                }
+            }
+        }
 
         void Start()
         {
@@ -75,7 +116,7 @@ namespace MenuUI.Scripts.SoulHome
 
             if (!hasInitialized) return;
 
-            _rig = GetComponentInChildren<AvatarRig>();
+            // Found in InitializeAvatar.
             if (_rig == null)
             {
                 UnityEngine.Debug.LogError("Failed to get AvatarRig");
@@ -89,16 +130,31 @@ namespace MenuUI.Scripts.SoulHome
             _validatedInteractAnimation = ValidateAnimations(_interactAnimation);
             StartIdle();
         }
-        private void OnEnable()
+        private void Update()
         {
             if (!hasInitialized) return;
 
+            Sleeping = _roomData.Sleeping;
+            if (Time.time >= NextDecisionTime) Decide();
+        }
+
+        // Also called when the Soulhome window is opened again.
+        private void OnEnable()
+        {
+            if (!hasInitialized || _sleeping) return;
+            WakeUp();
+        }
+
+        // Continues from where it was left, e.g. in the middle of a walk or climbing a ladder.
+        private void WakeUp()
+        {
             if (_grid == null)
             {
                 _roomData.UpdateGrid();
             }
 
-            _performingAnimation = false;
+            Status = AvatarStatus.Idle;
+            // Woke up before a room change cut off mid-climb was finished, so it stays at the ladder of this room.
             _pendingRoom = null;
 
             transform.position = GridToWorld(_currentGridPosition);
@@ -106,11 +162,21 @@ namespace MenuUI.Scripts.SoulHome
             StartIdle();
         }
 
-        public void InitializeAvatar(PlayerData data)
+        /// <summary>Called by <see cref="SoulHomeLoad"/> right after the character is created.</summary>
+        /// <param name="data">The player whose character this is.</param>
+        /// <param name="playerFetcher">Sends the local player's avatar again when it's edited, so this character can update its look.</param>
+        public void InitializeAvatar(PlayerData data, ClanPlayerFetcher playerFetcher)
         {
             _class = (CharacterClassType)BaseCharacter.GetClass(data.SelectedCharacterId);
+            _playerId = data.Id;
 
-            // Done here instead of Start, because Start doesn't run while the room is sleeping and the decisions still need the room.
+            _rig = GetComponentInChildren<AvatarRig>(true);
+            if (_rig != null) _rig.ApplyAvatarToRig(data);
+
+            _playerFetcher = playerFetcher;
+            if (_playerFetcher != null) _playerFetcher.OnLocalAvatarUpdated += OnLocalAvatarUpdated;
+
+            // Done here instead of Start, so the room is set before the first decision.
             if (!transform.parent.CompareTag("Room")) return;
             SetRoom(transform.parent.GetComponent<RoomData>());
             SetAvatar(_points, _roomData);
@@ -122,24 +188,40 @@ namespace MenuUI.Scripts.SoulHome
         private void OnDisable()
         {
             StopAllCoroutines();
-            _isMoving = false;
-            _performingAnimation = false;
+            Status = AvatarStatus.Idle;
         }
 
+        private void OnDestroy()
+        {
+            if (_playerFetcher != null) _playerFetcher.OnLocalAvatarUpdated -= OnLocalAvatarUpdated;
+        }
+
+        // Sent for every character, only the local player's characters change.
+        private void OnLocalAvatarUpdated(PlayerData data)
+        {
+            if (data == null || data.Id != _playerId || _rig == null) return;
+
+            _rig.ApplyAvatarToRig(data);
+            // Otherwise the hands go back to the old ones after walking or climbing, see UseDefaultHands.
+            if (_lHandResolver != null) _lHandLabel = _lHandResolver.GetLabel();
+            if (_rHandResolver != null) _rHandLabel = _rHandResolver.GetLabel();
+        }
+
+        // Called from Update when NextDecisionTime has passed.
         public void Decide()
         {
             NextDecisionTime = Time.time + Random.Range(_minDecisionTime, _maxDecisionTime);
             if (!hasInitialized) return;
 
             // Finish the room change that was cut off mid-climb before anything else
-            if (_pendingRoom != null && !isActiveAndEnabled)
+            if (_pendingRoom != null && _sleeping)
             {
                 RoomData pendingRoom = _pendingRoom;
                 _pendingRoom = null;
                 MoveOffScreen(pendingRoom, _pendingTarget);
                 return;
             }
-            if (IsBusy) return;
+            if (Status != AvatarStatus.Idle) return;
 
             float roll = Random.Range(0f, _stayWeight + _walkWeight + _changeRoomWeight);
             if (roll < _stayWeight) return;
@@ -151,8 +233,8 @@ namespace MenuUI.Scripts.SoulHome
             if (slots.Count == 0 && targetRoom == _roomData) return;
             Vector2Int target = slots.Count > 0 ? slots[Random.Range(0, slots.Count)] : LadderGridPosition;
 
-            if (isActiveAndEnabled) StartMove(targetRoom, target);
-            else MoveOffScreen(targetRoom, target);
+            if (_sleeping) MoveOffScreen(targetRoom, target);
+            else StartMove(targetRoom, target);
         }
 
         private void StartMove(RoomData targetRoom, Vector2Int target)
@@ -161,17 +243,18 @@ namespace MenuUI.Scripts.SoulHome
             // A room change walks to the ladder first and continues to the target after climbing.
             if (!SetPath(changeRoom ? LadderGridPosition : target)) return;
 
-            _isMoving = true;
+            Status = AvatarStatus.Wander;
             StartCoroutine(MoveRoutine(changeRoom ? targetRoom : null, target));
         }
 
-        // Disabled characters don't walk, they jump straight to where the move would end.
+        // Sleeping characters don't walk, they jump straight to where the move would end.
         private void MoveOffScreen(RoomData room, Vector2Int target)
         {
             SetRoom(room);
             _currentGridPosition = target;
             transform.position = GridToWorld(target);
-            if (gameObject.activeSelf == room.Sleeping) gameObject.SetActive(!room.Sleeping);
+            // Moving into a room that's awake wakes the character up there.
+            Sleeping = room.Sleeping;
         }
 
         private void SetRoom(RoomData room)
@@ -206,18 +289,18 @@ namespace MenuUI.Scripts.SoulHome
             if (targetRoom != null)
             {
                 yield return ClimbLadder(targetRoom, target);
-                // Climbed into a room that's sleeping off-screen, sleep with it at the target. OnEnable continues from there when it wakes up.
+                // Climbed into a room that's sleeping off-screen, sleep with it at the target. WakeUp continues from there.
                 if (_roomData.Sleeping)
                 {
                     _currentGridPosition = target;
-                    _isMoving = false;
-                    gameObject.SetActive(false);
+                    Sleeping = true;
                     yield break;
                 }
+                Status = AvatarStatus.Wander;
                 if (SetPath(target)) yield return FollowPath();
             }
 
-            _isMoving = false;
+            Status = AvatarStatus.Idle;
             StartIdle();
         }
 
@@ -264,7 +347,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private IEnumerator ClimbLadder(RoomData targetRoom, Vector2Int target)
         {
-            _performingAnimation = true;
+            Status = AvatarStatus.ClimbLadder;
             // If the room goes to sleep mid-climb, the next decision finishes the room change.
             _pendingRoom = targetRoom;
             _pendingTarget = target;
@@ -294,7 +377,6 @@ namespace MenuUI.Scripts.SoulHome
             transform.position = targetWorldPosition;
             _currentGridPosition = LadderGridPosition;
             UpdateSortingOrder(_currentGridPosition.y);
-            _performingAnimation = false;
             UseDefaultHands(false);
         }
 
@@ -312,7 +394,7 @@ namespace MenuUI.Scripts.SoulHome
             return upperRoom != null ? upperRoom : lowerRoom;
         }
 
-        // Room positions above the clan's room count are left empty.
+        // Room positions above the clan's room count are left empty, and so are the rooms the camera hasn't gotten near yet (see SoulHomeLoad.LoadRoomsInRange).
         private RoomData GetRoomAt(Transform roomPositions, int index)
         {
             if (index < 0 || index >= roomPositions.childCount) return null;
@@ -322,6 +404,7 @@ namespace MenuUI.Scripts.SoulHome
 
         private void StartIdle()
         {
+            if (_sleeping) return; // The rig is off, WakeUp starts the idle.
             _animator.Play(_idleAnimation.name);
             UseDefaultHands(false);
         }
@@ -624,8 +707,9 @@ namespace MenuUI.Scripts.SoulHome
 
         private IEnumerator InteractAnimation()
         {
-            if (_performingAnimation || _validatedInteractAnimation.Count == 0)
+            if (_validatedInteractAnimation.Count == 0)
             {
+                Status = AvatarStatus.Idle;
                 yield break;
             }
 
@@ -633,7 +717,6 @@ namespace MenuUI.Scripts.SoulHome
             AnimationClip selectedClip = _validatedInteractAnimation[index].Clip;
 
             _animator.Play(selectedClip.name);
-            _performingAnimation = true;
             UseDefaultHands(true);
             yield return null;
 
@@ -646,7 +729,7 @@ namespace MenuUI.Scripts.SoulHome
                 yield return null;
             }
 
-            _performingAnimation = false;
+            Status = AvatarStatus.Idle;
             StartIdle();
         }
         private List<AvatarAnimation> ValidateAnimations(List<AvatarAnimation> animationToValidate)
@@ -687,19 +770,21 @@ namespace MenuUI.Scripts.SoulHome
 
         public void HandleClick()
         {
-            if (_performingAnimation || _validatedInteractAnimation == null || _validatedInteractAnimation.Count == 0)
+            // Climbing and interacting can't be interrupted.
+            if (_sleeping || Status is AvatarStatus.ClimbLadder or AvatarStatus.Interact
+                || _validatedInteractAnimation == null || _validatedInteractAnimation.Count == 0)
             {
                 return;
             }
 
-            if (_isMoving)
+            if (Status is AvatarStatus.Wander)
             {
                 // Stops where it is, so the next path starts from here instead of the old target.
-                _isMoving = false;
                 _currentGridPosition = WorldToGrid(transform.position);
             }
             StopAllCoroutines();
 
+            Status = AvatarStatus.Interact;
             StartCoroutine(InteractAnimation());
         }
 
@@ -707,21 +792,25 @@ namespace MenuUI.Scripts.SoulHome
 
         private static GUIStyle _debugLabelStyle;
 
-        /// <summary>
-        /// Draws the character's state in the Scene view. Called by <see cref="SoulHomeLoad"/> instead of OnDrawGizmos,
-        /// because OnDrawGizmos isn't called for the disabled characters in sleeping rooms.
-        /// </summary>
-        public void DrawDebugGizmos()
+        // Draws the character's state in the Scene view, also for the sleeping characters.
+        private void OnDrawGizmos()
         {
-            if (!hasInitialized || _roomData == null) return;
+            if (!_drawDebug || !hasInitialized || _roomData == null) return;
 
             string state;
             Color color;
-            if (!gameObject.activeInHierarchy) { state = _roomData.Sleeping ? "Sleeping" : "Disabled"; color = Color.gray; }
-            else if (_pendingRoom != null) { state = "Climbing"; color = Color.magenta; }
-            else if (_performingAnimation) { state = "Animating"; color = Color.yellow; }
-            else if (_isMoving) { state = "Walking"; color = Color.cyan; }
-            else { state = "Idle"; color = Color.green; }
+            if (_sleeping) { state = _pendingRoom != null ? "Sleeping (mid-climb)" : "Sleeping"; color = Color.gray; }
+            else
+            {
+                state = Status.ToString();
+                color = Status switch
+                {
+                    AvatarStatus.Wander => Color.cyan,
+                    AvatarStatus.ClimbLadder => Color.magenta,
+                    AvatarStatus.Interact => Color.yellow,
+                    _ => Color.green,
+                };
+            }
 
             Vector3 position = transform.position;
             Vector3 destination = GridToWorld(_currentGridPosition);
@@ -729,12 +818,12 @@ namespace MenuUI.Scripts.SoulHome
             Gizmos.color = color;
             Gizmos.DrawWireSphere(position, 0.5f);
 
-            // Where the character is heading. For a disabled character this is where it shows up when its room wakes up.
+            // Where the character is heading. For a sleeping character this is where it shows up when its room wakes up.
             Gizmos.DrawWireCube(destination, new Vector3(0.6f, 0.6f, 0.1f));
             if (Vector3.Distance(position, destination) > 0.05f) Gizmos.DrawLine(position, destination);
 
             // Room change cut off mid-climb, finished by the next decision.
-            if (_pendingRoom != null && !gameObject.activeInHierarchy)
+            if (_pendingRoom != null && _sleeping)
             {
                 Gizmos.color = Color.magenta;
                 Transform pendingPoints = _pendingRoom.transform.Find("FurniturePoints").Find("FloorFurniturePoints");
@@ -742,7 +831,7 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             // Draw the Current Travel Path
-            if (gameObject.activeInHierarchy && _travelPoints != null && _travelPoints.Count > 0)
+            if (!_sleeping && _travelPoints != null && _travelPoints.Count > 0)
             {
                 Gizmos.color = Color.cyan;
                 Vector2 lastPoint = transform.position; // Start the line from avatar's current position
