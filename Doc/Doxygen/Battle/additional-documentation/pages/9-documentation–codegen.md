@@ -1,13 +1,12 @@
 # Documenting %Quantum generated code {#page-documentation-codegen}
-These are guidelines for writing documentation for **%Quantum generated code**.  
+These are guidelines for writing documentation for **%Quantum generated code**.
 
-Documentation for **%Quantum generated code** is written in `.dox` files because it can not be written directly in **source code**. Documentation is written using **documentation comments** with the `///` syntax.  
+Documentation for **%Quantum generated code** is written in `.dox` files because it can not be written directly in **source code**. Documentation is written using **documentation comments** with the `///` or `//!` format.  
 All `.qtn` files created by us should be documented, with a separate `.dox` file for each `.qtn` file.  
 The code being documented is that which is found in the **generated code** resulting from what is defined in the `.qtn` file.  
 The **generated code** is found in the Quantum namespace.  
 When referencing **code symbols**, make sure to reference the correct **generated code**.  
 **%Quantum components** should be referenced to as **structs**, as **%Quantum** generates them as such.
-
 
 ---
 
@@ -22,7 +21,9 @@ When referencing **code symbols**, make sure to reference the correct **generate
 
 ### Documentation comment blocks {#page-documentation-codegen-base-guidelines-documentation-comment-blocks}
 [Doxygen🡵] supports multiple **documentation comment** formats. See [[Documenting with Doxygen]](#page-documentation-doxygen-comment-blocks) for more information on these.  
-You should only use the `///` format.
+You should only use the `///` format.  
+**Code symbol** **documentation comment blocks** should use the `///` format.  
+**File** and **Grouping** **documentation comment blocks** should use the `//!` format.
 
 <br/>
 
@@ -97,50 +98,52 @@ In `.dox` file
 
 <br/>
 
-Sometimes documentation should be grouped together. For example fields and/or methods inside a struct.  
-Note that Doxygen already groups fields and/or methods together. So grouping is used to group fields and/or methods to categories.  
-However if you mix fields and methods in one group you override Doxygen's default grouping, which may not be a desired result.
+Sometimes documentation should be **Grouped** together. For example **fields**, **properties** and **methods** inside a struct.  
+Note that Doxygen already sorts **fields**, **properties** and **methods** by kind into **Groups**.
+So **Grouping** is used to divide any of these further into subcategories.  
+However if you mix different kinds in one **Group** you override **Doxygen's default grouping**, which may not be a desired result.
 
-This is done using the `@name` command followed by the name of the group and then `@{` on the next line, marking the beginning of the group.  
-The group is closed by `@}` and `//  END` comment that repeats the name of the group to make it easier to track where the groups starts and ends.
+This is done using **Group Begin** and **Group End** **documentation blocks** with the `//!` format.  
+**Group Begin** is specified using the `@name` command followed by the **name of the Group** and then `@{` on the next line, marking the beginning of the **Group**.  
+**Group End** is specified by `@}` and `//  END` comment that repeats the **name of the Group** to make it easier to track where the **Group** begins and ends.
 
 In `.dox` file
 ```
-/// @name Example Fields
-/// @{
+//! @name Example Fields
+//! @{
 
 ...
 
-/// @}
+//! @}
 //  END Example Fields
 ```
 
-The group can have a description written in between `@name` and `@{` separated by empty lines.
+The **Group Begin** **documentation block** can specify a **Group** description in between `@name` and `@{` separated by empty lines.
 
 ```
-/// @name Example Fields
-///
-/// Group Description
-///
-/// @{
+//! @name Example Fields
+//!
+//! Group Description
+//!
+//! @{
 
 ...
 
-/// @}
+//! @}
 //  END Example Fields
 ```
 
-The `@anchor` command is usually added before the `@name` command. The `@anchor` command specifies an **ID** for the group.  
-The **ID** is global so to avoid name collisions the **ID** should start with the struct name followed by a hyphen `-` and then the name of the group without any spaces.  
+The `@anchor` command is usually added before the `@name` command. The `@anchor` command specifies an **ID** for the **Group**.  
+The **ID** is global so to avoid name collisions the **ID** should start with the struct name followed by a hyphen `-` and then the name of the **Group** without any spaces.  
 `@anchor (StructName)-(GroupName)`
 
-When a group has an `@anchor` each member of the group should have a "Part of" link in its [{detailed description}] specifying that it is part of a group and linking back to the group itself.
+When a **Group** has an `@anchor` each member of the **Group** should have a "Part of" link in its [{detailed description}] specifying that it is part of a **Group** and linking back to the **Group** itself.
 
 In `.dox` file
 ```
-/// @anchor ExampleStruct-ExampleFields
-/// @name Example Fields
-/// @{
+//! @anchor ExampleStruct-ExampleFields
+//! @name Example Fields
+//! @{
 
 /// @var ...
 /// <summary> ...
@@ -149,7 +152,7 @@ In `.dox` file
 
 ...
 
-/// @}
+//! @}
 //  END Example Fields
 ```
 
@@ -158,7 +161,7 @@ In `.dox` file
 If a `.qtn` file contains an array %Quantum generates a private array that internally stores the data and a public property to access the data.
 
 The public property should contain the main documentation and a link to the internal array.  
-The internal array should be put in a group called "Private internal arrays" and have a link to the public property.
+The internal array should be put in a **Group** called "Private internal arrays" and have a link to the public property.
 
 In `.qtn` file
 ```
@@ -185,14 +188,14 @@ In `.dox` file
 
 ...
 
-/// @anchor ExampleStruct-PrivateArrays
-/// @name Private internal arrays
-/// @{
+//! @anchor ExampleStruct-PrivateArrays
+//! @name Private internal arrays
+//! @{
 
 /// @var Byte Quantum::ExampleStruct::_ExampleArray_
 /// <summary>Private internal array, access through @cref{Quantum.ExampleStruct,ExampleArray}</summary>
 
-/// @}
+//! @}
 //  END Private internal arrays
 ```
 
@@ -226,8 +229,8 @@ component ExampleComponent
 
 `qtn-Example.dox`
 ```
-/// @file Example.qtn
-/// ...
+//! @file Example.qtn
+//! ...
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -244,8 +247,12 @@ component ExampleComponent
 
 ### File documentation
 
-The file should be documented with a `@file` command and a [{brief/summary}].  
-In the [{detailed description}] of the file documentation all **enums** and **structs** defined in the file should be listed with bullet points.  
+%Quantum generates **components** as **structs**, therefore **struct** refers to both **structs** and **components**.
+
+The file should be documented using a **documentation block** with the `//!` format, starting with the `@file` command and a [{brief/summary}]. Documentation should contain the [{brief/summary}] and [{detailed description}].  
+The [{brief/summary}] usually starts with the word "Contains" followed by what the file contains, directly mentioning the **code symbols** and linking to their documentation,  
+directing readers to the documentation that has more information.  
+The [{detailed description}] should have the full list of **enums** and **structs** defined in the `.qtn` file using bullet points.
 
 `Example.qtn`
 ```
@@ -271,20 +278,20 @@ component ExampleComponent
 
 `qtn-Example.dox`
 ```
-/// @file Example.qtn
-/// <summary>
-/// Contains ...
-/// </summary>
-///
-/// ## Generated Enums
-/// - @cref{Quantum,ExampleEnum}
-///   @copybrief Quantum.ExampleEnum
-///
-/// ## Generated Structs
-/// - @cref{Quantum,ExampleStruct}
-///   @copybrief Quantum.ExampleStruct
-/// - @cref{Quantum,ExampleComponent}
-///   @copybrief Quantum.ExampleComponent
+//! @file Example.qtn
+//! <summary>
+//! Contains ...
+//! </summary>
+//!
+//! ## Generated Enums
+//! - @cref{Quantum,ExampleEnum}
+//!   @copybrief Quantum.ExampleEnum
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,ExampleStruct}
+//!   @copybrief Quantum.ExampleStruct
+//! - @cref{Quantum,ExampleComponent}
+//!   @copybrief Quantum.ExampleComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -343,10 +350,13 @@ Since %Quantum generates **components** as **structs** the following also applie
 
 **Structs** should be documented with a `@struct` command with the name of the **struct** formatted with `::` as below followed by a [{brief/summary}]. 
 The [{detailed description}] should have a **Generated from** link to the `.qtn` file itself should be listed as shown below.  
-Attached below the main struct documentation should be a `// {` comment marking the beginning of the intended **struct variable block**.  
-Each **variable** defined in a **struct** should be documented with a `@var` command with the type and the name of the **variable** followed by a [{brief/summary}].  
-The **struct variable block** should be closed with a `// }` comment.
+Attached below the main struct documentation should be a `// {` comment marking the beginning of the intended **struct content block**.  
+Each **field** and **property** defined in a **struct** should be documented with a `@var` command with the type and the name of the **field/property** followed by a [{brief/summary}].  
+The **struct content block** should be closed with a `// }` comment.
 
+The following example also shows a mistake that can happen when using **Grouping**.  
+`@var array Quantum::ExampleComponent::ExampleArray` is **Grouped** in "Example Fields" **Group**,  
+but is actually a **property** resulting a **Group** that mixes **fields** and **properties**, which would not give desired result
 
 `Example.qtn`
 ```
@@ -403,17 +413,17 @@ component ExampleComponent
     ///
     /// See [{Concept link}](#page-link) for more info.
 
-    /// @name Quantum Built-in
-    /// @{
-    ///
-    /// @var Int32 Quantum::ExampleStruct::SIZE
-    /// @var Int32 Quantum::ExampleStruct::ALIGNMENT
-    ///
-    /// @fn Int32 Quantum::ExampleStruct::GetHashCode
-    ///
-    /// @fn void Quantum::ExampleStruct::Serialize
-    ///
-    /// @}
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::ExampleStruct::SIZE
+    //! @var Int32 Quantum::ExampleStruct::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::ExampleStruct::GetHashCode
+    //!
+    //! @fn void Quantum::ExampleStruct::Serialize
+    //!
+    //! @}
 // }
 
 ...
@@ -428,9 +438,9 @@ component ExampleComponent
 /// @bigtext{Generated from @ref Example.qtn}
 ///
 // {
-    /// @anchor ExampleComponent-ExampleFields
-    /// @name Example Fields
-    /// @{
+    //! @anchor ExampleComponent-ExampleFields
+    //! @name Example Fields
+    //! @{
 
     /// @var ExampleEnum Quantum::ExampleComponent::State
     /// <summary>
@@ -449,32 +459,32 @@ component ExampleComponent
     ///
     /// Part of @ref ExampleComponent-ExampleFields "Example Fields"
 
-    /// @}
+    //! @}
     //  END Example Fields
     
-    /// @anchor ExampleComponent-PrivateArrays
-    /// @name Private internal arrays
-    /// @{
+    //! @anchor ExampleComponent-PrivateArrays
+    //! @name Private internal arrays
+    //! @{
     
     /// @var Byte Quantum::ExampleComponent::_ExampleArray_
     /// <summary>Private internal array, access through @cref{Quantum.ExampleComponent,ExampleArray}</summary>
     
-    /// @}
+    //! @}
     //  END Private internal arrays
 
-    /// @name Quantum Built-in
-    /// @{
-    ///
-    /// @var Int32 Quantum::ExampleComponent::SIZE
-    /// @var Int32 Quantum::ExampleComponent::ALIGNMENT
-    ///
-    /// @fn Int32 Quantum::ExampleComponent::GetHashCode
-    /// @fn void Quantum::ExampleComponent::ClearPointers
-    ///
-    /// @fn void Quantum::ExampleComponent::OnRemoved
-    /// @fn void Quantum::ExampleComponent::Serialize
-    ///
-    /// @}
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::ExampleComponent::SIZE
+    //! @var Int32 Quantum::ExampleComponent::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::ExampleComponent::GetHashCode
+    //! @fn void Quantum::ExampleComponent::ClearPointers
+    //!
+    //! @fn void Quantum::ExampleComponent::OnRemoved
+    //! @fn void Quantum::ExampleComponent::Serialize
+    //!
+    //! @}
 // }
 
 ...
