@@ -358,6 +358,9 @@ public class LocalizationEditor : Editor
         }
         serializedObject.ApplyModifiedProperties();
         OnUpdateLanguageList?.Invoke();
+        //_script.LocalizationBlock.UpdateBlock();
+        Debug.LogWarning("Update5?");
+        serializedObject.Update();
     }
 
 }
@@ -365,54 +368,85 @@ public class LocalizationEditor : Editor
 [CustomPropertyDrawer(typeof(LocalizationBlock))]
 public class LocalizationBlockEditor : PropertyDrawer
 {
-    SerializedProperty _languageBlockListProperty;
-    Foldout _languageBlockListField;
-    LocalizationBlock _script;
-
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
-        if(_script == null)
-        {
-            _script = property.boxedValue as LocalizationBlock;
-        }
-        LocalizationEditor.OnUpdateLanguageList += UpdateBlockList;
-
-        // Create property container element.
-        var container = new VisualElement();
-
-        _languageBlockListProperty = property.FindPropertyRelative("_languageBlock");
-
-        UpdateBlockList();
-
-        //var languageBlockListField = new PropertyField(languageBlockListProperty, "Text");
-
-
-        container.Add(_languageBlockListField);
-
-        
-
-        return container;
+        Debug.LogWarning("Update0?");
+        BlockVisualElement content = new BlockVisualElement(property);
+        return content;
     }
 
-    public void UpdateBlockList()
+    [Serializable]
+    public class BlockVisualElement : VisualElement
     {
-        Debug.LogWarning("Update2?");
-        if (_languageBlockListField == null)
+        SerializedProperty _languageBlockListProperty;
+        SerializedProperty _keyProperty;
+        List<PropertyField> _languageBlockFieldList = new();
+        Foldout _languageBlockListField;
+        LocalizationBlock _script;
+
+        public BlockVisualElement(SerializedProperty property): base()
         {
-            _languageBlockListField = new Foldout();
-        }
-        else
-        {
-            _languageBlockListField.Clear();
+            if (_script == null)
+            {
+                _script = property.boxedValue as LocalizationBlock;
+            }
+            LocalizationEditor.OnUpdateLanguageList += UpdateBlockList;
+            //_script.OnBlockUpdate += (() => UpdateBlockList());
+
+            _keyProperty = property.FindPropertyRelative("_key");
+            _languageBlockListProperty = property.FindPropertyRelative("_languageBlock");
+
+            UpdateBlockList();
         }
 
-        foreach (SerializedProperty block in _languageBlockListProperty)
+        public void UpdateBlockList()
         {
-            Debug.LogWarning((block.boxedValue as LocalizationLanguageBlock).Language + ": " + (block.boxedValue as LocalizationLanguageBlock).Active);
-            if ((block.boxedValue as LocalizationLanguageBlock).Active)
-                _languageBlockListField.Add(new PropertyField(block));
+            Foldout languageBlockListField;
+            Debug.LogWarning("Update2?");
+            if (_languageBlockListField == null)
+            {
+                languageBlockListField = new Foldout();
+                TextField text = new TextField("Key");
+                text.BindProperty(_keyProperty);
+                Add(text);
+                languageBlockListField.text = _keyProperty.stringValue;
+                foreach (SerializedProperty block in _languageBlockListProperty)
+                {
+                    PropertyField field = new PropertyField(block);
+                    languageBlockListField.Add(field);
+                    _languageBlockFieldList.Add(field);
+                    if ((block.boxedValue as LocalizationLanguageBlock).Active)
+                    {
+                        field.style.display = DisplayStyle.Flex;
+                    }
+                    else
+                    {
+                        field.style.display = DisplayStyle.None;
+                    }
+                }
+                Add(languageBlockListField);
+            }
+            else
+            {
+                //Clear();
+                languageBlockListField = _languageBlockListField;
+                int i = 0;
+                foreach (SerializedProperty block in _languageBlockListProperty)
+                {
+                    PropertyField field = _languageBlockFieldList[i++];
+                    if ((block.boxedValue as LocalizationLanguageBlock).Active)
+                    {
+                        field.style.display = DisplayStyle.Flex;
+                    }
+                    else
+                    {
+                        field.style.display = DisplayStyle.None;
+                    }
+                }
+            }
+            _languageBlockListField = languageBlockListField;
+            return;
         }
-        Debug.LogWarning(_languageBlockListField.childCount);
     }
 }
 
@@ -422,21 +456,33 @@ public class LocalizationLanguageBlockEditor : PropertyDrawer
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
         // Create property container element.
-        var container = new VisualElement();
-
-        var languageProperty = property.FindPropertyRelative("_language");
-        var textProperty = property.FindPropertyRelative("_text");
-        var textField = new PropertyField(textProperty, ((LanguageType)languageProperty.enumValueIndex).ToString());
-
-        textField.RegisterCallback<ChangeEvent<bool>>(type =>
-        {
-            LocalizationLanguageBlock selector = property.boxedValue as LocalizationLanguageBlock;
-            selector.UpdateSelection();
-        });
-
-        container.Add(textField);
-
+        var container = new BlockPieceVisualElement(property);
+        Debug.LogWarning("Update10?");
         return container;
+    }
+
+    public class BlockPieceVisualElement : VisualElement
+    {
+        private LocalizationLanguageBlock _block;
+
+        public LocalizationLanguageBlock Block => _block;
+        public BlockPieceVisualElement(SerializedProperty property)
+        {
+            _block = (property.boxedValue as LocalizationLanguageBlock);
+
+            var languageProperty = property.FindPropertyRelative("_language");
+            var textProperty = property.FindPropertyRelative("_text");
+            var textField = new PropertyField(textProperty, ((LanguageType)languageProperty.enumValueIndex).ToString());
+
+            textField.RegisterCallback<ChangeEvent<bool>>(type =>
+            {
+                LocalizationLanguageBlock selector = property.boxedValue as LocalizationLanguageBlock;
+                selector.UpdateSelection();
+            });
+
+            Add(textField);
+
+        }
     }
 }
 
