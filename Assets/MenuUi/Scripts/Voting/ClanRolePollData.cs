@@ -27,10 +27,9 @@ namespace Altzone.Scripts.Voting
         public ClanRoles NewRole;
 
         public ClanRoleCreatePollData(string id, Sprite icon, List<string> clanMembers, long endTime,
-                                      string proposerPlayerId, ClanRoles newRole)
+                                      string targetId, ClanRoles newRole)
             : base(id, icon, clanMembers, endTime)
         {
-            ProposerPlayerId = proposerPlayerId;
             NewRole = newRole;
         }
     }

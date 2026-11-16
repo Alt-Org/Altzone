@@ -189,9 +189,26 @@ public static class PollManager // Handles the polls from creation to loading to
     }
 
     // Temporary stub for creating role poll
-    public static void CreateRolePoll(string targetPlayerId, ClanRoles newRole, string roleId = null)
+    // Also neeeds to set rights if relevant
+    public static void CreateRolePoll(string targetPlayerId, ClanRoles newRole, Action<bool> callback, string roleId = null)
     {
+        LoadClanData();
+        long pollDurationMinutes = 1;
+        List<string> voterIds = clan.Members.Select(m => m.Id).ToList();
+        string pollId = GetFirstAvailableId();
+        Sprite placeholderSprite = null;
+
+        var poll = new ClanRoleCreatePollData(
+            pollId,
+            placeholderSprite,
+            voterIds,
+            pollDurationMinutes,
+            targetPlayerId,
+            newRole);
+
         Debug.Log($"TODO CreateRolePoll -> targetPlayerId={targetPlayerId}, roleName={newRole.name}, roleId={roleId}");
+        if (callback != null)
+            callback(false);
     }
 
 

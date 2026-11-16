@@ -169,7 +169,9 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     public void OnStartVoteClicked() {
         _draft.name = nameInput.text;
-        PollManager.CreateRolePoll(_currentMember.Id, _draft);
+        bool? result = null;
+
+        PollManager.CreateRolePoll(_currentMember.Id, _draft, c => result = c);
         newRoleContainer.SetActive(false);
         ClosePopup();
     }
