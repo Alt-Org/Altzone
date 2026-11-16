@@ -50,6 +50,7 @@ public class ClanMemberRoleRights : MonoBehaviour
     {
         roleDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
         roleDropdown.onValueChanged.AddListener(OnRolerightsDropdownValueChanged);
+        saveRoleButton.onClick.AddListener(OnStartVoteClicked);
         newRoleContainer.SetActive(false);
 
         if (CurrentMember.Role.name != null)
@@ -61,6 +62,13 @@ public class ClanMemberRoleRights : MonoBehaviour
         PopulateRightsDropdown();
         PopulateRoles(_clanData);
         SelectCurrentMemberRole();
+    }
+
+    void OnDestroy()
+    {
+        roleDropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
+        roleDropdown.onValueChanged.RemoveListener(OnRolerightsDropdownValueChanged);
+        saveRoleButton.onClick.RemoveListener(OnStartVoteClicked);
     }
 
     private void LoadClanData()
@@ -159,6 +167,13 @@ public class ClanMemberRoleRights : MonoBehaviour
         currentRole.SetRights(rightName, !allowed);
     }
 
+    public void OnStartVoteClicked() {
+        _draft.name = nameInput.text;
+        PollManager.CreateRolePoll(_currentMember.Id, _draft);
+        newRoleContainer.SetActive(false);
+        ClosePopup();
+    }
+
     private void NewRole() {
         _draft = new ClanRoles
         {
@@ -170,7 +185,5 @@ public class ClanMemberRoleRights : MonoBehaviour
         newRoleContainer.SetActive(true);
         nameInput.text = "";
         saveRoleButton.interactable = true;
-
-        PollManager.CreateRolePoll(_currentMember.Id, _draft);
     }
 }

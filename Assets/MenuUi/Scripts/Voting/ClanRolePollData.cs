@@ -19,4 +19,19 @@ namespace Altzone.Scripts.Voting
             TargetRole = targetRole;
         }
     }
+
+    [Serializable]
+    public class ClanRoleCreatePollData : PollData
+    {
+        public string ProposerPlayerId;
+        public ClanRoles NewRole;
+
+        public ClanRoleCreatePollData(string id, Sprite icon, List<string> clanMembers, long endTime,
+                                      string proposerPlayerId, ClanRoles newRole)
+            : base(id, icon, clanMembers, endTime)
+        {
+            ProposerPlayerId = proposerPlayerId;
+            NewRole = newRole;
+        }
+    }
 }
