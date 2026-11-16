@@ -259,6 +259,11 @@ public class LocalizationEditor : Editor
     private void OnDisable()
     {
         LanguageSelector.OnUpdateLanguageList -= UpdateLanguageSelectionListCall;
+        if(OnUpdateLanguageList != null && OnUpdateLanguageList?.GetInvocationList() != null)
+        foreach (Delegate d in OnUpdateLanguageList.GetInvocationList())
+        {
+            OnUpdateLanguageList -= (UpdateLanguageList)d;
+        }
     }
 
     public override VisualElement CreateInspectorGUI()
