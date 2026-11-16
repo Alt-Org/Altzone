@@ -101,7 +101,7 @@ public class Localization : ScriptableObject
             _languageList = checkedList;
         }
 
-        /*if(_localizationBlock == null)*/ _localizationBlock = new(_languageList);
+        if(_localizationBlock == null) _localizationBlock = new(_languageList);
 
     }
 
@@ -153,8 +153,9 @@ public class LanguageSelector
         _selected = true;
     }
 
-    public void UpdateSelection()
+    public void UpdateSelection(bool selected)
     {
+        _selected = selected;
         OnUpdateLanguageList?.Invoke(_language, _selected);
     }
 }
@@ -450,8 +451,9 @@ public class LanguageSelectorEditor : PropertyDrawer
 
         selectedField.RegisterCallback<ChangeEvent<bool>>(type =>
         {
+            Debug.LogWarning(type.newValue);
             LanguageSelector selector = property.boxedValue as LanguageSelector;
-            selector.UpdateSelection();
+            selector.UpdateSelection(type.newValue);
         });
 
         container.Add(selectedField);
