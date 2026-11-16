@@ -19,12 +19,16 @@ public class Localization : ScriptableObject
     [SerializeField] List<LanguageSelector> _languageList;
 
     [SerializeField] LocalizationBlock _localizationBlock;
+    [SerializeField] LocalizationBlock _localizationBlock2;
 
     private static Localization _instance;
     private static bool _hasInstance;
 
     public delegate void LanguageChanged(LanguageType language);
     public static event LanguageChanged OnLanguageChanged;
+
+    public delegate void SaveChangesEvent();
+    public event SaveChangesEvent OnSaveChanges;
 
     public static Localization Instance
     {
@@ -56,6 +60,13 @@ public class Localization : ScriptableObject
             _language = value;
             SaveLanguage();
         }
+    }
+
+    public LocalizationBlock GetBlock(int id)
+    {
+        if(_localizationBlock.Id == id) return _localizationBlock;
+        else if (_localizationBlock2.Id == id) return _localizationBlock2;
+        else return null;
     }
 
     public List<LanguageSelector> LanguageList { get => _languageList;}
@@ -102,6 +113,7 @@ public class Localization : ScriptableObject
         }
 
         if (_localizationBlock == null) _localizationBlock = new(0, _languageList);
+        if (_localizationBlock2 == null) _localizationBlock2 = new(1, _languageList);
 
     }
 
@@ -124,6 +136,8 @@ public class Localization : ScriptableObject
             _ => "",
         };
     }
+
+    public void SaveChanges() => OnSaveChanges?.Invoke();
 
 }
 
@@ -156,7 +170,14 @@ public class LanguageSelector
     public void UpdateSelection(bool selected)
     {
         _selected = selected;
+        Localization.Instance.SaveChanges();
         OnUpdateLanguageList?.Invoke(_language, _selected);
+    }
+
+    public void UpdateSelections(bool active)
+    {
+        _selected = active;
+        Localization.Instance.SaveChanges();
     }
 }
 
@@ -245,6 +266,7 @@ public class LocalizationEditor : Editor
     SerializedProperty _language;
     SerializedProperty _languageList;
     SerializedProperty _localizationBlock;
+    SerializedProperty _localizationBlock2;
     PopupField<LanguageType> _popup;
 
     public delegate void UpdateLanguageList();
@@ -256,11 +278,13 @@ public class LocalizationEditor : Editor
         _language = serializedObject.FindProperty("_language");
         _languageList = serializedObject.FindProperty("_languageList");
         _localizationBlock = serializedObject.FindProperty("_localizationBlock");
+        _localizationBlock2 = serializedObject.FindProperty("_localizationBlock2");
         serializedObject.Update();
         _script.Initialize();
         serializedObject.Update();
         serializedObject.ApplyModifiedProperties();
         LanguageSelector.OnUpdateLanguageList += UpdateLanguageSelectionListCall;
+        _script.OnSaveChanges += Save;
     }
 
     private void OnDisable()
@@ -271,6 +295,7 @@ public class LocalizationEditor : Editor
         {
             OnUpdateLanguageList -= (UpdateLanguageList)d;
         }
+        _script.OnSaveChanges -= Save;
     }
 
     public override VisualElement CreateInspectorGUI()
@@ -293,6 +318,9 @@ public class LocalizationEditor : Editor
 
         PropertyField localizationField = new(_localizationBlock);
         container.Add(localizationField);
+
+        PropertyField localizationField2 = new(_localizationBlock2);
+        container.Add(localizationField2);
 
         return container;
     }
@@ -351,6 +379,7 @@ public class LocalizationEditor : Editor
 
     private void UpdateLanguageSelectionListCall(LanguageType language, bool active)
     {
+        _script.LanguageList.FirstOrDefault(x => x.Language == language).UpdateSelections(active);
         UpdateLanguageSelectionList();
         UpdateLocalizationFields(language, active);
     }
@@ -370,6 +399,12 @@ public class LocalizationEditor : Editor
         serializedObject.Update();
     }
 
+    public void Save()
+    {
+        serializedObject.ApplyModifiedProperties();
+        SaveChanges();
+        serializedObject.Update();
+    }
 }
 
 [CustomPropertyDrawer(typeof(LocalizationBlock))]
@@ -427,6 +462,7 @@ public class LocalizationBlockEditor : PropertyDrawer
                     _script.Key = type.newValue;
                     languageBlockListField.text = _script.Key;
                     //serializedObject.ApplyModifiedProperties();
+                    Localization.Instance.SaveChanges();
                 });
 
                 Add(text);
