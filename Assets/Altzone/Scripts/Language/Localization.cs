@@ -101,7 +101,7 @@ public class Localization : ScriptableObject
             _languageList = checkedList;
         }
 
-        if(_localizationBlock == null) _localizationBlock = new();
+        /*if(_localizationBlock == null)*/ _localizationBlock = new(_languageList);
 
     }
 
@@ -162,6 +162,7 @@ public class LanguageSelector
 [Serializable]
 public class LocalizationBlock
 {
+    [SerializeField] private string _key;
     [SerializeField] private List<LocalizationLanguageBlock> _languageBlock;
 
     public delegate void BlockUpdate();
@@ -176,11 +177,12 @@ public class LocalizationBlock
     }
 
     public List<LocalizationLanguageBlock> LanguageBlock { get => _languageBlock;}
+    public string Key { get => _key; }
 
-    public LocalizationBlock()
+    public LocalizationBlock(List<LanguageSelector> LanguageList)
     {
         _languageBlock = new();
-        foreach (LanguageSelector selector in Localization.Instance.LanguageList)
+        foreach (LanguageSelector selector in LanguageList)
         {
             _languageBlock.Add(new(selector, string.Empty));
         }
@@ -276,8 +278,8 @@ public class LocalizationEditor : Editor
         PropertyField languageList = new(_languageList);
         container.Add(languageList);
 
-        PropertyField localizationBlock = new(_localizationBlock);
-        container.Add(localizationBlock);
+        PropertyField localizationField = new(_localizationBlock);
+        container.Add(localizationField);
 
         return container;
     }
