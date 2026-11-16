@@ -2937,22 +2937,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 924863700751620412}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcd82596d59b33f41bd00038baafe68c, type: 3}
+  m_Script: {fileID: 11500000, guid: 89990487505144b38868e2e086fd7325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _upperTeamText: {fileID: 0}
-  _lowerTeamText: {fileID: 0}
-  _toggleBotFill: {fileID: 0}
-  _player1Slot: {fileID: 1915884626695793988}
-  _player2Slot: {fileID: 3538402540962131107}
-  _player3Slot: {fileID: 0}
-  _player4Slot: {fileID: 0}
+  _alphaPlayerSlot: {fileID: 1915884626695793988}
+  _betaPlayerSlot: {fileID: 3538402540962131107}
   _buttonStartPlay: {fileID: 116578133472790575}
-  _buttonRaidTest: {fileID: 0}
   _selectedCharactersEditable: {fileID: 5118332142664737603}
-  _localPlayerPosition: 0
-  _isLocalPlayerPositionUnique: 0
-  _masterClientPosition: 0
 --- !u!114 &1029870582348880443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6642,10 +6633,7 @@ MonoBehaviour:
   _player3Slot: {fileID: 3117498258000540689}
   _player4Slot: {fileID: 7938621177152372018}
   _buttonStartPlay: {fileID: 2958878656600820561}
-  _buttonRaidTest: {fileID: 0}
   _selectedCharactersEditable: {fileID: 0}
-  _localPlayerPosition: 0
-  _isLocalPlayerPositionUnique: 0
   _masterClientPosition: 0
 --- !u!114 &4604730217467166935
 MonoBehaviour:

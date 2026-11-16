@@ -517,7 +517,9 @@ namespace Altzone.Scripts.Lobby
             int maxPlayers = PhotonRealtimeClient.CurrentRoom.MaxPlayers;
             int[] candidatePositions = maxPlayers >= 4
                 ? new[] { PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition2, PhotonBattleRoom.PlayerPosition3, PhotonBattleRoom.PlayerPosition4 }
-                : new[] { PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition2 };
+                : PhotonRealtimeClient.CurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.TeamSizeKey, 2) == 1
+                    ? new[] { PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition3 }
+                    : new[] { PhotonBattleRoom.PlayerPosition1, PhotonBattleRoom.PlayerPosition2 };
 
             foreach (int position in candidatePositions)
             {
