@@ -148,13 +148,14 @@ namespace MenuUI.Scripts.SoulHome
             Vector2 position = Vector2.zero;
             //transform.localPosition = Vector2.zero;
 
-            float width = transform.parent.GetComponent<FurnitureSlot>().width * Furniture.GetFurnitureSize().x;
+            FurnitureSlot parentSlot = transform.parent.GetComponent<FurnitureSlot>();
+            float width = parentSlot.width * Furniture.GetFurnitureSize().x;
 
             if (!reverse)
-                position.x = (width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2;
+                position.x = (width / 2) - parentSlot.width / 2;
             else
-                position.x = ((width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2)*-1;
-            position.y = -1 * (transform.parent.GetComponent<FurnitureSlot>().height / 2);
+                position.x = ((width / 2) - parentSlot.width / 2)*-1;
+            position.y = -1 * (parentSlot.height / 2);
             //}
 
             transform.localPosition = position;

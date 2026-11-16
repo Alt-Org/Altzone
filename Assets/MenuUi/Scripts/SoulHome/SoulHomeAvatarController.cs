@@ -54,7 +54,6 @@ namespace MenuUI.Scripts.SoulHome
 
         private static readonly Vector2Int LadderGridPosition = new(2, 1);
 
-        private Transform _points;
         private RoomData _roomData;
         private List<Vector2> _travelPoints = new();
 
@@ -176,7 +175,7 @@ namespace MenuUI.Scripts.SoulHome
             // Done here instead of Start, so the room is set before the first decision.
             if (!transform.parent.CompareTag("Room")) return;
             SetRoom(transform.parent.GetComponent<RoomData>());
-            SetAvatar(_points, _roomData);
+            SetAvatar(_roomData);
             Sleeping = _roomData.Sleeping;
             hasInitialized = true;
             // The first decisions are spread over the whole interval so the characters don't all decide at once.
@@ -259,7 +258,6 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (transform.parent != room.transform) transform.SetParent(room.transform, true);
             _roomData = room;
-            _points = room.transform.Find("FurniturePoints").Find("FloorFurniturePoints");
         }
 
         // Finds a path inside the current room and sets it as the travel points. Returns false if there is no path.
@@ -332,7 +330,8 @@ namespace MenuUI.Scripts.SoulHome
 
                     // offset is needed because when walking close to gridnode edge the closest grid node changes every step
                     float offset = _grid[0, 0].FurnitureSlot.height * 0.4f;
-                    UpdateSortingOrder(WorldToGrid(new(transform.position.x, transform.position.y - offset)).y);
+                    // Only the row is needed here, so it is looked up by height instead of with WorldToGrid.
+                    UpdateSortingOrder(_roomData.GetFloorRowAt(new(transform.position.x, transform.position.y - offset)));
 
                     yield return null;
                 }
@@ -350,9 +349,7 @@ namespace MenuUI.Scripts.SoulHome
             _pendingRoom = targetRoom;
             _pendingTarget = target;
 
-            Transform targetRoomPoints = targetRoom.transform.Find("FurniturePoints").Find("FloorFurniturePoints");
-
-            Vector3 targetWorldPosition = targetRoomPoints.GetChild(LadderGridPosition.y).GetChild(LadderGridPosition.x).position;
+            Vector3 targetWorldPosition = targetRoom.GetFloorSlot(LadderGridPosition.y, LadderGridPosition.x).transform.position;
 
             bool movingDown = targetWorldPosition.y < transform.position.y;
 
@@ -416,10 +413,9 @@ namespace MenuUI.Scripts.SoulHome
 
         private Vector2 GridToWorld(Vector2Int gridPosition)
         {
-            Transform rowTransform = _points.GetChild(gridPosition.y);
-            Transform slotTransform = rowTransform.GetChild(gridPosition.x);
+            Vector3 slotPosition = _roomData.GetFloorSlot(gridPosition.y, gridPosition.x).transform.position;
 
-            return new Vector2(slotTransform.position.x, slotTransform.position.y);
+            return new Vector2(slotPosition.x, slotPosition.y);
         }
 
         //finds the closest grid position from the actual avatar position
@@ -663,7 +659,7 @@ namespace MenuUI.Scripts.SoulHome
 
         #endregion
 
-        public void SetAvatar(Transform points, RoomData data)
+        public void SetAvatar(RoomData data)
         {
             int column;
             int row;
@@ -672,23 +668,22 @@ namespace MenuUI.Scripts.SoulHome
                 column = Random.Range(0, data.SlotColumns - 1);
                 row = Random.Range(0, data.SlotRows - 1);
 
-                if (points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>().Furniture != null) continue;
+                if (data.GetFloorSlot(row, column).Furniture != null) continue;
 
                 if (column + 1 < data.SlotColumns)
                 {
-                    if (points.GetChild(row).GetChild(column + 1).GetComponent<FurnitureSlot>().Furniture == null) break;
+                    if (data.GetFloorSlot(row, column + 1).Furniture == null) break;
                 }
                 if (column - 1 >= 0)
                 {
-                    if (points.GetChild(row).GetChild(column - 1).GetComponent<FurnitureSlot>().Furniture == null)
+                    if (data.GetFloorSlot(row, column - 1).Furniture == null)
                     {
                         column--;
                         break;
                     }
                 }
             }
-            //transform.SetParent(points.GetChild(row).GetChild(column), false);
-            FurnitureSlot slot = points.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
+            FurnitureSlot slot = data.GetFloorSlot(row, column);
             _sortingGroup.sortingOrder = 6 + (slot.row) * 100;
 
             Vector2 position = slot.transform.position;
@@ -824,8 +819,7 @@ namespace MenuUI.Scripts.SoulHome
             if (_pendingRoom != null && _sleeping)
             {
                 Gizmos.color = Color.magenta;
-                Transform pendingPoints = _pendingRoom.transform.Find("FurniturePoints").Find("FloorFurniturePoints");
-                Gizmos.DrawLine(position, pendingPoints.GetChild(_pendingTarget.y).GetChild(_pendingTarget.x).position);
+                Gizmos.DrawLine(position, _pendingRoom.GetFloorSlot(_pendingTarget.y, _pendingTarget.x).transform.position);
             }
 
             // Draw the Current Travel Path
