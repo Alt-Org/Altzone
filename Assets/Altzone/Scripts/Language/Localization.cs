@@ -444,7 +444,9 @@ public class LanguageSelectorEditor : PropertyDrawer
 
         var languageProperty = property.FindPropertyRelative("_language");
         var selectedProperty = property.FindPropertyRelative("_selected");
-        var selectedField = new PropertyField(selectedProperty, ((LanguageType)languageProperty.enumValueIndex).ToString());
+
+        Toggle selectedField = new(((LanguageType)languageProperty.enumValueIndex).ToString());
+        selectedField.SetValueWithoutNotify((property.boxedValue as LanguageSelector).Selected);
 
         selectedField.RegisterCallback<ChangeEvent<bool>>(type =>
         {
