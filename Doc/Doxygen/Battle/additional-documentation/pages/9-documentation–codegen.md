@@ -249,7 +249,8 @@ component ExampleComponent
 
 %Quantum generates **components** as **structs**, therefore **struct** refers to both **structs** and **components**.
 
-The file should be documented using a **documentation block** with the `//!` format, starting with the `@file` command and a [{brief/summary}]. Documentation should contain the [{brief/summary}] and [{detailed description}].  
+The file should be documented using a **documentation block** with the `//!` format, starting with the `@file` command and a [{brief/summary}].  
+Documentation should contain the [{brief/summary}] and [{detailed description}].  
 The [{brief/summary}] usually starts with the word "Contains" followed by what the file contains, directly mentioning the **code symbols** and linking to their documentation,  
 directing readers to the documentation that has more information.  
 The [{detailed description}] should have the full list of **enums** and **structs** defined in the `.qtn` file using bullet points.
@@ -301,7 +302,7 @@ component ExampleComponent
 
 ### Enum documentation
 
-**Enums** should be documented with a `@enum` command with the name of the **enum** formatted with `::` as below followed by a [{brief/summary}]. 
+**Enums** should be documented with a `@enum` command with the name of the **enum** formatted with `::` as below followed by a [{brief/summary}].  
 The [{detailed description}] should have a **Generated from** link to the `.qtn` file itself should be listed as shown below.  
 Attached below the main enum documentation should be a `// {` comment marking the beginning of the intended **enum variable block**.  
 Each **variable** defined in an **enum** should be documented with a `@var` command with the name of the **enum** and the name of the **variable** followed by a [{brief/summary}] text without the `<summary>` command.  
@@ -348,11 +349,17 @@ enum ExampleEnum
 
 Since %Quantum generates **components** as **structs** the following also applies to **components**.
 
-**Structs** should be documented with a `@struct` command with the name of the **struct** formatted with `::` as below followed by a [{brief/summary}]. 
+**Structs** should be documented with a `@struct` command with the name of the **struct** formatted with `::` as below followed by a [{brief/summary}].  
 The [{detailed description}] should have a **Generated from** link to the `.qtn` file itself should be listed as shown below.  
 Attached below the main struct documentation should be a `// {` comment marking the beginning of the intended **struct content block**.  
 Each **field** and **property** defined in a **struct** should be documented with a `@var` command with the type and the name of the **field/property** followed by a [{brief/summary}].  
 The **struct content block** should be closed with a `// }` comment.
+
+Besides the **fields** and **properties** defined in the `.qtn` file, %Quantum generates **Built-in members** into every **struct**.  
+At the end of the **struct content block** there should be a **%Quantum Built-in Documentation Block**, with the `//!` format, that has a **Group** named "Quantum Built-in" without an `@anchor`.   
+Inside the **%Quantum Built-in Documentation Block** **Group** should have the **Built-in members** listed without descriptions.  
+Most **structs** have `SIZE`, `ALIGNMENT`, `GetHashCode` and `Serialize`, but the exact set depends on the **struct**,  
+for example **components** with collections marked `[FreeOnComponentRemoved]` also have `OnRemoved`.  
 
 The following example also shows a mistake that can happen when using **Grouping**.  
 `@var array Quantum::ExampleComponent::ExampleArray` is **Grouped** in "Example Fields" **Group**,  
