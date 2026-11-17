@@ -288,6 +288,7 @@ public static class PollManager // Handles the polls from creation to loading to
             Debug.Log(output);
         }
     }
+
     public static void DebugPrintAllActivePolls()
     {
         Debug.Log("----- Active Polls Start -----");
@@ -373,8 +374,7 @@ public static class PollManager // Handles the polls from creation to loading to
     }
 
     // Ends the poll and determines if it passed, and updates clan inventory accordingly (WIP)
-    public static void EndPoll(string pollId)
-    {
+    public static void EndPoll(string pollId)    {
         //LoadClanData();
 
         DataStore store = Storefront.Get();

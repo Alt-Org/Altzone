@@ -24,6 +24,10 @@ public class ClanMemberRoleRights : MonoBehaviour
         }
     }
 
+    private int _previousValidIndex;
+    private string _divider = "--------";
+
+
     [SerializeField] private GameObject textPrefab;
     [SerializeField] private Transform contentParent;
     [SerializeField] private GameObject popup;
@@ -49,7 +53,6 @@ public class ClanMemberRoleRights : MonoBehaviour
     void Start()
     {
         roleDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
-        roleDropdown.onValueChanged.AddListener(OnRolerightsDropdownValueChanged);
         saveRoleButton.onClick.AddListener(OnStartVoteClicked);
         newRoleContainer.SetActive(false);
 
@@ -59,15 +62,13 @@ public class ClanMemberRoleRights : MonoBehaviour
         }
         LoadClanData();
 
-        PopulateRightsDropdown();
-        PopulateRoles(_clanData);
+        PopulateVotes(_clanData);
         SelectCurrentMemberRole();
     }
 
     void OnDestroy()
     {
         roleDropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
-        roleDropdown.onValueChanged.RemoveListener(OnRolerightsDropdownValueChanged);
         saveRoleButton.onClick.RemoveListener(OnStartVoteClicked);
     }
 
@@ -83,27 +84,22 @@ public class ClanMemberRoleRights : MonoBehaviour
         Debug.Log("did a thing");
     }
 
-    private void PopulateRoles(ClanData clan)
+    private void PopulateVotes(ClanData clan)
     {
         List<string> options = new List<string>();
         foreach (var role in clan.ClanRoles) {
             options.Add(role.name);
         }
         options.Add("Add role");
-        roleDropdown.ClearOptions();
-        roleDropdown.AddOptions(options);
-    }
+        options.Add(_divider);
 
-    private void PopulateRightsDropdown()
-    {
-        var options = new List<string>();
         foreach (MemberRights right in Enum.GetValues(typeof(MemberRights)))
         {
             options.Add(right.ToString());
         }
 
-        roleRightsDropdown.ClearOptions();
-        roleRightsDropdown.AddOptions(options);
+        roleDropdown.ClearOptions();
+        roleDropdown.AddOptions(options);
     }
 
     private void SelectCurrentMemberRole()
@@ -138,11 +134,25 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     private void OnDropdownValueChanged(int index)
     {
-        // Last option is new role, if index higher than ClanRoles.Count, treat as new role
-        if (index >= _clanData.ClanRoles.Count) {
+
+        if (roleDropdown.options[index].text == _divider)
+        {
+            roleDropdown.SetValueWithoutNotify(_previousValidIndex);
+        }
+        else
+        {
+            _previousValidIndex = index;
+        }
+
+        if (index == _clanData.ClanRoles.Count + 1)
+        {
             NewRole();
             return;
+        } else if (index > _clanData.ClanRoles.Count + 1)
+        {
+            return;
         }
+
         newRoleContainer.SetActive(false);
         ShowRole(_clanData.ClanRoles[index]);
     }
