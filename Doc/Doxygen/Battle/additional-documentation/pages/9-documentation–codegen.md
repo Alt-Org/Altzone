@@ -479,9 +479,7 @@ component ExampleComponent
     //! @var Int32 Quantum::ExampleComponent::ALIGNMENT
     //!
     //! @fn Int32 Quantum::ExampleComponent::GetHashCode
-    //! @fn void Quantum::ExampleComponent::ClearPointers
     //!
-    //! @fn void Quantum::ExampleComponent::OnRemoved
     //! @fn void Quantum::ExampleComponent::Serialize
     //!
     //! @}
