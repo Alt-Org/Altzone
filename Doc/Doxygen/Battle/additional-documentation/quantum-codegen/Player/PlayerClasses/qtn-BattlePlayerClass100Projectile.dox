@@ -1,11 +1,11 @@
-/// @file BattlePlayerClass100Projectile.qtn
-/// <summary>
-/// Contains component used for the player class 100 projectile
-/// </summary>
-///
-/// ## Generated Structs
-/// - @cref{Quantum,BattlePlayerClass100ProjectileQComponent}  
-///   @copybrief Quantum.BattlePlayerClass100ProjectileQComponent
+//! @file BattlePlayerClass100Projectile.qtn
+//! <summary>
+//! Contains component used for the player class 100 projectile
+//! </summary>
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,BattlePlayerClass100ProjectileQComponent}
+//!   @copybrief Quantum.BattlePlayerClass100ProjectileQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -15,14 +15,32 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerClass100Projectile.qtn}
-
-// ---------------------------------------------------------------------------------------------------- //
-
-/// @var FPVector2 Quantum::BattlePlayerClass100ProjectileQComponent::Direction
-/// <summary>Direction of the player class 100 projectile.</summary>
 ///
-/// @var FP Quantum::BattlePlayerClass100ProjectileQComponent::Speed
-/// <summary>Speed of the player class 100 projectile.</summary>
-///
-/// @var FP Quantum::BattlePlayerClass100ProjectileQComponent::Radius
-/// <summary>Radius of the player class 100 projectile.</summary>
+// {
+    /// @var FPVector2 Quantum::BattlePlayerClass100ProjectileQComponent::Direction
+    /// <summary>
+    /// Direction of the player class 100 projectile.
+    /// </summary>
+
+    /// @var FP Quantum::BattlePlayerClass100ProjectileQComponent::Speed
+    /// <summary>
+    /// Speed of the player class 100 projectile.
+    /// </summary>
+
+    /// @var FP Quantum::BattlePlayerClass100ProjectileQComponent::Radius
+    /// <summary>
+    /// Radius of the player class 100 projectile.
+    /// </summary>
+
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattlePlayerClass100ProjectileQComponent::SIZE
+    //! @var Int32 Quantum::BattlePlayerClass100ProjectileQComponent::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattlePlayerClass100ProjectileQComponent::GetHashCode
+    //!
+    //! @fn void Quantum::BattlePlayerClass100ProjectileQComponent::Serialize
+    //!
+    //! @}
+// }

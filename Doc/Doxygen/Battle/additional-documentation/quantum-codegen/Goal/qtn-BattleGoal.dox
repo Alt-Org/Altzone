@@ -1,25 +1,41 @@
-/// @file BattleGoal.qtn
-/// <summary>
-/// Contains component used for both goals.
-/// </summary>
-///
-/// ## Generated Structs
-/// - @cref{Quantum,BattleGoalQComponent}  
-///   @copybrief Quantum.BattleGoalQComponent
+//! @file BattleGoal.qtn
+//! <summary>
+//! Contains component used for a goal.
+//! </summary>
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,BattleGoalQComponent}
+//!   @copybrief Quantum.BattleGoalQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
 /// @struct Quantum::BattleGoalQComponent
 /// <summary>
-/// Keeps track of both team's goals.
+/// Specifies which team the goal belongs to and keeps track of whether it has been triggered.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleGoal.qtn}
-
-// ---------------------------------------------------------------------------------------------------- //
-
-/// @var BattleTeamNumber Quantum.BattleGoalQComponent::TeamNumber
-/// <summary>Which team the goal belongs to.</summary>
 ///
-/// @var bool Quantum.BattleGoalQComponent::HasTriggered
-/// <summary>Has the projectile gone into the goal or not.</summary>
+// {
+    /// @var BattleTeamNumber Quantum::BattleGoalQComponent::TeamNumber
+    /// <summary>
+    /// Which team the goal belongs to.
+    /// </summary>
+
+    /// @var bool Quantum::BattleGoalQComponent::HasTriggered
+    /// <summary>
+    /// Has the projectile gone into the goal or not.
+    /// </summary>
+
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattleGoalQComponent::SIZE
+    //! @var Int32 Quantum::BattleGoalQComponent::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattleGoalQComponent::GetHashCode
+    //!
+    //! @fn void Quantum::BattleGoalQComponent::Serialize
+    //!
+    //! @}
+// }

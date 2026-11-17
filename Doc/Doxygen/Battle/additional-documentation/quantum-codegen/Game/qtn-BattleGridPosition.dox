@@ -1,11 +1,11 @@
-/// @file BattleGridPosition.qtn
-/// <summary>
-/// Contains struct used for defining position in Grid.
-/// </summary>
-///
-/// ## Generated Structs
-/// - @cref{Quantum,BattleGridPosition}  
-///   @copybrief Quantum.BattleGridPosition
+//! @file BattleGridPosition.qtn
+//! <summary>
+//! Contains struct used for defining position in Grid.
+//! </summary>
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,BattleGridPosition}
+//!   @copybrief Quantum.BattleGridPosition
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -15,11 +15,27 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleGridPosition.qtn}
-
-// ---------------------------------------------------------------------------------------------------- //
-
-/// @var int Quantum.BattleGridPosition::Row
-/// <summary>Row position.</summary>
 ///
-/// @var int Quantum.BattleGridPosition::Col
-/// <summary>Column position.</summary>
+// {
+    /// @var int Quantum::BattleGridPosition::Row
+    /// <summary>
+    /// Row position.
+    /// </summary>
+
+    /// @var int Quantum::BattleGridPosition::Col
+    /// <summary>
+    /// Column position.
+    /// </summary>
+
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattleGridPosition::SIZE
+    //! @var Int32 Quantum::BattleGridPosition::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattleGridPosition::GetHashCode
+    //!
+    //! @fn void Quantum::BattleGridPosition::Serialize
+    //!
+    //! @}
+// }

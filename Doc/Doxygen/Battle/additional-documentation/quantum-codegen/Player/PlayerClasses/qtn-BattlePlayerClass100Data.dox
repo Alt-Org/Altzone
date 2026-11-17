@@ -1,36 +1,89 @@
-/// @file BattlePlayerClass100Data.qtn
-/// <summary>
-/// Contains component used by 100 character class.
-/// </summary>
-///
-/// ## Generated Structs
-/// - @cref{Quantum,BattlePlayerClass100DataQComponent}  
-///   @copybrief Quantum.BattlePlayerClass100DataQComponent
+//! @file BattlePlayerClass100Data.qtn
+//! <summary>
+//! Contains enum and component used by 100 character class.
+//! </summary>
+//!
+//! ## Generated Enums
+//! - @cref{Quantum,BattlePlayerClass100State}
+//!   @copybrief Quantum.BattlePlayerClass100State
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,BattlePlayerClass100DataQComponent}
+//!   @copybrief Quantum.BattlePlayerClass100DataQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
+
+/// @enum Quantum::BattlePlayerClass100State
+/// <summary>
+/// Defines the possible states of the 100 class characters.
+/// </summary>
+///
+/// See [{Player Character Class 100 - Desensitizer}](#page-concepts-player-class-100) for more info.
+///
+/// @bigtext{Generated from @ref BattlePlayerClass100Data.qtn}
+///
+// {
+    /// @var Quantum::BattlePlayerClass100State Quantum::BattlePlayerClass100State::Unused
+    /// Placement has not been started.
+
+    /// @var Quantum::BattlePlayerClass100State Quantum::BattlePlayerClass100State::Placement
+    /// The player is placing their character while @cref{Quantum,BattlePlayerClass100DataQComponent.PlacementTimer} is running.
+
+    /// @var Quantum::BattlePlayerClass100State Quantum::BattlePlayerClass100State::Placed
+    /// The character has been placed and its movement is disabled.
+// }
 
 /// @struct Quantum::BattlePlayerClass100DataQComponent
 /// <summary>
 /// %Player character class data for the 100 class.
 /// </summary>
 ///
-/// @bigtext{See [{PlayerClassData}](#page-concepts-player-simulation-class-classdata) for more info.}  
-/// @bigtext{See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.}  
-/// @bigtext{See [{Player Character Class 100 - Desensitizer}](#page-concepts-player-class-100) for more info.}
+/// See [{PlayerClassData}](#page-concepts-player-simulation-class-classdata) for more info.
+/// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
+/// See [{Player Character Class 100 - Desensitizer}](#page-concepts-player-class-100) for more info.
 ///
 /// @bigtext{Generated from @ref BattlePlayerClass100Data.qtn}
+///
+// {
+    /// @var BattlePlayerClass100State Quantum::BattlePlayerClass100DataQComponent::ClassState
+    /// <summary>
+    /// Current state of the character.
+    /// </summary>
 
-/// @var FPVector2 Quantum.BattlePlayerClass100DataQComponent::JoystickValuePrevious
-/// <summary>Previous value of the special joystick.</summary>
-///
-/// @var bool Quantum.BattlePlayerClass100DataQComponent::JoystickDownPrevious
-/// <summary>Was the joystick down.</summary>
-///
-/// @var FrameTimer Quantum.BattlePlayerClass100DataQComponent::JoystickTimer
-/// <summary>Timer for how long the joystick has been pressed.</summary>
-///
-/// @var FrameTimer Quantum.BattlePlayerClass100DataQComponent::CooldownTimer
-/// <summary>Timer for how long to wait before being able to shoot again.</summary>
-///
-/// @var FrameTimer Quantum.BattlePlayerClass100DataQComponent::PlacementTimer
-/// <summary>Timer for how long the player has to place their character.</summary>
+    /// @var FrameTimer Quantum::BattlePlayerClass100DataQComponent::PlacementTimer
+    /// <summary>
+    /// Timer for how long the player has to place their character.
+    /// </summary>
+
+    /// @var FPVector2 Quantum::BattlePlayerClass100DataQComponent::JoystickValuePrevious
+    /// <summary>
+    /// Previous value of the special joystick.
+    /// </summary>
+
+    /// @var bool Quantum::BattlePlayerClass100DataQComponent::JoystickDownPrevious
+    /// <summary>
+    /// Was the joystick down.
+    /// </summary>
+
+    /// @var FrameTimer Quantum::BattlePlayerClass100DataQComponent::JoystickTimer
+    /// <summary>
+    /// Timer for how long the joystick has been pressed.
+    /// </summary>
+
+    /// @var FrameTimer Quantum::BattlePlayerClass100DataQComponent::CooldownTimer
+    /// <summary>
+    /// Timer for how long to wait before being able to shoot again.
+    /// </summary>
+
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattlePlayerClass100DataQComponent::SIZE
+    //! @var Int32 Quantum::BattlePlayerClass100DataQComponent::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattlePlayerClass100DataQComponent::GetHashCode
+    //!
+    //! @fn void Quantum::BattlePlayerClass100DataQComponent::Serialize
+    //!
+    //! @}
+// }

@@ -1,31 +1,51 @@
-/// @file BattlePlayerStats.qtn
-/// <summary>
-/// Player's stats.
-/// </summary>
-///
-/// ## Generated Structs
-/// - @cref{Quantum,BattlePlayerStats}  
-///   @copybrief Quantum.BattlePlayerStats
+//! @file BattlePlayerStats.qtn
+//! <summary>
+//! Contains player's stats.
+//! </summary>
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,BattlePlayerStats}
+//!   @copybrief Quantum.BattlePlayerStats
 
 // ---------------------------------------------------------------------------------------------------- //
 
 /// @struct Quantum::BattlePlayerStats
 /// <summary>
-/// Player's stats.
+/// Contains player's stats.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerStats.qtn}
+///
+// {
+    /// @var FP Quantum::BattlePlayerStats::Speed
+    /// <summary>
+    /// Character's movement speed.
+    /// </summary>
 
-// ---------------------------------------------------------------------------------------------------- //
+    /// @var FP Quantum::BattlePlayerStats::CharacterSize
+    /// <summary>
+    /// Character's size.
+    /// </summary>
 
-/// @var FP Quantum.BattlePlayerStats::Speed
-/// <summary>Character's movement speed.</summary>
-///
-/// @var FP Quantum.BattlePlayerStats::CharacterSize
-/// <summary>Character's size.</summary>
-///
-/// @var FP Quantum.BattlePlayerStats::Attack
-/// <summary>Character's attack power.</summary>
-///
-/// @var FP Quantum.BattlePlayerStats::Defence
-/// <summary>Character's defence power.</summary>
+    /// @var FP Quantum::BattlePlayerStats::Attack
+    /// <summary>
+    /// Character's attack power.
+    /// </summary>
+
+    /// @var FP Quantum::BattlePlayerStats::Defence
+    /// <summary>
+    /// Character's defence power.
+    /// </summary>
+
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattlePlayerStats::SIZE
+    //! @var Int32 Quantum::BattlePlayerStats::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattlePlayerStats::GetHashCode
+    //!
+    //! @fn void Quantum::BattlePlayerStats::Serialize
+    //!
+    //! @}
+// }
