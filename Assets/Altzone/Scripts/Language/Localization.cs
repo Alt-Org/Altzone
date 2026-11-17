@@ -18,8 +18,8 @@ public class Localization : ScriptableObject
 
     [SerializeField] List<LanguageSelector> _languageList;
 
-    [SerializeField] LocalizationBlock _localizationBlock;
-    [SerializeField] LocalizationBlock _localizationBlock2;
+    [SerializeField] LocalizationBlock _localizationBlock = null;
+    [SerializeField] LocalizationBlock _localizationBlock2 = null;
 
     private static Localization _instance;
     private static bool _hasInstance;
@@ -62,15 +62,9 @@ public class Localization : ScriptableObject
         }
     }
 
-    public LocalizationBlock GetBlock(int id)
-    {
-        if(_localizationBlock.Id == id) return _localizationBlock;
-        else if (_localizationBlock2.Id == id) return _localizationBlock2;
-        else return null;
-    }
-
     public List<LanguageSelector> LanguageList { get => _languageList;}
     public LocalizationBlock LocalizationBlock { get => _localizationBlock;}
+    public LocalizationBlock LocalizationBlock2 { get => _localizationBlock2; }
 
     public void SaveLanguage()
     {
@@ -112,9 +106,8 @@ public class Localization : ScriptableObject
             _languageList = checkedList;
         }
 
-        if (_localizationBlock == null) _localizationBlock = new(0, _languageList);
-        if (_localizationBlock2 == null) _localizationBlock2 = new(1, _languageList);
-
+        _localizationBlock = new(0, _languageList);
+        _localizationBlock2 = new(1, _languageList);
     }
 
     private LanguageType ParseLanguage(string languageName)
@@ -137,7 +130,15 @@ public class Localization : ScriptableObject
         };
     }
 
-    public void SaveChanges() => OnSaveChanges?.Invoke();
+    public void SaveChanges()
+    {
+        OnSaveChanges?.Invoke();
+#if UNITY_EDITOR
+        AssetDatabase.Refresh();
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssets();
+#endif
+    }
 
 }
 
@@ -196,7 +197,7 @@ public class LocalizationBlock
     public string Key { get => _key; set => _key = value; }
     public int Id { get => _id; }
 
-    public LocalizationBlock(int blockid,List<LanguageSelector> LanguageList)
+    public LocalizationBlock(int blockid, List<LanguageSelector> LanguageList)
     {
         _id = blockid;
         _languageBlock = new();
@@ -233,6 +234,8 @@ public class LocalizationLanguageBlock
     }
     public string Text  => _text;
 
+    public int Id { get => _id;}
+
     public delegate void UpdateLocalizationText();
     public static event UpdateLocalizationText OnUpdateLocalizationText;
 
@@ -257,8 +260,11 @@ public class LocalizationEditor : Editor
     Localization _script;
     SerializedProperty _language;
     SerializedProperty _languageList;
-    SerializedProperty _localizationBlock;
-    SerializedProperty _localizationBlock2;
+    VisualElement _blockBoxElement;
+    BlockVisualElement _localizationBlockElement;
+    LocalizationBlock _localizationBlock;
+    BlockVisualElement _localizationBlockElement2;
+    LocalizationBlock _localizationBlock2;
     PopupField<LanguageType> _popup;
 
     public delegate void UpdateLanguageList();
@@ -269,14 +275,14 @@ public class LocalizationEditor : Editor
         _script = target as Localization;
         _language = serializedObject.FindProperty("_language");
         _languageList = serializedObject.FindProperty("_languageList");
-        _localizationBlock = serializedObject.FindProperty("_localizationBlock");
-        _localizationBlock2 = serializedObject.FindProperty("_localizationBlock2");
+        _localizationBlock = _script.LocalizationBlock;
+        _localizationBlock2 = _script.LocalizationBlock2;
         serializedObject.Update();
         _script.Initialize();
         serializedObject.Update();
         serializedObject.ApplyModifiedProperties();
         LanguageSelectorEditor.OnUpdateLanguageList += UpdateLanguageSelectionListCall;
-        _script.OnSaveChanges += Save;
+        Localization.Instance.OnSaveChanges += Save;
     }
 
     private void OnDisable()
@@ -287,7 +293,7 @@ public class LocalizationEditor : Editor
         {
             OnUpdateLanguageList -= (UpdateLanguageList)d;
         }
-        _script.OnSaveChanges -= Save;
+        Localization.Instance.OnSaveChanges -= Save;
     }
 
     public override VisualElement CreateInspectorGUI()
@@ -308,11 +314,34 @@ public class LocalizationEditor : Editor
         PropertyField languageList = new(_languageList);
         container.Add(languageList);
 
-        PropertyField localizationField = new(_localizationBlock);
-        container.Add(localizationField);
+        _blockBoxElement = new Box();
 
-        PropertyField localizationField2 = new(_localizationBlock2);
-        container.Add(localizationField2);
+        _blockBoxElement.style.minWidth = 500f;
+        _blockBoxElement.style.flexGrow = 1;
+        _blockBoxElement.style.backgroundColor = new Color(0.3f,0.3f,0.3f);
+        _blockBoxElement.style.flexDirection = FlexDirection.Column;
+        _blockBoxElement.style.flexWrap = Wrap.Wrap;
+
+        container.Add(_blockBoxElement);
+
+        Debug.LogWarning("0");
+
+        _localizationBlock = Localization.Instance.LocalizationBlock;
+        _localizationBlockElement = new(_localizationBlock);
+        _blockBoxElement.Add(_localizationBlockElement);
+
+        _localizationBlock2 = Localization.Instance.LocalizationBlock2;
+        _localizationBlockElement2 = new(_localizationBlock2);
+        _blockBoxElement.Add(_localizationBlockElement2);
+
+        Debug.LogWarning(Localization.Instance.LocalizationBlock.Key);
+        Debug.LogWarning(Localization.Instance.LocalizationBlock2.Key);
+
+        //PropertyField localizationField = new(_localizationBlockProperty);
+        //container.Add(localizationField);
+
+        //PropertyField localizationField2 = new(_localizationBlock2Property);
+        //container.Add(localizationField2);
 
         return container;
     }
@@ -384,6 +413,11 @@ public class LocalizationEditor : Editor
             if (block.Language == language)
                 block.Active = active;
         }
+        foreach (LocalizationLanguageBlock block in _script.LocalizationBlock2.LanguageBlock)
+        {
+            if (block.Language == language)
+                block.Active = active;
+        }
         serializedObject.ApplyModifiedProperties();
         OnUpdateLanguageList?.Invoke();
         //_script.LocalizationBlock.UpdateBlock();
@@ -395,7 +429,10 @@ public class LocalizationEditor : Editor
     {
         serializedObject.ApplyModifiedProperties();
         SaveChanges();
-        serializedObject.Update();
+        //serializedObject.Update();
+        Debug.LogWarning("Saved?");
+        Debug.LogWarning(Localization.Instance.LocalizationBlock.Key);
+        Debug.LogWarning(Localization.Instance.LocalizationBlock2.Key);
     }
 }
 
@@ -404,94 +441,95 @@ public class LocalizationBlockEditor : PropertyDrawer
 {
     public override VisualElement CreatePropertyGUI(SerializedProperty property)
     {
-        BlockVisualElement content = new BlockVisualElement(property);
+        BlockVisualElement content = new BlockVisualElement(property.boxedValue as LocalizationBlock);
         return content;
     }
 
-    [Serializable]
-    public class BlockVisualElement : VisualElement
+    
+}
+
+[Serializable]
+public class BlockVisualElement : VisualElement
+{
+    List<LocalizationLanguageBlock> _languageBlockList = new();
+    string _keyProperty;
+    List<TextField> _languageBlockFieldList = new();
+    Foldout _languageBlockListField;
+    LocalizationBlock _script;
+    int _id;
+
+    public BlockVisualElement(LocalizationBlock property) : base()
     {
-        List<LocalizationLanguageBlock> _languageBlockList = new();
-        string _keyProperty;
-        List<TextField> _languageBlockFieldList = new();
-        Foldout _languageBlockListField;
-        LocalizationBlock _script;
-        int _id;
-
-        public BlockVisualElement(SerializedProperty property): base()
+        if (_script == null)
         {
-            if (_script == null)
-            {
-                _script = property.boxedValue as LocalizationBlock;
-                _id = _script.Id;
-                Debug.LogWarning("Id: "+_id);
-                _script = Localization.Instance.GetBlock(_id);
-            }
-            LocalizationEditor.OnUpdateLanguageList += UpdateBlockList;
-            //_script.OnBlockUpdate += (() => UpdateBlockList());
+            _script = property;
+            _id = _script.Id;
+            Debug.LogWarning("Id: " + _id);
+        }
+        LocalizationEditor.OnUpdateLanguageList += UpdateBlockList;
+        //_script.OnBlockUpdate += (() => UpdateBlockList());
 
-            _keyProperty = _script.Key;
-            foreach (LocalizationLanguageBlock block in _script.LanguageBlock)
-            {
-                _languageBlockList.Add(block);
-            }
-
-            UpdateBlockList();
+        _keyProperty = _script.Key;
+        foreach (LocalizationLanguageBlock block in _script.LanguageBlock)
+        {
+            _languageBlockList.Add(block);
         }
 
-        public void UpdateBlockList()
-        {
-            Foldout languageBlockListField;
-            if (_languageBlockListField == null)
-            {
-                languageBlockListField = new Foldout();
-                TextField text = new("Key");
-                text.value = _script.Key;
-                text.RegisterCallback<ChangeEvent<string>>(type =>
-                {
-                    _script.Key = type.newValue;
-                    languageBlockListField.text = _script.Key;
-                    Localization.Instance.SaveChanges();
-                });
+        UpdateBlockList();
+    }
 
-                Add(text);
+    public void UpdateBlockList()
+    {
+        Foldout languageBlockListField;
+        if (_languageBlockListField == null)
+        {
+            languageBlockListField = new Foldout();
+            TextField text = new("Key");
+            text.value = _script.Key;
+            text.RegisterCallback<ChangeEvent<string>>(type =>
+            {
+                _script.Key = type.newValue;
                 languageBlockListField.text = _script.Key;
-                foreach (LocalizationLanguageBlock block in _languageBlockList)
-                {
-                    TextField localizationText = new(block.Language.ToString());
-                    languageBlockListField.Add(localizationText);
-                    _languageBlockFieldList.Add(localizationText);
-                    if (block.Active)
-                    {
-                        localizationText.style.display = DisplayStyle.Flex;
-                    }
-                    else
-                    {
-                        localizationText.style.display = DisplayStyle.None;
-                    }
-                }
-                Add(languageBlockListField);
-            }
-            else
+                Localization.Instance.SaveChanges();
+            });
+
+            Add(text);
+            languageBlockListField.text = _script.Key;
+            foreach (LocalizationLanguageBlock block in _languageBlockList)
             {
-                languageBlockListField = _languageBlockListField;
-                int i = 0;
-                foreach (LocalizationLanguageBlock block in _languageBlockList)
+                TextField localizationText = new(block.Language.ToString());
+                languageBlockListField.Add(localizationText);
+                _languageBlockFieldList.Add(localizationText);
+                if (block.Active)
                 {
-                    TextField localizationText = _languageBlockFieldList[i++];
-                    if (block.Active)
-                    {
-                        localizationText.style.display = DisplayStyle.Flex;
-                    }
-                    else
-                    {
-                        localizationText.style.display = DisplayStyle.None;
-                    }
+                    localizationText.style.display = DisplayStyle.Flex;
+                }
+                else
+                {
+                    localizationText.style.display = DisplayStyle.None;
                 }
             }
-            _languageBlockListField = languageBlockListField;
-            return;
+            Add(languageBlockListField);
         }
+        else
+        {
+            languageBlockListField = _languageBlockListField;
+            int i = 0;
+            foreach (LocalizationLanguageBlock block in _languageBlockList)
+            {
+                TextField localizationText = _languageBlockFieldList[i++];
+                if (block.Active)
+                {
+                    localizationText.style.display = DisplayStyle.Flex;
+                }
+                else
+                {
+                    localizationText.style.display = DisplayStyle.None;
+                }
+            }
+        }
+        _languageBlockListField = languageBlockListField;
+        return;
     }
 }
 
