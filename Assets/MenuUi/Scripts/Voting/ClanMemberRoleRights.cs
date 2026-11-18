@@ -21,6 +21,7 @@ public class ClanMemberRoleRights : MonoBehaviour
         set
         {
             _currentMember = value;
+
         }
     }
 
@@ -47,7 +48,14 @@ public class ClanMemberRoleRights : MonoBehaviour
     private ClanRoles _selectedRole;
     private MemberRights _selectedRight;
 
-    public void OpenPopup() => popup.SetActive(true);
+    public void OpenPopup()
+    {
+        popup.SetActive(true);
+
+        LoadClanData();
+        PopulateVotes(_clanData);
+        SelectCurrentMemberRole();
+    }
     public void ClosePopup() => popup.SetActive(false);
 
     void Start()
@@ -60,13 +68,9 @@ public class ClanMemberRoleRights : MonoBehaviour
         {
             Debug.LogWarning($"No current member seleceted?");
         }
-        LoadClanData();
-
-        PopulateVotes(_clanData);
-        SelectCurrentMemberRole();
     }
 
-    void OnDestroy()
+    void OnUnload()
     {
         roleDropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
         saveRoleButton.onClick.RemoveListener(OnStartVoteClicked);
@@ -74,6 +78,9 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     private void LoadClanData()
     {
+        if (_clanData != null)
+            return;
+
         DataStore store = Storefront.Get();
         PlayerData player = null;
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
@@ -81,7 +88,6 @@ public class ClanMemberRoleRights : MonoBehaviour
         if (player == null) return;
 
         store.GetClanData(player.ClanId, data => _clanData = data);
-        Debug.Log("did a thing");
     }
 
     private void PopulateVotes(ClanData clan)
@@ -98,6 +104,7 @@ public class ClanMemberRoleRights : MonoBehaviour
             options.Add(right.ToString());
         }
 
+        SelectCurrentMemberRole();
         roleDropdown.ClearOptions();
         roleDropdown.AddOptions(options);
     }
@@ -134,7 +141,14 @@ public class ClanMemberRoleRights : MonoBehaviour
 
         if (currentRoleText != null)
         {
-            currentRoleText.text = string.IsNullOrEmpty(role.name) ? "New role" : role.name;
+            currentRoleText.text = "Currently existing rights for role:";
+            foreach (MemberRights right in Enum.GetValues(typeof(MemberRights)))
+            {
+                bool isAllowed = _selectedRole.HasRights(right);
+                if (isAllowed)
+                    currentRoleText.text += "\n" + string.Join("\n", right);
+            }
+
         }
     }
 
@@ -172,18 +186,6 @@ public class ClanMemberRoleRights : MonoBehaviour
         newRoleContainer.SetActive(false);
         ShowRole(_clanData.ClanRoles[index]);
     }
-
-    private void OnRolerightsDropdownValueChanged(int index)
-    {
-        if (_selectedRole == null) return;
-
-        // Toggles rights locally for now (for a draft this is what gets sent in the poll)
-        Debug.Log($"Right {_selectedRight} for role '{_selectedRole.name}'");
-
-        MemberRights selectedRight = (MemberRights)index;
-        Debug.Log($"Selected role is {selectedRight}");
-    }
-
 
     private void OnButtonClicked(MemberRights rightName, bool allowed, ClanRoles currentRole)
     {
