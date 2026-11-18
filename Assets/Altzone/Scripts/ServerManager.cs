@@ -432,34 +432,71 @@ public class ServerManager : MonoBehaviour
     /// </remarks>
     public void SetProfileValues(JObject profileJSON, string username)
     {
-        SetAccessTokens(profileJSON);
+        if (profileJSON.ContainsKey("data"))
+        {
+            JToken profile = profileJSON["data"]["Profile"];
 
-        JToken player = profileJSON["Player"];
-        Assert.IsNotNull(player);
-        PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
+            SetAccessTokens(profileJSON);
 
-        Assert.IsNotNull(username);
-        PlayerPrefs.SetString("userName", username ?? string.Empty);
-        //StartCoroutine(LogIn());
+            Assert.IsNotNull(profile);
+            PlayerPrefs.SetString("playerId", (string)profile["_id"] ?? string.Empty);
+
+            Assert.IsNotNull(username);
+            PlayerPrefs.SetString("userName", username ?? string.Empty);
+        }
+        else
+        {
+            SetAccessTokens(profileJSON);
+
+            JToken player = profileJSON["Player"];
+            Assert.IsNotNull(player);
+            PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
+
+            Assert.IsNotNull(username);
+            PlayerPrefs.SetString("userName", username ?? string.Empty);
+        }
     }
 
     public void SetAccessTokens(JObject profileJSON)
     {
-        JToken accessToken = profileJSON["accessToken"];
-        Assert.IsNotNull(accessToken);
-        AccessToken = (string)accessToken;
+        if (profileJSON.ContainsKey("data"))
+        {
+            JToken profile = profileJSON["data"]["Profile"];
 
-        JToken tokenExpires = profileJSON["tokenExpires"];
-        Assert.IsNotNull(tokenExpires);
-        AccessTokenExpiration = tokenExpires.Value<int>();
+            JToken accessToken = profile["accessToken"];
+            Assert.IsNotNull(accessToken);
+            AccessToken = (string)accessToken;
 
-        JToken refreshToken = profileJSON["refreshToken"];
-        Assert.IsNotNull(refreshToken);
-        RefreshToken = (string)refreshToken;
+            JToken tokenExpires = profile["tokenExpires"];
+            Assert.IsNotNull(tokenExpires);
+            AccessTokenExpiration = tokenExpires.Value<int>();
 
-        JToken refreshTokenExpires = profileJSON["refreshTokenExpires"];
-        Assert.IsNotNull(refreshTokenExpires);
-        RefreshTokenExpiration = refreshTokenExpires.Value<int>();
+            JToken refreshToken = profile["refreshToken"];
+            Assert.IsNotNull(refreshToken);
+            RefreshToken = (string)refreshToken;
+
+            JToken refreshTokenExpires = profile["refreshTokenExpires"];
+            Assert.IsNotNull(refreshTokenExpires);
+            RefreshTokenExpiration = refreshTokenExpires.Value<int>();
+        }
+        else
+        {
+            JToken accessToken = profileJSON["accessToken"];
+            Assert.IsNotNull(accessToken);
+            AccessToken = (string)accessToken;
+
+            JToken tokenExpires = profileJSON["tokenExpires"];
+            Assert.IsNotNull(tokenExpires);
+            AccessTokenExpiration = tokenExpires.Value<int>();
+
+            JToken refreshToken = profileJSON["refreshToken"];
+            Assert.IsNotNull(refreshToken);
+            RefreshToken = (string)refreshToken;
+
+            JToken refreshTokenExpires = profileJSON["refreshTokenExpires"];
+            Assert.IsNotNull(refreshTokenExpires);
+            RefreshTokenExpiration = refreshTokenExpires.Value<int>();
+        }
     }
 
     /// <summary>
@@ -1094,29 +1131,69 @@ public class ServerManager : MonoBehaviour
 
     public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData> callback)
     {
-        string query = SERVERADDRESS + "clan";//?page=" + page + "&limit=5";
+        const int limit = 16;
 
-        StartCoroutine(WebRequests.Get(query, AccessToken, request =>
+        List<ServerClan> allClans = new();
+        PaginationData paginationData = null;
+
+        int pageCount = 1;
+        bool requestFailed = false;
+
+        Debug.Log($"[GetAllClans] Starting clan fetch. Starting page: {page}, limit: {limit}");
+
+        for (int currentPage = page; currentPage <= pageCount; currentPage++)
         {
-            if (request.result == UnityWebRequest.Result.Success)
+            string query = SERVERADDRESS + "clan?page=" + currentPage + "&limit=" + limit;
+
+            Debug.Log($"[GetAllClans] Requesting page {currentPage}. URL: {query}");
+
+            yield return StartCoroutine(WebRequests.Get(query, AccessToken, request =>
             {
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError($"[GetAllClans] Request failed. Page: {currentPage}, response code: {request.responseCode}, error: {request.error}");
+
+                    requestFailed = true;
+                    return;
+                }
+
                 JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(result);
-                JArray clans = (JArray)result["data"]["Clan"];
+                JArray clansJson = (JArray)result["data"]["Clan"];
+                List<ServerClan> clansFromPage = clansJson.ToObject<List<ServerClan>>();
 
-                PaginationData paginationData = new();//result["paginationData"].ToObject<PaginationData>();
+                allClans.AddRange(clansFromPage);
 
-                if (callback != null)
-                    callback(clans.ToObject<List<ServerClan>>(), paginationData);
-            }
-            else
+                PaginationData responsePaginationData = result["paginationData"]?.ToObject<PaginationData>();
+
+                if (responsePaginationData == null)
+                {
+                    Debug.LogWarning($"[GetAllClans] Response did not contain paginationData. Page: {currentPage}");
+                    return;
+                }
+
+                paginationData = responsePaginationData;
+
+                if (responsePaginationData.pageCount > 0)
+                {
+                    pageCount = responsePaginationData.pageCount;
+                }
+
+                Debug.Log($"[GetAllClans] Received {clansFromPage.Count} clans from page {responsePaginationData.currentPage} of {pageCount}. Total clans so far: {allClans.Count}");
+
+            }));
+        
+            if (requestFailed)
             {
-                if (callback != null)
-                    callback(null, null);
-            }
-        }));
+                Debug.LogError($"[GetAllClans] Fetch stopped after {allClans.Count} clans.");
 
-        yield break;
+                callback?.Invoke(null, null);
+                yield break;
+            }
+        }
+
+        Debug.Log($"[GetAllClans] Finished fetching clans. Total clans received: {allClans.Count}, total pages: {pageCount}");
+
+        callback?.Invoke(allClans, paginationData);
     }
 
     public IEnumerator GetClanMembersFromServer(Action<List<ClanMember>> callback)

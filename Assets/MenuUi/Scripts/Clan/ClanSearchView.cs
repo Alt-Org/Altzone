@@ -35,7 +35,7 @@ public class ClanSearchView : MonoBehaviour
     private int _totalPages;     // Total pages in pagination data
     private List<ClanListing> _listedClans = new();
     private ClanSearchFilters _filters;
-
+    private const int NormalVisibleClanCount = 16;
     private bool _isJoining;
 
     private void Awake()
@@ -69,6 +69,7 @@ public class ClanSearchView : MonoBehaviour
 
         if (_searchInputField != null)
             _searchInputField.onValueChanged.AddListener(UpdateClanNameSearch);
+            _searchInputField.onValueChanged.AddListener(OnSearchVisibilityChanged);
     }
 
     private void OnDestroy()
@@ -93,6 +94,7 @@ public class ClanSearchView : MonoBehaviour
 
         if (_searchInputField != null)
             _searchInputField.onValueChanged.RemoveListener(UpdateClanNameSearch);
+            _searchInputField.onValueChanged.RemoveListener(OnSearchVisibilityChanged);
     }
 
     private void OnEnable()
@@ -134,13 +136,16 @@ public class ClanSearchView : MonoBehaviour
 
     private void LoadMoreClans()
     {
-        StartCoroutine(ServerManager.Instance.GetAllClans(++_currentPage, new Action<List<ServerClan>, PaginationData>((clans, paginationData) =>
-        {
-            if (clans == null || paginationData == null) return;
+    StartCoroutine(ServerManager.Instance.GetAllClans(
+        1,
+        new Action<List<ServerClan>, PaginationData>(
+            (clans, paginationData) =>
+            {
+                if (clans == null || paginationData == null)
+                    return;
 
-            ListClans(clans, paginationData);
-        }
-        )));
+                ListClans(clans, paginationData);
+            })));
     }
 
     private void ListClans(List<ServerClan> clans, PaginationData paginationData)
@@ -192,13 +197,39 @@ public class ClanSearchView : MonoBehaviour
 
         _loadMoreButton.transform.SetAsLastSibling();
         FilterListings();
+        LimitNormalClanList();
     }
 
+
+    private void LimitNormalClanList()
+    {
+        if (!string.IsNullOrWhiteSpace(_filters.clanName))
+            return;
+
+        int visibleCount = 0;
+
+        foreach (ClanListing clanListing in _listedClans)
+        {
+            if (!clanListing.gameObject.activeSelf)
+                continue;
+
+            if (visibleCount < NormalVisibleClanCount)
+            {
+                visibleCount++;
+            }
+            else
+            {
+                clanListing.gameObject.SetActive(false);
+            }
+        }
+    }
 
     private void UpdateFilters(ClanSearchFilters newFilters)
     {
         _filters = newFilters;
         FilterListings();
+        ResuffleClans();
+        LimitNormalClanList();
     }
 
     private void FilterListings()
@@ -214,6 +245,19 @@ public class ClanSearchView : MonoBehaviour
                 || !CheckMemberCount(clanListing.Clan.playerCount, _filters.memberCount)
                 || !CheckValues(clanListing.Clan.labels, _filters.values);
             clanListing.gameObject.SetActive(!hidelisting);
+        }
+    }
+
+    private void ResuffleClans()
+    {
+        _listedClans.Shuffle();
+
+        foreach (ClanListing clanListing in _listedClans)
+        {
+            if(clanListing.Clan.playerCount < 30)
+                clanListing.transform.SetAsFirstSibling();
+            else
+                clanListing.transform.SetAsLastSibling();
         }
     }
 
@@ -459,6 +503,14 @@ public class ClanSearchView : MonoBehaviour
     {
         _filters.clanName = searchText.Trim();
         FilterListings();
+    }
+
+    private void OnSearchVisibilityChanged(string searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            LimitNormalClanList();
+        }
     }
 
     private ClanSearchFilters GetDefaultFilters()
