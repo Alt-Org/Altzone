@@ -113,6 +113,21 @@ public class ClanMemberRoleRights : MonoBehaviour
         ShowRole(_clanData.ClanRoles[index]);
     }
 
+    private void ShowRight(MemberRights right)
+    {
+        _selectedRight = right;
+        _selectedRole = _currentMember.Role;
+
+        Debug.Log($"_selectedRight = {right}");
+
+        bool isAllowed = _selectedRole.HasRights(_selectedRight);
+
+        if (currentRoleText != null)
+        {
+            currentRoleText.text = $"{right} is {isAllowed}";
+        }
+    }
+
     private void ShowRole(ClanRoles role)
     {
         _selectedRole = role;
@@ -121,8 +136,6 @@ public class ClanMemberRoleRights : MonoBehaviour
         {
             currentRoleText.text = string.IsNullOrEmpty(role.name) ? "New role" : role.name;
         }
-
-        RefreshRightToggle();
     }
 
     private void RefreshRightToggle()
@@ -130,11 +143,11 @@ public class ClanMemberRoleRights : MonoBehaviour
         if (_selectedRole == null) return;
 
         bool isAllowed = _selectedRole.HasRights(_selectedRight);
+        Debug.Log($"Right is or is not allowed? {isAllowed}");
     }
 
     private void OnDropdownValueChanged(int index)
     {
-
         if (roleDropdown.options[index].text == _divider)
         {
             roleDropdown.SetValueWithoutNotify(_previousValidIndex);
@@ -144,12 +157,15 @@ public class ClanMemberRoleRights : MonoBehaviour
             _previousValidIndex = index;
         }
 
-        if (index == _clanData.ClanRoles.Count + 1)
+        if (index == _clanData.ClanRoles.Count)
         {
             NewRole();
             return;
-        } else if (index > _clanData.ClanRoles.Count + 1)
+        }
+        else if (index > _clanData.ClanRoles.Count + 1)
         {
+            // +2, we need to count the divider too
+            ShowRight((MemberRights)index - (_clanData.ClanRoles.Count + 2));
             return;
         }
 
