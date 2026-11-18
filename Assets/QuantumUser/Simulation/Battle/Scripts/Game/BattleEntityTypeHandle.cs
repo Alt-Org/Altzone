@@ -1,15 +1,14 @@
 
 // System usings
 using System.Runtime.CompilerServices;
-
-// Quantum usings
-using Quantum;
-using Quantum.Collections;
-using Photon.Deterministic;
-
 // Battle QSimulation usings
 using Battle.QSimulation.Player;
 using Battle.QSimulation.Projectile;
+using Photon.Deterministic;
+// Quantum usings
+using Quantum;
+using Quantum.Collections;
+using static Quantum.BattlePlayerData;
 
 namespace Battle.QSimulation.Game
 {
@@ -193,26 +192,35 @@ namespace Battle.QSimulation.Game
     }
 
     /// <summary>
-    /// <b>{Managed Composite Entity Type Handle}</b> for handling players.
+    /// A <b>{Handle}</b> for a <b>%Player</b> and a <b>{Managed Composite Entity Type Handle}</b> for handling their <b>{Character Entities}</b>.
     /// </summary>
     ///
-    /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
+    /// See [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) for more info.<br/>
+    /// See [{BattleHandle}](#page-concepts-battle-handle) for more info.<br/>
+    /// See [{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.<br/>
+    /// See [{Character Entity}](#page-concepts-player-character-and-shield-entity) for more info.
     public unsafe struct BattlePlayerHandle : BattleManagedEntityHandle.IComposite
     {
+        //! @anchor BattlePlayerHandle-CreateMethods
+        //! @name Create Methods
+        //!
+        //! Methods for **Creating** a [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle).
+        //!
+        //! @{
+
         /// <summary>
         /// <b>Creates</b> a <b>{PlayerHandle}</b> for a <b>%Player</b> based on <paramref name="slot"/>.
         /// </summary>
         ///
         /// You can use @cref{Battle.QSimulation.Game.BattlePlayerHandle,Create(BattlePlayerData.Ref)}
-        /// if you already have a @cref{Quantum,BattlePlayerData.Ref}.
-        ///
+        /// if you already have a @cref{Quantum,BattlePlayerData.Ref}.<br/>
         /// Use @cref{Battle.QSimulation.Game.BattlePlayerHandle,Create(Frame\, EntityRef)}
         /// to <b>Create</b> a <b>Handle</b> for the <b>%Player</b> and a <b>Character</b>.
         ///
         /// See [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="slot">Slot of the player the handle is being created for.</param>
+        /// <param name="slot">Slot of the <b>%Player</b> the handle is being created for.</param>
         ///
         /// <returns>The created handle.</returns>
         public static BattlePlayerHandle Create(Frame f, BattlePlayerSlot slot)
@@ -223,18 +231,17 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// <b>Creates</b> a <b>{PlayerHandle}</b> for a <b>%Player</b> based on <paramref name="playerData"/>.
+        /// <b>Creates</b> a <b>{PlayerHandle}</b> for a <b>%Player</b> from <paramref name="playerData"/>.
         /// </summary>
         ///
         /// You can use @cref{Battle.QSimulation.Game.BattlePlayerHandle,Create(Frame\, BattlePlayerSlot)}
-        /// if you don't have a @cref{Quantum,BattlePlayerData.Ref}.
-        ///
+        /// if you don't have a @cref{Quantum,BattlePlayerData.Ref}.<br/>
         /// Use @cref{Battle.QSimulation.Game.BattlePlayerHandle,Create(Frame\, EntityRef)}
         /// to <b>Create</b> a <b>Handle</b> for the <b>%Player</b> and a <b>Character</b>.
         ///
         /// See [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) for more info.
         ///
-        /// <param name="playerData">Data of the player the handle is being created for.</param>
+        /// <param name="playerData">Data of the <b>%Player</b> the handle is being created for.</param>
         ///
         /// <returns>The created handle.</returns>
         public static BattlePlayerHandle Create(BattlePlayerData.Ref playerData)
@@ -258,7 +265,7 @@ namespace Battle.QSimulation.Game
         /// See [{Linked/Associated Entity}](#page-concepts-player-simulation-management-playerhandle-linked-entities) for more info.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="entityRef">EntityRef of the player the handle is being created for.</param>
+        /// <param name="entityRef">EntityRef of the <b>%Player</b> the handle is being created for.</param>
         ///
         /// <returns>The created handle.</returns>
         public static BattlePlayerHandle Create(Frame f, EntityRef entityRef)
@@ -274,6 +281,15 @@ namespace Battle.QSimulation.Game
 
             return handle;
         }
+
+        //! @}
+
+        //! @anchor BattlePlayerHandle-LinkCreationMethods
+        //! @name Link/Association Creation Methods
+        //!
+        //! Methods for creating a [{Link/Association}](#page-concepts-player-simulation-management-playerhandle-linked-entities) between the **%Player** and **Entities**.
+        //!
+        //! @{
 
         /// <summary>
         /// Creates a <b>{Link/Association}</b> between (<paramref name="slot"/>, <paramref name="characterEntityRef"/>)
@@ -299,63 +315,79 @@ namespace Battle.QSimulation.Game
             f.Add(linkEntityRef, playerLink);
         }
 
+        //! @}
+
+        //! @anchor BattlePlayerHandle-PlayerProperties
+        //! @name Player Properties
+        //!
+        //! Data related to the **%Player** itself.
+        //!
+        //! @{
+
         /// <summary>
-        /// Whether player has <b>{Selected a Character}</b> or not.
+        /// <see cref="BattlePlayerData.Ref"/> of <b>this Handle's</b> <b>%Player</b>.
+        /// </summary>
+        public BattlePlayerData.Ref PlayerData { get; private set; }
+
+        /// <summary>
+        /// Whether <b>%Player</b> has <b>{Selected a Character}</b> or not.
         /// </summary>
         ///
         /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.
         public readonly bool PlayerHasSelectedCharacter => PlayerData.SelectedCharacterNumber != BattlePlayerData.NoSelectedCharacter;
 
+        //! @}
+
+        //! @anchor BattlePlayerHandle-LoadedCharacterProperties
+        //! @name Loaded Character Properties
+        //!
+        //! Data related to the [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character).
+        //! - @ref BattlePlayerHandle-LoadedCharacterMethods "Loaded Character Methods"
+        //!
+        //! @{
+
         /// <summary>
-        /// Whether this handle has a loaded character or not.
+        /// Whether <b>this Handle</b> has a <b>{Loaded Character}</b> or not.
         /// </summary>
+        ///
+        /// See [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character) for more info.
         public readonly bool HandleHasCharacterLoaded => LoadedCharacterEntityHandle.ERef != EntityRef.None;
 
         /// <summary>
-        /// Whether this handle's <b>{Character is Selected}</b> or not.
+        /// Whether <b>this Handle's</b> <b>{Character is Selected}</b> or not.
         /// </summary>
         ///
         /// See [{Selected Character}](#page-concepts-player-character-entity-selected-character) for more info.
         public readonly bool LoadedCharacterIsSelected => LoadedCharacterData->Number == PlayerData.SelectedCharacterNumber;
 
         /// <summary>
-        /// Whether this handle's loaded character has an attached shield or not.
-        /// </summary>
-        public readonly bool LoadedCharacterHasShieldAttached => LoadedCharacterData->AttachedShieldEntityRef != EntityRef.None;
-
-        /// <summary>
-        /// Whether this handle has a <see cref="CollidedHitboxEntityRef"/> available or not.
-        /// </summary>
-        public readonly bool HandleHasCollidedHitbox => CollidedHitboxEntityRef != EntityRef.None;
-
-        /// <summary>
-        /// <see cref="BattlePlayerData.Ref"/> of this handle's player.
-        /// </summary>
-        public BattlePlayerData.Ref PlayerData { get; private set; }
-
-        /// <summary>
-        /// <see cref="BattleManagedEntityHandle"/> of this player's loaded character, if any are loaded.
+        /// <see cref="BattleManagedEntityHandle"/> of the <b>{Loaded Character}</b>, if any <b>{Character is Loaded}</b>.
         /// </summary>
         ///
-        /// Use @cref{HandleHasCharacterLoaded} to check if the handle has a loaded character.
+        /// Use @cref{HandleHasCharacterLoaded} to check if the handle has a <b>{Loaded Character}</b>.
+        ///
+        /// See [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character) for more info.
         public BattleManagedEntityHandle LoadedCharacterEntityHandle { get; private set; }
 
         /// <summary>
-        /// Pointer to the <see cref="BattlePlayerCharacterDataQComponent"/> of this player's character, if any are loaded.
+        /// Pointer to the <see cref="BattlePlayerCharacterDataQComponent"/> of the <b>{Loaded Character}</b>, if any <b>{Character is Loaded}</b>.
         /// </summary>
         ///
-        /// Use @cref{HandleHasCharacterLoaded} to check if the handle has a loaded character.
+        /// Use @cref{HandleHasCharacterLoaded} to check if the handle has a <b>{Loaded Character}</b>.
+        ///
+        /// See [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character) for more info.
         public BattlePlayerCharacterDataQComponent* LoadedCharacterData { get; private set; }
 
         /// <summary>
-        /// Pointer to the <see cref="Transform2D"/> of this player's character when their <b>{Registered Entity}</b> is <b>{InPlay}</b>, if any character is loaded.
-        /// @note <b>{Protected}</b> from possible unauthorized modification when the player's character's <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.
+        /// Pointer to the <b>Transform2D</b> of the <b>{Loaded Character}</b> when their <b>{Registered Entity}</b> is <b>{InPlay}</b>, if any <b>{Character is Loaded}</b>.
+        /// @note <b>{Protected}</b> from possible unauthorized modification when the <b>{Loaded Character's}</b> <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.
         /// </summary>
         ///
-        /// Use @cref{LoadedCharacterTransformCopy} to access the transform when the player's character's <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.<br/>
-        /// Use @cref{HandleHasCharacterLoaded} to check if the handle has a loaded character.<br/>
+        /// Use @cref{LoadedCharacterTransformCopy} to access the transform when the <b>Player's Character's</b> <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.<br/>
+        /// Use @cref{HandleHasCharacterLoaded} to check if the handle has a <b>{Loaded Character}</b>.<br/>
         ///
         /// See [{Protected Transform Component}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.<br/>
+        /// See [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character) for more info.<br/>
         /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
         /// See [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         public Transform2D* LoadedCharacterTransformPtr
@@ -368,42 +400,93 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Access to a copy of the <b>{Protected}</b> <see cref="Transform2D"/> of this player's character,
-        /// ensuring immutability when their <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.
+        /// Access to a copy of the <b>{Protected}</b> <b>Transform2D</b> of the <b>{Loaded Character}</b>, if any <b>{Character is Loaded}</b>.<br/>
+        /// The <b>Transform2D</b> is copied to ensure immutability when the <b>{Loaded Character}</b>'s <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.
         /// </summary>
         ///
-        /// Use @cref{LoadedCharacterTransformPtr} to modify the transform when the player's character's <b>{Registered Entity}</b> is <b>{InPlay}</b>.<br/>
-        /// Use @cref{HandleHasCharacterLoaded} to check if the handle has a loaded character.<br/>
+        /// Use @cref{LoadedCharacterTransformPtr} to modify the transform when the <b>Player's Character's</b> <b>{Registered Entity}</b> is <b>{InPlay}</b>.<br/>
+        /// Use @cref{HandleHasCharacterLoaded} to check if the handle has a <b>{Loaded Character}</b>.<br/>
         ///
         /// See [{Protected Transform Component}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.<br/>
+        /// See [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character) for more info.<br/>
         /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
         /// See [{InPlay/OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         public Transform2D LoadedCharacterTransformCopy => *_loadedCharacterTransformInternalPtr;
 
+        //! @}
+
+        //! @anchor BattlePlayerHandle-LoadedCharacterAttachedShieldProperties
+        //! @name Loaded Character Attached Shield Properties
+        //!
+        //! Data related to the [{Loaded Character's}](#page-concepts-player-simulation-management-playerhandle-loaded-character)
+        //! [{Attached Shield}](#page-concepts-player-character-entity-shield-attach)
+        //!
+        //! - @ref BattlePlayerHandle-LoadedCharacterAttachedShieldMethods "Loaded Character Attached Shield Methods"
+        //!
+        //! @{
+
         /// <summary>
-        /// The EntityRef of the collided hitbox, if available.
+        /// Whether <b>this Handle's</b> <b>{Loaded Character}</b> has an <b>{Attached Shield}</b> or not.
         /// </summary>
         ///
-        /// Use @cref{HandleHasCollidedHitbox} to check if collided hitbox is available.
+        /// See [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character) for more info.<br/>
+        /// See [{Attached Shield}](#page-concepts-player-character-entity-shield-attach) for more info.
+        public readonly bool LoadedCharacterHasShieldAttached => LoadedCharacterData->AttachedShieldEntityRef != EntityRef.None;
+
+        //! @}
+
+        //! @anchor BattlePlayerHandle-CollidedHitboxProperties
+        //! @name Collided Hitbox Properties
+        //!
+        //! Data related to the [{Collided Hitbox}](#page-concepts-player-simulation-management-playerhandle-collided-hitbox),
+        //! which may or may not be [{Available}](#page-concepts-player-simulation-management-playerhandle-collided-hitbox).
+        //!
+        //! @{
+
+        /// <summary>
+        /// Whether this handle has a <see cref="CollidedHitboxEntityRef"/> <b>{Available}</b> or not.
+        /// </summary>
+        ///
+        /// See [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playerhandle-collided-hitbox) for more info.
+        public readonly bool HandleHasCollidedHitbox => CollidedHitboxEntityRef != EntityRef.None;
+
+        /// <summary>
+        /// The EntityRef of the collided hitbox, if <b>{Available}</b>.
+        /// </summary>
+        ///
+        /// Use @cref{HandleHasCollidedHitbox} to check if collided hitbox is <b>{Available}</b>.
+        ///
+        /// See [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playerhandle-collided-hitbox) for more info.
         public EntityRef CollidedHitboxEntityRef { get; private set; }
 
         /// <summary>
-        /// Pointer to the <see cref="BattlePlayerHitboxQComponent"/> of the collided hitbox, if available.
+        /// Pointer to the <see cref="BattlePlayerHitboxQComponent"/> of the collided hitbox, if <b>{Available}</b>.
         /// </summary>
         ///
-        /// Use @cref{HandleHasCollidedHitbox} to check if collided hitbox is available.
+        /// Use @cref{HandleHasCollidedHitbox} to check if collided hitbox is <b>{Available}</b>.
+        ///
+        /// See [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playerhandle-collided-hitbox) for more info.
         public BattlePlayerHitboxQComponent* CollidedHitboxComponent { get; private set; }
 
         /// <summary>
-        /// Pointer to the <see cref="Transform2D"/> of the collided hitbox, if available.
+        /// Pointer to the <b>Transform2D</b> of the collided hitbox, if <b>{Available}</b>.
         /// </summary>
         ///
-        /// Use @cref{HandleHasCollidedHitbox} to check if collided hitbox is available.
+        /// Use @cref{HandleHasCollidedHitbox} to check if collided hitbox is <b>{Available}</b>.
+        ///
+        /// See [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playerhandle-collided-hitbox) for more info.
         public Transform2D* CollidedHitboxTransform { get; private set; }
 
+        //! @}
+
+        //! @anchor BattlePlayerHandle-LoadedCharacterMethods
         //! @name Loaded Character Methods
+        //!
         //! Methods for [{Loading Characters}]( #page-concepts-player-simulation-management-playerhandle-loaded-character)
         //! and other related methods.
+        //!
+        //! - @ref BattlePlayerHandle-LoadedCharacterProperties "Loaded Character Properties"
+        //!
         //! @{
 
         /// <summary>
@@ -459,6 +542,16 @@ namespace Battle.QSimulation.Game
 
         //! @}
 
+        //! @anchor BattlePlayerHandle-LoadedCharacterAttachedShieldMethods
+        //! @name Loaded Character Attached Shield Methods
+        //!
+        //! Methods for handling the [{Loaded Character's}](#page-concepts-player-simulation-management-playerhandle-loaded-character)
+        //! [{Attached Shield}](#page-concepts-player-character-entity-shield-attach)
+        //!
+        //! - @ref BattlePlayerHandle-LoadedCharacterAttachedShieldProperties "Loaded Character Attached Shield Properties"
+        //!
+        //! @{
+
         /// <summary>
         /// Retrieves the <see cref="BattlePlayerShieldHandle"/> of the <b>{Loaded Character's}</b> <b>{Attached Shield}</b>.
         /// </summary>
@@ -474,7 +567,15 @@ namespace Battle.QSimulation.Game
             return BattlePlayerShieldHandle.Create(f, LoadedCharacterData->AttachedShieldEntityRef);
         }
 
-        private Transform2D* _loadedCharacterTransformInternalPtr {  get; set; }
+        //! @}
+
+        /// <summary>
+        /// Private internal storage for the <b>{Protected}</b> <b>Transform2D</b> pointer of the <b>{Loaded Character}</b>.
+        /// </summary>
+        ///
+        /// See [{Protected Transform Component}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.<br/>
+        /// See [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character) for more info.
+        private Transform2D* _loadedCharacterTransformInternalPtr;
 
         /// <summary>
         /// Private helper method that handles <b>{Loading}</b> a <b>{Character}</b> <paramref name="entityHandle"/>.
@@ -520,6 +621,13 @@ namespace Battle.QSimulation.Game
             CollidedHitboxTransform = null;
         }
 
+        //! @name BattleManagedEntityHandle.IComposite Implementation
+        //!
+        //! See @cref{Battle.QSimulation.Game,BattleManagedEntityHandle.IComposite} for more info.
+        //!
+        //! @{
+
+        /// @private
         /// <summary>
         /// Used internally by <see cref="BattleManagedEntityHandle"/><b>.To</b> method in order to upgrade
         /// the <see cref="BattleManagedEntityHandle"/> to a <see cref="BattlePlayerHandle"/>.
@@ -536,6 +644,8 @@ namespace Battle.QSimulation.Game
             PlayerData = BattlePlayerManager.GetPlayerData(f, link->Slot);
             SetCharacter(f, managedEntity);
         }
+
+        //! @}
     }
 
     /// <summary>
@@ -545,21 +655,43 @@ namespace Battle.QSimulation.Game
     /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
     public unsafe struct BattlePlayerShieldHandle : BattleManagedEntityHandle.IComposite
     {
-        public static BattlePlayerShieldHandle Create(Frame f, EntityRef entity)
+        /// <summary>
+        /// <b>Creates</b> a <b>{PlayerShieldHandle}</b> for a shield based on <b>{Linked/Associated}</b> <paramref name="entityRef"/>
+        /// </summary>
+        ///
+        /// See [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle) for more info.
+        /// See [{Linked/Associated Entity}](#page-concepts-player-simulation-management-playershieldhandle-linked-associated-entities) for more info.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="entityRef">EntityRef of the shield the handle is being created for.</param>
+        ///
+        /// <returns>The created handle.</returns>
+        public static BattlePlayerShieldHandle Create(Frame f, EntityRef entityRef)
         {
             BattlePlayerShieldHandle handle = new();
 
-            BattlePlayerShieldLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerShieldLinkQComponent>(entity);
+            BattlePlayerShieldLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerShieldLinkQComponent>(entityRef);
 
             BattleManagedEntityHandle managedEntity = BattleManagedEntityHandle.Create(f, link->ERef);
 
             handle.SetShield(f, managedEntity);
 
-            if (link->Type == BattlePlayerShieldLinkEntityType.Hitbox) handle.SetHitbox(f, entity);
+            if (link->Type == BattlePlayerShieldLinkEntityType.Hitbox) handle.SetHitbox(f, entityRef);
 
             return handle;
         }
 
+        /// <summary>
+        /// Creates a <b>{Link/Association}</b> between <paramref name="shieldEntityRef"/>
+        /// and <paramref name="linkEntityRef"/> of <paramref name="type"/>.
+        /// </summary>
+        ///
+        /// See [{Linked/Associated Entity}](#page-concepts-player-simulation-management-playershieldhandle-linked-associated-entities) for more info.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="shieldEntityRef">Shield EntityRef <b>{Associated}</b> with <paramref name="linkEntityRef"/></param>
+        /// <param name="type">The type of entity this <b>{Association}</b> is being created for.</param>
+        /// <param name="linkEntityRef">EntityRef of the entity this <b>{Link/Association}</b> is being created for.</param>
         public static void CreateLink(Frame f, EntityRef shieldEntityRef, BattlePlayerShieldLinkEntityType type, EntityRef linkEntityRef)
         {
             BattlePlayerShieldLinkQComponent shieldLink = new()
@@ -571,12 +703,33 @@ namespace Battle.QSimulation.Game
             f.Add(linkEntityRef, shieldLink);
         }
 
-        public readonly bool HandleHasCollidedHitbox => CollidedHitboxEntityRef != EntityRef.None;
+        //! @anchor BattlePlayerShieldHandle-ShieldProperties
+        //! @name Shield Properties
+        //!
+        //! Data related to the [{Shield Entity}](#page-concepts-player-character-and-shield-entity).
+        //!
+        //! @{
 
+        /// <summary>
+        /// <see cref="BattleManagedEntityHandle"/> of the shield.
+        /// </summary>
         public BattleManagedEntityHandle ShieldEntityHandle {  get; private set; }
 
+        /// <summary>
+        /// Pointer to the <see cref="BattlePlayerShieldDataQComponent"/> of the shield.
+        /// </summary>
         public BattlePlayerShieldDataQComponent* ShieldData { get; private set; }
 
+        /// <summary>
+        /// Pointer to the <b>Transform2D</b> of the shield when their <b>{Registered Entity}</b> is <b>{InPlay}</b>.
+        /// @note <b>{Protected}</b> from possible unauthorized modification when the shield's <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.
+        /// </summary>
+        ///
+        /// Use @cref{ShieldTransformCopy} to access the transform when the shield's <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.
+        ///
+        /// See [{Protected Transform Component}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.<br/>
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
+        /// See [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         public Transform2D* ShieldTransformPtr
         {
             get
@@ -586,34 +739,123 @@ namespace Battle.QSimulation.Game
             }
         }
 
+        /// <summary>
+        /// Access to a copy of the <b>{Protected}</b> <b>Transform2D</b> of the shield.<br/>
+        /// The <b>Transform2D</b> is coped to ensure immutability when their <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.
+        /// </summary>
+        ///
+        /// Use @cref{ShieldTransformPtr} to modify the transform when the shield's <b>{Registered Entity}</b> is <b>{InPlay}</b>.
+        ///
+        /// See [{Protected Transform Component}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.<br/>
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
+        /// See [{InPlay/OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         public Transform2D ShieldTransformCopy => *_shieldTransformInternalPtr;
 
+        //! @}
+
+        //! @anchor BattlePlayerShieldHandle-CollidedHitboxProperties
+        //! @name Collided Hitbox Properties
+        //!
+        //! Collided Hitbox Properties
+        //!
+        //! @{
+
+        /// <summary>
+        /// Whether this handle has a <see cref="CollidedHitboxEntityRef"/> <b>{Available}</b> or not.
+        /// </summary>
+        ///
+        /// See [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox) for more info.
+        public readonly bool HandleHasCollidedHitbox => CollidedHitboxEntityRef != EntityRef.None;
+
+        /// <summary>
+        /// The EntityRef of the collided hitbox, if <b>{Available}</b>.
+        /// </summary>
+        ///
+        /// Use @cref{HandleHasCollidedHitbox} to check if collided hitbox is <b>{Available}</b>.
+        ///
+        /// See [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox) for more info.
         public EntityRef CollidedHitboxEntityRef { get; private set; }
 
+        /// <summary>
+        /// Pointer to the <see cref="BattlePlayerHitboxQComponent"/> of the collided hitbox, if <b>{Available}</b>.
+        /// </summary>
+        ///
+        /// Use @cref{HandleHasCollidedHitbox} to check if collided hitbox is <b>{Available}</b>.
+        ///
+        /// See [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox) for more info.
         public BattlePlayerHitboxQComponent* CollidedHitboxComponent { get; private set; }
 
+        /// <summary>
+        /// Pointer to the <b>Transform2D</b> of the collided hitbox, if <b>{Available}</b>.
+        /// </summary>
+        ///
+        /// Use @cref{HandleHasCollidedHitbox} to check if collided hitbox is <b>{Available}</b>.
+        ///
+        /// See [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox) for more info.
         public Transform2D* CollidedHitboxTransform { get; private set; }
 
+        //! @}
+
+        /// <summary>
+        /// Private internal storage for the <b>{Protected}</b> <b>Transform2D</b> pointer of the shield.
+        /// </summary>
+        ///
+        /// See [{Protected Transform Component}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
         private Transform2D* _shieldTransformInternalPtr { get; set; }
 
-        private void SetShield(Frame f, BattleManagedEntityHandle managedEntity)
+        /// <summary>
+        /// Private helper method that handles loading a <b>{Shield}</b> <paramref name="entityHandle"/>.
+        /// </summary>
+        ///
+        /// See [{Shield Entity}](#page-concepts-player-character-and-shield-entity) for more info.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="entityHandle"><b>{Shield Entity}</b> to be loaded.</param>
+        private void SetShield(Frame f, BattleManagedEntityHandle entityHandle)
         {
-            ShieldEntityHandle          = managedEntity;
-            ShieldData                  = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(managedEntity);
-            _shieldTransformInternalPtr = f.Unsafe.GetPointer<Transform2D>(managedEntity);
+            ShieldEntityHandle          = entityHandle;
+            ShieldData                  = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(entityHandle);
+            _shieldTransformInternalPtr = f.Unsafe.GetPointer<Transform2D>(entityHandle);
         }
 
-        private void SetHitbox(Frame f, EntityRef entity)
+        /// <summary>
+        /// Private helper method for capturing a <b>Hitbox</b> <paramref name="entityRef"/>
+        /// and making it <b>{Available}</b>.
+        /// </summary>
+        ///
+        /// See [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox) for more info.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="entityRef">Hitbox to capture and make <b>{Available}</b>.</param>
+        private void SetHitbox(Frame f, EntityRef entityRef)
         {
-            CollidedHitboxEntityRef = entity;
-            CollidedHitboxComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(entity);
-            CollidedHitboxTransform = f.Unsafe.GetPointer<Transform2D>(entity);
+            CollidedHitboxEntityRef = entityRef;
+            CollidedHitboxComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(entityRef);
+            CollidedHitboxTransform = f.Unsafe.GetPointer<Transform2D>(entityRef);
         }
 
+        //! @name BattleManagedEntityHandle.IComposite Implementation
+        //!
+        //! See @cref{Battle.QSimulation.Game,BattleManagedEntityHandle.IComposite} for more info.
+        //!
+        //! @{
+
+        /// @private
+        /// <summary>
+        /// Used internally by <see cref="BattleManagedEntityHandle"/><b>.To</b> method in order to upgrade
+        /// the <see cref="BattleManagedEntityHandle"/> to a <see cref="BattlePlayerShieldHandle"/>.
+        /// </summary>
+        ///
+        /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="managedEntity">The managed entity handle being upgraded.</param>
         void BattleManagedEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManagedEntityHandle managedEntity)
         {
             SetShield(f, managedEntity);
         }
+
+        //! @}
     }
 
     /// <summary>
@@ -623,11 +865,21 @@ namespace Battle.QSimulation.Game
     /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
     public unsafe struct BattleProjectileHandle : BattleManagedEntityHandle.IComposite
     {
-        public static BattleProjectileHandle Create(Frame f, EntityRef entity)
+        /// <summary>
+        /// Creates a <see cref="BattleProjectileHandle"/> for a projectile based on {Linked/Associated} <paramref name="entityRef"/>
+        /// </summary>
+        ///
+        /// See [{Linked/Associated Entity}](#page-concepts-player-simulation-management-playerhandle-linked-entities) for more info.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="entityRef">EntityRef of the projectile the handle is being created for.</param>
+        ///
+        /// <returns>The created handle.</returns>
+        public static BattleProjectileHandle Create(Frame f, EntityRef entityRef)
         {
             BattleProjectileHandle handle = new();
 
-            BattleProjectileLinkQComponent* link = f.Unsafe.GetPointer<BattleProjectileLinkQComponent>(entity);
+            BattleProjectileLinkQComponent* link = f.Unsafe.GetPointer<BattleProjectileLinkQComponent>(entityRef);
 
             handle.EntityHandle          = BattleManagedEntityHandle.Create(f, link->ERef);
             handle.Data                  = f.Unsafe.GetPointer<BattleProjectileQComponent>(link->ERef);
@@ -636,6 +888,14 @@ namespace Battle.QSimulation.Game
             return handle;
         }
 
+        /// <summary>
+        /// Creates a <see cref="BattleProjectileHandle"/> for a projectile based on <paramref name="filter"/>
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="filter">Filter containing the projectile's data.</param>
+        ///
+        /// <returns>The created handle.</returns>
         public static BattleProjectileHandle Create(Frame f, BattleProjectileQSystem.Filter filter)
         {
             BattleProjectileHandle handle = new();
@@ -647,20 +907,46 @@ namespace Battle.QSimulation.Game
             return handle;
         }
 
-        public static void CreateLink(Frame f, EntityRef projectileEntity, EntityRef linkEntityRef)
+        /// <summary>
+        /// Creates a <b>{Link/Association}</b> between <paramref name="projectileEntityRef"/>
+        /// and <paramref name="linkEntityRef"/>.
+        /// </summary>
+        ///
+        /// See [{Linked/Associated Entity}](#page-concepts-player-simulation-management-playerhandle-linked-entities) for more info.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="projectileEntityRef">Shield EntityRef <b>{Associated}</b> with <paramref name="linkEntityRef"/></param>
+        /// <param name="linkEntityRef">EntityRef of the entity this <b>{Link/Association}</b> is being created for.</param>
+        public static void CreateLink(Frame f, EntityRef projectileEntityRef, EntityRef linkEntityRef)
         {
             BattleProjectileLinkQComponent projectileLink = new()
             {
-                ERef = projectileEntity
+                ERef = projectileEntityRef
             };
 
             f.Add(linkEntityRef, projectileLink);
         }
 
+        /// <summary>
+        /// <see cref="BattleManagedEntityHandle"/> of the projectile.
+        /// </summary>
         public BattleManagedEntityHandle EntityHandle { get; private set; }
 
+        /// <summary>
+        /// Pointer to the <see cref="BattleProjectileQComponent"/> of the projectile.
+        /// </summary>
         public BattleProjectileQComponent* Data {  get; private set; }
 
+        /// <summary>
+        /// Pointer to the <b>Transform2D</b> of the projectile when their <b>{Registered Entity}</b> is <b>{InPlay}</b>.
+        /// @note <b>{Protected}</b> from possible unauthorized modification when the projectile's <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.
+        /// </summary>
+        ///
+        /// Use @cref{TransformCopy} to access the transform when the projectile's <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.
+        ///
+        /// See [{Protected Transform Component}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.<br/>
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
+        /// See [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         public Transform2D* TransformPtr
         {
             get
@@ -670,6 +956,16 @@ namespace Battle.QSimulation.Game
             }
         }
 
+        /// <summary>
+        /// Access to a copy of the <b>{Protected}</b> <b>Transform2D</b> of the projectile.<br/>
+        /// The <b>Transform2D</b> is coped to ensure immutability when their <b>{Registered Entity}</b> is <b>{OutOfPlay}</b>.
+        /// </summary>
+        ///
+        /// Use @cref{TransformPtr} to modify the transform when the projectile's <b>{Registered Entity}</b> is <b>{InPlay}</b>.
+        ///
+        /// See [{Protected Transform Component}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.<br/>
+        /// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.<br/>
+        /// See [{InPlay/OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) for more info.
         public Transform2D TransformCopy => *_transformInternalPtr;
 
         /// <summary>
@@ -723,13 +1019,36 @@ namespace Battle.QSimulation.Game
             f.Events.BattleProjectileChangeGlowStrength(Data->Attack / Data->AttackMax);
         }
 
+        /// <summary>
+        /// Private internal storage for the <b>{Protected}</b> <b>Transform2D</b> pointer of the projectile.
+        /// </summary>
+        ///
+        /// See [{Protected Transform Component}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
         private Transform2D* _transformInternalPtr { get; set; }
 
+        //! @name BattleManagedEntityHandle.IComposite Implementation
+        //!
+        //! See @cref{Battle.QSimulation.Game,BattleManagedEntityHandle.IComposite} for more info.
+        //!
+        //! @{
+
+        /// @private
+        /// <summary>
+        /// Used internally by <see cref="BattleManagedEntityHandle"/><b>.To</b> method in order to upgrade
+        /// the <see cref="BattleManagedEntityHandle"/> to a <see cref="BattleProjectileHandle"/>.
+        /// </summary>
+        ///
+        /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="managedEntity">The managed entity handle being upgraded.</param>
         void BattleManagedEntityHandle.IComposite.FromManagedEntity(Frame f, BattleManagedEntityHandle managedEntity)
         {
             EntityHandle          = managedEntity;
             Data                  = f.Unsafe.GetPointer<BattleProjectileQComponent>(managedEntity);
             _transformInternalPtr = f.Unsafe.GetPointer<Transform2D>(managedEntity);
         }
+
+        //! @}
     }
 }

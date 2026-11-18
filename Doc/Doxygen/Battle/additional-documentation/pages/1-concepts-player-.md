@@ -6,18 +6,19 @@
 This documentation is not entirely up to date. Player code was modified for testing flipper style game and behavior varies depending on if @cref{Battle.QSimulation.Game.BattleParameters,IsTestFlipperGame} is on.
 
 **%Quantum** handles recognizing **Players** through a [PlayerRef🡵](https://doc-api.photonengine.com/en/quantum/current/struct_quantum_1_1_player_ref.html),
-but we prefer to use **PlayerSlot** as defined by us whenever possible.  
-Each **Player** has an assigned **PlayerSlot** and a **TeamNumber**.  
-Each Each **Player** has a **PlayState**.  
-Each **Player** has **data** with them that **isn't connected to any specific character** under the **Player**'s control.  
-Each **Player** controls multiple **Character Entities** which also have some data associated with them.  
-Each **Character Entity** has a player character class that it belongs to.  
-Each **Character Entity** has one or more **Shield Entities**.  
-See [{Player Slots and Teams}](#page-concepts-player-slots-teams)  
-See [{Player PlayState}](#page-concepts-player-playstate)  
-See [{Player Manager Data}](#page-concepts-player-manager-data)  
-See [{Player Character and Shield Entities}](#page-concepts-player-character-and-shield-entity)  
-See [{Player Character Classes}](#page-concepts-player-characters-classes)
+but we prefer to use [{PlayerSlot}](#page-concepts-player-slots-teams) as defined by us whenever possible.  
+Each **Player** has an assigned [{Slot}](#page-concepts-player-slots-teams) and a [{Team}](#page-concepts-player-slots-teams).  
+Each **Player** has [{Player Data}](#page-concepts-player-data) which **is not connected to any specific character** under the **Player**'s control.  
+Each **Player** has a [{PlayState}](#page-concepts-player-playstate).
+
+Each **Player** controls multiple [{Character Entities}](#page-concepts-player-character-and-shield-entity) which also have some data associated with them.  
+Each [{Character Entity}](#page-concepts-player-character-and-shield-entity)
+has a [{Player Character Class}](#page-concepts-player-characters-classes) that it belongs to.  
+Each [{Character Entity}](#page-concepts-player-character-and-shield-entity)
+has one or more [{Shield Entities}](#page-concepts-player-character-and-shield-entity).
+
+The **Player** and their [{Character's}](#page-concepts-player-character-and-shield-entity) can be handled using a
+[{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle).
 
 **Other topics**  
 
@@ -96,23 +97,16 @@ graph PlayerSlotsAndTeams {
 
 <br/>
 
-## Player PlayState {#page-concepts-player-playstate}
-
-This concept extends the more general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) concept. However, this is tracked explicitly.  
-Each **Player** has a @cref{Quantum,BattlePlayerPlayState} used to track their state in the game,
-which is detached from [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) that the **Player** controls.  
-Each [{PlayerSlot}](#page-concepts-player-slots-teams) has a **Player PlayState** associated with it including slots that have no player.  
-The general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) applies to
-the individual [{Player Character And Shield Entities}](#page-concepts-player-character-and-shield-entity).
-
-<br/>
-
 ## Player Data {#page-concepts-player-data}
 
-**Player data** not connected to individual [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) is contained in the
+**Player Data** not connected to individual [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) is contained in the
 @cref{Quantum,BattlePlayerData} struct. It is defined in and generated from BattlePlayerData.qtn, and extended in BattlePlayerData.cs.  
 The [{PlayerManagerData}](#page-concepts-player-simulation-management-playermanagerdata) **%Quantum Singleton Component** contains a list of each player's **Player Data**
 which can be accessed through the [{PlayerManager}](#page-concepts-player-simulation-management-playermanager).  
+In practice, the **Player Data** can be handled using a [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle)
+by **Creating** one from **Player Data** or based on [{PlayerSlot}](#page-concepts-player-slots-teams),
+in which case the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle)
+will fetch **Player Data** from the [{PlayerManager}](#page-concepts-player-simulation-management-playermanager).
 
 The **Player Data** is split into 2 different levels, the **Gameplay Level** and the **Low Level** .  
 - **Gameplay Level**
@@ -128,6 +122,17 @@ The individual @cref{Quantum,BattlePlayerData} structs in [{PlayerManagerData}](
 are accessed through a @cref{Quantum,BattlePlayerData.Ref} that acts as a reference to one of them.  
 The @cref{Quantum,BattlePlayerData.Ref} struct is also a wrapper which only exposes **Gameplay Level** data directly but also grants access to the **Low Level**,
 allowing full access to the underlying @cref{Quantum,BattlePlayerData} struct for "low level" management and abstraction code.
+
+<br/>
+
+## Player PlayState {#page-concepts-player-playstate}
+
+This concept extends the more general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) concept. However, this is tracked explicitly.  
+Each **Player** has a @cref{Quantum,BattlePlayerPlayState} used to track their state in the game,
+which is detached from [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) that the **Player** controls.  
+Each [{PlayerSlot}](#page-concepts-player-slots-teams) has a **Player PlayState** associated with it including slots that have no player.  
+The general [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) applies to
+the individual [{Player Character And Shield Entities}](#page-concepts-player-character-and-shield-entity).
 
 <br/>
 
