@@ -773,6 +773,42 @@ teleporting it out of the arena.
 
 <br/>
 
+#### PlayerShieldHandle {#page-concepts-player-simulation-management-playershieldhandle}
+
+The @cref{Battle.QSimulation.Game,BattlePlayerShieldHandle} is a [{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle)
+for handling [{Player Shield Entities}](#page-concepts-player-character-and-shield-entity).
+
+A @cref{Battle.QSimulation.Game,BattlePlayerShieldHandle} for a **Shield** can be **Created** using the @clink{Create:Battle.QSimulation.Game.BattlePlayerShieldHandle.Create(Frame,EntityRef)} method
+with a [{Linked/Associated Entity}](#page-concepts-player-simulation-management-playershieldhandle-linked-associated-entities) as an argument.
+
+##### Linked/Associated Entities {#page-concepts-player-simulation-management-playershieldhandle-linked-associated-entities}
+
+Each [{Player Shield}](#page-concepts-player-character-and-shield-entity) has **Entities** that are **Linked/Associated** with the **Shield**
+using a @cref{Quantum,BattlePlayerShieldLinkQComponent}, a [{Link Component}](#page-concepts-battle-handle-entity-type-handle-link-component).  
+Each **Linked/Associated Entity** has a @cref{Quantum,BattlePlayerShieldLinkEntityType}.
+
+| Linked/Associated Entity                                                                                         | @cref{Quantum,BattlePlayerShieldLinkEntityType}        |
+| :--------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------- |
+| The main [{Player Shield Entity}](#page-concepts-player-character-and-shield-entity).                            | @cref{Quantum.BattlePlayerShieldLinkEntityType,Shield} |
+| The **Hitbox Entities** of the main [{Player Shield Entity}](#page-concepts-player-character-and-shield-entity). | @cref{Quantum.BattlePlayerShieldLinkEntityType,Hitbox} |
+
+If a [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle) is **Created** from a **Linked/Associated Entity**
+of **Type** @cref{Quantum.BattlePlayerShieldLinkEntityType,Hitbox}, the [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle)
+will have an [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox).  
+If a [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle) is **Created** from a **Linked/Associated Entity**
+of **Type** @cref{Quantum.BattlePlayerShieldLinkEntityType,Shield}, the [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle)
+will **not** have an [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox).
+
+##### Available Collided Hitbox {#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox}
+
+When there is a collision involving a [{Player Shield}](#page-concepts-player-character-and-shield-entity), the **Shield Hitbox Entity** that was collided with is relevant.  
+So, if a [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle) is **Created** using the @clink{Create:Battle.QSimulation.Game.BattlePlayerShieldHandle.Create(Frame,EntityRef)}
+method with a [{Linked/Associated Entity}](#page-concepts-player-simulation-management-playershieldhandle-linked-associated-entities)
+of **Type** @cref{Quantum.BattlePlayerShieldLinkEntityType,Hitbox} as an argument,
+the **Hitbox Entity** is captured and made **Available** through the @cref{Battle.QSimulation.Game.BattlePlayerShieldHandle,CollidedHitboxEntityRef} field.
+
+<br/>
+
 ### Game Logic {#page-concepts-player-gamelogic}
 
 This section contains **%Quantum** simulation side **Player** gameplay logic related code, while the management is handled by the
