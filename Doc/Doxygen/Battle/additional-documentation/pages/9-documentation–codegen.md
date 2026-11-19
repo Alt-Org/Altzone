@@ -1,12 +1,13 @@
 # Documenting %Quantum generated code {#page-documentation-codegen}
-These are guidelines for writing documentation for **%Quantum generated code**.
+These are guidelines for writing documentation for **%Quantum Generated code**.
 
-Documentation for **%Quantum generated code** is written in `.dox` files because it can not be written directly in **source code**. Documentation is written using **documentation comments** with the `///` or `//!` format.  
+Documentation for **%Quantum Generated code** is written in `.dox` files because it can not be written directly in **source code**.  
+Documentation is written using **documentation comments** with the `///` or `//!` format.  
 All `.qtn` files created by us should be documented, with a separate `.dox` file for each `.qtn` file.  
-The code being documented is that which is found in the **generated code** resulting from what is defined in the `.qtn` file.  
-The **generated code** is found in the Quantum namespace.  
-When referencing **code symbols**, make sure to reference the correct **generated code**.  
-**%Quantum components** should be referenced to as **structs**, as **%Quantum** generates them as such.
+The code being documented is that which is found in the **Generated code** resulting from what is defined in the `.qtn` file.  
+The **Generated code** is found in the **Quantum** namespace.  
+When referencing **Code symbols**, make sure to reference the correct **Generated code**.  
+**%Quantum components** should be referenced to as **structs**, as **%Quantum Generates** them as such.
 
 ---
 
@@ -15,7 +16,7 @@ When referencing **code symbols**, make sure to reference the correct **generate
 <br/>
 
 ### Unicode characters {#page-documentation-codegen-base-guidelines-unicode}
-**Unicode characters** are ok to use inside of `.dox` files.
+**Unicode characters** are ok to use inside of `.dox` and files.
 
 <br/>
 
@@ -51,12 +52,12 @@ When writing text, line breaks should be done using two spaces at the end of the
 <br/>
 
 ## File guidelines {#page-documentation-codegen-documenting-file-guidelines}
-**%Quantum generated code** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/quantum-codegen} to not have unnecessary additional files in **Unity**'s @dirref{Altzone,Assets} folder,  
+**%Quantum Generated code** documentation files are `.dox` files found in @dirref{Altzone/Doc/Doxygen/Battle/additional-documentation/quantum-codegen} to not have unnecessary additional files in **Unity**'s @dirref{Altzone,Assets} folder,  
 especially because **Unity** would create `.meta` files to keep track of the files for no reason.  
 The directory structure inside the above directory matches that found in the project.  
 The files are named as follows:  
 - Filenames begin with **"qtn"** in all lower case.
-- This is then followed by the name of the `.qtn` file being documented as it's named in the project separated by a hyphen.
+- This is then followed by the **name of the** `.qtn` file being documented as it's named in the project separated by a hyphen `-`.
 
 Example filename:  
 `qtn-(ExampleFilename).dox`
@@ -67,9 +68,9 @@ Example filename:
 
 ### Common Documentation Patterns
 
-Each "fragment" of documentation begins with a `@(type)` command like `@file`, `@struct`, `@enum`, or `@var` followed by name of the file or code symbol specifying to Doxygen what is being documented.
+Each "fragment" of documentation begins with a `@(type)` command like `@file`, `@struct`, `@enum`, or `@var` followed by **name of the File** or **Code symbol** specifying to [Doxygen🡵] what is being documented.
 
-`@(type)` is immediately followed by the **XML** `<summary>`command containing a [{brief/summary}] after which there is an empty line followed by the [{detailed description}].
+`@(type)` is immediately followed by the **XML** `<summary>` command containing a [{brief/summary}] after which there is an empty line followed by the [{detailed description}].
 
 In `.dox` file
 ```
@@ -81,8 +82,9 @@ In `.dox` file
 /// Detailed Description with some text
 ```
 
-If the [{brief/summary}] or the [{detailed description}] talks about some concept that has a definition/explanation of some other page or the concept is in some way relevant what is being documented.  
- Then the [{detailed description}] should contain a **Concept link** for more information. And where the concept was mentioned should use the `<b>{Concept mention}</b>` formatting.
+If the [{brief/summary}] or the [{detailed description}] talks about some **concept** that has a definition/explanation of some other page or the **concept** is in some way relevant what is being documented.  
+Then the [{detailed description}] should contain a **Concept link** for more information.  
+And where the **concept** was mentioned should use the `<b>{Concept mention}</b>` formatting.
 
 In `.dox` file
 ```
@@ -98,13 +100,13 @@ In `.dox` file
 
 <br/>
 
-Sometimes documentation should be **Grouped** together. For example **fields**, **properties** and **methods** inside a struct.  
-Note that Doxygen already sorts **fields**, **properties** and **methods** by kind into **Groups**.
+Sometimes documentation should be **Grouped** together. For example **fields**, **properties** and **methods** inside a **struct**.  
+Note that [Doxygen🡵] already sorts **fields**, **properties** and **methods** by **kind** into **Groups**.
 So **Grouping** is used to divide any of these further into subcategories.  
-However if you mix different kinds in one **Group** you override **Doxygen's default grouping**, which may not be a desired result.
+However if you mix different **kinds** in one **Group** you override [Doxygen🡵]'s **default Grouping**, which may not be a desired result.
 
 This is done using **Group Begin** and **Group End** **documentation blocks** with the `//!` format.  
-**Group Begin** is specified using the `@name` command followed by the **name of the Group** and then `@{` on the next line, marking the beginning of the **Group**.  
+**Group Begin** is specified using the `@name` command followed by the **name of the Group** and `@{` on the next line, marking the beginning of the **Group**.  
 **Group End** is specified by `@}` and `//  END` comment that repeats the **name of the Group** to make it easier to track where the **Group** begins and ends.
 
 In `.dox` file
@@ -120,6 +122,7 @@ In `.dox` file
 
 The **Group Begin** **documentation block** can specify a **Group** description in between `@name` and `@{` separated by empty lines.
 
+In `.dox` file
 ```
 //! @name Example Fields
 //!
@@ -134,10 +137,10 @@ The **Group Begin** **documentation block** can specify a **Group** description 
 ```
 
 The `@anchor` command is usually added before the `@name` command. The `@anchor` command specifies an **ID** for the **Group**.  
-The **ID** is global so to avoid name collisions the **ID** should start with the struct name followed by a hyphen `-` and then the name of the **Group** without any spaces.  
+The **ID** is global so to avoid name collisions the **ID** should start with the **struct name** followed by a hyphen `-` and then the **name of the Group** without any spaces.  
 `@anchor (StructName)-(GroupName)`
 
-When a **Group** has an `@anchor` each member of the **Group** should have a "Part of" link in its [{detailed description}] specifying that it is part of a **Group** and linking back to the **Group** itself.
+When a **Group** has an `@anchor` each member of the **Group** should have a **"Part of" link** in its [{detailed description}] specifying that it is **part of a Group** and linking back to the **Group** itself.
 
 In `.dox` file
 ```
@@ -158,10 +161,10 @@ In `.dox` file
 
 <br/>
 
-If a `.qtn` file contains an array %Quantum generates a private array that internally stores the data and a public property to access the data.
+If a `.qtn` file contains an **array**, **%Quantum Generates** a **private array** that **internally** stores the data and a **public property** to access the data.
 
-The public property should contain the main documentation and a link to the internal array.  
-The internal array should be put in a **Group** called "Private internal arrays" and have a link to the public property.
+The **public property** should contain the main documentation and a link to the **internal array**.  
+The **internal array** should be put in a **Group** named **"Private internal arrays"** and have a link to the **public property**.
 
 In `.qtn` file
 ```
@@ -177,12 +180,11 @@ struct ExampleStruct
 
 In `.dox` file
 ```
-
 ...
 
 /// @var array Quantum::ExampleStruct::ExampleArray
 /// <summary>
-/// Brief Description
+/// Brief Description  
 /// Public getter for internal @cref{Quantum.ExampleStruct,_ExampleArray_}
 /// </summary>
 
@@ -199,11 +201,13 @@ In `.dox` file
 //  END Private internal arrays
 ```
 
+<br/>
+
 ### File structure
 
-All **enums**, **structs** and **components** defined in a `.qtn` file, and the file itself, should be documented.  
-**File documentation** should be placed at the top of the file followed by a separator line comment.  
-After the separator line all the **enums**, **structs** and **components** are documented in the order they are defined in the `.qtn` file.
+All **enums**, **structs** and **components** defined in a `.qtn` file, and the **File** itself, should be documented.  
+**File documentation** should be placed at the top of the `.dox` file followed by a **separator line comment**.  
+After the **separator line** all the **enums**, **structs** and **components** are documented in the order they are defined in the `.qtn` file.
 
 `Example.qtn`
 ```
@@ -244,14 +248,15 @@ component ExampleComponent
 /// ...
 ```
 
+<br/>
 
 ### File documentation
 
-%Quantum generates **components** as **structs**, therefore **struct** refers to both **structs** and **components**.
+**%Quantum Generates** **components** as **structs**, therefore **struct** refers to both **structs** and **components**.
 
-The file should be documented using a **documentation block** with the `//!` format, starting with the `@file` command and a [{brief/summary}].  
-Documentation should contain the [{brief/summary}] and [{detailed description}].  
-The [{brief/summary}] usually starts with the word "Contains" followed by what the file contains, directly mentioning the **code symbols** and linking to their documentation,  
+The **File** should be documented using a **documentation block** with the `//!` format, starting with the `@file` command.  
+**File documentation** should contain a [{brief/summary}] and [{detailed description}].  
+The [{brief/summary}] usually starts with the word **"Contains"** followed by what the **File** contains, directly mentioning the **Code symbols** and linking to their documentation,  
 directing readers to the documentation that has more information.  
 The [{detailed description}] should have the full list of **enums** and **structs** defined in the `.qtn` file using bullet points.
 
@@ -285,13 +290,13 @@ component ExampleComponent
 //! </summary>
 //!
 //! ## Generated Enums
-//! - @cref{Quantum,ExampleEnum}
+//! - @cref{Quantum,ExampleEnum}  
 //!   @copybrief Quantum.ExampleEnum
 //!
 //! ## Generated Structs
-//! - @cref{Quantum,ExampleStruct}
+//! - @cref{Quantum,ExampleStruct}  
 //!   @copybrief Quantum.ExampleStruct
-//! - @cref{Quantum,ExampleComponent}
+//! - @cref{Quantum,ExampleComponent}  
 //!   @copybrief Quantum.ExampleComponent
 
 // ---------------------------------------------------------------------------------------------------- //
@@ -300,12 +305,14 @@ component ExampleComponent
 
 ```
 
+<br/>
+
 ### Enum documentation
 
-**Enums** should be documented with a `@enum` command with the name of the **enum** formatted with `::` as below followed by a [{brief/summary}].  
-The [{detailed description}] should have a **Generated from** link to the `.qtn` file itself should be listed as shown below.  
-Attached below the main enum documentation should be a `// {` comment marking the beginning of the intended **enum variable block**.  
-Each **variable** defined in an **enum** should be documented with a `@var` command with the name of the **enum** and the name of the **variable** followed by a [{brief/summary}] text without the `<summary>` command.  
+**Enums** should be documented with a `@enum` command with the **name of the enum** formatted with `::` as below followed by a [{brief/summary}] and [{detailed description}].  
+The [{detailed description}] should have a **"Generated from" link** to the `.qtn` file itself should be listed as shown below.  
+Attached below the main **enum** documentation should be a `// {` comment marking the beginning of the intended **enum variable block**.  
+Each **variable** defined in an **enum** should be documented with a `@var` command with the **name of the enum** and the **name of the variable** followed by a [{brief/summary}] text without the `<summary>` command.  
 The **enum variable block** should be closed with a `// }` comment.
 
 `Example.qtn`
@@ -345,24 +352,26 @@ enum ExampleEnum
 ...
 ```
 
+<br/>
+
 ### Struct and Component documentation
 
-Since %Quantum generates **components** as **structs** the following also applies to **components**.
+Since **%Quantum Generates** **components** as **structs** the following also applies to **components**.
 
-**Structs** should be documented with a `@struct` command with the name of the **struct** formatted with `::` as below followed by a [{brief/summary}].  
-The [{detailed description}] should have a **Generated from** link to the `.qtn` file itself should be listed as shown below.  
-Attached below the main struct documentation should be a `// {` comment marking the beginning of the intended **struct content block**.  
-Each **field** and **property** defined in a **struct** should be documented with a `@var` command with the type and the name of the **field/property** followed by a [{brief/summary}].  
+**Structs** should be documented with a `@struct` command with the **name of the struct** formatted with `::` as below followed by a [{brief/summary}] and [{detailed description}].  
+The [{detailed description}] should have a **"Generated from" link** to the `.qtn` file itself should be listed as shown below.  
+Attached below the main **struct** documentation should be a `// {` comment marking the beginning of the intended **struct content block**.  
+Each **field** and **property** defined in a **struct** should be documented with a `@var` command with the **type** and the **name of the field/property** followed by a [{brief/summary}].  
 The **struct content block** should be closed with a `// }` comment.
 
-Besides the **fields** and **properties** defined in the `.qtn` file, %Quantum generates **Built-in members** into every **struct**.  
-At the end of the **struct content block** there should be a **%Quantum Built-in Documentation Block**, with the `//!` format, that has a **Group** named "Quantum Built-in" without an `@anchor`.   
-Inside the **%Quantum Built-in Documentation Block** **Group** should have the **Built-in members** listed without descriptions.  
+Besides the **fields** and **properties** defined in the `.qtn` file, **%Quantum Generates** **Built-in members** into every **struct**.  
+At the end of the **struct content block** there should be a **%Quantum Built-in documentation block**, with the `//!` format, that has a **Group** named **"Quantum Built-in"** without an `@anchor`.   
+The **%Quantum Built-in documentation block** **Group** should have the **Built-in members** listed without descriptions.  
 Most **structs** have `SIZE`, `ALIGNMENT`, `GetHashCode` and `Serialize`, but the exact set depends on the **struct**,  
 for example **components** with collections marked `[FreeOnComponentRemoved]` also have `OnRemoved`.  
 
 The following example also shows a mistake that can happen when using **Grouping**.  
-`@var array Quantum::ExampleComponent::ExampleArray` is **Grouped** in "Example Fields" **Group**,  
+`@var array Quantum::ExampleComponent::ExampleArray` is **Grouped** in **"Example Fields"** **Group**,  
 but is actually a **property** resulting a **Group** that mixes **fields** and **properties**, which would not give desired result
 
 `Example.qtn`
@@ -468,14 +477,14 @@ component ExampleComponent
 
     //! @}
     //  END Example Fields
-    
+
     //! @anchor ExampleComponent-PrivateArrays
     //! @name Private internal arrays
     //! @{
-    
+
     /// @var Byte Quantum::ExampleComponent::_ExampleArray_
     /// <summary>Private internal array, access through @cref{Quantum.ExampleComponent,ExampleArray}</summary>
-    
+
     //! @}
     //  END Private internal arrays
 
