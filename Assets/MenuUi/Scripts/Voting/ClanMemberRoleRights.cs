@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using Altzone.Scripts.Config;
 using System.Collections.Generic;
@@ -25,24 +26,21 @@ public class ClanMemberRoleRights : MonoBehaviour
         }
     }
 
-    private int _previousValidIndex;
-    private string _divider = "--------";
-
-
     [SerializeField] private GameObject textPrefab;
     [SerializeField] private Transform contentParent;
     [SerializeField] private GameObject popup;
-    [SerializeField] private TextMeshProUGUI currentRoleText;
+    [SerializeField] private TextMeshProUGUI currentSelectionInfo;
     [SerializeField] private TMP_Dropdown roleDropdown;
-    [SerializeField] private TMP_Dropdown roleRightsDropdown;
     [SerializeField] private Toggle rightAllowedToggle;
+    [SerializeField] private TextMeshProUGUI currentRoleText;
 
     [SerializeField] private TMP_InputField nameInput;
     [SerializeField] private Button saveRoleButton;
     [SerializeField] private Button cancelRoleButton;
     [SerializeField] private GameObject newRoleContainer;
 
-
+    private int _previousValidIndex;
+    private string _divider = "--------";
     private ClanData _clanData = null;
     private ClanRoles _draft;
     private ClanRoles _selectedRole;
@@ -51,6 +49,8 @@ public class ClanMemberRoleRights : MonoBehaviour
     public void OpenPopup()
     {
         popup.SetActive(true);
+
+        currentRoleText.text = _currentMember.Role.name;
 
         LoadClanData();
         PopulateVotes(_clanData);
@@ -93,7 +93,8 @@ public class ClanMemberRoleRights : MonoBehaviour
     private void PopulateVotes(ClanData clan)
     {
         List<string> options = new List<string>();
-        foreach (var role in clan.ClanRoles) {
+        foreach (var role in clan.ClanRoles)
+        {
             options.Add(role.name);
         }
         options.Add("Add role");
@@ -101,7 +102,7 @@ public class ClanMemberRoleRights : MonoBehaviour
 
         foreach (MemberRights right in Enum.GetValues(typeof(MemberRights)))
         {
-            options.Add(right.ToString());
+            options.Add(GetDisplayName(right));
         }
 
         SelectCurrentMemberRole();
@@ -129,27 +130,28 @@ public class ClanMemberRoleRights : MonoBehaviour
 
         bool isAllowed = _selectedRole.HasRights(_selectedRight);
 
-        if (currentRoleText != null)
+        if (currentSelectionInfo != null)
         {
-            currentRoleText.text = $"{right} is {isAllowed}";
+            currentSelectionInfo.text = $"{GetDisplayName(right)} is {isAllowed}";
         }
     }
 
     private void ShowRole(ClanRoles role)
     {
+        if (currentSelectionInfo == null)
+            return;
+
         _selectedRole = role;
 
-        if (currentRoleText != null)
-        {
-            currentRoleText.text = "Currently existing rights for role:";
-            foreach (MemberRights right in Enum.GetValues(typeof(MemberRights)))
-            {
-                bool isAllowed = _selectedRole.HasRights(right);
-                if (isAllowed)
-                    currentRoleText.text += "\n" + string.Join("\n", right);
-            }
+        var allowedRights = Enum.GetValues(typeof(MemberRights))
+            .Cast<MemberRights>()
+            .Where(right => _selectedRole.HasRights(right))
+            .Select(right => GetDisplayName(right))
+            .ToList();
 
-        }
+        currentSelectionInfo.text = allowedRights.Count > 0
+            ? $"Currently existing rights for {_selectedRole.name}:\n- {string.Join("\n- ", allowedRights)}"
+            : $"none";
     }
 
     private void RefreshRightToggle()
@@ -195,7 +197,8 @@ public class ClanMemberRoleRights : MonoBehaviour
         currentRole.SetRights(rightName, !allowed);
     }
 
-    public void OnStartVoteClicked() {
+    public void OnStartVoteClicked()
+    {
         _draft.name = nameInput.text;
         bool? result = null;
 
@@ -204,7 +207,8 @@ public class ClanMemberRoleRights : MonoBehaviour
         ClosePopup();
     }
 
-    private void NewRole() {
+    private void NewRole()
+    {
         _draft = new ClanRoles
         {
             name = "",
@@ -216,4 +220,14 @@ public class ClanMemberRoleRights : MonoBehaviour
         nameInput.text = "";
         saveRoleButton.interactable = true;
     }
+
+    public static string GetDisplayName(MemberRights right) => right switch
+    {
+        MemberRights.CanEditHome     => "Edit home",
+        MemberRights.CanEditClanData => "Edit clan data",
+        MemberRights.CanEditRights   => "Edit rights",
+        MemberRights.CanManageRoles  => "Manage roles",
+        MemberRights.CanManageShop   => "Manage shop",
+        _                            => right.ToString()
+    };
 }
