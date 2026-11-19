@@ -23,7 +23,8 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private GameObject _signInWindow;
         [SerializeField] private GameObject _registerWindow;
         [SerializeField] private GameObject _passwordHintWindow;
-
+        [SerializeField] private GameObject _passwordResetPanel;
+        [SerializeField] private GameObject _ageVerificationPanel;
 
         [Header("Input Fields")]
         [SerializeField] private TMP_InputField _logInUsernameInputField;
@@ -63,6 +64,11 @@ namespace MenuUi.Scripts.Login
         [SerializeField] private Button _ageAuthButton;
         [SerializeField] private Button _skipHintButton;
         [SerializeField] private Button _setHintButton;
+        [SerializeField] private Button _passwordResetExitButton;
+        [SerializeField] private Button _ageVerificationExitButton;
+        [SerializeField] private Button _passwordHintExitButton;
+        [SerializeField] private Button _passwordHintConfirmExitButton;
+        [SerializeField] private Button _passwordHintSkipExitButton;
 
         [Header("Version Toggle")]
         [SerializeField] private ToggleSwitchHandler _turboEducationToggle;
@@ -273,6 +279,11 @@ namespace MenuUi.Scripts.Login
             _returnToSignInScreenButton.onClick.AddListener(() => CloseRegister());
             _setHintButton.onClick.AddListener(() => Register(_registerPasswordHintInputField.text, _registerPasswordHintAnswerInputField.text));
             _backButton2.onClick.AddListener(() => _registerWindow.SetActive(false));
+            _passwordResetExitButton.onClick.AddListener(ClosePasswordResetPanel);
+            _ageVerificationExitButton.onClick.AddListener(CloseAgeVerificationPanel);
+            _passwordHintExitButton.onClick.AddListener(ClosePasswordHintPanel);
+            _passwordHintConfirmExitButton.onClick.AddListener(ClosePasswordHintPanel);
+            _passwordHintSkipExitButton.onClick.AddListener(ClosePasswordHintPanel);
             _registerPasswordHintAnswerInputField.onValueChanged.AddListener((value) => CheckHintValidity());
             _registerPasswordHintInputField.onValueChanged.AddListener((value) => CheckHintValidity());
             _autoLoginToggle.OnToggleStateChanged += SetVersionState;
@@ -287,6 +298,19 @@ namespace MenuUi.Scripts.Login
             ClearMessage();
 
             ResetAllFields();
+        }
+
+        private void ClosePasswordResetPanel()
+        {
+            _passwordResetPanel.SetActive(false);
+        }
+        private void CloseAgeVerificationPanel()
+        {
+            _ageVerificationPanel.SetActive(false);
+        }
+        private void ClosePasswordHintPanel()
+        {
+            _passwordHintWindow.SetActive(false);
         }
 
         private void OnDisable()
