@@ -1,10 +1,10 @@
-/// @file BattleUiLoadScreenHandler.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiLoadScreenHandler} class, which handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
+//! @file BattleUiLoadScreenHandler.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiLoadScreenHandler} class, which handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles setting the visibility of the battle loading screen and updating it whenever a player connects to the game.
 
 // System usings
 using System.Linq;
@@ -26,10 +26,10 @@ namespace Battle.View.UI
 {
     public class BattleUiLoadScreenHandler : MonoBehaviour
     {
-        /// @anchor BattleUiLoadScreenHandler-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiLoadScreenHandler-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to the GameObject which can be used to hide or show the loading screen.</summary>
         /// @ref BattleUiLoadScreenHandler-SerializeFields
@@ -47,7 +47,7 @@ namespace Battle.View.UI
         /// @ref BattleUiLoadScreenHandler-SerializeFields
         [SerializeField] private TextMeshProUGUI[] _playerNames;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// If the player which connected is part of the game, this method:<br/>

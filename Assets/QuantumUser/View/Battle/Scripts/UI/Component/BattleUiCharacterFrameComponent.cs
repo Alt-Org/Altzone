@@ -1,7 +1,7 @@
-/// @file BattleUiCharacterFrameComponent.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiCharacterFrameComponent} class which controls character icon frames.
-/// </summary>
+//! @file BattleUiCharacterFrameComponent.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiCharacterFrameComponent} class which controls character icon frames.
+//! </summary>
 
 // System usings
 using System;
@@ -20,10 +20,10 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiCharacterFrameComponent : MonoBehaviour
     {
-        /// @anchor BattleUiCharacterFrameComponent-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiCharacterFrameComponent-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to the Image component of the Frame.</summary>
         /// @ref BattleUiCharacterFrameComponent-SerializeFields
@@ -37,7 +37,7 @@ namespace Battle.View.UI
         /// @ref BattleUiCharacterFrameComponent-SerializeFields
         [SerializeField] private FrameGraphics[] _frameGraphics;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Sets the character frame on the icon this is attached to to the specified classes frame.

@@ -1,8 +1,8 @@
-/// @file BattleEntityManager.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Game,BattleEntityManager} class which handles %Quantum entity management in the game.<br/>
-/// Entities are registered, and can be retrieved and returned.
-/// </summary>
+//! @file BattleEntityManager.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Game,BattleEntityManager} class which handles %Quantum entity management in the game.<br/>
+//! Entities are registered, and can be retrieved and returned.
+//! </summary>
 
 // System usings
 using System.Collections.Generic;
@@ -140,10 +140,10 @@ namespace Battle.QSimulation.Game
             entityManagerData->EntitySpacing = entitySpacing;
         }
 
-        /// @anchor BattleEntityManager-RegisterMethods
-        /// @name Register Methods
-        /// Methods for [{Registering}](#page-concepts-entity-management-registered-entities) entityrefs.
-        /// @{
+        //! @anchor BattleEntityManager-RegisterMethods
+        //! @name Register Methods
+        //! Methods for [{Registering}](#page-concepts-entity-management-registered-entities) entityrefs.
+        //! @{
         #region Public Register Methods
 
         /// <summary>
@@ -290,12 +290,12 @@ namespace Battle.QSimulation.Game
         }
 
         #endregion Public Register Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattleEntityManager-GetReturnMethods
-        /// @name Get/Return Methods
-        /// Methods for retrieving and returning [{Registered Entities}](#page-concepts-entity-management-registered-entities).
-        /// @{
+        //! @anchor BattleEntityManager-GetReturnMethods
+        //! @name Get/Return Methods
+        //! Methods for retrieving and returning [{Registered Entities}](#page-concepts-entity-management-registered-entities).
+        //! @{
         #region Public Get/Return Methods
 
         /// <summary>
@@ -399,12 +399,12 @@ namespace Battle.QSimulation.Game
         }
 
         #endregion Public Get/Return Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattleEntityManager-CompoundMethods
-        /// @name Compound Methods
-        /// Methods for [{Handling Compound Entities}](#page-concepts-entity-management-compound-entity-handling).
-        /// @{
+        //! @anchor BattleEntityManager-CompoundMethods
+        //! @name Compound Methods
+        //! Methods for [{Handling Compound Entities}](#page-concepts-entity-management-compound-entity-handling).
+        //! @{
         #region Public Compound Methods
 
         /// <summary>
@@ -530,7 +530,7 @@ namespace Battle.QSimulation.Game
             }
         }
         #endregion Public Compound Methods
-        /// @}
+        //! @}
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;

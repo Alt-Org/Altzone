@@ -1,10 +1,10 @@
-/// @file BattleUiCharacterButtonComponent.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiCharacterButtonComponent} class which handles character button visuals and component references.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles a BattleUiPlayerInfo prefab's character button visuals and component references.
+//! @file BattleUiCharacterButtonComponent.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiCharacterButtonComponent} class which handles character button visuals and component references.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles a BattleUiPlayerInfo prefab's character button visuals and component references.
 
 // Unity usings
 using UnityEngine;
@@ -26,10 +26,10 @@ namespace Battle.View.UI
     [RequireComponent(typeof(Button))]
     public class BattleUiCharacterButtonComponent : MonoBehaviour
     {
-        /// @anchor BattleUiCharacterButtonComponent-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiCharacterButtonComponent-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to the button component of the character button.</summary>
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
@@ -59,7 +59,7 @@ namespace Battle.View.UI
         /// @ref BattleUiCharacterButtonComponent-SerializeFields
         [SerializeField] private float _damageFillAnimationDuration = 0.5f;
 
-        /// @}
+        //! @}
 
         /// <value>Public getter for #_button.</value>
         public Button ButtonComponent => _button;

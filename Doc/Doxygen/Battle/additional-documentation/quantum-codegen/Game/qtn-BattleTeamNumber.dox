@@ -1,11 +1,11 @@
-/// @file BattleTeamNumber.qtn
-/// <summary>
-/// Contains enum of player teams.
-/// </summary>
-///
-/// ## Generated Enums
-/// - @cref{Quantum,BattleTeamNumber}  
-///   @copybrief Quantum.BattleTeamNumber
+//! @file BattleTeamNumber.qtn
+//! <summary>
+//! Contains enum of player teams.
+//! </summary>
+//!
+//! ## Generated Enums
+//! - @cref{Quantum,BattleTeamNumber}  
+//!   @copybrief Quantum.BattleTeamNumber
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -19,12 +19,14 @@
 /// See [{Player slots and teams}](#page-concepts-player-slots-teams) for more information.
 ///
 /// @bigtext{Generated from @ref BattleTeamNumber.qtn}
+///
+// {
+    /// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::NoTeam
+    /// No team.
 
-/// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::NoTeam
-/// No team.
-///
-/// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::TeamAlpha
-/// Alpha team.
-///
-/// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::TeamBeta
-/// Beta team.
+    /// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::TeamAlpha
+    /// Alpha team.
+
+    /// @var Quantum::BattleTeamNumber Quantum::BattleTeamNumber::TeamBeta
+    /// Beta team.
+// }

@@ -1,10 +1,10 @@
-/// @file BattleDiamondViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.Diamond,BattleDiamondViewController} class which handles diamonds visual functionality.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles diamonds visual functionality.
+//! @file BattleDiamondViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.Diamond,BattleDiamondViewController} class which handles diamonds visual functionality.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles diamonds visual functionality.
 
 // Unity usings
 using UnityEngine;

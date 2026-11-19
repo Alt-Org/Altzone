@@ -1,8 +1,8 @@
-/// @file BattlePlayerShieldClassNoneViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerShieldClassNoneViewController} class,
-/// which is a default none/empty <see cref="Battle.View.Player.BattlePlayerShieldClassNoneViewController">shield class %view controller</see> with no additional view logic.
-/// </summary>
+//! @file BattlePlayerShieldClassNoneViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.Player,BattlePlayerShieldClassNoneViewController} class,
+//! which is a default none/empty <see cref="Battle.View.Player.BattlePlayerShieldClassNoneViewController">shield class %view controller</see> with no additional view logic.
+//! </summary>
 
 // Quantum usings
 using Quantum;

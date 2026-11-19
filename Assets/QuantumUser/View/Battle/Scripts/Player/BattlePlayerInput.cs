@@ -1,9 +1,9 @@
-/// @file BattlePlayerInput.cs
-/// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerInput} class
-/// which handles subscribing to QuantumCallBack and polling player inputs for Quantum.<br/>
-/// Input is processed and compiled into an input struct, which is passed over to the Quantum simulation when polled by Quantum.
-/// </summary>
+//! @file BattlePlayerInput.cs
+//! <summary>
+//! Contains @cref{Battle.View.Player,BattlePlayerInput} class
+//! which handles subscribing to QuantumCallBack and polling player inputs for Quantum.<br/>
+//! Input is processed and compiled into an input struct, which is passed over to the Quantum simulation when polled by Quantum.
+//! </summary>
 
 //#define DEBUG_INPUT_TYPE_OVERRIDE
 
@@ -42,10 +42,10 @@ namespace Battle.View.Player
     /// [{Player Overview}](#page-concepts-player-overview)
     public class BattlePlayerInput : MonoBehaviour
     {
-        /// @name Command input methods
-        /// Command input methods are called by @cref{Battle.View.Game,BattleGameViewController} when the player gives a %UI input. These methods shouldn't be called any other way.<br/>
-        /// These inputs are sent to %Quantum as commands.
-        /// @{
+        //! @name Command input methods
+        //! Command input methods are called by @cref{Battle.View.Game,BattleGameViewController} when the player gives a %UI input. These methods shouldn't be called any other way.<br/>
+        //! These inputs are sent to %Quantum as commands.
+        //! @{
 
         /// <summary>
         /// Called when the player presses give up button
@@ -76,12 +76,12 @@ namespace Battle.View.Player
             BattleGameViewController.QGame.SendCommand(new BattleCharacterAbilityQCommand());
         }
 
-        /// @}
+        //! @}
 
-        /// @name Queued input methods
-        /// Queued input methods are called by @cref{Battle.View.Game,BattleGameViewController} when the player gives a %UI input. These methods shouldn't be called any other way.<br/>
-        /// These inputs are queued for next time that %Quantum polls input.
-        /// @{
+        //! @name Queued input methods
+        //! Queued input methods are called by @cref{Battle.View.Game,BattleGameViewController} when the player gives a %UI input. These methods shouldn't be called any other way.<br/>
+        //! These inputs are queued for next time that %Quantum polls input.
+        //! @{
 
         /// <summary>
         /// Called when the player interacts with the movement joystick.
@@ -117,7 +117,7 @@ namespace Battle.View.Player
             _queued.JoystickSpecialValue = value;
         }
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Struct containing data related to player movement input.
@@ -168,9 +168,9 @@ namespace Battle.View.Player
             public Vector2 JoystickSpecialValue;
         }
 
-        /// @name State variables
-        /// Variables related to current input states.
-        /// @{
+        //! @name State variables
+        //! Variables related to current input states.
+        //! @{
 
         /// <summary>Input data that is queued for next time Quantum polls input. <see cref="Queued">More</see></summary>
         private Queued _queued;
@@ -202,11 +202,11 @@ namespace Battle.View.Player
         /// <summary>Debug number for keeping track of inputs.</summary>
         private int _inputDebugNumber;
 
-        /// @}
+        //! @}
 
-        /// @name Setting variables
-        /// Data from SettingsCarrier is saved to these variables.
-        /// @{
+        //! @name Setting variables
+        //! Data from SettingsCarrier is saved to these variables.
+        //! @{
 
         /// <value>Saved info of the selected movement input type.</value>
         private MovementInputType _movementInputType;
@@ -226,11 +226,11 @@ namespace Battle.View.Player
         /// <value>The minimum tilt angle for activating gyroscope rotation.</value>
         private float _gyroMinAngle = 10f;
 
-        /// @}
+        //! @}
 
-        /// @name References
-        /// Saved references.
-        /// @{
+        //! @name References
+        //! Saved references.
+        //! @{
 
         /// <value>Reference to the play device's attitude sensor aka gyroscope.</value>
         private AttitudeSensor _attitudeSensor;
@@ -238,9 +238,9 @@ namespace Battle.View.Player
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private BattleDebugLogger _debugLogger;
 
-        /// @}
+        //! @}
 
-        /// @{
+        //! @{
 
         /// <summary>
         /// Saves data from SettingsCarrier to private variables. <br/>
@@ -384,9 +384,9 @@ namespace Battle.View.Player
             _inputDebugNumber++;
         }
 
-        /// @name Input reading methods
-        /// Helper methods for reading player input data.
-        /// @{
+        //! @name Input reading methods
+        //! Helper methods for reading player input data.
+        //! @{
 
         /// <summary>
         /// Handles player movement input based on selected input type.
@@ -559,6 +559,6 @@ namespace Battle.View.Player
             return rot.z;
         }
 
-        /// @}
+        //! @}
     }
 }

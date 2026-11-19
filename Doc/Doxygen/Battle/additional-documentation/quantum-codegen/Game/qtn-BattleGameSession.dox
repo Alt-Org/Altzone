@@ -1,11 +1,11 @@
-/// @file BattleGameSession.qtn
-/// <summary>
-/// Contains singleton component used for handling the game session.
-/// </summary>
-///
-/// ## Generated Structs
-/// - @cref{Quantum,BattleGameSessionQSingleton}  
-///   @copybrief Quantum.BattleGameSessionQSingleton
+//! @file BattleGameSession.qtn
+//! <summary>
+//! Contains singleton component used for handling the game session.
+//! </summary>
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,BattleGameSessionQSingleton}  
+//!   @copybrief Quantum.BattleGameSessionQSingleton
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -15,20 +15,42 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleGameSession.qtn}
+///
+// {
+    /// @var bool Quantum::BattleGameSessionQSingleton::GameInitialized
+    /// <summary>
+    /// Has the arena, player system, and game session been initialized or not. If true, BattleGameControlQSystem advances to the next GameState.
+    /// </summary>
 
-// ---------------------------------------------------------------------------------------------------- //
+    /// @var BattleGameState Quantum::BattleGameSessionQSingleton::State
+    /// <summary>
+    /// Which GameState the GameSession is currently in. Helps BattleGameControlQSystem manage the GameSession.
+    /// </summary>
 
-/// @var bool Quantum.BattleGameSessionQSingleton::GameInitialized
-/// <summary>Has the arena, player system, and game session been initialized or not. If true, BattleGameControlQSystem advances to the next GameState.</summary>
-///
-/// @var BattleGameState Quantum.BattleGameSessionQSingleton::State
-/// <summary>Which GameState the GameSession is currently in. Helps BattleGameControlQSystem manage the GameSession.</summary>
-///
-/// @var BattleGameState Quantum.BattleGameSessionQSingleton::LoadDelaySec
-/// <summary>Counter for a short delay after all players have connected, so the loading screen remains active for a moment.</summary>
-///
-/// @var FP Quantum.BattleGameSessionQSingleton::TimeUntilStartSec
-/// <summary>Counter for Countdown and GetReadyToPlay GameStates. Used for changing GameState when counter reaches 0.</summary>
-///
-/// @var FP Quantum.BattleGameSessionQSingleton::GameTimeSec
-/// <summary>How long the game has been going on.</summary>
+    /// @var FP Quantum::BattleGameSessionQSingleton::LoadDelaySec
+    /// <summary>
+    /// Counter for a short delay after all players have connected, so the loading screen remains active for a moment.
+    /// </summary>
+
+    /// @var FP Quantum::BattleGameSessionQSingleton::TimeUntilStartSec
+    /// <summary>
+    /// Counter for Countdown and GetReadyToPlay GameStates. Used for changing GameState when counter reaches 0.
+    /// </summary>
+
+    /// @var FP Quantum::BattleGameSessionQSingleton::GameTimeSec
+    /// <summary>
+    /// How long the game has been going on.
+    /// </summary>
+
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattleGameSessionQSingleton::SIZE
+    //! @var Int32 Quantum::BattleGameSessionQSingleton::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattleGameSessionQSingleton::GetHashCode
+    //!
+    //! @fn void Quantum::BattleGameSessionQSingleton::Serialize
+    //!
+    //! @}
+// }

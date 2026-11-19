@@ -1,7 +1,7 @@
-/// @file BattleSoulWallViewController.cs
-/// <summary>
-/// Handles SoulWall graphics. If debug mode is active, uses colored boxes instead of sprites.
-/// </summary>
+//! @file BattleSoulWallViewController.cs
+//! <summary>
+//! Handles SoulWall graphics. If debug mode is active, uses colored boxes instead of sprites.
+//! </summary>
 
 // Unity usings
 using UnityEngine;
@@ -18,10 +18,10 @@ namespace Battle.View.SoulWall
     /// </summary>
     public class BattleSoulWallViewController : QuantumEntityViewComponent
     {
-        /// @anchor BattleSoulWallViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleSoulWallViewController-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] SpriteRenderer for SoulWall sprites.</summary>
         /// @ref BattleSoulWallViewController-SerializeFields
@@ -53,7 +53,7 @@ namespace Battle.View.SoulWall
         [Tooltip("An array of colors for debug mode")]
         [SerializeField] private Color[] _debugColors;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>

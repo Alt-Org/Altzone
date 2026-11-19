@@ -1,9 +1,9 @@
-/// @file BattleDiamondQSpec.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Diamond,BattleDiamondQSpec} class for defining spawnable diamond's specifications.
-/// </summary>
-///
-/// @bigtext{Filled with data from @ref BattleDiamondQSpec.asset "BattleDiamondQSpec" data asset.}
+//! @file BattleDiamondQSpec.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Diamond,BattleDiamondQSpec} class for defining spawnable diamond's specifications.
+//! </summary>
+//!
+//! @bigtext{Filled with data from @ref BattleDiamondQSpec.asset "BattleDiamondQSpec" data asset.}
 
 // Quantum usings
 using Quantum;

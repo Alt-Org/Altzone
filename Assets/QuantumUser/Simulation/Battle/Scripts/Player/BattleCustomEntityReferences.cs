@@ -1,9 +1,9 @@
-/// @file BattleCustomEntityReferences.cs
-/// <summary>
-/// Contains extension methods for structs defined in @ref BattleCustomEntityReferences.qtn.
-/// </summary>
-///
-/// See [{Custom Entity References}](#page-concepts-custom-quantum-entity-references) for more info.
+//! @file BattleCustomEntityReferences.cs
+//! <summary>
+//! Contains extension methods for structs defined in @ref BattleCustomEntityReferences.qtn.
+//! </summary>
+//!
+//! See [{Custom Entity References}](#page-concepts-custom-quantum-entity-references) for more info.
 
 namespace Quantum
 {

@@ -1,8 +1,8 @@
-/// @file BattleViewRegistry.cs
-/// <summary>
-/// Contains @cref{Battle.View,BattleViewRegistry} class which handles mapping %Quantum entities
-/// to various objects they are related to.
-/// </summary>
+//! @file BattleViewRegistry.cs
+//! <summary>
+//! Contains @cref{Battle.View,BattleViewRegistry} class which handles mapping %Quantum entities
+//! to various objects they are related to.
+//! </summary>
 
 // system usings
 using System;

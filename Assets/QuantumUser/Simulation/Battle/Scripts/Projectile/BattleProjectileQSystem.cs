@@ -1,7 +1,7 @@
-/// @file BattleProjectileQSystem.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls projectile's movements and reactions to collisions.
-/// </summary>
+//! @file BattleProjectileQSystem.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Projectile,BattleProjectileQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which controls projectile's movements and reactions to collisions.
+//! </summary>
 
 // System usings
 using System.Runtime.CompilerServices;

@@ -1,7 +1,7 @@
-/// @file BattleProjectileViewController.cs
-/// <summary>
-/// Handles projectile's sprite changes and it's trail.
-/// </summary>
+//! @file BattleProjectileViewController.cs
+//! <summary>
+//! Handles projectile's sprite changes and it's trail.
+//! </summary>
 
 // Unity usings
 using UnityEngine;
@@ -20,10 +20,10 @@ namespace Battle.View.Projectile
     /// </summary>
     public class BattleProjectileViewController : QuantumEntityViewComponent
     {
-        /// @anchor BattleProjectileViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleProjectileViewController-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] SpriteRenderer reference for projectile's sprite.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
@@ -40,9 +40,9 @@ namespace Battle.View.Projectile
         [Tooltip("TrailRenderer reference for projectile's trail")]
         [SerializeField] private TrailRenderer _trailRenderer;
 
-        [Tooltip("Sprite 0: Sadness\nSprite 1: Joy\nSprite 2: Playful\nSprite 3: Aggression\nSprite 4: Love")]
         /// <summary>[SerializeField] An array of projectile sprites.</summary>
         /// @ref BattleProjectileViewController-SerializeFields
+        [Tooltip("Sprite 0: Sadness\nSprite 1: Joy\nSprite 2: Playful\nSprite 3: Aggression\nSprite 4: Love")]
         [SerializeField] private Sprite[] _sprites;
 
         /// <summary>[SerializeField] An array of gradient colors for projectile's trail.</summary>
@@ -80,7 +80,7 @@ namespace Battle.View.Projectile
         [Tooltip("The amount by which each segment gets smaller compared to the previous one")]
         [SerializeField] private float _trailScaleDegreesAmount;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Public method that is called when entity is activated upon its creation.<br/>

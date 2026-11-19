@@ -1,6 +1,6 @@
 # Documenting Source code {#page-documentation-documenting-source-code}
 All aspects of **source code**, such as **files**, **methods** and **variables**, should be documented with clear and concise information.  
-Documentation should be written in **documentation comment blocks** using the `///` format.  
+Documentation should be written in **documentation comment blocks** using the `///` or `//!` format.  
 Different sections of the documentation should be separated by an empty line.  
 
 <br/>
@@ -20,25 +20,37 @@ See [[Circumventing unicode characters]](#page-documentation-doxygen-custom-comm
 <br/>
 
 ### Doxygen specific and non-Doxygen specific {#page-documentation-source-code-base-guidelines-doxygen-specific}
-Some parts of documentation in **source code** are only read by [Doxygen🡵], while others are recognized by the IDE or Unity. 
-This places some limitations on what formats can be used in certain contexts.  
+Some parts of documentation in **source code** are only read by [Doxygen🡵], while others are recognized by the IDE or Unity.  
+This places some limitations on what formats can be used in certain contexts.
 
-**Non-Doxygen specific** areas of code documentation:
-- **Class**, **method** and **variable** documentation:
+**Non-Doxygen specific**:  
+Documentation blocks attached to **Code symbols** like class **struct**, **method**, **field** and **property** are **Non-Doxygen specific** and should use the `///` format.  
+However not everything inside **Code symbol** documentation blocks is **Non-Doxygen specific**.
+
+- **Non-Doxygen specific** sections are:
   - **XML** `<summary>` Command
   - **XML** `<param>` Command
   - **XML** `<returns>` Command
 
-**Doxygen specific** areas of code documentation:
-- All other areas, such as:
-  - **File documentation** (A `<summary>` section inside a **File documentation** block is also **Doxygen specific**)
-  - Other areas of **class**, **method** and **variable** documentation
+**Doxygen specific**:  
+Everything in **File documentation** and **Documentation Grouping** blocks are **Doxygen specific** and should use the `//!` format.  
+As stated before not everything inside **Code symbol** documentation blocks is **Non-Doxygen specific**.  
+The [{detailed descriptions}] inside **Code symbol** documentation blocks are **Doxygen specific**.
+
+<br/>
+
+### Documentation comment blocks {#page-documentation-source-code-base-guidelines-comment-blocks}
+[Doxygen🡵] supports multiple **documentation comment** formats. See [[Documenting with Doxygen]](#page-documentation-doxygen-comment-blocks) for more information on these.  
+[[Non-Doxygen specific]](#page-documentation-source-code-base-guidelines-doxygen-specific) **documentation comment blocks** should use the `///` format.  
+[[Doxygen specific]](#page-documentation-source-code-base-guidelines-doxygen-specific) **documentation comment blocks** should use the `//!` format.
+
+<br/>
 
 ### Documentation commands {#page-documentation-source-code-base-guidelines-commands}
 [Doxygen🡵] supports various **commands** that can be used in **source code** documentation. See [[Documenting with Doxygen]](#page-documentation-doxygen-commands) 
 for more information on these.  
 
-Always use these **XML Commands** when documenting **files**, **classes**, **methods** and **variable**:
+Always use these **XML Commands** when documenting **files**, **classes**, **methods**, **structs**, **fields** and **properties**:
 - `<summary>`
 - `<param>`
 - `<returns>`
@@ -268,5 +280,6 @@ The format used for grouping **SerializeFields**. Example provided also has **Se
 
 ---
 
-[Doxygen🡵]:         https://www.doxygen.nl/index.html
-[{brief/summary}]:  #page-documentation-doxygen-terminology-brief-summary
+[Doxygen🡵]:                https://www.doxygen.nl/index.html
+[{brief/summary}]:         #page-documentation-doxygen-terminology-brief-summary
+[{detailed descriptions}]: #page-documentation-doxygen-terminology-detailed-description

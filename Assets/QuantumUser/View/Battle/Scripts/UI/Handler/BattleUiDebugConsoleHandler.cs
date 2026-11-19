@@ -1,7 +1,7 @@
-﻿/// @file BattleUiDebugConsoleHandler.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiDebugConsoleHandler} class which displays custom on-screen debug console.
-/// </summary>
+﻿//! @file BattleUiDebugConsoleHandler.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiDebugConsoleHandler} class which displays custom on-screen debug console.
+//! </summary>
 
 // System usings
 using System;
@@ -37,20 +37,19 @@ namespace Battle.View.UI
     /// See @cref{SetShow}
     public class BattleUiDebugConsoleHandler : MonoBehaviour
     {
-        /// @anchor BattleUiDebugConsoleHandler-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiDebugConsoleHandler-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] <see cref="UnityReferences"/> struct.</summary>
         /// @ref BattleUiDebugConsoleHandler-SerializeFields "SerializeFields"
         [Tooltip("UnityReferences struct")]
         [SerializeField] private UnityReferences _unity;
 
-        [Header("Settings")]
-
         /// <summary>[SerializeField] The max amount of entries.</summary>
         /// @ref BattleUiDebugConsoleHandler-SerializeFields "SerializeFields"
+        [Header("Settings")]
         [Tooltip("The max amount of entries")]
         [SerializeField] private int _entriesMax;
 
@@ -74,7 +73,7 @@ namespace Battle.View.UI
         [Tooltip("The lifetime of individual log entries in seconds")]
         [SerializeField] private float _entryLifetimeSec;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Sets the %UI element visibility.

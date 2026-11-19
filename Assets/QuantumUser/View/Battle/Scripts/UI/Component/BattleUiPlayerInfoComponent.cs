@@ -1,10 +1,10 @@
-/// @file BattleUiPlayerInfoComponent.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiPlayerInfoComponent} class which holds references related to a BattleUiPlayerInfo prefab.
-/// </summary>
-///
-/// This script:<br/>
-/// Holds references related to a BattleUiPlayerInfo prefab.
+//! @file BattleUiPlayerInfoComponent.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiPlayerInfoComponent} class which holds references related to a BattleUiPlayerInfo prefab.
+//! </summary>
+//!
+//! This script:<br/>
+//! Holds references related to a BattleUiPlayerInfo prefab.
 
 // Unity usings
 using UnityEngine;

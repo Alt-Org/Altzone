@@ -1,7 +1,7 @@
-/// @file BattleUiDebugOverlayHandler.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiDebugOverlayHandler} class which displays the debug info.
-/// </summary>
+//! @file BattleUiDebugOverlayHandler.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiDebugOverlayHandler} class which displays the debug info.
+//! </summary>
 
 // System usings
 using System.Collections.Generic;
@@ -19,10 +19,10 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiDebugOverlayHandler : MonoBehaviour
     {
-        /// @anchor BattleUiDebugOverlayHandler-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiDebugOverlayHandler-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to the GameObject which can be used to hide or show the overlay.</summary>
         /// @ref BattleUiDebugOverlayHandler-SerializeFields "SerializeFields"
@@ -54,7 +54,7 @@ namespace Battle.View.UI
         [Tooltip("The entry font size")]
         [SerializeField] private float _entryFontSize;
 
-        /// @}
+        //! @}
 
         /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => _view.activeSelf;

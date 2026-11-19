@@ -1,7 +1,7 @@
-/// @file BattleDebugOverlayLink.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation,BattleDebugOverlayLink} which is a wrapper class for handling debug info in Simulation.
-/// </summary>
+//! @file BattleDebugOverlayLink.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation,BattleDebugOverlayLink} which is a wrapper class for handling debug info in Simulation.
+//! </summary>
 
 
 // System usings

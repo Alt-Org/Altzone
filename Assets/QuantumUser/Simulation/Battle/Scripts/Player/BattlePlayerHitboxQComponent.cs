@@ -1,7 +1,7 @@
-/// @file BattlePlayerHitboxQComponent.cs
-/// <summary>
-/// Contains @cref{Quantum,BattlePlayerHitboxQComponent} partial struct, which adds a method for calculating normals to the Quantum Component.
-/// </summary>
+//! @file BattlePlayerHitboxQComponent.cs
+//! <summary>
+//! Contains @cref{Quantum,BattlePlayerHitboxQComponent} partial struct, which adds a method for calculating normals to the Quantum Component.
+//! </summary>
 
 //Quantum usings
 using Photon.Deterministic;

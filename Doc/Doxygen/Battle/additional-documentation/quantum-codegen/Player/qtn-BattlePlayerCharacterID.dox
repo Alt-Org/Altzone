@@ -1,11 +1,11 @@
-/// @file BattlePlayerCharacterID.qtn
-/// <summary>
-/// Contains an enum with all the characters in the game.
-/// </summary>
-///
-/// ## Generated Enums
-/// - @cref{Quantum,BattlePlayerCharacterID}  
-///   @copybrief Quantum.BattlePlayerCharacterID
+//! @file BattlePlayerCharacterID.qtn
+//! <summary>
+//! Contains an enum with all the characters in the game.
+//! </summary>
+//!
+//! ## Generated Enums
+//! - @cref{Quantum,BattlePlayerCharacterID}  
+//!   @copybrief Quantum.BattlePlayerCharacterID
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -15,117 +15,119 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerCharacterID.qtn}
+///
+// {
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::None
+    /// No character.
 
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::None
-/// <summary>No character.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character101
-/// <summary>Character 101.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character102
-/// <summary>Character 102.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character103
-/// <summary>Character 103.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character104
-/// <summary>Character 104.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character105
-/// <summary>Character 105.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character106
-/// <summary>Character 106.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character201
-/// <summary>Character 201.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character202
-/// <summary>Character 202.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character203
-/// <summary>Character 203.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character204
-/// <summary>Character 204.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character301
-/// <summary>Character 301.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character302
-/// <summary>Character 302.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character303
-/// <summary>Character 303.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character304
-/// <summary>Character 304.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character305
-/// <summary>Character 305.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character306
-/// <summary>Character 306.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character401
-/// <summary>Character 401.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character402
-/// <summary>Character 402.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character403
-/// <summary>Character 403.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character404
-/// <summary>Character 404.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character501
-/// <summary>Character 501.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character502
-/// <summary>Character 502.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character503
-/// <summary>Character 503.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character504
-/// <summary>Character 504.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character505
-/// <summary>Character 505.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character506
-/// <summary>Character 506.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character507
-/// <summary>Character 507.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character601
-/// <summary>Character 601.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character602
-/// <summary>Character 602.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character603
-/// <summary>Character 603.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character604
-/// <summary>Character 604.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character605
-/// <summary>Character 605.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character701
-/// <summary>Character 701.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character702
-/// <summary>Character 702.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character703
-/// <summary>Character 703.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character704
-/// <summary>Character 704.</summary>
-///
-/// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character705
-/// <summary>Character 705.</summary>
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character101
+    /// Character 101.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character102
+    /// Character 102.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character103
+    /// Character 103.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character104
+    /// Character 104.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character105
+    /// Character 105.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character106
+    /// Character 106.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character201
+    /// Character 201.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character202
+    /// Character 202.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character203
+    /// Character 203.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character204
+    /// Character 204.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character301
+    /// Character 301.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character302
+    /// Character 302.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character303
+    /// Character 303.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character304
+    /// Character 304.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character305
+    /// Character 305.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character306
+    /// Character 306.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character401
+    /// Character 401.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character402
+    /// Character 402.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character403
+    /// Character 403.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character404
+    /// Character 404.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character501
+    /// Character 501.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character502
+    /// Character 502.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character503
+    /// Character 503.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character504
+    /// Character 504.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character505
+    /// Character 505.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character506
+    /// Character 506.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character507
+    /// Character 507.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character601
+    /// Character 601.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character602
+    /// Character 602.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character603
+    /// Character 603.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character604
+    /// Character 604.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character605
+    /// Character 605.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character701
+    /// Character 701.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character702
+    /// Character 702.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character703
+    /// Character 703.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character704
+    /// Character 704.
+
+    /// @var Quantum::BattlePlayerCharacterID Quantum::BattlePlayerCharacterID::Character705
+    /// Character 705.
+// }

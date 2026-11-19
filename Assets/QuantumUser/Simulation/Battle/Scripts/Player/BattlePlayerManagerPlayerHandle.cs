@@ -1,9 +1,9 @@
-/// @file BattlePlayerManagerPlayerHandle.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerManager} partial class<br/>
-/// which contains @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle}
-/// and @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} structs.
-/// </summary>
+//! @file BattlePlayerManagerPlayerHandle.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Player,BattlePlayerManager} partial class<br/>
+//! which contains @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle}
+//! and @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} structs.
+//! </summary>
 
 // System usings
 using System.Diagnostics;
@@ -41,10 +41,10 @@ namespace Battle.QSimulation.Player
         {
             #region Public Static Methods
 
-            /// @anchor BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerSlotAndTeamNumberGetters
-            /// @name Player Slot and Team Number Getters
-            /// Methods for retrieving the [{Player's Slot and Team}](#page-concepts-player-slots-teams)
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerSlotAndTeamNumberGetters
+            //! @name Player Slot and Team Number Getters
+            //! Methods for retrieving the [{Player's Slot and Team}](#page-concepts-player-slots-teams)
+            //! @{
             #region Public Static Methods - Player Slot and TeamNumber getters
 
             /// <summary>
@@ -81,12 +81,12 @@ namespace Battle.QSimulation.Player
             public static BattleTeamNumber GetTeamNumber(BattlePlayerSlot slot) => PlayerHandleInternal.GetTeamNumber(slot);
 
             #endregion Public Static Methods - Player Slot and TeamNumber getters
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerHandleGetters
-            /// @name Player Handle Getters
-            /// Methods for retrieving the player's handle
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandle-PublicStaticMethods-PlayerHandleGetters
+            //! @name Player Handle Getters
+            //! Methods for retrieving the player's handle
+            //! @{
             #region Public Static Methods - Player Handle Getters
 
             /// <summary>
@@ -148,10 +148,10 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Static Methods - Player Handle Getters
-            /// @}
+            //! @}
 
-            /// @name Other Public Static Methods
-            /// @{
+            //! @name Other Public Static Methods
+            //! @{
 
             /// <summary>
             /// Checks if a given <paramref name="characterNumber"/> is valid.
@@ -165,11 +165,11 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static bool IsValidCharacterNumber(int characterNumber) => PlayerHandleInternal.IsValidCharacterNumber(characterNumber);
 
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerManager-PlayerHandle-PublicStaticMethods-LowLevel
-            /// @name Low Level Methods
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandle-PublicStaticMethods-LowLevel
+            //! @name Low Level Methods
+            //! @{
             #region Public static methods - Low level
 
             /// <summary>
@@ -209,7 +209,7 @@ namespace Battle.QSimulation.Player
             public static int Low_GetPlayerIndex(BattlePlayerSlot slot) => PlayerHandleInternal.GetPlayerIndex(slot);
 
             #endregion Public static methods - Low level
-            /// @}
+            //! @}
 
             #endregion Public Static Methods
 
@@ -229,10 +229,10 @@ namespace Battle.QSimulation.Player
             public readonly PlayerRef PlayerRef
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.PlayerRef; }
 
-            /// @anchor BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState
-            /// @name Player State
-            /// Player state properties
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandle-PublicProperties-PlayerState
+            //! @name Player State
+            //! Player state properties
+            //! @{
             #region Public Properties - Player State
 
             /// <summary>
@@ -288,12 +288,12 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Properties - Player State
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerManager-PlayerHandle-PublicProperties-PlayerCharacter
-            /// @name Player Character
-            /// Player character properties
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandle-PublicProperties-PlayerCharacter
+            //! @name Player Character
+            //! Player character properties
+            //! @{
             #region Public Properties - Player Character
 
             /// <summary>
@@ -319,10 +319,10 @@ namespace Battle.QSimulation.Player
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => _internalHandle.SelectedCharacterState; }
 
             #endregion Public Properties - Player Character
-            /// @}
+            //! @}
 
-            /// @name Other Public Properties
-            /// @{
+            //! @name Other Public Properties
+            //! @{
 
             /// <summary>
             /// Public getter and setter for <em>RespawnTimer</em>.
@@ -335,16 +335,16 @@ namespace Battle.QSimulation.Player
                 set => _internalHandle.RespawnTimer = value;
             }
 
-            /// @}
+            //! @}
 
             #endregion Public Properties
 
             #region Public Methods
 
-            /// @anchor BattlePlayerManager-PlayerHandle-PublicMethods-PlayerPlayStateSetters
-            /// @name Player PlayState Setters
-            /// Player PlayState Setters
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandle-PublicMethods-PlayerPlayStateSetters
+            //! @name Player PlayState Setters
+            //! Player PlayState Setters
+            //! @{
             #region Public Methods - Player PlayState Setters
 
             /// <summary>
@@ -382,12 +382,12 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Methods - Player PlayState Setters
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerManager-PlayerHandle-PublicMethods-PlayerCharacterMethods
-            /// @name Player Character Methods
-            /// Player Character Methods
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandle-PublicMethods-PlayerCharacterMethods
+            //! @name Player Character Methods
+            //! Player Character Methods
+            //! @{
             #region Public Methods - Player Character Methods
 
             /// <summary>
@@ -441,7 +441,7 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Methods - Player Character Methods
-            /// @}
+            //! @}
 
             #endregion Public Methods
             #region Private
@@ -482,10 +482,10 @@ namespace Battle.QSimulation.Player
         {
             #region Public Static Methods
 
-            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerSlotAndTeamNumberGetters
-            /// @name Player Slot and Team Number Getters
-            /// Methods for retrieving the [{Player's Slot and Team}](#page-concepts-player-slots-teams).
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerSlotAndTeamNumberGetters
+            //! @name Player Slot and Team Number Getters
+            //! Methods for retrieving the [{Player's Slot and Team}](#page-concepts-player-slots-teams).
+            //! @{
             #region Public Static Methods - Player Slot and TeamNumber getters
 
             /// <summary>
@@ -544,12 +544,12 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Static Methods - Player Slot and TeamNumber getters
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters
-            /// @name Player Index Getters
-            /// Methods for retrieving the @ref BattlePlayerManager-PlayerIndex "Player's Index".
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters
+            //! @name Player Index Getters
+            //! Methods for retrieving the @ref BattlePlayerManager-PlayerIndex "Player's Index".
+            //! @{
             #region Public Static Methods - Player Index Getters
             /// <summary>
             /// Maps <paramref name="slot"/> to player index.
@@ -632,12 +632,12 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Static Methods - Player Index Getters
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerHandleGetters
-            /// @name Player Handle Getters
-            /// Methods for creating the player's handle.
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerHandleGetters
+            //! @name Player Handle Getters
+            //! Methods for creating the player's handle.
+            //! @{
             #region Public Static Methods - Player Handle Getters
 
             /// <summary>
@@ -683,10 +683,10 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Static Methods - Player Handle Getters
-            /// @}
+            //! @}
 
-            /// @name Other Public Static Methods
-            /// @{
+            //! @name Other Public Static Methods
+            //! @{
 
             /// <summary>
             /// Sets all players' play states to a given <paramref name="playerPlayState"/>.
@@ -764,7 +764,7 @@ namespace Battle.QSimulation.Player
                 return true;
             }
 
-            /// @}
+            //! @}
 
             #endregion Public Static Methods
 
@@ -790,10 +790,10 @@ namespace Battle.QSimulation.Player
                 set => _playerManagerData->PlayerRefs[Index] = value;
             }
 
-            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState
-            /// @name Player State
-            /// %Player state properties
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerState
+            //! @name Player State
+            //! %Player state properties
+            //! @{
             #region Public Properties - Player State
 
             /// <summary>
@@ -876,12 +876,12 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Properties - Player State
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter
-            /// @name Player Character
-            /// %Player character properties
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-PlayerCharacter
+            //! @name Player Character
+            //! %Player character properties
+            //! @{
             #region Public Properties - Player Character
 
             /// <summary>
@@ -932,11 +932,11 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Properties - Player Character
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-OtherPublicProperties
-            /// @name Other Public Properties
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandleInternal-PublicProperties-OtherPublicProperties
+            //! @name Other Public Properties
+            //! @{
 
             /// <summary>
             /// Gets/Sets player's <em>RespawnTimer</em>.
@@ -962,7 +962,7 @@ namespace Battle.QSimulation.Player
             public readonly FPVector2 DefaultSpawnPosition
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => GetCharacterDefaultSpawnPosition(1); }
 
-            /// @}
+            //! @}
 
             #endregion Public Properties
 
@@ -998,10 +998,10 @@ namespace Battle.QSimulation.Player
 
             #region Public Methods - Player Character
 
-            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterNumber
-            /// @name Player Character Number Methods
-            /// Methods for handling [{Character Numbers}](#page-concepts-player-character-entity-character-number).
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterNumber
+            //! @name Player Character Number Methods
+            //! Methods for handling [{Character Numbers}](#page-concepts-player-character-entity-character-number).
+            //! @{
             #region Public Methods - Player Character - Character Number
 
             /// <summary>
@@ -1042,12 +1042,12 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Methods - Player Character - Character Number
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterEntity
-            /// @name Player Character Entity Methods
-            /// Methods for handling character Entities
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterEntity
+            //! @name Player Character Entity Methods
+            //! Methods for handling character Entities
+            //! @{
             #region Public Methods - Player Character - Character Entity
 
             /// <summary>
@@ -1125,12 +1125,12 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Methods - Player Character - Character Entity
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState
-            /// @name Player Character State Methods
-            /// Methods for handling [{Character States}](#page-concepts-player-character-entity-character-state).
-            /// @{
+            //! @anchor BattlePlayerManager-PlayerHandleInternal-PublicMethods-PlayerCharacter-CharacterState
+            //! @name Player Character State Methods
+            //! Methods for handling [{Character States}](#page-concepts-player-character-entity-character-state).
+            //! @{
             #region Public Methods - Player Character - Character State
 
             /// <summary>
@@ -1214,7 +1214,7 @@ namespace Battle.QSimulation.Player
             }
 
             #endregion Public Methods - Player Character - Character State
-            /// @}
+            //! @}
 
             #endregion Public Methods - Player Character
 

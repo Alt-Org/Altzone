@@ -1,7 +1,7 @@
-/// @file BattleDebugLogger.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation,BattleDebugLogger} class which provides custom debug logging methods for use in %Battle.
-/// </summary>
+//! @file BattleDebugLogger.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation,BattleDebugLogger} class which provides custom debug logging methods for use in %Battle.
+//! </summary>
 
 //#define DEBUG_ASSERT_ENABLED_OVERRIDE
 
@@ -168,10 +168,10 @@ namespace Battle.QSimulation
             s_addLogToOnScreenConsoleFnRef = addLogToOnScreenConsoleFnRef;
         }
 
-        /// @anchor BattleDebugLogger-CreateMethods
-        /// @name Create Methods
-        /// Methods for creating a BattleDebugLogger instance.
-        /// @{
+        //! @anchor BattleDebugLogger-CreateMethods
+        //! @name Create Methods
+        //! Methods for creating a BattleDebugLogger instance.
+        //! @{
         #region Public Create Methods
 
         /// <summary>
@@ -217,14 +217,14 @@ namespace Battle.QSimulation
         }
 
         #endregion Create Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattleDebugLogger-StaticLogMethods
-        /// @name Static Log Methods
-        /// Static Log methods that can be used without a BattleDebugLogger instance.
-        ///
-        /// See @ref BattleDebugLogger-LogMethodsDoc "Log Methods Overview" for more info.
-        /// @{
+        //! @anchor BattleDebugLogger-StaticLogMethods
+        //! @name Static Log Methods
+        //! Static Log methods that can be used without a BattleDebugLogger instance.
+        //!
+        //! See @ref BattleDebugLogger-LogMethodsDoc "Log Methods Overview" for more info.
+        //! @{
         #region Public Static Log Methods
 
         /// <summary>
@@ -585,14 +585,14 @@ namespace Battle.QSimulation
         }
 
         #endregion Public Static Log Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattleDebugLogger-StaticAssertMethods
-        /// @name Static Assert Methods
-        /// Static Assert Methods that can be used without a BattleDebugLogger instance.
-        ///
-        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert Methods Overview" for more info.
-        /// @{
+        //! @anchor BattleDebugLogger-StaticAssertMethods
+        //! @name Static Assert Methods
+        //! Static Assert Methods that can be used without a BattleDebugLogger instance.
+        //!
+        //! See @ref BattleDebugLogger-AssertMethodsDoc "Assert Methods Overview" for more info.
+        //! @{
         #region Public Static Assert Methods
 
         /// <summary>
@@ -936,14 +936,14 @@ namespace Battle.QSimulation
         }
 
         #endregion Public Static Assert Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattleDebugLogger-LogMethods
-        /// @name Log Methods
-        /// Public Log methods that can only be used with a BattleDebugLogger instance.
-        ///
-        /// See @ref BattleDebugLogger-LogMethodsDoc "Log Methods Overview" for more info.
-        /// @{
+        //! @anchor BattleDebugLogger-LogMethods
+        //! @name Log Methods
+        //! Public Log methods that can only be used with a BattleDebugLogger instance.
+        //!
+        //! See @ref BattleDebugLogger-LogMethodsDoc "Log Methods Overview" for more info.
+        //! @{
         #region Public Log Methods
 
         /// <summary>
@@ -1286,14 +1286,14 @@ namespace Battle.QSimulation
         }
 
         #endregion Public Log Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattleDebugLogger-AssertMethods
-        /// @name Assert Methods
-        /// Public Assert methods that can only be used with a BattleDebugLogger instance.
-        ///
-        /// See @ref BattleDebugLogger-AssertMethodsDoc "Assert Methods Overview" for more info.
-        /// @{
+        //! @anchor BattleDebugLogger-AssertMethods
+        //! @name Assert Methods
+        //! Public Assert methods that can only be used with a BattleDebugLogger instance.
+        //!
+        //! See @ref BattleDebugLogger-AssertMethodsDoc "Assert Methods Overview" for more info.
+        //! @{
         #region Public Assert Methods
 
         /// <summary>
@@ -1625,7 +1625,7 @@ namespace Battle.QSimulation
         }
 
         #endregion Public Assert Methods
-        /// @}
+        //! @}
 
         /// <summary>Constant format for Log messages when called through static methods.</summary>
         private const string StaticFormatUnity                          = "[Battle] [{0:D6}] [{1}] {2}";
