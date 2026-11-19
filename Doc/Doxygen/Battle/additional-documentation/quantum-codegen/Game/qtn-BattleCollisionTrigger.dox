@@ -4,18 +4,18 @@
 //! </summary>
 //!
 //! ## Generated Enums
-//! - @cref{Quantum,BattleCollisionTriggerType}
+//! - @cref{Quantum,BattleCollisionTriggerType}  
 //!   @copybrief Quantum.BattleCollisionTriggerType
 //!
 //! ## Generated Structs
-//! - @cref{Quantum,BattleCollisionTriggerQComponent}
+//! - @cref{Quantum,BattleCollisionTriggerQComponent}  
 //!   @copybrief Quantum.BattleCollisionTriggerQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
 /// @enum Quantum::BattleCollisionTriggerType
 /// <summary>
-/// Identifies the type of a Collision Trigger.
+/// Identifies the type of a Collision Trigger.  
 /// Used by the @cref{Quantum,BattleCollisionTriggerQComponent}.
 /// </summary>
 ///
@@ -46,7 +46,7 @@
 /// Component that marks the entity as a Collision Trigger and contains the type of the Collision Trigger component that the entity has.
 /// </summary>
 ///
-/// Streamlines identifying entities as something that can be collided with
+/// Streamlines identifying entities as something that can be collided with  
 /// and retrieving the component that is unique to the type of entity that has been collided with.
 ///
 /// @bigtext{Generated from @ref BattleCollisionTrigger.qtn}

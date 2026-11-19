@@ -4,16 +4,16 @@
 //! </summary>
 //!
 //! ## Generated Structs
-//! - @cref{Quantum,BattleEntityLink}
+//! - @cref{Quantum,BattleEntityLink}  
 //!   @copybrief Quantum.BattleEntityLink
-//! - @cref{Quantum,BattleCompoundEntityQComponent}
+//! - @cref{Quantum,BattleCompoundEntityQComponent}  
 //!   @copybrief Quantum.BattleCompoundEntityQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
 /// @struct Quantum::BattleEntityLink
 /// <summary>
-/// Link structure used to reference %Quantum entity and its relative position.
+/// Link structure used to reference %Quantum entity and its relative position.  
 /// Used by @cref{Quantum,BattleCompoundEntityQComponent} for entity associations.
 /// </summary>
 ///
@@ -47,11 +47,11 @@
 
 /// @struct Quantum::BattleCompoundEntityQComponent
 /// <summary>
-/// Component that stores one or more **%Quantum entity** links for **Compound Entities**.
+/// Component that stores one or more **%Quantum entity** links for **Compound Entities**.  
 /// Used by @cref{Battle.QSimulation.Game,BattleEntityManager} to manage **Compound Entities**.
 /// </summary>
 ///
-/// See [{Entity Manager}](#page-concepts-entity-management-entity-manager) for more info.
+/// See [{Entity Manager}](#page-concepts-entity-management-entity-manager) for more info.  
 /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
 ///
 /// @bigtext{Generated from @ref BattleCompoundEntity.qtn}

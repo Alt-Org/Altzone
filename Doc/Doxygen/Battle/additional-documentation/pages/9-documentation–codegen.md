@@ -285,13 +285,13 @@ component ExampleComponent
 //! </summary>
 //!
 //! ## Generated Enums
-//! - @cref{Quantum,ExampleEnum}
+//! - @cref{Quantum,ExampleEnum}  
 //!   @copybrief Quantum.ExampleEnum
 //!
 //! ## Generated Structs
-//! - @cref{Quantum,ExampleStruct}
+//! - @cref{Quantum,ExampleStruct}  
 //!   @copybrief Quantum.ExampleStruct
-//! - @cref{Quantum,ExampleComponent}
+//! - @cref{Quantum,ExampleComponent}  
 //!   @copybrief Quantum.ExampleComponent
 
 // ---------------------------------------------------------------------------------------------------- //

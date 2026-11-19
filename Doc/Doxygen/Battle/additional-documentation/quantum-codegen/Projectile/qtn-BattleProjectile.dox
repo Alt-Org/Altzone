@@ -4,20 +4,20 @@
 //! </summary>
 //!
 //! ## Generated Enums
-//! - @cref{Quantum,BattleProjectileCollisionFlags}
+//! - @cref{Quantum,BattleProjectileCollisionFlags}  
 //!   @copybrief Quantum.BattleProjectileCollisionFlags
 //!
 //! ## Generated Structs
-//! - @cref{Quantum,BattleProjectileQComponent}
+//! - @cref{Quantum,BattleProjectileQComponent}  
 //!   @copybrief Quantum.BattleProjectileQComponent
-//! - @cref{Quantum,BattleProjectileTriggerQComponent}
+//! - @cref{Quantum,BattleProjectileTriggerQComponent}  
 //!   @copybrief Quantum.BattleProjectileTriggerQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
 /// @enum Quantum::BattleProjectileCollisionFlags
 /// <summary>
-/// Flags that track collisions during one frame.
+/// Flags that track collisions during one frame.  
 /// This is used to prevent multiple collisions happening during the same frame.
 /// </summary>
 ///
@@ -62,7 +62,7 @@
     /// The true emotion state of the projectile.
     /// </summary>
     ///
-    /// Special emotions temporarily override the true state and are not saved to this. Currently the only special emotion state is Love.
+    /// Special emotions temporarily override the true state and are not saved to this. Currently the only special emotion state is Love.  
     /// The emotion in use by the projectile is saved in @cref{Quantum.BattleProjectileQComponent,EmotionCurrent}.
 
     /// @var BattleEmotionState Quantum::BattleProjectileQComponent::EmotionCurrent
@@ -70,12 +70,12 @@
     /// Current emotion in use by the projectile, including special emotion states.
     /// </summary>
     ///
-    /// Normal and special emotions that override the true underlying state are saved to this. Currently the only special state is Love.
+    /// Normal and special emotions that override the true underlying state are saved to this. Currently the only special state is Love.  
     /// The true emotion of the projectile is also always saved in @cref{Quantum.BattleProjectileQComponent,EmotionBase}.
 
     /// @var array Quantum::BattleProjectileQComponent::CollisionFlags
     /// <summary>
-    /// Used to prevent hitting multiple entities per frame.
+    /// Used to prevent hitting multiple entities per frame.  
     /// Property for accessing the @cref{Quantum.BattleProjectileQComponent,_CollisionFlags_} array of flags for projectile's collisions.
     /// </summary>
 
@@ -130,8 +130,8 @@
 
     /// @var byte Quantum::BattleProjectileQComponent::_CollisionFlags_
     /// <summary>
-    /// An array used internally for holding flags for projectile's collisions.
-    /// Used to prevent hitting multiple entities per frame.
+    /// An array used internally for holding flags for projectile's collisions.  
+    /// Used to prevent hitting multiple entities per frame.  
     /// Use @cref{Quantum.BattleProjectileQComponent,CollisionFlags} for accessing the flags.
     /// </summary>
 
