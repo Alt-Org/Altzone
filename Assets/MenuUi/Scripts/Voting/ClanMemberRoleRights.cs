@@ -53,8 +53,7 @@ public class ClanMemberRoleRights : MonoBehaviour
 
         currentRoleText.text = _currentMember.Role.name;
 
-        defaultContainer.SetActive(true);
-        newRoleContainer.SetActive(false);
+        SetNewRoleView(false);
 
         LoadClanData();
         PopulateVotes(_clanData);
@@ -76,16 +75,17 @@ public class ClanMemberRoleRights : MonoBehaviour
         }
     }
 
-    void OnUnload()
+    void OnDisable()
     {
         roleDropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
         saveRoleButton.onClick.RemoveListener(OnStartVoteClicked);
         cancelNewRoleButton.onClick.RemoveListener(CancelNewRole);
+        ClosePopup();
     }
 
     private void CancelNewRole() {
-        defaultContainer.SetActive(true);
-        newRoleContainer.SetActive(false);
+        SetNewRoleView(false);
+
         roleDropdown.SetValueWithoutNotify(_previousValidIndex);
     }
 
@@ -200,8 +200,8 @@ public class ClanMemberRoleRights : MonoBehaviour
             return;
         }
 
-        newRoleContainer.SetActive(false);
-        defaultContainer.SetActive(true);
+        SetNewRoleView(false);
+
         ShowRole(_clanData.ClanRoles[index]);
     }
 
@@ -219,7 +219,9 @@ public class ClanMemberRoleRights : MonoBehaviour
         bool? result = null;
 
         PollManager.CreateRolePoll(_currentMember.Id, _draft, c => result = c);
-        newRoleContainer.SetActive(false);
+
+        SetNewRoleView(false);
+
         ClosePopup();
     }
 
@@ -232,14 +234,21 @@ public class ClanMemberRoleRights : MonoBehaviour
             rights = new ClanRoles.ClanRights(),
         };
 
-        newRoleContainer.SetActive(true);
-        defaultContainer.SetActive(false);
+        SetNewRoleView(true);
 
         // nameInput.text = "";
         saveRoleButton.interactable = true;
     }
 
-    public static string GetDisplayName(MemberRights right) => right switch
+    private void SetNewRoleView(bool isNewRole)
+    {
+        if (newRoleContainer == null || defaultContainer == null) return;
+
+        newRoleContainer.SetActive(isNewRole);
+        defaultContainer.SetActive(!isNewRole);
+    }
+
+    private static string GetDisplayName(MemberRights right) => right switch
     {
         MemberRights.CanEditHome     => "Edit home",
         MemberRights.CanEditClanData => "Edit clan data",
