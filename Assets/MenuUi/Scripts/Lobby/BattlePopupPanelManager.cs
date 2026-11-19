@@ -32,7 +32,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     {
         LobbyManager.OnMatchmakingRoomEntered += SwitchToMatchmakingPanel;
         SignalBus.OnCustomRoomSettingsRequested += OpenCustomRoomSettings;
-        InRoomController.OnLeaveRoom += ReturnToMain;
+        CustomRoomController.OnLeaveRoom += ReturnToMain;
         CharacterConfirmPanelHandler.OnLockCharacters += SwitchRoom;
         WireMainPanelButtons();
         WireCreateRoomButtons();
@@ -42,7 +42,7 @@ public class BattlePopupPanelManager : MonoBehaviour
     {
         LobbyManager.OnMatchmakingRoomEntered -= SwitchToMatchmakingPanel;
         SignalBus.OnCustomRoomSettingsRequested -= OpenCustomRoomSettings;
-        InRoomController.OnLeaveRoom -= ReturnToMain;
+        CustomRoomController.OnLeaveRoom -= ReturnToMain;
         CharacterConfirmPanelHandler.OnLockCharacters -= SwitchRoom;
     }
 
