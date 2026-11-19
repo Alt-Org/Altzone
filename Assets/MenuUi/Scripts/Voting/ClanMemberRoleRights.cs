@@ -36,8 +36,9 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     [SerializeField] private TMP_InputField nameInput;
     [SerializeField] private Button saveRoleButton;
-    [SerializeField] private Button cancelRoleButton;
+    [SerializeField] private Button cancelNewRoleButton;
     [SerializeField] private GameObject newRoleContainer;
+    [SerializeField] private GameObject defaultContainer;
 
     private int _previousValidIndex;
     private string _divider = "--------";
@@ -52,16 +53,21 @@ public class ClanMemberRoleRights : MonoBehaviour
 
         currentRoleText.text = _currentMember.Role.name;
 
+        defaultContainer.SetActive(true);
+        newRoleContainer.SetActive(false);
+
         LoadClanData();
         PopulateVotes(_clanData);
         SelectCurrentMemberRole();
     }
+
     public void ClosePopup() => popup.SetActive(false);
 
     void Start()
     {
         roleDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
         saveRoleButton.onClick.AddListener(OnStartVoteClicked);
+        cancelNewRoleButton.onClick.AddListener(CancelNewRole);
         newRoleContainer.SetActive(false);
 
         if (CurrentMember.Role.name != null)
@@ -74,6 +80,13 @@ public class ClanMemberRoleRights : MonoBehaviour
     {
         roleDropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
         saveRoleButton.onClick.RemoveListener(OnStartVoteClicked);
+        cancelNewRoleButton.onClick.RemoveListener(CancelNewRole);
+    }
+
+    private void CancelNewRole() {
+        defaultContainer.SetActive(true);
+        newRoleContainer.SetActive(false);
+        roleDropdown.SetValueWithoutNotify(_previousValidIndex);
     }
 
     private void LoadClanData()
@@ -113,6 +126,7 @@ public class ClanMemberRoleRights : MonoBehaviour
     private void SelectCurrentMemberRole()
     {
         int index = _clanData.ClanRoles.FindIndex(r => r.name == CurrentMember.Role.name);
+        _previousValidIndex = index;
         if (index == -1) return;
 
         roleDropdown.SetValueWithoutNotify(index);
@@ -149,9 +163,10 @@ public class ClanMemberRoleRights : MonoBehaviour
             .Select(right => GetDisplayName(right))
             .ToList();
 
-        currentSelectionInfo.text = allowedRights.Count > 0
-            ? $"Currently existing rights for {_selectedRole.name}:\n- {string.Join("\n- ", allowedRights)}"
-            : $"none";
+        currentSelectionInfo.text = $"Currently existing rights for {_selectedRole.name}:\n"
+                                    + (allowedRights.Count > 0
+                                        ? $"- {string.Join("\n- ", allowedRights)}"
+                                        : $"none");
     }
 
     private void RefreshRightToggle()
@@ -164,21 +179,21 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     private void OnDropdownValueChanged(int index)
     {
-        if (roleDropdown.options[index].text == _divider)
-        {
-            roleDropdown.SetValueWithoutNotify(_previousValidIndex);
-        }
-        else
-        {
-            _previousValidIndex = index;
-        }
-
         if (index == _clanData.ClanRoles.Count)
         {
             NewRole();
             return;
         }
-        else if (index > _clanData.ClanRoles.Count + 1)
+
+        if (roleDropdown.options[index].text == _divider)
+        {
+            roleDropdown.SetValueWithoutNotify(_previousValidIndex);
+            return;
+        }
+
+        _previousValidIndex = index;
+
+        if (index > _clanData.ClanRoles.Count + 1)
         {
             // +2, we need to count the divider too
             ShowRight((MemberRights)index - (_clanData.ClanRoles.Count + 2));
@@ -186,6 +201,7 @@ public class ClanMemberRoleRights : MonoBehaviour
         }
 
         newRoleContainer.SetActive(false);
+        defaultContainer.SetActive(true);
         ShowRole(_clanData.ClanRoles[index]);
     }
 
@@ -217,7 +233,9 @@ public class ClanMemberRoleRights : MonoBehaviour
         };
 
         newRoleContainer.SetActive(true);
-        nameInput.text = "";
+        defaultContainer.SetActive(false);
+
+        // nameInput.text = "";
         saveRoleButton.interactable = true;
     }
 
