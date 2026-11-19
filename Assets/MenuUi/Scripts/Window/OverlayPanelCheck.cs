@@ -42,6 +42,9 @@ namespace MenuUi.Scripts.Window
         public delegate void ChangePopupInfo(InfoLevel level, string message);
         public static event ChangePopupInfo OnChangePopupInfo;
 
+        public delegate void UpdateButtonInteractable();
+        public static event UpdateButtonInteractable OnUpdateButtonInteractable;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -117,6 +120,7 @@ namespace MenuUi.Scripts.Window
                     glow.gameObject.SetActive(isCurrentWindow);
                 }
             } //for
+            OnUpdateButtonInteractable?.Invoke();
         } //updatebuttoncontent
 
         public void ToggleOverlay(bool value)
