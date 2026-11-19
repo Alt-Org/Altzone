@@ -43,16 +43,16 @@ namespace MenuUi.Scripts.Window
             var components = new HashSet<Component>();
             foreach (var text in canvas.GetComponentsInChildren<TextMeshProUGUI>(includeInactive: true))
             {
-                CheckFontName(components, text, knownFontNames, text.font.name);
+                CheckFontName(components, text, knownFontNames, text.font ? text.font.name : string.Empty);
             }
             foreach (var text in canvas.GetComponentsInChildren<Text>(includeInactive: true))
             {
-                CheckFontName(components, text, knownFontNames, text.font.name);
+                CheckFontName(components, text, knownFontNames, text.font? text.font.name :string.Empty);
             }
             // This selects TextMeshProUGUI instances as well because they inherit from TMP_Text.
             foreach (var text in canvas.GetComponentsInChildren<TMP_Text>(includeInactive: true))
             {
-                CheckFontName(components, text, knownFontNames, text.font.name);
+                CheckFontName(components, text, knownFontNames, text.font ? text.font.name : string.Empty);
             }
         }
 
@@ -67,16 +67,18 @@ namespace MenuUi.Scripts.Window
             var isTmpText = component.GetType() == typeof(TMP_Text);
             var iTextMeshProUGUI = component.GetType() == typeof(TextMeshProUGUI);
             var isValidTextType = iTextMeshProUGUI && !isTmpText;
+            var hasFont = !string.IsNullOrEmpty(fontName);
             var isKnownFont = false;
-            foreach (var knownFontName in knownFontNames)
-            {
-                if (fontName != knownFontName)
+            if(hasFont)
+                foreach (var knownFontName in knownFontNames)
                 {
-                    continue;
+                    if (fontName != knownFontName)
+                    {
+                        continue;
+                    }
+                    isKnownFont = true;
+                    break;
                 }
-                isKnownFont = true;
-                break;
-            }
             if (isValidTextType && isKnownFont)
             {
                 // Nothing to complain.
@@ -85,7 +87,7 @@ namespace MenuUi.Scripts.Window
             var componentText = isValidTextType ? component.name
                 : component is TMP_Text ? $"{RichText.Yellow(component.name)} <i>text type '{component.GetType().Name}' is deprecated</i>"
                 : $"{RichText.Yellow(component.name)} <i>text type '{component.GetType().Name}' is old/legacy</i>";
-            var fontText = isKnownFont ? fontName : $"{RichText.Yellow(fontName)} <i>should not use this font</i>";
+            var fontText = hasFont ? isKnownFont ? fontName : $"{RichText.Yellow(fontName)} <i>should not use this font</i>": $" <i>There is {RichText.Yellow("No")} font found</i>";
             var marker = "<color=orange>*</color>";
             if (isKnownFont)
             {
