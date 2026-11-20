@@ -17,11 +17,11 @@ namespace MenuUi.Scripts.Signals
 {
     public static partial class SignalBus
     {
-        public delegate void BattlePopupRequestedHandler(MatchmakingType lobbygameType, MatchmakingType actualGameType, GameType gameType);
+        public delegate void BattlePopupRequestedHandler(MatchmakingType lobbygameType, MatchmakingType actualGameType, GameType gameType, int teamSize);
         public static event BattlePopupRequestedHandler OnBattlePopupRequested;
-        public static void OnBattlePopupRequestedSignal(MatchmakingType lobbygameType, MatchmakingType actualGameType = MatchmakingType.None, GameType gameType = GameType.BattlePingPong)
+        public static void OnBattlePopupRequestedSignal(MatchmakingType lobbygameType, MatchmakingType actualGameType = MatchmakingType.None, GameType gameType = GameType.BattlePingPong, int teamSize = 2)
         {
-            OnBattlePopupRequested?.Invoke(lobbygameType, actualGameType, gameType);
+            OnBattlePopupRequested?.Invoke(lobbygameType, actualGameType, gameType, teamSize);
         }
 
         public delegate void CloseBattlePopupRequestedHandler();
@@ -62,6 +62,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
         public static InLobbyController Instance { get; private set; }
         public static MatchmakingType SelectedMatchmakingType { get; private set; }
         public static GameType SelectedGameType { get; private set; }
+        public static int SelectedTeamSize { get; private set; } = 2;
         public static MatchmakingType SelectedPremadeTargetMatchmakingType { get; private set; } = MatchmakingType.Clan2v2;
         private static string _pendingFriendLobbyInvitePlayerId;
 
@@ -157,7 +158,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
             var playerCount = PhotonRealtimeClient.CountOfPlayers;
             _topInfoPanel.LobbyText = new string[2] { _currentRegion, PhotonRealtimeClient.GetPing().ToString()};
             _topInfoPanel.PlayerCountText = playerCount.ToString();
-            _topInfoPanel.MatchmakingCountText = PhotonRealtimeClient.CurrentRoomPlayerCount.ToString();
+            _topInfoPanel.MatchmakingCountText = LobbyManager.ServerMatchmakingPlayerCount.ToString();
         }
 
         /*public void OnDisconnected(DisconnectCause cause)
@@ -171,8 +172,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
         }*/
 
 
-        private void OpenWindow(MatchmakingType matchmakingType, MatchmakingType actualMatchmakingType = MatchmakingType.None, GameType gameType = GameType.BattlePingPong)
+        private void OpenWindow(MatchmakingType matchmakingType, MatchmakingType actualMatchmakingType = MatchmakingType.None, GameType gameType = GameType.BattlePingPong, int teamSize = 2)
         {
+            SelectedTeamSize = Mathf.Clamp(teamSize, 1, 2);
             _popupContents.SetActive(true);
             // Ensure top info shows current values when popup opens
             RefreshTopInfo();
@@ -202,15 +204,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     return;
                 case MatchmakingType.Clan2v2:
                 case MatchmakingType.Random2v2:
-                    // Treat persistent queue rooms as matchmaking state so reopening the popup shows matchmaking panel
-                    bool inQueueRoom = false;
-                    try
-                    {
-                        var curr = PhotonRealtimeClient.LobbyCurrentRoom;
-                        if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey)) inQueueRoom = true;
-                    }
-                    catch { }
-
                     bool currentRoomGameTypeMatches = false;
                     try
                     {
@@ -218,17 +211,18 @@ namespace MenuUi.Scripts.Lobby.InLobby
                         if (currRoom != null)
                         {
                             var gt = currRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey);
-                            currentRoomGameTypeMatches = gt == (int)matchmakingType;
+                            currentRoomGameTypeMatches = gt == (int)matchmakingType
+                                && currRoom.GetCustomProperty<int>(PhotonBattleRoom.TeamSizeKey, 2) == SelectedTeamSize;
                         }
                     }
                     catch { }
 
-                    if ((PhotonRealtimeClient.InMatchmakingRoom || inQueueRoom) && currentRoomGameTypeMatches)
+                    if (LobbyManager.IsServerMatchmakingActive)
                     {
-                        _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
+                        _roomSwitcher.SwitchToMatchmakingPanel(LobbyManager.IsLocalServerMatchmakingOwner);
                         return;
                     }
-                    else if (PhotonRealtimeClient.InRoom) // If we are in a room
+                    if (PhotonRealtimeClient.InRoom) // If we are in a custom or premade room
                     {
                         // Checking if the game type changed, if it didn't we don't want to do anything but if it did we leave the room
                         if (currentRoomGameTypeMatches)
@@ -257,12 +251,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
                     }
                     catch { }
 
-                    if (PhotonRealtimeClient.InMatchmakingRoom && currentFriendRoomMatches)
+                    if (LobbyManager.IsServerMatchmakingActive)
                     {
-                        _roomSwitcher.SwitchToMatchmakingPanel(PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient);
+                        _roomSwitcher.SwitchToMatchmakingPanel(LobbyManager.IsLocalServerMatchmakingOwner);
                         return;
                     }
-
                     if (PhotonRealtimeClient.InRoom)
                     {
                         if (currentFriendRoomMatches)
@@ -281,7 +274,6 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
             SelectedMatchmakingType = matchmakingType;
             SelectedGameType = gameType;
-            if (SelectedMatchmakingType == MatchmakingType.Random2v2) SelectedMatchmakingType = MatchmakingType.Clan2v2; //This line is for testing purposes, remove when you no longer want to force Clan2v2.
             SelectedPremadeTargetMatchmakingType = actualMatchmakingType;
 
             // Starting creating room of a selected game type if the coroutine is not already running
@@ -315,7 +307,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 {
                     _topInfoPanel.LobbyText = new string[2] { _currentRegion, PhotonRealtimeClient.GetPing().ToString() };
                     _topInfoPanel.PlayerCountText = PhotonRealtimeClient.CountOfPlayers.ToString();
-                    _topInfoPanel.MatchmakingCountText = PhotonRealtimeClient.CurrentRoomPlayerCount.ToString();
+                    _topInfoPanel.MatchmakingCountText = LobbyManager.ServerMatchmakingPlayerCount.ToString();
                 }
             }
             catch (Exception ex)

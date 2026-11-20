@@ -1,10 +1,8 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
-using Altzone.Scripts.Language;
 using Altzone.Scripts.Lobby;
 using Altzone.Scripts.Lobby.Wrappers;
 using Altzone.Scripts.Model.Poco.Clan;
@@ -16,47 +14,34 @@ using Prg.Scripts.Common.PubSub;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 using SignalBus = MenuUi.Scripts.Signals.SignalBus;
 
 namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>
-    /// Sets the room's title inside a room. Handles calling going back and starting matchmaking from room when pressing buttons in the UI.
+    /// Handles friend invites and starting matchmaking from the matchmaking lobby panel.
     /// </summary>
     public class InRoomController : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _title;
         [SerializeField] private TextMeshProUGUI _gameType;
-        [SerializeField] private TextLanguageSelectorCaller _conflictText;
-        [SerializeField] private List<Conflicts> _conflicts;
         [SerializeField] private Button _startGameButton;
         [SerializeField] private Button _backButton;
         [SerializeField] private BattlePopupPanelManager _roomSwitcher;
         [SerializeField] private TMP_Text _noticeText;
         [SerializeField] private TMP_Text _sendInviteToFriendText;
-        [SerializeField] private AttentionSpanHandler _readyPanel;
 
         [SerializeField] private Button _inviteOnlinePlayerButton;
         [SerializeField] private InRoomInviteSelectorPanel _inviteSelectorPanel;
 
         private bool _inviteRequestInFlight;
-        private Coroutine _customRoomTimeoutHolder;
-        private const float CustomRoomTimeoutSeconds = 300f;
-
-        public delegate void LeaveRoom();
-        public static event LeaveRoom OnLeaveRoom;
-
         private void Awake()
         {
-            //buttons[0].onClick.AddListener(SetPlayerAsGuest);
-            //buttons[1].onClick.AddListener(SetPlayerAsSpectator);
-            _startGameButton.onClick.AddListener(StartPlaying);
-            _backButton.onClick.AddListener(() => StartCoroutine(GoBack()));
-            // premade target-mode selector removed until prefab wiring is fixed
+            if (_startGameButton != null) _startGameButton.onClick.AddListener(StartPlaying);
+            if (_backButton != null) _backButton.onClick.AddListener(OnBackButtonPressed);
+
             if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.AddListener(OnInviteOnlinePlayerButtonPressed);
-            //buttons[3].onClick.AddListener(StartRaidTest);
-            InRoomPlayerSlot.OnActivateReadyPanel += OpenReadyPanel;
+
         }
 
         private void OnEnable()
@@ -66,11 +51,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             switch (InLobbyController.SelectedMatchmakingType)
             {
-                case MatchmakingType.Custom:
-                    if (_title != null) StartCoroutine(SetRoomTitle());
-                    if (_conflictText != null) StartCoroutine(CycleConflicts());
-                    StartCustomRoomTimeoutMonitoring();
-                    break;
                 case MatchmakingType.FriendLobby:
                     if (_title != null) _title.text = "Friend Lobby";
                     if (_gameType) _gameType.text = InLobbyController.SelectedPremadeTargetMatchmakingType.ToString();
@@ -79,9 +59,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     EnsureInviteSelectorPanel();
                     break;
                 case MatchmakingType.Random2v2:
-                    //if (_title != null) _title.text = "Keräily 2v2";
-                    //if (_noticeText != null) _noticeText.text = "Tätä pelimuotoa voi mennä pelaamaan yksin tai kaverin kanssa (työn alla). Huom. Jos menet pelaamaan yksin, paikan valinnalla ei ole merkitystä.";
-                    //if (_sendInviteToFriendText != null) _sendInviteToFriendText.text = "Lähetä kutsu kaverille";
                     _roomSwitcher.ClosePanels();
                     StartPlaying();
                     break;
@@ -92,39 +69,19 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     break;
             }
 
-            if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Custom)
-            {
-                StopCustomRoomTimeoutMonitoring();
-            }
         }
 
         private void OnDestroy()
         {
-            // premade target-mode selector removed until prefab wiring is fixed
             if (_inviteOnlinePlayerButton != null) _inviteOnlinePlayerButton.onClick.RemoveListener(OnInviteOnlinePlayerButtonPressed);
             if (_inviteSelectorPanel != null) _inviteSelectorPanel.HideSilently();
-            StopCustomRoomTimeoutMonitoring();
-            _startGameButton.onClick.RemoveAllListeners();
-            _backButton.onClick.RemoveAllListeners();
-            InRoomPlayerSlot.OnActivateReadyPanel -= OpenReadyPanel;
+            if (_startGameButton != null) _startGameButton.onClick.RemoveListener(StartPlaying);
+            if (_backButton != null) _backButton.onClick.RemoveListener(OnBackButtonPressed);
         }
 
         private void OnDisable()
         {
             if (_inviteSelectorPanel != null) _inviteSelectorPanel.HideSilently();
-            StopCustomRoomTimeoutMonitoring();
-        }
-
-        private void SetPlayerAsGuest()
-        {
-            Debug.Log($"setPlayerAsGuest {PhotonLobbyRoom.PlayerPositionGuest}");
-            this.Publish(new LobbyManager.PlayerPosEvent(PhotonLobbyRoom.PlayerPositionGuest));
-        }
-
-        private void SetPlayerAsSpectator()
-        {
-            Debug.Log($"setPlayerAsSpectator {PhotonLobbyRoom.PlayerPositionSpectator}");
-            this.Publish(new LobbyManager.PlayerPosEvent(PhotonLobbyRoom.PlayerPositionSpectator));
         }
 
         private void StartPlaying()
@@ -134,18 +91,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 if (_startGameButton != null) _startGameButton.interactable = true;
             }
 
-            //if (!PhotonLobbyRoom.IsValidAllSelectedCharacters())
-            //{
-            //    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Kaikkien pelaajien pitää ensin valita 3 puolustushahmoa.");
-            //    return;
-            //}
-            _startGameButton.interactable = false;
+            if (_startGameButton != null) _startGameButton.interactable = false;
 
             switch (InLobbyController.SelectedMatchmakingType)
             {
-                case MatchmakingType.Custom:
-                    this.Publish(new LobbyManager.StartPlayingEvent());
-                    break;
 
                 case MatchmakingType.FriendLobby:
                     if (!PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
@@ -197,19 +146,7 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 case MatchmakingType.Clan2v2:
                     if (PhotonLobbyRoom.CountRealPlayers() == PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers)
                     {
-                        // Prevent starting matchmaking when this room is actually a queue room
-                        try
-                        {
-                            var curr = PhotonRealtimeClient.LobbyCurrentRoom;
-                            if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
-                            {
-                                Debug.Log("StartPlaying suppressed: current room is a queue room (Clan2v2).");
-                                RestoreStartButton();
-                                return;
-                            }
-                        }
-                        catch { }
-                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType));
+                        this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType, teamSize: InLobbyController.SelectedTeamSize));
                     }
                     else
                     {
@@ -218,29 +155,10 @@ namespace MenuUi.Scripts.Lobby.InRoom
                     }
                     break;
                 case MatchmakingType.Random2v2:
-                    // Prevent starting matchmaking when this room is a queue room
-                    try
-                    {
-                        var curr = PhotonRealtimeClient.LobbyCurrentRoom;
-                        if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey))
-                        {
-                            Debug.Log("StartPlaying suppressed: current room is a queue room (Random2v2).");
-                            RestoreStartButton();
-                            return;
-                        }
-                    }
-                    catch { }
-                    this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType));
+                    this.Publish(new LobbyManager.StartMatchmakingEvent(InLobbyController.SelectedMatchmakingType, InLobbyController.SelectedGameType, teamSize: InLobbyController.SelectedTeamSize));
                     break;
             }
         }
-
-        private void OpenReadyPanel()
-        {
-            _readyPanel.OpenPanel();
-        }
-
-        // Premade target selector UI path temporarily removed.
 
         private void OnInviteOnlinePlayerButtonPressed()
         {
@@ -274,17 +192,17 @@ namespace MenuUi.Scripts.Lobby.InRoom
                 yield break;
             }
 
-                    SetInviteButtonInteractable(false);
+            SetInviteButtonInteractable(false);
             _inviteSelectorPanel.Show(
                 candidates,
                 selectedPlayer =>
                 {
-                        SetInviteButtonInteractable(true);
+                    SetInviteButtonInteractable(true);
                     SendInviteToOnlinePlayer(selectedPlayer);
                 },
                 () =>
                 {
-                        SetInviteButtonInteractable(true);
+                    SetInviteButtonInteractable(true);
                     OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Kutsun lähetys peruttu.");
                 });
         }
@@ -453,85 +371,6 @@ namespace MenuUi.Scripts.Lobby.InRoom
             return string.IsNullOrEmpty(onlinePlayer._id) ? "Tuntematon" : onlinePlayer._id;
         }
 
-        private void StartCustomRoomTimeoutMonitoring()
-        {
-            if (_customRoomTimeoutHolder != null)
-            {
-                return;
-            }
-
-            _customRoomTimeoutHolder = StartCoroutine(CustomRoomTimeoutRoutine());
-        }
-
-        private void StopCustomRoomTimeoutMonitoring()
-        {
-            if (_customRoomTimeoutHolder == null)
-            {
-                return;
-            }
-
-            StopCoroutine(_customRoomTimeoutHolder);
-            _customRoomTimeoutHolder = null;
-        }
-
-        private IEnumerator CustomRoomTimeoutRoutine()
-        {
-            try
-            {
-                yield return new WaitUntil(() => PhotonRealtimeClient.InRoom || InLobbyController.SelectedMatchmakingType != MatchmakingType.Custom);
-
-                if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
-                {
-                    yield break;
-                }
-
-                bool isCustomRoom = false;
-                try
-                {
-                    isCustomRoom = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey) == (int)MatchmakingType.Custom;
-                }
-                catch { }
-
-                if (!isCustomRoom)
-                {
-                    yield break;
-                }
-
-                yield return new WaitForSecondsRealtime(CustomRoomTimeoutSeconds);
-
-                if (InLobbyController.SelectedMatchmakingType != MatchmakingType.Custom || !PhotonRealtimeClient.InRoom || PhotonRealtimeClient.LobbyCurrentRoom == null)
-                {
-                    yield break;
-                }
-
-                if (_startGameButton != null && !_startGameButton.interactable)
-                {
-                    yield break;
-                }
-
-                try
-                {
-                    isCustomRoom = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey) == (int)MatchmakingType.Custom;
-                }
-                catch
-                {
-                    isCustomRoom = false;
-                }
-
-                if (!isCustomRoom)
-                {
-                    yield break;
-                }
-
-                Debug.Log($"Custom room timeout reached after {CustomRoomTimeoutSeconds}s, leaving room.");
-                yield return GoBack();
-            }
-            finally
-            {
-                _customRoomTimeoutHolder = null;
-            }
-        }
-
         private void EnsureInviteSelectorPanel()
         {
             if (_inviteSelectorPanel != null)
@@ -551,65 +390,18 @@ namespace MenuUi.Scripts.Lobby.InRoom
             }
         }
 
+        private void OnBackButtonPressed()
+        {
+            StartCoroutine(GoBack());
+        }
+
         private IEnumerator GoBack()
         {
             Debug.Log($"leavingRoom");
             PhotonRealtimeClient.LeaveRoom();
             yield return new WaitUntil(() => !PhotonRealtimeClient.InRoom);
-            if (InLobbyController.SelectedMatchmakingType == MatchmakingType.Custom) OnLeaveRoom?.Invoke();
-            else SignalBus.OnCloseBattlePopupRequestedSignal();
-            //this.Publish(new LobbyManager.StartPlayingEvent());
+            SignalBus.OnCloseBattlePopupRequestedSignal();
         }
 
-        private void StartRaidTest()
-        {
-            Debug.Log($"startPlaying");
-            this.Publish(new LobbyManager.StartRaidTestEvent());
-        }
-
-        private IEnumerator SetRoomTitle()
-        {
-            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
-            // Getting room name either from custom properties or from the room's name itself.
-            string roomName = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<string>(PhotonBattleRoom.VisibleRoomNameKey);
-            bool testRoom = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<bool>(PhotonLobbyRoom.TestModeKey);
-            string gameType = ((GameType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.GameTypeKey)).GetString();
-            if (string.IsNullOrEmpty(roomName)) roomName = PhotonRealtimeClient.LobbyCurrentRoom.Name;
-            _title.text = _title.text = testRoom ? $"{roomName} (test)" : roomName;
-            _gameType.text = gameType;
-        }
-
-        private IEnumerator CycleConflicts()
-        {
-            if (_conflicts == null || _conflicts.Count == 0) yield break;
-            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
-            int previousConflict = -1;
-            while (PhotonRealtimeClient.InRoom)
-            {
-                int selectedConflict = Random.Range(0, _conflicts.Count);
-                if (selectedConflict == previousConflict) continue;
-                _conflictText.SetText(_conflicts[selectedConflict].ConlictText);
-                yield return new WaitForSecondsRealtime(7);
-            }  
-        }
-    }
-    [Serializable]
-    public class Conflicts
-    {
-        [SerializeField, TextArea(1, 5)] private string _finnishConflictText;
-        [SerializeField, TextArea(1, 5)] private string _englishConflictText;
-
-        public string ConlictText
-        {
-            get
-            {
-                switch (SettingsCarrier.Instance.Language)
-                {
-                    case SettingsCarrier.LanguageType.Finnish: return _finnishConflictText;
-                    case SettingsCarrier.LanguageType.English: return _englishConflictText;
-                    default: return _finnishConflictText;
-                }
-            }
-        }
     }
 }
