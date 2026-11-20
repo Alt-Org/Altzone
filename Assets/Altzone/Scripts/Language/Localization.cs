@@ -11,7 +11,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-[CreateAssetMenu(menuName = "ALT-Zone/LocalizationSheet", fileName = "LocalizationSheet")]
+[CreateAssetMenu(menuName = "ALT-Zone/LocalizationSheet", fileName = nameof(Localization))]
 public class Localization : ScriptableObject
 {
     [SerializeField] LanguageType _language = LanguageType.None;
@@ -188,7 +188,7 @@ public class LocalizationBlock
     public string LocalizedText
     {
         get
-        { 
+        {
             return _languageBlock.FirstOrDefault(x => x.Language == Localization.Language).Text;
         }
     }
@@ -445,7 +445,7 @@ public class LocalizationBlockEditor : PropertyDrawer
         return content;
     }
 
-    
+
 }
 
 [Serializable]
