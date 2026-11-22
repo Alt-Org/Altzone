@@ -43,6 +43,7 @@ namespace MenuUi.Scripts.Window
                 if (targetIndex == 1)
                 {
                     windowManager.GoBack();
+                    yield return new WaitUntil(() => windowManager.FindIndex(_naviTarget) == 0);
                     OverlayPanelCheck.Instance?.UpdateButtonContent();
                     yield break;
                 }
@@ -50,6 +51,7 @@ namespace MenuUi.Scripts.Window
                 {
                     windowManager.Unwind(naviTarget);
                     windowManager.GoBack();
+                    yield return new WaitUntil(() => windowManager.FindIndex(_naviTarget) == 0);
                     OverlayPanelCheck.Instance?.UpdateButtonContent();
                     yield break;
                 }
@@ -57,6 +59,7 @@ namespace MenuUi.Scripts.Window
             if (_useNonDefaultWindow == true)
                 DataCarrier.AddData(DataCarrier.RequestedWindow, _targetWindow);
             windowManager.ShowWindow(naviTarget);
+            yield return new WaitUntil(() => windowManager.FindIndex(_naviTarget) == 0);
             OverlayPanelCheck.Instance?.UpdateButtonContent();
         }
 #if UNITY_EDITOR

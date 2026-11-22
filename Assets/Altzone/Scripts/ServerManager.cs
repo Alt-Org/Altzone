@@ -434,7 +434,7 @@ public class ServerManager : MonoBehaviour
     {
         if (profileJSON.ContainsKey("data"))
         {
-            JToken profile = profileJSON["data"]["Profile"];
+            JToken profile = profileJSON["data"]["Profile"]["Player"];
 
             SetAccessTokens(profileJSON);
 
