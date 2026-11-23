@@ -568,6 +568,7 @@ GameObject:
   - component: {fileID: 4539814359122352259}
   - component: {fileID: 8069141811149921324}
   - component: {fileID: 4666113885770233504}
+  - component: {fileID: 958316508578879602}
   m_Layer: 5
   m_Name: TearCounter
   m_TagString: Untagged
@@ -660,6 +661,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &958316508578879602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537088777127567005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 655028a5322690147b83a215e7deae45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tearAmountText: {fileID: 878436226112691546}
+  _statsWindowController: {fileID: 4781772882377915832}
 --- !u!1 &572344712872813807
 GameObject:
   m_ObjectHideFlags: 0
@@ -6944,7 +6959,7 @@ PrefabInstance:
     - target: {fileID: 4425445187369934355, guid: 5f1834e86d79d314d935e44b4b45a462,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 203.28972
+      value: 205.16246
       objectReference: {fileID: 0}
     - target: {fileID: 4536731278934773674, guid: 5f1834e86d79d314d935e44b4b45a462,
         type: 3}
@@ -7089,7 +7104,7 @@ PrefabInstance:
     - target: {fileID: 6493755432871463774, guid: 5f1834e86d79d314d935e44b4b45a462,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 256.57944
+      value: 260.32492
       objectReference: {fileID: 0}
     - target: {fileID: 6670085549273967225, guid: 5f1834e86d79d314d935e44b4b45a462,
         type: 3}
@@ -12262,7 +12277,7 @@ PrefabInstance:
     - target: {fileID: 6891754130952581934, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_fontSize
-      value: 28
+      value: 28.2
       objectReference: {fileID: 0}
     - target: {fileID: 6924264353861042730, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
@@ -12698,7 +12713,7 @@ PrefabInstance:
     - target: {fileID: 9011883256918754321, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
       propertyPath: m_fontSize
-      value: 39.55
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 9092838377446531208, guid: 57890b7dbec8a984abb7d8148eefe9f6,
         type: 3}
