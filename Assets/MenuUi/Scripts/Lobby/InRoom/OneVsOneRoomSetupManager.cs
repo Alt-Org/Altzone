@@ -6,7 +6,7 @@ using UnityEngine;
 namespace MenuUi.Scripts.Lobby.InRoom
 {
     /// <summary>Two opposing player slots for the 1v1 lobby.</summary>
-    public class LobbyRoomSetupManager : RoomSetupBase
+    public class OneVsOneRoomSetupManager : RoomSetupBase
     {
         [SerializeField] private InRoomPlayerSlot _alphaPlayerSlot;
         [SerializeField] private InRoomPlayerSlot _betaPlayerSlot;

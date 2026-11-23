@@ -45,6 +45,15 @@ namespace MenuUi.Scripts.Lobby.InRoom
         private bool _player3SlotInUse = false;
         private bool _player4SlotInUse = false;
 
+        private RectTransform _player1Rect;
+        private RectTransform _player3Rect;
+        private Vector2 _player1AnchorMin;
+        private Vector2 _player1AnchorMax;
+        private Vector2 _player3AnchorMin;
+        private Vector2 _player3AnchorMax;
+        private bool _oneVsOnePositionsInitialized;
+        private bool _oneVsOneLayoutActive;
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -74,20 +83,25 @@ namespace MenuUi.Scripts.Lobby.InRoom
             ResetState();
             MatchmakingType roomGameType = (MatchmakingType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(PhotonBattleRoom.MatchmakingKey);
             if(roomGameType is MatchmakingType.Custom)
-                if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2)
+            {
+                bool oneVsOne = PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2;
+                if (oneVsOne)
                 {
-                    _player1Slot.gameObject.SetActive(true);
-                    _player2Slot.gameObject.SetActive(false);
-                    _player3Slot.gameObject.SetActive(true);
-                    _player4Slot.gameObject.SetActive(false);
+                    SetPlayerSlotLayout(true);
+                    if (_player1Slot != null) _player1Slot.gameObject.SetActive(true);
+                    if (_player2Slot != null) _player2Slot.gameObject.SetActive(false);
+                    if (_player3Slot != null) _player3Slot.gameObject.SetActive(true);
+                    if (_player4Slot != null) _player4Slot.gameObject.SetActive(false);
                 }
                 else
                 {
-                    _player1Slot.gameObject.SetActive(true);
-                    _player2Slot.gameObject.SetActive(true);
-                    _player3Slot.gameObject.SetActive(true);
-                    _player4Slot.gameObject.SetActive(true);
+                    if (_player1Slot != null) _player1Slot.gameObject.SetActive(true);
+                    if (_player2Slot != null) _player2Slot.gameObject.SetActive(true);
+                    if (_player3Slot != null) _player3Slot.gameObject.SetActive(true);
+                    if (_player4Slot != null) _player4Slot.gameObject.SetActive(true);
+                    SetPlayerSlotLayout(false);
                 }
+            }
 
             // We need local player to check against other players
             LobbyPlayer localPlayer = PhotonRealtimeClient.LocalLobbyPlayer;
@@ -144,6 +158,54 @@ namespace MenuUi.Scripts.Lobby.InRoom
 
             // Setting team text
             SetTeamText();
+        }
+
+        private void SetPlayerSlotLayout(bool oneVsOne)
+        {
+            if (oneVsOne == _oneVsOneLayoutActive) return;
+
+            if (_player1Rect == null && _player1Slot != null)
+                _player1Rect = _player1Slot.transform as RectTransform;
+            if (_player3Rect == null && _player3Slot != null)
+                _player3Rect = _player3Slot.transform as RectTransform;
+
+            if (_player1Rect == null || _player3Rect == null)
+            {
+                _oneVsOneLayoutActive = oneVsOne;
+                return;
+            }
+
+            if (oneVsOne)
+            {
+                if (!_oneVsOnePositionsInitialized)
+                {
+                    _player1AnchorMin = _player1Rect.anchorMin;
+                    _player1AnchorMax = _player1Rect.anchorMax;
+                    _player3AnchorMin = _player3Rect.anchorMin;
+                    _player3AnchorMax = _player3Rect.anchorMax;
+                    _oneVsOnePositionsInitialized = true;
+                }
+
+                CenterSlotHorizontally(_player1Rect);
+                CenterSlotHorizontally(_player3Rect);
+            }
+            else
+            {
+                _player1Rect.anchorMin = _player1AnchorMin;
+                _player1Rect.anchorMax = _player1AnchorMax;
+                _player3Rect.anchorMin = _player3AnchorMin;
+                _player3Rect.anchorMax = _player3AnchorMax;
+            }
+
+            _oneVsOneLayoutActive = oneVsOne;
+        }
+
+        private static void CenterSlotHorizontally(RectTransform slot)
+        {
+            float width = slot.anchorMax.x - slot.anchorMin.x;
+            float centeredMin = (1f - width) * 0.5f;
+            slot.anchorMin = new Vector2(centeredMin, slot.anchorMin.y);
+            slot.anchorMax = new Vector2(centeredMin + width, slot.anchorMax.y);
         }
 
         private void SetTeamText()
