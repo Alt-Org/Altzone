@@ -28,6 +28,7 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     [SerializeField] private GameObject textPrefab;
     [SerializeField] private Transform contentParent;
+
     [SerializeField] private GameObject popup;
     [SerializeField] private TextMeshProUGUI currentSelectionInfo;
     [SerializeField] private TMP_Dropdown roleDropdown;
@@ -44,6 +45,7 @@ public class ClanMemberRoleRights : MonoBehaviour
     private string _divider = "--------";
     private ClanData _clanData = null;
     private ClanRoles _draft;
+    private ClanRoles _draftRole;
     private ClanRoles _selectedRole;
     private MemberRights _selectedRight;
 
@@ -86,6 +88,10 @@ public class ClanMemberRoleRights : MonoBehaviour
     private void CancelNewRole() {
         SetNewRoleView(false);
 
+        for (int i = contentParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(contentParent.GetChild(i).gameObject);
+        }
         roleDropdown.SetValueWithoutNotify(_previousValidIndex);
     }
 
@@ -235,9 +241,50 @@ public class ClanMemberRoleRights : MonoBehaviour
         };
 
         SetNewRoleView(true);
+        NewRoleOptions();
 
         // nameInput.text = "";
         saveRoleButton.interactable = true;
+    }
+
+    private void NewRoleOptions()
+    {
+        _draftRole = new ClanRoles { rights = new ClanRoles.ClanRights() };
+
+        foreach (MemberRights right in Enum.GetValues(typeof(MemberRights)))
+        {
+            GameObject newTextObj = Instantiate(textPrefab, contentParent);
+
+            TextMeshProUGUI label = newTextObj.GetComponent<TextMeshProUGUI>();
+            Button button = newTextObj.GetComponentInChildren<Button>();
+            if (label == null || button == null) continue;
+
+            Image buttonImage = button.GetComponent<Image>();
+            MemberRights capturedRight = right; // safe capture for the lambda
+
+            UpdateVisuals(label, buttonImage, capturedRight);
+
+            button.onClick.AddListener(() =>
+            {
+                bool newValue = !_draftRole.HasRights(capturedRight);
+                SetNewRoleRight(capturedRight, newValue);
+                UpdateVisuals(label, buttonImage, capturedRight);
+            });
+        }
+    }
+
+    private void UpdateVisuals(TextMeshProUGUI label, Image buttonImage, MemberRights right)
+    {
+        bool isAllowed = _draftRole.HasRights(right);
+        string color = isAllowed ? "green" : "red";
+
+        label.text = $"{GetDisplayName(right)}: <color={color}>{isAllowed}</color>";
+        buttonImage.color = isAllowed ? Color.green : Color.red;
+    }
+
+    private void SetNewRoleRight(MemberRights right, bool isAllowed)
+    {
+        _draftRole.SetRights(right, isAllowed);
     }
 
     private void SetNewRoleView(bool isNewRole)
