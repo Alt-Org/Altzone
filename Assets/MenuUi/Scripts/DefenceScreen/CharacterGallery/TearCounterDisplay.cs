@@ -7,18 +7,17 @@ using UnityEngine;
 namespace MenuUi.Scripts.CharacterGallery
 {
     /// <summary>
-    /// Displays and updates the player's current tear (StatsDiamond) amount in DefenceView.
+    /// Displays and updates the player's current tear (StatsDiamond) amount across individual digit slots in DefenceView.
     /// </summary>
     public class TearCounterDisplay : AltMonoBehaviour
     {
-        [SerializeField] private TMP_Text _tearAmountText;
+        [SerializeField] private TMP_Text[] _digitTexts;
         [SerializeField] private StatsWindowController _statsWindowController;
 
         private void OnEnable()
         {
             if (_statsWindowController == null)
             {
-                // includeInactive: true, because StatsWindowController might be disabled initially
                 _statsWindowController = FindObjectOfType<StatsWindowController>(true);
             }
 
@@ -42,9 +41,26 @@ namespace MenuUi.Scripts.CharacterGallery
         {
             StartCoroutine(GetPlayerData(playerData =>
             {
-                if (playerData == null || _tearAmountText == null) return;
+                if (playerData == null || _digitTexts == null || _digitTexts.Length == 0) return;
 
-                _tearAmountText.text = playerData.DiamondSpeed.ToString();
+                string formatted = playerData.DiamondSpeed.ToString();
+
+                if (formatted.Length > _digitTexts.Length)
+                {
+                    formatted = new string('9', _digitTexts.Length);
+                }
+                else
+                {
+                    formatted = formatted.PadLeft(_digitTexts.Length, ' ');
+                }
+
+                for (int i = 0; i < _digitTexts.Length; i++)
+                {
+                    if (_digitTexts[i] != null)
+                    {
+                        _digitTexts[i].text = formatted[i] == ' ' ? string.Empty : formatted[i].ToString();
+                    }
+                }
             }));
         }
     }
