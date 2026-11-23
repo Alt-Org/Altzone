@@ -207,6 +207,7 @@ public static class PollManager // Handles the polls from creation to loading to
             newRole);
 
         Debug.Log($"TODO CreateRolePoll -> targetPlayerId={targetPlayerId}, roleName={newRole.name}, roleId={roleId}");
+
         if (callback != null)
             callback(false);
     }
