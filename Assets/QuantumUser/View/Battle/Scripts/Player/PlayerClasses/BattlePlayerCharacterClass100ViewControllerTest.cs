@@ -1,8 +1,8 @@
-/// @file BattlePlayerCharacterClass100ViewControllerTest.cs
-/// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerCharacterClass100ViewControllerTest} class,
-/// which is a <see cref="Battle.View.Player.BattlePlayerCharacterClass100ViewControllerTest">class %view controller</see> for the 100 character class.
-/// </summary>
+//! @file BattlePlayerCharacterClass100ViewControllerTest.cs
+//! <summary>
+//! Contains @cref{Battle.View.Player,BattlePlayerCharacterClass100ViewControllerTest} class,
+//! which is a <see cref="Battle.View.Player.BattlePlayerCharacterClass100ViewControllerTest">class %view controller</see> for the 100 character class.
+//! </summary>
 
 // Unity usings
 using UnityEngine;
@@ -26,17 +26,17 @@ namespace Battle.View.Player
     /// @bigtext{See [{Player Character Class 100 - Desensitizer}](#page-concepts-player-class-100) for more info.}<br/>
     public class BattlePlayerCharacterClass100ViewControllerTest : BattlePlayerCharacterClassBaseViewController
     {
-        /// @anchor BattlePlayerClass100ViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattlePlayerClass100ViewController-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>Reference to the aim indicator object</summary>
         /// @ref BattlePlayerClass100ViewController-SerializeFields
         [Tooltip("Reference to the aim indicator object")]
         [SerializeField] private GameObject _aimIndicator;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Gets the character class associated with this Class.<br/>

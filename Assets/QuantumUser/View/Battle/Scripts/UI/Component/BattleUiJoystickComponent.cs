@@ -1,11 +1,11 @@
-/// @file BattleUiJoystickComponent.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiJoystickComponent} class which handles joystick drag input.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles %Battle Ui joystick drag input functionality.
-/// Implements IPointerDownHandler, IDragHandler and IPointerUpHandler interfaces.
+//! @file BattleUiJoystickComponent.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiJoystickComponent} class which handles joystick drag input.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles %Battle Ui joystick drag input functionality.
+//! Implements IPointerDownHandler, IDragHandler and IPointerUpHandler interfaces.
 
 // Unity usings
 using UnityEngine;
@@ -25,16 +25,16 @@ namespace Battle.View.UI
     [RequireComponent(typeof(RectTransform))]
     public class BattleUiJoystickComponent : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
-        /// @anchor BattleUiJoystickComponent-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiJoystickComponent-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to joystick handle's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/RectTransform.html">RectTransform@u-exlink</a> component.</summary>
         /// @ref BattleUiJoystickComponent-SerializeFields
         [SerializeField] private RectTransform _handleRectTransform;
 
-        /// @}
+        //! @}
 
         /// <value>Is joystick locked in the Y axis (can only be moved left to right)</value>
         public bool LockYAxis = false;

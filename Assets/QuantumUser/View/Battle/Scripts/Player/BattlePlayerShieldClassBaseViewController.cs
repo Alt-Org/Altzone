@@ -1,9 +1,9 @@
-/// @file BattlePlayerShieldClassBaseViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerShieldClassBaseViewController} class,
-/// which is an abstract base class for the shield class view controllers to extend.<br/>
-/// Works together with @cref{Battle.View.Player,BattlePlayerShieldViewController}, which handles the shared player shield view logic.
-/// </summary>
+//! @file BattlePlayerShieldClassBaseViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.Player,BattlePlayerShieldClassBaseViewController} class,
+//! which is an abstract base class for the shield class view controllers to extend.<br/>
+//! Works together with @cref{Battle.View.Player,BattlePlayerShieldViewController}, which handles the shared player shield view logic.
+//! </summary>
 
 // Unity usings
 using UnityEngine;

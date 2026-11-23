@@ -1,47 +1,67 @@
-/// @file BattleSignals.qtn
-/// <summary>
-/// Contains all battle signals.
-/// </summary>
-///
-/// ## Signals
-/// - <b>signal</b> @ref BattleOnDiamondHitPlayer (BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, EntityRef playerEntity)   
-///   @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
-/// - <b>signal</b> @ref BattleOnGameOver (BattleTeamNumber winningTeam)   
-///   @copybrief Quantum.ISignalBattleOnGameOver
-///
-/// ---
-///
-/// <br/>
-///
-/// ## Signal Documentation
-///
-/// ---
-///
-/// @anchor BattleOnDiamondHitPlayer
-/// ### BattleOnDiamondHitPlayer
-/// @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
-///
-/// This signal is sent when player picks up a collectable diamond.
-///
-/// Generated Interface @cref{Quantum,ISignalBattleOnDiamondHitPlayer}  
-/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnDiamondHitPlayer}
-///
-/// ---
-///
-/// @anchor BattleOnGameOver
-/// ### BattleOnGameOver
-/// @copybrief Quantum.ISignalBattleOnGameOver
-///
-/// This signal is sent when the game ends.
-///
-/// Generated Interface @cref{Quantum,ISignalBattleOnGameOver}  
-/// Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnGameOver}
-///
-/// ---
+//! @file BattleSignals.qtn
+//! <summary>
+//! Contains all battle signals.
+//! </summary>
+//!
+//! ## Signals
+//! - <b>signal</b> @ref BattleOnDiamondHitPlayer (BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, EntityRef playerEntity)   
+//!   @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
+//! - <b>signal</b> @ref BattleOnDiamondHitArenaBorder (BattleDiamondDataQComponent* diamond, EntityRef diamondEntity, BattleArenaBorderQComponent* arenaBorder, EntityRef arenaBorderEntity)  
+//!   @copybrief Quantum.ISignalBattleOnDiamondHitArenaBorder
+//! - <b>signal</b> @ref BattleOnGameOver (BattleTeamNumber winningTeam)   
+//!   @copybrief Quantum.ISignalBattleOnGameOver
+//!
+//! ---
+//!
+//! <br/>
+//!
+//! ## Signal Documentation
+//!
+//! ---
+//!
+//! @anchor BattleOnDiamondHitPlayer
+//! ### BattleOnDiamondHitPlayer
+//! @copybrief Quantum.ISignalBattleOnDiamondHitPlayer
+//!
+//! This signal is sent when player picks up a collectable diamond.
+//!
+//! Generated Interface @cref{Quantum,ISignalBattleOnDiamondHitPlayer}  
+//! Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnDiamondHitPlayer}
+//!
+//! ---
+//!
+//! @anchor BattleOnDiamondHitArenaBorder
+//! ### BattleOnDiamondHitArenaBorder
+//! @copybrief Quantum.ISignalBattleOnDiamondHitArenaBorder
+//!
+//! This signal is sent when a diamond collides with an arena border.
+//!
+//! Generated Interface @cref{Quantum,ISignalBattleOnDiamondHitArenaBorder}  
+//! Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnDiamondHitArenaBorder}
+//!
+//! ---
+//!
+//! @anchor BattleOnGameOver
+//! ### BattleOnGameOver
+//! @copybrief Quantum.ISignalBattleOnGameOver
+//!
+//! This signal is sent when the game ends.
+//!
+//! Generated Interface @cref{Quantum,ISignalBattleOnGameOver}  
+//! Generated Method @cref{Quantum,Frame.FrameSignals.BattleOnGameOver}
+//!
+//! ---
 
 /// @interface Quantum::ISignalBattleOnDiamondHitPlayer
 /// <summary>
 /// Signal for player's and diamond's collision.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleSignals.qtn}
+
+/// @interface Quantum::ISignalBattleOnDiamondHitArenaBorder
+/// <summary>
+/// Signal for diamond's and arena border's collision.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleSignals.qtn}

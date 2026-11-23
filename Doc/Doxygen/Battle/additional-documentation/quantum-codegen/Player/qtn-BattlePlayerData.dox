@@ -1,11 +1,11 @@
-/// @file BattlePlayerData.qtn
-/// <summary>
-/// Contains the BattlePlayerData struct.
-/// </summary>
-///
-/// ## Generated Structs
-/// - @cref{Quantum,BattlePlayerData}  
-///   @copybrief Quantum.BattlePlayerData
+//! @file BattlePlayerData.qtn
+//! <summary>
+//! Contains the BattlePlayerData struct.
+//! </summary>
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,BattlePlayerData}  
+//!   @copybrief Quantum.BattlePlayerData
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -71,9 +71,9 @@
     /// See [{Player Data}](#page-concepts-player-data) for more info.  
     /// See [{Player PlayState}](#page-concepts-player-playstate) for more info.
 
-    /// @anchor BattlePlayerData-StateFields
-    /// @name State Fields
-    /// @{
+    //! @anchor BattlePlayerData-StateFields
+    //! @name State Fields
+    //! @{
 
     /// @var bool Quantum::BattlePlayerData::StateAllowCharacterSwapping
     /// <summary>
@@ -105,12 +105,12 @@
     ///
     /// See [{Player Data}](#page-concepts-player-data) for more info.
 
-    /// @}
+    //! @}
     //  END State Fields
 
-    /// @anchor BattlePlayerData-CharacterFields
-    /// @name Character Fields
-    /// @{
+    //! @anchor BattlePlayerData-CharacterFields
+    //! @name Character Fields
+    //! @{
 
     /// @var int Quantum::BattlePlayerData::SelectedCharacterNumber
     /// <summary>
@@ -135,12 +135,12 @@
     /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.  
     /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
 
-    /// @}
+    //! @}
     //  END Character Fields
 
-    /// @anchor BattlePlayerData-CharacterProperties
-    /// @name Character Properties
-    /// @{
+    //! @anchor BattlePlayerData-CharacterProperties
+    //! @name Character Properties
+    //! @{
 
     /// @var array Quantum::BattlePlayerData::CharacterDefaultSpawnPositions
     /// <summary>
@@ -153,12 +153,12 @@
     ///
     /// See [{Player Data}](#page-concepts-player-data) for more info.
 
-    /// @}
+    //! @}
     //  END Character Properties
 
-    /// @anchor BattlePlayerData-ShieldProperties
-    /// @name Shield Properties
-    /// @{
+    //! @anchor BattlePlayerData-ShieldProperties
+    //! @name Shield Properties
+    //! @{
 
     /// @var array Quantum::BattlePlayerData::ShieldEntityGroupIDs
     /// <summary>
@@ -173,12 +173,12 @@
     /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.  
     /// See [{Entity Group}](#page-concepts-entity-management-entity-group) for more info.
 
-    /// @}
+    //! @}
     //  END Shield Properties
 
-    /// @anchor BattlePlayerData-PrivateArrays
-    /// @name Private fixed arrays
-    /// @{
+    //! @anchor BattlePlayerData-PrivateArrays
+    //! @name Private fixed arrays
+    //! @{
 
     /// @var Byte Quantum.BattlePlayerData::_CharacterDefaultSpawnPositions_
     /// <summary>Private internal array, access through @cref{Quantum.BattlePlayerData,CharacterDefaultSpawnPositions}</summary>
@@ -186,18 +186,18 @@
     /// @var Byte Quantum.BattlePlayerData::_ShieldEntityGroupIDs_
     /// <summary>Private internal array, access through @cref{Quantum.BattlePlayerData,ShieldEntityGroupIDs}</summary>
 
-    /// @}
+    //! @}
     //  END Private fixed arrays
 
-    /// @name Quantum Built-in
-    /// @{
-    ///
-    /// @var Int32 Quantum::BattlePlayerData::SIZE
-    /// @var Int32 Quantum::BattlePlayerData::ALIGNMENT
-    ///
-    /// @fn Int32 Quantum::BattlePlayerData::GetHashCode
-    ///
-    /// @fn void Quantum::BattlePlayerData::Serialize
-    ///
-    /// @}
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattlePlayerData::SIZE
+    //! @var Int32 Quantum::BattlePlayerData::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattlePlayerData::GetHashCode
+    //!
+    //! @fn void Quantum::BattlePlayerData::Serialize
+    //!
+    //! @}
 // }

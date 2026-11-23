@@ -1,7 +1,7 @@
-/// @file BattlePlayerShieldViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.Player,BattlePlayerShieldViewController} class which handles shield sprites and particles.
-/// </summary>
+//! @file BattlePlayerShieldViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.Player,BattlePlayerShieldViewController} class which handles shield sprites and particles.
+//! </summary>
 
 // System usings
 using System.Runtime.CompilerServices;
@@ -35,10 +35,10 @@ namespace Battle.View.Player
     /// See [{Player View Code Overview}](#page-concepts-player-view-overview) for more info.
     public unsafe class BattlePlayerShieldViewController : QuantumEntityViewComponent
     {
-        /// @anchor BattlePlayerShieldViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattlePlayerShieldViewController-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
         #region SerializeFields
 
         //{ editor
@@ -102,7 +102,7 @@ namespace Battle.View.Player
         //} settings
 
         #endregion
-        /// @}
+        //! @}
 
         #region Public
 
@@ -117,10 +117,10 @@ namespace Battle.View.Player
 
         public bool OnLocalTeam => _onLocalTeam;
 
-        /// @anchor BattlePlayerShieldViewController-Public-SpriteControlMethods
-        /// @name Public Sprite Control Methods
-        /// Methods for controlling sprites.
-        /// @{
+        //! @anchor BattlePlayerShieldViewController-Public-SpriteControlMethods
+        //! @name Public Sprite Control Methods
+        //! Methods for controlling sprites.
+        //! @{
         #region Public - Sprite Control Methods
 
         /// <summary>
@@ -168,11 +168,11 @@ namespace Battle.View.Player
         }
 
         #endregion Public - Sprite Control Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattlePlayerShieldViewController-Public-GameflowMethods
-        /// @name Public Gameflow Methods
-        /// @{
+        //! @anchor BattlePlayerShieldViewController-Public-GameflowMethods
+        //! @name Public Gameflow Methods
+        //! @{
         #region Public - Gameflow Methods
 
         /// <summary>
@@ -295,12 +295,12 @@ namespace Battle.View.Player
         }
 
         #endregion Public - Gameflow Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattlePlayerShieldViewController-Public-ForwardedQuantumEventHandlers
-        /// @name Public Forwarded QuantumEvent Handlers
-        /// Methods for handling forwarded QuantumEvents.
-        /// @{
+        //! @anchor BattlePlayerShieldViewController-Public-ForwardedQuantumEventHandlers
+        //! @name Public Forwarded QuantumEvent Handlers
+        //! Methods for handling forwarded QuantumEvents.
+        //! @{
         #region Public - Forwarded QuantumEvent Handlers
 
         /// <summary>
@@ -338,7 +338,7 @@ namespace Battle.View.Player
         }
 
         #endregion Public - Forwarded QuantumEvent Handlers
-        /// @}
+        //! @}
 
         #endregion Public
 
@@ -373,9 +373,9 @@ namespace Battle.View.Player
         /// <summary>Boolean that tells whether this shield is associated with a player on the local team.</summary>
         private bool _onLocalTeam;
 
-        /// @anchor BattlePlayerShieldViewController-Private-GameflowMethods
-        /// @name Private Gameflow Methods
-        /// @{
+        //! @anchor BattlePlayerShieldViewController-Private-GameflowMethods
+        //! @name Private Gameflow Methods
+        //! @{
         #region Private - Gameflow Methods
 
         /// <summary>
@@ -392,12 +392,12 @@ namespace Battle.View.Player
         }
 
         #endregion Private - Gameflow Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattlePlayerShieldViewController-Private-ViewRegistryCallbackHandlers
-        /// @name Private ViewRegistry Callback Handlers
-        /// Methods for handling ViewRegistry callbacks.
-        /// @{
+        //! @anchor BattlePlayerShieldViewController-Private-ViewRegistryCallbackHandlers
+        //! @name Private ViewRegistry Callback Handlers
+        //! Methods for handling ViewRegistry callbacks.
+        //! @{
         #region Private - ViewRegistry Callback Handlers
 
         /// <summary>
@@ -425,12 +425,12 @@ namespace Battle.View.Player
         }
 
         #endregion Private - ViewRegistry Callback Handlers
-        /// @}
+        //! @}
 
-        /// @anchor BattlePlayerShieldViewController-Private-QuantumEventHandlers
-        /// @name Private QuantumEvent Handlers
-        /// Methods for handling QuantumEvents.
-        /// @{
+        //! @anchor BattlePlayerShieldViewController-Private-QuantumEventHandlers
+        //! @name Private QuantumEvent Handlers
+        //! Methods for handling QuantumEvents.
+        //! @{
         #region Private - QuantumEvent Handlers
 
         /// <summary>
@@ -452,7 +452,7 @@ namespace Battle.View.Player
         }
 
         #endregion Private - QuantumEvent Handlers
-        /// @}
+        //! @}
 
         #endregion Private
     }

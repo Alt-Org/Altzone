@@ -1,55 +1,71 @@
-/// @file BattleCollisionTrigger.qtn
-/// <summary>
-/// Contains enum and component for defining entity's collider trigger type.
-/// </summary>
-///
-/// ## Generated Enums
-/// - @cref{Quantum,BattleCollisionTriggerType}  
-///   @copybrief Quantum.BattleCollisionTriggerType
-///
-/// ## Generated Structs
-/// - @cref{Quantum,BattleCollisionTriggerQComponent}  
-///   @copybrief Quantum.BattleCollisionTriggerQComponent
+//! @file BattleCollisionTrigger.qtn
+//! <summary>
+//! Contains enum and component for defining entity's Collider Trigger type.
+//! </summary>
+//!
+//! ## Generated Enums
+//! - @cref{Quantum,BattleCollisionTriggerType}  
+//!   @copybrief Quantum.BattleCollisionTriggerType
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,BattleCollisionTriggerQComponent}  
+//!   @copybrief Quantum.BattleCollisionTriggerQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
 /// @enum Quantum::BattleCollisionTriggerType
 /// <summary>
-/// Identifies the type of a collision trigger.  
+/// Identifies the type of a Collision Trigger.  
 /// Used by the @cref{Quantum,BattleCollisionTriggerQComponent}.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleCollisionTrigger.qtn}
+///
+// {
+    /// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::ArenaBorder
+    /// Collision Trigger type of ArenaBorder.
 
-/// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::ArenaBorder
-/// <summary>Collision trigger type of ArenaBorder.</summary>
-///
-/// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::SoulWall
-/// <summary>Collision trigger type of SoulWall.</summary>
-///
-/// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::Player
-/// <summary>Collision trigger type of Player.</summary>
-///
-/// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::Shield
-/// <summary>Collision trigger type of Shield.</summary>
-///
-/// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::Goal
-/// <summary>Collision trigger type of %Goal.</summary>
-///
-/// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::Projectile
-/// <summary>Collision trigger type of Projectile.</summary>
+    /// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::SoulWall
+    /// Collision Trigger type of SoulWall.
 
-// ---------------------------------------------------------------------------------------------------- //
+    /// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::Player
+    /// Collision Trigger type of Player.
+
+    /// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::Shield
+    /// Collision Trigger type of Shield.
+
+    /// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::Goal
+    /// Collision Trigger type of %Goal.
+
+    /// @var Quantum::BattleCollisionTriggerType Quantum::BattleCollisionTriggerType::Projectile
+    /// Collision Trigger type of Projectile.
+// }
 
 /// @struct Quantum::BattleCollisionTriggerQComponent
 /// <summary>
-/// Component that marks the entity as a collision trigger and contains the type of the collision trigger component that the entity has.
+/// Component that marks the entity as a Collision Trigger and contains the type of the Collision Trigger component that the entity has.
 /// </summary>
 ///
 /// Streamlines identifying entities as something that can be collided with  
 /// and retrieving the component that is unique to the type of entity that has been collided with.
 ///
 /// @bigtext{Generated from @ref BattleCollisionTrigger.qtn}
+///
+// {
+    /// @var BattleCollisionTriggerType Quantum::BattleCollisionTriggerQComponent::Type
+    /// <summary>
+    /// The type of the Collision Trigger component that the entity has.
+    /// </summary>
 
-/// @var BattleCollisionTriggerType Quantum.BattleCollisionTriggerQComponent::Type
-/// <summary>The type of the collision trigger component that the entity has.</summary>
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattleCollisionTriggerQComponent::SIZE
+    //! @var Int32 Quantum::BattleCollisionTriggerQComponent::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattleCollisionTriggerQComponent::GetHashCode
+    //!
+    //! @fn void Quantum::BattleCollisionTriggerQComponent::Serialize
+    //!
+    //! @}
+// }

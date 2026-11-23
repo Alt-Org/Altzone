@@ -1,7 +1,7 @@
-/// @file BattlePlayerShieldManager.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerShieldManager} class which handles player shield logic.
-/// </summary>
+//! @file BattlePlayerShieldManager.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Player,BattlePlayerShieldManager} class which handles player shield logic.
+//! </summary>
 
 // System usings
 using System.Runtime.CompilerServices;
@@ -329,10 +329,10 @@ namespace Battle.QSimulation.Player
 
         #endregion Public Static Methods
 
-        /// @anchor BattlePlayerShieldManager-PrivateDebugMessageConstants
-        /// @name Constant Private DebugMessage Attributes
-        /// Constants defining debug messages
-        /// @{
+        //! @anchor BattlePlayerShieldManager-PrivateDebugMessageConstants
+        //! @name Constant Private DebugMessage Attributes
+        //! Constants defining debug messages
+        //! @{
         #region Private DebugMessage Constants
 
         /// <summary>Formatted debug message for when a shield is attached.</summary>
@@ -345,7 +345,7 @@ namespace Battle.QSimulation.Player
         private const string DebugMessageShieldRemovedFormat = "({0}) Removing shield number {1} of character {2}";
 
         #endregion Private DebugMessage Constants
-        /// @}
+        //! @}
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
         private static BattleDebugLogger s_debugLogger;
@@ -405,7 +405,7 @@ namespace Battle.QSimulation.Player
         }
 
         #endregion Private Static Methods - Shield Entity
-        /// @}
+        //! @}
 
         #endregion Private Static Methods
     }

@@ -1,10 +1,10 @@
-/// @file BattleUiController.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiController} class which controls the %Battle %UI.
-/// </summary>
-///
-/// This script:<br/>
-/// Holds references to all of the @ref UIHandlerReferences and @ref DebugUIHandlerReferences, and the BattleGameViewController script.
+//! @file BattleUiController.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiController} class which controls the %Battle %UI.
+//! </summary>
+//!
+//! This script:<br/>
+//! Holds references to all of the @ref UIHandlerReferences and @ref DebugUIHandlerReferences, and the BattleGameViewController script.
 
 // Unity usings
 using UnityEngine;
@@ -26,10 +26,10 @@ namespace Battle.View.UI
         /// <value>BattleGameViewController script back reference.</value>
         public BattleGameViewController GameViewController;
 
-        /// @anchor UIHandlerReferences
-        /// @name UI Handler script references
-        /// Handler scripts control the visual functionality of the %UI prefabs and GameObjects.
-        /// @{
+        //! @anchor UIHandlerReferences
+        //! @name UI Handler script references
+        //! Handler scripts control the visual functionality of the %UI prefabs and GameObjects.
+        //! @{
 
         /// <summary>Reference to BattleUiAnnouncementHandler which handles showing the countdown.</summary>
         /// Part of @ref UIHandlerReferences.
@@ -63,12 +63,12 @@ namespace Battle.View.UI
         /// Part of @ref UIHandlerReferences.
         public BattleUiJoystickHandler JoystickHandler;
 
-        /// @}
+        //! @}
 
-        /// @anchor DebugUIHandlerReferences
-        /// @name Debug UI Handler script references
-        /// These handler scripts handle visual functionality for the debug %UI.
-        /// @{
+        //! @anchor DebugUIHandlerReferences
+        //! @name Debug UI Handler script references
+        //! These handler scripts handle visual functionality for the debug %UI.
+        //! @{
 
         /// <summary>Reference to BattleUiDebugOverlayHandler which displays the debug info.</summary>
         /// Part of @ref DebugUIHandlerReferences.
@@ -78,6 +78,6 @@ namespace Battle.View.UI
         /// Part of @ref DebugUIHandlerReferences.
         public BattleUiDebugConsoleHandler DebugConsoleHandler;
 
-        /// @}
+        //! @}
     }
 }

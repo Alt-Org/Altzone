@@ -1,9 +1,9 @@
-/// @file BattlePlayerBotQSpec.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerBotQSpec} class for defining bot behavior and other spec settings.
-/// </summary>
-///
-/// @bigtext{Filled with data from @ref BattlePlayerBotQSpec.asset "BattlePlayerBotQSpec" data asset.}
+//! @file BattlePlayerBotQSpec.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Player,BattlePlayerBotQSpec} class for defining bot behavior and other spec settings.
+//! </summary>
+//!
+//! @bigtext{Filled with data from @ref BattlePlayerBotQSpec.asset "BattlePlayerBotQSpec" data asset.}
 
 // Unity usings
 using UnityEngine;

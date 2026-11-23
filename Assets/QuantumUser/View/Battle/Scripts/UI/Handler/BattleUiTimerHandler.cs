@@ -1,10 +1,10 @@
-/// @file BattleUiTimerHandler.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiTimerHandler} class which handles setting the timer text.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles setting the timer text.
+//! @file BattleUiTimerHandler.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiTimerHandler} class which handles setting the timer text.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles setting the timer text.
 
 // Unity usings
 using UnityEngine;
@@ -24,10 +24,10 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiTimerHandler : MonoBehaviour
     {
-        /// @anchor BattleUiTimerHandler-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiTimerHandler-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to the BattleUiMovableElement script which is attached to a BattleUiTimer prefab.</summary>
         /// @ref BattleUiTimerHandler-SerializeFields
@@ -37,7 +37,7 @@ namespace Battle.View.UI
         /// @ref BattleUiTimerHandler-SerializeFields
         [SerializeField] private TMP_Text _timerText;
 
-        /// @}
+        //! @}
 
         /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => MovableUiElement.gameObject.activeSelf;

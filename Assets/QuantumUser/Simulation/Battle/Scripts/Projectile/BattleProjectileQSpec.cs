@@ -1,9 +1,9 @@
-/// @file BattleProjectileQSpec.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Projectile,BattleProjectileQSpec} class for defining the projectile's initial values.
-/// </summary>
-///
-/// @bigtext{Filled with data from @ref BattleProjectileQSpec.asset "BattleProjectileQSpec" data asset.}
+//! @file BattleProjectileQSpec.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Projectile,BattleProjectileQSpec} class for defining the projectile's initial values.
+//! </summary>
+//!
+//! @bigtext{Filled with data from @ref BattleProjectileQSpec.asset "BattleProjectileQSpec" data asset.}
 
 // Unity usings
 using UnityEngine;

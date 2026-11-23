@@ -1,7 +1,7 @@
-/// @file BattlePlayerQSystem.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.Player,BattlePlayerQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles the quantum side of player logic.
-/// </summary>
+//! @file BattlePlayerQSystem.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.Player,BattlePlayerQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles the quantum side of player logic.
+//! </summary>
 
 // Unity usings
 using UnityEngine.Scripting;
@@ -369,10 +369,10 @@ namespace Battle.QSimulation.Player
         /// {Battle.QSimulation.Player.BattlePlayerQSystem.UpdateData,LoadPlayerCharacter}.
         private class UpdateData
         {
-            /// @anchor BattlePlayerQSystem-UpdateData-CommonData
-            /// @name Common Data
-            /// Common data related to the update logic. @ref BattlePlayerQSystem-UpdateData-DetailedDescription "More..."
-            /// @{
+            //! @anchor BattlePlayerQSystem-UpdateData-CommonData
+            //! @name Common Data
+            //! Common data related to the update logic. @ref BattlePlayerQSystem-UpdateData-DetailedDescription "More..."
+            //! @{
 
             /// <summary>
             /// Used to keep track of the team that wants to give up.
@@ -380,12 +380,12 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerQSystem-UpdateData-CommonData "Common Data"
             public BattleTeamNumber GiveUpTeam = BattleTeamNumber.NoTeam;
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerQSystem-UpdateData-CurrentPlayer
-            /// @name Current Player Properties
-            /// Data related to the current player that is being processed. @ref BattlePlayerQSystem-UpdateData-DetailedDescription "More..."
-            /// @{
+            //! @anchor BattlePlayerQSystem-UpdateData-CurrentPlayer
+            //! @name Current Player Properties
+            //! Data related to the current player that is being processed. @ref BattlePlayerQSystem-UpdateData-DetailedDescription "More..."
+            //! @{
 
             /// <summary>
             /// PlayerHandle of the current player.
@@ -414,7 +414,7 @@ namespace Battle.QSimulation.Player
             ///
             /// Part of @ref BattlePlayerQSystem-UpdateData-CurrentPlayer "Current Player Properties"
             public bool PlayerHasSwappedCharacter { get; set; }
-            /// @}
+            //! @}
 
             /// <summary>
             /// Sets the current player.

@@ -1,13 +1,13 @@
-/// @file BattleLightrayEffect.qtn
-/// <summary>
-/// Contains enums for Lightray's color and size.
-/// </summary>
-///
-/// ## Generated Enums
-/// - @cref{Quantum,BattleLightrayColor}  
-///   @copybrief Quantum.BattleLightrayColor
-/// - @cref{Quantum,BattleLightraySize}  
-///   @copybrief Quantum.BattleLightraySize
+//! @file BattleLightrayEffect.qtn
+//! <summary>
+//! Contains enums for Lightray's color and size.
+//! </summary>
+//!
+//! ## Generated Enums
+//! - @cref{Quantum,BattleLightrayColor}  
+//!   @copybrief Quantum.BattleLightrayColor
+//! - @cref{Quantum,BattleLightraySize}  
+//!   @copybrief Quantum.BattleLightraySize
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -17,14 +17,14 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleLightrayEffect.qtn}
-
-/// @var Quantum::BattleLightrayColor Quantum::BattleLightrayColor::Red
-/// <summary>Red Lightray color.</summary>
 ///
-/// @var Quantum::BattleLightrayColor Quantum::BattleLightrayColor::Blue
-/// <summary>Blue Lightray color.</summary>
+// {
+    /// @var Quantum::BattleLightrayColor Quantum::BattleLightrayColor::Red
+    /// Red Lightray color.
 
-// ---------------------------------------------------------------------------------------------------- //
+    /// @var Quantum::BattleLightrayColor Quantum::BattleLightrayColor::Blue
+    /// Blue Lightray color.
+// }
 
 /// @enum Quantum::BattleLightraySize
 /// <summary>
@@ -32,12 +32,14 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleLightrayEffect.qtn}
+///
+// {
+    /// @var Quantum::BattleLightraySize Quantum::BattleLightraySize::Narrow
+    /// Narrow Lightray size.
 
-/// @var Quantum::BattleLightraySize Quantum::BattleLightraySize::Narrow
-/// <summary>Narrow Lightray size.</summary>
-///
-/// @var Quantum::BattleLightraySize Quantum::BattleLightraySize::Medium
-/// <summary>Medium Lightray size.</summary>
-///
-/// @var Quantum::BattleLightraySize Quantum::BattleLightraySize::Wide
-/// <summary>Wide Lightray size.</summary>
+    /// @var Quantum::BattleLightraySize Quantum::BattleLightraySize::Medium
+    /// Medium Lightray size.
+
+    /// @var Quantum::BattleLightraySize Quantum::BattleLightraySize::Wide
+    /// Wide Lightray size.
+// }

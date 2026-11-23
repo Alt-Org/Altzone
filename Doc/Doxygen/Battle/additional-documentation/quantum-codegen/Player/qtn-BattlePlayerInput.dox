@@ -1,19 +1,19 @@
-/// @file BattlePlayerInput.qtn
-/// <summary>
-/// Contains enum for player's input.
-/// </summary>
-///
-/// ## Generated Structs
-/// - @cref{Quantum,Input}  
-///   @copybrief Quantum.Input
-/// - @cref{Quantum,BattleSpecialInput}  
-///   @copybrief Quantum.BattleSpecialInput
-///
-/// ## Generated Enums
-/// - @cref{Quantum,BattleMovementInputType}  
-///   @copybrief Quantum.BattleMovementInputType
-/// - @cref{Quantum,BattleJoystickState}  
-///   @copybrief Quantum.BattleJoystickState
+//! @file BattlePlayerInput.qtn
+//! <summary>
+//! Contains enums and structs for player's input.
+//! </summary>
+//!
+//! ## Generated Enums
+//! - @cref{Quantum,BattleMovementInputType}  
+//!   @copybrief Quantum.BattleMovementInputType
+//! - @cref{Quantum,BattleJoystickState}  
+//!   @copybrief Quantum.BattleJoystickState
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,Input}  
+//!   @copybrief Quantum.Input
+//! - @cref{Quantum,BattleSpecialInput}  
+//!   @copybrief Quantum.BattleSpecialInput
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -25,13 +25,63 @@
 /// See [{PlayerInput}](#page-concepts-player-input) for more information.
 ///
 /// @bigtext{Generated from @ref BattlePlayerInput.qtn}
-
-/// @struct Quantum::BattleSpecialInput
-/// <summary>
-/// An input struct that defines the special input data that is used in the game.
-/// </summary>
 ///
-/// @bigtext{Generated from @ref BattlePlayerInput.qtn}
+// {
+    /// @var bool Quantum::Input::IsValid
+    /// <summary>
+    /// Is input valid
+    /// </summary>
+
+    /// @var int Quantum::Input::DebugNumber
+    /// <summary>
+    /// Debug number of the input
+    /// </summary>
+
+    /// @var BattleMovementInputType Quantum::Input::MovementInput
+    /// <summary>
+    /// What movement input type is being used
+    /// </summary>
+
+    /// @var bool Quantum::Input::MovementDirectionIsNormalized
+    /// <summary>
+    /// Is movement direction normalized
+    /// </summary>
+
+    /// @var BattleGridPosition Quantum::Input::MovementGridPosition
+    /// <summary>
+    /// Grid position of the movement
+    /// </summary>
+
+    /// @var FPVector2 Quantum::Input::MovementVector
+    /// <summary>
+    /// Position or direction of the movement
+    /// </summary>
+
+    /// @var bool Quantum::Input::RotationInput
+    /// <summary>
+    /// Is input rotation input
+    /// </summary>
+
+    /// @var FP Quantum::Input::RotationValue
+    /// <summary>
+    /// Rotation input value
+    /// </summary>
+
+    /// @var BattleSpecialInput Quantum::Input::Special
+    /// <summary>
+    /// Is special input given
+    /// </summary>
+
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::Input::SIZE
+    //! @var Int32 Quantum::Input::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::Input::GetHashCode
+    //!
+    //! @}
+// }
 
 /// @enum Quantum::BattleMovementInputType
 /// <summary>
@@ -41,6 +91,20 @@
 /// See @cref{Quantum,Input} for more information.
 ///
 /// @bigtext{Generated from @ref BattlePlayerInput.qtn}
+///
+// {
+    /// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::None
+    /// Player does not want to move.
+
+    /// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::PositionTarget
+    /// The player wants to move to a target position.
+
+    /// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::PositionMove
+    /// The player wants to move towards a position.
+
+    /// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::Direction
+    /// The player wants to move in a direction.
+// }
 
 /// @enum Quantum::BattleJoystickState
 /// <summary>
@@ -48,59 +112,45 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattlePlayerInput.qtn}
+///
+// {
+    /// @var Quantum::BattleJoystickState Quantum::BattleJoystickState::Up
+    /// The joystick is not pressed.
 
-// ---------------------------------------------------------------------------------------------------- //
+    /// @var Quantum::BattleJoystickState Quantum::BattleJoystickState::Down
+    /// The joystick is pressed.
 
-/// @var bool Quantum::Input::IsValid
-/// <summary>Is input valid</summary>
-///
-/// @var int Quantum::Input::DebugNumber
-/// <summary>Debug number of the input</summary>
-///
-/// @var BattleMovementInputType Quantum::Input::MovementInput
-/// <summary>What movement input type is being used</summary>
-///
-/// @var bool Quantum::Input::MovementDirectionIsNormalized
-/// <summary>Is movement direction normalized</summary>
-///
-/// @var BattleGridPosition Quantum::Input::MovementGridPosition
-/// <summary>Grid position of the movement</summary>
-///
-/// @var FPVector2 Quantum::Input::MovementVector
-/// <summary>Position or direction of the movement</summary>
-///
-/// @var bool Quantum::Input::RotationInput
-/// <summary>Is input rotation input</summary>
-///
-/// @var FP Quantum::Input::RotationValue
-/// <summary>Rotation input value</summary>
-///
-/// @var BattleSpecialInput Quantum::Input::Special
-/// <summary>Is special input given</summary>
+    /// @var Quantum::BattleJoystickState Quantum::BattleJoystickState::Drag
+    /// The joystick is being dragged.
+// }
 
-/// @var BattleJoystickState Quantum::BattleSpecialInput::JoystickState
-/// <summary>State of the special joystick</summary>
+/// @struct Quantum::BattleSpecialInput
+/// <summary>
+/// An input struct that defines the special input data that is used in the game.
+/// </summary>
 ///
-/// @var FPVector2 Quantum::BattleSpecialInput::JoystickValue
-/// <summary>Value of the special joystick</summary>
+/// @bigtext{Generated from @ref BattlePlayerInput.qtn}
+///
+// {
+    /// @var BattleJoystickState Quantum::BattleSpecialInput::JoystickState
+    /// <summary>
+    /// State of the special joystick
+    /// </summary>
 
-/// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::None
-/// <summary>Player does not want to move.</summary>
-///
-/// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::PositionTarget
-/// <summary>The player wants to move to a target position.</summary>
-///
-/// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::PositionMove
-/// <summary>The player wants to move towards a position.</summary>
-///
-/// @var Quantum::BattleMovementInputType Quantum::BattleMovementInputType::Direction
-/// <summary>The player wants to move in a direction.</summary>
+    /// @var FPVector2 Quantum::BattleSpecialInput::JoystickValue
+    /// <summary>
+    /// Value of the special joystick
+    /// </summary>
 
-/// @var Quantum::BattleJoystickState Quantum::BattleJoystickState::Up
-/// <summary>The joystick is not pressed.</summary>
-///
-/// @var Quantum::BattleJoystickState Quantum::BattleJoystickState::Down
-/// <summary>The joystick is pressed.</summary>
-///
-/// @var Quantum::BattleJoystickState Quantum::BattleJoystickState::Drag
-/// <summary>The joystick is being dragged.</summary>
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattleSpecialInput::SIZE
+    //! @var Int32 Quantum::BattleSpecialInput::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattleSpecialInput::GetHashCode
+    //!
+    //! @fn void Quantum::BattleSpecialInput::Serialize
+    //!
+    //! @}
+// }

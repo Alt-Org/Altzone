@@ -1,7 +1,7 @@
-/// @file BattleDebugOverlay.cs
-/// <summary>
-/// Contains @cref{Battle.View,BattleDebugOverlay} class which handles the debug info.
-/// </summary>
+//! @file BattleDebugOverlay.cs
+//! <summary>
+//! Contains @cref{Battle.View,BattleDebugOverlay} class which handles the debug info.
+//! </summary>
 
 // Battle QSimulation usings
 using Battle.QSimulation;

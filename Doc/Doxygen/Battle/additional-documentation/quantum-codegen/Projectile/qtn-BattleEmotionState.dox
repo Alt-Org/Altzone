@@ -1,11 +1,11 @@
-/// @file BattleEmotionState.qtn
-/// <summary>
-/// Contains enum with different emotions.
-/// </summary>
-///
-/// ## Generated Enums
-/// - @cref{Quantum,BattleEmotionState}  
-///   @copybrief Quantum.BattleEmotionState
+//! @file BattleEmotionState.qtn
+//! <summary>
+//! Contains enum with different emotions.
+//! </summary>
+//!
+//! ## Generated Enums
+//! - @cref{Quantum,BattleEmotionState}  
+//!   @copybrief Quantum.BattleEmotionState
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -15,18 +15,20 @@
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleEmotionState.qtn}
+///
+// {
+    /// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Sadness
+    /// Projectile is using the effects of Sadness emotion.
 
-/// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Sadness
-/// <summary>Projectile is using the effects of Sadness emotion.</summary>
-///
-/// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Joy
-/// <summary>Projectile is using the effects of Joy emotion.</summary>
-///
-/// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Playful
-/// <summary>Projectile is using the effects of Playful emotion.</summary>
-///
-/// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Aggression
-/// <summary>Projectile is using the effects of Aggression emotion.</summary>
-///
-/// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Love
-/// <summary>Projectile is using the effects of Love emotion.</summary>
+    /// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Joy
+    /// Projectile is using the effects of Joy emotion.
+
+    /// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Playful
+    /// Projectile is using the effects of Playful emotion.
+
+    /// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Aggression
+    /// Projectile is using the effects of Aggression emotion.
+
+    /// @var Quantum::BattleEmotionState Quantum::BattleEmotionState::Love
+    /// Projectile is using the effects of Love emotion.
+// }

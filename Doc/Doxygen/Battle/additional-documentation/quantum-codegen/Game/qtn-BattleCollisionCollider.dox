@@ -1,46 +1,62 @@
-/// @file BattleCollisionCollider.qtn
-/// <summary>
-/// Contains enum and component for defining entity's collision collider type.
-/// </summary>
-///
-/// ## Generated Enums
-/// - @cref{Quantum,BattleCollisionColliderType}  
-///   @copybrief Quantum.BattleCollisionColliderType
-///
-/// ## Generated Structs
-/// - @cref{Quantum,BattleCollisionColliderQComponent}  
-///   @copybrief Quantum.BattleCollisionColliderQComponent
+//! @file BattleCollisionCollider.qtn
+//! <summary>
+//! Contains enum and component for defining entity's Collision Collider type.
+//! </summary>
+//!
+//! ## Generated Enums
+//! - @cref{Quantum,BattleCollisionColliderType}  
+//!   @copybrief Quantum.BattleCollisionColliderType
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,BattleCollisionColliderQComponent}  
+//!   @copybrief Quantum.BattleCollisionColliderQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
 /// @enum Quantum::BattleCollisionColliderType
 /// <summary>
-/// Identifies the type of a collision collider.  
+/// Identifies the type of a Collision collider.  
 /// Used by the @cref{Quantum,BattleCollisionColliderQComponent}.
 /// </summary>
 ///
 /// @bigtext{Generated from @ref BattleCollisionCollider.qtn}
-
-/// @var Quantum::BattleCollisionColliderType Quantum::BattleCollisionColliderType::Projectile
-/// <summary>Collision collider type of Projectile.</summary>
 ///
-/// @var Quantum::BattleCollisionColliderType Quantum::BattleCollisionColliderType::Diamond
-/// <summary>Collision collider type of Diamond.</summary>
-///
-/// @var Quantum::BattleCollisionColliderType Quantum::BattleCollisionColliderType::PlayerClass100Projectile
-/// <summary>Collision Collider type of player class 100 Projectile.</summary>
+// {
+    /// @var Quantum::BattleCollisionColliderType Quantum::BattleCollisionColliderType::Projectile
+    /// Collision Collider type of Projectile.
 
-// ---------------------------------------------------------------------------------------------------- //
+    /// @var Quantum::BattleCollisionColliderType Quantum::BattleCollisionColliderType::Diamond
+    /// Collision Collider type of Diamond.
+
+    /// @var Quantum::BattleCollisionColliderType Quantum::BattleCollisionColliderType::PlayerClass100Projectile
+    /// Collision Collider type of player class 100 Projectile.
+// }
 
 /// @struct Quantum::BattleCollisionColliderQComponent
 /// <summary>
-/// Component that marks the entity as a collision collider and contains the type of the collision collider component that the entity has.
+/// Component that marks the entity as a Collision Collider and contains the type of the Collision Collider component that the entity has.
 /// </summary>
 ///
 /// Streamlines identifying entities as something that can be collided with  
 /// and retrieving the component that is unique to the type of entity that has been collided with.
 ///
 /// @bigtext{Generated from @ref BattleCollisionCollider.qtn}
+///
+// {
+    /// @var BattleCollisionColliderType Quantum::BattleCollisionColliderQComponent::Type
+    /// <summary>
+    /// The type of the Collision Collider component that the entity has.
+    /// </summary>
 
-/// @var BattleCollisionColliderType Quantum.BattleCollisionColliderQComponent::Type
-/// <summary>The type of the collision collider component that the entity has.</summary>
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattleCollisionColliderQComponent::SIZE
+    //! @var Int32 Quantum::BattleCollisionColliderQComponent::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattleCollisionColliderQComponent::GetHashCode
+    //!
+    //! @fn void Quantum::BattleCollisionColliderQComponent::Serialize
+    //!
+    //! @}
+// }

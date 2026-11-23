@@ -1,7 +1,7 @@
-/// @file BattleSoulWallQSystem.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles creating and destroying SoulWalls.
-/// </summary>
+//! @file BattleSoulWallQSystem.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSystem} [Quantum System](https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems) which handles creating and destroying SoulWalls.
+//! </summary>
 
 // Unity usings
 using UnityEngine.Scripting;

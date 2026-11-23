@@ -1,8 +1,8 @@
-/// @file BattleSoulWallQSpec.cs
-/// <summary>
-/// Contains @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSpec} class for defining a list of usable SoulWall EntityPrototypes for creating SoulWalls.
-/// </summary>
-/// @bigtext{Filled with data from @ref BattleSoulWallQSpec.asset "BattleSoulWallQSpec" data asset.}
+//! @file BattleSoulWallQSpec.cs
+//! <summary>
+//! Contains @cref{Battle.QSimulation.SoulWall,BattleSoulWallQSpec} class for defining a list of usable SoulWall EntityPrototypes for creating SoulWalls.
+//! </summary>
+//! @bigtext{Filled with data from @ref BattleSoulWallQSpec.asset "BattleSoulWallQSpec" data asset.}
 
 // Quantum usings
 using Quantum;

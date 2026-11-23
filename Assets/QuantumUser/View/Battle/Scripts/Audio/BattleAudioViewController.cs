@@ -1,7 +1,7 @@
-/// @file BattleAudioViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.Audio,BattleAudioViewController} class which handles playing audio in Battle.
-/// </summary>
+//! @file BattleAudioViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.Audio,BattleAudioViewController} class which handles playing audio in Battle.
+//! </summary>
 
 // System usings
 using System.Runtime.CompilerServices;

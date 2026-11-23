@@ -1,10 +1,10 @@
-/// @file BattleUiGiveUpButtonHandler.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiGiveUpButtonHandler} class which handles give up button functionality.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles give up button functionality.
+//! @file BattleUiGiveUpButtonHandler.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiGiveUpButtonHandler} class which handles give up button functionality.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles give up button functionality.
 
 // Unity usings
 using UnityEngine;
@@ -30,10 +30,10 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiGiveUpButtonHandler : MonoBehaviour
     {
-        /// @anchor BattleUiGiveUpButtonHandler-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiGiveUpButtonHandler-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to BattleUiController.</summary>
         /// @ref BattleUiGiveUpButtonHandler-SerializeFields
@@ -51,7 +51,7 @@ namespace Battle.View.UI
         /// @ref BattleUiGiveUpButtonHandler-SerializeFields
         [SerializeField] private TextMeshProUGUI _giveUpButtonInfoText;
 
-        /// @}
+        //! @}
 
         /// <value>Is the %UI element visible or not.</value>
         public bool IsVisible => MovableUiElement.gameObject.activeSelf;

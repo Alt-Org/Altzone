@@ -1,10 +1,10 @@
-/// @file BattleUiPlayerInfoHandler.cs
-/// <summary>
-/// Contains @cref{Battle.View.UI,BattleUiPlayerInfoHandler} class which handles %Battle %UI player and teammate info visual functionality..
-/// </summary>
-///
-/// This script:<br/>
-/// Handles %Battle %UI player and teammate info visual functionality through BattleUiPlayerInfoComponent.
+//! @file BattleUiPlayerInfoHandler.cs
+//! <summary>
+//! Contains @cref{Battle.View.UI,BattleUiPlayerInfoHandler} class which handles %Battle %UI player and teammate info visual functionality..
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles %Battle %UI player and teammate info visual functionality through BattleUiPlayerInfoComponent.
 
 // Unity usings
 using UnityEngine;
@@ -26,10 +26,10 @@ namespace Battle.View.UI
     /// </summary>
     public class BattleUiPlayerInfoHandler : MonoBehaviour
     {
-        /// @anchor BattleUiPlayerInfoHandler-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleUiPlayerInfoHandler-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to BattleUiController.</summary>
         /// @ref BattleUiPlayerInfoHandler-SerializeFields
@@ -43,7 +43,7 @@ namespace Battle.View.UI
         /// @ref BattleUiPlayerInfoHandler-SerializeFields
         [SerializeField] private BattleUiMultiOrientationElement _localTeammateMultiOrientationElement;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Helper enum to differentiate between local player and local player's teammate when calling #SetInfo method.

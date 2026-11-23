@@ -1,10 +1,10 @@
-/// @file BattleGridViewController.cs
-/// <summary>
-/// Contains @cref{Battle.View.Game,BattleGridViewController} class which handles the %Battle arena grid's visuals.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles %Battle arena grid's visual functionality.
+//! @file BattleGridViewController.cs
+//! <summary>
+//! Contains @cref{Battle.View.Game,BattleGridViewController} class which handles the %Battle arena grid's visuals.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles %Battle arena grid's visual functionality.
 
 // Unity usings
 using UnityEngine;
@@ -20,10 +20,10 @@ namespace Battle.View.Game
     /// </summary>
     public class BattleGridViewController : MonoBehaviour
     {
-        /// @anchor BattleGridViewController-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleGridViewController-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to grid's parent <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Transform.html">Transform@u-exlink</a>.</summary>
         /// @ref BattleGridViewController-SerializeFields
@@ -45,7 +45,7 @@ namespace Battle.View.Game
         [Tooltip("Grid cell color B")]
         [SerializeField] private Color _colorB;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Initializes the grid based on the static variables defined in BattleGridManager by initializing new grid cells based on <see cref="BattleGridViewController._gridCellTemplate">_gridCellTemplate</see>.

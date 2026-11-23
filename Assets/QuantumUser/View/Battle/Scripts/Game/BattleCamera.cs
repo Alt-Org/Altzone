@@ -1,10 +1,10 @@
-/// @file BattleCamera.cs
-/// <summary>
-/// Contains @cref{Battle.View.Game,BattleCamera} class which handles %Battle camera.
-/// </summary>
-///
-/// This script:<br/>
-/// Handles %Battle camera functionality.
+//! @file BattleCamera.cs
+//! <summary>
+//! Contains @cref{Battle.View.Game,BattleCamera} class which handles %Battle camera.
+//! </summary>
+//!
+//! This script:<br/>
+//! Handles %Battle camera functionality.
 
 // Unity usings
 using UnityEngine;
@@ -18,10 +18,10 @@ namespace Battle.View.Game
     /// </summary>
     public class BattleCamera : MonoBehaviour
     {
-        /// @anchor BattleCamera-SerializeFields
-        /// @name SerializeField variables
-        /// <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
-        /// @{
+        //! @anchor BattleCamera-SerializeFields
+        //! @name SerializeField variables
+        //! <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/SerializeField.html">SerializeFields@u-exlink</a> are serialized variables exposed to the Unity editor.
+        //! @{
 
         /// <summary>[SerializeField] Reference to the <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/Camera.html">Camera@u-exlink</a>.</summary>
         /// @ref BattleCamera-SerializeFields
@@ -51,7 +51,7 @@ namespace Battle.View.Game
         /// @ref BattleCamera-SerializeFields
         [SerializeField] private Color _colorDebug;
 
-        /// @}
+        //! @}
 
         /// <summary>
         /// Public static getter for #_camera in #s_instance.

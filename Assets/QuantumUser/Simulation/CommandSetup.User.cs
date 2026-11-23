@@ -1,7 +1,7 @@
-﻿/// @file CommandSetup.User.cs
-/// <summary>
-/// Contains @cref{Quantum,DeterministicCommandSetup} class contains all project-specific commands.
-/// </summary>
+﻿//! @file CommandSetup.User.cs
+//! <summary>
+//! Contains @cref{Quantum,DeterministicCommandSetup} class contains all project-specific commands.
+//! </summary>
 
 // System usings
 using System.Collections.Generic;
