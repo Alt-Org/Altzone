@@ -29,11 +29,13 @@ public class ClanMemberRoleRights : MonoBehaviour
     private readonly struct DropdownEntry
     {
         public readonly string Label;
+        public readonly object Tag;
         public readonly Action<int> OnSelected; // null = divider
 
-        public DropdownEntry(string label, Action<int> onSelected)
+        public DropdownEntry(string label, object tag, Action<int> onSelected)
         {
             Label = label;
+            Tag = tag;
             OnSelected = onSelected;
         }
     }
@@ -58,22 +60,25 @@ public class ClanMemberRoleRights : MonoBehaviour
     private const string _addRoleText = "Add role";
     private ClanData _clanData = null;
     private ClanRoles _draft;
-    private ClanRoles _draftRole;
     private ClanRoles _selectedRole;
     private MemberRights _selectedRight;
     private readonly List<DropdownEntry> _entries = new();
 
     public void OpenPopup()
     {
+        if (_currentMember?.Role == null)
+        {
+            Debug.LogWarning("No current member or role selected");
+            return;
+        }
         popup.SetActive(true);
-
         currentRoleText.text = _currentMember.Role.name;
 
-        SetNewRoleView(false);
-
-        LoadClanData();
-        PopulateDropdown(_clanData);
-        SelectCurrentMemberRole();
+        LoadClanData(clan =>
+        {
+            _clanData = clan;
+            PopulateDropdown(clan);
+        });
     }
 
     public void ClosePopup() {
@@ -83,7 +88,7 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     void Start()
     {
-        if (CurrentMember.Role.name != null)
+        if (CurrentMember.Role.name == null)
         {
             Debug.LogWarning($"No current member seleceted?");
         }
@@ -102,7 +107,7 @@ public class ClanMemberRoleRights : MonoBehaviour
         roleDropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
         saveRoleButton.onClick.RemoveListener(OnStartVoteClicked);
         cancelNewRoleButton.onClick.RemoveListener(CancelNewRole);
-        ClosePopup();
+        _draft = null;
     }
 
     private void CancelNewRole() {
@@ -112,44 +117,49 @@ public class ClanMemberRoleRights : MonoBehaviour
         {
             Destroy(contentParent.GetChild(i).gameObject);
         }
+
         roleDropdown.SetValueWithoutNotify(_previousValidIndex);
+        nameInput.text = "";
+        _draft = null;
     }
 
-    private void LoadClanData()
+    private void LoadClanData(Action<ClanData> onLoaded)
     {
-        if (_clanData != null)
-            return;
-
         DataStore store = Storefront.Get();
         PlayerData player = null;
+
         store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
 
         if (player == null) return;
 
-        store.GetClanData(player.ClanId, data => _clanData = data);
+        store.GetClanData(player.ClanId, clan =>
+        {
+            if (clan != null)
+                onLoaded(clan);
+        });
     }
 
     private void PopulateDropdown(ClanData clan)
     {
         _entries.Clear();
 
-        _entries.Add(new(_addRoleText, _ => NewRole()));
-        _entries.Add(new(_divider, null));
+        _entries.Add(new(_addRoleText, null, _ => NewRole()));
+        _entries.Add(new(_divider, null, null));
 
         foreach (var role in clan.ClanRoles)
-        _entries.Add(ViewEntry(role.name, () => ShowRole(role)));
+            _entries.Add(ViewEntry(role.name, role, () => ShowRole(role)));
 
-        _entries.Add(new(_divider, null));
+        _entries.Add(new(_divider, null, null));
 
         foreach (MemberRights right in Enum.GetValues(typeof(MemberRights)))
-        _entries.Add(ViewEntry(GetDisplayName(right), () => ShowRight(right)));
+            _entries.Add(ViewEntry(GetDisplayName(right), right, () => ShowRight(right)));
 
         roleDropdown.ClearOptions();
         roleDropdown.AddOptions(_entries.Select(e => e.Label).ToList());
         SelectCurrentMemberRole();
     }
 
-    private DropdownEntry ViewEntry(string label, Action show) => new(label, index =>
+    private DropdownEntry ViewEntry(string label, object tag, Action show) => new(label, tag, index =>
     {
         _previousValidIndex = index;
         SetNewRoleView(false);
@@ -171,14 +181,13 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     private void SelectCurrentMemberRole()
     {
-        int index = _clanData.ClanRoles.FindIndex(r => r.name == CurrentMember.Role.name);
-        _previousValidIndex = index;
+        int index = _entries.FindIndex(e => e.Tag is ClanRoles r && r.name == CurrentMember.Role.name);
         if (index == -1) return;
+        _previousValidIndex = index;
 
         roleDropdown.SetValueWithoutNotify(index);
         roleDropdown.RefreshShownValue();
-
-        ShowRole(_clanData.ClanRoles[index]);
+        _entries[index].OnSelected(index);
     }
 
     private void ShowRight(MemberRights right)
@@ -198,10 +207,10 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     private void ShowRole(ClanRoles role)
     {
+        _selectedRole = role;
+
         if (currentSelectionInfo == null)
             return;
-
-        _selectedRole = role;
 
         var allowedRights = Enum.GetValues(typeof(MemberRights))
             .Cast<MemberRights>()
@@ -233,12 +242,26 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     public void OnStartVoteClicked()
     {
-        _draft.name = nameInput.text;
-        bool? result = null;
+        if (_draft == null) return;
 
-        PollManager.CreateRolePoll(_currentMember.Id, _draft, c => result = c);
+        string roleName = nameInput.text.Trim();
+        if (string.IsNullOrEmpty(roleName))
+        {
+            Debug.LogWarning("Role name is empty");
+            return;
+        }
+        if (_clanData.ClanRoles.Any(r => r.name == roleName))
+        {
+            Debug.LogWarning($"Role '{roleName}' already exists");
+            return;
+        }
 
-        SetNewRoleView(false);
+        _draft.name = roleName;
+        PollManager.CreateRolePoll(_currentMember.Id, _draft, success =>
+        {
+            if (!success)
+                Debug.LogWarning("Creating role poll failed");
+        });
 
         ClosePopup();
     }
@@ -261,7 +284,10 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     private void NewRoleOptions()
     {
-        _draftRole = new ClanRoles { rights = new ClanRoles.ClanRights() };
+        for (int i = contentParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(contentParent.GetChild(i).gameObject);
+        }
 
         foreach (MemberRights right in Enum.GetValues(typeof(MemberRights)))
         {
@@ -278,7 +304,7 @@ public class ClanMemberRoleRights : MonoBehaviour
 
             button.onClick.AddListener(() =>
             {
-                bool newValue = !_draftRole.HasRights(capturedRight);
+                bool newValue = !_draft.HasRights(capturedRight);
                 SetNewRoleRight(capturedRight, newValue);
                 UpdateVisuals(label, buttonImage, capturedRight);
             });
@@ -287,7 +313,7 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     private void UpdateVisuals(TextMeshProUGUI label, Image buttonImage, MemberRights right)
     {
-        bool isAllowed = _draftRole.HasRights(right);
+        bool isAllowed = _draft.HasRights(right);
         string color = isAllowed ? "green" : "red";
 
         label.text = $"{GetDisplayName(right)}: <color={color}>{isAllowed}</color>";
@@ -296,7 +322,7 @@ public class ClanMemberRoleRights : MonoBehaviour
 
     private void SetNewRoleRight(MemberRights right, bool isAllowed)
     {
-        _draftRole.SetRights(right, isAllowed);
+        _draft.SetRights(right, isAllowed);
     }
 
     private void SetNewRoleView(bool isNewRole)
