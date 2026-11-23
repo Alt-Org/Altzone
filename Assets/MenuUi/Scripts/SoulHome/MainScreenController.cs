@@ -404,13 +404,13 @@ namespace MenuUI.Scripts.SoulHome
             GameObject tray = GetTray();
             if (enable)
             {
-                OverlayPanelCheck.Instance.ToggleBottomBar(false);
+                OverlayPanelCheck.Instance?.ToggleBottomBar(false);
                 tray.SetActive(true);
                 _changeHandleButtonTray.SetActive(true);
             }
             else
             {
-                OverlayPanelCheck.Instance.ToggleBottomBar(true);
+                OverlayPanelCheck.Instance?.ToggleBottomBar(true);
                 tray.SetActive(false);
                 _changeHandleButtonTray.SetActive(false);
             }

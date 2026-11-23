@@ -231,7 +231,7 @@ public class OnlinePlayersPanelItem : AltMonoBehaviour
             }
             else
             {
-                _inviteButton.gameObject.SetActive(true);
+                _inviteButton.gameObject.SetActive(false); //Disabled for now.
                 // Disable the invite button if the player is offline
                 _inviteButton.interactable = IsOnline;
 

@@ -42,8 +42,6 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     [SerializeField] private Button _viewClanPlayersButton;
     [SerializeField] private Button _viewAllPlayersButton;
     [SerializeField] private Button _viewFriendListButton;
-    [Header("Popup Button")]
-    [SerializeField] private PopupButtonVisual _onlinePlayersPopupButton; //for visual selection effect
 
     private OnlinePlayersView _currentView = OnlinePlayersView.Clan;
 
@@ -58,6 +56,11 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     public static OnlinePlayersPanel Instance { get; private set; }
     public List<FriendPlayer> Friendlist { get => _friendlist; }
     public List<FriendRequest> FriendRequests { get => _friendRequests; }
+
+    public bool IsOpen { get => _onlinePlayersPanel.activeSelf; }
+
+    public delegate void ToggleOnlinePlayerButton(bool? active = null);
+    public static event ToggleOnlinePlayerButton OnToggleOnlinePlayerButton;
 
     private void Awake()
     {
@@ -498,12 +501,12 @@ public class OnlinePlayersPanel : AltMonoBehaviour
     public void OpenPanel()
     {
         _onlinePlayersPanel.SetActive(true);
-        _onlinePlayersPopupButton.ButtonSelected(true);
+        OnToggleOnlinePlayerButton?.Invoke(true);
     }
 
     public void Hide()
     {
         _onlinePlayersPanel.SetActive(false);
-        _onlinePlayersPopupButton.ButtonSelected(false);
+        OnToggleOnlinePlayerButton?.Invoke(false);
     }
 }

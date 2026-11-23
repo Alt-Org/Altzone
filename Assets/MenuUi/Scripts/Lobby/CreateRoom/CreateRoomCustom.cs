@@ -55,8 +55,8 @@ namespace MenuUi.Scripts.Lobby.CreateRoom
         public bool ShowToFriends {  get { return _showToFriends.isOn; } }
         public bool ShowToClan { get {  return _showToClan.isOn; } }
         public Button CreateRoomButton { get { return _createRoom; } }
-        public GameType SelectedCustomGameMode { get { return _customBattleGameModeSelector.SelectedGameMode; } }
-        public int SelectedCustomGameModeIndex { get { return (int)_customBattleGameModeSelector.SelectedGameMode; } }
+        public GameType SelectedCustomGameMode { get { return CustomBattleGameModeSelector.SelectedGameMode; } }
+        public int SelectedCustomGameModeIndex { get { return (int) CustomBattleGameModeSelector.SelectedGameMode; } }
         public int PlayerCount { get { return (int)_playerCountSelector.PlayerCount; } }
         public bool CanCreateRoom => !IsPrivate || !string.IsNullOrWhiteSpace(RoomPassword);
 

@@ -11879,7 +11879,7 @@ PrefabInstance:
         type: 3}
       propertyPath: overlayButtons.Array.data[0]
       value: 
-      objectReference: {fileID: 1123333911}
+      objectReference: {fileID: 0}
     - target: {fileID: 27453095474569272, guid: e41290d0959bdfe47b62024b1a7a3c44,
         type: 3}
       propertyPath: overlayButtons.Array.data[1]
@@ -13935,18 +13935,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1123333911 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6202265700417584613, guid: e41290d0959bdfe47b62024b1a7a3c44,
-    type: 3}
-  m_PrefabInstance: {fileID: 1051589477}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1179279238 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 749740166195640302, guid: e41290d0959bdfe47b62024b1a7a3c44,
@@ -14452,6 +14440,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1277116465}
   - component: {fileID: 1277116464}
+  - component: {fileID: 1277116466}
   m_Layer: 0
   m_Name: OnlineProfileManager
   m_TagString: Untagged
@@ -14489,6 +14478,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1277116466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277116463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a78a58a2f6bb14d868b714194c0dd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _naviTarget: {fileID: 11400000, guid: 58e1481b45b1dc44c90a3346a441246b, type: 2}
+  _useNonDefaultWindow: 0
+  _targetWindow: 0
+  _isCurrentPopOutWindow: 0
+  _disabledOnProd: 0
 --- !u!114 &1325998317 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7833296492300959358, guid: 0dc265c7860e2ff459362c238d4f0cf8,

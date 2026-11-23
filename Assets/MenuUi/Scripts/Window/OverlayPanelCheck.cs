@@ -20,8 +20,6 @@ namespace MenuUi.Scripts.Window
         [SerializeField] private GameObject _chatBox;
         [SerializeField] private GameObject _buttonsBar;
 
-        [SerializeField] private Button _onlineToggleButton;
-
         private bool _chatActive = true;
 
         public static OverlayPanelCheck Instance { get; private set; }
@@ -43,6 +41,9 @@ namespace MenuUi.Scripts.Window
 
         public delegate void ChangePopupInfo(InfoLevel level, string message);
         public static event ChangePopupInfo OnChangePopupInfo;
+
+        public delegate void UpdateButtonInteractable();
+        public static event UpdateButtonInteractable OnUpdateButtonInteractable;
 
         private void Awake()
         {
@@ -72,13 +73,6 @@ namespace MenuUi.Scripts.Window
         {
             if (Instance == this)
                 UpdateButtonContent();
-
-            _onlineToggleButton.onClick.AddListener(ToggleOnlinePlayers);
-        }
-
-        private void OnDisable()
-        {
-            _onlineToggleButton?.onClick.RemoveAllListeners();
         }
 
         private void OnDestroy()
@@ -126,6 +120,7 @@ namespace MenuUi.Scripts.Window
                     glow.gameObject.SetActive(isCurrentWindow);
                 }
             } //for
+            OnUpdateButtonInteractable?.Invoke();
         } //updatebuttoncontent
 
         public void ToggleOverlay(bool value)
@@ -154,7 +149,7 @@ namespace MenuUi.Scripts.Window
             OnChatBarToggled?.Invoke(value);
         }
 
-        public void ToggleOnlinePlayers()
+        public static void ToggleOnlinePlayers()
         {
             OnToggleOnlinePlayerList?.Invoke();
         }

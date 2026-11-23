@@ -67,14 +67,14 @@ public class BattleStartHandler : MonoBehaviour
         //_loadImage.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.8f);
         //_loadImage.transform.localScale = new Vector2(1f, 1f);
         //_battleStartText.gameObject.SetActive(false);
-        float animationLength = PlayBattleEnd();
+        float animationLength = PlayBattleStart();
 
         yield return new WaitForSeconds(animationLength + 3);
         LobbyManager.Instance.IsStartFinished = true;
         _timerCoroutine = null;
     }
 
-    private float PlayBattleEnd()
+    private float PlayBattleStart()
     {
         _animator.Play(_battleStartAnimation.name);
         return _battleStartAnimation.length;

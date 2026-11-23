@@ -446,7 +446,7 @@ namespace Altzone.Scripts.Battle.Photon
         {
             if (PhotonRealtimeClient.LobbyCurrentRoom.MaxPlayers == 2 && (MatchmakingType)PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty<int>(MatchmakingKey) is not MatchmakingType.Custom)
             {
-                return playerPos is >= PlayerPosition1 and <= PlayerPosition2;
+                return playerPos is PlayerPosition1 or PlayerPosition3;
             }
             else
             {

@@ -1,18 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+using MenuUi.Scripts.Window;
 
-[RequireComponent(typeof(Button))]
-public class LogOutHandler : MonoBehaviour
+public class LogOutHandler : WindowNavigation
 {
-    private void Start()
+    // Start is called before the first frame update
+    void Start()
     {
-        GetComponent<Button>().onClick.AddListener(LogOut);
+        ServerManager.OnLogInStatusChanged += HandleLogOut;
     }
 
-    public void LogOut()
+    private void OnDestroy()
     {
-        ServerManager.Instance.LogOut();
+        ServerManager.OnLogInStatusChanged -= HandleLogOut;
+    }
+
+    private void HandleLogOut(bool loggedIn)
+    {
+        if(!loggedIn) StartCoroutine(Navigate());
     }
 }

@@ -659,26 +659,10 @@ namespace MenuUi.Scripts.DefenceScreen.CharacterStatsWindow
             return success;
         }
 
-
-        // Get all character stats combined
-        private int GetStatsCombined()
-        {
-            if (_customCharacter == null) return GetBaseStatsCombined();
-            return _customCharacter.Speed + _customCharacter.CharacterSize + _customCharacter.Attack + _customCharacter.Defence + _customCharacter.Hp;
-        }
-
-
-        // Get all character base stats combined
-        private int GetBaseStatsCombined()
-        {
-            return _baseCharacter.DefaultSpeed + _baseCharacter.DefaultCharacterSize + _baseCharacter.DefaultAttack + _baseCharacter.DefaultDefence + _baseCharacter.DefaultHp; 
-        }
-
-
         // Checks if stat levels combined are less than level cap
         private bool CheckCombinedLevelCap()
         {
-            if (GetStatsCombined() < CustomCharacter.STATMAXCOMBINED)
+            if (_customCharacter.GetStatsCombined() < CustomCharacter.STATMAXCOMBINED)
             {
                 return true;
             }
