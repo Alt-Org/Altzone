@@ -182,36 +182,6 @@ namespace Battle.QSimulation.Player
         }
 
         /// <summary>
-        /// Verifies that the given <paramref name="shieldNumber"/> is valid for specified player's specified character.
-        /// </summary>
-        ///
-        /// See [{Shield Number}](#page-concepts-player-character-entity-shield-number) for more info.<br/>
-        /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
-        /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerSlot">Slot of the specified player.</param>
-        /// <param name="characterNumber">The character number of the specified character.</param>
-        /// <param name="shieldNumber">The shield number to be verified.</param>
-        ///
-        /// <returns>True if the shield number is valid, false if it isn't.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsValidShieldNumber(Frame f, BattlePlayerSlot playerSlot, int characterNumber, int shieldNumber)
-        {
-            /*if (!BattlePlayerData.IsValidCharacterNumber(characterNumber)) return false;
-
-            int shieldIndex = GetShieldIndex(playerSlot, characterNumber);
-
-            if (shieldNumber < 0 || shieldNumber > GetPlayerShieldManagerData(f)->PlayerShieldCounts[shieldIndex] - 1)
-            {
-                s_debugLogger.ErrorFormat(f, "({0}) shield number {1} is not valid for character number {2}", playerSlot, shieldNumber, characterNumber);
-                return false;
-            }*/
-
-            return true;
-        }
-
-        /// <summary>
         /// Attaches a shield to a player's character based on their <paramref name="playerSlot"/>, <paramref name="characterNumber"/> and <paramref name="shieldNumber"/>
         /// and updates necessary data. Additionally teleports the shield to the character if needed.
         /// </summary>
@@ -304,7 +274,9 @@ namespace Battle.QSimulation.Player
         /// <param name="shieldNumber">The number of the shield that's to be removed.</param>
         public static void RemoveShield(Frame f, BattlePlayerHandle playerHandle, int characterNumber, int shieldNumber)
         {
-            if (!IsValidShieldNumber(f, playerHandle.PlayerData.Slot, characterNumber, shieldNumber)) return;
+            playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerShieldManager), "");
+
+            BattlePlayerData.DevAssertIsValidShieldNumber(nameof(BattlePlayerShieldManager), playerHandle, shieldNumber);
 
             BattlePlayerShieldHandle shieldHandle = GetShield(f, playerHandle, shieldNumber);
 
@@ -320,11 +292,6 @@ namespace Battle.QSimulation.Player
 
             ReturnShieldEntityRef(f, playerHandle.PlayerData, characterNumber, shieldNumber);
             f.Events.BattleShieldChangeState(playerHandle.LoadedCharacterEntityHandle, playerHandle.PlayerData.Team, shieldHandle.ShieldData->IsAttached, shieldNumber);
-        }
-
-        public static bool IsValidShieldNumber(BattlePlayerHandle playerHandle, int shieldNumber)
-        {
-            return BattlePlayerData.IsValidShieldNumber(playerHandle, shieldNumber);
         }
 
         #endregion Public Static Methods
