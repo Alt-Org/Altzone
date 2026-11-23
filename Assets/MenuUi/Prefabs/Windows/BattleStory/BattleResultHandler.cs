@@ -135,14 +135,22 @@ public class BattleResultHandler : MonoBehaviour
             _teamBetaPanel.SetActive(true);
 
             _clanAlphaName.text = info.TeamAlphaName;
-            StartCoroutine(FetchClanLogo(info.TeamAlphaId, c =>
+            StartCoroutine(FetchClanData(info.TeamAlphaId, clan =>
             {
-                _clanAlphaLogo.SetHeartColors(c);
+                if (clan != null)
+                {
+                    _clanAlphaName.text = clan.Name;
+                    _clanAlphaLogo.SetHeartColors(clan.ClanHeartPieces);
+                }
             }));
             _clanBetaName.text = info.TeamBetaName;
-            StartCoroutine(FetchClanLogo(info.TeamBetaId, c =>
+            StartCoroutine(FetchClanData(info.TeamBetaId, clan =>
             {
-                _clanBetaLogo.SetHeartColors(c);
+                if (clan != null)
+                {
+                    _clanBetaName.text = clan.Name;
+                    _clanBetaLogo.SetHeartColors(clan.ClanHeartPieces);
+                }
             }));
         }
         else
@@ -249,29 +257,27 @@ public class BattleResultHandler : MonoBehaviour
             callback(avatarData);
     }
 
-    private IEnumerator FetchClanLogo(string clanId, Action<List<HeartPieceData>> callback)
+    private IEnumerator FetchClanData(string clanId, Action<ClanData> callback)
     {
-        if (string.IsNullOrEmpty(clanId)) yield break;
+        if (string.IsNullOrWhiteSpace(clanId))
+        {
+            callback?.Invoke(null);
+            yield break;
+        }
 
-        List<HeartPieceData> clanLogo = null;
         ClanData data = null;
         bool finished = false;
 
-        if (clanId == ServerManager.Instance.Clan._id)
+        Storefront.Get().GetClanData(clanId, cachedData => data = cachedData);
+        if (data == null)
         {
-            Storefront.Get().GetClanData(ServerManager.Instance.Clan._id, c =>
+            StartCoroutine(ServerManager.Instance.GetClanFromServer(clanId, clan =>
             {
-                clanLogo = c.ClanHeartPieces;
-            });
-        }
-        else
-        {
-            StartCoroutine(ServerManager.Instance.GetClanFromServer(clanId, c => data = new(c), f => finished = f));
+                if (clan != null) data = new ClanData(clan);
+            }, f => finished = f));
             yield return new WaitUntil(() => data != null || finished);
-            clanLogo = data.ClanHeartPieces;
         }
 
-        if (callback != null)
-            callback(clanLogo);
+        callback?.Invoke(data);
     }
 }

@@ -2358,16 +2358,31 @@ namespace Altzone.Scripts.Lobby
                 };
                 long sendTime = data.StartTime;
 
-                Room room = PhotonRealtimeClient.CurrentRoom;
-                string alphaTeamName = room.GetCustomProperty(TeamAlphaNameKey, "Alpha");
-                string alphaTeamId = room.GetCustomProperty(PhotonBattleRoom.ClanIdKey, "");
-                string betaTeamName = room.GetCustomProperty(TeamBetaNameKey, "Beta");
-                string betaTeamId = room.GetCustomProperty(PhotonBattleRoom.ClanOpponentIdKey, "");
+                MatchmakingType resultMatchmakingType = _serverMatchData != null
+                    ? (MatchmakingType)_serverMatchData.matchType
+                    : data.MatchmakingType;
+                GameType resultGameType = _serverMatchData != null
+                    ? (GameType)_serverMatchData.gameType
+                    : data.GameType;
+                bool isClanMatch = resultMatchmakingType == MatchmakingType.Clan2v2;
+                string alphaTeamName = "Team Alpha";
+                string alphaTeamId = string.Empty;
+                string betaTeamName = "Team Beta";
+                string betaTeamId = string.Empty;
+                if (isClanMatch && _serverMatchData?.teams != null)
+                {
+                    MQTTMatchTeams alphaTeam = _serverMatchData.teams.FirstOrDefault(team =>
+                        string.Equals(team?.side, "A", StringComparison.OrdinalIgnoreCase));
+                    MQTTMatchTeams betaTeam = _serverMatchData.teams.FirstOrDefault(team =>
+                        string.Equals(team?.side, "B", StringComparison.OrdinalIgnoreCase));
+                    alphaTeamId = alphaTeam?.clanId ?? string.Empty;
+                    betaTeamId = betaTeam?.clanId ?? string.Empty;
+                }
 
                 _roomInfo = new()
                 {
-                    MatchmakingType = data.MatchmakingType,
-                    GameType = data.GameType,
+                    MatchmakingType = resultMatchmakingType,
+                    GameType = resultGameType,
                     Player1Id = data.PlayerSlotUserIds[0],
                     Player1Name = data.PlayerSlotUserNames[0],
                     Player2Id = data.PlayerSlotUserIds[1],
@@ -2560,11 +2575,6 @@ namespace Altzone.Scripts.Lobby
         {
             DataCarrier.AddData(DataCarrier.BattleWinner, (int)winningTeam);
             DataCarrier.AddData(DataCarrier.OwnBattleResult, winningTeam == ownTeam);
-            Room room = PhotonRealtimeClient.CurrentRoom;
-            string alphaTeamName = room.GetCustomProperty(TeamAlphaNameKey, "Alpha");
-            string betaTeamName = room.GetCustomProperty(TeamBetaNameKey, "Beta");
-            DataCarrier.AddData(DataCarrier.BattleOwnTeamName, ownTeam is BattleTeamNumber.TeamAlpha? alphaTeamName : betaTeamName);
-            DataCarrier.AddData(DataCarrier.BattleEnemyTeamName, ownTeam is BattleTeamNumber.TeamAlpha ? betaTeamName : alphaTeamName);
             if (Instance != null
                 && ServerManager.Instance != null
                 && !string.IsNullOrEmpty(ServerManager.Instance.ActiveMatchmakingMatchId)
