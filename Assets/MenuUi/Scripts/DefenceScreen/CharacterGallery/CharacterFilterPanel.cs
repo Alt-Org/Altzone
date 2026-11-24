@@ -44,7 +44,6 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private GameObject _dropDownArrowDown;
 
         [Header("Popup action buttons")]
-        [SerializeField] private Button _closeButton;
         [SerializeField] private Button _clearButton;
         [SerializeField] private Button _showButton;
 
@@ -63,7 +62,6 @@ namespace MenuUi.Scripts.CharacterGallery
             _openFilterPopUpButton2.onClick.AddListener(Open);
             _openFilterPopUpButton3.onClick.AddListener(Open);
 
-            _closeButton.onClick.AddListener(Close);
             _clearButton.onClick.AddListener(ResetFilters);
 
             _showButton.onClick.AddListener(CloseAndApply);
@@ -184,11 +182,6 @@ namespace MenuUi.Scripts.CharacterGallery
         public void Open()
         {
             _filterPopUp.SetActive(true);
-        }
-
-        private void Close()
-        {
-            _filterPopUp.SetActive(false);
         }
 
         private void ResetFilters()
