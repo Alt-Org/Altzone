@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -74,7 +75,25 @@ namespace MenuUI.Scripts.SoulHome
 
         public int Width => _width;
         public int Height => _height;
-        public Furniture Furniture { get => _furniture; set => _furniture = value; }
+        public Furniture Furniture
+        {
+            get
+            {
+                if(_furniture == null || string.IsNullOrEmpty(_furniture.Name))
+                {
+                    GameFurniture furniture = null;
+                    furniture= StorageFurnitureReference.Instance.GetGameFurniture(_name);
+                    Debug.LogWarning(furniture);
+                    if (furniture == null)
+                    {
+                        return null;
+                    }
+                    _furniture = new(furniture);
+                }
+                return _furniture;
+        }
+            set => _furniture = value;
+        }
         public Vector2 Position { get => _position; set => _position = value; }
         public FurnitureSlot Slot { get => _slot;
             set
