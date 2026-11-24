@@ -158,7 +158,13 @@ MonoBehaviour:
     type: 3}
   cullCheckAmount: 0.1
   _hasInteractionSlot: 1
-  Pattern: 1
+  _pattern: 1
+  customInteractionOffsets:
+  - {x: 0, y: -2}
+  - {x: 1, y: -2}
+  - {x: 2, y: -2}
+  _width: 3
+  _height: 2
 --- !u!210 &5631410605880800485
 SortingGroup:
   m_ObjectHideFlags: 0
