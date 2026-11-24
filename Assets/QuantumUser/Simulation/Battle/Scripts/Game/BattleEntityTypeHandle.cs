@@ -222,7 +222,7 @@ namespace Battle.QSimulation.Game
         /// <param name="f">Current simulation frame.</param>
         /// <param name="slot">Slot of the <b>%Player</b> the handle is being created for.</param>
         ///
-        /// <returns>The created handle.</returns>
+        /// <returns>The <b>Created Handle</b>.</returns>
         public static BattlePlayerHandle Create(Frame f, BattlePlayerSlot slot)
         {
             BattlePlayerHandle handle = new();
@@ -239,11 +239,12 @@ namespace Battle.QSimulation.Game
         /// Use @cref{Battle.QSimulation.Game.BattlePlayerHandle,Create(Frame\, EntityRef)}
         /// to <b>Create</b> a <b>Handle</b> for the <b>%Player</b> and a <b>Character</b>.
         ///
-        /// See [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) for more info.
+        /// See [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) for more info.<br/>
+        /// See [{Player Data}](#page-concepts-player-data) for more info.
         ///
-        /// <param name="playerData">Data of the <b>%Player</b> the handle is being created for.</param>
+        /// <param name="playerData">Reference to <b>{Data}</b> of the <b>%Player</b> the handle is being <b>Created</b> for.</param>
         ///
-        /// <returns>The created handle.</returns>
+        /// <returns>The <b>Created Handle</b>.</returns>
         public static BattlePlayerHandle Create(BattlePlayerData.Ref playerData)
         {
             BattlePlayerHandle handle = new();
@@ -267,7 +268,7 @@ namespace Battle.QSimulation.Game
         /// <param name="f">Current simulation frame.</param>
         /// <param name="entityRef">EntityRef of the <b>%Player</b> the handle is being created for.</param>
         ///
-        /// <returns>The created handle.</returns>
+        /// <returns>The <b>Created Handle</b>.</returns>
         public static BattlePlayerHandle Create(Frame f, EntityRef entityRef)
         {
             BattlePlayerLinkQComponent* link = f.Unsafe.GetPointer<BattlePlayerLinkQComponent>(entityRef);
@@ -325,8 +326,10 @@ namespace Battle.QSimulation.Game
         //! @{
 
         /// <summary>
-        /// <see cref="BattlePlayerData.Ref"/> of <b>this Handle's</b> <b>%Player</b>.
+        /// <b>{%Player Data}</b> of <b>this Handle's</b> <b>%Player</b>.
         /// </summary>
+        ///
+        /// See [{Player Data}](#page-concepts-player-data) for more info.
         public BattlePlayerData.Ref PlayerData { get; private set; }
 
         /// <summary>

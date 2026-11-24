@@ -50,7 +50,10 @@ namespace Battle.QSimulation.Player
         /// Creates all shield entities for specified player character, initializing data, hitboxes and view components.
         /// </summary>
         ///
+        /// See [{Player Data}](#page-concepts-player-data) for more info.
+        ///
         /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Reference to the <b>{%Player Data}</b>.</param>
         /// <param name="playerCharacterNumber">The character number of the specified character.</param>
         /// <param name="playerCharacterId">The ID of the specified character.</param>
         /// <param name="playerCharacterClass">The character class of the specified character.</param>
@@ -319,10 +322,10 @@ namespace Battle.QSimulation.Player
 
         #region Private Static Methods
 
-        /// @anchor BattlePlayerShieldManager-PrivateStaticMethods-ShieldEntity
-        /// @name Shield Entity Methods
-        /// Methods for handling shield entities
-        /// @{
+        //! @anchor BattlePlayerShieldManager-PrivateStaticMethods-ShieldEntity
+        //! @name Shield Entity Methods
+        //! Methods for handling shield entities
+        //! @{
         #region Private Static Methods - Shield Entity
 
         /// <summary>
@@ -358,10 +361,12 @@ namespace Battle.QSimulation.Player
         ///
         /// See [{Shield Entity}](#page-concepts-player-character-and-shield-entity) for more info.<br/>
         /// See [{Player Slots}](#page-concepts-player-slots-teams) for more info.<br/>
+        /// See [{Player Data}](#page-concepts-player-data) for more info.
         /// See [{Character Number}](#page-concepts-player-character-entity-character-number) for more info.<br/>
         /// See [{Shield Number}](#page-concepts-player-character-entity-shield-number) for more info.<br/>
         ///
         /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Reference to the <b>{%Player Data}</b>.</param>
         /// <param name="characterNumber">The character number of the specified character.</param>
         /// <param name="shieldNumber">The shield number of the shield to be returned.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

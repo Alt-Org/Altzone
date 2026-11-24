@@ -58,7 +58,10 @@ namespace Battle.QSimulation.Player
         ///
         /// Updates give up state and calls <see cref="BattlePlayerQSystem.HandleGiveUpLogic">HandleGiveUpLogic</see> method which handles the rest of the logic.
         ///
+        /// See [{Player Data}](#page-concepts-player-data) for more info.
+        ///
         /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Reference to the <b>{%Player Data}</b>.</param>
         public static void HandlePlayerAbandoned(Frame f, BattlePlayerData.Ref playerData)
         {
             playerData.StatePlayerGiveUp = true;
@@ -519,7 +522,10 @@ namespace Battle.QSimulation.Player
         ///
         /// Used by <see cref="BattlePlayerQSystem.HandleGiveUp">HandleGiveUp</see> and <see cref="BattlePlayerQSystem.HandlePlayerAbandoned">HandlePlayerAbandoned</see>.
         ///
+        /// See [{Player Data}](#page-concepts-player-data) for more info.
+        ///
         /// <param name="f">Current simulation frame.</param>
+        /// <param name="playerData">Reference to the <b>{%Player Data}</b>.</param>
         ///
         /// <returns>True if all players on a team have given up.</returns>
         private static BattleTeamNumber HandleGiveUpLogic(Frame f, BattlePlayerData.Ref playerData)
