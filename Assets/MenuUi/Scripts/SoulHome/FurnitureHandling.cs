@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
-using UnityEditor.Graphs;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 using UnityEngine.Rendering;
 
 namespace MenuUI.Scripts.SoulHome
@@ -23,6 +21,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             Surround,     // All surrounding slots
             FrontRow,     // All slots along the "front" width
+            Custom
         }
 
         [SerializeField]
@@ -62,9 +61,8 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField]
         private bool _hasInteractionSlot = false;
         private Vector2Int _interactionOffset = new Vector2Int(0, 1);
-        public bool HasInteractionSlot => _hasInteractionSlot;
 
-        //[SerializeField] public InteractionPattern Pattern = InteractionPattern.FrontRow;
+        [SerializeField] private InteractionPattern _pattern = InteractionPattern.FrontRow;
         public List<FurnitureSlot> AssignedInteractionSlots { get; private set; } = new List<FurnitureSlot>();
 
         [HideInInspector]
@@ -76,78 +74,6 @@ namespace MenuUI.Scripts.SoulHome
 
         public int Width => _width;
         public int Height => _height;
-
-        public void ClearInteractionSlots()
-        {
-            foreach (var slot in AssignedInteractionSlots)
-            {
-                slot.IsReserved = false;
-                slot.InteractionOwner = null;
-                slot.ClearValidity();
-            }
-            AssignedInteractionSlots.Clear();
-        }
-
-        public void AddInteractionSlot(FurnitureSlot slot)
-        {
-            if (!AssignedInteractionSlots.Contains(slot))
-            {
-                slot.IsReserved = true;
-                AssignedInteractionSlots.Add(slot);
-            }
-        }
-
-        //Get closest interaction slot for npc to path to
-        public FurnitureSlot GetClosestInteractionSlot(Vector3 npcPosition)
-        {
-            if (AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
-                return null;
-
-            FurnitureSlot closest = null;
-            float minDistance = float.MaxValue;
-
-            foreach (var slot in AssignedInteractionSlots)
-            {
-                float dist = Vector3.Distance(npcPosition, slot.transform.position);
-                if (dist < minDistance)
-                {
-                    minDistance = dist;
-                    closest = slot;
-                }
-            }
-            return closest;
-        }
-
-        public void StartInteract(SoulHomeAvatarController controller)
-        {
-            StartCoroutine(InteractRoutine(controller));
-        }
-
-        private IEnumerator InteractRoutine(SoulHomeAvatarController controller)
-        {
-            GameObject original = controller.gameObject;
-            original.SetActive(false);
-
-            GameObject dummy = Instantiate(original);
-            dummy.SetActive(true);
-
-            dummy.transform.SetParent(this.transform, true);
-            dummy.transform.localPosition = Vector3.zero;
-
-            Animator dummyAnim = dummy.GetComponentInChildren<Animator>();
-            //dummyAnim.Play("");
-
-            //yield return new WaitForEndOfFrame(); // Wait for animator to update
-            //float animLength = dummyAnim.GetCurrentAnimatorStateInfo(0).length;
-            //yield return new WaitForSeconds(animLength);
-
-            //Temporary
-            yield return new WaitForSeconds(10);
-
-            Destroy(dummy);
-            original.SetActive(true);
-        }
-
         public Furniture Furniture { get => _furniture; set => _furniture = value; }
         public Vector2 Position { get => _position; set => _position = value; }
         public FurnitureSlot Slot { get => _slot;
@@ -181,6 +107,8 @@ namespace MenuUI.Scripts.SoulHome
         public Sprite FurnitureSpriteLeft { get => _furnitureSpriteLeft; set { if (!Application.isPlaying) _furnitureSpriteLeft = value; } }
         public Sprite FurnitureSpriteBack { get => _furnitureSpriteBack; set { if (!Application.isPlaying) _furnitureSpriteBack = value; } }
         public bool SpriteCanBeFlipped { get => _spriteCanBeFlipped;}
+
+        public bool HasInteractionSlot => _hasInteractionSlot;
 
         public delegate void FurnitureRotated(Direction direction);
         public event FurnitureRotated OnFurnitureRotated;
@@ -467,6 +395,77 @@ namespace MenuUI.Scripts.SoulHome
         public void SaveDirection()
         {
             _spriteDirection = _tempSpriteDirection;
+        }
+
+        public void ClearInteractionSlots()
+        {
+            foreach (var slot in AssignedInteractionSlots)
+            {
+                slot.IsReserved = false;
+                slot.InteractionOwner = null;
+                slot.ClearValidity();
+            }
+            AssignedInteractionSlots.Clear();
+        }
+
+        public void AddInteractionSlot(FurnitureSlot slot)
+        {
+            if (!AssignedInteractionSlots.Contains(slot))
+            {
+                slot.IsReserved = true;
+                AssignedInteractionSlots.Add(slot);
+            }
+        }
+
+        //Get closest interaction slot for npc to path to
+        public FurnitureSlot GetClosestInteractionSlot(Vector3 npcPosition)
+        {
+            if (AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
+                return null;
+
+            FurnitureSlot closest = null;
+            float minDistance = float.MaxValue;
+
+            foreach (var slot in AssignedInteractionSlots)
+            {
+                float dist = Vector3.Distance(npcPosition, slot.transform.position);
+                if (dist < minDistance)
+                {
+                    minDistance = dist;
+                    closest = slot;
+                }
+            }
+            return closest;
+        }
+
+        public void StartInteract(SoulHomeAvatarController controller)
+        {
+            StartCoroutine(InteractRoutine(controller));
+        }
+
+        private IEnumerator InteractRoutine(SoulHomeAvatarController controller)
+        {
+            GameObject original = controller.gameObject;
+            original.SetActive(false);
+
+            GameObject dummy = Instantiate(original);
+            dummy.SetActive(true);
+
+            dummy.transform.SetParent(this.transform, true);
+            dummy.transform.localPosition = Vector3.zero;
+
+            Animator dummyAnim = dummy.GetComponentInChildren<Animator>();
+            //dummyAnim.Play("");
+
+            //yield return new WaitForEndOfFrame(); // Wait for animator to update
+            //float animLength = dummyAnim.GetCurrentAnimatorStateInfo(0).length;
+            //yield return new WaitForSeconds(animLength);
+
+            //Temporary
+            yield return new WaitForSeconds(10);
+
+            Destroy(dummy);
+            original.SetActive(true);
         }
 
         public void SetOutline(bool outline)

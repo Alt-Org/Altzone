@@ -5,11 +5,13 @@ using UnityEngine;
 [CustomEditor(typeof(FurnitureHandling))]
 public class FurnitureInteractionCustomEditor : Editor
 {
+    private FurnitureHandling _script;
     private SerializedProperty widthProp;
     private SerializedProperty heightProp;
 
     private void OnEnable()
     {
+        _script = target as FurnitureHandling;
         widthProp = serializedObject.FindProperty("_width");
         heightProp = serializedObject.FindProperty("_height");
     }
@@ -17,8 +19,6 @@ public class FurnitureInteractionCustomEditor : Editor
     {
         DrawDefaultInspector();
         serializedObject.Update();
-
-        FurnitureHandling script = (FurnitureHandling)target;
 
         if (widthProp.intValue < 1) widthProp.intValue = 1;
         if (heightProp.intValue < 1) heightProp.intValue = 1;
@@ -45,7 +45,7 @@ public class FurnitureInteractionCustomEditor : Editor
             {
                 Vector2Int pos = new Vector2Int(x, y);
 
-                bool isInteraction = script.customInteractionOffsets.Contains(pos);
+                bool isInteraction = _script.customInteractionOffsets.Contains(pos);
                 bool isFurnitureBody = (x >= 0 && x < width && y <= 0 && y > -height);
 
                 if (isFurnitureBody) GUI.backgroundColor = Color.green;
@@ -58,11 +58,11 @@ public class FurnitureInteractionCustomEditor : Editor
                 {
                     if (!isFurnitureBody)
                     {
-                        Undo.RecordObject(script, "Modify Custom Interaction Slot");
-                        if (isInteraction) script.customInteractionOffsets.Remove(pos);
-                        else script.customInteractionOffsets.Add(pos);
+                        Undo.RecordObject(_script, "Modify Custom Interaction Slot");
+                        if (isInteraction) _script.customInteractionOffsets.Remove(pos);
+                        else _script.customInteractionOffsets.Add(pos);
 
-                        EditorUtility.SetDirty(script);
+                        EditorUtility.SetDirty(_script);
                     }
                 }
                 GUI.backgroundColor = Color.white;
@@ -73,9 +73,9 @@ public class FurnitureInteractionCustomEditor : Editor
 
         if (GUILayout.Button("Clear Pattern"))
         {
-            Undo.RecordObject(script, "Clear Interaction Pattern");
-            script.customInteractionOffsets.Clear();
-            EditorUtility.SetDirty(script);
+            Undo.RecordObject(_script, "Clear Interaction Pattern");
+            _script.customInteractionOffsets.Clear();
+            EditorUtility.SetDirty(_script);
         }
 
         serializedObject.ApplyModifiedProperties();
