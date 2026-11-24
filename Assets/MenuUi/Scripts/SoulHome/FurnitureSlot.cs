@@ -94,18 +94,22 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (isInteractSlot)
             {
-
-                _slotValidityIndicator.color = new Color(1, 1, 0, 0.3f); //Yellow
+                if (validity)
+                {
+                    _slotValidityIndicator.color = new Color(1, 1, 0, 0.3f); //Yellow
+                    _slotValidityIndicator.gameObject.SetActive(false);
+                }
+                else
+                    _slotValidityIndicator.gameObject.SetActive(false);
             }
-            else if (validity)
+            else 
             {
-                _slotValidityIndicator.color = new Color(0,1,0, 0.3f);
+                if (validity)
+                    _slotValidityIndicator.color = new Color(0,1,0, 0.3f);
+                else
+                    _slotValidityIndicator.color = new Color(1, 0, 0, 0.3f);
+                _slotValidityIndicator.gameObject.SetActive(true);
             }
-            else
-            {
-                _slotValidityIndicator.color = new Color(1, 0, 0, 0.3f);
-            }
-            _slotValidityIndicator.gameObject.SetActive(true);
         }
         public void ClearValidity()
         {
