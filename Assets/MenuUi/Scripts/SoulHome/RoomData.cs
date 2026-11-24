@@ -221,7 +221,7 @@ namespace MenuUI.Scripts.SoulHome
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
                     FurnitureSlot slot = furnitureSlot.GetComponent<FurnitureSlot>();
-                    slot.InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, _slotRows, slotWidth, slotDepth);
+                    slot.InitializeSlot(this, row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, _slotRows, slotWidth, slotDepth);
                     _floorSlots[row, col] = slot;
                     furnitureSlot.tag = "FloorFurnitureSlot";
                     col++;
@@ -259,7 +259,7 @@ namespace MenuUI.Scripts.SoulHome
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
                     FurnitureSlot slot = furnitureSlot.GetComponent<FurnitureSlot>();
-                    slot.InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.BackWall, _slotMaxGrowthPercentage, wallSlotColumns, slotWidth, slotDepth);
+                    slot.InitializeSlot(this, row, col, _roomInfo.Id, FurnitureGrid.BackWall, _slotMaxGrowthPercentage, wallSlotColumns, slotWidth, slotDepth);
                     _backWallSlots[row, col] = slot;
                     furnitureSlot.tag = "WallFurnitureSlot";
                     col++;
@@ -293,7 +293,7 @@ namespace MenuUI.Scripts.SoulHome
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
                     FurnitureSlot slot = furnitureSlot.GetComponent<FurnitureSlot>();
-                    slot.InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.RightWall, _slotMaxGrowthPercentage, wallSlotColumns, slotWidth, slotDepth);
+                    slot.InitializeSlot(this, row, col, _roomInfo.Id, FurnitureGrid.RightWall, _slotMaxGrowthPercentage, wallSlotColumns, slotWidth, slotDepth);
                     _rightWallSlots[row, col] = slot;
                     furnitureSlot.tag = "RightWallFurnitureSlot";
                     row++;
@@ -326,7 +326,7 @@ namespace MenuUI.Scripts.SoulHome
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
                     FurnitureSlot slot = furnitureSlot.GetComponent<FurnitureSlot>();
-                    slot.InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.LeftWall, _slotMaxGrowthPercentage, wallSlotRows, slotWidth, slotDepth);
+                    slot.InitializeSlot(this, row, col, _roomInfo.Id, FurnitureGrid.LeftWall, _slotMaxGrowthPercentage, wallSlotRows, slotWidth, slotDepth);
                     _leftWallSlots[row, col] = slot;
                     furnitureSlot.tag = "LeftWallFurnitureSlot";
                     row++;
@@ -360,7 +360,7 @@ namespace MenuUI.Scripts.SoulHome
                     float slotWidth = (ceilingWidth / ceilingSlotColumns) * (1 + _slotMaxGrowthPercentage * (((float)i) / (((float)ceilingSlotRows) - 1)) / 100);
                     furnitureSlot.name = (1 + j).ToString();
                     FurnitureSlot slot = furnitureSlot.GetComponent<FurnitureSlot>();
-                    slot.InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, ceilingSlotRows, slotWidth, slotDepth);
+                    slot.InitializeSlot(this, row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, ceilingSlotRows, slotWidth, slotDepth);
                     _ceilingSlots[row, col] = slot;
                     furnitureSlot.tag = "CeilingFurnitureSlot";
 
@@ -1043,6 +1043,19 @@ namespace MenuUI.Scripts.SoulHome
                 slot.ClearValidity();
             }
             _currentSlotValidity.Clear();
+        }
+
+        public FurnitureSlot GetFurnitureSlot(FurnitureGrid grid,int row, int column)
+        {
+            return grid switch
+            {
+                FurnitureGrid.Floor => _floorSlots[row, column],
+                FurnitureGrid.BackWall => _backWallSlots[row, column],
+                FurnitureGrid.RightWall => _rightWallSlots[row, column],
+                FurnitureGrid.LeftWall => _leftWallSlots[row, column],
+                FurnitureGrid.Ceiling => _ceilingSlots[row, column],
+                _ => null,
+            };
         }
 
         public void SetFurnitureSlots(FurnitureHandling furniture)
