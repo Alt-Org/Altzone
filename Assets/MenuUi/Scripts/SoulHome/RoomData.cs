@@ -94,7 +94,7 @@ namespace MenuUI.Scripts.SoulHome
         public Room RoomInfo { get => _roomInfo;}
         public int SlotRows { get => _slotRows;}
         public int SlotColumns { get => _slotColumns;}
-        public GridNode[,] Grid { get => _grid;}
+        public GridNode[,] MovementGrid { get => _grid;}
         public List<Vector2Int> WalkableSlots { get => _walkableSlots;}
         public SoulHomeController Controller { get => _controller;}
 
@@ -669,7 +669,7 @@ namespace MenuUI.Scripts.SoulHome
 
 
             if(check == null) check = CheckFurniturePosition(row, column, gridtoCheck, furniture.Furniture);
-            SetSlotValidity(row, column, gridtoCheck, furniture.Furniture, (bool)check);
+            SetSlotValidity(row, column, gridtoCheck, furniture, (bool)check);
             return (bool)check;
         }
 
@@ -1019,8 +1019,9 @@ namespace MenuUI.Scripts.SoulHome
 
         }
 
-        private void SetSlotValidity(int row, int column, FurnitureGrid grid, Furniture furniture, bool check)
+        private void SetSlotValidity(int row, int column, FurnitureGrid grid, FurnitureHandling handling, bool check)
         {
+            Furniture furniture = handling.Furniture;
             Vector3Int furnitureSize = furniture.GetFurnitureSize();
 
             int startRow;
@@ -1032,6 +1033,10 @@ namespace MenuUI.Scripts.SoulHome
 
             startRow = row - (furnitureSize.y - 1);
             endColumn = column + (furnitureSize.x - 1);
+
+            Transform targetGrid = GetTargetGrid(grid);
+
+            if (targetGrid == null) return;
 
             for (int i = startRow; i <= row; i++)
             {
@@ -1068,25 +1073,20 @@ namespace MenuUI.Scripts.SoulHome
                     }
                     if (furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.FloorNonblock)
                     {
-                        _floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
-                        _currentSlotValidity.Add(_floorFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
+                        targetGrid.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
+                        _currentSlotValidity.Add(targetGrid.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
                     }
                     else if (furniture.Place is FurniturePlacement.Wall)
                     {
                         if (grid is FurnitureGrid.BackWall)
                         {
-                            _wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
-                            _currentSlotValidity.Add(_wallBackFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
+                            targetGrid.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check);
+                            _currentSlotValidity.Add(targetGrid.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>());
                         }
-                        if (grid is FurnitureGrid.RightWall)
+                        if (grid is FurnitureGrid.RightWall or FurnitureGrid.LeftWall)
                         {
-                            _wallRightFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().SetValidity(check);
-                            _currentSlotValidity.Add(_wallRightFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>());
-                        }
-                        if (grid is FurnitureGrid.LeftWall)
-                        {
-                            _wallLeftFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().SetValidity(check);
-                            _currentSlotValidity.Add(_wallLeftFurniturePoints.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>());
+                            targetGrid.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>().SetValidity(check);
+                            _currentSlotValidity.Add(targetGrid.GetChild(j).GetChild(i).GetComponent<FurnitureSlot>());
                         }
                     }
                     else if (furniture.Place is FurniturePlacement.Ceiling)
@@ -1094,6 +1094,64 @@ namespace MenuUI.Scripts.SoulHome
                         /*if (_wallFurniturePoints.GetChild(i).GetChild(j).GetComponent<FurnitureSlot>().SetValidity(check)*/
                     }
                 }
+            }
+
+            if (handling.HasInteractionSlot)
+            {
+                int W = furnitureSize.x;
+                int H = furnitureSize.y;
+
+                foreach (Vector2Int offset in handling.customInteractionOffsets)
+                {
+                    Vector2Int rotatedOffset = offset;
+                    switch (handling.TempSpriteDirection)
+                    {
+                        case FurnitureHandling.Direction.Front:
+                            rotatedOffset = new Vector2Int(offset.x, -offset.y - H + 1);
+                            break;
+
+                        case FurnitureHandling.Direction.Right:
+                            rotatedOffset = new Vector2Int(offset.y + H - 1, -offset.x);
+                            break;
+
+                        case FurnitureHandling.Direction.Left:
+                            rotatedOffset = new Vector2Int(-offset.y, offset.x - (W - 1));
+                            break;
+                    }
+
+                    int targetCol = column + rotatedOffset.x;
+                    int targetRow = row + rotatedOffset.y;
+
+                    Debug.LogWarning(targetCol + " : " + targetRow);
+
+                    HighlightSlot(targetGrid, targetCol, targetRow, handling, check);
+                }
+            }
+
+        }
+
+        private void HighlightSlot(Transform grid, int col, int row, FurnitureHandling handling, bool check)
+        {
+            if (col >= 0 && col < SlotColumns && row >= 0 && row < SlotRows)
+            {
+                FurnitureSlot interactSlot = grid.GetChild(row).GetChild(col).GetComponent<FurnitureSlot>();
+
+                bool overlapsFurniture = interactSlot.SlotOwner != null && interactSlot.SlotOwner != handling;
+                bool overlapsInteract = interactSlot.InteractionOwner != null && interactSlot.InteractionOwner != handling;
+
+                bool isValid = !overlapsFurniture && !overlapsInteract && check;
+
+
+                if (isValid)
+                {
+                    Debug.LogWarning(interactSlot.column + " : " + interactSlot.row);
+                    interactSlot.SetValidity(isValid, true);
+                }
+                else if (!isValid)
+                {
+                    interactSlot.SetValidity(false, true);
+                }
+                AddToValidityList(interactSlot);
             }
         }
 
@@ -1104,6 +1162,35 @@ namespace MenuUI.Scripts.SoulHome
                 slot.ClearValidity();
             }
             _currentSlotValidity.Clear();
+        }
+
+        /*public FurnitureSlot GetSlot(int col, int row, FurnitureHandling furnitureInfo)
+        {
+
+        }*/
+
+        public Transform GetTargetGrid(FurnitureGrid grid)
+        {
+            Transform targetGrid = null;
+            switch (grid)
+            {
+                case FurnitureGrid.Floor:
+                    targetGrid = _floorFurniturePoints;
+                    break;
+                case FurnitureGrid.BackWall:
+                    targetGrid = _wallBackFurniturePoints;
+                    break;
+                case FurnitureGrid.RightWall:
+                    targetGrid = _wallRightFurniturePoints;
+                    break;
+                case FurnitureGrid.LeftWall:
+                    targetGrid = _wallLeftFurniturePoints;
+                    break;
+                case FurnitureGrid.Ceiling:
+                    targetGrid = _ceilingFurniturePoints;
+                    break;
+            }
+            return targetGrid;
         }
 
         public FurnitureSlot GetFurnitureSlot(FurnitureGrid grid,int row, int column)

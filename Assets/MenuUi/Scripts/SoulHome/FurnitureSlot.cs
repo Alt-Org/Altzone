@@ -97,7 +97,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (validity)
                 {
                     _slotValidityIndicator.color = new Color(1, 1, 0, 0.3f); //Yellow
-                    _slotValidityIndicator.gameObject.SetActive(false);
+                    _slotValidityIndicator.gameObject.SetActive(true);
                 }
                 else
                     _slotValidityIndicator.gameObject.SetActive(false);

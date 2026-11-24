@@ -683,7 +683,7 @@ namespace MenuUI.Scripts.SoulHome
                     if ((hover || check) && _selectedFurniture != null)
                     {
                         FurnitureHandling handling = _selectedFurniture.GetComponent<FurnitureHandling>();
-                        FurnitureSlot hoveredSlot = GetHoveredSlot(hitArray);
+                        /*FurnitureSlot hoveredSlot = GetHoveredSlot(hitArray);
 
                         if (hoveredSlot != null && handling.HasInteractionSlot)
                         {
@@ -717,7 +717,7 @@ namespace MenuUI.Scripts.SoulHome
 
                                 HighlightSlot(room, targetCol, targetRow);
                             }
-                        }
+                        }*/
                     }
 
                     //Save interaction slots on placement
@@ -765,7 +765,7 @@ namespace MenuUI.Scripts.SoulHome
                                     int targetCol = hoveredSlot.column + rotatedOffset.x;
                                     int targetRow = hoveredSlot.row + rotatedOffset.y;
 
-                                    HighlightSlot(room, targetCol, targetRow);
+                                    //HighlightSlot(room, targetCol, targetRow);
                                     SaveSlot(room, targetCol, targetRow, handling);
                                 }
                             }
@@ -1069,7 +1069,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (col >= 0 && col < room.SlotColumns && row >= 0 && row < room.SlotRows)
             {
-                FurnitureSlot slot = room.Grid[col, row].FurnitureSlot;
+                FurnitureSlot slot = room.MovementGrid[col, row].FurnitureSlot;
                 handling.AddInteractionSlot(slot);
                 slot.InteractionOwner = handling;
             }
@@ -1080,7 +1080,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (col >= 0 && col < room.SlotColumns && row >= 0 && row < room.SlotRows)
             {
-                FurnitureSlot interactSlot = room.Grid[col, row].FurnitureSlot;
+                FurnitureSlot interactSlot = room.MovementGrid[col, row].FurnitureSlot;
                 FurnitureHandling current = _selectedFurniture.GetComponent<FurnitureHandling>();
 
                 bool overlapsFurniture = interactSlot.SlotOwner != null && interactSlot.SlotOwner != current;
