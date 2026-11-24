@@ -394,7 +394,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 56.35
+  m_fontSize: 45.7
   m_fontSizeBase: 80
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -621,7 +621,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 30.7
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -918,7 +918,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Valmis
+  m_text: "N\xE4yt\xE4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 6c39a08b9bdffae4b905988ec5054da8, type: 2}
@@ -1001,8 +1001,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: Valmis
-  _englishText: Confirm
+  _finnishText: "N\xE4yt\xE4"
+  _englishText: View
 --- !u!1 &959569123046686161
 GameObject:
   m_ObjectHideFlags: 0
@@ -1224,7 +1224,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36.4
+  m_fontSize: 25.2
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1830,7 +1830,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38
+  m_fontSize: 36.8
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1959,8 +1959,8 @@ MonoBehaviour:
   _dropDownArrowUp: {fileID: 3416094142753270921}
   _dropDownArrowDown: {fileID: 5746246644860046784}
   _closeButton: {fileID: 2935703997506539294}
-  _cancelButton: {fileID: 5010880491616311522}
-  _confirmButton: {fileID: 4712483519621768040}
+  _clearButton: {fileID: 5010880491616311522}
+  _showButton: {fileID: 4712483519621768040}
   _galleryView: {fileID: 202220006862611404, guid: 5f1834e86d79d314d935e44b4b45a462,
     type: 3}
 --- !u!1 &2302769351490417241
@@ -3555,7 +3555,7 @@ GameObject:
   - component: {fileID: 4712483519621768040}
   - component: {fileID: 4078535944817867658}
   m_Layer: 5
-  m_Name: ConfirmButton
+  m_Name: ShowButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3922,7 +3922,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 34.25
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4397,7 +4397,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 37.35
+  m_fontSize: 26.5
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4576,7 +4576,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4905015668747979653}
   m_Layer: 5
-  m_Name: CancelConfirmButtons
+  m_Name: ClearShowButtons
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4697,7 +4697,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 29.8
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4925,7 +4925,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
+  m_fontSize: 39.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5822,7 +5822,7 @@ GameObject:
   - component: {fileID: 5010880491616311522}
   - component: {fileID: 7233685495864908584}
   m_Layer: 5
-  m_Name: CancelButton
+  m_Name: ClearButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6327,7 +6327,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 87.5
+  m_fontSize: 62.1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6498,7 +6498,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 56.35
+  m_fontSize: 40
   m_fontSizeBase: 80
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6736,7 +6736,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 36.4
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7847,7 +7847,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
+  m_fontSize: 33.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7971,7 +7971,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Peruuta
+  m_text: "Tyhjenn\xE4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 575dbda903adc434caffae39c1b59109, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 6c39a08b9bdffae4b905988ec5054da8, type: 2}
@@ -8054,8 +8054,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 220ef737e6ba13e48841e379d56ad79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _finnishText: Peruuta
-  _englishText: Cancel
+  _finnishText: "Tyhjenn\xE4"
+  _englishText: Clear
 --- !u!1001 &4677438810891453639
 PrefabInstance:
   m_ObjectHideFlags: 0

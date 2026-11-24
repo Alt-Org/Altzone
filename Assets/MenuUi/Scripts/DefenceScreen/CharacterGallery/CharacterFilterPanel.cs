@@ -43,10 +43,10 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private GameObject _dropDownArrowUp;
         [SerializeField] private GameObject _dropDownArrowDown;
 
-        [Header("Popup close buttons")]
+        [Header("Popup action buttons")]
         [SerializeField] private Button _closeButton;
-        [SerializeField] private Button _cancelButton;
-        [SerializeField] private Button _confirmButton;
+        [SerializeField] private Button _clearButton;
+        [SerializeField] private Button _showButton;
 
         [Header("GalleryView")]
         [SerializeField] private GalleryView _galleryView;
@@ -64,9 +64,9 @@ namespace MenuUi.Scripts.CharacterGallery
             _openFilterPopUpButton3.onClick.AddListener(Open);
 
             _closeButton.onClick.AddListener(Close);
-            _cancelButton.onClick.AddListener(Close);
+            _clearButton.onClick.AddListener(ResetFilters);
 
-            _confirmButton.onClick.AddListener(CloseAndApply);
+            _showButton.onClick.AddListener(CloseAndApply);
 
             _filterConscious.onValueChanged.AddListener(ConsciousToggleBold);
             _filterUnconscious.onValueChanged.AddListener(UnconsciousToggleBold);
@@ -189,6 +189,20 @@ namespace MenuUi.Scripts.CharacterGallery
         private void Close()
         {
             _filterPopUp.SetActive(false);
+        }
+
+        private void ResetFilters()
+        {
+            _classSortDropdown.value = 0;
+
+            _filterConscious.isOn = false;
+            _filterUnconscious.isOn = false;
+
+            foreach (Toggle toggle in _classFilterToggles)
+            {
+                toggle.SetIsOnWithoutNotify(true);
+            }
+            _toggleAll.SetIsOnWithoutNotify(true);
         }
 
         private void CloseAndApply()
