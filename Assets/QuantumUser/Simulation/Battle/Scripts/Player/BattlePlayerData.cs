@@ -1,7 +1,7 @@
-/// @file BattlePlayerData.cs
-/// <summary>
-/// TO-DO ADD DOCUMENTATION
-/// </summary>
+//! @file BattlePlayerData.cs
+//! <summary>
+//! TO-DO ADD DOCUMENTATION
+//! </summary>
 
 // System usings
 using System.Diagnostics;
@@ -26,13 +26,13 @@ namespace Quantum
         /// See [{Player Data}](#page-concepts-player-data) for more info.
         public struct Ref
         {
-            /// @anchor BattlePlayerDataRef-Attributes
-            /// @name Immutable Attributes
-            /// Immutable data accessed but not meant to be modified by gameplay logic.<br/>
-            ///
-            /// See [{Player Data}](#page-concepts-player-data) for more info.
-            ///
-            /// @{
+            //! @anchor BattlePlayerDataRef-Attributes
+            //! @name Immutable Attributes
+            //! Immutable data accessed but not meant to be modified by gameplay logic.<br/>
+            //!
+            //! See [{Player Data}](#page-concepts-player-data) for more info.
+            //!
+            //! @{
             #region Attributes
 
             /// <summary>PlayerRef used to identify the player in %Quantum.</summary>
@@ -96,15 +96,15 @@ namespace Quantum
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => Low_Level.SelectedCharacterNumber; }
 
             #endregion Attributes
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerDataRef-State
-            /// @name Mutable State
-            /// Mutable data accessed and modified as needed by gameplay logic.<br/>
-            ///
-            /// See [{Player Data}](#page-concepts-player-data) for more info.
-            ///
-            /// @{
+            //! @anchor BattlePlayerDataRef-State
+            //! @name Mutable State
+            //! Mutable data accessed and modified as needed by gameplay logic.<br/>
+            //!
+            //! See [{Player Data}](#page-concepts-player-data) for more info.
+            //!
+            //! @{
             #region State
 
             /// <summary>Whether character swapping is allowed or not.</summary>
@@ -132,16 +132,16 @@ namespace Quantum
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => ref Low_Level.StateRespawnTimer; }
 
             #endregion State
-            /// @}
+            //! @}
 
-            /// @anchor BattlePlayerDataRef-LowLevel
-            /// @name Low Level
-            /// Low level access.<br/>
-            /// @note Only meant for use by "low level" code.<br/>
-            ///
-            /// See [{Player Data}](#page-concepts-player-data) for more info.
-            ///
-            /// @{
+            //! @anchor BattlePlayerDataRef-LowLevel
+            //! @name Low Level
+            //! Low level access.<br/>
+            //! @note Only meant for use by "low level" code.<br/>
+            //!
+            //! See [{Player Data}](#page-concepts-player-data) for more info.
+            //!
+            //! @{
             #region Low Level
 
             /// <summary>Low level access. @note Only meant for use by "low level" code.</summary>
@@ -153,7 +153,7 @@ namespace Quantum
             { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => ref _playerManagerData->PlayerArray[_index]; }
 
             #endregion Low Level
-            /// @}
+            //! @}
 
             public Ref(BattlePlayerManagerDataQSingleton* playerManagerData, int index)
             {
@@ -190,13 +190,13 @@ namespace Quantum
             private int _index;
         }
 
-        /// @name test
-        /// @{
+        //! @name test
+        //! @{
 
         public const int NoSelectedCharacter = -1;
         public const int NoAttachedShield = -1;
 
-        /// @}
+        //! @}
 
         #region Public Static Methods
 

@@ -403,12 +403,12 @@ namespace Battle.QSimulation.Game
         }
 
         #endregion Public Get Methods
-        /// @}
+        //! @}
 
-        /// @anchor BattleEntityManager-UseReturnMethods
-        /// @name Use/Return Methods
-        /// Methods for using and returning [{Registered Entities}](#page-concepts-entity-management-registered-entities).
-        /// @{
+        //! @anchor BattleEntityManager-UseReturnMethods
+        //! @name Use/Return Methods
+        //! Methods for using and returning [{Registered Entities}](#page-concepts-entity-management-registered-entities).
+        //! @{
         #region Public Use/Return Methods
 
         /// <summary>
