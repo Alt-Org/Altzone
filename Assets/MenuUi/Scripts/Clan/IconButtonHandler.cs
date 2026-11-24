@@ -11,17 +11,24 @@ public class IconButtonHandler : MonoBehaviour
 
     [SerializeField]
     private Button _button;
+
     [SerializeField]
-    private Image _backgroundSelector;
+    private GameObject _backgroundHighlight;
+
     [SerializeField]
     private Image _valueIcon;
+
     [SerializeField]
     private TMP_Text _labelText;
 
-    private ClanValues _value;
+    [Header("Text Colors")]
+    [SerializeField]
+    private Color _selectedTextColor = new Color(1f, 0.55f, 0f); // orange
 
-    private string _selectedColorHex = "#00FF00";   // Vihreä
-    private string _unselectedColorHex = "#CBCBCB"; // Harmaa
+    [SerializeField]
+    private Color _unselectedTextColor = Color.black;
+
+    private ClanValues _value;
 
     private Action<ClanValues, Action<bool>> _selectionMethod;
 
@@ -34,21 +41,17 @@ public class IconButtonHandler : MonoBehaviour
         }          
     }
 
-    public void Initialize
-        (Sprite sprite,
+    public void Initialize(
+        Sprite sprite,
         ClanValues value,
         string label,
-        string selectedColour,
-        string unselectedColour,
         Action<ClanValues, Action<bool>> selectionMethod)
     {
         _valueIcon.sprite = sprite;
         _value = value;
-        _selectedColorHex = selectedColour;
-        _unselectedColorHex = unselectedColour;
         _selectionMethod = selectionMethod;
 
-        if(_labelText != null)
+        if (_labelText != null)
         {
             _labelText.text = label;
         }
@@ -65,18 +68,14 @@ public class IconButtonHandler : MonoBehaviour
 
     public void UpdateButtonVisual(bool isSelected)
     {
-        if (_backgroundSelector != null)
+        if (_backgroundHighlight != null)
         {
-            string hexColor = isSelected ? _selectedColorHex : _unselectedColorHex;
+            _backgroundHighlight.SetActive(isSelected);
+        }
 
-            if (ColorUtility.TryParseHtmlString(hexColor, out Color parsedColor))
-            {
-                _backgroundSelector.color = parsedColor;
-            }
-            else
-            {
-                Debug.LogWarning($"Virheellinen v�riarvo: {hexColor}");
-            }
+        if (_labelText != null)
+        {
+            _labelText.color = isSelected ? _selectedTextColor : _unselectedTextColor;
         }
     }
 }

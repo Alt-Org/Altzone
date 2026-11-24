@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Altzone.Scripts.ReferenceSheets
 {
@@ -148,28 +149,82 @@ namespace Altzone.Scripts.ReferenceSheets
     public class FurnitureInfo
     {
         public Sprite Image;
+        public Sprite SidewaysImage;
         public Sprite PosterImage;
         public Sprite RibbonImage;
-        public string VisibleName;
+        [FormerlySerializedAs("VisibleName")] public string FinnishName;
         public string EnglishName;
-        public string SetName;
+        [FormerlySerializedAs("SetName")] public string SetNameFinnish;
         public string SetNameEnglish;
+        public Sprite SetRibbonBackground;
+        public Sprite SetPosterBackground;
+        public Sprite SetFontName;
         public string ArtistName;
-        public string ArtisticDescription;
+        [FormerlySerializedAs("ArtisticDescription")] public string FinnishArtisticDescription;
         public string EnglishArtisticDescription;
         public string DiagnoseNumber;
+
+        public string VisibleName
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return FinnishName;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                {
+                    if (string.IsNullOrEmpty(EnglishName)) return FinnishName;
+                    return EnglishName;
+                }
+                else
+                    return FinnishName;
+            }
+        }
+        public string SetName
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return SetNameFinnish;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                {
+                    if (string.IsNullOrEmpty(SetNameEnglish)) return SetNameFinnish;
+                    return SetNameEnglish;
+                }
+                else
+                    return SetNameFinnish;
+            }
+        }
+        public string ArtisticDescription
+        {
+            get
+            {
+                if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.Finnish)
+                    return FinnishArtisticDescription;
+                else if (SettingsCarrier.Instance.Language is SettingsCarrier.LanguageType.English)
+                {
+                    if (string.IsNullOrEmpty(EnglishArtisticDescription)) return FinnishArtisticDescription;
+                    return EnglishArtisticDescription;
+                }
+                else
+                    return FinnishArtisticDescription;
+            }
+        }
 
         public FurnitureInfo(FurnitureInfoObject data, FurnitureSetInfo setData)
         {
             Image = data.Image;
+            SidewaysImage = data.SidewaysImage;
             PosterImage = data.PosterImage;
+            SetRibbonBackground = setData.SetRibbonBackground;
+            SetPosterBackground = setData.SetPosterBackground;
+            SetFontName = setData.SetFontName;
             RibbonImage = data.RibbonImage;
-            VisibleName = data.VisibleName;
+            FinnishName = data.VisibleName;
             EnglishName = data.EnglishName;
-            SetName = setData.SetName;
+            SetNameFinnish = setData.SetName;
             SetNameEnglish = setData.SetNameEnglish;
             ArtistName = setData.ArtistName;
-            ArtisticDescription = data.ArtisticDescription;
+            FinnishArtisticDescription = data.ArtisticDescription;
             EnglishArtisticDescription = data.EnglishArtisticDescription;
             DiagnoseNumber = data.DiagnoseNumber;
         }
@@ -177,13 +232,14 @@ namespace Altzone.Scripts.ReferenceSheets
 
     [Serializable]
     public class FurnitureInfoObject
-    {        
+    {
         public string Name;
-        public string EnglishName;
         public Sprite Image;
+        public Sprite SidewaysImage;
         public Sprite PosterImage;
         public Sprite RibbonImage;
         public string VisibleName;
+        public string EnglishName;
         public string ArtisticDescription;
         public string EnglishArtisticDescription;
         public string DiagnoseNumber;
@@ -195,8 +251,11 @@ namespace Altzone.Scripts.ReferenceSheets
     {
         public string SetName;
         public string SetNameEnglish;
+        public Sprite SetRibbonBackground;
+        public Sprite SetPosterBackground;
+        public Sprite SetFontName;
         public string ArtistName;
-        
+
         public List<FurnitureInfoObject> list;
     }
 }

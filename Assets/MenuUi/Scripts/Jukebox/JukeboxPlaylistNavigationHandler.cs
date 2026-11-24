@@ -8,44 +8,13 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
 {
     [Header("Navigation")]
     [SerializeField] private TMP_InputField _searchField;
-    //[SerializeField] private Button _openTrackFiltersPopupButton;
     [Space]
-    //[SerializeField] private Transform _tracksListContent;
-    //[SerializeField] private GameObject _jukeboxButtonPrefab;
-    //[Space]
-    //[SerializeField] private Button _playPlaylistNormal;
-    //[SerializeField] private Button _playPlaylistShuffle;
-    //[Space]
-    //[SerializeField] private int _trackChunkSize = 8;
     [SerializeField] private SmartVerticalObjectList _smartList;
-
-    //[Header("Filters Popup")]
-    //[SerializeField] private GameObject _filtersPopupObject;
-    //[Space]
-    //[SerializeField] private Button _closeFiltersPopupButton;
-    //[SerializeField] private Button _resetFiltersButton;
-    //[Space]
-    //[SerializeField] private Toggle _favoriteFilterToggle;
-    //[SerializeField] private TMP_Dropdown _nameOrderFilterDropdown;
-    //[SerializeField] private TMP_Dropdown _genreFilterDropdown;
-    //[SerializeField] private TMP_Dropdown _albumFilterDropdown;
-    //[SerializeField] private TMP_Dropdown _artistFilterDropdown;
-
-
-    //private List<Chunk<JukeboxTrackButtonHandler>> _buttonHandlersOriginalOrder;
-    //private List<Chunk<JukeboxTrackButtonHandler>> _buttonHandlerChunks = new List<Chunk<JukeboxTrackButtonHandler>>(); //Visible
-    //private int _buttonHandlerChunkPointer = 0;
-    //private int _buttonHandlerPoolPointer = -1;
-
-    //private string _currentPlaylistName = "";
 
     private List<Chunk<bool>> _hiddenTrackHandlers = new List<Chunk<bool>>();
     private int _previousSearchLength = 0;
 
     private List<PersonalizedMusicTrack> _personalizedMusicTracks = new();
-
-    // public delegate void InfoPressed(MusicTrack musicTrack, JukeboxManager.MusicTrackFavoriteType likeType);
-    // public event InfoPressed OnInfoPressed;
 
     private void Start()
     {
@@ -56,54 +25,15 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
 
         #region Filters
         _searchField.onValueChanged.AddListener((value) => SearchFieldChange(value));
-
-        //_openTrackFiltersPopupButton.onClick.AddListener(() => _filtersPopupObject.SetActive(true));
-        //_closeFiltersPopupButton.onClick.AddListener(() => _filtersPopupObject.SetActive(false));
         #endregion
     }
-
-    private void OnEnable()
-    {
-        //JukeboxManager.Instance.OnPlaylistChange += SetPlaylist;
-
-        //if (string.IsNullOrEmpty(_currentPlaylistName)) StartCoroutine(GetCurrentPlaylist());
-    }
-
-    private void OnDisable()
-    {
-        //JukeboxManager.Instance.OnPlaylistChange -= SetPlaylist;
-
-    }
-
-    #region Playlist
-
-    //private void SetPlaylist(Playlist playlist)
-    //{
-    //    _currentPlaylistName = playlist.Name;
-    //    FillContentList(playlist.MusicTracks);
-    //}
-
-    //private IEnumerator GetCurrentPlaylist()
-    //{
-    //    JukeboxManager manager = JukeboxManager.Instance;
-
-    //    yield return new WaitUntil(() => manager.CurrentPlaylist != null);
-
-    //    //_currentPlaylistName = manager.CurrentPlaylist.Name;
-
-    //}
-    #endregion
 
     private void FillSelectionButtonList(List<MusicTrack> musicTracks)
     {
         _personalizedMusicTracks.Clear();
 
         foreach (MusicTrack musicTrack in musicTracks)
-        {
-            PersonalizedMusicTrack pMusicTrack = new (musicTrack, JukeboxManager.Instance.GetTrackFavoriteType(musicTrack));
-
-            _personalizedMusicTracks.Add(pMusicTrack);
-        }
+            _personalizedMusicTracks.Add(new PersonalizedMusicTrack(musicTrack, JukeboxManager.Instance.GetTrackFavoriteType(musicTrack.Id)));
 
         _smartList.Setup<PersonalizedMusicTrack>(_personalizedMusicTracks);
     }
@@ -114,7 +44,7 @@ public class JukeboxPlaylistNavigationHandler : MonoBehaviour
     }
 
     #region Filtering
-    private void SearchFieldChange(string value) //TODO: Out Of Order! Make compatible with Smart List.
+    private void SearchFieldChange(string value) //TODO: Useless repetition?
     {
         List<MusicTrack> musicTracks;
 

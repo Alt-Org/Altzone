@@ -44,7 +44,10 @@ var NAVTREE =
     [ "View", "page-view.html", [
       [ "Namespaces", "page-view.html#page-view-namespaces", null ],
       [ "Directories", "page-view.html#page-view-directories", null ],
-      [ "View Controllers", "page-view.html#page-view-controllers", null ],
+      [ "View Controllers", "page-view.html#page-view-controllers", [
+        [ "Player Class Base View Controllers", "page-view.html#page-view-controllers-player-class-base-view-controllers", null ],
+        [ "Player Class View Controllers", "page-view.html#page-view-controller-player-class-view-controllers", null ]
+      ] ],
       [ "Other Classes", "page-view.html#page-view-other", null ],
       [ "UI", "page-view.html#page-view-ui", null ],
       [ "UI Handler", "page-view.html#page-view-uihandler", null ],
@@ -54,7 +57,10 @@ var NAVTREE =
       [ "Directories", "page-resources.html#page-resources-directories", null ],
       [ "Configs", "page-resources.html#page-resources-configs", null ],
       [ "Spec Data Assets", "page-resources.html#page-resources-specs", null ],
-      [ "Prefabs/EntityPrototypes", "page-resources.html#page-resources-prefabs", null ]
+      [ "Prefabs/EntityPrototypes", "page-resources.html#page-resources-prefabs", [
+        [ "Player/Shield prefabs/EntityPrototypes", "page-resources.html#autotoc_md8", null ],
+        [ "UI Shared prefabs", "page-resources.html#autotoc_md9", null ]
+      ] ]
     ] ],
     [ "Scenes", "page-scenes.html", [
       [ "Scenes", "page-scenes.html#index-scenes", null ]
@@ -94,26 +100,33 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "31-_quantum_battle_8unity.html",
-"_soul_wall_base_view_model_8prefab.html",
-"class_battle_1_1_q_simulation_1_1_battle_debug_logger.html#a3ea2c88d52611d93fce4b1ce21177d6e",
-"class_battle_1_1_q_simulation_1_1_game_1_1_battle_grid_manager.html",
-"class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_play_state_extension.html#a6c0b496ad23c8eea5fd8c5e97849e5d1",
-"class_battle_1_1_view_1_1_game_1_1_battle_camera.html#a98e51075755ca24e09736fdae7f33c8b",
-"class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#a87654fa4368ee42406c2e5b50a68069b",
-"class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_console_handler.html#a0b43e005167644a26372b755f198f1b8",
-"class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#aa05e798436098391ab84d1db06beaa61",
-"class_quantum_1_1_event_battle_play_sound_f_x.html",
-"class_quantum_1_1_event_battle_view_wait_for_players.html#a718528cd4c2affb4512cd70a446baea4",
-"class_quantum_1_1_prototypes_1_1_battle_player_hitbox_q_component_prototype.html",
-"class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_data_q_component_prototype.html#af70a88d5b82e0daa6bbd6e38b15d040d",
-"class_quantum_1_1_statics.html#ac2aa29ba84abc8aa05035e16db743149",
-"namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096aadb831a7fdd83dd1e2a309ce7591dff8",
-"namespace_quantum.html#ab1787f1ce82c5d51193c9f7ca86a8b4badad683abecb5c715b89760841bf1bc85",
-"page-simulation.html#page-simulation-signals",
-"struct_battle_1_1_view_1_1_player_1_1_battle_player_input_1_1_rotation_input_info.html#a9810b6ec75d32ba9113cf91c49264c83",
-"struct_quantum_1_1_battle_player_data_q_component.html#ab052be46c8a7e654273b85c383e93979",
-"struct_quantum_1_1_battle_soul_wall_q_component.html#abe43087ee723ebff4b5b3eadf3f9fe02",
-"struct_quantum_1_1_frame_1_1_frame_signals.html#afef9e4974c0818b66c70827f678486db"
+"_battle_player700_character_07_base_and_test_character_08_8prefab.html",
+"class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_movable_joystick_element.html#a8c0701c2f3cfffe9e4f0a803f5983141",
+"class_battle_1_1_q_simulation_1_1_battle_debug_logger.html#aaaf063f72acce34c8033dc0684d9c731",
+"class_battle_1_1_q_simulation_1_1_game_1_1_battle_game_control_q_system.html#a6f038e692f069d1bbbb4ec6da95d41f3",
+"class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#a41b0323a367fba381e24b6c7d0a205a2",
+"class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_shield_manager.html#a31ff9070c1cda54838617a822242ca21",
+"class_battle_1_1_view_1_1_game_1_1_battle_camera.html#ac61bb386386cef6b21aa11e72e107fd1",
+"class_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller.html#abf2549226f42277a5eee32008cd2d46d",
+"class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a937a561e9b68c252443aa8169ab0a820",
+"class_battle_1_1_view_1_1_u_i_1_1_battle_ui_debug_overlay_handler.html#ab337525f80a4318d579eb71b4b28ebda",
+"class_quantum_1_1_constants.html#a16c274859069b965cc2a39008cb509c9",
+"class_quantum_1_1_event_battle_play_sound_fx_for_player.html#a6f475c704e40631a218ee0db06e0bd5d",
+"class_quantum_1_1_event_battle_view_activate.html#a58fd2216ad0d78f9de030d17ace4d24b",
+"class_quantum_1_1_prototypes_1_1_battle_entity_manager_data_q_singleton_prototype.html#a440adaafe1ad04e53a83b3e8536f1fb6",
+"class_quantum_1_1_prototypes_1_1_battle_player_manager_data_q_singleton_prototype.html",
+"class_quantum_1_1_prototypes_1_1_unity_1_1_battle_player_class400_data_q_component_prototype.html#acc892a8e365a07b6056222f58d3bed78",
+"class_quantum_1_1_q_prototype_battle_player_class100_projectile_q_component.html#a3870ff72df4edef6f6dec47b7c338dbd",
+"dir_405e5088b72882a273678a48d42a9317.html",
+"namespace_battle_1_1_view_1_1_soul_wall.html",
+"namespace_quantum.html#ab1787f1ce82c5d51193c9f7ca86a8b4ba8468aba56a55a423d1ad145fb8425638",
+"page-concepts-player-class-100.html",
+"struct_battle_1_1_q_simulation_1_1_game_1_1_battle_parameters.html#a0261826b4a136f3a1c296800a2dadc53",
+"struct_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller_1_1_sprite_sheet_map.html#a28a8a4675d887d06f6ed0e5e8848e6d9a2aa13aec55fdd06719557d51ac3d66b4",
+"struct_quantum_1_1_battle_compound_entity_q_component.html#a27a0f772f9c0973385998149c6f04c4c",
+"struct_quantum_1_1_battle_player_data_q_component.html#a540ccb7377e332fee74a477fc294e0ad",
+"struct_quantum_1_1_battle_player_shield_entity_ref.html#a1d85e279491891dffd47e6c2fa818e1d",
+"struct_quantum_1_1_bit_set256.html#ade0fb8d7f38e33a5afd7150c5a59e1fb"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronization';

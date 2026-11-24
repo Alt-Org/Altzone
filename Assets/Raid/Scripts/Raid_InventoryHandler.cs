@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-//using Photon.Pun;
 using Random = UnityEngine.Random;
 
 public class Raid_InventoryHandler : MonoBehaviour
@@ -14,33 +11,25 @@ public class Raid_InventoryHandler : MonoBehaviour
     public int MediumItemMaxAmount;
     public int LargeItemMaxAmount;
 
-    /*public PhotonView _photonView { get; private set; }
-
     private void Start()
     {
-        _photonView = gameObject.AddComponent<PhotonView>();
-        _photonView.ViewID = 1;
-        if (PhotonNetwork.IsMasterClient)
+        if (RaidMatchmakingController.Instance != null && RaidMatchmakingController.Instance.ControlsInventorySetup)
         {
-            int randomInventorySize = Random.Range(4, 26);
-            _photonView.RPC(nameof(SetRandomInventorySizeRPC), RpcTarget.All, randomInventorySize);
+            return;
         }
-    }
 
-    [PunRPC]
-    public void SetRandomInventorySizeRPC(int inventorySize)
-    {
-        InventorySize = inventorySize*4;
-        CompleteStartMethod();
-    }
-
-    private void CompleteStartMethod()
-    {
+        int randomInventorySize = Random.Range(6, 12);
+        InventorySize = randomInventorySize*4;
         InventoryUI.InitializeInventoryUI(InventorySize);
-        Debug.Log("Inventory initialized");
-        if (PhotonNetwork.IsMasterClient)
-            InventoryUI.SetInventorySlotData(InventorySize);
-    }*/
+        InventoryUI.RandomizeInventoryContent(InventorySize);
 
+    }
+
+    public void InitializeSharedInventory(int inventorySize, int seed, RaidPhotonRoom.TrapData[] traps)
+    {
+        InventorySize = inventorySize;
+        InventoryUI.InitializeInventoryUI(InventorySize, traps);
+        InventoryUI.RandomizeInventoryContentDeterministic(InventorySize, seed);
+    }
 
 }

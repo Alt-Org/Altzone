@@ -8,6 +8,8 @@ using Altzone.Scripts.Lobby;
 using TMPro;
 using Altzone.Scripts.Window;
 using Altzone.Scripts.Language;
+using MenuUi.Scripts.Window;
+using Altzone.Scripts.Audio;
 
 namespace MenuUi.Scripts.Lobby.BattleButton
 {
@@ -19,21 +21,28 @@ namespace MenuUi.Scripts.Lobby.BattleButton
     {
         [SerializeField] private Image _gameTypeIcon;
         [SerializeField] private Image _gameTypeBanner;
+        [SerializeField] private Image _gameTypeBackground;
+        [SerializeField] private Image _gameTypeMiddleground;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeName;
         [SerializeField] private TextLanguageSelectorCaller _gameTypeDescription;
         [SerializeField] private Button _openBattleUiEditorButton;
         [SerializeField] private GameTypeReference _gameTypeReference;
         [SerializeField] private GameObject _touchBlocker;
 
+        [SerializeField] private WindowNavigation _raidNavigation;
+
+        private const string SelectedMatchmakingKey = "BattleButtonMatchmaking";
         private const string SelectedGameTypeKey = "BattleButtonGameType";
 
-        private GameType _selectedGameType = GameType.Custom;
+        private MatchmakingType _selectedMatchmakingType = MatchmakingType.Random2v2;
+        private GameType _selectedGameType = GameType.BattlePingPong;
 
         private List<GameTypeOption> _gameTypeOptionList = new();
         private Button _button;
         private SwipeUI _swipe;
 
-        public GameType SelectedGameType { get => _selectedGameType;}
+        public MatchmakingType SelectedMatchmakingType { get => _selectedMatchmakingType; }
+        public GameType SelectedGameType { get => _selectedGameType; }
         public Button Button { get => _button;}
 
         private void Awake()
@@ -45,7 +54,9 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _button.onClick.AddListener(RequestBattlePopup);
 
             // Loading selected game type from player prefs Note: Only custom available for now
-            _selectedGameType = GameType.Custom; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
+            _selectedMatchmakingType = MatchmakingType.Custom; //(GameType)PlayerPrefs.GetInt(SelectedGameTypeKey, (int)_selectedGameType);
+
+            UpdateGameType(_gameTypeReference.GetGameTypeInfos().Find(x => x.matchmakingType == _selectedMatchmakingType && x.gameType == _selectedGameType));
 
             _openBattleUiEditorButton.transform.SetAsLastSibling();
             _openBattleUiEditorButton.onClick.AddListener(OnOpenBattleUiEditorButtonPressed);
@@ -61,24 +72,34 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private void RequestBattlePopup()
         {
-            SignalBus.OnBattlePopupRequestedSignal(_selectedGameType);
+            if (_selectedGameType is GameType.Raid)
+            {
+                AudioManager.Instance.StopMusic();
+                StartCoroutine(_raidNavigation.Navigate());
+                return;
+            }
+            SignalBus.OnBattlePopupRequestedSignal(_selectedMatchmakingType, _selectedMatchmakingType == MatchmakingType.FriendLobby? MatchmakingType.Clan2v2: MatchmakingType.None, _selectedGameType);
         }
 
         public void UpdateGameType(GameTypeInfo gameTypeInfo)
         {
             _gameTypeIcon.sprite = gameTypeInfo.Icon;
             _gameTypeBanner.sprite = gameTypeInfo.Banner;
+            _gameTypeBackground.sprite = gameTypeInfo.Background;
+            _gameTypeMiddleground.sprite = gameTypeInfo.Middleground;
             _gameTypeName.SetText(gameTypeInfo.Name);
             _gameTypeDescription.SetText(gameTypeInfo.Description);
+            _selectedMatchmakingType = gameTypeInfo.matchmakingType;
             _selectedGameType = gameTypeInfo.gameType;
 
             // Saving battle button selected game type to playerprefs
+            PlayerPrefs.SetInt(SelectedMatchmakingKey, (int)_selectedMatchmakingType);
             PlayerPrefs.SetInt(SelectedGameTypeKey, (int)_selectedGameType);
 
             // Setting selected visuals for option buttons
             foreach (GameTypeOption gameTypeOption in _gameTypeOptionList)
             {
-                bool selected = gameTypeOption.Info.gameType == _selectedGameType;
+                bool selected = gameTypeOption.Info.matchmakingType == _selectedMatchmakingType && gameTypeOption.Info.gameType == _selectedGameType;
                 gameTypeOption.SetSelected(selected);
             }
             
@@ -90,7 +111,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         {
             foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
             {
-                if (gameTypeInfo.gameType == _selectedGameType)
+                if (gameTypeInfo.matchmakingType == _selectedMatchmakingType && gameTypeInfo.gameType == _selectedGameType)
                 {
                     _gameTypeName.SetText(gameTypeInfo.Name);
                     _gameTypeDescription.SetText(gameTypeInfo.Description);
@@ -105,7 +126,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 {
                     if (gameTypeInfo.gameType == gameTypeOption.Info.gameType)
                     {
-                        bool selected = gameTypeInfo.gameType == _selectedGameType;
+                        bool selected = gameTypeOption.Info.matchmakingType == _selectedMatchmakingType && gameTypeOption.Info.gameType == _selectedGameType;
                         gameTypeOption.SetInfo(gameTypeInfo, selected);
                     }
                 }

@@ -7,8 +7,10 @@ var searchData=
   ['spec_2dasset_2dbattlearenaqspec_2edox_4',['spec-asset-BattleArenaQSpec.dox',['../spec-asset-_battle_arena_q_spec_8dox.html',1,'']]],
   ['spec_2dasset_2dbattlediamondqspec_2edox_5',['spec-asset-BattleDiamondQSpec.dox',['../spec-asset-_battle_diamond_q_spec_8dox.html',1,'']]],
   ['spec_2dasset_2dbattleplayerbotqspec_2edox_6',['spec-asset-BattlePlayerBotQSpec.dox',['../spec-asset-_battle_player_bot_q_spec_8dox.html',1,'']]],
-  ['spec_2dasset_2dbattleplayerqspec_2edox_7',['spec-asset-BattlePlayerQSpec.dox',['../spec-asset-_battle_player_q_spec_8dox.html',1,'']]],
-  ['spec_2dasset_2dbattleprojectileqspec_2edox_8',['spec-asset-BattleProjectileQSpec.dox',['../spec-asset-_battle_projectile_q_spec_8dox.html',1,'']]],
-  ['spec_2dasset_2dbattlesoulwallqspec_2edox_9',['spec-asset-BattleSoulWallQSpec.dox',['../spec-asset-_battle_soul_wall_q_spec_8dox.html',1,'']]],
-  ['systemsetup_2euser_2ecs_10',['SystemSetup.User.cs',['../_system_setup_8_user_8cs.html',1,'']]]
+  ['spec_2dasset_2dbattleplayerclass100qspec_2edox_7',['spec-asset-BattlePlayerClass100QSpec.dox',['../spec-asset-_battle_player_class100_q_spec_8dox.html',1,'']]],
+  ['spec_2dasset_2dbattleplayerclass600qspec_2edox_8',['spec-asset-BattlePlayerClass600QSpec.dox',['../spec-asset-_battle_player_class600_q_spec_8dox.html',1,'']]],
+  ['spec_2dasset_2dbattleplayerqspec_2edox_9',['spec-asset-BattlePlayerQSpec.dox',['../spec-asset-_battle_player_q_spec_8dox.html',1,'']]],
+  ['spec_2dasset_2dbattleprojectileqspec_2edox_10',['spec-asset-BattleProjectileQSpec.dox',['../spec-asset-_battle_projectile_q_spec_8dox.html',1,'']]],
+  ['spec_2dasset_2dbattlesoulwallqspec_2edox_11',['spec-asset-BattleSoulWallQSpec.dox',['../spec-asset-_battle_soul_wall_q_spec_8dox.html',1,'']]],
+  ['systemsetup_2euser_2ecs_12',['SystemSetup.User.cs',['../_system_setup_8_user_8cs.html',1,'']]]
 ];

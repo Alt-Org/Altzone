@@ -4,10 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Player;
 using Newtonsoft.Json;
-using Prg;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Debug = Prg.Debug;
+using Debug = UnityEngine.Debug;
 
 namespace Altzone.Scripts.Model.Poco.Game
 {
@@ -59,6 +58,9 @@ namespace Altzone.Scripts.Model.Poco.Game
         public const int STATMAXCOMBINED = 50;
         public const int STATMAXLEVEL = 6;
         public const int STATMINLEVEL = 1;
+
+        public delegate void StatUpdatedHandler(CustomCharacter character, StatType statType);
+        public event StatUpdatedHandler OnStatUpdated;
 
         [JsonConstructor]
         private CustomCharacter()
@@ -125,15 +127,15 @@ namespace Altzone.Scripts.Model.Poco.Game
             Id = id;
             ServerID = character._id;
             Name = string.IsNullOrEmpty(character.name) ? character.name : GetCharacterName(Id);
-            _hp = character.hp;
+            _hp = character.hp > 6 || character.hp < 1 ? _characterBase.Hp : character.hp;
             HpSegmentCount = 0;
-            _speed = _characterBase.Speed;
+            _speed = character.speed > 6 || character.speed < 1 ? _characterBase.Speed : character.speed;
             SpeedSegmentCount = 0;
-            _characterSize = character.size;
+            _characterSize = character.size > 6 || character.size < 1 ? _characterBase.CharacterSize : character.size;
             CharacterSizeSegmentCount = 0;
-            _attack = character.attack;
+            _attack = character.attack > 6 || character.attack < 1 ? _characterBase.Attack : character.attack;
             AttackSegmentCount = 0;
-            _defence = character.defence;
+            _defence = character.defence > 6 || character.defence < 1 ? _characterBase.Defence : character.defence;
             DefenceSegmentCount = 0;
         }
 
@@ -284,7 +286,11 @@ namespace Altzone.Scripts.Model.Poco.Game
                     Debug.LogError("Invalid stat type. Provide proper stat type.");
                     return false;
             }
-            if (increase) return true;
+            if (increase)
+            {
+                OnStatUpdated?.Invoke(this, statType);
+                return true;
+            }
             else return false;
         }
 
@@ -385,7 +391,11 @@ namespace Altzone.Scripts.Model.Poco.Game
                     Debug.LogError("Invalid stat type. Provide proper stat type.");
                     return false;
             }
-            if (decrease) return true;
+            if (decrease)
+            {
+                OnStatUpdated?.Invoke(this, statType);
+                return true;
+            }
             else return false;
         }
 
@@ -485,6 +495,25 @@ namespace Altzone.Scripts.Model.Poco.Game
                 valid = false;
             }
             return valid;
+        }
+
+        public void RemoveDelegates()
+        {
+            if (OnStatUpdated == null) return;
+            foreach (Delegate d in OnStatUpdated.GetInvocationList())
+            {
+                OnStatUpdated -= (StatUpdatedHandler)d;
+            }
+        }
+    }
+
+    public static class CustomCharacterExtension
+    {
+        // Get all character stats combined
+        public static int GetStatsCombined(this CustomCharacter customcharacter)
+        {
+            if (customcharacter == null) return customcharacter.CharacterBase.GetBaseStatsCombined();
+            return customcharacter.Speed + customcharacter.CharacterSize + customcharacter.Attack + customcharacter.Defence + customcharacter.Hp;
         }
     }
 }

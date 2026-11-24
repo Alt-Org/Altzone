@@ -16,12 +16,23 @@ namespace MenuUi.Scripts.CharacterGallery
     {
         [SerializeField] public GalleryCharacter Character;
 
+        private string _name = string.Empty;
+
         [HideInInspector] public bool IsLocked = false;
         [HideInInspector] public bool IsUsed = false;
-        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, Sprite classNameIcon, Sprite classIcon, CharacterID id)
+
+        public string Name { get => _name;}
+
+        public void SetInfo(Sprite sprite, Color bgColor, Color bgAltColor, string name, string className, Sprite classIcon, CharacterID id)
         {
             _id = id;
-            Character.SetInfo(sprite, bgColor, bgAltColor, name, classNameIcon, id, this);
+            _name = name;
+            Character.SetInfo(sprite, bgColor, bgAltColor, name, className, id, this);
+        }
+
+        public void GradientOverride(Sprite bgImage)
+        {
+            Character.GradientOverride(bgImage);
         }
     }
 }

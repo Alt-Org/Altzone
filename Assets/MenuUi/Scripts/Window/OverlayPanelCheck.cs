@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using MenuUi.Scripts.Window.ScriptableObjects;
+using MenuUI.Scripts;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -12,73 +13,74 @@ namespace MenuUi.Scripts.Window
         [SerializeField] private GameObject _overlayObject;
         [SerializeField] private SceneDef _allowedScene;
 
-        [SerializeField] private Button[] buttons;
+        [SerializeField] private Button[] buttons; //Array assigned in inspector, in UIOverlayPanel gameobject
 
         [SerializeField] private GameObject _topBar;
         [SerializeField] private GameObject _bottomBar;
         [SerializeField] private GameObject _chatBox;
         [SerializeField] private GameObject _buttonsBar;
 
-        [SerializeField] private Button _onlineToggleButton;
-
         private bool _chatActive = true;
 
         public static OverlayPanelCheck Instance { get; private set; }
         public bool ChatActive => _chatActive;
+        public bool TopBarActive => _topBar.activeSelf;
+        public bool BottomBarActive => _bottomBar.activeSelf;
 
         public delegate void ChatBarToggled(bool active);
         public static event ChatBarToggled OnChatBarToggled;
 
+        public delegate void TopBarToggled(bool active);
+        public static event TopBarToggled OnTopBarToggled;
+
+        public delegate void BottomBarToggled(bool active);
+        public static event BottomBarToggled OnBottomBarToggled;
+
         public delegate void ToggleOnlinePlayerList(bool? active = null);
         public static event ToggleOnlinePlayerList OnToggleOnlinePlayerList;
-        
+
+        public delegate void ChangePopupInfo(InfoLevel level, string message);
+        public static event ChangePopupInfo OnChangePopupInfo;
+
+        public delegate void UpdateButtonInteractable();
+        public static event UpdateButtonInteractable OnUpdateButtonInteractable;
 
         private void Awake()
         {
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
+                return;
             }
             else
             {
-                if(gameObject.tag is "OverlayPanel") Instance = this;
-                else Destroy(gameObject);
+                if (gameObject.tag is "OverlayPanel") Instance = this;
+                else
+                {
+                    Destroy(gameObject);
+                    return;
+                }
+
                 UpdateButtonContent();
             }
 
-            if (_overlayObject == null) _overlayObject = transform.Find("UIOverlayPanel").GetComponent<GameObject>();
+            if (_overlayObject == null) _overlayObject = transform.gameObject;
             _chatActive = true;
             buttons[2].transform.localScale = Vector3.one * 1.2f;
-            //buttons[2].interactable = false;
-
         }
 
         private void OnEnable()
         {
-            GameObject panel= GameObject.FindWithTag("OverlayPanel");
-            if (panel != gameObject && panel ? true : SceneManager.GetActiveScene().name != _allowedScene.SceneName) //If OverlayPanel can be found, return, otherwise check if this panel is allowed to be set active.
-            {
-                return;
-            }
-            else _overlayObject.SetActive(true);
-
             if (Instance == this)
                 UpdateButtonContent();
-
-            _onlineToggleButton.onClick.AddListener(ToggleOnlinePlayers);
-        }
-
-        private void OnDisable()
-        {
-            _onlineToggleButton?.onClick.RemoveAllListeners();
         }
 
         private void OnDestroy()
         {
-            if(Instance == this) Instance = null;
+            if (Instance == this) Instance = null;
         }
 
-        public void UpdateButtonContent()
+        public void UpdateButtonContent() //Makes buttons bigger and glow when selected
         {
             if (buttons == null || buttons.Length == 0) return;
 
@@ -93,15 +95,34 @@ namespace MenuUi.Scripts.Window
                 if (isCurrentWindow)
                 {
                     button.transform.localScale = Vector3.one * 1.2f;
-                    //button.interactable = false;
                 }
                 else
                 {
                     button.transform.localScale = Vector3.one;
                     button.interactable = true;
+                } //ifelse currentwindow
+
+                /* Opacity controller for inactive buttons
+                Image image = button.GetComponent<Image>();
+                float targetAlpha = isCurrentWindow ? 1f : 0.7f; //if=1 else=0.7f
+
+                if (image != null)
+                {
+                    Color color = image.color;
+                    color.a = targetAlpha;
+                    image.color = color;
                 }
-            }
-        }
+                */
+                // find and enable child glow object when button is active
+                Transform glow = button.transform.Find("Glow");
+                if (glow != null)
+                {
+                    glow.gameObject.SetActive(isCurrentWindow);
+                }
+            } //for
+            OnUpdateButtonInteractable?.Invoke();
+        } //updatebuttoncontent
+
         public void ToggleOverlay(bool value)
         {
             ToggleBottomBar(value);
@@ -111,11 +132,13 @@ namespace MenuUi.Scripts.Window
         public void ToggleBottomBar(bool value)
         {
             _bottomBar.SetActive(value);
+            OnBottomBarToggled?.Invoke(value);
         }
 
         public void ToggleTopBar(bool value)
         {
             _topBar.SetActive(value);
+            OnTopBarToggled?.Invoke(value);
         }
 
         public void ToggleChat(bool value)
@@ -126,10 +149,14 @@ namespace MenuUi.Scripts.Window
             OnChatBarToggled?.Invoke(value);
         }
 
-        public void ToggleOnlinePlayers()
+        public static void ToggleOnlinePlayers()
         {
             OnToggleOnlinePlayerList?.Invoke();
         }
 
+        public static void ActivateInfoPopup(InfoLevel level, string message)
+        {
+            OnChangePopupInfo?.Invoke(level, message);
+        }
     }
 }

@@ -42,8 +42,11 @@ public class DailyTaskManager : AltMonoBehaviour
     private PlayerTask _currentTask;
 
     // Track's the state of choose task popup, for proper Popup state on task selection
-    private bool _chooseTaskActive = false;
+    private bool _chooseTaskPopupActive = false;
 
+    // This is for the TurboEducation ChooseTask (so if the current task was a forced selection or not)
+    private bool _currentTaskForced;
+    public bool CurrentTaskForced { get { return _currentTaskForced; } set { _currentTaskForced = value; } }
     #endregion
 
 
@@ -63,6 +66,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
     void Start()
     {
+        DailyTaskProgressManager.OnTaskDone += ClearCurrentTask;
         ChooseTask.OnChooseTaskShown += ChooseTaskShown;
         ChooseTask.OnChooseTaskHidden += ChooseTaskHidden;
         StartCoroutine(DataSetup());
@@ -70,17 +74,18 @@ public class DailyTaskManager : AltMonoBehaviour
 
     private void OnDestroy()
     {
+        DailyTaskProgressManager.OnTaskDone -= ClearCurrentTask;
         ChooseTask.OnChooseTaskShown -= ChooseTaskShown;
         ChooseTask.OnChooseTaskHidden -= ChooseTaskHidden;
     }
 
     void ChooseTaskShown()
     {
-        _chooseTaskActive = true;
+        _chooseTaskPopupActive = true;
     }
     void ChooseTaskHidden()
     {
-        _chooseTaskActive = false;
+        _chooseTaskPopupActive = false;
     }
 
     /// <summary>
@@ -134,6 +139,13 @@ public class DailyTaskManager : AltMonoBehaviour
                     Storefront.Get().GetPlayerTasks(content => clanTasks = content);
 
                     //clanTasks = content; // Uncomment when it's possible to get proper info from the server
+                    if(clanTasks == null)
+                    {
+                        if (gameVersion is VersionType.Education or VersionType.TurboEducation)
+                            clanTasks = GenerateEducationTasks();
+                        else
+                            clanTasks = TESTGenerateNormalTasks();
+                    }
                 }
                 else
                 {
@@ -276,10 +288,25 @@ public class DailyTaskManager : AltMonoBehaviour
             serverTask._id = i.ToString();
             serverTask.amount = normalTasks[i].amount;
             serverTask.amountLeft = serverTask.amount;
+
             serverTask.title = new ServerPlayerTask.TaskTitle();
             serverTask.title.fi = normalTasks[i].title;
-            serverTask.content = new ServerPlayerTask.TaskContent();
-            serverTask.content.fi = normalTasks[i].description;
+            serverTask.title.en = normalTasks[i].englishTitle;
+
+            serverTask.description = new ServerPlayerTask.TaskDescription();
+            serverTask.description.fi = normalTasks[i].description;
+            serverTask.description.en = normalTasks[i].englishDescription;
+
+            serverTask.execution = new ServerPlayerTask.TaskExecution();
+            serverTask.execution.fi = normalTasks[i].execution;
+            serverTask.execution.en = normalTasks[i].englishExecution;
+
+            serverTask.instruction = new ServerPlayerTask.TaskInstruction();
+            serverTask.instruction.fi = normalTasks[i].instruction;
+            serverTask.instruction.en = normalTasks[i].englishInstruction;
+
+            serverTask.gameLiteracy = normalTasks[i].gameLiteracy;
+
             serverTask.points = normalTasks[i].points;
             serverTask.coins = normalTasks[i].coins;
             serverTask.type = normalTasks[i].type;
@@ -303,12 +330,25 @@ public class DailyTaskManager : AltMonoBehaviour
             serverTask._id = i.ToString();
             serverTask.amount = educationTasks[i].amount;
             serverTask.amountLeft = serverTask.amount;
+
             serverTask.title = new ServerPlayerTask.TaskTitle();
             serverTask.title.fi = educationTasks[i].title;
-            serverTask.content = new ServerPlayerTask.TaskContent();
-            serverTask.content.fi = educationTasks[i].description;
             serverTask.title.en = educationTasks[i].englishTitle;
-            serverTask.content.en = educationTasks[i].englishDescription;
+
+            serverTask.description = new ServerPlayerTask.TaskDescription();
+            serverTask.description.fi = educationTasks[i].description;  
+            serverTask.description.en = educationTasks[i].englishDescription;
+
+            serverTask.execution = new ServerPlayerTask.TaskExecution();
+            serverTask.execution.fi = educationTasks[i].execution;
+            serverTask.execution.en = educationTasks[i].englishExecution;
+
+            serverTask.instruction = new ServerPlayerTask.TaskInstruction();
+            serverTask.instruction.fi = educationTasks[i].instruction;
+            serverTask.instruction.en = educationTasks[i].englishInstruction;
+
+            serverTask.gameLiteracy = educationTasks[i].gameLiteracy;
+
             serverTask.points = educationTasks[i].points;
             serverTask.coins = educationTasks[i].coins;
             serverTask.type = "";
@@ -357,7 +397,23 @@ public class DailyTaskManager : AltMonoBehaviour
         yield break;
     }
 
-    public IEnumerator CancelTask(System.Action<bool> done)
+    public void StartCancelTask()
+    {
+        if (_currentTask == null) return;
+
+        PopupData data = new(PopupData.PopupDataType.CancelTask);
+        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.Finnish)
+        {
+            ShowPopupAndHandleResponse("Haluatko peruuttaa nykyisen tehtävän?", data);
+        }
+        else
+        {
+            ShowPopupAndHandleResponse("Do you want to cancel your current task?", data);
+        }
+
+    }
+
+    private IEnumerator CancelTask(System.Action<bool> done)
     {
         PlayerData playerData = _currentPlayerData;
         PlayerData savePlayerData = null;
@@ -419,6 +475,7 @@ public class DailyTaskManager : AltMonoBehaviour
         Debug.Log("Task id: " + _ownTaskId + ", has been cleard.");
         _ownTaskId = null;
         _currentTask = null;
+        CurrentTaskForced = false;
     }
 
     /// <summary>
@@ -440,9 +497,13 @@ public class DailyTaskManager : AltMonoBehaviour
         switch (data.Value.Type)
         {
             case PopupData.PopupDataType.OwnTask:
-                // On TurboEducation mode, if the chooseTaskWindow is not active, show PopupWindowType.Info so the player can't choose a new task
-                // (Accept window is still needed on TurboEducation to make sure the player can choose a task from the given options)
-                if (GameConfig.Get().GameVersionType == VersionType.TurboEducation && !_chooseTaskActive)
+                // On TurboEducation mode, if the current task is forced for player, don't allow changing it
+                if (GameConfig.Get().GameVersionType == VersionType.TurboEducation && _currentTaskForced)
+                {
+                    windowType = Popup.PopupWindowType.Info;
+                }
+                // If the popup is for the current task, show task info (can't change to same task)
+                else if (_currentTask != null && data.Value.OwnPage.Id == _currentTask.Id)
                 {
                     windowType = Popup.PopupWindowType.Info;
                 }
@@ -452,6 +513,7 @@ public class DailyTaskManager : AltMonoBehaviour
             case PopupData.PopupDataType.CancelTask: windowType = Popup.PopupWindowType.Cancel; break;
             case PopupData.PopupDataType.ClanMilestone: windowType = Popup.PopupWindowType.ClanMilestone; break;
             case PopupData.PopupDataType.MultipleChoice: windowType = Popup.PopupWindowType.MultipleChoice; break;
+
             default: windowType = Popup.PopupWindowType.Accept; break;
         }
 
@@ -467,6 +529,7 @@ public class DailyTaskManager : AltMonoBehaviour
             {
                 case PopupData.PopupDataType.OwnTask:
                     {
+                        // If player already has a task, cancel current task before selecting new one
                         if (_currentPlayerData != null && _currentPlayerData.Task != null)
                         {
                             StartCoroutine(CancelTask(data2 => done = data2));
@@ -474,6 +537,7 @@ public class DailyTaskManager : AltMonoBehaviour
                             done = null;
                         }
 
+                        // Find new task
                         StartCoroutine(GetSaveSetHandleOwnTask(data.Value.OwnPage, data2 => done = data2));
                         yield return new WaitUntil(() => (_currentPlayerData.Task != null || done != null));
 
@@ -525,7 +589,7 @@ public class DailyTaskManager : AltMonoBehaviour
 
         if (playerData.Task == null || !MultipleChoiceOptions.Instance.IsMultipleChoice(playerData.Task)) return;
         PopupData data = new(playerData.Task);
-        ShowPopupAndHandleResponse(playerData.Task.Content, data);
+        ShowPopupAndHandleResponse(playerData.Task.Description, data);
     }
 
     /// <summary>

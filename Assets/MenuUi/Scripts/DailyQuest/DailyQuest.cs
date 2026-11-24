@@ -22,7 +22,7 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     [Header("Universal")]
     [SerializeField] private GameObject _coinIndicator;
-    [SerializeField] private Image _TaskImage;
+    [SerializeField] private Image _taskImage;
 
     [Header("Windows")]
     [SerializeField] private GameObject _availableWindow;
@@ -163,25 +163,15 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
     /// </summary>
     public void PopulateData()
     {
-        // Use the current language to pick the correct title
-        if (SettingsCarrier.Instance.Language == SettingsCarrier.LanguageType.English)
-        {
-            _taskShort.text = _taskData.EnglishTitle;
-            //_taskContent.text = _taskData.EnglishContent; // if you have a content field
-        }
-        else
-        {
-            _taskShort.text = _taskData.Title;
-            //_taskContent.text = _taskData.Content;
-        }
+        _taskShort.text = _taskData.Title;
 
         _taskDebugID.text = _taskData.Id.ToString();
         _taskPoints.text = "+" + _taskData.Points.ToString();
         _taskCoins.text = "+" + _taskData.Coins.ToString();
         _taskAmount.text = _taskData.Amount.ToString();
-        _coinIndicator.SetActive(_taskData.Coins >= 0);
+        //_coinIndicator.SetActive(_taskData.Coins >= 0);
 
-        _TaskImage.sprite = _cardImageReference.GetTaskImage(_taskData);
+        _taskImage.sprite = _cardImageReference.GetTaskImage(_taskData);
 
 
         ShowWindowWithType(TaskWindowType.Available);
@@ -237,11 +227,6 @@ public class DailyQuest : MonoBehaviour, IBeginDragHandler, IEndDragHandler
 
     private void UpdateLanguage(SettingsCarrier.LanguageType language)
     {
-        _taskShort.text = language switch
-        {
-            SettingsCarrier.LanguageType.Finnish => _taskData.Title,
-            SettingsCarrier.LanguageType.English => _taskData.EnglishTitle,
-            _ => _taskData.Title,
-        };
+        _taskShort.text = _taskData.Title;
     }
 }

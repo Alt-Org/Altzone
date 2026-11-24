@@ -35,6 +35,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Itse\xE4\xE4n n\xE4l\xE4ll\xE4 rankaiseva, tyhjyyden
     t\xE4ytt\xE4j\xE4."
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 82159d8c17c1d4740b7177639572ca30, type: 2}
   Hp:
     Level: 1
@@ -54,7 +56,16 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: f7b73dd5a41318d43aca22d47ebc23c1, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 7f0ccc03fc025544cbd6e5592ec3f5f4, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1511606100970463187
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1433563657466510385
+  - Id:
+      Value: 1430889944749343593
+  - Id:
+      Value: 1335918483308797496
+  - Id:
+      Value: 1496487720099878949
   BattleUiSprite: {fileID: 0}

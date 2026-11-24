@@ -14,13 +14,21 @@
 /// Player character state enum used to track the state of each character of each player.
 /// </summary>
 ///
+/// See [{Player Character State}](#page-concepts-player-character-entity-character-state) for more info.  
+/// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.
 /// @bigtext{Generated from @ref BattlePlayerCharacterState.qtn}
 
-/// @var Quantum::BattlePlayerCharacterState Quantum::BattlePlayerCharacterState::Dead
-/// <summary>Player character is dead.</summary>
+/// @var Quantum::BattlePlayerCharacterState Quantum::BattlePlayerCharacterState::OutOfPlay
+/// <summary>Player character is out of play.</summary>
 ///
-/// @var Quantum::BattlePlayerCharacterState Quantum::BattlePlayerCharacterState::Alive
-/// <summary>Player character is alive.</summary>
+/// @var Quantum::BattlePlayerCharacterState Quantum::BattlePlayerCharacterState::OutOfPlayDead
+/// <summary>Player character is out of play and dead.</summary>
+///
+/// @var Quantum::BattlePlayerCharacterState Quantum::BattlePlayerCharacterState::InPlay
+/// <summary>Player character is in play.</summary>
+///
+/// @var Quantum::BattlePlayerCharacterState Quantum::BattlePlayerCharacterState::InPlaySelected
+/// <summary>Player character is in play and selected.</summary>
 ///
 
 // ---------------------------------------------------------------------------------------------------- //

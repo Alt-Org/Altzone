@@ -1,9 +1,12 @@
 using System;
 using System.Linq;
+using Altzone.Scripts;
+using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2;
 using MenuUi.Scripts.Signals;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.Lobby.SelectedCharacters
 {
@@ -15,6 +18,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [SerializeField] private BattlePopupSelectedCharacter[] _selectedCharacterSlots;
         [SerializeField] private bool _isInRoom;
         [SerializeField] private Sprite _dragAndDropIcon;
+        [SerializeField] private Button _button;
 
 
         private void Awake()
@@ -31,6 +35,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             else
             {
                 SignalBus.OnReloadCharacterGalleryRequested += SetCharacters;
+            }
+            if (_button)
+            {
+                _button.onClick.RemoveAllListeners();
+                _button.onClick.AddListener(OpenCharacterSelection);
             }
         }
 
@@ -52,12 +61,22 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// </summary>
         public void SetCharacters()
         {
-            StartCoroutine(GetPlayerData(playerData =>
+            Storefront.Get().GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, playerData =>
             {
+                if (playerData == null)
+                {
+                    for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+                    {
+                        _selectedCharacterSlots[i].SetEmpty(true);
+                    }
+
+                    return;
+                }
+
                 for (int i = 0; i < _selectedCharacterSlots.Length; i++)
                 {
                     CharacterID charID;
-                    if (playerData.SelectedCharacterIds.Length < i)
+                    if (playerData.SelectedCharacterIds == null || playerData.SelectedCharacterIds.Length <= i)
                     {
                         charID = CharacterID.None;
                     }
@@ -77,7 +96,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                     //_selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charID, true);
                     _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charID, true);
                 }
-            }));
+            });
         }
 
 
@@ -88,6 +107,15 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         /// <param name="stats">The stats for all three characters in an int array. Order: Hp, Speed, CharacterSize, Attack, Defence.</param>
         public void SetCharacters(int[] selectedCharacterIds, int[] stats = null)
         {
+            if (selectedCharacterIds == null)
+            {
+                for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+                {
+                    _selectedCharacterSlots[i].SetEmpty(false);
+                }
+                return;
+            }
+
             for (int i = 0; i < Mathf.Min(selectedCharacterIds.Length,_selectedCharacterSlots.Length); i++)
             {
                 if (selectedCharacterIds[i] == (int)CharacterID.None)
@@ -111,7 +139,7 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         {
             for (int i = 0; i < _selectedCharacterSlots.Length; i++)
             {
-                if (selectedCharacterIds == null || selectedCharacterIds.Length > i || selectedCharacterIds[i] == (int)CharacterID.None)
+                if (selectedCharacterIds == null || selectedCharacterIds.Length <= i || selectedCharacterIds[i] == (int)CharacterID.None)
                 {
                     _selectedCharacterSlots[i].SetBot();
                     continue;
@@ -121,6 +149,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 //_selectedCharacterSlots[i].SetInfo(charInfo.GalleryHeadImage, charInfo.CharacterId, false);
                 _selectedCharacterSlots[i].SetInfo(charInfo.GalleryImage, charInfo.CharacterId, false);
             }
+        }
+
+        private void OpenCharacterSelection()
+        {
+            SignalBus.OnDefenceGalleryEditPanelRequestedSignal();
         }
     }
 }

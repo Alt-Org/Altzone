@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,11 +15,13 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
     {
         [Header("Grid options")]
         [SerializeField] private int _gridLineThickness = 5;
+
         [SerializeField] private Color _lineDefaultColor = Color.black;
         [SerializeField] private Color _lineHighlightedColor = Color.blue;
 
         [Header("GameObject references.")]
         [SerializeField] private Transform _gridColumns;
+
         [SerializeField] private Transform _gridRows;
         [SerializeField] private GameObject _gridLinePrefab;
 
@@ -193,6 +194,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 {
                     line.color = _lineDefaultColor;
                 }
+
                 _highlightedLines = null;
             }
         }
@@ -285,9 +287,7 @@ namespace MenuUi.Scripts.Settings.BattleUiEditor
                 yield break;
             }
 
-            // Removing extra lines
-            int linesToRemove = lineParent.childCount - lineAmount;
-            for (int i = 0; i < linesToRemove; i++)
+            for (int i = lineParent.childCount - 1; i >= lineAmount; i--)
             {
                 if (lineParent == _gridRows) _rowLineImages.RemoveAt(i);
                 else _columnLineImages.RemoveAt(i);

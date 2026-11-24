@@ -287,11 +287,11 @@ public static class Debug
 
     private static string GetPrefix(MemberInfo method, string memberName = null)
     {
-        var className = method.ReflectedType?.Name ?? nameof(Debug);
+        var className = method.ReflectedType?.Name ?? nameof(UnityEngine.Debug);
         if (className.StartsWith("<"))
         {
             // For anonymous types we try its parent type.
-            className = method.ReflectedType?.DeclaringType?.Name ?? nameof(Debug);
+            className = method.ReflectedType?.DeclaringType?.Name ?? nameof(UnityEngine.Debug);
         }
         var methodName = method.Name;
         if (methodName.StartsWith("<"))

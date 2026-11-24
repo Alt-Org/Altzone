@@ -1,20 +1,21 @@
 using System;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.ReferenceSheets;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class IntroCharacters : MonoBehaviour
 {
     [SerializeField]
-    private ClassReference _classReference;
-
-    [SerializeField]
-    private List<GameObject> characterCards;
+    private List<CharacterThumbnailHandler> characterCards;
 
     private List<int> characterIDs = new List<int>();
 
+    public delegate void InitialAvatarSelection(CharacterClassType classType);
+    public static event InitialAvatarSelection OnInitialAvatarSelection;
 
     void Start()
     {
@@ -24,34 +25,21 @@ public class IntroCharacters : MonoBehaviour
             characterIDs.Add(i);
         }
 
-
-        CharacterClassType classType;
         int j = 0;                     //for going through the classtype list
-
-        foreach (GameObject characterCard in characterCards)
+        AvatarReference avatarreference= AvatarReference.Instance;
+        foreach (CharacterThumbnailHandler characterCard in characterCards)
         {
             j++;
 
-            classType = (CharacterClassType)characterIDs[j]; //get classtype from list
+            CharacterClassType classType = (CharacterClassType)characterIDs[j]; //get classtype from list
 
-            characterCard.GetComponent<Image>().color = _classReference.GetAlternativeColor(classType); //change card color
-
-
-            CharacterThumbnailHandler characterThumbnailHandler = characterCard.GetComponent<CharacterThumbnailHandler>(); // get correct thumbnailhandler 
-
-            Image characterSprite = characterThumbnailHandler._characterSprite;
-            characterSprite.sprite = _classReference.GetCharacter(classType); //set character sprite
-
-
-            Image emblemSprite = characterThumbnailHandler._emblemSprite; //find emblem-child
-            emblemSprite.sprite = _classReference.GetCornerIcon(classType); //set emblem sprite
-
-            Image nameSprite = characterThumbnailHandler._nameSprite; //find name-child
-            nameSprite.sprite = _classReference.GetNameIcon(classType); //set name sprite
-
-           
+            characterCard.SetData(classType, SelectInitialAvatar);
         }
     }
 
+    public static void SelectInitialAvatar(CharacterClassType classType)
+    {
+        OnInitialAvatarSelection?.Invoke(classType);
+    }
 
 }

@@ -19,7 +19,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             _avatarEditorController.PlayerAvatar.SetPart(slot, feature.Id);
             ColorUtility.TryParseHtmlString(_avatarEditorController.PlayerAvatar.GetPartColor(slot), out Color color);
-            _avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature, color);
+            StartCoroutine(_avatarEditorCharacterHandle.SetMainCharacterImage(slot, feature, color));
         }
 
         public void SetLoadedFeatures(PlayerAvatar avatar)
@@ -40,7 +40,7 @@ namespace MenuUi.Scripts.AvatarEditor
                 if (avatarPart != null)
                 {
                     ColorUtility.TryParseHtmlString(avatar.GetPartColor(slot), out Color color);
-                    _avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart, color);
+                    StartCoroutine(_avatarEditorCharacterHandle.SetMainCharacterImage(slot, avatarPart, color));
                 }
             }
 

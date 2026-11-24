@@ -67,7 +67,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Price
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 31fb2bbeeb88b8f4fa87e595eb13b936, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 607ab1d3fedd2ec47a689eddcef4219e, type: 2}
   m_sharedMaterial: {fileID: 7919689120557700827, guid: 31fb2bbeeb88b8f4fa87e595eb13b936,
     type: 2}
   m_fontSharedMaterials: []
@@ -351,29 +351,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 8341378575056358552}
+        m_TargetAssemblyTypeName: EsineDisplay, MainMenu
+        m_MethodName: OnAdCLicked
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &8341378575056358552
 MonoBehaviour:
@@ -387,6 +375,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 555db4787863c1f4f8d6213b6b6f4750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  items: {fileID: 11400000, guid: cecb0ece863eed949813a62605dd88b4, type: 2}
-  price: {fileID: 7179073579465683295}
-  contentImage: {fileID: 3076712100754815630}
+  _adBackground: {fileID: 0}
+  _adFrameBorder: {fileID: 0}
+  _adItemImage: {fileID: 0}
+  _adClanLogo: {fileID: 0}
+  _adClanName: {fileID: 0}
+  _adText: {fileID: 0}
+  _adFurniture: {fileID: 0}
+  _adTextHolder: {fileID: 0}
+  _inputFieldHolder: {fileID: 0}
+  _button: {fileID: 0}

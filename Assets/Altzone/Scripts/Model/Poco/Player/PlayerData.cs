@@ -2,16 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using Altzone.Scripts.Common;
-using Prg.Scripts.Common.Extensions;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ModelV2.Internal;
 using Altzone.Scripts.Voting;
+using Newtonsoft.Json;
+using Prg.Scripts.Common.Extensions;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Newtonsoft.Json;
 
 namespace Altzone.Scripts.Model.Poco.Player
 {
@@ -69,9 +70,15 @@ namespace Altzone.Scripts.Model.Poco.Player
 
         public PlayStyles playStyles;
 
-        public string emotionSelectorDate = null;
+        private DateTime _emotionSelectorDate = DateTime.MinValue;
+
+        public DateTime EmotionSelectionDate => _emotionSelectorDate;
 
         public string daysBetweenInput = "0";
+
+        private DateTime _clanJoinDate = DateTime.MinValue;
+
+        public DateTime ClanJoinDate => _clanJoinDate;
 
         public List<string> _playerDataEmotionList = new List<string>
         {
@@ -83,6 +90,8 @@ namespace Altzone.Scripts.Model.Poco.Player
             Emotion.Blank.ToString(),
             Emotion.Blank.ToString()
         };
+
+        public List<DailyEmotion> _playerDataEmotions = new();
 
         public List<PlayerVoteData> playerVotes = new List<PlayerVoteData>();
 
@@ -234,6 +243,7 @@ namespace Altzone.Scripts.Model.Poco.Player
             Assert.IsTrue(player.uniqueIdentifier.IsSet());
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
+            _clanJoinDate = DateTime.ParseExact(player.clan_joindate, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
             string noCharacter = ((int)CharacterID.None).ToString();
             if (!limited) BuildSelectedCharacterList(player.battleCharacter_ids);
@@ -254,7 +264,7 @@ namespace Altzone.Scripts.Model.Poco.Player
         public void UpdatePlayerData(ServerPlayer player)
         {
             Debug.Log("UpdatePlayerData raw emotion count: " + (_playerDataEmotionList == null ? -1 : _playerDataEmotionList.Count));
-            Debug.Log("UpdatePlayerData raw emotion date: " + emotionSelectorDate);
+            Debug.Log("UpdatePlayerData raw emotion date: " + _emotionSelectorDate);
 
             Assert.IsTrue(player._id.IsSet());
             Assert.IsTrue(player.clan_id.IsNullOEmptyOrNonWhiteSpace());
@@ -264,6 +274,10 @@ namespace Altzone.Scripts.Model.Poco.Player
             Assert.IsTrue(player.uniqueIdentifier.IsSet());
             Id = player._id;
             ClanId = player.clan_id ?? string.Empty;
+            if (!string.IsNullOrEmpty(ClanId))
+            {
+                _clanJoinDate = DateTime.ParseExact(player.clan_joindate, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            }
             SelectedCharacterId = (int)(player.currentAvatarId == null ? 0 : player.currentAvatarId);
             string noCharacter = ((int)CharacterID.None).ToString();
             BuildSelectedCharacterList(player.battleCharacter_ids);
@@ -280,6 +294,7 @@ namespace Altzone.Scripts.Model.Poco.Player
                     Emotion.Blank, Emotion.Blank, Emotion.Blank,
                     Emotion.Blank, Emotion.Blank, Emotion.Blank, Emotion.Blank
                 };
+            _playerDataEmotions = FormatEmotions(player.emotions);
             if (daysBetweenInput == null) daysBetweenInput = "0";
 
             
@@ -497,6 +512,31 @@ namespace Altzone.Scripts.Model.Poco.Player
             return true;
         }
 
+        private List<DailyEmotion> FormatEmotions(List<ServerEmotions> serverEmotions)
+        {
+            List<DailyEmotion> emotions = new();
 
+            foreach(ServerEmotions emotion in serverEmotions)
+            {
+                emotions.Add(new(emotion));
+            }
+
+            emotions = emotions.OrderByDescending(o => o.DateTime).ToList();
+
+            if(emotions.Count > 0) _emotionSelectorDate = emotions[0].DateTime;
+
+            return emotions;
+        }
+
+        public void AddEmotion(Emotion emotion)
+        {
+            List<DailyEmotion> emotions = new();
+
+            _playerDataEmotions.Add(new(emotion));
+
+            _playerDataEmotions = _playerDataEmotions.OrderByDescending(o => o.DateTime).ToList();
+
+            _emotionSelectorDate = DateTime.UtcNow.Date;
+        }
     }
 }

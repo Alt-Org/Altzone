@@ -10,15 +10,23 @@ using UnityEngine.UI;
 public class AdPosterHandler : AltMonoBehaviour
 {
     [SerializeField]
-    private Image _adBackground;
+    protected Image _adBackground;
     [SerializeField]
-    private Image _adFrameBorder;
+    protected Image _adFrameBorder;
     [SerializeField]
-    private Image _adItemImage;
+    protected Image _adItemImage;
     [SerializeField]
     private ClanHeartColorSetter _adClanLogo;
     [SerializeField]
     private TextMeshProUGUI _adClanName;
+    [SerializeField]
+    protected TextMeshProUGUI _adText;
+    [SerializeField]
+    protected Image _adFurniture;
+    [SerializeField]
+    private GameObject _adTextHolder;
+    [SerializeField]
+    private GameObject _inputFieldHolder;
 
     // Start is called before the first frame update
     void Start()
@@ -37,19 +45,43 @@ public class AdPosterHandler : AltMonoBehaviour
         ClanData.OnAdDataUpdated -= FetchAdData;
     }
 
+
     private void FetchAdData()
     {
+        if (!gameObject.activeInHierarchy) return;
         StartCoroutine(GetClanData(data =>
         {
-            if (data != null) SetAdPoster(data.AdData, data.Name, data.ClanHeartPieces);
+            if (data != null)
+            {
+                SetAdPoster(data.AdData, data.Name, data.ClanHeartPieces);
+            }
         }));
     }
+
+
 
     public void SetAdPoster(AdStoreObject data, string clanName, List<HeartPieceData> pieceData)
     {
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
-        if(_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
+        if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
+
+        if (AdDecorationReference.Instance.FurnitureList == null || AdDecorationReference.Instance.FurnitureList.Count <= 0) _adFurniture.enabled = false;
+        else
+        {
+            _adFurniture.enabled = true;
+
+            if (data.Furniture == null) _adFurniture.sprite = AdDecorationReference.Instance.FurnitureList[0].Image;
+            else _adFurniture.sprite = data.Furniture;
+        }
+
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
+        if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour;
+
+        _adText.font = data.TextFont;
+        _adText.text = data.AdText;
+
+        if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true);
+        if (data.IsAdText == false) _adTextHolder.SetActive(false);
         _adClanLogo.SetHeartColors(pieceData);
         _adClanName.text = clanName;
     }
@@ -58,8 +90,24 @@ public class AdPosterHandler : AltMonoBehaviour
     {
         _adFrameBorder.sprite = AdDecorationReference.Instance.GetBorderFrameSprite(data.BorderFrame);
         if (_adFrameBorder.sprite) _adFrameBorder.enabled = _adFrameBorder.sprite;
+
+        if (AdDecorationReference.Instance.FurnitureList == null || AdDecorationReference.Instance.FurnitureList.Count <= 0) _adFurniture.enabled = false;
+        else
+        {
+            _adFurniture.enabled = true;
+
+            if (data.Furniture == null) _adFurniture.sprite = AdDecorationReference.Instance.FurnitureList[0].Image;
+            else _adFurniture.sprite = data.Furniture;
+        }
+
         if (ColorUtility.TryParseHtmlString(data.BackgroundColour, out Color colour)) _adBackground.color = colour;
+        if (ColorUtility.TryParseHtmlString(data.TextColour, out Color textColour)) _adText.color = textColour;
+
+        _adText.font = data.TextFont;
+        _adText.text = data.AdText;
+
+        if (!_inputFieldHolder.activeSelf && data.IsAdText == true) _adTextHolder.SetActive(true);
+        if (data.IsAdText == false) _adTextHolder.SetActive(false);
         _adClanName.text = clanName;
     }
-
 }

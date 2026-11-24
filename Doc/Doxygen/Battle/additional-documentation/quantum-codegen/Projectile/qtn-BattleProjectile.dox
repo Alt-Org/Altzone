@@ -10,6 +10,8 @@
 /// ## Generated Structs
 /// - @cref{Quantum,BattleProjectileQComponent}  
 ///   @copybrief Quantum.BattleProjectileQComponent
+/// - @cref{Quantum,BattleProjectileTriggerQComponent}  
+///   @copybrief Quantum.BattleProjectileTriggerQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -76,6 +78,9 @@
 /// @var FP Quantum.BattleProjectileQComponent::Speed
 /// <summary>Projectile's speed.</summary>
 ///
+/// @var FPVector2 Quantum.BattleProjectileQComponent::Position
+/// <summary>Projectile's position.</summary>
+///
 /// @var FPVector2 Quantum.BattleProjectileQComponent::Direction
 /// <summary>The direction the projectile is going towards.</summary>
 ///
@@ -114,3 +119,13 @@
 //
 // @var FP Quantum.BattleProjectileQComponent::AccelerationTimerDuration
 // <summary>Used for setting AccelerationTimer.</summary>
+
+/// @struct Quantum::BattleProjectileTriggerQComponent
+/// <summary>
+/// Contains entity reference to the projectile entity.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattleProjectile.qtn}
+
+/// @var EntityRef Quantum.BattleProjectileTriggerQComponent::ProjectileEntityRef
+/// <summary>Used for getting the reference of the projectile entity.</summary>

@@ -1,11 +1,13 @@
 using System;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.BattleUiShared;
+using System.Collections.Generic;
 using Altzone.Scripts.Chat;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 using static Altzone.Scripts.Chat.ChatListener;
+using Altzone.Scripts.Audio;
 
 public class SettingsCarrier : MonoBehaviour // Script for carrying settings data between scenes
 {
@@ -46,6 +48,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         GiveUpButton = 4,
         MoveJoystick = 5,
         RotateJoystick = 6,
+        SpecialJoystick = 7,
     }
 
     public enum BattleMovementInputType
@@ -67,17 +70,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     public enum TopBarStyle
     {
+        None = -1,
         Old,
         NewHelena,
         NewNiko
     }
 
-    public enum JukeboxPlayArea
-    {
-        MainMenu,
-        Soulhome,
-        Battle
-    }
+    // public enum JukeboxPlayArea
+    // {
+    //     MainMenu,
+    //     Soulhome,
+    //     Battle
+    // }
 
     public enum SettingsType
     {
@@ -92,13 +96,27 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public event Action OnButtonLabelVisibilityChange;
 
     public delegate void MuteAllSoundsChange(bool value);
+
     public static event MuteAllSoundsChange OnMuteAllSoundsChange;
 
     public delegate void TopBarChanged(int index);
+
     public static event TopBarChanged OnTopBarChanged;
 
     public delegate void LanguageChanged(LanguageType language);
+
     public static event LanguageChanged OnLanguageChanged;
+
+    //Events for ParentalControl
+    public event Action OnAllowLinksChange;
+    public event Action OnChatMessagesChange;
+    public event Action OnAllowEmojisChange;
+    public event Action OnAllowTreasureHuntChange;
+    public event Action OnMonthlyLimitChange;
+    public event Action OnActivatePurchasesSeparatelyChange;
+    public event Action OnMaxPlayTimeChange;
+    public event Action OnEndMidMatchChange;
+    public event Action OnEndAfterMatchChange;
 
     // Constants
     public const string BattleShowDebugStatsOverlayKey = "BattleStatsOverlay";
@@ -111,6 +129,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public const string BattleSwipeMaxDistanceKey = "BattleSwipeMaxDistance";
     public const string BattleSwipeSensitivityKey = "BattleSwipeSensitivity";
     public const string BattleGyroMinAngleKey = "BattleGyroMinAngle";
+    public const string BattleArenaStoneWallCharacterKey = "BattleStoneWallCharacter";
+    public const string BattleOuterEdgeWithoutFloorKey = "BattleOuterEdgeWithoutFloor";
 
     public const int BattleArenaScaleDefault = 100;
     public const int BattleArenaPosXDefault = 50;
@@ -138,12 +158,10 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     public float soundVolume;
 
     private bool _muteAllSounds;
+
     public bool MuteAllSounds
     {
-        get
-        {
-            return _muteAllSounds;
-        }
+        get { return _muteAllSounds; }
 
         set
         {
@@ -178,15 +196,17 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private TextSize _textSize;
-    public TextSize Textsize { get => _textSize; }
+
+    public TextSize Textsize
+    {
+        get => _textSize;
+    }
 
     private bool _showButtonLabels;
+
     public bool ShowButtonLabels
     {
-        get
-        {
-            return _showButtonLabels;
-        }
+        get { return _showButtonLabels; }
 
         set
         {
@@ -196,6 +216,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private bool _unlimitedStatUpgradeMaterials;
+
     public bool UnlimitedStatUpgradeMaterials
     {
         get => _unlimitedStatUpgradeMaterials;
@@ -208,6 +229,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private bool _statDebuggingMode;
+
     public bool StatDebuggingMode
     {
         get => _statDebuggingMode;
@@ -220,6 +242,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private bool _battleShowDebugStatsOverlay;
+
     public bool BattleShowDebugStatsOverlay
     {
         get => _battleShowDebugStatsOverlay;
@@ -232,6 +255,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private int _battleArenaScale;
+
     public int BattleArenaScale
     {
         get => _battleArenaScale;
@@ -244,6 +268,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private int _battleArenaPosX;
+
     public int BattleArenaPosX
     {
         get => _battleArenaPosX;
@@ -256,6 +281,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private int _battleArenaPosY;
+
     public int BattleArenaPosY
     {
         get => _battleArenaPosY;
@@ -268,6 +294,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private BattleMovementInputType _battleMovementInput;
+
     public BattleMovementInputType BattleMovementInput
     {
         get => _battleMovementInput;
@@ -280,6 +307,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private BattleRotationInputType _battleRotationInput;
+
     public BattleRotationInputType BattleRotationInput
     {
         get => _battleRotationInput;
@@ -292,6 +320,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private float _battleSwipeMinDistance;
+
     public float BattleSwipeMinDistance
     {
         get => _battleSwipeMinDistance;
@@ -304,6 +333,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private float _battleSwipeMaxDistance;
+
     public float BattleSwipeMaxDistance
     {
         get => _battleSwipeMaxDistance;
@@ -316,6 +346,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private float _battleSwipeSensitivity;
+
     public float BattleSwipeSensitivity
     {
         get => _battleSwipeSensitivity;
@@ -328,6 +359,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private float _battleGyroMinAngle;
+
     public float BattleGyroMinAngle
     {
         get => _battleGyroMinAngle;
@@ -340,6 +372,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     }
 
     private TopBarStyle _topBarStyleSetting;
+
     public TopBarStyle TopBarStyleSetting
     {
         get => _topBarStyleSetting;
@@ -347,13 +380,52 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         {
             if (_topBarStyleSetting == value) return;
             _topBarStyleSetting = value;
+
             PlayerPrefs.SetInt(TopBarStyleSettingKey, (int)value);
             OnTopBarChanged?.Invoke((int)value);
         }
     }
 
+
+    public static bool IsTopBarItemVisibleByKeyStatic(string key, bool defaultOn = true)
+        => PlayerPrefs.GetInt(key, defaultOn ? 1 : 0) != 0;
+
+
+    private const string _topBarOrderKeyPrefix = "TopBarOrder_";
+    private static string GetTopBarOrderKey(TopBarStyle style) => _topBarOrderKeyPrefix + style;
+
+    private bool _battleDebug;
+
+    public bool BattleDebug
+    {
+        get => _battleDebug;
+        set
+        {
+            if (_battleDebug == value) return;
+            _battleDebug = value;
+            PlayerPrefs.SetInt("BattleDebug", value ? 1 : 0);
+        }
+    }
+
+    private bool _showFps;
+
+    public bool ShowFps
+    {
+        get => _showFps;
+        set
+        {
+            if (_showFps == value) return;
+            _showFps = value;
+            PlayerPrefs.SetInt("ShowFps", value ? 1 : 0);
+        }
+    }
+
     private string _mainMenuMusicName;
-    public string MainMenuMusicName { get { return _mainMenuMusicName; } }
+
+    public string MainMenuMusicName
+    {
+        get { return _mainMenuMusicName; }
+    }
 
     private int? _chatChannel;
 
@@ -361,6 +433,39 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     {
         None,
         MainMenuMusic
+    }
+
+    private bool _battleArenaArenaStoneWallCharacter;
+
+    public bool BattleArenaStoneWallCharacter
+    {
+        get => _battleArenaArenaStoneWallCharacter;
+        set
+        {
+            if (_battleArenaArenaStoneWallCharacter == value) return;
+            _battleArenaArenaStoneWallCharacter = value;
+
+            PlayerPrefs.SetInt(
+                BattleArenaStoneWallCharacterKey,
+                value ? 1 : 0);
+        }
+    }
+
+    private bool _battleArenaArenaOuterEdgeWithoutFloor;
+
+    public bool BattleArenaOuterEdgeWithoutFloor
+    {
+        get => _battleArenaArenaOuterEdgeWithoutFloor;
+        set
+        {
+            if (_battleArenaArenaOuterEdgeWithoutFloor == value) return;
+
+            _battleArenaArenaOuterEdgeWithoutFloor = value;
+
+            PlayerPrefs.SetInt(
+                BattleOuterEdgeWithoutFloorKey,
+                value ? 1 : 0);
+        }
     }
 
     // Functions
@@ -379,7 +484,8 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
     private void Start()
     {
-        Application.targetFrameRate = PlayerPrefs.GetInt("TargetFrameRate", (int)Screen.currentResolution.refreshRateRatio.value);
+        Application.targetFrameRate =
+            PlayerPrefs.GetInt("TargetFrameRate", (int)Screen.currentResolution.refreshRateRatio.value);
         mainMenuWindowIndex = 0;
 
         _language = ParseLanguage(PlayerPrefs.GetString("LanguageType", ""));
@@ -395,7 +501,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _muteAllSounds = PlayerPrefs.GetInt("MuteAllSounds", 0) == 1;
 
         jukeboxSoulhome = PlayerPrefs.GetInt("JukeboxSoulHome", 1) != 0;
-        jukeboxUI = PlayerPrefs.GetInt("JukeboxUI",1) != 0;
+        jukeboxUI = PlayerPrefs.GetInt("JukeboxUI", 1) != 0;
         jukeboxBattle = PlayerPrefs.GetInt("JukeboxBattle", 0) != 0;
 
         _battleShowDebugStatsOverlay = PlayerPrefs.GetInt(BattleShowDebugStatsOverlayKey, 0) == 1;
@@ -404,13 +510,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         _battleArenaPosX = PlayerPrefs.GetInt(BattleArenaPosXKey, BattleArenaPosXDefault);
         _battleArenaPosY = PlayerPrefs.GetInt(BattleArenaPosYKey, BattleArenaPosYDefault);
 
-        _battleMovementInput = (BattleMovementInputType)PlayerPrefs.GetInt(BattleMovementInputKey, (int)BattleMovementInputDefault);
-        _battleRotationInput = (BattleRotationInputType)PlayerPrefs.GetInt(BattleRotationInputKey, (int)BattleRotationInputDefault);
+        _battleMovementInput =
+            (BattleMovementInputType)PlayerPrefs.GetInt(BattleMovementInputKey, (int)BattleMovementInputDefault);
+        _battleRotationInput =
+            (BattleRotationInputType)PlayerPrefs.GetInt(BattleRotationInputKey, (int)BattleRotationInputDefault);
 
         _battleSwipeMinDistance = PlayerPrefs.GetFloat(BattleSwipeMinDistanceKey, BattleSwipeMinDistanceDefault);
         _battleSwipeMaxDistance = PlayerPrefs.GetFloat(BattleSwipeMaxDistanceKey, BattleSwipeMaxDistanceDefault);
         _battleSwipeSensitivity = PlayerPrefs.GetFloat(BattleSwipeSensitivityKey, BattleSwipeSensitivityDefault);
         _battleGyroMinAngle = PlayerPrefs.GetFloat(BattleGyroMinAngleKey, BattleGyroMinAngleDefault);
+
+        _battleArenaArenaStoneWallCharacter = PlayerPrefs.GetInt(BattleArenaStoneWallCharacterKey, 1) == 0;
+        _battleArenaArenaOuterEdgeWithoutFloor = PlayerPrefs.GetInt(BattleOuterEdgeWithoutFloorKey, 0) == 1;
 
         _unlimitedStatUpgradeMaterials = PlayerPrefs.GetInt(UnlimitedStatUpgradeMaterialsKey, 1) == 1;
 
@@ -418,9 +529,25 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
 
         _topBarStyleSetting = (TopBarStyle)PlayerPrefs.GetInt(TopBarStyleSettingKey, 1);
 
+        OnTopBarChanged?.Invoke((int)_topBarStyleSetting);
+        _battleDebug = PlayerPrefs.GetInt("BattleDebug", 0) == 1;
+
+        _showFps = PlayerPrefs.GetInt("ShowFps", 0) == 1;
+
         _mainMenuMusicName = PlayerPrefs.GetString("MainMenuMusic");
 
         ChatListener.OnActiveChannelChanged += SaveChatChannel;
+
+        //ParentalControl settings
+        _allowLinks = (PlayerPrefs.GetInt("AllowLinks", 1) == 1);
+        _chatMessages = (PlayerPrefs.GetInt("AllowChat", 1) == 1);
+        _allowEmojis = (PlayerPrefs.GetInt("AllowEmojis", 1) == 1);
+        _allowTreasureHunt = (PlayerPrefs.GetInt("AllowTreasureHunt", 1) == 1);
+        _monthlyLimit = (PlayerPrefs.GetFloat("MonthlyLimit"));
+        _activatePurchasesSeparately = (PlayerPrefs.GetInt("ActivatePurchasesSeparately", 1) == 1);
+        _maxPlayTime = (PlayerPrefs.GetFloat("MaxPlayTime"));
+        _endMidMatch = (PlayerPrefs.GetInt("EndMidMatch", 1) == 1);
+        _endAfterMatch = (PlayerPrefs.GetInt("EndAfterMatch", 1) == 1);
     }
 
     private void OnDestroy()
@@ -432,9 +559,18 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     {
         switch (type)
         {
-            case SoundType.menu: menuVolume = value; PlayerPrefs.SetFloat("MenuVolume", value); break;
-            case SoundType.music: musicVolume = value; PlayerPrefs.SetFloat("MusicVolume", value); break;
-            case SoundType.sound:  soundVolume = value; PlayerPrefs.SetFloat("SoundVolume", value); break;
+            case SoundType.menu:
+                menuVolume = value;
+                PlayerPrefs.SetFloat("MenuVolume", value);
+                break;
+            case SoundType.music:
+                musicVolume = value;
+                PlayerPrefs.SetFloat("MusicVolume", value);
+                break;
+            case SoundType.sound:
+                soundVolume = value;
+                PlayerPrefs.SetFloat("SoundVolume", value);
+                break;
             default: break;
         }
     }
@@ -451,6 +587,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             case SoundType.sound: otherVolume = soundVolume; break;
             default: break;
         }
+
         return 1 * (otherVolume * masterVolume);
     }
 
@@ -464,6 +601,7 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
             case SoundType.sound: otherVolume = soundVolume; break;
             default: break;
         }
+
         return otherVolume;
     }
 
@@ -498,6 +636,24 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    public bool SetBoolValue(string type, bool? value = null)
+    {
+        switch (type)
+        {
+            case "BattleDebug":
+                if (value.HasValue) BattleDebug = value.Value;
+                else BattleDebug = !BattleDebug;
+                return true;
+            case "ShowFps":
+                if (value.HasValue) ShowFps = value.Value;
+                else ShowFps = !ShowFps;
+                return true;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return false;
+        }
+    }
+
     public bool? GetBoolValue(SettingsType type)
     {
         switch (type)
@@ -516,6 +672,20 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         }
     }
 
+    public bool? GetBoolValue(string type)
+    {
+        switch (type)
+        {
+            case "BattleDebug":
+                return _battleDebug;
+            case "ShowFps":
+                return _showFps;
+            default:
+                Debug.LogError($"Cannot find type: {type}. Somebody probably forgot to add it.");
+                return null;
+        }
+    }
+
     public BattleUiMovableElementData GetBattleUiMovableElementData(BattleUiElementType type)
     {
         if (type == BattleUiElementType.None) return null;
@@ -524,7 +694,11 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         if (string.IsNullOrEmpty(json)) return null;
 
         BattleUiMovableElementData data = JsonUtility.FromJson<BattleUiMovableElementData>(json);
-        if (data != null) data.UiElementType = data.UiElementType == BattleUiElementType.None ? type : data.UiElementType; // Backwards compatibility with old BattleUiMovableElementData
+        if (data != null)
+            data.UiElementType =
+                data.UiElementType == BattleUiElementType.None
+                    ? type
+                    : data.UiElementType; // Backwards compatibility with old BattleUiMovableElementData
 
         return data;
     }
@@ -537,19 +711,19 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
         PlayerPrefs.SetString($"BattleUi{type}", json);
     }
 
-    public bool CanPlayJukeboxInArea(JukeboxPlayArea playArea)
+    public bool CanPlayJukeboxInArea(AudioCategoryType playArea)
     {
         switch (playArea)
         {
-            case JukeboxPlayArea.MainMenu:
+            case AudioCategoryType.MainMenu:
                 {
                     return jukeboxUI;
                 }
-            case JukeboxPlayArea.Soulhome:
+            case AudioCategoryType.SoulHome:
                 {
                     return jukeboxSoulhome;
                 }
-            case JukeboxPlayArea.Battle:
+            case AudioCategoryType.Battle:
                 {
                     return jukeboxBattle;
                 }
@@ -571,8 +745,76 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
     {
         switch (type)
         {
-            case SelectionBoxType.MainMenuMusic: _mainMenuMusicName = value; PlayerPrefs.SetString("MainMenuMusic", value); break;
+            case SelectionBoxType.MainMenuMusic:
+                _mainMenuMusicName = value;
+                PlayerPrefs.SetString("MainMenuMusic", value);
+                break;
         }
+    }
+
+    public void SetTopBarItemVisibleByKey(string key, bool visible)
+    {
+        int newV = visible ? 1 : 0;
+        int oldV = PlayerPrefs.HasKey(key) ? PlayerPrefs.GetInt(key) : -1;
+        if (oldV == newV) return;
+
+        PlayerPrefs.SetInt(key, newV);
+        OnTopBarChanged?.Invoke((int)TopBarStyleSetting);
+    }
+
+    [System.Serializable]
+    private class TopBarOrderData
+    {
+        public List<int> order = new List<int>();
+    }
+
+    public void SaveTopBarOrder(TopBarStyle style, IList<int> order)
+    {
+        string key = GetTopBarOrderKey(style);
+
+        TopBarOrderData data = new TopBarOrderData { order = new List<int>(order) };
+        string jsonNew = JsonUtility.ToJson(data);
+
+        string jsonOld = PlayerPrefs.GetString(key, "");
+        if (jsonOld == jsonNew) return;
+
+        PlayerPrefs.SetString(key, jsonNew);
+        OnTopBarChanged?.Invoke((int)style);
+    }
+
+    public static List<int> LoadTopBarOrderStatic(TopBarStyle style, int count)
+    {
+        List<int> result = new List<int>(count);
+        bool[] used = new bool[count];
+
+        string raw = PlayerPrefs.GetString(GetTopBarOrderKey(style), "");
+        if (string.IsNullOrEmpty(raw))
+        {
+            for (int i = 0; i < count; i++) result.Add(i);
+            return result;
+        }
+
+        TopBarOrderData data = JsonUtility.FromJson<TopBarOrderData>(raw);
+
+        // JSON-lista l�pi foreachilla
+        if (data != null && data.order != null)
+        {
+            foreach (int idx in data.order)
+            {
+                if ((uint)idx < (uint)count && !used[idx])
+                {
+                    used[idx] = true;
+                    result.Add(idx);
+                    if (result.Count == count) return result;
+                }
+            }
+        }
+
+        for (int i = 0; i < count; i++)
+            if (!used[i])
+                result.Add(i);
+
+        return result;
     }
 
     public ChatChannelType FetchChatChannel()
@@ -612,6 +854,218 @@ public class SettingsCarrier : MonoBehaviour // Script for carrying settings dat
                 return "en";
             default:
                 return "";
+        }
+    }
+
+
+    // ParentalControl functions
+    // Example for getting / setting toggles is taken mostly from ShowButtonLabels
+
+    // Social controls
+
+    private bool _allowLinks;
+
+    public bool AllowLinks
+    {
+        get => _allowLinks;
+        set
+        {
+            _allowLinks = value;
+
+            if (_allowLinks)
+            {
+                PlayerPrefs.SetInt("AllowLinks", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("AllowLinks", 0);
+            }
+
+            OnAllowLinksChange?.Invoke();
+        }
+    }
+
+    private bool _chatMessages;
+
+    public bool ChatMessages
+    {
+        get => _chatMessages;
+        set
+        {
+            _chatMessages = value;
+
+            if (_chatMessages)
+            {
+                PlayerPrefs.SetInt("AllowChat", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("AllowChat", 0);
+            }
+
+            OnChatMessagesChange?.Invoke();
+        }
+    }
+
+    private bool _allowEmojis;
+
+    public bool AllowEmojis
+    {
+        get => _allowEmojis;
+        set
+        {
+            _allowEmojis = value;
+
+            if (_allowEmojis)
+            {
+                PlayerPrefs.SetInt("AllowEmojis", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("AllowEmojis", 0);
+            }
+
+            OnAllowEmojisChange?.Invoke();
+        }
+    }
+
+    private bool _allowTreasureHunt;
+
+    public bool AllowTreasureHunt
+    {
+        get => _allowTreasureHunt;
+        set
+        {
+            _allowTreasureHunt = value;
+
+            if (_allowTreasureHunt)
+            {
+                PlayerPrefs.SetInt("AllowTreasureHunt", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("AllowTreasureHunt", 0);
+            }
+
+            OnAllowTreasureHuntChange?.Invoke();
+        }
+    }
+
+    //Money controls
+    private float _monthlyLimit;
+
+    public float MonthlyLimit
+    {
+        get => _monthlyLimit;
+        set
+        {
+            if (_monthlyLimit == value) return;
+            _monthlyLimit = value;
+            if (_monthlyLimit > 0)
+            {
+                PlayerPrefs.SetFloat("MonthlyLimit", (float)value);
+            }
+            else
+            {
+                PlayerPrefs.SetFloat("MonthlyLimit", 0);
+            }
+
+            OnMonthlyLimitChange?.Invoke();
+        }
+    }
+
+    private bool _activatePurchasesSeparately;
+
+    public bool ActivatePurchasesSeparately
+    {
+        get => _activatePurchasesSeparately;
+        set
+        {
+            _activatePurchasesSeparately = value;
+
+            if (_activatePurchasesSeparately)
+            {
+                PlayerPrefs.SetInt("ActivatePurchasesSeparately", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("ActivatePurchasesSeparately", 0);
+            }
+
+            OnActivatePurchasesSeparatelyChange?.Invoke();
+        }
+    }
+
+
+    //Time controls
+    private float _maxPlayTime;
+
+    public float MaxPlayTime
+    {
+        get => _maxPlayTime;
+        set
+        {
+            if (_maxPlayTime == value) return;
+            _maxPlayTime = value;
+            if (_maxPlayTime > 1 && _maxPlayTime <= 24)
+            {
+                PlayerPrefs.SetFloat("MaxPlayTime", (float)value);
+            }
+
+            else if (_maxPlayTime > 25)
+            {
+                PlayerPrefs.SetFloat("MaxPlayTime", 24);
+            }
+            else
+            {
+                PlayerPrefs.SetFloat("MaxPlayTime", 1);
+            }
+
+            OnMaxPlayTimeChange?.Invoke();
+        }
+    }
+
+    private bool _endMidMatch;
+
+    public bool EndMidMatch
+    {
+        get => _endMidMatch;
+        set
+        {
+            _endMidMatch = value;
+
+            if (_endMidMatch)
+            {
+                PlayerPrefs.SetInt("EndMidMatch", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("EndMidMatch", 0);
+            }
+
+            OnEndMidMatchChange?.Invoke();
+        }
+    }
+
+    private bool _endAfterMatch;
+
+    public bool EndAfterMatch
+    {
+        get => _endAfterMatch;
+        set
+        {
+            _endAfterMatch = value;
+
+            if (_endAfterMatch)
+            {
+                PlayerPrefs.SetInt("EndAfterMatch", 1);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("EndAfterMatch", 0);
+            }
+
+            OnEndAfterMatchChange?.Invoke();
         }
     }
 }

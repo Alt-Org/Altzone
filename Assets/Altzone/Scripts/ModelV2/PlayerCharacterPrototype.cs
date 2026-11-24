@@ -31,7 +31,8 @@ namespace Altzone.Scripts.ModelV2
         public Sprite GalleryImage => _characterSpec.GalleryImage;
         public Sprite GalleryHeadImage => _characterSpec.GalleryHeadImage;
         public Sprite CharPhotoSeries => _characterSpec.CharPhotoSeries;
-        public AssetRef<EntityPrototype> BattleEntityPrototype => _characterSpec.BattleEntityPrototype;
+        public AssetRef<EntityPrototype> BattleCharacterEntityPrototype => _characterSpec.BattleCharacterEntityPrototype;
+        public AssetRef<EntityPrototype>[] BattleShieldEntityPrototypes => _characterSpec.BattleShieldEntityPrototypes;
         public Sprite BattleUiSprite => _characterSpec.BattleUiSprite;
         public string Description => _characterSpec.CharacterDescription;
         public string ShortDescription => _characterSpec.CharacterShortDescription;

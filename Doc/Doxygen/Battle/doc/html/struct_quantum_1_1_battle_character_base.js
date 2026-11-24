@@ -1,6 +1,6 @@
 var struct_quantum_1_1_battle_character_base =
 [
-    [ "Class", "struct_quantum_1_1_battle_character_base.html#adb0c15b9c2ad31a9a29bb0f0d291ad4b", null ],
-    [ "Id", "struct_quantum_1_1_battle_character_base.html#aed282906908289f7c0eca77955ef6965", null ],
+    [ "Class", "struct_quantum_1_1_battle_character_base.html#a8703aa9d690584a1d965b7f885b55454", null ],
+    [ "Id", "struct_quantum_1_1_battle_character_base.html#a0ab27075aebe5a0af9ae933e805ca1cc", null ],
     [ "Stats", "struct_quantum_1_1_battle_character_base.html#a68beed5f72fbf05292fde2efb6bb51c3", null ]
 ];

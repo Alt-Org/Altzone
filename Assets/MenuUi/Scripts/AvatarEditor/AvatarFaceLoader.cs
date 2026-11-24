@@ -11,6 +11,8 @@ namespace MenuUi.Scripts.AvatarEditor
         [SerializeField] private AvatarEditorCharacterHandle _characterHandle;
         [SerializeField] private bool _useOwnAvatarVisuals = true;
 
+        (AvatarPiece slot, AvatarPartInfo partInfo, Color color)[] _pendingFeatureUpdates = null;
+
         #region Unity Lifecycle
 
         private void OnEnable()
@@ -19,6 +21,12 @@ namespace MenuUi.Scripts.AvatarEditor
             {
                 UpdateVisuals();
                 SubscribeToEvents();
+            }
+
+            if (_pendingFeatureUpdates != null)
+            {
+                ApplyFeatureUpdates(_pendingFeatureUpdates);
+                if (gameObject.activeInHierarchy) _pendingFeatureUpdates = null;
             }
         }
 
@@ -108,11 +116,16 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private void ApplyFeatureUpdates((AvatarPiece slot, AvatarPartInfo partInfo, Color color)[] featureUpdates)
         {
+            if (!gameObject.activeInHierarchy)
+            {
+                _pendingFeatureUpdates = featureUpdates;
+                return;
+            }
             foreach (var (slot, partInfo, color) in featureUpdates)
             {
                 try
                 {
-                    _characterHandle.SetMainCharacterImage(slot, partInfo, color);
+                    StartCoroutine(_characterHandle.SetMainCharacterImage(slot, partInfo, color));
                 }
                 catch (System.Exception ex)
                 {

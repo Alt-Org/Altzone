@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['buttoncomponent_0',['ButtonComponent',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_character_button_component.html#aabcff99537ca01c5a20aa0f5bddf8fd0',1,'Battle::View::UI::BattleUiCharacterButtonComponent']]]
+  ['battlecommandtype_0',['BattleCommandType',['../class_battle_1_1_q_simulation_1_1_game_1_1_battle_command.html#a18950f19696765b9f56b5332aa1c3e80',1,'Battle.QSimulation.Game.BattleCommand.BattleCommandType'],['../class_battle_1_1_q_simulation_1_1_game_1_1_battle_character_ability_q_command.html#a7fcdfa22f5c6dd1943619129756450a1',1,'Battle.QSimulation.Game.BattleCharacterAbilityQCommand.BattleCommandType'],['../class_battle_1_1_q_simulation_1_1_game_1_1_battle_character_swap_q_command.html#af412ef099af7961a67de858f44f641f6',1,'Battle.QSimulation.Game.BattleCharacterSwapQCommand.BattleCommandType'],['../class_battle_1_1_q_simulation_1_1_game_1_1_battle_give_up_q_command.html#abd5cf1761673067096e11caff16becb4',1,'Battle.QSimulation.Game.BattleGiveUpQCommand.BattleCommandType']]],
+  ['buttoncomponent_1',['ButtonComponent',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_character_button_component.html#aabcff99537ca01c5a20aa0f5bddf8fd0',1,'Battle::View::UI::BattleUiCharacterButtonComponent']]]
 ];

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4183373380506724483}
   - component: {fileID: 4095162371665227173}
+  - component: {fileID: 7281363262430897814}
   m_Layer: 0
   m_Name: OnlineProfileManager
   m_TagString: Untagged
@@ -47,3 +48,15 @@ MonoBehaviour:
   _automaticallyLogIn: 0
   isLoggedIn: 0
   _skipServerFurniture: 0
+--- !u!114 &7281363262430897814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6833843638086194393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10c5407f019f1e44a9751b0a106ce573, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

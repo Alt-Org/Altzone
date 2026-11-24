@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using Altzone.Scripts.Common;
 using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 using static ServerChatMessage;
 
@@ -18,8 +21,9 @@ namespace Altzone.Scripts.Chat
         [SerializeField] private string _username;
         private AvatarData _avatar;
         [SerializeField] private string _message;
+        [SerializeField] private ResponseType _responseType;
         [SerializeField] private ChatChannel _channel;
-        [SerializeField] private Mood _mood;
+        [SerializeField] private Emotion _mood;
         private List<ServerReactions> _reactions;
         private DateTime _timestamp;
 
@@ -28,7 +32,7 @@ namespace Altzone.Scripts.Chat
         public string Username { get => _username; }
         public AvatarData Avatar { get => _avatar; }
         public string Message { get => _message; }
-        public Mood Mood { get => _mood; }
+        public Emotion Mood { get => _mood; }
         public string Id { get => _id; }
         public List<ServerReactions> Reactions { get => _reactions; internal set => _reactions = value; }
         public DateTime Timestamp { get => _timestamp; }
@@ -39,11 +43,11 @@ namespace Altzone.Scripts.Chat
             _username = string.Empty;
             _message = string.Empty;
             _channel = new ChatChannel();
-            _mood = Mood.None;
+            _mood = Emotion.Blank;
             _reactions = new();
         }
 
-        internal ChatMessage(string id, string name, string message, ChatChannel channel, Mood mood)
+        internal ChatMessage(string id, string name, string message, ChatChannel channel, Emotion mood)
         {
             _id = id;
             _username = name;
@@ -60,7 +64,22 @@ namespace Altzone.Scripts.Chat
             if(message.sender.avatar != null) _avatar = new(message.sender.name, message.sender.avatar);
             _message = message.content;
             _channel = ChatListener.Instance.GetChatChannel(message.type);
-            if(message.feeling != null)_mood = (Mood)Enum.Parse(typeof(Mood), message.feeling);
+            if(message.responseType != null)
+                if(Enum.TryParse(message.responseType, out _responseType))
+                {
+                    List<ChatResponseObject> responceList = CharacterResponseList.Instance.GetChatResponses((Emotion)message.emotion);
+                    ChatResponseObject convertedResponse = responceList.FirstOrDefault(c => c.ResponseId == _responseType);
+                    _message = convertedResponse.Response;
+                } 
+            /*if(message.feeling != null)
+                if(!Enum.TryParse(message.feeling, out _mood))
+                {
+                    if (Enum.TryParse(message.feeling, out Mood mood))
+                        {
+                        _mood = (Emotion)mood;
+                        }
+                }*/
+            _mood = (Emotion)message.emotion;
             _reactions = message.reactions;
             _timestamp = DateTime.ParseExact(message.createdAt, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Altzone.Scripts.Common;
 using NativeWebSocket;
 using Newtonsoft.Json;
 
@@ -21,14 +22,36 @@ namespace Altzone.Scripts.Chat
 
     public enum Mood
     {
-        Happy,
-        Sad,
-        Neutral,
-        Love,
+        Happy = Emotion.Joy,
+        Sad = Emotion.Sorrow,
+        Neutral = Emotion.Blank,
+        Love = Emotion.Love,
         Thinking,
-        Wink,
-        Angry,
+        Wink = Emotion.Playful,
+        Angry = Emotion.Anger,
         None
+    }
+
+    public enum ResponseType
+    {
+        NeedCompany,
+        NewGame,
+        ComingToPlay,
+        WantToPlay,
+        Yes,
+        No,
+        Online,
+        Leaving,
+        Busy,
+        WinningStreak,
+        LosingStreak,
+        Discord,
+        Lonely,
+        GoodGame,
+        BadGame,
+        SkillIssue,
+        SkillIssue2,
+        Funny
     }
     /// <summary>
     /// ChatListener is the main class handling interaction between server WebSocket, our own server for chat history and the game.
@@ -254,6 +277,7 @@ namespace Altzone.Scripts.Chat
                 {
                     Debug.LogWarning(JObject.Parse(json));
                     JToken middleresult = JObject.Parse(json)["message"];
+                    if (middleresult == null) return;
                     ServerChatMessage message = middleresult["message"].ToObject<ServerChatMessage>();
                     if (middleresult["event"].ToString().Equals("newMessage"))
                     {
@@ -273,7 +297,7 @@ namespace Altzone.Scripts.Chat
             }
         }
 
-        public async void SendMessage(string message, Mood emotion, ChatChannelType channel)
+        public async void SendMessage(string message, ResponseType responseType, Emotion emotion, ChatChannelType channel)
         {
             if (_socket == null) Debug.LogError("Socket is null");
             if (_socket.State == WebSocketState.Open)
@@ -288,7 +312,8 @@ namespace Altzone.Scripts.Chat
                     data = new
                     {
                         content = message,
-                        feeling = emotion.ToString()
+                        responseType = responseType.ToString(),
+                        emotion = (int)emotion
                     }
                 }).ToString();
 

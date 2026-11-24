@@ -14,6 +14,7 @@ namespace MenuUi.Scripts.Window
         [SerializeField] protected bool _useNonDefaultWindow = false;
         [SerializeField] protected int _targetWindow;
         [Tooltip(Tooltip), SerializeField] protected bool _isCurrentPopOutWindow;
+        [SerializeField] protected bool _disabledOnProd = false;
 
         public WindowDef NaviTarget { get => _naviTarget; }
 
@@ -25,6 +26,7 @@ namespace MenuUi.Scripts.Window
 
         protected IEnumerator Navigate(WindowDef naviTarget)
         {
+            if (_disabledOnProd && !(AppPlatform.IsEditor || AppPlatform.IsDevelopmentBuild)) yield break;
             Debug.Log($"naviTarget {naviTarget} isCurrentPopOutWindow {_isCurrentPopOutWindow}", naviTarget);
             var windowManager = WindowManager.Get();
             if (windowManager.FindIndex(naviTarget) == 0) yield break;
@@ -41,6 +43,7 @@ namespace MenuUi.Scripts.Window
                 if (targetIndex == 1)
                 {
                     windowManager.GoBack();
+                    yield return new WaitUntil(() => windowManager.FindIndex(_naviTarget) == 0);
                     OverlayPanelCheck.Instance?.UpdateButtonContent();
                     yield break;
                 }
@@ -48,6 +51,7 @@ namespace MenuUi.Scripts.Window
                 {
                     windowManager.Unwind(naviTarget);
                     windowManager.GoBack();
+                    yield return new WaitUntil(() => windowManager.FindIndex(_naviTarget) == 0);
                     OverlayPanelCheck.Instance?.UpdateButtonContent();
                     yield break;
                 }
@@ -55,6 +59,7 @@ namespace MenuUi.Scripts.Window
             if (_useNonDefaultWindow == true)
                 DataCarrier.AddData(DataCarrier.RequestedWindow, _targetWindow);
             windowManager.ShowWindow(naviTarget);
+            yield return new WaitUntil(() => windowManager.FindIndex(_naviTarget) == 0);
             OverlayPanelCheck.Instance?.UpdateButtonContent();
         }
 #if UNITY_EDITOR
@@ -65,6 +70,7 @@ namespace MenuUi.Scripts.Window
             protected SerializedProperty UseNonDefaultWindow;
             protected SerializedProperty TargetWindow;
             protected SerializedProperty IsCurrentPopOutWindow;
+            protected SerializedProperty DisableOnProd;
 
             protected virtual void OnEnable()
             {
@@ -72,6 +78,7 @@ namespace MenuUi.Scripts.Window
                 UseNonDefaultWindow = serializedObject.FindProperty(nameof(_useNonDefaultWindow));
                 TargetWindow = serializedObject.FindProperty(nameof(_targetWindow));
                 IsCurrentPopOutWindow = serializedObject.FindProperty(nameof(_isCurrentPopOutWindow));
+                DisableOnProd = serializedObject.FindProperty(nameof(_disabledOnProd));
             }
 
             public override void OnInspectorGUI()
@@ -84,6 +91,7 @@ namespace MenuUi.Scripts.Window
                 EditorGUILayout.PropertyField(UseNonDefaultWindow);
                 if(script._useNonDefaultWindow != false) EditorGUILayout.PropertyField(TargetWindow);
                 EditorGUILayout.PropertyField(IsCurrentPopOutWindow);
+                EditorGUILayout.PropertyField(DisableOnProd);
 
                 serializedObject.ApplyModifiedProperties();
             }

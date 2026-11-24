@@ -1,0 +1,37 @@
+/// @file BattleEntityID.qtn
+/// <summary>
+/// Contains BattleEntityID struct.
+/// </summary>
+///
+/// ## Generated Structs
+/// - @cref{Quantum,BattleEntityID}  
+///   @copybrief Quantum.BattleEntityID
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleEntityID
+/// <summary>
+/// Struct used by @cref{Battle.QSimulation.Game,BattleEntityManager} to reference %Quantum entities.
+/// </summary>
+///
+/// [{Entity ID}](#page-concepts-entity-management-entity-id)
+///
+/// @bigtext{Generated from @ref BattleEntityID.qtn}
+
+/// @var int Quantum::BattleEntityID::Int
+/// <summary>Int representation of the ID.</summary>
+///
+/// @var bool Quantum::BattleEntityID::IsCompound
+/// <summary>Is the entity a compound.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattleEntityID::SIZE
+/// @var Int32 Quantum::BattleEntityID::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattleEntityID::GetHashCode
+///
+/// @fn void Quantum::BattleEntityID::Serialize
+///
+/// @}

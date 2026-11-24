@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using MenuUi.Scripts.TabLine;
 using Altzone.Scripts.Window;
+using MenuUi.Scripts.TabLine;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,14 +13,31 @@ public class TabChangeHandler : MonoBehaviour
     {
         public Button Button;
         public GameObject Window;
+        public GameObject TabAreaContent;
         public Image Image;
     }
+
     [Header("TablineScript reference")]
-    public TabLine _tablineScript;
+    [SerializeField] protected TabLine _tablineScript;
 
     [SerializeField] protected List<ButtonWindowBind> _buttons = new List<ButtonWindowBind>();
     [SerializeField] protected int _defaultTab = 1;
     [SerializeField] private bool _ignoreChange;
+
+    [Header("Optional Tab Context UI")]
+    [SerializeField] private bool _updateTabContextUI;
+
+    [SerializeField] private int _primaryTabIndex = 0;
+    [SerializeField] private int _secondaryTabIndex = 1;
+
+    [SerializeField] private GameObject _primaryOnlyButton;
+    [SerializeField] private GameObject _secondaryOnlyButton;
+    [SerializeField] private TMP_Text _headerText;
+
+    [SerializeField] private string _primaryHeaderText = "Kaikki klaanit";
+
+    [SerializeField] private string _secondaryHeaderText = "Luo klaani";
+
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -28,6 +46,11 @@ public class TabChangeHandler : MonoBehaviour
             int j = i;
             _buttons[i].Button.onClick.AddListener(() => SetVisible(j));
         }
+    }
+
+    private void Awake()
+    {
+        _tablineScript.OnTabChanged += SetVisible;
     }
 
     protected virtual void OnEnable()
@@ -39,8 +62,13 @@ public class TabChangeHandler : MonoBehaviour
             value = DataCarrier.GetData<int?>(DataCarrier.RequestedWindow, false, suppressWarning: true);
         if (value != null) SetVisible((int)value);
         else
-        //Added "if(!_ignoreChange)" so that "chat channel" tabs wouldn't change
-        if(!_ignoreChange) SetVisible(_defaultTab);
+            //Added "if(!_ignoreChange)" so that "chat channel" tabs wouldn't change
+        if (!_ignoreChange) SetVisible(_defaultTab);
+    }
+
+    private void OnDestroy()
+    {
+        _tablineScript.OnTabChanged -= SetVisible;
     }
 
     protected virtual void SetVisible(int activeIndex)
@@ -50,8 +78,32 @@ public class TabChangeHandler : MonoBehaviour
             for (int i = 0; i < _buttons.Count; i++)
             {
                 if (_buttons[i].Window != null) _buttons[i].Window.SetActive(i == activeIndex);
+                else continue;
+                if (_buttons[i].TabAreaContent != null) _buttons[i].TabAreaContent.SetActive(i == activeIndex);
             }
-        else _tablineScript.Swipe.CurrentPage = activeIndex;
-        _tablineScript.ActivateTabButton(activeIndex);
+        else
+        {
+            _tablineScript.Swipe.CurrentPage = activeIndex;
+            for (int i = 0; i < _buttons.Count; i++)
+            {
+                if (_buttons[i].TabAreaContent != null) _buttons[i].TabAreaContent.SetActive(i == activeIndex);
+            }
+        }
+
+        _tablineScript.UpdateTabVisuals(activeIndex);
+        UpdateTabContextUI(activeIndex);
+    }
+
+    private void UpdateTabContextUI(int activeIndex)
+    {
+        if (!_updateTabContextUI) return;
+
+        bool isSecondaryTab = activeIndex == _secondaryTabIndex;
+
+        if (_primaryOnlyButton != null) _primaryOnlyButton.SetActive(!isSecondaryTab);
+
+        if (_secondaryOnlyButton != null) _secondaryOnlyButton.SetActive(isSecondaryTab);
+
+        if (_headerText != null) _headerText.text = isSecondaryTab ? _secondaryHeaderText : _primaryHeaderText;
     }
 }

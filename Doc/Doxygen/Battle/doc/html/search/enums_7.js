@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['texttype_0',['TextType',['../class_battle_1_1_view_1_1_u_i_1_1_battle_ui_announcement_handler.html#adbf62d5a0e880363e0ab1a8a198da439',1,'Battle::View::UI::BattleUiAnnouncementHandler']]]
+  ['orientationtype_0',['OrientationType',['../class_altzone_1_1_scripts_1_1_battle_ui_shared_1_1_battle_ui_multi_orientation_element.html#a600678374981174562a9bd7e95cfc0fa',1,'Altzone::Scripts::BattleUiShared::BattleUiMultiOrientationElement']]]
 ];

@@ -12,6 +12,10 @@
 /// ## Generated Structs
 /// - @cref{Quantum,BattlePlayerHitboxQComponent}  
 ///   @copybrief Quantum.BattlePlayerHitboxQComponent
+/// - @cref{Quantum,BattlePlayerHitboxColliderTemplate}  
+///   @copybrief Quantum.BattlePlayerHitboxColliderTemplate
+/// - @cref{Quantum,BattlePlayerHitboxTemplate}  
+///   @copybrief Quantum.BattlePlayerHitboxTemplate
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -53,10 +57,11 @@
 /// Contains hitbox's data, inluding which player the hitbox belongs to, which type it is, etc.
 /// </summary>
 ///
-/// @bigtext{Generated from @ref BattlePlayerHitbox.qtn}
+/// @bigtext{Generated from @ref BattlePlayerHitbox.qtn}  
+/// @bigtext{Extended in @ref BattlePlayerHitboxQComponent.cs}
 
-/// @var EntityRef Quantum.BattlePlayerHitboxQComponent::PlayerEntity
-/// <summary>EntityRef to the player the hitbox belongs to.</summary>
+/// @var EntityRef Quantum.BattlePlayerHitboxQComponent::ParentEntityRef
+/// <summary>EntityRef to the entity the hitbox belongs to.</summary>
 ///
 /// @var BattlePlayerHitboxType Quantum.BattlePlayerHitboxQComponent::HitboxType
 /// <summary>Is the hitbox a character hitbox or a shield hitbox.</summary>
@@ -64,10 +69,80 @@
 /// @var BattlePlayerCollisionType Quantum.BattlePlayerHitboxQComponent::CollisionType
 /// <summary>Type of the hitbox, affects how the projectile bounces off of it.</summary>
 ///
-/// @var FPVector2 Quantum.BattlePlayerHitboxQComponent::Normal
-/// <summary>Hitbox's [Normal vector🡵](https://en.wikipedia.org/wiki/Normal_(geometry)).</summary>
+/// @var FP Quantum.BattlePlayerHitboxQComponent::NormalAngleRad
+/// <summary>The normal angle of the hitbox in radians.</summary>
 ///
 /// @var FP Quantum.BattlePlayerHitboxQComponent::CollisionMinOffset
 /// <summary>How much projectile is allowed to accidentally penetrate into the player's hitbox before it's forcibly lifted out.</summary>
 ///
 /// Used as a precaution to minimize cases where projectile gets stuck inside other entities.
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerHitboxQComponent::SIZE
+/// @var Int32 Quantum::BattlePlayerHitboxQComponent::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerHitboxQComponent::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerHitboxQComponent::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerHitboxColliderTemplate
+/// <summary>
+/// Template for hitbox's position and size.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
+/// @var IntVector2 Quantum::BattlePlayerHitboxColliderTemplate::Position
+/// <summary>Position of the hitbox.</summary>
+///
+/// @var IntVector2 Quantum::BattlePlayerHitboxColliderTemplate::Size
+/// <summary>Size of the hitbox.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerHitboxColliderTemplate::SIZE
+/// @var Int32 Quantum::BattlePlayerHitboxColliderTemplate::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerHitboxColliderTemplate::GetHashCode
+///
+/// @fn void Quantum::BattlePlayerHitboxColliderTemplate::Serialize
+///
+/// @}
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattlePlayerHitboxTemplate
+/// <summary>
+/// Template for creating hitboxes for player entities.
+/// </summary>
+///
+/// @bigtext{Generated from @ref BattlePlayerData.qtn}
+
+/// @var QListPtr<BattlePlayerHitboxColliderTemplate> Quantum::BattlePlayerHitboxTemplate::ColliderTemplateList
+/// <summary>List of colliders made using BattlePlayerHitboxColliderTemplate.</summary>
+///
+/// @var BattlePlayerCollisionType Quantum::BattlePlayerHitboxTemplate::CollisionType
+/// <summary>Type of the hitbox, affects how the projectile collides with it.</summary>
+///
+/// @var FP Quantum::BattlePlayerHitboxTemplate::NormalAngleDeg
+/// <summary>The normal angle of the hitbox in degrees.</summary>
+
+/// @name Quantum Built-in
+/// @{
+///
+/// @var Int32 Quantum::BattlePlayerHitboxTemplate::SIZE
+/// @var Int32 Quantum::BattlePlayerHitboxTemplate::ALIGNMENT
+///
+/// @fn Int32 Quantum::BattlePlayerHitboxTemplate::GetHashCode
+/// @fn void Quantum::BattlePlayerHitboxTemplate::ClearPointers
+///
+/// @fn void Quantum::BattlePlayerHitboxTemplate::Serialize
+///
+/// @}

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1632878112106902822}
   - component: {fileID: 2212706850438285505}
   - component: {fileID: 2622878337890806878}
+  - component: {fileID: 2677170603777937794}
   m_Layer: 0
   m_Name: BattleDiamond
   m_TagString: Untagged
@@ -254,6 +255,21 @@ MonoBehaviour:
         RawValue: 0
     TargetDistance:
       RawValue: 0
+--- !u!114 &2677170603777937794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6051338489004453902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2c870b196309b47ade1f9b4b3e470d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Type:
+      Value: 1
 --- !u!1 &7722483135608033401
 GameObject:
   m_ObjectHideFlags: 0

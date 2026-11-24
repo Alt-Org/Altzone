@@ -25,26 +25,32 @@ namespace Battle.View.SoulWall
 
         /// <summary>[SerializeField] SpriteRenderer for SoulWall sprites.</summary>
         /// @ref BattleSoulWallViewController-SerializeFields
+        [Tooltip("SpriteRenderer for SoulWall sprites")]
         [SerializeField] private SpriteRenderer _spriteRenderer;
 
         /// <summary>[SerializeField] SpriteRenderer for the cement under SoulWall sprite.</summary>
         /// @ref BattleSoulWallViewController-SerializeFields
+        [Tooltip("SpriteRenderer for the cement under SoulWall sprite")]
         [SerializeField] private SpriteRenderer _emotionIndicatorSpriteRenderer;
 
         /// <summary>[SerializeField] SpriteRender for debug mode box sprite. Disabled by default.</summary>
         /// @ref BattleSoulWallViewController-SerializeFields
+        [Tooltip("SpriteRender for debug mode box sprite. Disabled by default")]
         [SerializeField] private SpriteRenderer _debugSpriteRenderer;
 
         /// <summary>[SerializeField] An array of colors that show which emotion projectile takes after destroying the SoulWall segment in question.</summary>
         /// @ref BattleSoulWallViewController-SerializeFields
+        [Tooltip("An array of colors that show which emotion projectile takes after destroying the SoulWall segment in question")]
         [SerializeField] private Color[] _emotionIndicatorColors;
 
         /// <summary>[SerializeField] Bool for debug mode.</summary>
         /// @ref BattleSoulWallViewController-SerializeFields
+        [Tooltip("Bool for debug mode")]
         [SerializeField] private bool _useDebugSprites;
 
         /// <summary>[SerializeField] An array of colors for debug mode.</summary>
         /// @ref BattleSoulWallViewController-SerializeFields
+        [Tooltip("An array of colors for debug mode")]
         [SerializeField] private Color[] _debugColors;
 
         /// @}
@@ -58,7 +64,7 @@ namespace Battle.View.SoulWall
         /// <param name="_">Current simulation frame.</param>
         public override void OnActivate(Frame _) => QuantumEvent.Subscribe(this, (EventBattleSoulWallViewInit e) =>
         {
-            if (EntityRef != e.Entity) return;
+            if (EntityRef != e.ERef) return;
 
             BattleDebugLogger debugLogger = BattleDebugLogger.Create<BattleSoulWallViewController>();
 

@@ -22,6 +22,8 @@ MonoBehaviour:
   CharacterDescriptionEnglish: 
   CharacterShortDescriptionFinnish: 
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: f0eb0e641cbf0274f919c98da06032a4, type: 2}
   Hp:
     Level: 1
@@ -31,18 +33,21 @@ MonoBehaviour:
     Coefficient: 0
   CharacterSize:
     Level: 3
-    Coefficient: 4
+    Coefficient: 0
   Attack:
     Level: 2
     Coefficient: 2
   Defence:
-    Level: 2
+    Level: 3
     Coefficient: 1
   GalleryImage: {fileID: 49914648, guid: 0b8c7df743389e04b9b2394020e2274c, type: 3}
   GalleryHeadImage: {fileID: 3323784572005849981, guid: 6b7f8f6787aebdc4da339e49694e1f45,
     type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
-      Value: 0
+      Value: 1476517630156410324
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1417175247969267498
   BattleUiSprite: {fileID: 0}

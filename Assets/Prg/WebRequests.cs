@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Prg;
+using UnityEngine;
 using UnityEngine.Networking;
-using static Prg.Debug;
 
 
 /// <summary>

@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Prg.Scripts.Common.Extensions;
+using System.Globalization;
 using Altzone.Scripts.Store;
 using Altzone.Scripts.Voting;
+using Newtonsoft.Json;
+using Prg.Scripts.Common.Extensions;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Newtonsoft.Json;
 
 namespace Altzone.Scripts.Model.Poco.Clan
 {
@@ -30,8 +31,9 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public ClanInventory Inventory = new();
         [JsonIgnore]
         public List<PollData> Polls = new();
-
+        [JsonIgnore]
         public AdStoreObject _adData;
+        [JsonIgnore]
         public AdStoreObject AdData {
             get { return _adData != null ? _adData : _adData = new(null, null); }
             set { _adData = value; CallAdDataUpdate(); } }
@@ -42,6 +44,8 @@ namespace Altzone.Scripts.Model.Poco.Clan
         public ClanAge ClanAge;
         public Language Language;
         public Goals Goals;
+
+        public DateTime CreatedAt = DateTime.MinValue;
 
         public int GameCoins { get => _gameCoins; set { _gameCoins = value; CallDataUpdate(); } }
 
@@ -69,7 +73,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             _gameCoins = gameCoins;
         }
 
-        public ClanData(ServerClan clan)
+        public ClanData(ServerClan clan, bool limited = false)
         {
             Assert.IsTrue(clan._id.IsSet());
             Assert.IsTrue(clan.name.IsSet());
@@ -79,11 +83,23 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Name = clan.name;
             Tag = clan.tag ?? string.Empty;
             Phrase = clan.phrase ?? string.Empty;
-            _gameCoins = clan.gameCoins;
+            if (!limited) _gameCoins = clan.gameCoins;
             Points = clan.points;
             foreach (string point in clan.labels)
             {
-                Values.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString()).Replace("ä", "a").Replace("ö","o").Replace("+", "").Replace(" ", "")));
+                try
+                {
+                    Values.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString())
+                        .Replace("ä", "a")
+                        .Replace("ö", "o")
+                        .Replace("+", "")
+                        .Replace(" ", "")
+                        .Replace("-", "")));
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                }
             }
             ClanAge = clan.ageRange;
             Language = clan.language;
@@ -98,10 +114,11 @@ namespace Altzone.Scripts.Model.Poco.Clan
 
                 i++;
             }
-            Rules = new() { Clan.Rules.FairGame, Clan.Rules.NoToxicity, Clan.Rules.NoSpam };
+            if (!limited) Rules = new() { Clan.Rules.FairGame, Clan.Rules.NoToxicity, Clan.Rules.NoSpam };
             IsOpen = clan.isOpen;
-            if (clan.polls != null) Polls = clan.polls;
-            ClanRoles = clan.roles;
+            if (clan.polls != null && !limited) Polls = clan.polls;
+            if (!limited) ClanRoles = clan.roles;
+            if(!limited)CreatedAt = DateTime.ParseExact(clan.createdAt, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
 
         public void UpdateClanData(ServerClan clan)
@@ -119,7 +136,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             Values = new();
             foreach (string point in clan.labels)
             {
-                Values.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString()).Replace("ä", "a").Replace("ö", "o").Replace("+", "").Replace(" ", "")));
+                Values.Add((ClanValues)Enum.Parse(typeof(ClanValues), string.Concat(point[0].ToString().ToUpper(), point.AsSpan(1).ToString()).Replace("ä", "a").Replace("ö", "o").Replace("+", "").Replace("-", "").Replace(" ", "")));
             }
             ClanAge = clan.ageRange;
             Language = clan.language;
@@ -140,6 +157,7 @@ namespace Altzone.Scripts.Model.Poco.Clan
             else if (Polls == null) Polls = new();
             Rooms = new();
             ClanRoles = clan.roles;
+            CreatedAt = DateTime.ParseExact(clan.createdAt, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
         }
 
         public void CallDataUpdate()

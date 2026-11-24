@@ -5,7 +5,6 @@ using UnityEditor.Graphs;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.Rendering;
-using Debug = Prg.Debug;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -183,6 +182,9 @@ namespace MenuUI.Scripts.SoulHome
         public Sprite FurnitureSpriteBack { get => _furnitureSpriteBack; set { if (!Application.isPlaying) _furnitureSpriteBack = value; } }
         public bool SpriteCanBeFlipped { get => _spriteCanBeFlipped;}
 
+        public delegate void FurnitureRotated(Direction direction);
+        public event FurnitureRotated OnFurnitureRotated;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -251,15 +253,39 @@ namespace MenuUI.Scripts.SoulHome
         {
             Vector2 position = Vector2.zero;
             //transform.localPosition = Vector2.zero;
+            FurnitureSlot slot = transform.parent.GetComponent<FurnitureSlot>();
 
-            float width = transform.parent.GetComponent<FurnitureSlot>().width * Furniture.GetFurnitureSize().x;
+            float width = slot.width * Furniture.GetFurnitureSize().x;
 
-            if (!reverse)
-                position.x = (width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2;
+            if (_furniture != null && _furniture.Place is FurniturePlacement.FloorByWall)
+            {
+                float height = slot.height * Furniture.GetFurnitureSize().y;
+                if (_tempSpriteDirection is Direction.Left)
+                {
+                    FurnitureSlot topSlot = slot.RoomData.GetFurnitureSlot(slot.furnitureGrid,slot.row - Furniture.GetFurnitureSize().y + 1, slot.column);
+                    position.x = topSlot.transform.position.x - slot.transform.position.x - topSlot.width / 2;
+                }
+                else if (_tempSpriteDirection is Direction.Right)
+                {
+                    FurnitureSlot topSlot = slot.RoomData.GetFurnitureSlot(slot.furnitureGrid, slot.row - Furniture.GetFurnitureSize().y+1, slot.column + Furniture.GetFurnitureSize().x-1);
+                    position.x = topSlot.transform.position.x - slot.transform.position.x + topSlot.width / 2;
+                }
+                else
+                {
+                    FurnitureSlot topSlot = slot.RoomData.GetFurnitureSlot(slot.furnitureGrid, slot.row - Furniture.GetFurnitureSize().y+1, slot.column);
+                    width = topSlot.width * Furniture.GetFurnitureSize().x;
+                    position.x = (width / 2) - topSlot.width / 2;
+                }
+                position.y = -1 * (slot.height / 2) + height;
+            }
             else
-                position.x = ((width / 2) - transform.parent.GetComponent<FurnitureSlot>().width / 2)*-1;
-            position.y = -1 * (transform.parent.GetComponent<FurnitureSlot>().height / 2);
-            //}
+            {
+                if (!reverse)
+                    position.x = (width / 2) - slot.width / 2;
+                else
+                    position.x = ((width / 2) - slot.width / 2) * -1;
+                position.y = -1 * (slot.height / 2);
+            }
 
             transform.localPosition = position;
         }
@@ -391,7 +417,7 @@ namespace MenuUI.Scripts.SoulHome
             SetFurnitureSprite(_tempSpriteDirection);
         }
 
-            private void SetFurnitureSprite(Direction direction)
+        private void SetFurnitureSprite(Direction direction)
         {
             GetComponent<SpriteRenderer>().flipX = false;
             if (direction == Direction.Front) GetComponent<SpriteRenderer>().sprite = _furnitureSpriteFront;
@@ -420,6 +446,8 @@ namespace MenuUI.Scripts.SoulHome
                     GetComponent<SpriteRenderer>().flipX = true;
                 }
             }
+
+            OnFurnitureRotated?.Invoke(direction);
         }
 
         public void ResetDirection()

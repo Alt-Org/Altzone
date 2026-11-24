@@ -7,7 +7,7 @@ public class ResizeCollider : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Resize();
+        //Resize();
     }
 
     public void Resize()

@@ -96,22 +96,30 @@ $(function(){initNavTree('page-concepts-player.html','',''); });
 <div class="textblock"><p><a class="anchor" id="md__altzone_2_doc_2_doxygen_2_battle_2additional-documentation_2pages_21-concepts-player-"></a></p>
 <h1 class="doxsection"><a class="anchor" id="page-concepts-player-overview"></a>
 Overview</h1>
+<dl class="section note"><dt>Note</dt><dd>This documentation is not entirely up to date. Player code was modified for testing flipper style game and behavior varies depending on if <a class="el" href="struct_battle_1_1_q_simulation_1_1_game_1_1_battle_parameters.html#afa774957569f043b6b8e3e630a163df8" title="Battle.QSimulation.Game.BattleParameters.IsTestFlipperGame">IsTestFlipperGame</a> is on.</dd></dl>
 <p><b>Quantum</b> handles recognizing <b>Players</b> through a <a href="https://doc-api.photonengine.com/en/quantum/current/struct_quantum_1_1_player_ref.html">PlayerRef🡵</a>, but we prefer to use <b>PlayerSlot</b> as defined by us whenever possible. <br  />
  Each <b>Player</b> has an assigned <b>PlayerSlot</b> and a <b>TeamNumber</b>. <br  />
+ Each Each <b>Player</b> has a <b>PlayState</b>. <br  />
  Each <b>Player</b> has <b>data</b> with them that <b>isn't connected to any specific character</b> under the <b>Player</b>'s control. <br  />
  Each <b>Player</b> controls multiple <b>Character Entities</b> which also have some data associated with them. <br  />
  Each <b>Character Entity</b> has a player character class that it belongs to. <br  />
+ Each <b>Character Entity</b> has one or more <b>Shield Entities</b>. <br  />
  See <a class="el" href="#page-concepts-player-slots-teams" title="Player Slots and Teams">{Player Slots and Teams}</a> <br  />
+ See <a class="el" href="#page-concepts-player-playstate" title="Player PlayState">{Player PlayState}</a> <br  />
  See <a class="el" href="#page-concepts-player-manager-data" title="Player Manager Data">{Player Manager Data}</a> <br  />
- See <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entity}</a> <br  />
+ See <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character and Shield Entities}</a> <br  />
  See <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Classes}</a></p>
 <p><b>Other topics</b> <br  />
 </p>
 <p>See <a class="el" href="#page-concepts-player-initializing" title="Joining and Initializing">{Joining and Initializing}</a> <br  />
  See <a class="el" href="#page-concepts-player-input" title="Player Input">{Player Input}</a> <br  />
 </p>
+<p><b>Other sections</b> <br  />
+</p>
+<p>See <a class="el" href="#page-concepts-player-simulation" title="%Quantum simulation">{Quantum Simulation}</a> <br  />
+ See <a class="el" href="#page-concepts-player-view" title="View">{View}</a></p>
 <div class="dotgraph">
-<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_10586f34fa00c67b39ce67ff44acd93d.svg" width="1050" height="367"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_c50c42cfb425f53041d117e99b21d742.svg" width="1050" height="367"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <h1 class="doxsection"><a class="anchor" id="page-concepts-player-slots-teams"></a>
 Player Slots and Teams</h1>
 <p>Each <b>Player</b> has an assigned <a class="el" href="namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096" title="Quantum.BattlePlayerSlot">BattlePlayerSlot</a> and a <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf" title="Quantum.BattleTeamNumber">BattleTeamNumber</a>. <br  />
@@ -124,63 +132,132 @@ Player Slots and Teams</h1>
 <iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_733b75f26432a297a105f6d0feace535.svg" width="299" height="92"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <p><br  />
 </p>
+<h1 class="doxsection"><a class="anchor" id="page-concepts-player-playstate"></a>
+Player PlayState</h1>
+<p>This concept extends the more general <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{PlayState}</a> concept. However, this is tracked explicitly. <br  />
+ Each <b>Player</b> has a <a class="el" href="namespace_quantum.html#ab183bf00e5df3656dc5f32a8a0995153" title="Quantum.BattlePlayerPlayState">BattlePlayerPlayState</a> used to track their state in the game, which is detached from <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entities}</a> that the <b>Player</b> controls. <br  />
+ Each <a class="el" href="#page-concepts-player-slots-teams" title="Player Slots and Teams">{PlayerSlot}</a> has a <b>Player PlayState</b> associated with it including slots that have no player. <br  />
+ The general <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{PlayState}</a> applies to the individual <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character And Shield Entities}</a>.</p>
+<p><br  />
+</p>
 <h1 class="doxsection"><a class="anchor" id="page-concepts-player-manager-data"></a>
 Player Manager Data</h1>
-<p><b>Player data</b> not connected to individual <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entities}</a> is handled by <a class="el" href="#page-concepts-player-simulation-playermanager" title="PlayerManager">{PlayerManager}</a>. <br  />
- The <a class="el" href="#page-concepts-player-simulation-playermanagerdata" title="PlayerManagerData (%Quantum Singleton)">{PlayerManagerData}</a> <b>Quantum Singleton Component</b> is used to store <b>Player Data</b>. The <a class="el" href="#page-concepts-player-simulation-playerhandle" title="PlayerHandle">{PlayerHandle}</a> struct allows the code to access <b>Player Manager Data</b> of specific individual <b>Players</b>. <br  />
+<p><b>Player data</b> not connected to individual <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entities}</a> is handled by <a class="el" href="#page-concepts-player-simulation-management-playermanager" title="PlayerManager">{PlayerManager}</a>. <br  />
+ The <a class="el" href="#page-concepts-player-simulation-management-playermanagerdata" title="PlayerManagerData (%Quantum Singleton)">{PlayerManagerData}</a> <b>Quantum Singleton Component</b> is used to store <b>Player Data</b>. <br  />
+ The <a class="el" href="#page-concepts-player-simulation-management-playerhandle" title="PlayerHandle">{PlayerHandle}</a> struct allows the code to access <b>Player Manager Data</b> of specific individual <b>Players</b>. <br  />
  <b>Player Manager Data</b> is defined and used in <a class="el" href="#page-concepts-player-simulation" title="%Quantum simulation">{Simulation}</a>.</p>
 <p><br  />
 </p>
 <h1 class="doxsection"><a class="anchor" id="page-concepts-player-initializing"></a>
 Joining and Initializing</h1>
-<p><b>Quantum</b> handles <b>Players</b> connecting to the game. The data from <b>Quantum</b> is used to initialize everything related to <b>Players</b> in the game. <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_game_control_q_system.html" title="Battle.QSimulation.Game.BattleGameControlQSystem">BattleGameControlQSystem</a> receives <b>Player</b> information from <b>Quantum</b> when a <b>Player</b> joins and passes it to <a class="el" href="#page-concepts-player-simulation-playermanager" title="PlayerManager">{PlayerManager}</a>, which processes the <b>Player</b>'s data and registers them as having joined.</p>
-<p>Once all <b>Players</b> have joined, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_game_control_q_system.html" title="Battle.QSimulation.Game.BattleGameControlQSystem">BattleGameControlQSystem</a> tells <a class="el" href="#page-concepts-player-simulation-playermanager" title="PlayerManager">{PlayerManager}</a> to create <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entities}</a> for all <b>Players</b>.</p>
+<p><b>Quantum</b> handles <b>Players</b> connecting to the game. The data from <b>Quantum</b> is used to initialize everything related to <b>Players</b> in the game. <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_game_control_q_system.html" title="Battle.QSimulation.Game.BattleGameControlQSystem">BattleGameControlQSystem</a> receives <b>Player</b> information from <b>Quantum</b> when a <b>Player</b> joins and passes it to <a class="el" href="#page-concepts-player-simulation-management-playermanager" title="PlayerManager">{PlayerManager}</a>, which processes the <b>Player</b>'s data and registers them as having joined.</p>
+<p>Once all <b>Players</b> have joined, <a class="el" href="class_battle_1_1_q_simulation_1_1_game_1_1_battle_game_control_q_system.html" title="Battle.QSimulation.Game.BattleGameControlQSystem">BattleGameControlQSystem</a> tells <a class="el" href="#page-concepts-player-simulation-management-playermanager" title="PlayerManager">{PlayerManager}</a> to create <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entities}</a> for all <b>Players</b>.</p>
 <div class="dotgraph">
-<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_9166f9b6418983e910114e2b7f44b85f.svg" width="450" height="560"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_f26e1a317a6597064f5b52ca0f9b2729.svg" width="450" height="560"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <p><br  />
 </p>
 <h1 class="doxsection"><a class="anchor" id="page-concepts-player-input"></a>
 Player Input</h1>
-<p><b>Players</b> can interact with the game through moving and rotating their <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entity}</a>, as well as switching between their available <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entities}</a> <b>Player Inputs</b> are processed and compiled into a <a class="el" href="struct_quantum_1_1_input.html" title="Quantum.Input">Quantum Input Struct</a> on the <b>Unity/View</b> side in <a class="el" href="#page-concepts-player-view-input" title="PlayerInput">{PlayerInput}</a>. The created <b>struct</b> is passed over to <b>Quantum Simulation</b>. <br  />
+<p><b>Players</b> can interact with the game through moving and rotating their <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entity}</a>, as well as switching between their available <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entities}</a>. <br  />
+ <b>Player Inputs</b> are processed and compiled into a <a class="el" href="struct_quantum_1_1_input.html" title="Quantum.Input">Quantum Input Struct</a> on the <b>Unity/View</b> side in <a class="el" href="#page-concepts-player-view-input" title="PlayerInput">{PlayerInput}</a>. The created <b>struct</b> is passed over to <b>Quantum Simulation</b>. <br  />
  <b>Quantum</b> synchronises the <b>struct</b> for all connected <b>clients</b>, and classes on the <a class="el" href="#page-concepts-player-simulation" title="%Quantum simulation">{Quantum Simulation}</a> side use the contained data.</p>
 <p>See <a href="https://doc.photonengine.com/quantum/current/manual/input">Input🡵</a> <b>Quantum</b>'s documentation for more info.</p>
 <div class="dotgraph">
-<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_f8fa54b42183e3bc0bc092fd9d849e74.svg" width="328" height="638"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_349bbafe37d5fb167acacaaffa308da0.svg" width="414" height="638"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <p><br  />
 </p>
-<h1 class="doxsection"><a class="anchor" id="page-concepts-player-character-entity"></a>
-Player Character Entity</h1>
-<p>Each <b>Player</b> controls <b>3</b> <b>Character Quantum Entities</b> in the game. <br  />
- For each <b>Player</b> one <b>Character</b> is present on the stage at a time and <a class="el" href="#page-concepts-player-simulation-playermanager" title="PlayerManager">{PlayerManager}</a> handles spawning and despawning <b>Character Entities</b> when switching between them. Each <b>Character Entity</b> has a <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Class}</a> that it belongs to.</p>
+<h1 class="doxsection"><a class="anchor" id="page-concepts-player-character-and-shield-entity"></a>
+Player Character and Shield Entities</h1>
+<p>Each <b>Player</b> controls <b>3</b> <b>Character Quantum Entities</b> in the game, each of which have a <a class="el" href="#page-concepts-player-character-entity-character-number" title="Player Character Number">{Character Number}</a>. <br  />
+ For each <b>Player</b> one <a class="el" href="#page-concepts-player-character-entity-selected-character" title="Selected Character">{Selected Character}</a> can be present in the arena at a time and <a class="el" href="#page-concepts-player-simulation-management-playermanager" title="PlayerManager">{PlayerManager}</a> handles spawning and despawning <b>Character Entities</b> when switching between them. <br  />
+ Each <b>Character</b> has one or more <b>Shields</b>, each of which has a <a class="el" href="#page-concepts-player-character-entity-shield-number" title="Shield Number">{Shield Number}</a>. One of the <b>Shields</b> may be <a class="el" href="#page-concepts-player-character-entity-shield-attach" title="Attached/Detached Shield">{Attached}</a> to the <b>Character</b>. One or more <b>Shields</b> can also be present in the arena detached from the <b>Character</b>. <br  />
+ The <a class="el" href="#page-concepts-player-simulation-management-shieldmanager" title="ShieldManager">{ShieldManager}</a> handles <b>Shield Entity</b> management. <br  />
+ Each <b>Character and Shield Entity</b> has a <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Class}</a> that it belongs to.</p>
 <div class="dotgraph">
-<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_236691adb0d126347b9883244b091ded.svg" width="779" height="362"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<p>These <b>Entities</b> are created based on <b>Unity Prefabs</b>. <b>Entities</b> are controlled by <b>Quantum Simulation</b>. <br  />
- The <b>Unity Prefab root GameObject</b> contains a <b>Quantum Entity Prototype</b> component, where the <b>Entity</b> is defined.</p>
-<p>During gameplay the <b>Player Character</b> exists both as a <b>Quantum Entity</b> inside <a class="el" href="#page-concepts-player-simulation" title="%Quantum simulation">{Quantum Simulation}</a> and a <b>Unity GameObject</b> inside <b>Unity View</b>, which <b>Quantum</b> links together.</p>
-<p>The <b>Entity</b> contains <b>Quantum Components</b> used by the <b>Quantum Simulation</b>. The most significant of these is the <a class="el" href="#page-concepts-player-simulation-playerdata" title="PlayerData (%Quantum Component)">{PlayerData}</a>, which is our own defined data relating to <b>Player Character Entities</b> and optionally <b>Class Data Component</b>.</p>
+<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_6cda29881f792118769d06d26a972587.svg" width="1708" height="330"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<p>These <b>Entities</b> are created based on <b>Unity Prefabs</b>. <b>Entities</b> are controlled by <b>Quantum Simulation</b>. The <b>Unity Prefab root GameObject</b> contains a <b>Quantum Entity Prototype</b> component, where the <b>Entity</b> is defined.</p>
+<p>During gameplay the <b>Player Character</b> and it's <b>Shield(s)</b> exists both as a <b>Quantum Entity</b> inside <a class="el" href="#page-concepts-player-simulation" title="%Quantum simulation">{Quantum Simulation}</a> and a <b>Unity GameObject</b> inside <b>Unity View</b>, which <b>Quantum</b> links together.</p>
+<p>The <b>Entity</b> contains <b>Quantum Components</b> used by the <b>Quantum Simulation</b>. The most significant of these are the <a class="el" href="#page-concepts-player-simulation-gamelogic-playerdata" title="PlayerData (%Quantum Component)">{PlayerData}</a> and the <a class="el" href="#page-concepts-player-simulation-gamelogic-shielddata" title="ShieldData (%Quantum Component)">{ShieldData}</a>, which are our own defined data relating to <b>Player Character and Shield Entities</b>. Optionally, the <b>Character Entity</b> can have a <b>Class Data Component</b>.</p>
 <p>See <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Classes}</a> for more info.</p>
-<p>The <b>Unity root GameObject</b> has the child object <b>PlayerViewModel</b>, containing all things related to the visible elements of <b>Player Characters</b>. The attached <a class="el" href="#page-concepts-player-view-controller" title="PlayerViewController">{PlayerViewController}</a> component implements <b>Unity View / Visual</b> logic for <b>Player Characters</b>.</p>
+<p>The <b>Unity root GameObject</b> has the child object <b>PlayerViewModel</b> ,or <b>ShieldViewModel</b> for <b>Shields</b>, containing all things related to the visible elements of <b>Player Characters and Shields</b>. <br  />
+ The attached <a class="el" href="#page-concepts-player-character-view-controller" title="PlayerCharacterViewController">{PlayerCharacterViewController}</a> or <a class="el" href="#page-concepts-player-shield-view-controller" title="PlayerShieldViewController">{PlayerShieldViewController}</a> component implements <b>Unity View / Visual</b> logic for <b>Player Characters and Shields</b>.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md5"></a>
+Player Character Entity/GameObject Graph</h2>
 <div class="dotgraph">
-<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_a0af83d8a9720be5f17e451889ffa5b9.svg" width="1659" height="487"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_b830ec63c18da82050e5dbe343bcf2f7.svg" width="1730" height="391"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md6"></a>
+Player Shield Entity/GameObject Graph</h2>
+<div class="dotgraph">
+<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_c717ea75a7e74725907720c8af6428d2.svg" width="1456" height="368"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<p><br  />
+</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-character-entity-character-number"></a>
+Player Character Number</h2>
+<p>Each <b>Character Quantum Entity</b> is internally assigned a <b>Character Number</b> between 0 and 2, each corresponding to one of the <b>3 Characters</b> a <b>Player</b> controls. It is used to reference a specific <b>Character</b> for a given <b>Player</b>.</p>
+<p><br  />
+</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-character-entity-character-state"></a>
+Player Character State</h2>
+<p>Each <b>Character Quantum Entity</b> always has a <a class="el" href="namespace_quantum.html#ac833707607fdef72ea1658c65f5bda73" title="Quantum.BattlePlayerCharacterState">BattlePlayerCharacterState</a> indicating if the <b>Character</b> is <b>Alive</b> or <b>Dead</b>.</p>
+<p><br  />
+</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-character-entity-selected-character"></a>
+Selected Character</h2>
+<p>The <b>Selected Character</b> is the <b>Character Entity</b> that is currently <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{InPlay}</a>. <br  />
+ The <b>Selected Character</b> is tracked using <a class="el" href="#page-concepts-player-character-entity-character-number" title="Player Character Number">{Player Character Number}</a>. <br  />
+ This is managed by the <a class="el" href="#page-concepts-player-simulation-management-playermanager" title="PlayerManager">{PlayerManager}</a>.</p>
+<p><br  />
+</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-character-entity-spawn-behaviour"></a>
+Player Character Spawn Behaviour</h2>
+<p>Each <b>Player Character</b> has 3 ways to spawn, defined by <a class="el" href="namespace_quantum.html#a516ce2738cf33992489fb5aae5d1499c" title="Quantum.BattlePlayerSpawnBehaviour">BattlePlayerSpawnBehaviour</a>.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadLeft" colspan="2">Enumerator  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft">DefaultPosition  </td><td class="markdownTableBodyLeft">Character spawns in the position defined in the arena spec.     </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft">CharactersPreviousPosition  </td><td class="markdownTableBodyLeft">Character spawns in the position it despawned in.     </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft">PreviousCharactersPosition  </td><td class="markdownTableBodyLeft">Character spawns in the position the last character despawned in.     </td></tr>
+</table>
+<p>The <a class="el" href="#page-concepts-player-simulation-management-playermanager" title="PlayerManager">{PlayerManager}</a> handles spawning based on the <b>Player Character's</b> chosen <b>Spawn Behaviour</b>.</p>
+<p><br  />
+</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-character-entity-shield-number"></a>
+Shield Number</h2>
+<p>Each <b>Shield Quantum Entity</b> is internally assigned a <b>Shield Number</b>, each corresponding to one of the <b>Shields</b> a <b>Character</b> controls. It is used to reference a specific <b>Shield</b> for a given <b>Character</b>.</p>
+<p><br  />
+</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-character-entity-shield-attach"></a>
+Attached/Detached Shield</h2>
+<p>Each <b>Shield Entity</b> can be <b>Attached</b> or <b>Detached</b> from the <b>Character Entity</b> they are bound to. <br  />
+ When <b>Attached</b>, the <b>Shield Entity</b> will move with the <b>Character Entity</b>. <br  />
+ When <b>Detached</b>, the <b>Shield Entity</b> will move independently from the <b>Character Entity</b> it is bound to. <br  />
+ Regardless of if the <b>Shield Entity</b> is <b>Attached</b> or <b>Detached</b>, it is tracked using the <a class="el" href="#page-concepts-player-character-entity-shield-number" title="Shield Number">{Shield Number}</a>. <br  />
+ This is managed by the <a class="el" href="#page-concepts-player-simulation-management-shieldmanager" title="ShieldManager">{ShieldManager}</a>.</p>
 <p><br  />
 </p>
 <h1 class="doxsection"><a class="anchor" id="page-concepts-player-characters-classes"></a>
 Player Character Classes</h1>
 <p><span class="big-text"><b>Explanation</b></span></p>
-<p>In <b>Quantum Simulation</b>, <b>Player Character Classes</b> function by having implementable methods that are called in certain situations during a game, such as when a projectile collides with a <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entity}</a>. <b>Classes</b> can also implement an update method.</p>
-<p>In <b>Unity View</b>, <b>Player Character Classes</b> function by having implementable methods that are called when certain events occur during a game, such as when the player takes damage. <b>Classes</b> can also implement an update view method.</p>
-<p>These methods can be used to implement functionality on top of the base logic, for example the default collision logic and/or <b>Unity/View</b> update logic, changing how different <b>Character Classes</b> function.</p>
+<p>In <b>Quantum Simulation</b>, <b>Player Character Classes</b> function by having implementable methods that are called in certain situations during a game, such as when a projectile collides with a <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entity}</a>. <b>Classes</b> can also implement an update method.</p>
+<p>In <b>Unity View</b>, <b>Player Character Classes</b> function by having implementable methods that are called when certain events occur during a game, such as when the player takes damage. <b>Classes</b> can also implement an update view method. <br  />
+ <b>Characters</b> and <b>Shields</b> are separated in <b>Unity/View</b>, both of which can independently implement <b>Class</b> logic.</p>
+<p>These methods can be used to implement functionality on top of the base logic, for example the default <b>Simulation</b> collision logic and/or <b>Unity/View</b> update logic, changing how different <b>Character Classes</b> function.</p>
 <p><span class="big-text"><b>Implementation</b></span></p>
-<p>In <b>Quantum Simulation</b>, every <b>Player Character Class</b> can optionally have a unique <b>C#</b> <a class="el" href="#page-concepts-player-simulation-playerclass" title="PlayerClass">{PlayerClass}</a>. <br  />
- <b>Character Classes</b> can also optionally have a <a class="el" href="#page-concepts-player-simulation-classdata" title="PlayerClassData (%Quantum Component)">{PlayerClassData}</a> <b>QComponent</b> attached to the <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entities}</a> for additional data the <b>Class</b> will use. <br  />
- The <b>C#</b> <a class="el" href="#page-concepts-player-simulation-playerclass" title="PlayerClass">{PlayerClass}</a> are stateless and there is only one instance for each <b>Character Class</b>. These are loaded and managed by <a class="el" href="#page-concepts-player-simulation-classmanager" title="PlayerClassManager">{PlayerClassManager}</a>.</p>
-<p>In <b>Unity View</b>, every <b>Player Character class</b> can optionally have a <a class="el" href="#page-concepts-player-view-class-controller" title="PlayerClassViewControllers">{PlayerClassViewController}</a>.</p>
+<p>In <b>Quantum Simulation</b>, every <b>Player Character Class</b> can optionally have a unique <b>C#</b> <a class="el" href="#page-concepts-player-simulation-class-playerclass" title="PlayerClass">{PlayerClass}</a>. <br  />
+ <b>Character Classes</b> can also optionally have a <a class="el" href="#page-concepts-player-simulation-QSpec" title="PlayerClassQSpec (%Quantum Spec)">{PlayerClassQSpec}</a> and <a class="el" href="#page-concepts-player-simulation-class-classdata" title="PlayerClassData (%Quantum Component)">{PlayerClassData}</a> <b>QComponent</b> attached to the <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entities}</a> for additional data the <b>Class</b> will use. <br  />
+ The <b>C#</b> <a class="el" href="#page-concepts-player-simulation-class-playerclass" title="PlayerClass">{PlayerClass}</a> are stateless and there is only one instance for each <b>Character Class</b>. These are loaded and managed by <a class="el" href="#page-concepts-player-simulation-class-classmanager" title="PlayerClassManager">{PlayerClassManager}</a>.</p>
+<p>In <b>Unity View</b>, every <b>Player Character class</b> can optionally have a <a class="el" href="#page-concepts-player-view-character-class-controller" title="PlayerCharacterClassViewControllers">{PlayerCharacterClassViewController}</a> and/or a <a class="el" href="#page-concepts-player-view-shield-class-controller" title="PlayerShieldClassViewControllers">{PlayerShieldClassViewController}</a>.</p>
 <p><br  />
 </p>
 <h2 class="doxsection"><a class="anchor" id="page-concepts-player-characters-class-list"></a>
 Player Character Class List</h2>
-<p><a class="el" href="page-concepts-player-class-400-projector.html" title="Player Character Class 400 - Projector">Player Character Class 400 - Projector</a> <br  />
- <a class="el" href="page-concepts-player-class-600-confluent.html" title="Player Character Class 600 - Confluent">Player Character Class 600 - Confluent</a></p>
+<p><a class="el" href="page-concepts-player-class-100.html" title="Player Character Class 100 - Desensitizer">Player Character Class 100 - Desensitizer</a> <br  />
+ <a class="el" href="page-concepts-player-class-400.html" title="Player Character Class 400 - Projector">Player Character Class 400 - Projector</a> <br  />
+ <a class="el" href="page-concepts-player-class-500.html" title="Player Character Class 500 - Reflector">Player Character Class 500 - Reflector</a> <br  />
+ <a class="el" href="page-concepts-player-class-600.html" title="Player Character Class 600 - Confluent">Player Character Class 600 - Confluent</a></p>
 <p><br  />
 </p>
 <hr  />
@@ -193,56 +270,111 @@ Quantum simulation</h1>
 <h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-overview"></a>
 Simulation Code Overview</h2>
 <div class="dotgraph">
-<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_460c70e01fbc0d70697a5a8be1ec593f.svg" width="1170" height="862"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_5f39c00125d274a71eeb83f149c1689b.svg" width="1858" height="1039"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 <p> <br  />
 </p>
-<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-playermanagerdata"></a>
-PlayerManagerData (Quantum Singleton)</h2>
-<p>The <a class="el" href="struct_quantum_1_1_battle_player_manager_data_q_singleton.html" title="Quantum.BattlePlayerManagerDataQSingleton">BattlePlayerManagerDataQSingleton</a> struct is a <b>Quantum Singleton Component</b> defined in and generated from <a class="el" href="_battle_player_manager_data_8qtn.html" title="Contains enum and component used for managing all players&#39;s all characters and their states.">BattlePlayerManagerData.qtn</a> containing all our defined data for <b>Players</b>. <a class="el" href="#page-concepts-player-simulation-playerhandle" title="PlayerHandle">{PlayerHandle}</a> is used to access this data for each individual <b>Player</b>.</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-management"></a>
+Management</h2>
+<p>This section contains <b>Quantum</b> simulation side <b>Player</b> management related code, while the game logic is handled by the <a class="el" href="#page-concepts-player-gamelogic" title="Game Logic">{Game Logic}</a> code.</p>
 <p><br  />
 </p>
-<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-playermanager"></a>
-PlayerManager</h2>
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-management-playermanagerdata"></a>
+PlayerManagerData (Quantum Singleton)</h3>
+<p>The <a class="el" href="struct_quantum_1_1_battle_player_manager_data_q_singleton.html" title="Quantum.BattlePlayerManagerDataQSingleton">BattlePlayerManagerDataQSingleton</a> struct is a <b>Quantum Singleton Component</b> defined in and generated from <a class="el" href="_battle_player_manager_data_8qtn.html" title="Contains player manager data singleton component that is used internally by BattlePlayerManager to ma...">BattlePlayerManagerData.qtn</a> containing all our defined data for <b>Players</b>. <a class="el" href="#page-concepts-player-simulation-management-playerhandle" title="PlayerHandle">{PlayerHandle}</a> is used to access this data for each individual <b>Player</b>. <br  />
+ The data contained in this <b>Quantum Singleton Component</b> is used by the <a class="el" href="#page-concepts-player-simulation-management-playermanager" title="PlayerManager">{PlayerManager}</a>.</p>
+<p><br  />
+</p>
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-management-playermanager"></a>
+PlayerManager</h3>
 <p>The <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html" title="Battle.QSimulation.Player.BattlePlayerManager">BattlePlayerManager</a> handles player management, allowing other classes to focus on gameplay logic. <br  />
  Provides static methods to <b>Initialize</b>, spawn, despawn, and query player-related data. <br  />
- Handles <b>Initializing Players</b> that are present in the game, as well as spawning and despawning <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entities}</a> and also contains <a class="el" href="#page-concepts-player-simulation-playerhandle" title="PlayerHandle">{Playerhandle}</a> struct.</p>
+ Handles <b>Initializing Players</b> that are present in the game, as well as spawning and despawning <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entities}</a> and also contains <a class="el" href="#page-concepts-player-simulation-management-playerhandle" title="PlayerHandle">{Playerhandle}</a> struct.</p>
 <p>See <a class="el" href="#page-concepts-player-initializing" title="Joining and Initializing">{Joining and Initializing}</a> for more info.</p>
+<h4 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-management-playermanager-player-entity-management"></a>
+Player Entity Management</h4>
+<p><b>Characters</b> can be <a class="el" href="#page-concepts-player-character-entity-character-state" title="Player Character State">{Alive}</a> or <a class="el" href="#page-concepts-player-character-entity-character-state" title="Player Character State">{Dead}</a> and <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{InPlay}</a> or <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{OutOfPlay}</a>.</p>
+<p>A <b>Character</b> can be <b>Spawned</b> using <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#acbde58b2ac5fc895378af67ebfdc8c57" title="Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int, bool)">SpawnPlayer</a>. (<a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{InPlay}</a>) <br  />
+ The <b>Character</b> is spawned based on it's chosen <a class="el" href="#page-concepts-player-character-entity-spawn-behaviour" title="Player Character Spawn Behaviour">{Spawn Behaviour}</a>. <br  />
+ If a <b>Character</b> is <a class="el" href="#page-concepts-player-character-entity-character-state" title="Player Character State">{Dead}</a>, it cannot be <b>Spawned</b>.</p>
+<p>A <b>Character</b> can be <b>Despawned</b> using <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a9734fcdd5f42e4a5167fef7bd2ca3be3" title="Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, int, bool)">DespawnPlayer</a>. (<a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{OutOfPlay}</a>) <br  />
+</p>
+<p>The <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#acbde58b2ac5fc895378af67ebfdc8c57" title="Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int, bool)">SpawnPlayer</a> and <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a9734fcdd5f42e4a5167fef7bd2ca3be3" title="Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, int, bool)">DespawnPlayer</a> methods also affect the <a class="el" href="#page-concepts-player-playstate" title="Player PlayState">{Player PlayState}</a> of the <b>Player</b> the <b>Character</b> belongs to.</p>
 <p><br  />
 </p>
-<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-playerhandle"></a>
-PlayerHandle</h2>
-<p>The <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html" title="Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle">PlayerHandle</a> struct defined in <a class="el" href="#page-concepts-player-simulation-playermanager" title="PlayerManager">{PlayerManager}</a> allows the code to access <a class="el" href="#page-concepts-player-manager-data" title="Player Manager Data">{Player Manager Data}</a> of each individual <b>Player</b>.</p>
-<p>There is both a <b>private</b> <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle_internal.html" title="Battle.QSimulation.Player.BattlePlayerManager.PlayerHandleInternal">PlayerHandleInternal</a> struct containing all the data for <b>use internally</b> within <a class="el" href="#page-concepts-player-simulation-playermanager" title="PlayerManager">{PlayerManager}</a>, and the <b>public</b> <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html" title="Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle">PlayerHandle</a> exposing some parts to the <b>rest of the game</b>.</p>
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-management-playerhandle"></a>
+PlayerHandle</h3>
+<p>The <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html" title="Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle">PlayerHandle</a> struct defined in <a class="el" href="#page-concepts-player-simulation-management-playermanager" title="PlayerManager">{PlayerManager}</a> allows the code to access <a class="el" href="#page-concepts-player-manager-data" title="Player Manager Data">{Player Manager Data}</a> of each individual <b>Player</b>.</p>
+<p>There is both a <b>private</b> <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle_internal.html" title="Battle.QSimulation.Player.BattlePlayerManager.PlayerHandleInternal">PlayerHandleInternal</a> struct containing all the data for <b>use internally</b> within <a class="el" href="#page-concepts-player-simulation-management-playermanager" title="PlayerManager">{PlayerManager}</a>, and the <b>public</b> <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html" title="Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle">PlayerHandle</a> exposing some parts to the <b>rest of the game</b>.</p>
 <p><br  />
 </p>
-<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-playerdata"></a>
-PlayerData (Quantum Component)</h2>
-<p>The <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html" title="Quantum.BattlePlayerDataQComponent">BattlePlayerDataQComponent</a> struct is defined in and generated from <a class="el" href="_battle_player_data_8qtn.html" title="Contains components used for player entities.">BattlePlayerData.qtn</a>. This contains data specific to each <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entity}</a> used by the <b>Quantum Simulation</b> during gameplay.</p>
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-management-shieldmanagerdata"></a>
+ShieldManagerData (Quantum Singleton)</h3>
+<p>The <a class="el" href="struct_quantum_1_1_battle_player_shield_manager_data_q_singleton.html" title="Quantum. BattlePlayerShieldManagerDataQSingleton">BattlePlayerShieldManagerDataQSingleton</a> struct is a <b>Quantum Singleton Component</b> defined in and generated from <a class="el" href="_battle_player_shield_manager_data_8qtn.html" title="Contains shield manager data singleton component that is used internally by BattlePlayerShieldManager...">BattlePlayerShieldManagerData.qtn</a> containing all our defined data for managing <b>Shields</b>. <br  />
+ The data contained in this <b>Quantum Singleton Component</b> is used by the <a class="el" href="#page-concepts-player-simulation-management-shieldmanager" title="ShieldManager">{ShieldManager}</a>.</p>
 <p><br  />
 </p>
-<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-playerqsystem"></a>
-PlayerQSystem</h2>
-<p>The <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html" title="Battle.QSimulation.Player.BattlePlayerQSystem">BattlePlayerQSystem</a> contains the primary <b>Quantum</b> <b>Player</b> logic. This <b>Quantum System</b> contains code for handling collisions and the update method for <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entities}</a>. Other classes are utilized for specific aspects of <b>Player</b> logic.</p>
-<p>See <a class="el" href="#page-concepts-player-simulation-playerqsystem-movement-controller" title="PlayerMovementController">{PlayerMovementController}</a> for more info. <br  />
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-management-shieldmanager"></a>
+ShieldManager</h3>
+<p>The <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_shield_manager.html" title="Battle.QSimulation.Player. BattlePlayerShieldManager">BattlePlayerShieldManager</a> handles <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Shield Entity}</a> management, allowing other classes to focus on gameplay logic. <br  />
+ Provides static methods to <b>Initialize</b>, <a class="el" href="#page-concepts-player-character-entity-shield-attach" title="Attached/Detached Shield">{Attach}</a>, remove and query shield-related data. <br  />
+ Handles <b>Initializing Shields</b> that are present in the game, as well as attaching and detaching <b>Shield Entities</b> from a <b>Character Entity</b>.</p>
+<h4 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-management-shieldmanager-shield-entity-management"></a>
+Shield Entity Management</h4>
+<p><b>Shields</b> can be <a class="el" href="#page-concepts-player-character-entity-shield-attach" title="Attached/Detached Shield">{Attached}</a> or <b>Detached</b> and <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{InPlay}</a> or <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{OutOfPlay}</a>.</p>
+<p>A <b>Shield</b> can be <a class="el" href="#page-concepts-player-character-entity-shield-attach" title="Attached/Detached Shield">{Attached}</a> to a player's <b>Character</b> using <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_shield_manager.html#a31ff9070c1cda54838617a822242ca21" title="Battle.QSimulation.Player.BattlePlayerShieldManager.AttachShield(Frame, BattlePlayerSlot, int, int, bool)">AttachShield</a>. This has no effect on the <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{InPlay/OutOfPlay}</a>. <br  />
+ If a <b>Character</b> already has a shield <a class="el" href="#page-concepts-player-character-entity-shield-attach" title="Attached/Detached Shield">{Attached}</a>, the shield will be swapped. <br  />
+ When <a class="el" href="#page-concepts-player-character-entity-shield-attach" title="Attached/Detached Shield">{Attached}</a>, <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{InPlay/OutOfPlay}</a> logic is handled by the <a class="el" href="#page-concepts-player-simulation-management-playermanager" title="PlayerManager">{PlayerManager}</a>. (<a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{InPlay}</a> when <b>Character</b> is <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{InPlay}</a>, <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{OutOfPlay}</a> when <b>Character</b> is <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{OutOfPlay}</a>)</p>
+<p><b>Shields</b> can be used <b>Detached</b> using <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_shield_manager.html#a4a4670a57410ab8513f973e9e47d49c8" title="Battle.QSimulation.Player.BattlePlayerShieldManager.GetDetachedShieldEntityRef(Frame, BattlePlayerSlot, int, int, bool)">GetDetachedShieldEntityRef</a>. The method will retrieve the shield to be used in the arena (<b>Detached</b> and <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{InPlay}</a>) <a class="el" href="#page-concepts-player-character-entity-shield-attach" title="Attached/Detached Shield">{Attached}</a> or not, <b>Detaching</b> the <b>Shield</b> if needed. <br  />
+ A <b>Shield</b> can be <b>Removed</b> using <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_shield_manager.html#a897aa41ff0df519fc94614fc5598f2fb" title="Battle.QSimulation.Player.BattlePlayerShieldManager.RemoveShield(Frame, BattlePlayerSlot, int, int)">RemoveShield</a>, teleporting it out of the arena. (<b>Detached</b> and <a class="el" href="page-concepts-entity-management.html#page-concepts-entity-management-registered-entities-playstate" title="PlayState">{OutOfPlay}</a>) <br  />
+ <a class="el" href="#page-concepts-player-character-entity-shield-attach" title="Attached/Detached Shield">{Attached}</a> or not, <b>Detaching</b> the <b>Shield</b> if needed.</p>
+<p><br  />
+</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-gamelogic"></a>
+Game Logic</h2>
+<p>This section contains <b>Quantum</b> simulation side <b>Player</b> gameplay logic related code, while the management is handled by the <a class="el" href="#page-concepts-player-simulation-management" title="Management">{Management}</a> code.</p>
+<p><br  />
+</p>
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-gamelogic-playerdata"></a>
+PlayerData (Quantum Component)</h3>
+<p>The <a class="el" href="struct_quantum_1_1_battle_player_data_q_component.html" title="Quantum.BattlePlayerDataQComponent">BattlePlayerDataQComponent</a> struct is defined in and generated from <a class="el" href="_battle_player_data_8qtn.html" title="Contains components used for player entities.">BattlePlayerData.qtn</a>. This contains data specific to each <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entity}</a> used by the <b>Quantum Simulation</b> during gameplay.</p>
+<p><br  />
+</p>
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-gamelogic-shielddata"></a>
+ShieldData (Quantum Component)</h3>
+<p>The <a class="el" href="struct_quantum_1_1_battle_player_shield_data_q_component.html" title="Quantum. BattlePlayerShieldDataQComponent">BattlePlayerShieldDataQComponent</a> struct is defined in and generated from <a class="el" href="_battle_player_shield_data_8qtn.html" title="Contains components used for player shield entities.">BattlePlayerShieldData.qtn</a>. This contains data specific to each <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Shield Entity}</a> used by the <b>Quantum Simulation</b> during gameplay.</p>
+<p><br  />
+</p>
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-gamelogic-playerqsystem"></a>
+PlayerQSystem</h3>
+<p>The <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html" title="Battle.QSimulation.Player.BattlePlayerQSystem">BattlePlayerQSystem</a> contains the primary <b>Quantum</b> <b>Player</b> logic. This <b>Quantum System</b> contains code for handling collisions and the update method for <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entities}</a>. Other classes are utilized for specific aspects of <b>Player</b> logic.</p>
+<p>See <a class="el" href="#page-concepts-player-simulation-gamelogic-playerqsystem-movement-controller" title="PlayerMovementController">{PlayerMovementController}</a> for more info. <br  />
  See <a class="el" href="#page-concepts-player-simulation-botcontroller" title="PlayerBotController">{PlayerBotController}</a> for more info.</p>
 <p><br  />
 </p>
-<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-playerqsystem-movement-controller"></a>
-PlayerMovementController</h2>
-<p>The <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_movement_controller.html" title="Battle.QSimulation.Player.BattlePlayerMovementController">BattlePlayerMovementController</a> contains the primary <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_movement_controller.html#a3b02b4fda839b033b6059f632ac81ffb" title="Battle.QSimulation.Player.BattlePlayerMovementController.UpdateMovement">UpdateMovement</a> method which handles <b>Player</b> movement, and is called by <a class="el" href="#page-concepts-player-simulation-playerqsystem" title="PlayerQSystem">{BattlePlayerQSystem}</a>. Also contains individual helper methods for moving and rotating <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entities}</a>, which can be used by other scripts.</p>
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-gamelogic-playerqsystem-movement-controller"></a>
+PlayerMovementController</h3>
+<p>The <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_movement_controller.html" title="Battle.QSimulation.Player.BattlePlayerMovementController">BattlePlayerMovementController</a> contains the primary <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_movement_controller.html#ae43ca1d6077f6d1de112a90c42c2435f" title="Battle.QSimulation.Player.BattlePlayerMovementController.UpdateMovement">UpdateMovement</a> method which handles <b>Player</b> movement, and is called by <a class="el" href="#page-concepts-player-simulation-gamelogic-playerqsystem" title="PlayerQSystem">{BattlePlayerQSystem}</a>. Also contains individual helper methods for moving and rotating <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entities}</a>, which can be used by other scripts.</p>
 <p><br  />
 </p>
-<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-classmanager"></a>
-PlayerClassManager</h2>
-<p>The <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html" title="Battle.QSimulation.Player.BattlePlayerClassManager">BattlePlayerClassManager</a> handles the initial loading of <a class="el" href="#page-concepts-player-simulation-playerclass" title="PlayerClass">{PlayerClasses}</a> and routes individual game events to the correct <b>Class</b> scripts. <br  />
- The <a class="el" href="#page-concepts-player-simulation-playerclass" title="PlayerClass">{PlayerClasses}</a> are stateless and there is only one instance loaded at a time. <br  />
- Scripts such as <a class="el" href="#page-concepts-player-simulation-playerqsystem" title="PlayerQSystem">{PlayerQSystem}</a> call methods in <b>PlayerClassManager</b>, which then in turn call the corresponding method for the <b>Character Class</b> of the specified <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entity}</a>.</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-class"></a>
+Character Class Management and Game Logic</h2>
+<p>Each <b>Player Character</b> belongs to a <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Class}</a>. <br  />
+ This section contains <b>Quantum</b> simulation side <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Class}</a> management and game logic related code.</p>
+<p><br  />
+</p>
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-class-classmanager"></a>
+PlayerClassManager</h3>
+<p>The <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html" title="Battle.QSimulation.Player.BattlePlayerClassManager">BattlePlayerClassManager</a> handles the initial loading of <a class="el" href="#page-concepts-player-simulation-class-playerclass" title="PlayerClass">{PlayerClasses}</a> and routes individual game events to the correct <b>Class</b> scripts. <br  />
+ The <a class="el" href="#page-concepts-player-simulation-class-playerclass" title="PlayerClass">{PlayerClasses}</a> are stateless and there is only one instance loaded at a time. <br  />
+ Scripts such as <a class="el" href="#page-concepts-player-simulation-gamelogic-playerqsystem" title="PlayerQSystem">{PlayerQSystem}</a> call methods in <b>PlayerClassManager</b>, which then in turn call the corresponding method for the <b>Character Class</b> of the specified <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entity}</a>.</p>
 <p>See <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Classes}</a> for more info.</p>
 <p><br  />
 </p>
-<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-playerclass"></a>
-PlayerClass</h2>
-<p>Every <b>Player Character Class</b> can optionally have a unique <b>C# class</b> that inherits one of the two base <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html" title="Battle.QSimulation.Player.BattlePlayerClassBase">BattlePlayerClassBase</a> classes defined in <a class="el" href="_battle_player_class_manager_8cs.html" title="Contains BattlePlayerClassManager class which handles player class logic. Also contains BattlePlayerC...">BattlePlayerClassManager.cs</a>. These classes can choose to implement any of the available methods for functionality. <b>Character Classes</b> can also optionally have a <a class="el" href="#page-concepts-player-simulation-classdata" title="PlayerClassData (%Quantum Component)">{PlayerClassData}</a> <b>QComponent</b> for additional data. When a <b>Character Class</b> has a <b>Data QComponent</b>, the <b>C# class</b> inherits the generic version of the base class using the <b>Data QComponent</b> as the generic type parameter. <br  />
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-class-playerclass"></a>
+PlayerClass</h3>
+<p>Every <b>Player Character Class</b> can optionally have a unique <b>C# class</b> that inherits one of the two base <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_base.html" title="Battle.QSimulation.Player.BattlePlayerClassBase">BattlePlayerClassBase</a> classes defined in <a class="el" href="_battle_player_class_manager_8cs.html" title="Contains BattlePlayerClassManager class which handles player class logic. Also contains BattlePlayerC...">BattlePlayerClassManager.cs</a>. These classes can choose to implement any of the available methods for functionality. <b>Character Classes</b> can also optionally have a <a class="el" href="#page-concepts-player-simulation-class-classdata" title="PlayerClassData (%Quantum Component)">{PlayerClassData}</a> <b>QComponent</b> for additional data.<br  />
+ When a <b>Character Class</b> has a <b>Data QComponent</b>, the <b>C# class</b> inherits the generic version of the base class using the <b>Data QComponent</b> as the generic type parameter. <br  />
+ <b>Character Classes</b> can also optionally have a <a class="el" href="#page-concepts-player-simulation-QSpec" title="PlayerClassQSpec (%Quantum Spec)">{PlayerClassQSpec}</a> for additional immutable data.<br  />
  As stated before the <b>C# class</b> is optional and can be omitted for <b>Player Character Classes</b> that need no additional <b>Quantum Simulation</b> logic.</p>
 <p><b>C# code example</b> </p><div class="fragment"><div class="line"><span class="comment">// Without data QComponent</span></div>
 <div class="line"><span class="keyword">public</span> <span class="keyword">class </span>BattlePlayerClassExample1 : BattlePlayerClassBase</div>
@@ -255,26 +387,37 @@ PlayerClass</h2>
 <div class="line">{</div>
 <div class="line">  <span class="comment">// ...</span></div>
 <div class="line">}</div>
-</div><!-- fragment --><p>The <b>C# classes</b> are stateless and there is only one instance for each <b>Character Class</b> which are loaded and managed by <a class="el" href="#page-concepts-player-simulation-classmanager" title="PlayerClassManager">{PlayerClassManager}</a>. <br  />
- Scripts such as <a class="el" href="#page-concepts-player-simulation-playerqsystem" title="PlayerQSystem">{PlayerQSystem}</a> call methods in <a class="el" href="#page-concepts-player-simulation-classmanager" title="PlayerClassManager">{PlayerClassManager}</a>, which then in turn call the corresponding method for the <b>Character Class</b> of the specified <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entity}</a>. This way each <b>Player Characters</b> possible <b>Character Class</b> methods are always correctly called.</p>
+</div><!-- fragment --><p>The <b>C# classes</b> are stateless and there is only one instance for each <b>Character Class</b> which are loaded and managed by <a class="el" href="#page-concepts-player-simulation-class-classmanager" title="PlayerClassManager">{PlayerClassManager}</a>. <br  />
+ Scripts such as <a class="el" href="#page-concepts-player-simulation-gamelogic-playerqsystem" title="PlayerQSystem">{PlayerQSystem}</a> call methods in <a class="el" href="#page-concepts-player-simulation-class-classmanager" title="PlayerClassManager">{PlayerClassManager}</a>, which then in turn call the corresponding method for the <b>Character Class</b> of the specified <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entity}</a>. This way each <b>Player Characters</b> possible <b>Character Class</b> methods are always correctly called.</p>
 <p>See <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Classes}</a> for more info.</p>
 <p><br  />
 </p>
-<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-classdata"></a>
-PlayerClassData (Quantum Component)</h2>
+<h3 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-class-classdata"></a>
+PlayerClassData (Quantum Component)</h3>
 <p>Every <b>Player Character Class</b> can optionally have a <b>Data QComponent</b> for additional data.</p>
 <p><b>Qtn code example</b> </p><div class="fragment"><div class="line">component BattlePlayerClassExample2DataQComponent</div>
 <div class="line">{</div>
-<div class="line">  // ...</div>
+<div class="line">  <span class="comment">// ...</span></div>
 <div class="line">}</div>
-</div><!-- fragment --><p>The <b>Data QComponents</b> are attached to the <a class="el" href="#page-concepts-player-character-entity" title="Player Character Entity">{Player Character Entities}</a> and are used by the <b>C# class</b> of the corresponding <b>Character Class</b>.</p>
-<p>See <a class="el" href="#page-concepts-player-simulation-playerclass" title="PlayerClass">{PlayerClass}</a> for more info. <br  />
+</div><!-- fragment --><p>The <b>Data QComponents</b> are attached to the <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entities}</a> and are used by the <b>C# class</b> of the corresponding <b>Character Class</b>.</p>
+<p>See <a class="el" href="#page-concepts-player-simulation-class-playerclass" title="PlayerClass">{PlayerClass}</a> for more info. <br  />
+ See <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Classes}</a> for more info.</p>
+<p><br  />
+</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-QSpec"></a>
+PlayerClassQSpec (Quantum Spec)</h2>
+<p>Every <b>Player Character Class</b> can optionally have a <b>QSpec</b> for additional immutable data that is shared between all the <a class="el" href="#page-concepts-player-character-and-shield-entity" title="Player Character and Shield Entities">{Player Character Entities}</a> of the corresponding <b>Character Class</b>.</p>
+<p><b>C# code example</b> </p><div class="fragment"><div class="line"><span class="keyword">public</span> <span class="keyword">class </span>BattlePlayerClassExample3QSpec : AssetObject</div>
+<div class="line">{</div>
+<div class="line">  <span class="comment">// ...</span></div>
+<div class="line">}</div>
+</div><!-- fragment --><p>See <a class="el" href="#page-concepts-player-simulation-class-playerclass" title="PlayerClass">{PlayerClass}</a> for more info. <br  />
  See <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Classes}</a> for more info.</p>
 <p><br  />
 </p>
 <h2 class="doxsection"><a class="anchor" id="page-concepts-player-simulation-botcontroller"></a>
 PlayerBotController</h2>
-<p>The <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_controller.html" title="Battle.QSimulation.Player.BattlePlayerBotController">BattlePlayerBotController</a> contains the <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_controller.html#a502c0487591e8218cae5b9454d156f05" title="Battle.QSimulation.Player.BattlePlayerBotController.GetBotInput">GetBotInput</a> method which handles <b>Bot</b> movement logic, and is called by <a class="el" href="#page-concepts-player-simulation-playerqsystem" title="PlayerQSystem">{BattlePlayerQSystem}</a>. <br  />
+<p>The <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_controller.html" title="Battle.QSimulation.Player.BattlePlayerBotController">BattlePlayerBotController</a> contains the <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_controller.html#aca3fd73e8f7451f30d16ca3d02cbc4b5" title="Battle.QSimulation.Player.BattlePlayerBotController.GetBotInput">GetBotInput</a> method which handles <b>Bot</b> movement logic, and is called by <a class="el" href="#page-concepts-player-simulation-gamelogic-playerqsystem" title="PlayerQSystem">{BattlePlayerQSystem}</a>. <br  />
  <b>Bots</b> have a <b>base character</b> which is retrieved from <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_q_spec.html" title="Battle.QSimulation.Player.BattlePlayerBotQSpec">BattlePlayerBotQSpec</a> using <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_bot_controller.html#a2364c5edcad94178853fe3e7bb7dfa25" title="Battle.QSimulation.Player.BattlePlayerBotController.GetBotCharacters">GetBotCharacters</a> method. <br  />
  In a match each <b>Bot</b> uses <b>3</b> instances of the <b>base character</b>.</p>
 <h1 class="doxsection"><a class="anchor" id="page-concepts-player-view"></a>
@@ -283,9 +426,12 @@ View</h1>
 </p>
 <h2 class="doxsection"><a class="anchor" id="page-concepts-player-view-overview"></a>
 View Code Overview</h2>
+<p>The <b>Unity/View</b> code is separated into <b>Character</b> and <b>Shield</b> logic. <br  />
+ Any <b>Character</b> related logic will start with <b>BattlePlayerCharacter</b>, while any <b>Shield</b> related logic will start with <b>BattlePlayerShield</b>. <br  />
+ Both <b>Character</b> and <b>Shield</b> logic use the <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Class}</a> term, which is separate from both and should not be confused with either. <b>Player Inputs</b> are also processed in the <b>Unity/View</b> code and is then sent over to <b>Quantum</b>.</p>
 <div class="dotgraph">
-<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_ec53d2dd201c9768338a46d9f510d21f.svg" width="1207" height="770"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
-<p><br  />
+<iframe scrolling="no" loading="lazy" frameborder="0" src="dot_inline_dotgraph_ecfc5c0fedae0fd45d3c533e1a822222.svg" width="2035" height="796"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<p> <br  />
 </p>
 <h2 class="doxsection"><a class="anchor" id="page-concepts-player-view-input"></a>
 PlayerInput</h2>
@@ -293,19 +439,44 @@ PlayerInput</h2>
 <p>See <a class="el" href="#page-concepts-player-input" title="Player Input">{Player Input}</a> for more info.</p>
 <p><br  />
 </p>
-<h2 class="doxsection"><a class="anchor" id="page-concepts-player-view-controller"></a>
-PlayerViewController</h2>
-<p>The <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html" title="Battle.View.Player.BattlePlayerViewController">BattlePlayerViewController</a> handles <b>Player</b> <b>Unity/View</b> logic. <br  />
- <a class="el" href="#page-concepts-player-view-class-controller" title="PlayerClassViewControllers">{PlayerClassViewControllers}</a>, which are tied to this <b>C# class</b>, handle <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Class}</a> specific <b>Unity/View</b> logic.</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-character-view-controller"></a>
+PlayerCharacterViewController</h2>
+<p>The <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller.html" title="Battle.View.Player.BattlePlayerCharacterViewController">BattlePlayerCharacterViewController</a> handles <b>Player Character</b> <b>Unity/View</b> logic. <br  />
+ <a class="el" href="#page-concepts-player-view-character-class-controller" title="PlayerCharacterClassViewControllers">{PlayerCharacterClassViewControllers}</a>, which are tied to this <b>C# class</b>, handle <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Class}</a> specific <b>Unity/View</b> logic. <br  />
+</p>
 <p><br  />
 </p>
-<h2 class="doxsection"><a class="anchor" id="page-concepts-player-view-class-controller"></a>
-PlayerClassViewControllers</h2>
-<p>Every <b>Player Character Class</b> can optionally have a <b>View Controller</b> which extends the <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_class_base_view_controller.html" title="Battle.View.Player.BattlePlayerClassBaseViewController">BattlePlayerClassBaseViewController</a>. These <b>View Controllers</b> can be optionally implemented and attached to <b>Player viewmodel</b> in prefab. The <b>View Controllers</b> can choose to implement any of the available methods for functionality to handle <b>Character Class</b> <b>Unity/View</b> logic. <br  />
- If no <b>PlayerClassViewController</b> is attached then <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_class_none_view_controller.html" title="Battle.View.Player.BattlePlayerClassNoneViewController">BattlePlayerClassNoneViewController</a> is attached. <br  />
- As stated before the <b>PlayerClassViewController</b> is optional and can be omitted for <b>Player Character Classes</b> that need no additional <b>Unity/View</b> logic. <br  />
- <b>PlayerClassViewControllers</b> are tied to <a class="el" href="#page-concepts-player-view-controller" title="PlayerViewController">{PlayerViewController}</a>.</p>
-<p><b>C# code example</b> </p><div class="fragment"><div class="line"><span class="keyword">public</span> <span class="keyword">class </span>BattlePlayerClassExampleViewController : BattlePlayerClassBaseViewController</div>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-view-character-class-controller"></a>
+PlayerCharacterClassViewControllers</h2>
+<p>Every <b>Player Character Class</b> can optionally have a <b>View Controller</b> which extends the <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_character_class_base_view_controller.html" title="Battle.View.Player.BattlePlayerCharacterClassBaseViewController">BattlePlayerCharacterClassBaseViewController</a>. <br  />
+ These <b>View Controllers</b> can be optionally implemented and attached to <b>Player character viewmodel</b> in prefab. <br  />
+ The <b>PlayerCharacterClassViewController</b> can choose to implement any of the available methods for functionality to handle <b>Character Class</b> <b>Unity/View</b> logic. <br  />
+ If no <b>PlayerCharacterClassViewController</b> is attached then <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_character_class_none_view_controller.html" title="Battle.View.Player.BattlePlayerCharacterClassNoneViewController">BattlePlayerCharacterClassNoneViewController</a> is attached. <br  />
+ As stated before the <b>PlayerCharacterClassViewController</b> is optional and can be omitted for <b>Player Character Classes</b> that need no additional <b>Unity/View</b> logic. <br  />
+ <b>PlayerCharacterClassViewControllers</b> are tied to <a class="el" href="#page-concepts-player-character-view-controller" title="PlayerCharacterViewController">{PlayerCharacterViewController}</a>.</p>
+<p><b>C# code example</b> </p><div class="fragment"><div class="line"><span class="keyword">public</span> <span class="keyword">class </span>BattlePlayerCharacterClassExampleViewController : BattlePlayerCharacterClassBaseViewController</div>
+<div class="line">{</div>
+<div class="line">  <span class="comment">// ...</span></div>
+<div class="line">}</div>
+</div><!-- fragment --><p>See <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Classes}</a> for more info.</p>
+<p><br  />
+</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-shield-view-controller"></a>
+PlayerShieldViewController</h2>
+<p>The <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_shield_view_controller.html" title="Battle.View.Player.BattlePlayerShieldViewController">BattlePlayerShieldViewController</a> handles <b>Player Shield</b> <b>Unity/View</b> logic. <br  />
+ <a class="el" href="#page-concepts-player-view-shield-class-controller" title="PlayerShieldClassViewControllers">{PlayerShieldClassViewControllers}</a>, which are tied to this <b>C# class</b>, handle <a class="el" href="#page-concepts-player-characters-classes" title="Player Character Classes">{Player Character Class}</a> specific <b>Shield Unity/View</b> logic. <br  />
+</p>
+<p><br  />
+</p>
+<h2 class="doxsection"><a class="anchor" id="page-concepts-player-view-shield-class-controller"></a>
+PlayerShieldClassViewControllers</h2>
+<p>Every <b>Player Character Class</b> can optionally have a <b>View Controller</b> which extends the <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_shield_class_base_view_controller.html" title="Battle.View.Player.BattlePlayerShieldClassBaseViewController">BattlePlayerShieldClassBaseViewController</a>. <br  />
+ These <b>View Controllers</b> can be optionally implemented and attached to <b>Player shield viewmodel</b> in prefab. <br  />
+ The <b>PlayerShieldClassViewController</b> can choose to implement any of the available methods for functionality to handle <b>Character Class</b> <b>Unity/View</b> logic. <br  />
+ If no <b>PlayerShieldClassViewController</b> is attached then <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_shield_class_none_view_controller.html" title="Battle.View.Player.BattlePlayerShieldClassNoneViewController">BattlePlayerShieldClassNoneViewController</a> is attached. <br  />
+ As stated before the <b>PlayerShieldClassViewController</b> is optional and can be omitted for <b>Player Character Classes</b> that need no additional <b>Unity/View</b> logic. <br  />
+ <b>PlayerShieldViewControllers</b> are tied to <a class="el" href="#page-concepts-player-shield-view-controller" title="PlayerShieldViewController">{PlayerShieldViewController}</a>.</p>
+<p><b>C# code example</b> </p><div class="fragment"><div class="line"><span class="keyword">public</span> <span class="keyword">class </span>BattlePlayerShieldClassExampleViewController : BattlePlayerShieldClassBaseViewController</div>
 <div class="line">{</div>
 <div class="line">  <span class="comment">// ...</span></div>
 <div class="line">}</div>

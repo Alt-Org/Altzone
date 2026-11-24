@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
 using Altzone.Scripts.Model.Poco.Clan;
@@ -9,7 +8,9 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Voting;
 using MenuUi.Scripts.Storage;
+using MenuUi.Scripts.Window;
 using MenuUI.Scripts;
+using UnityEngine;
 
 public static class PollManager // Handles the polls from creation to loading to ending them
 {
@@ -37,7 +38,6 @@ public static class PollManager // Handles the polls from creation to loading to
         {
             if (result)
             {
-                ShowVotingPopup?.Invoke(furniturePollType);
 
                 OnPollCreated?.Invoke();
                 if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null)
@@ -56,7 +56,7 @@ public static class PollManager // Handles the polls from creation to loading to
             }
             else
             {
-                SignalBus.OnChangePopupInfoSignal("Tavaran ostoäänestyksen luominen epäonnistui.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error,"Tavaran ostoäänestyksen luominen epäonnistui.");
                 if (callback != null)
                     callback(false);
             }
@@ -67,7 +67,7 @@ public static class PollManager // Handles the polls from creation to loading to
     // Create poll for GameFurniture
     public static void CreateBuyFurniturePoll(FurniturePollType furniturePollType, GameFurniture furniture, string id, bool fetchData = false)
     {
-        if(fetchData)LoadClanData();
+        if (fetchData) LoadClanData();
 
 
         DataStore store = Storefront.Get();
@@ -97,7 +97,8 @@ public static class PollManager // Handles the polls from creation to loading to
     // Create poll for StorageFurniture
     public static void CreateFurnitureSellPoll(FurniturePollType furniturePollType, StorageFurniture furniture, Action<bool> callback)
     {
-        ServerManager.Instance.SellItemOnStall(furniture.Id, (int)furniture.Value, result => {
+        ServerManager.Instance.SellItemOnStall(furniture.Id, (int)furniture.Value, result =>
+        {
 
             if (result)
             {
@@ -120,7 +121,7 @@ public static class PollManager // Handles the polls from creation to loading to
             }
             else
             {
-                SignalBus.OnChangePopupInfoSignal("Tavaran myyntiäänestyksen luominen epäonnistui.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error,"Tavaran myyntiäänestyksen luominen epäonnistui.");
                 if (callback != null)
                     callback(false);
             }
@@ -191,6 +192,31 @@ public static class PollManager // Handles the polls from creation to loading to
     public static void CreateRolePoll(string targetPlayerId, string roleName, string roleId = null)
     {
         Debug.Log($"TODO CreateRolePoll -> targetPlayerId={targetPlayerId}, roleName={roleName}, roleId={roleId}");
+    }
+
+
+    //TO DO: kirpputori huonekalu äänestys, ostamassa vai myymässä
+    public static void CreateVotingPoll(FurniturePollType furniturePollType, StorageFurniture furniture, Action<bool> callback)
+    {
+        Debug.Log("CreateVotingPoll");
+        ShowVotingPopup?.Invoke(furniturePollType);
+        Debug.Log($"TODO CreateVotingPoll -> furniturePollType={furniturePollType}, furniture={furniture}, action={callback}");
+        if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null)
+        {
+            if (DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == TaskEducationSocialType.ClanVote)
+            {
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationSocialType.ClanVote, "1");
+            }
+            else if (DailyTaskProgressManager.Instance.CurrentPlayerTask.EducationSocialType == TaskEducationSocialType.CreateNewVote)
+            {
+                DailyTaskProgressManager.Instance.UpdateTaskProgress(TaskEducationSocialType.CreateNewVote, "1");
+            }
+        }
+
+
+        //for testing purposes, delete later
+        if (callback != null)
+              callback(false);
     }
 
     // Create poll for kicking a member from clan
@@ -431,7 +457,7 @@ public static class PollManager // Handles the polls from creation to loading to
 
             // Refresh UI
             trayPopulator?.RefreshTray();
-            VotingActions.ReloadPollList?.Invoke();
+            //VotingActions.ReloadPollList?.Invoke();
             PastPollManager.OnPastPollsChanged?.Invoke();
 
             if (PollManagerData.Instance.pollDataList.Count == 0)
@@ -468,4 +494,5 @@ public static class PollManager // Handles the polls from creation to loading to
     {
         return PollManagerData.Instance.pastPollDataList;
     }
+
 }

@@ -9,6 +9,7 @@ using Altzone.Scripts.GA;
 using Altzone.Scripts.Audio;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Language;
+using MenuUI.Scripts.Jukebox;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -65,12 +66,13 @@ namespace MenuUI.Scripts.SoulHome
         {
             EditModeTrayResize();
             if (GameAnalyticsManager.Instance != null) GameAnalyticsManager.Instance.OpenSoulHome();
-            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong += SetSongName;
+            JukeBoxSoulhomeHandler.OnChangeJukeboxSong += SetSongName;
         }
 
         public void OnDisable()
         {
-            JukeBoxSoulhomeHandler.OnChangeJukeBoxSong -= SetSongName;
+            JukeBoxSoulhomeHandler.OnChangeJukeboxSong -= SetSongName;
+            AudioManager.Instance.PlayMusic(AudioCategoryType.MainMenu);
         }
 
         public void AddFurniture(Furniture furniture)
@@ -89,7 +91,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (furniture != null)
             {
-                if(!_soulHomeTower.EditingMode || _soulHomeTower.Rotated)FurnitureName.gameObject.SetActive(true);
+                if(!_soulHomeTower.EditingMode)FurnitureName.gameObject.SetActive(true);
                 string furnitureName = furniture.Name;
                 FurnitureName.GetComponent<TextMeshProUGUI>().text = furnitureName;
             }
@@ -207,7 +209,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ShowInfoPopup(string popupText)
         {
-            SignalBus.OnChangePopupInfoSignal(popupText);
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Info, popupText);
         }
 
         private void SetSongName(MusicTrack song)

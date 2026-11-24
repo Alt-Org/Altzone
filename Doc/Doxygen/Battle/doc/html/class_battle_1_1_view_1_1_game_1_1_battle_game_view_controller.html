@@ -112,14 +112,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a54b335e4c42c2bd64fa894b8ab995e21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public method that gets called when the local player pressed the give up button.  <br /></td></tr>
 <tr class="memitem:a1ee961d343079d9a11ffa48675b62862" id="r_a1ee961d343079d9a11ffa48675b62862"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a1ee961d343079d9a11ffa48675b62862">UiInputOnCharacterSelected</a> (int characterNumber)</td></tr>
 <tr class="memdesc:a1ee961d343079d9a11ffa48675b62862"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public method that gets called when the local player selected another character.<br  />
- Calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a5852c549916347477056a90489388e7e" title="Called when the player presses one of the character selection buttons.">BattlePlayerInput.OnCharacterSelected</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>.  <br /></td></tr>
-<tr class="memitem:a6a3e56eb6cd215a4ff34737ceeccf47b" id="r_a6a3e56eb6cd215a4ff34737ceeccf47b"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a6a3e56eb6cd215a4ff34737ceeccf47b">UiInputOnJoystickMovement</a> (Vector2 input)</td></tr>
-<tr class="memdesc:a6a3e56eb6cd215a4ff34737ceeccf47b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public method that gets called when local player gives movement joystick input. Calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#af650fbe02ca3509b7f88ae0ad117797c">OnJoystickMovement</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>.  <br /></td></tr>
-<tr class="memitem:ae84cca2dd113c4a16f7d5ca2a6ef3b03" id="r_ae84cca2dd113c4a16f7d5ca2a6ef3b03"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ae84cca2dd113c4a16f7d5ca2a6ef3b03">UiInputOnJoystickRotation</a> (float input)</td></tr>
-<tr class="memdesc:ae84cca2dd113c4a16f7d5ca2a6ef3b03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public method that gets called when local player gives rotation joystick input. Calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a739d0f225c8d379c6a23000bea4c4011">OnJoystickRotation</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>.  <br /></td></tr>
+ Calls BattlePlayerInput.OnCharacterSelected method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>.  <br /></td></tr>
+<tr class="memitem:a8c2fdeadd284660def9e65bb49fb7663" id="r_a8c2fdeadd284660def9e65bb49fb7663"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a8c2fdeadd284660def9e65bb49fb7663">UiInputOnJoystickMovement</a> (<a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a> state, Vector2 value)</td></tr>
+<tr class="memdesc:a8c2fdeadd284660def9e65bb49fb7663"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public method that gets called when local player gives movement joystick input. Calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a4db63fbdb222f80ac41e59874da4663f">QueueJoystickMovement</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>.  <br /></td></tr>
+<tr class="memitem:a5e4973d89f39a837aa854901da5a647d" id="r_a5e4973d89f39a837aa854901da5a647d"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a5e4973d89f39a837aa854901da5a647d">UiInputOnJoystickRotation</a> (<a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a> state, float value)</td></tr>
+<tr class="memdesc:a5e4973d89f39a837aa854901da5a647d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public method that gets called when local player gives rotation joystick input. Calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#aeb6fc649471ffa30819a14f0fe26ab80">QueueJoystickRotation</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>.  <br /></td></tr>
 <tr class="memitem:abb42aa3ebd18229dba078a772ddeae80" id="r_abb42aa3ebd18229dba078a772ddeae80"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#abb42aa3ebd18229dba078a772ddeae80">UiInputOnExitGamePressed</a> ()</td></tr>
 <tr class="memdesc:abb42aa3ebd18229dba078a772ddeae80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public method that gets called when the local player pressed the exit game button.<br  />
  Calls ExitQuantum method in LobbyManager, which makes the local player leave the game.  <br /></td></tr>
+<tr class="memitem:af0a15478f553a1f692cf1e1680de19f3" id="r_af0a15478f553a1f692cf1e1680de19f3"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#af0a15478f553a1f692cf1e1680de19f3">UiInputOnJoystickSpecial</a> (<a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a> state, Vector2 value)</td></tr>
+<tr class="memdesc:af0a15478f553a1f692cf1e1680de19f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public method that gets called when local player gives special joystick input. calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a92d4b7ca8e8f1b34e79a5eb649872fae">QueueJoystickSpecial</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -128,6 +130,8 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
+<tr class="memitem:a4cddc3983b141f0e477ae6d34a66e32f" id="r_a4cddc3983b141f0e477ae6d34a66e32f"><td class="memItemLeft">static QuantumGame&#160;</td><td class="memItemRight"><a class="el" href="#a4cddc3983b141f0e477ae6d34a66e32f">QGame</a><code> [get, private set]</code></td></tr>
+<tr class="memdesc:a4cddc3983b141f0e477ae6d34a66e32f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="namespace_quantum.html" title="Quantum&#39;s Build-in Namespace.   Contains Quantum&#39;s own code and Battle Simulation code that is genera...">Quantum</a> game.  <br /></td></tr>
 <tr class="memitem:a590f0ed4b6f979b425d6771c4ddb4dab" id="r_a590f0ed4b6f979b425d6771c4ddb4dab"><td class="memItemLeft">static <a class="el" href="namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096">BattlePlayerSlot</a>&#160;</td><td class="memItemRight"><a class="el" href="#a590f0ed4b6f979b425d6771c4ddb4dab">LocalPlayerSlot</a><code> [get, private set]</code></td></tr>
 <tr class="memdesc:a590f0ed4b6f979b425d6771c4ddb4dab"><td class="mdescLeft">&#160;</td><td class="mdescRight">The local player's <a class="el" href="namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096" title="Which PlayerSlot the {Player} is on.">BattlePlayerSlot</a>.  <br /></td></tr>
 <tr class="memitem:a56c2fafbe09c9d4a3815401e954acf98" id="r_a56c2fafbe09c9d4a3815401e954acf98"><td class="memItemLeft">static <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf">BattleTeamNumber</a>&#160;</td><td class="memItemRight"><a class="el" href="#a56c2fafbe09c9d4a3815401e954acf98">LocalPlayerTeam</a><code> [get, private set]</code></td></tr>
@@ -151,7 +155,7 @@ Private Member Functions</h2></td></tr>
  Handles initializing <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a66606386182817dad71d25067785a18c">AnnouncementHandler</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a> with waiting for players text.  <br /></td></tr>
 <tr class="memitem:ac5fd6972705eda4f3facd8eff7e99f6b" id="r_ac5fd6972705eda4f3facd8eff7e99f6b"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ac5fd6972705eda4f3facd8eff7e99f6b">QEventOnViewPlayerConnected</a> (<a class="el" href="class_quantum_1_1_event_battle_view_player_connected.html">EventBattleViewPlayerConnected</a> e)</td></tr>
 <tr class="memdesc:ac5fd6972705eda4f3facd8eff7e99f6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_view_player_connected.html" title="Synced event. Used when a player connects to the game.">EventBattleViewPlayerConnected</a> QuantumEvent.<br  />
- Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_load_screen_handler.html#a0479b03846063a0d346e3945d7026d70">PlayerConnected</a> through <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a> with the slot and character IDs of the connected player.  <br /></td></tr>
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_load_screen_handler.html#a73af78f19a2ffcce9dab2d2493fcb117">PlayerConnected</a> through <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a> with the slot and character IDs of the connected player.  <br /></td></tr>
 <tr class="memitem:a92f1a48971de796ec8c7e62eebd51c44" id="r_a92f1a48971de796ec8c7e62eebd51c44"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a92f1a48971de796ec8c7e62eebd51c44">QEventOnViewAllPlayersConnected</a> (<a class="el" href="class_quantum_1_1_event_battle_view_all_players_connected.html">EventBattleViewAllPlayersConnected</a> e)</td></tr>
 <tr class="memdesc:a92f1a48971de796ec8c7e62eebd51c44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_view_all_players_connected.html" title="Synced event. Used when all players have connected to the game.">EventBattleViewAllPlayersConnected</a> QuantumEvent.<br  />
  Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_announcement_handler.html#a35550a91cce6b43564e4d934c06e7155">ClearAnnouncerTextField</a> once all players have successfully joined the game.  <br /></td></tr>
@@ -182,24 +186,37 @@ Private Member Functions</h2></td></tr>
  Handles calling <a class="el" href="class_battle_1_1_view_1_1_effect_1_1_battle_screen_effect_view_controller.html#a8b32db296a518b3d6fb9033e5d0db2a8">ChangeColor</a> in <a class="el" href="#aac9b6aa8c1d555660bb14d5d556e1712">_screenEffectViewController</a>.  <br /></td></tr>
 <tr class="memitem:a22e7685f5d7261c2d156bd8f90a93507" id="r_a22e7685f5d7261c2d156bd8f90a93507"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a22e7685f5d7261c2d156bd8f90a93507">QEventOnLastRowWallDestroyed</a> (<a class="el" href="class_quantum_1_1_event_battle_last_row_wall_destroyed.html">EventBattleLastRowWallDestroyed</a> e)</td></tr>
 <tr class="memdesc:a22e7685f5d7261c2d156bd8f90a93507"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_last_row_wall_destroyed.html" title="Synced event. Used when a last row SoulWall segment is destroyed.">EventBattleLastRowWallDestroyed</a> QuantumEvent.<br  />
- Handles calling <a class="el" href="">DestroyCharacterPart</a> in <a class="el" href="#acc46b7ceca8385392ccfd2dc0a58a48e">_stoneCharacterViewController</a><br  />
- and <a class="el" href="class_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller.html#a70ffc393f830e5684432961603cbb697">SpawnLightray</a> in <a class="el" href="#a896794852386df4328a174e89a5c33a6">_lightrayEffectViewController</a>.  <br /></td></tr>
-<tr class="memitem:a674261ad13e53bcb718a521d16f886af" id="r_a674261ad13e53bcb718a521d16f886af"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a674261ad13e53bcb718a521d16f886af">QEventPlaySoundFX</a> (<a class="el" href="class_quantum_1_1_event_battle_play_sound_f_x.html">EventBattlePlaySoundFX</a> e)</td></tr>
-<tr class="memdesc:a674261ad13e53bcb718a521d16f886af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_play_sound_f_x.html" title="Non-synced Event. Used to play sound effects during battle.">EventBattlePlaySoundFX</a> QuantumEvent.<br  />
- Handles calling <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">PlaySound</a>.  <br /></td></tr>
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_soul_wall_1_1_battle_stone_character_view_controller.html#af324619a5d3863a641c11427ad5ca581">DestroyCharacterPart</a> in <a class="el" href="#acc46b7ceca8385392ccfd2dc0a58a48e">_stoneCharacterViewController</a><br  />
+ and <a class="el" href="class_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller.html#a1273290d21a7d07c1cfaab59a1bf3666">SpawnLightray</a> in <a class="el" href="#a896794852386df4328a174e89a5c33a6">_lightrayEffectViewController</a>.  <br /></td></tr>
+<tr class="memitem:ab0b7f1a28c67866be76f13dff9118d88" id="r_ab0b7f1a28c67866be76f13dff9118d88"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ab0b7f1a28c67866be76f13dff9118d88">QEventPlaySoundFxForAll</a> (<a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_all.html">EventBattlePlaySoundFxForAll</a> e)</td></tr>
+<tr class="memdesc:ab0b7f1a28c67866be76f13dff9118d88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_all.html" title="Non-synced Event. Used to play sound effects during battle for everyone.">EventBattlePlaySoundFxForAll</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">PlaySoundFX</a>.  <br /></td></tr>
+<tr class="memitem:a44cd159d92bce582b4bcbc8d42c75187" id="r_a44cd159d92bce582b4bcbc8d42c75187"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a44cd159d92bce582b4bcbc8d42c75187">QEventPlaySoundFxForTeam</a> (<a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_team.html">EventBattlePlaySoundFxForTeam</a> e)</td></tr>
+<tr class="memdesc:a44cd159d92bce582b4bcbc8d42c75187"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_team.html" title="Non-synced Event. Used to play sound effects during battle for a player&#39;s team.">EventBattlePlaySoundFxForTeam</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">PlaySoundFX</a>.  <br /></td></tr>
+<tr class="memitem:a4d366598af4141c3240c9c8b185bb32b" id="r_a4d366598af4141c3240c9c8b185bb32b"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a4d366598af4141c3240c9c8b185bb32b">QEventPlaySoundFxForPlayer</a> (<a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_player.html">EventBattlePlaySoundFxForPlayer</a> e)</td></tr>
+<tr class="memdesc:a4d366598af4141c3240c9c8b185bb32b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_player.html" title="Non-synced Event. Used to play sound effects during battle for a player.">EventBattlePlaySoundFxForPlayer</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">PlaySoundFX</a>.  <br /></td></tr>
 <tr class="memitem:a60285ddb3b2154f82fd462ab135051c6" id="r_a60285ddb3b2154f82fd462ab135051c6"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a60285ddb3b2154f82fd462ab135051c6">QEventCharacterSelected</a> (<a class="el" href="class_quantum_1_1_event_battle_character_selected.html">EventBattleCharacterSelected</a> e)</td></tr>
-<tr class="memitem:a8c365ce0f88106853660f982d20355e6" id="r_a8c365ce0f88106853660f982d20355e6"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a8c365ce0f88106853660f982d20355e6">QEventOnCharacterTakeDamage</a> (<a class="el" href="class_quantum_1_1_event_battle_character_take_damage.html">EventBattleCharacterTakeDamage</a> e)</td></tr>
-<tr class="memdesc:a8c365ce0f88106853660f982d20355e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_character_take_damage.html" title="Synced event. Used when a character takes damage.">EventBattleCharacterTakeDamage</a> QuantumEvent.<br  />
- Handles calling <a class="el" href="">UpdateHealthVisual</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a9747fb9a87aa5811d6d43c3a8e7ae253">PlayerInfoHandler</a>.  <br /></td></tr>
-<tr class="memitem:a61ca9adc1d3e1de0f1fa79fa2a7f6374" id="r_a61ca9adc1d3e1de0f1fa79fa2a7f6374"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a61ca9adc1d3e1de0f1fa79fa2a7f6374">QEventOnShieldTakeDamage</a> (<a class="el" href="class_quantum_1_1_event_battle_shield_take_damage.html">EventBattleShieldTakeDamage</a> e)</td></tr>
-<tr class="memdesc:a61ca9adc1d3e1de0f1fa79fa2a7f6374"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_shield_take_damage.html" title="Synced event. Used when character&#39;s shield takes damage.">EventBattleShieldTakeDamage</a> QuantumEvent.<br  />
+<tr class="memdesc:a60285ddb3b2154f82fd462ab135051c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_character_selected.html" title="Synced event. Used when a player character is spawned or despawned.">EventBattleCharacterSelected</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a820282853369935ed055b7321b9ae3bf">SetSelected</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a9747fb9a87aa5811d6d43c3a8e7ae253">PlayerInfoHandler</a>.  <br /></td></tr>
+<tr class="memitem:ada86e74cb0b57a2c91e5275c20afa02a" id="r_ada86e74cb0b57a2c91e5275c20afa02a"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ada86e74cb0b57a2c91e5275c20afa02a">QEventOnShieldHit</a> (<a class="el" href="class_quantum_1_1_event_battle_shield_hit.html">EventBattleShieldHit</a> e)</td></tr>
+<tr class="memdesc:ada86e74cb0b57a2c91e5275c20afa02a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_shield_hit.html" title="Synced event. Used when character&#39;s shield gets hit.">EventBattleShieldHit</a> QuantumEvent.<br  />
  Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a59ef1f837271022bf497ec0aaea0f698">UpdateDefenceVisual</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a9747fb9a87aa5811d6d43c3a8e7ae253">PlayerInfoHandler</a>.  <br /></td></tr>
 <tr class="memitem:a36b0ab25ea676636cf44ce4037fc3a40" id="r_a36b0ab25ea676636cf44ce4037fc3a40"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a36b0ab25ea676636cf44ce4037fc3a40">QEventOnGiveUpStateChange</a> (<a class="el" href="class_quantum_1_1_event_battle_give_up_state_change.html">EventBattleGiveUpStateChange</a> e)</td></tr>
 <tr class="memdesc:a36b0ab25ea676636cf44ce4037fc3a40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_give_up_state_change.html" title="Synced event. Used when player changes give up state.">EventBattleGiveUpStateChange</a> QuantumEvent.<br  />
  Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_give_up_button_handler.html#a502ec0ef75c948a6a0ffac91c98bacca">UpdateState</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a5dac5c827d2c24e2777541ddfc444931">GiveUpButtonHandler</a>.  <br /></td></tr>
 <tr class="memitem:a70b8fb92d4a297152ca1bc19473bc7b7" id="r_a70b8fb92d4a297152ca1bc19473bc7b7"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a70b8fb92d4a297152ca1bc19473bc7b7">QEventOnStoneCharacterPlayHitAnimation</a> (<a class="el" href="class_quantum_1_1_event_battle_stone_character_play_hit_animation.html">EventBattleStoneCharacterPlayHitAnimation</a> e)</td></tr>
+<tr class="memdesc:a70b8fb92d4a297152ca1bc19473bc7b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_stone_character_play_hit_animation.html" title="Synced event. Used to play StoneCharacter animations.">EventBattleStoneCharacterPlayHitAnimation</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_soul_wall_1_1_battle_stone_character_view_controller.html#a0f36c82b801e5bb7158389bf0afd644e">PlaySound</a> in <a class="el" href="#acc46b7ceca8385392ccfd2dc0a58a48e">_stoneCharacterViewController</a>.  <br /></td></tr>
+<tr class="memitem:a5e2220a5cdb9df0603b45dc3ed72986c" id="r_a5e2220a5cdb9df0603b45dc3ed72986c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a5e2220a5cdb9df0603b45dc3ed72986c">QEventOnBattleSpecialJoystickVisibilityChange</a> (<a class="el" href="class_quantum_1_1_event_battle_special_joystick_visibility_change.html">EventBattleSpecialJoystickVisibilityChange</a> e)</td></tr>
+<tr class="memdesc:a5e2220a5cdb9df0603b45dc3ed72986c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_special_joystick_visibility_change.html" title="Synced event. Used to change special joystick visibility.">EventBattleSpecialJoystickVisibilityChange</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_joystick_handler.html#a27dcbae6ee746a9ecf36c4020b86843c">SetShow</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a01007f2b53d3c46dc336f9472967d492">JoystickHandler</a>.  <br /></td></tr>
+<tr class="memitem:a1b0d20646bddd0b16af88d3f84f09629" id="r_a1b0d20646bddd0b16af88d3f84f09629"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a1b0d20646bddd0b16af88d3f84f09629">QEventOnBattleCharacterDeath</a> (<a class="el" href="class_quantum_1_1_event_battle_character_death.html">EventBattleCharacterDeath</a> e)</td></tr>
+<tr class="memdesc:a1b0d20646bddd0b16af88d3f84f09629"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_character_death.html" title="Synced event. Used when a player gets hit when his defence is 0 or lower.">EventBattleCharacterDeath</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#af53b875bc29114a046c72fe821145433">MarkCharacterDead</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a9747fb9a87aa5811d6d43c3a8e7ae253">PlayerInfoHandler</a>.  <br /></td></tr>
 <tr class="memitem:ae7ca69bd4c3ff5fefd3d6469802c8264" id="r_ae7ca69bd4c3ff5fefd3d6469802c8264"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ae7ca69bd4c3ff5fefd3d6469802c8264">QEventDebugOnScreenMessage</a> (<a class="el" href="class_quantum_1_1_event_battle_debug_on_screen_message.html">EventBattleDebugOnScreenMessage</a> e)</td></tr>
-<tr class="memdesc:ae7ca69bd4c3ff5fefd3d6469802c8264"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_debug_on_screen_message.html">EventBattleDebugOnScreenMessage</a> QuantumEvent.<br  />
+<tr class="memdesc:ae7ca69bd4c3ff5fefd3d6469802c8264"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private handler method for <a class="el" href="class_quantum_1_1_event_battle_debug_on_screen_message.html" title="Synced event. Used to display debug messages on screen.">EventBattleDebugOnScreenMessage</a> QuantumEvent.<br  />
  Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_announcement_handler.html#a7aa68e2c02645d3f8eba189fd30b84e9">SetDebugtext</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a66606386182817dad71d25067785a18c" title="Reference to BattleUiAnnouncementHandler which handles showing the countdown.">BattleUiController.AnnouncementHandler</a>.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
@@ -304,7 +321,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>Private <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/MonoBehaviour.Awake.html">Awake🡵</a> method. Handles subscribing to QuantumEvents. </p>
 
-<p class="reference">References <a class="el" href="#a24029a2d02516b4ce414759ac09f4ab6">_debugLogger</a>, <a class="el" href="#a28730c96958b9180d9df7d2879f71933">_gridViewController</a>, <a class="el" href="#a896794852386df4328a174e89a5c33a6">_lightrayEffectViewController</a>, <a class="el" href="#acc46b7ceca8385392ccfd2dc0a58a48e">_stoneCharacterViewController</a>, <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html#a60a7e34530eeb066aaea85039f210cab">Battle.QSimulation.BattleDebugLogger.Create()</a>, <a class="el" href="class_battle_1_1_view_1_1_battle_debug_overlay.html#a0bf46c53e4d4eea516286cac13f95e12">Battle.View.BattleDebugOverlay.Init()</a>, <a class="el" href="#a60285ddb3b2154f82fd462ab135051c6">QEventCharacterSelected()</a>, <a class="el" href="#ae7ca69bd4c3ff5fefd3d6469802c8264">QEventDebugOnScreenMessage()</a>, <a class="el" href="#a297bf2368b6ada4d5d31e9bfd4a679c2">QEventOnChangeEmotionState()</a>, <a class="el" href="#a8c365ce0f88106853660f982d20355e6">QEventOnCharacterTakeDamage()</a>, <a class="el" href="#a36b0ab25ea676636cf44ce4037fc3a40">QEventOnGiveUpStateChange()</a>, <a class="el" href="#a22e7685f5d7261c2d156bd8f90a93507">QEventOnLastRowWallDestroyed()</a>, <a class="el" href="#a645266e65bec7b0b0d7a749ec598c0cf">QEventOnSetRotationJoystickVisibility()</a>, <a class="el" href="#a61ca9adc1d3e1de0f1fa79fa2a7f6374">QEventOnShieldTakeDamage()</a>, <a class="el" href="#a791675132e69607dfbbafd92a65e63b7">QEventOnStoneCharacterPieceViewInit()</a>, <a class="el" href="#a70b8fb92d4a297152ca1bc19473bc7b7">QEventOnStoneCharacterPlayHitAnimation()</a>, <a class="el" href="#a8f49a2f6b814df91fafdc967e3a85a93">QEventOnViewActivate()</a>, <a class="el" href="#a92f1a48971de796ec8c7e62eebd51c44">QEventOnViewAllPlayersConnected()</a>, <a class="el" href="#a0fa4da0325750aa22dc2106ea844929f">QEventOnViewGameOver()</a>, <a class="el" href="#a2d43978bc2fa128a5219f6fc095adc1a">QEventOnViewGameStart()</a>, <a class="el" href="#a236506fb9c02c0b0618c341f6610366d">QEventOnViewGetReadyToPlay()</a>, <a class="el" href="#a6e7ef2bbbf35dcfffc7db08d7b05669b">QEventOnViewInit()</a>, <a class="el" href="#ac5fd6972705eda4f3facd8eff7e99f6b">QEventOnViewPlayerConnected()</a>, <a class="el" href="#a3075f0e08806d88f2eb7cf6b2155ce7e">QEventOnViewWaitForPlayers()</a>, <a class="el" href="#a674261ad13e53bcb718a521d16f886af">QEventPlaySoundFX()</a>, and <a class="el" href="#a071395a71273f04f182c46ea971a1ff0">s_instance</a>.</p>
+<p class="reference">References <a class="el" href="#a24029a2d02516b4ce414759ac09f4ab6">_debugLogger</a>, <a class="el" href="#a28730c96958b9180d9df7d2879f71933">_gridViewController</a>, <a class="el" href="#a896794852386df4328a174e89a5c33a6">_lightrayEffectViewController</a>, <a class="el" href="#acc46b7ceca8385392ccfd2dc0a58a48e">_stoneCharacterViewController</a>, <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html#a60a7e34530eeb066aaea85039f210cab">Battle.QSimulation.BattleDebugLogger.Create()</a>, <a class="el" href="class_battle_1_1_view_1_1_battle_debug_overlay.html#a0bf46c53e4d4eea516286cac13f95e12">Battle.View.BattleDebugOverlay.Init()</a>, <a class="el" href="class_battle_1_1_view_1_1_battle_view_registry.html#abb4e210c8d020bc3156234ab2bdde92c">Battle.View.BattleViewRegistry.Init()</a>, <a class="el" href="#a60285ddb3b2154f82fd462ab135051c6">QEventCharacterSelected()</a>, <a class="el" href="#ae7ca69bd4c3ff5fefd3d6469802c8264">QEventDebugOnScreenMessage()</a>, <a class="el" href="#a1b0d20646bddd0b16af88d3f84f09629">QEventOnBattleCharacterDeath()</a>, <a class="el" href="#a5e2220a5cdb9df0603b45dc3ed72986c">QEventOnBattleSpecialJoystickVisibilityChange()</a>, <a class="el" href="#a297bf2368b6ada4d5d31e9bfd4a679c2">QEventOnChangeEmotionState()</a>, <a class="el" href="#a36b0ab25ea676636cf44ce4037fc3a40">QEventOnGiveUpStateChange()</a>, <a class="el" href="#a22e7685f5d7261c2d156bd8f90a93507">QEventOnLastRowWallDestroyed()</a>, <a class="el" href="#a645266e65bec7b0b0d7a749ec598c0cf">QEventOnSetRotationJoystickVisibility()</a>, <a class="el" href="#ada86e74cb0b57a2c91e5275c20afa02a">QEventOnShieldHit()</a>, <a class="el" href="#a791675132e69607dfbbafd92a65e63b7">QEventOnStoneCharacterPieceViewInit()</a>, <a class="el" href="#a70b8fb92d4a297152ca1bc19473bc7b7">QEventOnStoneCharacterPlayHitAnimation()</a>, <a class="el" href="#a8f49a2f6b814df91fafdc967e3a85a93">QEventOnViewActivate()</a>, <a class="el" href="#a92f1a48971de796ec8c7e62eebd51c44">QEventOnViewAllPlayersConnected()</a>, <a class="el" href="#a0fa4da0325750aa22dc2106ea844929f">QEventOnViewGameOver()</a>, <a class="el" href="#a2d43978bc2fa128a5219f6fc095adc1a">QEventOnViewGameStart()</a>, <a class="el" href="#a236506fb9c02c0b0618c341f6610366d">QEventOnViewGetReadyToPlay()</a>, <a class="el" href="#a6e7ef2bbbf35dcfffc7db08d7b05669b">QEventOnViewInit()</a>, <a class="el" href="#ac5fd6972705eda4f3facd8eff7e99f6b">QEventOnViewPlayerConnected()</a>, <a class="el" href="#a3075f0e08806d88f2eb7cf6b2155ce7e">QEventOnViewWaitForPlayers()</a>, <a class="el" href="#ab0b7f1a28c67866be76f13dff9118d88">QEventPlaySoundFxForAll()</a>, <a class="el" href="#a4d366598af4141c3240c9c8b185bb32b">QEventPlaySoundFxForPlayer()</a>, <a class="el" href="#a44cd159d92bce582b4bcbc8d42c75187">QEventPlaySoundFxForTeam()</a>, and <a class="el" href="#a071395a71273f04f182c46ea971a1ff0">s_instance</a>.</p>
 
 </div>
 </div>
@@ -330,6 +347,15 @@ Static Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_character_selected.html" title="Synced event. Used when a player character is spawned or despawned.">EventBattleCharacterSelected</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a820282853369935ed055b7321b9ae3bf">SetSelected</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a9747fb9a87aa5811d6d43c3a8e7ae253">PlayerInfoHandler</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>The event data.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p class="reference">References <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="class_quantum_1_1_event_battle_character_selected.html#a4b636de7f653c239fdc74df66c90b3f7">Quantum.EventBattleCharacterSelected.CharacterNumber</a>, and <a class="el" href="class_quantum_1_1_event_battle_character_selected.html#a8c53def81788b20ae4003c244b4f007a">Quantum.EventBattleCharacterSelected.Slot</a>.</p>
 
@@ -360,7 +386,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_debug_on_screen_message.html">EventBattleDebugOnScreenMessage</a> QuantumEvent.<br  />
+<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_debug_on_screen_message.html" title="Synced event. Used to display debug messages on screen.">EventBattleDebugOnScreenMessage</a> QuantumEvent.<br  />
  Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_announcement_handler.html#a7aa68e2c02645d3f8eba189fd30b84e9">SetDebugtext</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a66606386182817dad71d25067785a18c" title="Reference to BattleUiAnnouncementHandler which handles showing the countdown.">BattleUiController.AnnouncementHandler</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -370,6 +396,82 @@ Static Private Attributes</h2></td></tr>
 </dl>
 
 <p class="reference">References <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, and <a class="el" href="class_quantum_1_1_event_battle_debug_on_screen_message.html#abbe498d9f145fafedc3c5b9cd0e5e79a">Quantum.EventBattleDebugOnScreenMessage.Message</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
+
+</div>
+</div>
+<a id="a1b0d20646bddd0b16af88d3f84f09629" name="a1b0d20646bddd0b16af88d3f84f09629"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b0d20646bddd0b16af88d3f84f09629">&#9670;&#160;</a></span>QEventOnBattleCharacterDeath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.Game.BattleGameViewController.QEventOnBattleCharacterDeath </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_quantum_1_1_event_battle_character_death.html">EventBattleCharacterDeath</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_character_death.html" title="Synced event. Used when a player gets hit when his defence is 0 or lower.">EventBattleCharacterDeath</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#af53b875bc29114a046c72fe821145433">MarkCharacterDead</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a9747fb9a87aa5811d6d43c3a8e7ae253">PlayerInfoHandler</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>The event data.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="reference">References <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="class_quantum_1_1_event_battle_character_death.html#a836ab5048de04834afa0196050fdf2fb">Quantum.EventBattleCharacterDeath.CharacterNumber</a>, and <a class="el" href="class_quantum_1_1_event_battle_character_death.html#a5013fde957a68cb629460f476dbc5eaf">Quantum.EventBattleCharacterDeath.Slot</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
+
+</div>
+</div>
+<a id="a5e2220a5cdb9df0603b45dc3ed72986c" name="a5e2220a5cdb9df0603b45dc3ed72986c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e2220a5cdb9df0603b45dc3ed72986c">&#9670;&#160;</a></span>QEventOnBattleSpecialJoystickVisibilityChange()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.Game.BattleGameViewController.QEventOnBattleSpecialJoystickVisibilityChange </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_quantum_1_1_event_battle_special_joystick_visibility_change.html">EventBattleSpecialJoystickVisibilityChange</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_special_joystick_visibility_change.html" title="Synced event. Used to change special joystick visibility.">EventBattleSpecialJoystickVisibilityChange</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_joystick_handler.html#a27dcbae6ee746a9ecf36c4020b86843c">SetShow</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a01007f2b53d3c46dc336f9472967d492">JoystickHandler</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>The event data.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="reference">References <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="#a590f0ed4b6f979b425d6771c4ddb4dab">LocalPlayerSlot</a>, <a class="el" href="class_quantum_1_1_event_battle_special_joystick_visibility_change.html#a98f3f709a08e202dfe5a3c2d8dabada9">Quantum.EventBattleSpecialJoystickVisibilityChange.Show</a>, and <a class="el" href="class_quantum_1_1_event_battle_special_joystick_visibility_change.html#a93527b0ae1100c1ac773b1a7f60ee154">Quantum.EventBattleSpecialJoystickVisibilityChange.Slot</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
 
@@ -408,44 +510,6 @@ Static Private Attributes</h2></td></tr>
 </dl>
 
 <p class="reference">References <a class="el" href="#aac9b6aa8c1d555660bb14d5d556e1712">_screenEffectViewController</a>, and <a class="el" href="class_quantum_1_1_event_battle_change_emotion_state.html#ac32af220bc3a9081528e69819ccf728c">Quantum.EventBattleChangeEmotionState.Emotion</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
-
-</div>
-</div>
-<a id="a8c365ce0f88106853660f982d20355e6" name="a8c365ce0f88106853660f982d20355e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c365ce0f88106853660f982d20355e6">&#9670;&#160;</a></span>QEventOnCharacterTakeDamage()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Battle.View.Game.BattleGameViewController.QEventOnCharacterTakeDamage </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_quantum_1_1_event_battle_character_take_damage.html">EventBattleCharacterTakeDamage</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_character_take_damage.html" title="Synced event. Used when a character takes damage.">EventBattleCharacterTakeDamage</a> QuantumEvent.<br  />
- Handles calling <a class="el" href="">UpdateHealthVisual</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a9747fb9a87aa5811d6d43c3a8e7ae253">PlayerInfoHandler</a>. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">e</td><td>The event data.</td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="reference">References <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="class_quantum_1_1_event_battle_character_take_damage.html#ade95ba2facbddccd44feb51df35d3893">Quantum.EventBattleCharacterTakeDamage.CharacterNumber</a>, <a class="el" href="class_quantum_1_1_event_battle_character_take_damage.html#ac2e78fd2520f0922a2682e5566d63c87">Quantum.EventBattleCharacterTakeDamage.HealthPercentage</a>, <a class="el" href="#a56c2fafbe09c9d4a3815401e954acf98">LocalPlayerTeam</a>, <a class="el" href="class_quantum_1_1_event_battle_character_take_damage.html#a333e115e4361afecead22f0e058be698">Quantum.EventBattleCharacterTakeDamage.Slot</a>, and <a class="el" href="class_quantum_1_1_event_battle_character_take_damage.html#a57fe2cf1acfa245cde3c206bf5785dfa">Quantum.EventBattleCharacterTakeDamage.Team</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
 
@@ -513,8 +577,8 @@ Static Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_last_row_wall_destroyed.html" title="Synced event. Used when a last row SoulWall segment is destroyed.">EventBattleLastRowWallDestroyed</a> QuantumEvent.<br  />
- Handles calling <a class="el" href="">DestroyCharacterPart</a> in <a class="el" href="#acc46b7ceca8385392ccfd2dc0a58a48e">_stoneCharacterViewController</a><br  />
- and <a class="el" href="class_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller.html#a70ffc393f830e5684432961603cbb697">SpawnLightray</a> in <a class="el" href="#a896794852386df4328a174e89a5c33a6">_lightrayEffectViewController</a>. </p>
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_soul_wall_1_1_battle_stone_character_view_controller.html#af324619a5d3863a641c11427ad5ca581">DestroyCharacterPart</a> in <a class="el" href="#acc46b7ceca8385392ccfd2dc0a58a48e">_stoneCharacterViewController</a><br  />
+ and <a class="el" href="class_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller.html#a1273290d21a7d07c1cfaab59a1bf3666">SpawnLightray</a> in <a class="el" href="#a896794852386df4328a174e89a5c33a6">_lightrayEffectViewController</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">e</td><td>The event data.</td></tr>
@@ -522,7 +586,7 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="#a896794852386df4328a174e89a5c33a6">_lightrayEffectViewController</a>, <a class="el" href="#acc46b7ceca8385392ccfd2dc0a58a48e">_stoneCharacterViewController</a>, <a class="el" href="class_quantum_1_1_event_battle_last_row_wall_destroyed.html#a081464cbea81e4b91311a5ea000a336b">Quantum.EventBattleLastRowWallDestroyed.LightrayColor</a>, <a class="el" href="class_quantum_1_1_event_battle_last_row_wall_destroyed.html#a917502dbe1d515d3183adad323ce69a3">Quantum.EventBattleLastRowWallDestroyed.Team</a>, and <a class="el" href="class_quantum_1_1_event_battle_last_row_wall_destroyed.html#a6324ea7fa1bc154ac3ef3a1a0f944d26">Quantum.EventBattleLastRowWallDestroyed.WallNumber</a>.</p>
+<p class="reference">References <a class="el" href="#a896794852386df4328a174e89a5c33a6">_lightrayEffectViewController</a>, <a class="el" href="#acc46b7ceca8385392ccfd2dc0a58a48e">_stoneCharacterViewController</a>, <a class="el" href="class_quantum_1_1_event_battle_last_row_wall_destroyed.html#a917502dbe1d515d3183adad323ce69a3">Quantum.EventBattleLastRowWallDestroyed.Team</a>, and <a class="el" href="class_quantum_1_1_event_battle_last_row_wall_destroyed.html#a6324ea7fa1bc154ac3ef3a1a0f944d26">Quantum.EventBattleLastRowWallDestroyed.WallNumber</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
 
@@ -566,8 +630,8 @@ Static Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a61ca9adc1d3e1de0f1fa79fa2a7f6374" name="a61ca9adc1d3e1de0f1fa79fa2a7f6374"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61ca9adc1d3e1de0f1fa79fa2a7f6374">&#9670;&#160;</a></span>QEventOnShieldTakeDamage()</h2>
+<a id="ada86e74cb0b57a2c91e5275c20afa02a" name="ada86e74cb0b57a2c91e5275c20afa02a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada86e74cb0b57a2c91e5275c20afa02a">&#9670;&#160;</a></span>QEventOnShieldHit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -576,9 +640,9 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Battle.View.Game.BattleGameViewController.QEventOnShieldTakeDamage </td>
+          <td class="memname">void Battle.View.Game.BattleGameViewController.QEventOnShieldHit </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_quantum_1_1_event_battle_shield_take_damage.html">EventBattleShieldTakeDamage</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="class_quantum_1_1_event_battle_shield_hit.html">EventBattleShieldHit</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -589,7 +653,7 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_shield_take_damage.html" title="Synced event. Used when character&#39;s shield takes damage.">EventBattleShieldTakeDamage</a> QuantumEvent.<br  />
+<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_shield_hit.html" title="Synced event. Used when character&#39;s shield gets hit.">EventBattleShieldHit</a> QuantumEvent.<br  />
  Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a59ef1f837271022bf497ec0aaea0f698">UpdateDefenceVisual</a> in <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController's</a> <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#a9747fb9a87aa5811d6d43c3a8e7ae253">PlayerInfoHandler</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -598,7 +662,7 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="class_quantum_1_1_event_battle_shield_take_damage.html#ad82961401024eafcf63b9d69883da945">Quantum.EventBattleShieldTakeDamage.CharacterNumber</a>, <a class="el" href="class_quantum_1_1_event_battle_shield_take_damage.html#a5ea170eda4bf95a7747e9c86cd100d41">Quantum.EventBattleShieldTakeDamage.DefencePercentage</a>, <a class="el" href="#a56c2fafbe09c9d4a3815401e954acf98">LocalPlayerTeam</a>, <a class="el" href="class_quantum_1_1_event_battle_shield_take_damage.html#afa6d653bbba2a99cb4ae3f1c1afd3215">Quantum.EventBattleShieldTakeDamage.Slot</a>, and <a class="el" href="class_quantum_1_1_event_battle_shield_take_damage.html#a24282dc15380a85edcd8e8f214d8de02">Quantum.EventBattleShieldTakeDamage.Team</a>.</p>
+<p class="reference">References <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="class_quantum_1_1_event_battle_shield_hit.html#ab5a220902859c1049ac23bdea1e662fb">Quantum.EventBattleShieldHit.CharacterNumber</a>, <a class="el" href="class_quantum_1_1_event_battle_shield_hit.html#acad9a81579dc1ae046d9abceb5f3db85">Quantum.EventBattleShieldHit.DefencePercentage</a>, <a class="el" href="class_quantum_1_1_event_battle_shield_hit.html#a6923e2d80f0a480d52245140f6d7f07c">Quantum.EventBattleShieldHit.DefenceUpdateVisual</a>, <a class="el" href="#a56c2fafbe09c9d4a3815401e954acf98">LocalPlayerTeam</a>, <a class="el" href="class_quantum_1_1_event_battle_shield_hit.html#a5cc7c0d9215c7fde020e9eeef29f963c">Quantum.EventBattleShieldHit.Slot</a>, and <a class="el" href="class_quantum_1_1_event_battle_shield_hit.html#a1352f8ff90a7631260b2eae8a1b262dc">Quantum.EventBattleShieldHit.Team</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
 
@@ -664,6 +728,15 @@ Static Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_stone_character_play_hit_animation.html" title="Synced event. Used to play StoneCharacter animations.">EventBattleStoneCharacterPlayHitAnimation</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_soul_wall_1_1_battle_stone_character_view_controller.html#a0f36c82b801e5bb7158389bf0afd644e">PlaySound</a> in <a class="el" href="#acc46b7ceca8385392ccfd2dc0a58a48e">_stoneCharacterViewController</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>The event data.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p class="reference">References <a class="el" href="#acc46b7ceca8385392ccfd2dc0a58a48e">_stoneCharacterViewController</a>, <a class="el" href="class_quantum_1_1_event_battle_stone_character_play_hit_animation.html#a440f377d1e34a4645aa47fb7a205af97">Quantum.EventBattleStoneCharacterPlayHitAnimation.Emotion</a>, and <a class="el" href="class_quantum_1_1_event_battle_stone_character_play_hit_animation.html#aa12e9784d542238db1bb67fa0dd35e5b">Quantum.EventBattleStoneCharacterPlayHitAnimation.Team</a>.</p>
 
@@ -895,7 +968,7 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="#a28730c96958b9180d9df7d2879f71933">_gridViewController</a>, <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a16ca38b17c6a36f527d69cda9581191d">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.GetSlot()</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#ad3a33cbca221e93bbd4807b86a032a47">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.GetTeammateHandle()</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a03700760e98869117c18e8b9e0d5526c">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.GetTeamNumber()</a>, <a class="el" href="#a590f0ed4b6f979b425d6771c4ddb4dab">LocalPlayerSlot</a>, <a class="el" href="#a56c2fafbe09c9d4a3815401e954acf98">LocalPlayerTeam</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a9014fa34c29fc8f403c3a8c83096c08c">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.PlayerRef</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_overlay_link.html#aec235fd03f2acb4f509c490676170043">Battle.QSimulation.BattleDebugOverlayLink.SetLocalPlayerSlot()</a>, and <a class="el" href="class_battle_1_1_view_1_1_utils.html#a1dabb47c0763c06d0c72037a1a2bdb92">Battle.View.Utils.TryGetQuantumFrame()</a>.</p>
+<p class="reference">References <a class="el" href="#a28730c96958b9180d9df7d2879f71933">_gridViewController</a>, <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a16ca38b17c6a36f527d69cda9581191d">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.GetSlot()</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#ad3a33cbca221e93bbd4807b86a032a47">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.GetTeammateHandle()</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#a03700760e98869117c18e8b9e0d5526c">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.GetTeamNumber()</a>, <a class="el" href="#a590f0ed4b6f979b425d6771c4ddb4dab">LocalPlayerSlot</a>, <a class="el" href="#a56c2fafbe09c9d4a3815401e954acf98">LocalPlayerTeam</a>, <a class="el" href="struct_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager_1_1_player_handle.html#afc0a98b9e6b52951afc08106b5e67c1a">Battle.QSimulation.Player.BattlePlayerManager.PlayerHandle.PlayerRef</a>, <a class="el" href="#a4cddc3983b141f0e477ae6d34a66e32f">QGame</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_overlay_link.html#aec235fd03f2acb4f509c490676170043">Battle.QSimulation.BattleDebugOverlayLink.SetLocalPlayerSlot()</a>, and <a class="el" href="class_battle_1_1_view_1_1_utils.html#a1dabb47c0763c06d0c72037a1a2bdb92">Battle.View.Utils.TryGetQuantumFrame()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
 
@@ -925,7 +998,7 @@ Static Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_view_player_connected.html" title="Synced event. Used when a player connects to the game.">EventBattleViewPlayerConnected</a> QuantumEvent.<br  />
- Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_load_screen_handler.html#a0479b03846063a0d346e3945d7026d70">PlayerConnected</a> through <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a> with the slot and character IDs of the connected player. </p>
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_load_screen_handler.html#a73af78f19a2ffcce9dab2d2493fcb117">PlayerConnected</a> through <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a> with the slot and character IDs of the connected player. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">e</td><td>The event data.</td></tr>
@@ -933,7 +1006,7 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="class_quantum_1_1_runtime_player.html#a70f73bcfbfcc2fe0b9992422601987f8">Quantum.RuntimePlayer.Characters</a>, <a class="el" href="struct_quantum_1_1_battle_character_base.html#adb0c15b9c2ad31a9a29bb0f0d291ad4b">Quantum.BattleCharacterBase.Class</a>, <a class="el" href="class_quantum_1_1_event_battle_view_player_connected.html#a183f28329c8e1815a6a5231661f78106">Quantum.EventBattleViewPlayerConnected.Data</a>, <a class="el" href="struct_quantum_1_1_battle_character_base.html#aed282906908289f7c0eca77955ef6965">Quantum.BattleCharacterBase.Id</a>, and <a class="el" href="class_quantum_1_1_runtime_player.html#abf48489ad33bb49a51eb94b0e3b4895a">Quantum.RuntimePlayer.PlayerSlot</a>.</p>
+<p class="reference">References <a class="el" href="#ada0bd19c2aae88eac9d5831366e0e8c3">_uiController</a>, <a class="el" href="class_quantum_1_1_runtime_player.html#a70f73bcfbfcc2fe0b9992422601987f8">Quantum.RuntimePlayer.Characters</a>, <a class="el" href="struct_quantum_1_1_battle_character_base.html#a8703aa9d690584a1d965b7f885b55454">Quantum.BattleCharacterBase.Class</a>, <a class="el" href="class_quantum_1_1_event_battle_view_player_connected.html#a183f28329c8e1815a6a5231661f78106">Quantum.EventBattleViewPlayerConnected.Data</a>, <a class="el" href="struct_quantum_1_1_battle_character_base.html#a0ab27075aebe5a0af9ae933e805ca1cc">Quantum.BattleCharacterBase.Id</a>, and <a class="el" href="class_quantum_1_1_runtime_player.html#abf48489ad33bb49a51eb94b0e3b4895a">Quantum.RuntimePlayer.PlayerSlot</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
 
@@ -977,8 +1050,8 @@ Static Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a674261ad13e53bcb718a521d16f886af" name="a674261ad13e53bcb718a521d16f886af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a674261ad13e53bcb718a521d16f886af">&#9670;&#160;</a></span>QEventPlaySoundFX()</h2>
+<a id="ab0b7f1a28c67866be76f13dff9118d88" name="ab0b7f1a28c67866be76f13dff9118d88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0b7f1a28c67866be76f13dff9118d88">&#9670;&#160;</a></span>QEventPlaySoundFxForAll()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -987,9 +1060,9 @@ Static Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void Battle.View.Game.BattleGameViewController.QEventPlaySoundFX </td>
+          <td class="memname">void Battle.View.Game.BattleGameViewController.QEventPlaySoundFxForAll </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_quantum_1_1_event_battle_play_sound_f_x.html">EventBattlePlaySoundFX</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_all.html">EventBattlePlaySoundFxForAll</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1000,8 +1073,8 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_play_sound_f_x.html" title="Non-synced Event. Used to play sound effects during battle.">EventBattlePlaySoundFX</a> QuantumEvent.<br  />
- Handles calling <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">PlaySound</a>. </p>
+<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_all.html" title="Non-synced Event. Used to play sound effects during battle for everyone.">EventBattlePlaySoundFxForAll</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">PlaySoundFX</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">e</td><td>The event data.</td></tr>
@@ -1009,7 +1082,83 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="class_quantum_1_1_event_battle_play_sound_f_x.html#a8243561d43992b0633814e4e4f8d59a8">Quantum.EventBattlePlaySoundFX.Effect</a>, and <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">Battle.View.Audio.BattleAudioViewController.PlaySoundFX()</a>.</p>
+<p class="reference">References <a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_all.html#a707368541a41f72179e9d5dbce716457">Quantum.EventBattlePlaySoundFxForAll.Effect</a>, and <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">Battle.View.Audio.BattleAudioViewController.PlaySoundFX()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
+
+</div>
+</div>
+<a id="a4d366598af4141c3240c9c8b185bb32b" name="a4d366598af4141c3240c9c8b185bb32b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d366598af4141c3240c9c8b185bb32b">&#9670;&#160;</a></span>QEventPlaySoundFxForPlayer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.Game.BattleGameViewController.QEventPlaySoundFxForPlayer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_player.html">EventBattlePlaySoundFxForPlayer</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_player.html" title="Non-synced Event. Used to play sound effects during battle for a player.">EventBattlePlaySoundFxForPlayer</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">PlaySoundFX</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>The event data.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="reference">References <a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_player.html#a310554d397b84be265419da1419b2165">Quantum.EventBattlePlaySoundFxForPlayer.Effect</a>, <a class="el" href="#a590f0ed4b6f979b425d6771c4ddb4dab">LocalPlayerSlot</a>, <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">Battle.View.Audio.BattleAudioViewController.PlaySoundFX()</a>, and <a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_player.html#a464f468e7612b6c05894b4e83423acda">Quantum.EventBattlePlaySoundFxForPlayer.Slot</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
+
+</div>
+</div>
+<a id="a44cd159d92bce582b4bcbc8d42c75187" name="a44cd159d92bce582b4bcbc8d42c75187"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44cd159d92bce582b4bcbc8d42c75187">&#9670;&#160;</a></span>QEventPlaySoundFxForTeam()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.Game.BattleGameViewController.QEventPlaySoundFxForTeam </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_team.html">EventBattlePlaySoundFxForTeam</a></td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Private handler method for <a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_team.html" title="Non-synced Event. Used to play sound effects during battle for a player&#39;s team.">EventBattlePlaySoundFxForTeam</a> QuantumEvent.<br  />
+ Handles calling <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">PlaySoundFX</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">e</td><td>The event data.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="reference">References <a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_team.html#afc9b8d096b6582dfb46524830a84c405">Quantum.EventBattlePlaySoundFxForTeam.Effect</a>, <a class="el" href="#a56c2fafbe09c9d4a3815401e954acf98">LocalPlayerTeam</a>, <a class="el" href="class_battle_1_1_view_1_1_audio_1_1_battle_audio_view_controller.html#a0128bd0c13fb0ddabfc35c35d677c783">Battle.View.Audio.BattleAudioViewController.PlaySoundFX()</a>, and <a class="el" href="class_quantum_1_1_event_battle_play_sound_fx_for_team.html#a80da822a2fa2a2a8c18e9a893331b4e8">Quantum.EventBattlePlaySoundFxForTeam.Team</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>.</p>
 
@@ -1039,7 +1188,7 @@ Static Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Public method that gets called when the local player selected another character.<br  />
- Calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a5852c549916347477056a90489388e7e" title="Called when the player presses one of the character selection buttons.">BattlePlayerInput.OnCharacterSelected</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>. </p>
+ Calls BattlePlayerInput.OnCharacterSelected method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">characterNumber</td><td>The character number which the local player selected.</td></tr>
@@ -1081,8 +1230,8 @@ Static Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a6a3e56eb6cd215a4ff34737ceeccf47b" name="a6a3e56eb6cd215a4ff34737ceeccf47b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6a3e56eb6cd215a4ff34737ceeccf47b">&#9670;&#160;</a></span>UiInputOnJoystickMovement()</h2>
+<a id="a8c2fdeadd284660def9e65bb49fb7663" name="a8c2fdeadd284660def9e65bb49fb7663"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c2fdeadd284660def9e65bb49fb7663">&#9670;&#160;</a></span>UiInputOnJoystickMovement()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1093,8 +1242,12 @@ Static Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">void Battle.View.Game.BattleGameViewController.UiInputOnJoystickMovement </td>
           <td>(</td>
-          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>input</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a></td>          <td class="paramname"><span class="paramname"><em>state</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -1104,10 +1257,11 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Public method that gets called when local player gives movement joystick input. Calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#af650fbe02ca3509b7f88ae0ad117797c">OnJoystickMovement</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>. </p>
+<p>Public method that gets called when local player gives movement joystick input. Calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a4db63fbdb222f80ac41e59874da4663f">QueueJoystickMovement</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">input</td><td>The movement direction Vector2.</td></tr>
+    <tr><td class="paramname">state</td><td><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">Quantum.BattleJoystickState</a> of the joystick.</td></tr>
+    <tr><td class="paramname">value</td><td>The movement direction Vector2.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1116,8 +1270,8 @@ Static Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae84cca2dd113c4a16f7d5ca2a6ef3b03" name="ae84cca2dd113c4a16f7d5ca2a6ef3b03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae84cca2dd113c4a16f7d5ca2a6ef3b03">&#9670;&#160;</a></span>UiInputOnJoystickRotation()</h2>
+<a id="a5e4973d89f39a837aa854901da5a647d" name="a5e4973d89f39a837aa854901da5a647d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e4973d89f39a837aa854901da5a647d">&#9670;&#160;</a></span>UiInputOnJoystickRotation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1128,8 +1282,12 @@ Static Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">void Battle.View.Game.BattleGameViewController.UiInputOnJoystickRotation </td>
           <td>(</td>
-          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>input</em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a></td>          <td class="paramname"><span class="paramname"><em>state</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">float</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -1139,10 +1297,51 @@ Static Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Public method that gets called when local player gives rotation joystick input. Calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a739d0f225c8d379c6a23000bea4c4011">OnJoystickRotation</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>. </p>
+<p>Public method that gets called when local player gives rotation joystick input. Calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#aeb6fc649471ffa30819a14f0fe26ab80">QueueJoystickRotation</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">input</td><td>The rotation input as float.</td></tr>
+    <tr><td class="paramname">state</td><td><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">Quantum.BattleJoystickState</a> of the joystick.</td></tr>
+    <tr><td class="paramname">value</td><td>The rotation input as float.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="reference">References <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>.</p>
+
+</div>
+</div>
+<a id="af0a15478f553a1f692cf1e1680de19f3" name="af0a15478f553a1f692cf1e1680de19f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0a15478f553a1f692cf1e1680de19f3">&#9670;&#160;</a></span>UiInputOnJoystickSpecial()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Battle.View.Game.BattleGameViewController.UiInputOnJoystickSpecial </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">BattleJoystickState</a></td>          <td class="paramname"><span class="paramname"><em>state</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Vector2</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Public method that gets called when local player gives special joystick input. calls <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a92d4b7ca8e8f1b34e79a5eb649872fae">QueueJoystickSpecial</a> method in <a class="el" href="#a5dd91c14666c74c7d92b4d2fe75690e1">_playerInput</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td><a class="el" href="namespace_quantum.html#ae058b4f8c57650cd8685af3c6e12c863">Quantum.BattleJoystickState</a> of the joystick.</td></tr>
+    <tr><td class="paramname">value</td><td>The special input as Vector2</td></tr>
   </table>
   </dd>
 </dl>
@@ -1391,7 +1590,7 @@ Static Private Attributes</h2></td></tr>
 <p>[SerializeField] Reference to <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html" title="Player input Unity MonoBehaviour script🡵.  Handles subscribing to QuantumCallBack and polling player ...">BattlePlayerInput</a> which polls player input for Quantum. </p>
 <p><a class="el" href="#BattleGameViewController-SerializeFields" title="BattleGameViewController-SerializeFields">BattleGameViewController-SerializeFields</a> </p>
 
-<p class="reference">Referenced by <a class="el" href="#a1ee961d343079d9a11ffa48675b62862">UiInputOnCharacterSelected()</a>, <a class="el" href="#a6a3e56eb6cd215a4ff34737ceeccf47b">UiInputOnJoystickMovement()</a>, <a class="el" href="#ae84cca2dd113c4a16f7d5ca2a6ef3b03">UiInputOnJoystickRotation()</a>, and <a class="el" href="#a54b335e4c42c2bd64fa894b8ab995e21">UiInputOnLocalPlayerGiveUp()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a1ee961d343079d9a11ffa48675b62862">UiInputOnCharacterSelected()</a>, <a class="el" href="#a8c2fdeadd284660def9e65bb49fb7663">UiInputOnJoystickMovement()</a>, <a class="el" href="#a5e4973d89f39a837aa854901da5a647d">UiInputOnJoystickRotation()</a>, <a class="el" href="#af0a15478f553a1f692cf1e1680de19f3">UiInputOnJoystickSpecial()</a>, and <a class="el" href="#a54b335e4c42c2bd64fa894b8ab995e21">UiInputOnLocalPlayerGiveUp()</a>.</p>
 
 </div>
 </div>
@@ -1472,7 +1671,7 @@ Static Private Attributes</h2></td></tr>
 <p>[SerializeField] Reference to <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html" title="Main controller for Battle UI.  BattleGameViewController accesses the [UI Handlers] scripts through t...">BattleUiController</a> which holds references to all of the <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_controller.html#UIHandlerReferences" title="UIHandlerReferences">UIHandlerReferences</a> scripts. </p>
 <p><a class="el" href="#BattleGameViewController-SerializeFields" title="BattleGameViewController-SerializeFields">BattleGameViewController-SerializeFields</a> </p>
 
-<p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>, <a class="el" href="#a60285ddb3b2154f82fd462ab135051c6">QEventCharacterSelected()</a>, <a class="el" href="#ae7ca69bd4c3ff5fefd3d6469802c8264">QEventDebugOnScreenMessage()</a>, <a class="el" href="#a8c365ce0f88106853660f982d20355e6">QEventOnCharacterTakeDamage()</a>, <a class="el" href="#a36b0ab25ea676636cf44ce4037fc3a40">QEventOnGiveUpStateChange()</a>, <a class="el" href="#a645266e65bec7b0b0d7a749ec598c0cf">QEventOnSetRotationJoystickVisibility()</a>, <a class="el" href="#a61ca9adc1d3e1de0f1fa79fa2a7f6374">QEventOnShieldTakeDamage()</a>, <a class="el" href="#a8f49a2f6b814df91fafdc967e3a85a93">QEventOnViewActivate()</a>, <a class="el" href="#a92f1a48971de796ec8c7e62eebd51c44">QEventOnViewAllPlayersConnected()</a>, <a class="el" href="#a0fa4da0325750aa22dc2106ea844929f">QEventOnViewGameOver()</a>, <a class="el" href="#a2d43978bc2fa128a5219f6fc095adc1a">QEventOnViewGameStart()</a>, <a class="el" href="#a236506fb9c02c0b0618c341f6610366d">QEventOnViewGetReadyToPlay()</a>, <a class="el" href="#a6e7ef2bbbf35dcfffc7db08d7b05669b">QEventOnViewInit()</a>, <a class="el" href="#ac5fd6972705eda4f3facd8eff7e99f6b">QEventOnViewPlayerConnected()</a>, <a class="el" href="#a3075f0e08806d88f2eb7cf6b2155ce7e">QEventOnViewWaitForPlayers()</a>, and <a class="el" href="#a424d73c3514a744e12e4b1d19106819f">Update()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a6fbc2da1dc47fe8b37983b3593f6bec5">Awake()</a>, <a class="el" href="#a60285ddb3b2154f82fd462ab135051c6">QEventCharacterSelected()</a>, <a class="el" href="#ae7ca69bd4c3ff5fefd3d6469802c8264">QEventDebugOnScreenMessage()</a>, <a class="el" href="#a1b0d20646bddd0b16af88d3f84f09629">QEventOnBattleCharacterDeath()</a>, <a class="el" href="#a5e2220a5cdb9df0603b45dc3ed72986c">QEventOnBattleSpecialJoystickVisibilityChange()</a>, <a class="el" href="#a36b0ab25ea676636cf44ce4037fc3a40">QEventOnGiveUpStateChange()</a>, <a class="el" href="#a645266e65bec7b0b0d7a749ec598c0cf">QEventOnSetRotationJoystickVisibility()</a>, <a class="el" href="#ada86e74cb0b57a2c91e5275c20afa02a">QEventOnShieldHit()</a>, <a class="el" href="#a8f49a2f6b814df91fafdc967e3a85a93">QEventOnViewActivate()</a>, <a class="el" href="#a92f1a48971de796ec8c7e62eebd51c44">QEventOnViewAllPlayersConnected()</a>, <a class="el" href="#a0fa4da0325750aa22dc2106ea844929f">QEventOnViewGameOver()</a>, <a class="el" href="#a2d43978bc2fa128a5219f6fc095adc1a">QEventOnViewGameStart()</a>, <a class="el" href="#a236506fb9c02c0b0618c341f6610366d">QEventOnViewGetReadyToPlay()</a>, <a class="el" href="#a6e7ef2bbbf35dcfffc7db08d7b05669b">QEventOnViewInit()</a>, <a class="el" href="#ac5fd6972705eda4f3facd8eff7e99f6b">QEventOnViewPlayerConnected()</a>, <a class="el" href="#a3075f0e08806d88f2eb7cf6b2155ce7e">QEventOnViewWaitForPlayers()</a>, and <a class="el" href="#a424d73c3514a744e12e4b1d19106819f">Update()</a>.</p>
 
 </div>
 </div>
@@ -1525,7 +1724,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>The local player's <a class="el" href="namespace_quantum.html#a5d8482e2ed68dc153e9fee6463afb096" title="Which PlayerSlot the {Player} is on.">BattlePlayerSlot</a>. </p>
 
-<p class="reference">Referenced by <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#adffc49354e93158e12e57f28f24dd84a">Battle.View.UI.BattleUiPlayerInfoHandler.GetPlayerInfoComponent()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#aad0902d6fa897a1b5bf63f93d0d49fd4">Battle.View.Player.BattlePlayerViewController.OnActivate()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a42097a6ff71df956fe7c8228e0d76ac1">Battle.View.Player.BattlePlayerInput.PollInput()</a>, <a class="el" href="#a645266e65bec7b0b0d7a749ec598c0cf">QEventOnSetRotationJoystickVisibility()</a>, <a class="el" href="#a6e7ef2bbbf35dcfffc7db08d7b05669b">QEventOnViewInit()</a>, <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a820282853369935ed055b7321b9ae3bf">Battle.View.UI.BattleUiPlayerInfoHandler.SetSelected()</a>, and <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_give_up_button_handler.html#a502ec0ef75c948a6a0ffac91c98bacca">Battle.View.UI.BattleUiGiveUpButtonHandler.UpdateState()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#adffc49354e93158e12e57f28f24dd84a">Battle.View.UI.BattleUiPlayerInfoHandler.GetPlayerInfoComponent()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a42097a6ff71df956fe7c8228e0d76ac1">Battle.View.Player.BattlePlayerInput.PollInput()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_character_class100_view_controller_test.html#a3acf3f0bf17efefeddecea3b07b71a86">Battle.View.Player.BattlePlayerCharacterClass100ViewControllerTest.QEventOnAimIndicatorUpdate()</a>, <a class="el" href="#a5e2220a5cdb9df0603b45dc3ed72986c">QEventOnBattleSpecialJoystickVisibilityChange()</a>, <a class="el" href="#a645266e65bec7b0b0d7a749ec598c0cf">QEventOnSetRotationJoystickVisibility()</a>, <a class="el" href="#a6e7ef2bbbf35dcfffc7db08d7b05669b">QEventOnViewInit()</a>, <a class="el" href="#a4d366598af4141c3240c9c8b185bb32b">QEventPlaySoundFxForPlayer()</a>, <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_player_info_handler.html#a820282853369935ed055b7321b9ae3bf">Battle.View.UI.BattleUiPlayerInfoHandler.SetSelected()</a>, and <a class="el" href="class_battle_1_1_view_1_1_u_i_1_1_battle_ui_give_up_button_handler.html#a502ec0ef75c948a6a0ffac91c98bacca">Battle.View.UI.BattleUiGiveUpButtonHandler.UpdateState()</a>.</p>
 
 </div>
 </div>
@@ -1551,7 +1750,7 @@ Static Private Attributes</h2></td></tr>
 
 <p>The local player's <a class="el" href="namespace_quantum.html#af501a8e3ee76de01918fd817b508d2cf" title="Enum that defines the teams in battle.">BattleTeamNumber</a>. </p>
 
-<p class="reference">Referenced by <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#ae17cd5c75df81b46413cab5e0d54b13a">Battle.View.Player.BattlePlayerInput.GetMovementInput()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a0011bd1983581fc38d7ba20f99e0a313">Battle.View.Player.BattlePlayerInput.GetRotationInput()</a>, <a class="el" href="class_battle_1_1_view_1_1_diamond_1_1_battle_diamond_view_controller.html#a75780a9115dd6ba236b738b0424da333">Battle.View.Diamond.BattleDiamondViewController.OnActivate()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_view_controller.html#aad0902d6fa897a1b5bf63f93d0d49fd4">Battle.View.Player.BattlePlayerViewController.OnActivate()</a>, <a class="el" href="class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a4ea1f7811feb3a0429b422632a65d12b">Battle.View.Projectile.BattleProjectileViewController.OnActivate()</a>, <a class="el" href="#a8c365ce0f88106853660f982d20355e6">QEventOnCharacterTakeDamage()</a>, <a class="el" href="#a36b0ab25ea676636cf44ce4037fc3a40">QEventOnGiveUpStateChange()</a>, <a class="el" href="#a61ca9adc1d3e1de0f1fa79fa2a7f6374">QEventOnShieldTakeDamage()</a>, <a class="el" href="#a8f49a2f6b814df91fafdc967e3a85a93">QEventOnViewActivate()</a>, <a class="el" href="#a0fa4da0325750aa22dc2106ea844929f">QEventOnViewGameOver()</a>, <a class="el" href="#a6e7ef2bbbf35dcfffc7db08d7b05669b">QEventOnViewInit()</a>, <a class="el" href="#abb42aa3ebd18229dba078a772ddeae80">UiInputOnExitGamePressed()</a>, and <a class="el" href="#a424d73c3514a744e12e4b1d19106819f">Update()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_view_1_1_effect_1_1_battle_lightray_effect_view_controller.html#a1273290d21a7d07c1cfaab59a1bf3666">Battle.View.Effect.BattleLightrayEffectViewController.ActivateLightray()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#ae17cd5c75df81b46413cab5e0d54b13a">Battle.View.Player.BattlePlayerInput.GetMovementInput()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a0011bd1983581fc38d7ba20f99e0a313">Battle.View.Player.BattlePlayerInput.GetRotationInput()</a>, <a class="el" href="class_battle_1_1_view_1_1_diamond_1_1_battle_diamond_view_controller.html#a75780a9115dd6ba236b738b0424da333">Battle.View.Diamond.BattleDiamondViewController.OnActivate()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller.html#a53a429ca275750035969ed25e410ec66">Battle.View.Player.BattlePlayerCharacterViewController.OnActivate()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_shield_view_controller.html#ad43b3c1f04f6fa9191cafd5d4a0673ee">Battle.View.Player.BattlePlayerShieldViewController.OnActivate()</a>, <a class="el" href="class_battle_1_1_view_1_1_projectile_1_1_battle_projectile_view_controller.html#a4ea1f7811feb3a0429b422632a65d12b">Battle.View.Projectile.BattleProjectileViewController.OnActivate()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_character_class100_view_controller_test.html#a3acf3f0bf17efefeddecea3b07b71a86">Battle.View.Player.BattlePlayerCharacterClass100ViewControllerTest.QEventOnAimIndicatorUpdate()</a>, <a class="el" href="#a36b0ab25ea676636cf44ce4037fc3a40">QEventOnGiveUpStateChange()</a>, <a class="el" href="#ada86e74cb0b57a2c91e5275c20afa02a">QEventOnShieldHit()</a>, <a class="el" href="#a8f49a2f6b814df91fafdc967e3a85a93">QEventOnViewActivate()</a>, <a class="el" href="#a0fa4da0325750aa22dc2106ea844929f">QEventOnViewGameOver()</a>, <a class="el" href="#a6e7ef2bbbf35dcfffc7db08d7b05669b">QEventOnViewInit()</a>, <a class="el" href="#a44cd159d92bce582b4bcbc8d42c75187">QEventPlaySoundFxForTeam()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller.html#ac55e013da86cace4d63354cc488dce6d">Battle.View.Player.BattlePlayerCharacterViewController.SetHandOnShieldSprite()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_character_view_controller.html#aac9f13dd8288856f9796bdc009f24282">Battle.View.Player.BattlePlayerCharacterViewController.StunCoroutine()</a>, <a class="el" href="#abb42aa3ebd18229dba078a772ddeae80">UiInputOnExitGamePressed()</a>, and <a class="el" href="#a424d73c3514a744e12e4b1d19106819f">Update()</a>.</p>
 
 </div>
 </div>
@@ -1577,7 +1776,33 @@ Static Private Attributes</h2></td></tr>
 
 <p>Reference to the projectile's <a href="https://docs.unity3d.com/2022.3/Documentation/ScriptReference/GameObject.html">GameObject🡵</a>. </p>
 
-<p class="reference">Referenced by <a class="el" href="#a16fef4902dfe829d17bf467d2bd10dc9">AssignProjectileReference()</a>, and <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_class_projector_view_controller.html#ac66920deea96c959f8b9f38da33ed63f">Battle.View.Player.BattlePlayerClassProjectorViewController.OnUpdateView()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a16fef4902dfe829d17bf467d2bd10dc9">AssignProjectileReference()</a>, and <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_shield_class400_view_controller.html#a06359695ad8d0e73548d10482a4eb4ef">Battle.View.Player.BattlePlayerShieldClass400ViewController.OnUpdateView()</a>.</p>
+
+</div>
+</div>
+<a id="a4cddc3983b141f0e477ae6d34a66e32f" name="a4cddc3983b141f0e477ae6d34a66e32f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cddc3983b141f0e477ae6d34a66e32f">&#9670;&#160;</a></span>QGame</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QuantumGame Battle.View.Game.BattleGameViewController.QGame</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel get">get</span><span class="mlabel private-set">private set</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The <a class="el" href="namespace_quantum.html" title="Quantum&#39;s Build-in Namespace.   Contains Quantum&#39;s own code and Battle Simulation code that is genera...">Quantum</a> game. </p>
+
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a962d245d69e6d6f4bb0f6214e6a3a96a">Battle.View.Player.BattlePlayerInput.CommandSendActivateAbility()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#a0b8dd48fc46bcba161256a2a9de2c326">Battle.View.Player.BattlePlayerInput.CommandSendGiveUp()</a>, <a class="el" href="class_battle_1_1_view_1_1_player_1_1_battle_player_input.html#aed72f4acfc4f00a75057a8cb1d7d5975">Battle.View.Player.BattlePlayerInput.CommandSendSwapCharacter()</a>, and <a class="el" href="#a6e7ef2bbbf35dcfffc7db08d7b05669b">QEventOnViewInit()</a>.</p>
 
 </div>
 </div>

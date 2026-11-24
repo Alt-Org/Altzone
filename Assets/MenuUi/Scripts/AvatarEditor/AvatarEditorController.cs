@@ -6,6 +6,8 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 using MenuUi.Scripts.Window;
+using Altzone.Scripts.ReferenceSheets;
+using Altzone.Scripts.Model.Poco.Game;
 
 namespace MenuUi.Scripts.AvatarEditor
 {
@@ -27,6 +29,8 @@ namespace MenuUi.Scripts.AvatarEditor
 
         private PlayerData _currentPlayerData;
         private PlayerAvatar _playerAvatar;
+        private CharacterClassType _characterClassType;
+        private Action<CharacterClassType, AvatarData> _saveOverride = null;
 
         void Start()
         {
@@ -35,7 +39,16 @@ namespace MenuUi.Scripts.AvatarEditor
 
             UpdateCellSizes();
 
-            _saveButton.onClick.AddListener(() => _popUpHandler.ShowPopUp());
+            _saveButton.onClick.AddListener(() =>
+            {
+                if(_saveOverride != null)
+                {
+                    AvatarData avatarData = FormatAvatarData(_playerAvatar);
+                    _saveOverride(_characterClassType, avatarData);
+                }
+                else
+                    _popUpHandler.ShowPopUp();
+            });
 
             _popUpHandler.AddConfirmButtonListener(() =>
             {
@@ -81,6 +94,7 @@ namespace MenuUi.Scripts.AvatarEditor
         {
             AspectRatioChangeDetector.OnAspectRatioChange -= UpdateCellSizes;
             OverlayPanelCheck.Instance?.ToggleChat(true);
+            _popUpHandler.HidePopUp();
         }
 
         private void UpdateCellSizes()
@@ -101,8 +115,12 @@ namespace MenuUi.Scripts.AvatarEditor
                 yield break;
 
             _currentPlayerData = playerData;
-            SetAllAvatarFeatures();
-            _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData.AvatarData));
+            if (playerData.SelectedCharacterId != 0 && playerData.SelectedCharacterId != -1)
+            {
+                _characterClassType = (CharacterClassType)((_currentPlayerData.SelectedCharacterId / 100) * 100);
+                SetAllAvatarFeatures();
+                _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(playerData.AvatarData));
+            }
         }
 
         private IEnumerator SaveAvatarData()
@@ -111,18 +129,7 @@ namespace MenuUi.Scripts.AvatarEditor
             PlayerData playerData = null;
             PlayerData savePlayerData = _currentPlayerData;
 
-            savePlayerData.AvatarData = new(_playerAvatar.Name,
-                null,
-                _playerAvatar.SkinColor,
-                null,
-                new Vector2(1, 1));
-
-            var features = Enum.GetValues(typeof(AvatarPiece));
-            foreach (AvatarPiece feature in features)
-            {
-                AssignPartToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartId(feature));
-                AssignColorToPlayerData(savePlayerData.AvatarData, feature, _playerAvatar.GetPartColor(feature));
-            }
+            savePlayerData.AvatarData = FormatAvatarData(_playerAvatar);
             StartCoroutine(SavePlayerData(savePlayerData, p => playerData = p));
             yield return new WaitUntil(() => ((timeout != null) || (playerData != null)));
 
@@ -153,7 +160,7 @@ namespace MenuUi.Scripts.AvatarEditor
             if (_currentPlayerData.AvatarData == null || !_currentPlayerData.AvatarData.Validate())
             {
                 Debug.LogError("AvatarData is null! Using default data.");
-                _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
+                _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar(_characterClassType));
             }
             else
             {
@@ -164,17 +171,34 @@ namespace MenuUi.Scripts.AvatarEditor
             _categoryLoader.UpdateSlotImages();
         }
 
+        public void SetPresetAvatar(CharacterClassType characterClass)
+        {
+            _characterClassType = characterClass;
+
+            _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar(characterClass));
+
+            _featureSetter.SetLoadedFeatures(_playerAvatar);
+            _categoryLoader.UpdateSlotImages();
+            _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(AvatarReference.Instance.GetDefaultAvatar(characterClass))));
+        }
+
 
         private void SetDefaultAvatar()
         {
-            _playerAvatar = new(_avatarDefaultReference.GetByCharacterId(_currentPlayerData.SelectedCharacterId)[0]);
-
+            _playerAvatar = new(AvatarReference.Instance.GetDefaultAvatar(_characterClassType));
             _featureSetter.SetLoadedFeatures(_playerAvatar);
+            _categoryLoader.UpdateSlotImages();
+            _avatarLoader.UpdateVisuals(AvatarDesignLoader.Instance.CreateAvatarVisualData(new AvatarData(AvatarReference.Instance.GetDefaultAvatar(_characterClassType))));
         }
 
         private void RevertAvatarChanges()
         {
             SetAllAvatarFeatures();
+        }
+
+        public void SetSaveOverride(Action<CharacterClassType, AvatarData> saveOverride)
+        {
+            _saveOverride = saveOverride;
         }
 
         private void AssignColorToPlayerData(AvatarData playerAvatarData, AvatarPiece feature, string color)
@@ -255,6 +279,25 @@ namespace MenuUi.Scripts.AvatarEditor
         public PlayerAvatar PlayerAvatar
         {
             get { return _playerAvatar; }
+        }
+
+        private AvatarData FormatAvatarData(PlayerAvatar playerAvatar)
+        {
+            if (playerAvatar == null) return null;
+
+            AvatarData avatarData = new(playerAvatar.Name,
+            null,
+            playerAvatar.SkinColor,
+            null,
+            new Vector2(1, 1));
+
+            var features = Enum.GetValues(typeof(AvatarPiece));
+            foreach (AvatarPiece feature in features)
+            {
+                AssignPartToPlayerData(avatarData, feature, playerAvatar.GetPartId(feature));
+                AssignColorToPlayerData(avatarData, feature, playerAvatar.GetPartColor(feature));
+            }
+            return avatarData;
         }
     }
 }

@@ -12,6 +12,7 @@ public enum LogInStatus
     CheckSettingsData,
     FetchPlayerData,
     FetchClanData,
+    ConnectingMQTT,
     Finished,
     MovingToMain
 }
@@ -77,24 +78,34 @@ namespace MenuUi.Scripts.Loader
                     {
                         case LogInStatus.LogIn:
                             _infoText.text = "Logging in";
+                            _loadingBar.value = 3f / 7f;
                             break;
                         case LogInStatus.VersionCheck:
                             _infoText.text = "Checking version data";
+                            _loadingBar.value = 1f / 7f;
                             break;
                         case LogInStatus.FetchPlayerData:
                             _infoText.text = "Fetching player info";
+                            _loadingBar.value = 4f / 7f;
                             break;
                         case LogInStatus.FetchClanData:
                             _infoText.text = "Fetching clan info";
+                            _loadingBar.value = 5f / 7f;
+                            break;
+                        case LogInStatus.ConnectingMQTT:
+                            _infoText.text = "Establishing MQTT connection";
+                            _loadingBar.value = 6f / 7f;
                             break;
                         case LogInStatus.Finished:
                             _infoText.text = "Press here to continue.";
+                            _loadingBar.value = 7f / 7f;
                             break;
                         case LogInStatus.MovingToMain:
                             _infoText.text = "Moving to Main Menu";
                             break;
                         case LogInStatus.CheckSettingsData:
                             _infoText.text = "Checking settings";
+                            _loadingBar.value = 1f / 7f;
                             break;
                         default:
                             break;
@@ -106,30 +117,34 @@ namespace MenuUi.Scripts.Loader
                     {
                         case LogInStatus.LogIn:
                             _infoText.text = "Kirjaudutaan sisään";
-                            _loadingBar.value = 3f / 6f;
+                            _loadingBar.value = 3f / 7f;
                             break;
                         case LogInStatus.VersionCheck:
                             _infoText.text = "Tarkistetaan versio dataa";
-                            _loadingBar.value = 2f / 6f;
+                            _loadingBar.value = 2f / 7f;
                             break;
                         case LogInStatus.FetchPlayerData:
                             _infoText.text = "Haetaan pelaajan tietoja";
-                            _loadingBar.value = 4f / 6f;
+                            _loadingBar.value = 4f / 7f;
                             break;
                         case LogInStatus.FetchClanData:
                             _infoText.text = "Haetaan klaanin tietoja";
-                            _loadingBar.value = 5f / 6f;
+                            _loadingBar.value = 5f / 7f;
+                            break;
+                        case LogInStatus.ConnectingMQTT:
+                            _infoText.text = "Yhdistetään MQTT-palvelimeen";
+                            _loadingBar.value = 6f / 7f;
                             break;
                         case LogInStatus.Finished:
                             _infoText.text = "Paina tästä siirtyäksesi pääikkunaan.";
-                            _loadingBar.value = 6f / 6f;
+                            _loadingBar.value = 7f / 7f;
                             break;
                         case LogInStatus.MovingToMain:
                             _infoText.text = "Siirrytään pääikkunaan";
                             break;
                         case LogInStatus.CheckSettingsData:
                             _infoText.text = "Tarkistetaan asetuksia";
-                            _loadingBar.value = 1f / 6f;
+                            _loadingBar.value = 1f / 7f;
                             break;
                         default:
                             break;

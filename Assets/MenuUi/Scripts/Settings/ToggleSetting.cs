@@ -16,10 +16,12 @@ public class ToggleSetting : MonoBehaviour
         _toggle = GetComponent<Toggle>();
         _carrier = SettingsCarrier.Instance;
 
-        GetSavedValue();
+        if (_toggle && _carrier)
+        {
+            _toggle.onValueChanged.AddListener(ChangeValue);
+            GetSavedValue();
+        }
     }
-
-    private void OnEnable() { if (_toggle && _carrier) GetSavedValue(); }
 
     private void GetSavedValue()
     {
@@ -27,7 +29,9 @@ public class ToggleSetting : MonoBehaviour
 
         bool? value = _carrier.GetBoolValue(_type);
 
-        bool newValue = value ?? (PlayerPrefs.GetInt(_name, 0) != 0);
+        value ??= _carrier.GetBoolValue(_name);
+
+        bool newValue = value ?? false; //?? (PlayerPrefs.GetInt(_name, 0) != 0);
 
         if (_toggle.isOn != newValue) _ignoreChange = true;
 
@@ -35,19 +39,21 @@ public class ToggleSetting : MonoBehaviour
     }
 
 
-    public void ChangeValue()
+    public void ChangeValue(bool value)
     {
         if(!CheckValidity() || _ignoreChange)
         {
             _ignoreChange = false;
             return;
         }
+        bool valueFound = _carrier.SetBoolValue(_type, value);
 
-        bool valueFound = _carrier.SetBoolValue(_type);
+        if (!valueFound) valueFound = _carrier.SetBoolValue(_name, value);
 
         if (!valueFound) return;
 
-        PlayerPrefs.SetInt(_name, _toggle.isOn ? 1 : 0);
+        //PlayerPrefs.SetInt(_name, _toggle.isOn ? 1 : 0);
+
     }
 
     private bool CheckValidity()

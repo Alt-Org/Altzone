@@ -167,7 +167,7 @@ namespace Battle.View.UI
                     break;
 
                 case ButtonInfoState.LocalGiveUp:
-                    _giveUpButtonInfoText.text = "You want to give up";
+                    _giveUpButtonInfoText.text = "You want to give up\nClick to cancel";
                     break;
 
                 case ButtonInfoState.TeammateGiveUp:

@@ -69,7 +69,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 512
     resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 1
@@ -178,7 +178,7 @@ TextureImporter:
       bones:
       - name: bone_1
         guid: cf0f5f6cd784fed4ea22d0e22f2cee79
-        position: {x: 20.408417, y: 3.9152222, z: 0}
+        position: {x: 20.408386, y: 3.9152222, z: 0}
         rotation: {x: 0, y: 0, z: 0.7154166, w: 0.69869816}
         length: 33.342327
         parentId: -1
@@ -339,18 +339,22 @@ TextureImporter:
       spriteID: b954248ec92ca614c9021bfd940fac9d
       internalID: 1433589366
       vertices:
-      - {x: 292, y: 244}
-      - {x: 276.072, y: 275.944}
-      - {x: 256.142, y: 250.428}
-      - {x: 275.41602, y: 238}
-      indices: 000000000300000001000000010000000300000002000000
+      - {x: 282.819, y: 238.313}
+      - {x: 293, y: 250.75}
+      - {x: 274.138, y: 276.965}
+      - {x: 256.203, y: 251.025}
+      - {x: 260.349, y: 243.825}
+      - {x: 276.191, y: 237.288}
+      indices: 000000000500000001000000010000000300000002000000010000000400000003000000010000000500000004000000
       edges:
       - {x: 0, y: 1}
-      - {x: 0, y: 3}
+      - {x: 0, y: 5}
       - {x: 1, y: 2}
       - {x: 2, y: 3}
+      - {x: 3, y: 4}
+      - {x: 4, y: 5}
       weights:
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -358,7 +362,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -366,7 +370,7 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0
@@ -374,7 +378,23 @@ TextureImporter:
         boneIndex[1]: 0
         boneIndex[2]: 0
         boneIndex[3]: 0
-      - weight[0]: 0
+      - weight[0]: 1
+        weight[1]: 0
+        weight[2]: 0
+        weight[3]: 0
+        boneIndex[0]: 0
+        boneIndex[1]: 0
+        boneIndex[2]: 0
+        boneIndex[3]: 0
+      - weight[0]: 1
+        weight[1]: 0
+        weight[2]: 0
+        weight[3]: 0
+        boneIndex[0]: 0
+        boneIndex[1]: 0
+        boneIndex[2]: 0
+        boneIndex[3]: 0
+      - weight[0]: 1
         weight[1]: 0
         weight[2]: 0
         weight[3]: 0

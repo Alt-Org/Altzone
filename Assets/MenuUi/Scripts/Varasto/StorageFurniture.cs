@@ -50,8 +50,10 @@ namespace MenuUi.Scripts.Storage
         public string Name { get => _name;}
         public string Id { get => _id;}
         public Sprite Sprite { get => _info.Image;}
-        public string VisibleName { get => _info.VisibleName;}
-        public string SetName { get => _info.SetName; }
+        public string VisibleName => _info.VisibleName;
+        public string SetName => _info.SetName;
+        public string Description => _info.ArtisticDescription;
+
         public FurnitureRarity Rarity { get => _rarity; }
         public Vector2Int Position { get => _position; set => _position = value; }
         public int Room { get => _room; set => _room = value; }

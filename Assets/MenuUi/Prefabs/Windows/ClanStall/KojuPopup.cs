@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 using Altzone.Scripts.ReferenceSheets;
 using Altzone.Scripts.Model.Poco.Game;
 
@@ -11,10 +12,16 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Button denyButton;
     [SerializeField] private Button increasePriceButton;
     [SerializeField] private Button decreasePriceButton;
+    [SerializeField] private Button removeButton;
+    [SerializeField] private Image confirmImage;
+    [SerializeField] private GameObject denyButtonGO;
+    [SerializeField] private GameObject removeButtonGO;
 
     [Header("Price UI")]
     [SerializeField] private TMP_InputField priceInput;
     [SerializeField] private TMP_Text kojuPriceText;
+    [SerializeField] private GameObject inputBar;
+    [SerializeField] private TMP_Text removeKojuPriceText;
 
     [Header("Info UI")]
     [SerializeField] private TMP_Text nameText;
@@ -25,10 +32,16 @@ public class KojuPopup : MonoBehaviour
     [SerializeField] private Image iconImage;
     [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text artistNameText;
+    [SerializeField] private Image removeIconImage;
+    [SerializeField] private TMP_Text removeNameText;
+    [SerializeField] private TMP_Text removeSetNameText;
 
     [Header("Panels")]
     [SerializeField] private GameObject infoObject;
     [SerializeField] private GameObject removePopup;
+    [SerializeField] private GameObject kojuPanel;
+    [SerializeField] private KojuSorting kojuContent;
+    [SerializeField] private GameObject furnitureTray;
 
     [Header("Remove Confirmation")]
     [SerializeField] private Button removeConfirmButton;
@@ -37,6 +50,7 @@ public class KojuPopup : MonoBehaviour
     [Header("Backgrounds")]
     [SerializeField] private Image infoBoxBackground;
     [SerializeField] private Image removePopupBackground;
+    [SerializeField] private TMP_Text chooseText;
 
     [Header("Rarity Color Reference")]
     [SerializeField] private RarityColourReference rarityColourReference;
@@ -91,8 +105,8 @@ public class KojuPopup : MonoBehaviour
         rarityText.text = $"Rarity: {rarityEnum}";
 
         // Price fields
-        priceInput.text = currentPrice.ToString("0.0");
-        kojuPriceText.text = $"Value: {currentPrice:0.0}";
+        priceInput.text = currentPrice.ToString("0");
+        kojuPriceText.text = $"Value: {currentPrice:0}";
 
         // Description
         descriptionText.text = cardUI.GetDescriptionText();
@@ -106,6 +120,33 @@ public class KojuPopup : MonoBehaviour
         {
             infoBoxBackground.color = rarityColor;
         }
+
+        if (iconImage.enabled == false)
+        {
+            iconImage.enabled = true;
+        }
+        if (!inputBar.active)
+        {
+            inputBar.SetActive(true);
+        }
+        if (confirmButton.enabled == false)
+        {
+            confirmButton.enabled = true;
+            confirmImage.color = new Vector4(255f, 255f, 255f, 1f);
+        }
+        if (chooseText.enabled == true)
+        {
+            chooseText.enabled = false;
+        }
+        if (itemMover.AssignedSlot != null)
+        {
+            if (!removeButtonGO.active)
+            {
+                removeButtonGO.SetActive(true);
+                removeButton.onClick.AddListener(() => OpenRemovePopup(currentCard));
+            }
+            if (kojuPanel.active) { kojuPanel.SetActive(false); }
+        }
     }
 
     // Opens the popup in removal confirmation mode
@@ -116,10 +157,30 @@ public class KojuPopup : MonoBehaviour
 
         // Apply rarity color to the background in RemovePopup
         var cardUI = card.GetComponent<FurnitureCardUI>();
-        if (cardUI != null && removePopupBackground != null)
+
+        if (cardUI != null)
         {
-            Color rarityColor = cardUI.GetRarityColor();
-            removePopupBackground.color = rarityColor;
+            if (removePopupBackground != null)
+            {
+                Color rarityColor = cardUI.GetRarityColor();
+                removePopupBackground.color = rarityColor;
+            }
+
+            if (removeIconImage != null && removeKojuPriceText != null)
+            {
+                Sprite cardIconImage = cardUI.GetIcon();
+                removeIconImage.sprite = cardIconImage;
+                float cardPrice = cardUI.GetValue();
+                removeKojuPriceText.text = cardPrice.ToString();
+            }
+
+            if (removeNameText != null && removeSetNameText != null)
+            {
+                string cardNameText = cardUI.GetNameText();
+                removeNameText.text = cardNameText;
+                string cardSetNameText = cardUI.GetSetNameText();
+                removeSetNameText.text = cardSetNameText;
+            }
         }
 
         removePopup.SetActive(true);
@@ -176,7 +237,7 @@ public class KojuPopup : MonoBehaviour
         gameObject.GetComponent<DailyTaskProgressListener>().UpdateProgress("1");
 
         // Moves the item, see ItemMover.cs
-        itemMover?.ExecuteMove();
+        if (itemMover.AssignedSlot == null) { itemMover?.ExecuteMove(); }
         Close();
     }
 
@@ -197,6 +258,19 @@ public class KojuPopup : MonoBehaviour
         infoObject.SetActive(false);
         removePopup.SetActive(false);
         gameObject.SetActive(false);
+
+        iconImage.enabled = false;
+        inputBar.SetActive(false);
+        confirmButton.enabled = false;
+        confirmImage.color = new Vector4(255f, 255f, 255f, 0.2f);
+        chooseText.enabled = true;
+        removeButtonGO.SetActive(false);
+
+        if (kojuPanel != null)
+        {
+            kojuPanel.SetActive(true);
+            furnitureTray.SetActive(false);
+        }
     }
 
     public void ToggleInfo(GameObject target)

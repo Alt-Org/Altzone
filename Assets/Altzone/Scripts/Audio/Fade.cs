@@ -37,14 +37,7 @@ namespace Altzone.Scripts.Audio
                 _fadeCoroutine = null;
             }
 
-            if (_textMeshProUGUI != null) _textMeshProUGUI.alpha = 1f;
-
-            if (_image != null)
-            {
-                Color tempColor = _image.color;
-                tempColor.a = 1f;
-                _image.color = tempColor;
-            }
+            SetElements(1f);
         }
 
         public void StartFadeOperation(FadeType type, bool forceOneWay = false)
@@ -85,31 +78,23 @@ namespace Altzone.Scripts.Audio
 
                 float progress = type == FadeType.Out ? Mathf.Lerp(1f, 0f, timer / _fadeDuration) : Mathf.Lerp(0f, 1f, timer / _fadeDuration);
 
-                if (_textMeshProUGUI != null) _textMeshProUGUI.alpha = progress;
-
-                if (_image != null)
-                {
-                    Color tempColor = _image.color;
-                    tempColor.a = progress;
-                    _image.color = tempColor;
-                }
+                SetElements(progress);
             }
 
             done(true);
         }
 
-        public void SetAlphaVisibility(bool visible)
+        public void SetAlphaVisibility(bool visible) { SetElements(visible ? 1f : 0f); }
+
+        private void SetElements(float progress)
         {
-            float progress = visible ? 1f : 0f;
+            if (_textMeshProUGUI) _textMeshProUGUI.alpha = progress;
 
-            if (_textMeshProUGUI != null) _textMeshProUGUI.alpha = progress;
+            if (!_image) return;
 
-            if (_image != null)
-            {
-                Color tempColor = _image.color;
-                tempColor.a = progress;
-                _image.color = tempColor;
-            }
+            Color tempColor = _image.color;
+            tempColor.a = progress;
+            _image.color = tempColor;
         }
     }
 }

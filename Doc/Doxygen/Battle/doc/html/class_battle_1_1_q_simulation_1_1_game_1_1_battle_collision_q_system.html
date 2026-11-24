@@ -106,6 +106,7 @@ Inheritance diagram for Battle.QSimulation.Game.BattleCollisionQSystem:</div>
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:ProjectileCollisionData" id="r_ProjectileCollisionData"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_projectile_collision_data.html">ProjectileCollisionData</a></td></tr>
+<tr class="memitem:PlayerClass100ProjectileCollisionData" id="r_PlayerClass100ProjectileCollisionData"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_class100_projectile_collision_data.html">PlayerClass100ProjectileCollisionData</a></td></tr>
 <tr class="memitem:ArenaBorderCollisionData" id="r_ArenaBorderCollisionData"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_arena_border_collision_data.html">ArenaBorderCollisionData</a></td></tr>
 <tr class="memitem:SoulWallCollisionData" id="r_SoulWallCollisionData"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_soul_wall_collision_data.html">SoulWallCollisionData</a></td></tr>
 <tr class="memitem:PlayerCharacterCollisionData" id="r_PlayerCharacterCollisionData"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_battle_1_1_q_simulation_1_1_game_1_1_battle_collision_q_system_1_1_player_character_collision_data.html">PlayerCharacterCollisionData</a></td></tr>
@@ -124,6 +125,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a0308deff9bfbafe619f9550768f79008" id="r_a0308deff9bfbafe619f9550768f79008"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a0308deff9bfbafe619f9550768f79008">Init</a> ()</td></tr>
 <tr class="memdesc:a0308deff9bfbafe619f9550768f79008"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes this classes <a class="el" href="class_battle_1_1_q_simulation_1_1_battle_debug_logger.html" title="Provides custom debug logging methods for use in Battle to apply consistant formatting to all Log mes...">BattleDebugLogger</a> instance.<br  />
  This method is exclusively for debug logging purposes.  <br /></td></tr>
+<tr class="memitem:a8fd079ed87b3e500232b8f79b158647f" id="r_a8fd079ed87b3e500232b8f79b158647f"><td class="memItemLeft">static <a class="el" href="struct_quantum_1_1_battle_collision_trigger_q_component.html">BattleCollisionTriggerQComponent</a>&#160;</td><td class="memItemRight"><a class="el" href="#a8fd079ed87b3e500232b8f79b158647f">CreateCollisionTriggerComponent</a> (<a class="el" href="namespace_quantum.html#aa0ccecf0db3f0191c0c1228c4a6c8d81">BattleCollisionTriggerType</a> triggerType)</td></tr>
+<tr class="memdesc:a8fd079ed87b3e500232b8f79b158647f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="struct_quantum_1_1_battle_collision_trigger_q_component.html" title="Component that marks the entity as a collision trigger and contains the type of the collision trigger...">BattleCollisionTriggerQComponent</a> with the given <a class="el" href="namespace_quantum.html#aa0ccecf0db3f0191c0c1228c4a6c8d81" title="Quantum.BattleCollisionTriggerType">BattleCollisionTriggerType</a>.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-static-attribs" class="groupheader"><a id="pri-static-attribs" name="pri-static-attribs"></a>
 Static Private Attributes</h2></td></tr>
@@ -135,6 +138,42 @@ Static Private Attributes</h2></td></tr>
  Handles all collisions in the game. Reacts only when it receives a signal upon collision. </p>
 <p>This system reacts to ISignalOnTrigger2D signals. Depending on which entities are colliding, the appropriate methods in other systems are called. </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="a8fd079ed87b3e500232b8f79b158647f" name="a8fd079ed87b3e500232b8f79b158647f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fd079ed87b3e500232b8f79b158647f">&#9670;&#160;</a></span>CreateCollisionTriggerComponent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="struct_quantum_1_1_battle_collision_trigger_q_component.html">BattleCollisionTriggerQComponent</a> Battle.QSimulation.Game.BattleCollisionQSystem.CreateCollisionTriggerComponent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_quantum.html#aa0ccecf0db3f0191c0c1228c4a6c8d81">BattleCollisionTriggerType</a></td>          <td class="paramname"><span class="paramname"><em>triggerType</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a <a class="el" href="struct_quantum_1_1_battle_collision_trigger_q_component.html" title="Component that marks the entity as a collision trigger and contains the type of the collision trigger...">BattleCollisionTriggerQComponent</a> with the given <a class="el" href="namespace_quantum.html#aa0ccecf0db3f0191c0c1228c4a6c8d81" title="Quantum.BattleCollisionTriggerType">BattleCollisionTriggerType</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">triggerType</td><td><a class="el" href="namespace_quantum.html#aa0ccecf0db3f0191c0c1228c4a6c8d81" title="Identifies the type of a collision trigger.   Used by the BattleCollisionTriggerQComponent.">BattleCollisionTriggerType</a> the component needs to be.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The newly created component.</dd></dl>
+
+<p class="reference">Referenced by <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_manager.html#a537f2ef8fefcdec16e38bd5b2575b2a2">Battle.QSimulation.Player.BattlePlayerManager.CreatePlayers()</a>, and <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_shield_manager.html#ad79ea5a3ea3af9b6a223411c7f50a8d8">Battle.QSimulation.Player.BattlePlayerShieldManager.CreateShields()</a>.</p>
+
+</div>
+</div>
 <a id="a0308deff9bfbafe619f9550768f79008" name="a0308deff9bfbafe619f9550768f79008"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0308deff9bfbafe619f9550768f79008">&#9670;&#160;</a></span>Init()</h2>
 
@@ -206,7 +245,7 @@ Static Private Attributes</h2></td></tr>
   </dd>
 </dl>
 
-<p class="reference">References <a class="el" href="namespace_quantum.html#aa0ccecf0db3f0191c0c1228c4a6c8d81a232013438c229f59e2e4405a98c6ce27">Quantum.ArenaBorder</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#aebfa17f07b65f43bd2972a43e8ce38de">Battle.QSimulation.Projectile.BattleProjectileQSystem.IsCollisionFlagSet()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#a0beaa4e2219849930814883916db8973">Battle.QSimulation.Projectile.BattleProjectileQSystem.OnProjectileCollision()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_goal_1_1_battle_goal_q_system.html#a777a381bfe27b22907f4a9c91d415dfb">Battle.QSimulation.Goal.BattleGoalQSystem.OnProjectileHitGoal()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#a630ace578497ff35ea8a5b6296aaaaec">Battle.QSimulation.Player.BattlePlayerClassManager.OnProjectileHitPlayerCharacter()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#ac5e9d061e06d95d4e1d7655c8f1797c4">Battle.QSimulation.Player.BattlePlayerQSystem.OnProjectileHitPlayerCharacter()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#ac028437f1ced6e85fb98d220a69c2320">Battle.QSimulation.Player.BattlePlayerClassManager.OnProjectileHitPlayerShield()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a74d94db718d866f55b5745acd1a41c59">Battle.QSimulation.Player.BattlePlayerQSystem.OnProjectileHitPlayerShield()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_diamond_1_1_battle_diamond_q_system.html#a618ffd20c5e6d04d7b8f2a8e7dc4abe8">Battle.QSimulation.Diamond.BattleDiamondQSystem.OnProjectileHitSoulWall()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_soul_wall_1_1_battle_soul_wall_q_system.html#aa732a28472d9f351615ce8d358682719">Battle.QSimulation.SoulWall.BattleSoulWallQSystem.OnProjectileHitSoulWall()</a>, and <a class="el" href="#aea20bfce42cbeb908d779340933ca05d">s_debugLogger</a>.</p>
+<p class="reference">References <a class="el" href="namespace_quantum.html#aa0ccecf0db3f0191c0c1228c4a6c8d81a232013438c229f59e2e4405a98c6ce27">Quantum.ArenaBorder</a>, <a class="el" href="struct_quantum_1_1_battle_projectile_q_component.html#a43e58c6894bfe470276a919faf1541e4">Quantum.BattleProjectileQComponent.EmotionBase</a>, <a class="el" href="struct_quantum_1_1_battle_projectile_q_component.html#acd43ed8b057cdc79d04dfe11fc0d7188">Quantum.BattleProjectileQComponent.EmotionCurrent</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#aebfa17f07b65f43bd2972a43e8ce38de">Battle.QSimulation.Projectile.BattleProjectileQSystem.IsCollisionFlagSet()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_projectile_1_1_battle_projectile_q_system.html#a0beaa4e2219849930814883916db8973">Battle.QSimulation.Projectile.BattleProjectileQSystem.OnProjectileCollision()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class100_projectile_q_system.html#a047f8fead9c17ad49f284ce565ef0be8">Battle.QSimulation.Player.BattlePlayerClass100ProjectileQSystem.OnProjectileHitArenaBorder()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class100_projectile_q_system.html#afc1a9e5a2c9ed3ab1c7ed24538bea70e">Battle.QSimulation.Player.BattlePlayerClass100ProjectileQSystem.OnProjectileHitEmotionProjectile()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_goal_1_1_battle_goal_q_system.html#a777a381bfe27b22907f4a9c91d415dfb">Battle.QSimulation.Goal.BattleGoalQSystem.OnProjectileHitGoal()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class100_projectile_q_system.html#a068391f51bb5afe32a704431fbe8102c">Battle.QSimulation.Player.BattlePlayerClass100ProjectileQSystem.OnProjectileHitObstacle()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#a630ace578497ff35ea8a5b6296aaaaec">Battle.QSimulation.Player.BattlePlayerClassManager.OnProjectileHitPlayerCharacter()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#ac5e9d061e06d95d4e1d7655c8f1797c4">Battle.QSimulation.Player.BattlePlayerQSystem.OnProjectileHitPlayerCharacter()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_class_manager.html#ac028437f1ced6e85fb98d220a69c2320">Battle.QSimulation.Player.BattlePlayerClassManager.OnProjectileHitPlayerShield()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_player_1_1_battle_player_q_system.html#a74d94db718d866f55b5745acd1a41c59">Battle.QSimulation.Player.BattlePlayerQSystem.OnProjectileHitPlayerShield()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_diamond_1_1_battle_diamond_q_system.html#a618ffd20c5e6d04d7b8f2a8e7dc4abe8">Battle.QSimulation.Diamond.BattleDiamondQSystem.OnProjectileHitSoulWall()</a>, <a class="el" href="class_battle_1_1_q_simulation_1_1_soul_wall_1_1_battle_soul_wall_q_system.html#aa732a28472d9f351615ce8d358682719">Battle.QSimulation.SoulWall.BattleSoulWallQSystem.OnProjectileHitSoulWall()</a>, <a class="el" href="struct_quantum_1_1_battle_projectile_trigger_q_component.html#a842eda0130078a4eda21f9d397795b82">Quantum.BattleProjectileTriggerQComponent.ProjectileEntityRef</a>, and <a class="el" href="#aea20bfce42cbeb908d779340933ca05d">s_debugLogger</a>.</p>
 
 </div>
 </div>

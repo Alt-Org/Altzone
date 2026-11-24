@@ -1,0 +1,109 @@
+/// @file BattlePlayerCharacterClassBaseViewController.cs
+/// <summary>
+/// Contains @cref{Battle.View.Player,BattlePlayerCharacterClassBaseViewController} class,
+/// which is an abstract base class for the character class view controllers to extend.<br/>
+/// Works together with @cref{Battle.View.Player,BattlePlayerCharacterViewController}, which handles the shared player character view logic.
+/// </summary>
+
+// Unity usings
+using UnityEngine;
+
+// Quantum usings
+using Quantum;
+
+namespace Battle.View.Player
+{
+    /// <summary>
+    /// <span class="brief-h">%Abstract base character class view controller <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html">Unity MonoBehaviour script@u-exlink</a>.</span><br/>
+    /// Abstract base class for the character class view controllers to extend.
+    /// </summary>
+    ///
+    /// Defines character class view controller structure, implements base non-specific view logic for all character classes.
+    /// Provides hooks for derived classes to implement character class specific view logic.
+    /// Works together with @cref{Battle.View.Player,BattlePlayerCharacterViewController}, which handles the shared player character view logic.
+    ///
+    /// See [{PlayerCharacterClassViewControllers}](#page-concepts-player-view-character-class-controller) for more info.<br/>
+    /// See [{Player Character Classes}](#page-concepts-player-characters-classes) for more info.
+    public abstract class BattlePlayerCharacterClassBaseViewController : MonoBehaviour
+    {
+        /// <summary>The <see cref="BattlePlayerCharacterClass"/> associated with this view controller.</summary>
+        /// Must be implemented by derived character class view controllers.
+        public abstract BattlePlayerCharacterClass Class { get; }
+
+        /// <summary>
+        /// Called by the @cref{Battle.View.Player,BattlePlayerCharacterViewController} **OnViewInit**
+        /// (<see cref="BattlePlayerCharacterViewController.OnActivate(Frame)">OnActivate</see>).<br/>
+        /// Initializes this instance of a character class view controller. Performs base non-specific initialization for all characters classes.<br/>
+        /// Stores references to the parent controller and entity, then calls the protected <see cref="OnViewInitOverride"/> method that performs the character class specific initialization.
+        /// </summary>
+        ///
+        /// This is not an overridable method. Override the @cref{OnViewInitOverride} method in derived classes for implementing character class specific custom initialization.
+        ///
+        /// <param name="parent">Reference to the parent (<see cref="BattlePlayerCharacterViewController"/>).</param>
+        /// <param name="entityRef">The entity reference for this player character.</param>
+        /// <param name="slot">The player slot associated with this character.</param>
+        /// <param name="characterId">The ID of the character being initialized.</param>
+        public void OnViewInit(BattlePlayerCharacterViewController parent, EntityRef entityRef, BattlePlayerSlot slot, BattlePlayerCharacterID characterId)
+        {
+            _parent = parent;
+            _entityRef = entityRef;
+            OnViewInitOverride(slot, characterId);
+        }
+
+        /// <summary>
+        /// Called by the @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+        /// <see cref="BattlePlayerCharacterViewController.QEventOnCharacterHit(EventBattleCharacterHit)">QEventOnCharacterHit</see> method
+        /// when the character gets hit.<br/>
+        /// Provides a hook for derived classes to implement character class specific view logic.
+        /// </summary>
+        ///
+        /// <param name="e">The hit event data.</param>
+        public virtual void OnCharacterHit(EventBattleCharacterHit e) { }
+
+        /// <summary>
+        /// Called by the @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+        /// <see cref="BattlePlayerCharacterViewController.QEventOnShieldHit(EventBattleShieldHit)">QEventOnShieldHit</see> method
+        /// when any of the shields associated with this character get hit.<br/>
+        /// Provides a hook for derived classes to implement character class specific view logic.
+        /// </summary>
+        ///
+        /// <param name="e">The shield hit event data.</param>
+        public virtual void OnShieldHit(EventBattleShieldHit e) { }
+
+        /// <summary>
+        /// Called by the @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+        /// <see cref="BattlePlayerCharacterViewController.QEventOnPlayStateUpdate(EventBattlePlayStateUpdate)">QEventOnPlayStateUpdate</see> method
+        /// when play state updates.<br/>
+        /// Provides a hook for derived classes to implement character class specific view logic.
+        /// </summary>
+        ///
+        /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
+        ///
+        /// <param name="e">The play state update event data.</param>
+        public virtual void OnPlayStateUpdate(EventBattlePlayStateUpdate e) { }
+
+        /// <summary>
+        /// Called by the @cref{Battle.View.Player,BattlePlayerCharacterViewController}
+        /// <see cref="BattlePlayerCharacterViewController.OnUpdateView()">OnUpdateView</see> method
+        /// once per frame.<br/>
+        /// Provides a hook for derived classes to implement character class specific view logic.
+        /// </summary>
+        public virtual void OnUpdateView() { }
+
+        /// <summary>Reference to the parent <see cref="BattlePlayerCharacterViewController">BattlePlayerCharacterViewController</see> that manages shared player character view logic.</summary>
+        protected BattlePlayerCharacterViewController _parent;
+        /// <summary>Reference to the entity associated with this character view controller.</summary>
+        protected EntityRef _entityRef;
+
+        /// <summary>
+        /// Provides a hook for derived classes to perform character class specific custom initialization.<br/>
+        /// Called by <see cref="OnViewInit"/> that performs base non-specific initialization before calling this method.
+        /// </summary>
+        ///
+        /// Use the public @cref{OnViewInit} method when initializing an instance of a character class.
+        ///
+        /// <param name="slot">The player slot associated with this character.</param>
+        /// <param name="characterId">The ID of the character being initialized.</param>
+        protected virtual void OnViewInitOverride(BattlePlayerSlot slot, BattlePlayerCharacterID characterId) { }
+    }
+}

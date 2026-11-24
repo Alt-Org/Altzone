@@ -5,6 +5,7 @@ using Altzone.Scripts.Model.Poco.Player;
 using Altzone.Scripts.Model.Poco.Clan;
 using Altzone.Scripts;
 using Altzone.Scripts.Config;
+using UnityEngine.UI;
 
 public class PlayerPanel : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class PlayerPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _playerNameText;
 
     [Header("Navigation Buttons")]
-    [SerializeField] private NaviButton _profileNaviButton;
+    [SerializeField] private Button _profileNaviButton;
 
     private ServerPlayer _player;
 
@@ -34,7 +35,7 @@ public class PlayerPanel : MonoBehaviour
     private void Reset()
     {
         _playerNameText.text = loggedOutPlayerText;
-        _profileNaviButton.gameObject.SetActive(false);
+        _profileNaviButton.enabled = false;
     }
 
     private void OnDisable()
@@ -55,7 +56,7 @@ public class PlayerPanel : MonoBehaviour
             PlayerData playerData = null;
             store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, p => playerData = p);
             _playerNameText.text = playerData.Name;
-            _profileNaviButton.gameObject.SetActive(true);
+            _profileNaviButton.enabled = true;
         }
         else
         {

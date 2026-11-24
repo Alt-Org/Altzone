@@ -54,6 +54,10 @@ namespace Altzone.Scripts.Model.Poco.Game
 
         public string Filename;
 
+        public string VisibleName => FurnitureInfo?.VisibleName;
+        
+        public string SetName => FurnitureInfo?.SetName;
+
         public GameFurniture(string id, string name, FurnitureRarity rarity, FurniturePlacement placementType, double weight, float value, string shape = "", string material = "", string recycling = "", string unityKey = "", string filename = "")
         {
             Assert.IsTrue(id.IsSet());

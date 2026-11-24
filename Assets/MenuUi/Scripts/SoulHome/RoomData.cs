@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
 using UnityEngine;
 using UnityEngine.Rendering;
-using Debug = Prg.Debug;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -146,7 +145,7 @@ namespace MenuUI.Scripts.SoulHome
                     float slotWidth = (_floorWidth / _slotColumns) * (1 + _slotMaxGrowthPercentage * (((float)i) / (((float)_slotRows) - 1))/100);
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
-                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, _slotRows, slotWidth, slotDepth);
+                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(this, row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, _slotRows, slotWidth, slotDepth);
                     furnitureSlot.tag = "FloorFurnitureSlot";
                     col++;
                 }
@@ -181,7 +180,7 @@ namespace MenuUI.Scripts.SoulHome
                     float slotWidth = (wallWidth / wallSlotColumns);
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
-                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.BackWall, _slotMaxGrowthPercentage, wallSlotColumns, slotWidth, slotDepth);
+                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(this, row, col, _roomInfo.Id, FurnitureGrid.BackWall, _slotMaxGrowthPercentage, wallSlotColumns, slotWidth, slotDepth);
                     furnitureSlot.tag = "WallFurnitureSlot";
                     col++;
                 }
@@ -212,7 +211,7 @@ namespace MenuUI.Scripts.SoulHome
                     float slotWidth = (wallWidth / wallSlotColumns);
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
-                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.RightWall, _slotMaxGrowthPercentage, wallSlotColumns, slotWidth, slotDepth);
+                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(this, row, col, _roomInfo.Id, FurnitureGrid.RightWall, _slotMaxGrowthPercentage, wallSlotColumns, slotWidth, slotDepth);
                     furnitureSlot.tag = "RightWallFurnitureSlot";
                     row++;
                 }
@@ -242,7 +241,7 @@ namespace MenuUI.Scripts.SoulHome
                     float slotWidth = (wallWidth / wallSlotColumns);
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
-                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.LeftWall, _slotMaxGrowthPercentage, wallSlotRows, slotWidth, slotDepth);
+                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(this, row, col, _roomInfo.Id, FurnitureGrid.LeftWall, _slotMaxGrowthPercentage, wallSlotRows, slotWidth, slotDepth);
                     furnitureSlot.tag = "LeftWallFurnitureSlot";
                     row++;
                 }
@@ -274,7 +273,7 @@ namespace MenuUI.Scripts.SoulHome
                     float slotWidth = (ceilingWidth / ceilingSlotColumns) * (1 + _slotMaxGrowthPercentage * (((float)i) / (((float)ceilingSlotRows) - 1)) / 100);
                     furnitureSlot.GetComponent<BoxCollider2D>().size = new Vector2(slotWidth, slotDepth);
                     furnitureSlot.name = (1 + j).ToString();
-                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, ceilingSlotRows, slotWidth, slotDepth);
+                    furnitureSlot.GetComponent<FurnitureSlot>().InitializeSlot(this, row, col, _roomInfo.Id, FurnitureGrid.Floor, _slotMaxGrowthPercentage, ceilingSlotRows, slotWidth, slotDepth);
                     furnitureSlot.tag = "CeilingFurnitureSlot";
 
                     float initialHeightOffset = Mathf.Abs(furnitureSlot.transform.position.y - _wallBackFurniturePoints.position.y);
@@ -294,7 +293,7 @@ namespace MenuUI.Scripts.SoulHome
             {
                 _ladder.gameObject.SetActive(true);
                 _ladder.GetComponent<SortingGroup>().sortingOrder = 20;
-                
+
                 foreach(Transform rowTransform in _wallBackFurniturePoints)
                 {
                     rowTransform.GetChild(1).GetComponent<FurnitureSlot>().Ladder = true;
@@ -341,7 +340,7 @@ namespace MenuUI.Scripts.SoulHome
                     }
                 }
             }
-            
+
             _walkableSlots.Clear();
 
             foreach (GridNode node in _grid)
@@ -381,7 +380,7 @@ namespace MenuUI.Scripts.SoulHome
         }
 
         // Add a penalty to tiles to the right or left of furniture, and double penalty if there is furniture to the left and the right,
-        // and also add a penalty to the bottom-right corner + 1 node to the left, and bottom-left corner and 1 node from that to the right, 
+        // and also add a penalty to the bottom-right corner + 1 node to the left, and bottom-left corner and 1 node from that to the right,
         // so the avatar only goes there if there is no other way (makes clipping with furniture less likely, and avatar only chooses to "slip"
         // through the corner of the furniture if there is absolutely no other way to the end position)
         private void CalculatePenalties()
@@ -971,7 +970,7 @@ namespace MenuUI.Scripts.SoulHome
             Debug.Log("Free:"+slot.row+":"+slot.column);
             Vector3Int furnitureSize;
 
-            if (furniture.Furniture.IsRotated != slot.Rotated || furniture.Furniture.IsRotated != slot.RotatedNonBlock)
+            if (furniture.Furniture.IsRotated)
                 furnitureSize = furniture.GetFurnitureSizeRotated();
             else
                 furnitureSize = furniture.GetFurnitureSize();
@@ -1105,6 +1104,19 @@ namespace MenuUI.Scripts.SoulHome
                 slot.ClearValidity();
             }
             _currentSlotValidity.Clear();
+        }
+
+        public FurnitureSlot GetFurnitureSlot(FurnitureGrid grid,int row, int column)
+        {
+            return grid switch
+            {
+                FurnitureGrid.Floor => _floorFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>(),
+                FurnitureGrid.BackWall => _wallBackFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>(),
+                FurnitureGrid.RightWall => _wallRightFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>(),
+                FurnitureGrid.LeftWall => _wallLeftFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>(),
+                FurnitureGrid.Ceiling => _ceilingFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>(),
+                _ => null,
+            };
         }
 
         public void SetFurnitureSlots(FurnitureHandling furniture)

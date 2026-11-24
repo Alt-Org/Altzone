@@ -18,17 +18,15 @@ namespace Quantum {
     partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype prototype);
     [DrawInline()]
     [ReadOnly(InEditMode = false)]
-    public Quantum.Prototypes.Unity.BattlePlayerManagerDataQSingletonPrototype Prototype;
+    public Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype Prototype;
     public override System.Type ComponentType {
       get {
         return typeof(Quantum.BattlePlayerManagerDataQSingleton);
       }
     }
     public override ComponentPrototype CreatePrototype(Quantum.QuantumEntityPrototypeConverter converter) {
-      Quantum.Prototypes.BattlePlayerManagerDataQSingletonPrototype result;
-      converter.Convert(Prototype, out result);
-      CreatePrototypeUser(converter, ref result);
-      return result;
+      CreatePrototypeUser(converter, ref Prototype);
+      return Prototype;
     }
   }
 }

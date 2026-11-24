@@ -1,0 +1,7 @@
+singleton component BattleEntityManagerDataQSingleton
+{
+    [FreeOnComponentRemoved] list<EntityRef> RegisteredEntities;
+
+    BattleGridPosition EntityOffscreenPositionOffset;
+    int                EntitySpacing;
+}

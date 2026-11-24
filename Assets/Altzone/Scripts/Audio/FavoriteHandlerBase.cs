@@ -33,7 +33,7 @@ namespace Altzone.Scripts.Audio
             JukeboxManager manager = JukeboxManager.Instance;
             MusicTrack musicTrack = manager.GetMusicTrack(_musicTrackId);
 
-            if (musicTrack != null) OnFavoriteButtonChange(_musicTrackId, manager.GetTrackFavoriteType(musicTrack));
+            if (musicTrack != null) OnFavoriteButtonChange(_musicTrackId, manager.GetTrackFavoriteType(musicTrack.Id));
         }
 
         public void Setup(MusicTrackFavoriteType type, string musicTrackId)
@@ -47,9 +47,9 @@ namespace Altzone.Scripts.Audio
         {
             switch (_musicTrackFavoriteType)
             {
-                case MusicTrackFavoriteType.Neutral: _musicTrackFavoriteType = MusicTrackFavoriteType.Like; /*ChangeFavoriteImage(_musicTrackFavoriteType);*/ break;
-                case MusicTrackFavoriteType.Like: _musicTrackFavoriteType = MusicTrackFavoriteType.Dislike; /*ChangeFavoriteImage(_musicTrackFavoriteType);*/ break;
-                case MusicTrackFavoriteType.Dislike: _musicTrackFavoriteType = MusicTrackFavoriteType.Neutral; /*ChangeFavoriteImage(_musicTrackFavoriteType);*/ break;
+                case MusicTrackFavoriteType.Neutral: _musicTrackFavoriteType = MusicTrackFavoriteType.Like; break;
+                case MusicTrackFavoriteType.Like: _musicTrackFavoriteType = MusicTrackFavoriteType.Dislike; break;
+                case MusicTrackFavoriteType.Dislike: _musicTrackFavoriteType = MusicTrackFavoriteType.Neutral; break;
             }
 
             JukeboxManager.Instance.InvokeOnFavoriteButtonChange(_musicTrackId, _musicTrackFavoriteType);

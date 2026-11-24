@@ -26,12 +26,14 @@ MonoBehaviour:
     RawValue: 65536
   Inaccuracy:
     RawValue: 131072
+  CharacterSwapTimeSecMin:
+    RawValue: 327680
+  CharacterSwapTimeSecMax:
+    RawValue: 655360
   BotCharacterSelection:
   - Id: 101
     Class: 100
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -43,8 +45,6 @@ MonoBehaviour:
   - Id: 102
     Class: 100
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -56,8 +56,6 @@ MonoBehaviour:
   - Id: 103
     Class: 100
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -69,8 +67,6 @@ MonoBehaviour:
   - Id: 104
     Class: 100
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -82,8 +78,6 @@ MonoBehaviour:
   - Id: 105
     Class: 100
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -95,8 +89,6 @@ MonoBehaviour:
   - Id: 106
     Class: 100
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -108,8 +100,6 @@ MonoBehaviour:
   - Id: 201
     Class: 200
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -121,8 +111,6 @@ MonoBehaviour:
   - Id: 202
     Class: 200
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -134,8 +122,6 @@ MonoBehaviour:
   - Id: 203
     Class: 200
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -147,8 +133,6 @@ MonoBehaviour:
   - Id: 204
     Class: 200
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -160,8 +144,6 @@ MonoBehaviour:
   - Id: 301
     Class: 300
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -173,8 +155,6 @@ MonoBehaviour:
   - Id: 302
     Class: 300
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -186,8 +166,6 @@ MonoBehaviour:
   - Id: 303
     Class: 300
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -199,8 +177,6 @@ MonoBehaviour:
   - Id: 304
     Class: 300
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -212,8 +188,6 @@ MonoBehaviour:
   - Id: 305
     Class: 300
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -225,8 +199,6 @@ MonoBehaviour:
   - Id: 306
     Class: 300
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -238,8 +210,6 @@ MonoBehaviour:
   - Id: 401
     Class: 400
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -251,8 +221,6 @@ MonoBehaviour:
   - Id: 402
     Class: 400
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -264,8 +232,6 @@ MonoBehaviour:
   - Id: 403
     Class: 400
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -277,8 +243,6 @@ MonoBehaviour:
   - Id: 404
     Class: 400
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -290,8 +254,6 @@ MonoBehaviour:
   - Id: 501
     Class: 500
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -303,8 +265,6 @@ MonoBehaviour:
   - Id: 502
     Class: 500
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -316,8 +276,6 @@ MonoBehaviour:
   - Id: 503
     Class: 500
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -329,8 +287,6 @@ MonoBehaviour:
   - Id: 504
     Class: 500
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -342,8 +298,6 @@ MonoBehaviour:
   - Id: 505
     Class: 500
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -355,8 +309,6 @@ MonoBehaviour:
   - Id: 506
     Class: 500
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -368,8 +320,6 @@ MonoBehaviour:
   - Id: 601
     Class: 600
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -381,8 +331,6 @@ MonoBehaviour:
   - Id: 602
     Class: 600
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -394,8 +342,6 @@ MonoBehaviour:
   - Id: 603
     Class: 600
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -407,8 +353,6 @@ MonoBehaviour:
   - Id: 604
     Class: 600
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -420,8 +364,6 @@ MonoBehaviour:
   - Id: 605
     Class: 600
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -433,8 +375,6 @@ MonoBehaviour:
   - Id: 701
     Class: 700
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -446,8 +386,6 @@ MonoBehaviour:
   - Id: 702
     Class: 700
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -459,8 +397,6 @@ MonoBehaviour:
   - Id: 703
     Class: 700
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -472,8 +408,6 @@ MonoBehaviour:
   - Id: 704
     Class: 700
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:
@@ -485,8 +419,6 @@ MonoBehaviour:
   - Id: 705
     Class: 700
     Stats:
-      Hp:
-        RawValue: 13107200
       Speed:
         RawValue: 655360
       CharacterSize:

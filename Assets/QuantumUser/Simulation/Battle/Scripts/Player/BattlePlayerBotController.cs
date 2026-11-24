@@ -4,7 +4,6 @@
 /// </summary>
 
 // System usings
-using System.Collections.Generic;
 using System.Linq;
 
 // Unity usings
@@ -31,6 +30,13 @@ namespace Battle.QSimulation.Player
     /// Bot behavior and other spec settings are defined in @cref{BattlePlayerBotQSpec}.
     public static unsafe class BattlePlayerBotController
     {
+        public struct BotInputData
+        {
+            public Input Input;
+            public BattleCommand.Type CommandType;
+            public BattleCommand CommandData;
+        }
+
         /// <summary>
         /// Helper method to get characters for a bot.
         /// </summary>
@@ -44,11 +50,11 @@ namespace Battle.QSimulation.Player
         {
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
 
-            int[] selectedBotCharacters = new int[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
+            int[] selectedBotCharacters = new int[BattlePlayerManager.PlayerCharacterCount];
 
-            BattleCharacterBase[] botCharacters = new BattleCharacterBase[Constants.BATTLE_PLAYER_CHARACTER_COUNT];
+            BattleCharacterBase[] botCharacters = new BattleCharacterBase[BattlePlayerManager.PlayerCharacterCount];
             for (int i = 0; i < botCharacters.Length; i++)
-            {            
+            {
                 int selectedCharacter;
                 do
                 {
@@ -56,48 +62,107 @@ namespace Battle.QSimulation.Player
                 } while (selectedBotCharacters.Contains(selectedCharacter));
 
                 selectedBotCharacters[i] = selectedCharacter;
-                botCharacters[i]         = playerBotSpec.BotCharacterSelection[selectedCharacter];             
+                botCharacters[i]         = playerBotSpec.BotCharacterSelection[selectedCharacter];
             }
             return botCharacters;
         }
 
         /// <summary>
-        /// Handles bot AI by predicting the projectile and generating the input for a bot.
+        /// Handles bot AI logic and generates <see cref="Quantum.Input">Quantum Input</see>
+        /// and/or <see cref="Battle.QSimulation.Game.BattleCommand">Battle Command</see>.
         /// </summary>
+        ///
+        /// Bot behavior:
+        /// - Selects a random character on random intervals or if none is selected.
+        /// - Character movement: Moves intentionally or "misclicks" based on @cref{Battle.QSimulation.Player,BattlePlayerBotQSpec.MissClickChance}.
+        ///   - Intentional movement: Predicts and intercepts the projectile, with some inaccuracy based on @cref{Battle.QSimulation.Player,BattlePlayerBotQSpec.Inaccuracy}.
+        ///   - Misclick: Performs a random movement.
+        /// - Gives up when teammate gives up.
         ///
         /// Bot behavior spec settings is defined in @cref{BattlePlayerBotQSpec}.
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="isInPlay">Bool to check if bot is in play.</param>
-        /// <param name="playerData">Pointer to player's BattlePlayerDataQComponent.</param>
-        /// <param name="outBotInput">Pointer to where bot's %Quantum Input will be written.</param>
-        public static void GetBotInput(Frame f, bool isInPlay, BattlePlayerDataQComponent* playerData, Input* outBotInput)
+        /// <param name="playerHandle">The player handle of the bot.</param>
+        ///
+        /// <returns><see cref="BotInputData"/> struct, which contains the generated inputs.</returns>
+        public static BotInputData GetBotInput(Frame f, BattlePlayerManager.PlayerHandle playerHandle)
         {
+            BotInputData botInputData = new();
+
             BattlePlayerBotQSpec playerBotSpec = BattleQConfig.GetPlayerBotSpec(f);
 
-            BattleMovementInputType movementInput         = BattleMovementInputType.None;
-            BattleGridPosition      predictedGridPosition = new() { Col = 0, Row = 0 };
+            BattleMovementInputType movementInput = BattleMovementInputType.None;
+            BattleGridPosition predictedGridPosition = new() { Col = 0, Row = 0 };
 
-            if (isInPlay)
+            bool hasCharacter = false;
+
+            BattlePlayerEntityRef playerEntity;
+            BattlePlayerDataQComponent* playerData = null;
+
+            if (playerHandle.SelectedCharacterNumber != -1)
             {
-                if (playerData->MovementCooldownSec > FP._0)
+                playerEntity = playerHandle.GetSelectedCharacterEntityRef(f);
+                playerData = playerEntity.GetDataQComponent(f);
+
+                hasCharacter = true;
+            }
+
+            //{ non-character logic
+
+            // behavior: gives up when teammate gives up
+            if (BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerHandle.Slot).GiveUpState && !playerHandle.GiveUpState)
+            {
+                botInputData.CommandType = BattleCommand.Type.GiveUp;
+                botInputData.CommandData = new BattleGiveUpQCommand();
+                return botInputData;
+            }
+
+            // behavior: selects a random character on random intervals or if none is selected
+            if (hasCharacter && playerData->BotCharacterSwapTimerSec > FP._0)
+            {
+                playerData->BotCharacterSwapTimerSec -= f.DeltaTime;
+            }
+            else
+            {
+                int nextCharacter = hasCharacter
+                    ? (playerHandle.SelectedCharacterNumber + f.RNG->NextInclusive(1, BattlePlayerManager.PlayerCharacterCount - 1)) % BattlePlayerManager.PlayerCharacterCount
+                    : f.RNG->NextInclusive(0, BattlePlayerManager.PlayerCharacterCount - 1);
+
+                playerHandle.GetCharacterEntityRef(f, nextCharacter).GetDataQComponent(f)->BotCharacterSwapTimerSec =
+                    f.RNG->NextInclusive(playerBotSpec.CharacterSwapTimeSecMin, playerBotSpec.CharacterSwapTimeSecMax);
+
+                botInputData.CommandType = BattleCommand.Type.SwapCharacter;
+                botInputData.CommandData = new BattleCharacterSwapQCommand
                 {
-                    playerData->MovementCooldownSec -= f.DeltaTime;
-                }
-                else
-                {
-                    movementInput = BattleMovementInputType.PositionTarget;
-                }
+                    CharacterNumber = nextCharacter
+                };
+                return botInputData;
+            }
+
+            //} non-character logic
+
+            //{ character logic
+            // behavior character movement: moves intentionally or "misclicks" based on BattlePlayerBotQSpec.MissClickChance.
+            // - intentional movement: predicts and intercepts the projectile, with some inaccuracy based on BattlePlayerBotQSpec.Inaccuracy.
+            // - misclick: performs a random movement.
+
+            if (playerData->BotMovementCooldownSec > FP._0)
+            {
+                playerData->BotMovementCooldownSec -= f.DeltaTime;
+            }
+            else
+            {
+                movementInput = BattleMovementInputType.PositionTarget;
             }
 
             if (movementInput != BattleMovementInputType.None)
             {
-                playerData->MovementCooldownSec = f.RNG->NextInclusive(playerBotSpec.MovementCooldownSecMin, playerBotSpec.MovementCooldownSecMax); ;
+                playerData->BotMovementCooldownSec = f.RNG->NextInclusive(playerBotSpec.MovementCooldownSecMin, playerBotSpec.MovementCooldownSecMax);
                 ComponentFilter<BattleProjectileQComponent> projectiles = f.Filter<BattleProjectileQComponent>();
                 if (projectiles.NextUnsafe(out EntityRef projectileEntity, out BattleProjectileQComponent* projectile))
                 {
                     FPVector2 projectileDirection = projectile->Direction;
-                    if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? projectileDirection.Y > 0 : projectileDirection.Y < 0) return;
+                    if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? projectileDirection.Y > 0 : projectileDirection.Y < 0) return botInputData;
                     FPVector2 projectilePosition = projectile->Position;
                     FP predictionTimeSec = playerBotSpec.LookAheadTimeSec;
 
@@ -163,20 +228,20 @@ namespace Battle.QSimulation.Player
                 }
             }
 
-            *outBotInput = new Input()
+            botInputData.Input = new Input()
             {
                 IsValid                       = true,
                 MovementInput                 = movementInput,
                 MovementDirectionIsNormalized = false,
-                MovementPositionTarget        = predictedGridPosition,
-                MovementPositionMove          = FPVector2.Zero,
-                MovementDirection             = FPVector2.Zero,
+                MovementGridPosition          = predictedGridPosition,
+                MovementVector                = FPVector2.Zero,
                 RotationInput                 = false,
-                RotationValue                 = FP._0,
-                PlayerCharacterNumber         = -1,
-                GiveUpInput                   = false,
-                AbilityActivate               = false
+                RotationValue                 = FP._0
             };
+
+            return botInputData;
+
+            //} character logic
         }
     }
 }

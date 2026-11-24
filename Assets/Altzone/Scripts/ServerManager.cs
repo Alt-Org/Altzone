@@ -1,30 +1,30 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using UnityEngine;
-using UnityEngine.Networking;
-using Altzone.Scripts.Model.Poco.Player;
-using System.Globalization;
-using Altzone.Scripts;
-using Altzone.Scripts.Config;
-using Altzone.Scripts.Model.Poco.Clan;
-using Altzone.Scripts.GA;
-using Altzone.Scripts.Model.Poco.Game;
-using UnityEngine.Assertions;
-using Altzone.Scripts.Model;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Altzone.Scripts;
+using Altzone.Scripts.Chat;
+using Altzone.Scripts.Config;
+using Altzone.Scripts.GA;
+using Altzone.Scripts.Lobby;
+using Altzone.Scripts.Model;
+using Altzone.Scripts.Model.Poco;
+using Altzone.Scripts.Model.Poco.Clan;
+using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.Model.Poco.Player;
+using Altzone.Scripts.MQTT;
+using Altzone.Scripts.ReferenceSheets; 
+using Altzone.Scripts.Settings;
+using Altzone.Scripts.Store;
+using Altzone.Scripts.Voting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Altzone.Scripts.Settings;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
-using Altzone.Scripts.ReferenceSheets;
-using Altzone.Scripts.Voting;
-using System.Linq;
-using Altzone.Scripts.Model.Poco;
-using Altzone.Scripts.Store;
-using Altzone.Scripts.Chat;
-using Altzone.Scripts.Audio;
 
 /// <summary>
 /// ServerManager acts as an interface between the server and the game.
@@ -43,6 +43,8 @@ public class ServerManager : MonoBehaviour
     [SerializeField] private bool _automaticallyLogIn = false;
     private int _accessTokenExpiration;
     private string _accessToken;
+    private int _refreshTokenExpiration;
+    private string _refreshToken;
     public bool isLoggedIn = false;
     [SerializeField] private bool _skipServerFurniture = false;
     private static string ADDRESS = "https://altzone.fi/api/";
@@ -99,7 +101,46 @@ public class ServerManager : MonoBehaviour
             PlayerPrefs.SetString("accessToken", value);
         }
     }
-    public int AccessTokenExpiration { get => _accessTokenExpiration; set => _accessTokenExpiration = value; }
+    public int AccessTokenExpiration
+    {
+        get
+        {
+            if (_accessTokenExpiration != 0) return _accessTokenExpiration;
+            else return PlayerPrefs.GetInt("accessTokenExpiration", 0);
+        }
+        private set
+        {
+            _accessTokenExpiration = value;
+            PlayerPrefs.SetInt("accessTokenExpiration", value);
+        }
+    }
+
+    public string RefreshToken
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(_refreshToken)) return _refreshToken;
+            else return PlayerPrefs.GetInt("AutomaticLogin", 0) == 1 ? PlayerPrefs.GetString("refreshToken", string.Empty) : string.Empty;
+        }
+         private set
+        {
+            _refreshToken = value;
+            PlayerPrefs.SetString("refreshToken", value);
+        }
+    }
+    public int RefreshTokenExpiration
+    {
+        get
+        {
+            if (_refreshTokenExpiration != 0) return _refreshTokenExpiration;
+            else return PlayerPrefs.GetInt("refreshTokenExpiration", 0);
+        }
+        private set
+        {
+            _refreshTokenExpiration = value;
+            PlayerPrefs.SetInt("refreshTokenExpiration", value);
+        }
+    }
     public ServerPlayer Player { get => _player; set => _player = value; }
     public ServerClan Clan
     {
@@ -159,6 +200,7 @@ public class ServerManager : MonoBehaviour
     {
         OnClanChanged?.Invoke(Clan);
         _firstJoin = false;
+        if (MQTTManager.IsConnected && !MQTTManager.IsSubscribed) MQTTManager.Instance.SubscribeToClanNotifications();
     }
 
     /// <summary>
@@ -189,6 +231,26 @@ public class ServerManager : MonoBehaviour
         }
         else
         {
+            bool? canContinue = null;
+            if (((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() >= AccessTokenExpiration)
+            {
+                yield return RefreshAccessToken(b =>
+                {
+                    canContinue = b;
+                });
+            }
+            else
+            {
+                canContinue = true;
+            }
+
+            yield return new WaitUntil(() => canContinue.HasValue);
+            if ((bool)!canContinue)
+            {
+                OnLogInFailed?.Invoke();
+                yield break;
+            }
+
             bool gettingPlayer = true;
             bool gettingCharacter = true;
             bool gettingTasks = true;
@@ -318,6 +380,8 @@ public class ServerManager : MonoBehaviour
             OnLogInStatusChanged?.Invoke(true);
             _heartbeatCoroutine = StartCoroutine(ServiceHeartBeat());
 
+            MQTTManager.Instance.StartMQTT();
+
             if (Clan == null)
             {
                 StartCoroutine(GetClanFromServer(clan =>
@@ -354,6 +418,8 @@ public class ServerManager : MonoBehaviour
         OnLogInStatusChanged?.Invoke(false);
 
         OnClanChanged?.Invoke(null);
+
+        if (MQTTManager.IsConnected && MQTTManager.IsSubscribed) MQTTManager.Instance.UnsubscribeFromClanNotifications();
     }
 
     /// <summary>
@@ -364,21 +430,73 @@ public class ServerManager : MonoBehaviour
     /// Profile and Player (<c>ServerPlayer</c>) are not the same as Profile might hold personal information!<br />
     /// Player contains exclusively data related to in game Player.
     /// </remarks>
-    public void SetProfileValues(JObject profileJSON)
+    public void SetProfileValues(JObject profileJSON, string username)
     {
-        JToken accessToken = profileJSON["accessToken"];
-        Assert.IsNotNull(accessToken);
-        AccessToken = (string)accessToken;
+        if (profileJSON.ContainsKey("data"))
+        {
+            JToken profile = profileJSON["data"]["Profile"]["Player"];
 
-        JToken tokenExpires = profileJSON["tokenExpires"];
-        Assert.IsNotNull(tokenExpires);
-        AccessTokenExpiration = tokenExpires.Value<int>();
+            SetAccessTokens(profileJSON);
 
-        JToken player = profileJSON["Player"];
-        Assert.IsNotNull(player);
-        PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
+            Assert.IsNotNull(profile);
+            PlayerPrefs.SetString("playerId", (string)profile["_id"] ?? string.Empty);
 
-        //StartCoroutine(LogIn());
+            Assert.IsNotNull(username);
+            PlayerPrefs.SetString("userName", username ?? string.Empty);
+        }
+        else
+        {
+            SetAccessTokens(profileJSON);
+
+            JToken player = profileJSON["Player"];
+            Assert.IsNotNull(player);
+            PlayerPrefs.SetString("playerId", (string)player["_id"] ?? string.Empty);
+
+            Assert.IsNotNull(username);
+            PlayerPrefs.SetString("userName", username ?? string.Empty);
+        }
+    }
+
+    public void SetAccessTokens(JObject profileJSON)
+    {
+        if (profileJSON.ContainsKey("data"))
+        {
+            JToken profile = profileJSON["data"]["Profile"];
+
+            JToken accessToken = profile["accessToken"];
+            Assert.IsNotNull(accessToken);
+            AccessToken = (string)accessToken;
+
+            JToken tokenExpires = profile["tokenExpires"];
+            Assert.IsNotNull(tokenExpires);
+            AccessTokenExpiration = tokenExpires.Value<int>();
+
+            JToken refreshToken = profile["refreshToken"];
+            Assert.IsNotNull(refreshToken);
+            RefreshToken = (string)refreshToken;
+
+            JToken refreshTokenExpires = profile["refreshTokenExpires"];
+            Assert.IsNotNull(refreshTokenExpires);
+            RefreshTokenExpiration = refreshTokenExpires.Value<int>();
+        }
+        else
+        {
+            JToken accessToken = profileJSON["accessToken"];
+            Assert.IsNotNull(accessToken);
+            AccessToken = (string)accessToken;
+
+            JToken tokenExpires = profileJSON["tokenExpires"];
+            Assert.IsNotNull(tokenExpires);
+            AccessTokenExpiration = tokenExpires.Value<int>();
+
+            JToken refreshToken = profileJSON["refreshToken"];
+            Assert.IsNotNull(refreshToken);
+            RefreshToken = (string)refreshToken;
+
+            JToken refreshTokenExpires = profileJSON["refreshTokenExpires"];
+            Assert.IsNotNull(refreshTokenExpires);
+            RefreshTokenExpiration = refreshTokenExpires.Value<int>();
+        }
     }
 
     /// <summary>
@@ -717,6 +835,15 @@ public class ServerManager : MonoBehaviour
                 heartBeat = callback;
             });
             yield return new WaitUntil(() => heartBeat != null);
+
+            if (((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() >= AccessTokenExpiration - 5)
+            {
+                yield return RefreshAccessToken(b =>
+                {
+                    if (!b) LogOut();
+                });
+            }
+
             bool? list = null;
             if (heartBeat == true)
             {
@@ -736,7 +863,7 @@ public class ServerManager : MonoBehaviour
                     }
                 });
             }
-            yield return new WaitUntil(() => list != null);
+            yield return new WaitUntil(() => list != null || heartBeat == false);
             while (timeCurrent < timeToNext)
             {
                 yield return null;
@@ -803,7 +930,7 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
-    public IEnumerator GetPlayerFromServer(string playerId, Action<ServerPlayer> callback)
+    public IEnumerator GetPlayerFromServer(string playerId, Action<ServerPlayer> callback, Action<bool> finished = null)
     {
         if (Player != null)
             Debug.LogWarning("Player already exists. Consider using ServerManager.Instance.Player if the most up to data data from server is not needed.");
@@ -824,6 +951,8 @@ public class ServerManager : MonoBehaviour
                 if (callback != null)
                     callback(null);
             }
+            if (finished != null)
+                finished(true);
         }));
     }
 
@@ -874,10 +1003,65 @@ public class ServerManager : MonoBehaviour
         }));
     }
 
+    public IEnumerator CheckEmotionInServer(Action<bool> callback)
+    {
+        if (Player == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        yield return StartCoroutine(WebRequests.Get(SERVERADDRESS + "player/emotioncheck", AccessToken, request =>
+        {
+            JObject result = JObject.Parse(request.downloadHandler.text);
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(bool.Parse(result["emotioncheck"]["submitted_today"].ToString()));
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    public IEnumerator UpdateEmotionToServer(string emotion, Action<bool> callback)
+    {
+        if (Player == null)
+        {
+            Debug.LogError("Cannot find Player.");
+            yield break;
+        }
+
+        string body = JObject.FromObject(
+            new
+            {
+                emotion = emotion,
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "player/emotion", body, AccessToken, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
     #endregion
 
     #region Clan
-    public IEnumerator GetClanFromServer(Action<ServerClan> callback)
+    public IEnumerator GetClanFromServer(Action<ServerClan> callback, Action<bool> finished = null)
     {
         if (Clan != null)
             Debug.LogWarning("Clan already exists. Consider using ServerManager.Instance.Clan if the most up to data data from server is not needed.");
@@ -886,6 +1070,8 @@ public class ServerManager : MonoBehaviour
         {
             if (callback != null)
                 callback(Clan);
+            if (finished != null)
+                finished(true);
             yield break;
         }
 
@@ -909,15 +1095,19 @@ public class ServerManager : MonoBehaviour
                 if (callback != null)
                     callback(null);
             }
+            if (finished != null)
+                finished(true);
         }));
     }
 
-    public IEnumerator GetClanFromServer(string clanId, Action<ServerClan> callback)
+    public IEnumerator GetClanFromServer(string clanId, Action<ServerClan> callback, Action<bool> finished = null)
     {
         if (string.IsNullOrEmpty(clanId))
         {
             Debug.LogWarning("GetClanFromServer called with empty clanId.");
             callback?.Invoke(null);
+            if (finished != null)
+                finished(true);
             yield break;
         }
 
@@ -934,34 +1124,76 @@ public class ServerManager : MonoBehaviour
             {
                 callback?.Invoke(null);
             }
+            if (finished != null)
+                finished(true);
         }));
     }
 
     public IEnumerator GetAllClans(int page, Action<List<ServerClan>, PaginationData> callback)
     {
-        string query = SERVERADDRESS + "clan";//?page=" + page + "&limit=5";
+        const int limit = 16;
 
-        StartCoroutine(WebRequests.Get(query, AccessToken, request =>
+        List<ServerClan> allClans = new();
+        PaginationData paginationData = null;
+
+        int pageCount = 1;
+        bool requestFailed = false;
+
+        Debug.Log($"[GetAllClans] Starting clan fetch. Starting page: {page}, limit: {limit}");
+
+        for (int currentPage = page; currentPage <= pageCount; currentPage++)
         {
-            if (request.result == UnityWebRequest.Result.Success)
+            string query = SERVERADDRESS + "clan?page=" + currentPage + "&limit=" + limit;
+
+            Debug.Log($"[GetAllClans] Requesting page {currentPage}. URL: {query}");
+
+            yield return StartCoroutine(WebRequests.Get(query, AccessToken, request =>
             {
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError($"[GetAllClans] Request failed. Page: {currentPage}, response code: {request.responseCode}, error: {request.error}");
+
+                    requestFailed = true;
+                    return;
+                }
+
                 JObject result = JObject.Parse(request.downloadHandler.text);
-                //Debug.LogWarning(result);
-                JArray clans = (JArray)result["data"]["Clan"];
+                JArray clansJson = (JArray)result["data"]["Clan"];
+                List<ServerClan> clansFromPage = clansJson.ToObject<List<ServerClan>>();
 
-                PaginationData paginationData = new();//result["paginationData"].ToObject<PaginationData>();
+                allClans.AddRange(clansFromPage);
 
-                if (callback != null)
-                    callback(clans.ToObject<List<ServerClan>>(), paginationData);
-            }
-            else
+                PaginationData responsePaginationData = result["paginationData"]?.ToObject<PaginationData>();
+
+                if (responsePaginationData == null)
+                {
+                    Debug.LogWarning($"[GetAllClans] Response did not contain paginationData. Page: {currentPage}");
+                    return;
+                }
+
+                paginationData = responsePaginationData;
+
+                if (responsePaginationData.pageCount > 0)
+                {
+                    pageCount = responsePaginationData.pageCount;
+                }
+
+                Debug.Log($"[GetAllClans] Received {clansFromPage.Count} clans from page {responsePaginationData.currentPage} of {pageCount}. Total clans so far: {allClans.Count}");
+
+            }));
+        
+            if (requestFailed)
             {
-                if (callback != null)
-                    callback(null, null);
-            }
-        }));
+                Debug.LogError($"[GetAllClans] Fetch stopped after {allClans.Count} clans.");
 
-        yield break;
+                callback?.Invoke(null, null);
+                yield break;
+            }
+        }
+
+        Debug.Log($"[GetAllClans] Finished fetching clans. Total clans received: {allClans.Count}, total pages: {pageCount}");
+
+        callback?.Invoke(allClans, paginationData);
     }
 
     public IEnumerator GetClanMembersFromServer(Action<List<ClanMember>> callback)
@@ -1126,6 +1358,7 @@ public class ServerManager : MonoBehaviour
                     playerData.ClanId = string.Empty;
                     storefront.SavePlayerData(playerData, null);
                     OnClanChanged?.Invoke(null);
+                    if (MQTTManager.IsConnected && MQTTManager.IsSubscribed) MQTTManager.Instance.UnsubscribeFromClanNotifications();
                 }
                 else
                 {
@@ -1214,7 +1447,7 @@ public class ServerManager : MonoBehaviour
                 _id = data.Id,
                 name = data.Name,
                 tag = data.Tag,
-                isOpen = Clan.isOpen,
+                isOpen = data.IsOpen,
                 labels = serverValues,
                 ageRange = data.ClanAge,
                 goal = data.Goals,
@@ -1235,7 +1468,7 @@ public class ServerManager : MonoBehaviour
                 {
                     Clan.name = data.Name;
                     Clan.tag = data.Tag;
-                    Clan.isOpen = Clan.isOpen;
+                    Clan.isOpen = data.IsOpen;
                     Clan.ageRange = data.ClanAge;
                     Clan.goal = data.Goals;
                     Clan.phrase = data.Phrase;
@@ -1403,10 +1636,58 @@ public class ServerManager : MonoBehaviour
             yield break;
         }
 
-        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "online-players/ping", "", AccessToken, request =>
+        string body = JObject.FromObject(
+            new
+            {
+                client_version = ApplicationController.VersionNumber.ToString(),
+            }
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "online-players/ping", body, AccessToken, request =>
         {
             if (request.result == UnityWebRequest.Result.Success)
             {
+                if (callback != null)
+                    callback(true);
+            }
+            else
+            {
+                if (callback != null)
+                    callback(false);
+            }
+        }));
+    }
+
+    #endregion
+
+    #region AccessToken
+
+    private IEnumerator RefreshAccessToken(Action<bool> callback)
+    {
+        Debug.Log("Access token expired. Attempting token refresh.");
+
+        if (((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds() >= RefreshTokenExpiration)
+        {
+            Debug.Log("Refresh token expired. New Login required.");
+            callback?.Invoke(false);
+            yield break;
+        }
+
+        string body = JObject.FromObject(
+            new
+            {
+                refreshToken = RefreshToken,
+            }
+        ).ToString();
+
+        yield return StartCoroutine(WebRequests.Post(SERVERADDRESS + "auth/refresh", body, null, request =>
+        {
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                JObject result = JObject.Parse(request.downloadHandler.text);
+
+                Instance.SetAccessTokens(result);
+
                 if (callback != null)
                     callback(true);
             }
@@ -1744,7 +2025,7 @@ public class ServerManager : MonoBehaviour
                 List<ServerItem> requestItems = new();
                 JObject jObject = JObject.Parse(request.downloadHandler.text);
                 //Debug.LogWarning(jObject);
-                JArray array = (JArray)jObject["data"]["Stock"]["Item"];
+                JArray array = (JArray)jObject["data"]["Item"];
                 requestItems = array.ToObject<List<ServerItem>>();
 
                 foreach (ServerItem item in requestItems)
@@ -1832,6 +2113,12 @@ public class ServerManager : MonoBehaviour
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
                 Debug.LogWarning(result);
+                JArray token = (JArray)result["data"]["Friendship"];
+                foreach (JToken token2 in token)
+                {
+                    if (token2["avatar"].ToString() == string.Empty) continue;
+                    if (int.TryParse(token2["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
+                }
                 List<ServerFriendPlayer> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendPlayer>>();
 
 
@@ -1856,7 +2143,10 @@ public class ServerManager : MonoBehaviour
                 Debug.LogWarning(result);
                 JArray token = (JArray)result["data"]["Friendship"];
                 foreach (JToken token2 in token)
+                {
+                    if (token2["friend"]["avatar"].ToString() == string.Empty) continue;
                     if (int.TryParse(token2["friend"]["avatar"]["head"].ToString(), out int value)) token2["friend"]["avatar"] = string.Empty;
+                }
                 List<ServerFriendRequest> friendList = ((JArray)result["data"]["Friendship"]).ToObject<List<ServerFriendRequest>>();
 
 
@@ -1939,6 +2229,194 @@ public class ServerManager : MonoBehaviour
     #endregion
 
     #region Battle
+
+    public string ActiveMatchmakingRoomId { get; private set; }
+    public bool HasActiveMatchmakingRoom => !string.IsNullOrEmpty(ActiveMatchmakingRoomId);
+    private bool _matchmakingLeaveInFlight;
+
+    public static string CreateMatchmakingRoomId()
+    {
+        // The matchmaking API validates room ids as MongoDB ObjectIds (24 hexadecimal characters).
+        return Guid.NewGuid().ToString("N").Substring(0, 24);
+    }
+
+    public IEnumerator MatchmakingCreateRoom(MatchmakingType matchmakingType, GameType gameType, Action<bool> callback, string RoomId = "", int teamSize = 2, bool allowBots = true, string automaticInvite = null)
+    {
+        yield return StartCoroutine(MatchmakingCreateRoom(
+            matchmakingType,
+            gameType,
+            (success, _) => callback?.Invoke(success),
+            RoomId,
+            teamSize,
+            allowBots,
+            automaticInvite));
+    }
+
+    public IEnumerator MatchmakingCreateRoom(MatchmakingType matchmakingType, GameType gameType, Action<bool, string> callback, string RoomId = "", int teamSize = 2, bool allowBots = true, string automaticInvite = null)
+    {
+        if (HasActiveMatchmakingRoom || _matchmakingLeaveInFlight)
+        {
+            bool previousRoomLeft = false;
+            yield return StartCoroutine(MatchmakingLeaveRoom(success => previousRoomLeft = success));
+            if (!previousRoomLeft)
+            {
+                callback?.Invoke(false, null);
+                yield break;
+            }
+        }
+
+        object invite = automaticInvite != null ? (automaticInvite.ToUpper().Equals("CLAN") ? new { type = "CLAN" } : new { type = "PLAYER", playerId = automaticInvite }) : null;
+
+        string matchType = matchmakingType switch
+        {
+            MatchmakingType.Random2v2 => "RANDOM",
+            MatchmakingType.Clan2v2 => "CLAN",
+            MatchmakingType.Custom => "CUSTOM",
+            _ => null
+        };
+
+        if (matchType == null)
+        {
+            Debug.LogError($"MatchmakingCreateRoom: unsupported matchmaking type {matchmakingType}.");
+            callback?.Invoke(false, null);
+            yield break;
+        }
+
+        JObject bodyObject = JObject.FromObject(
+            new
+            {
+                matchType,
+                gameType = (int)gameType,
+                allowBots = allowBots,
+                automaticInvite = invite,
+                clientVersion = ApplicationController.VersionNumber.ToString(),
+            },
+            JsonSerializer.CreateDefault(new JsonSerializerSettings {})
+        );
+
+        if (matchmakingType == MatchmakingType.Custom)
+        {
+            bodyObject["roomId"] = string.IsNullOrEmpty(RoomId) ? CreateMatchmakingRoomId() : RoomId;
+            bodyObject["teamSize"] = teamSize;
+        }
+
+        string body = bodyObject.ToString();
+
+        for (int attempt = 0; attempt < 2; attempt++)
+        {
+            UnityWebRequest.Result requestResult = UnityWebRequest.Result.InProgress;
+            long responseCode = 0;
+            string responseBody = null;
+            yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}matchmaking/rooms", body, AccessToken, Request =>
+            {
+                requestResult = Request.result;
+                responseCode = Request.responseCode;
+                responseBody = Request.downloadHandler?.text;
+            }));
+
+            if (requestResult == UnityWebRequest.Result.Success)
+            {
+                try
+                {
+                    JObject result = JObject.Parse(responseBody);
+                    string serverRoomId = result["data"]?["Object"]?["id"]?.ToString();
+                    if (string.IsNullOrEmpty(serverRoomId))
+                    {
+                        Debug.LogError("MatchmakingCreateRoom: server response did not contain data.Object.id.");
+                        callback?.Invoke(false, null);
+                        yield break;
+                    }
+
+                    ActiveMatchmakingRoomId = serverRoomId;
+                    callback?.Invoke(true, serverRoomId);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"MatchmakingCreateRoom: failed to parse server response: {ex.Message}");
+                    callback?.Invoke(false, null);
+                }
+                yield break;
+            }
+
+            // Recover from stale server state left by an earlier client/game session, then retry once.
+            if (responseCode == 409 && attempt == 0)
+            {
+                bool leftRoom = false;
+                yield return StartCoroutine(MatchmakingLeaveRoom(success => leftRoom = success));
+                if (leftRoom) continue;
+            }
+
+            callback?.Invoke(false, null);
+            yield break;
+        }
+    }
+
+    public IEnumerator MatchmakingLeaveRoom(Action<bool> callback = null)
+    {
+        if (_matchmakingLeaveInFlight)
+        {
+            yield return new WaitUntil(() => !_matchmakingLeaveInFlight);
+            callback?.Invoke(!HasActiveMatchmakingRoom);
+            yield break;
+        }
+
+        _matchmakingLeaveInFlight = true;
+        bool leftRoom = false;
+        try
+        {
+            yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}matchmaking/rooms/leave", "", AccessToken, Request =>
+            {
+                // Leaving is idempotent locally: a 404 means the backend already has no active room.
+                leftRoom = Request.result == UnityWebRequest.Result.Success || Request.responseCode == 404;
+                if (leftRoom) ActiveMatchmakingRoomId = null;
+            }));
+        }
+        finally
+        {
+            _matchmakingLeaveInFlight = false;
+        }
+
+        callback?.Invoke(leftRoom);
+    }
+
+    public IEnumerator MatchmakingSendInviteToClan(Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}matchmaking/invites/clan", "", AccessToken, Request =>
+        {
+            if (Request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(obj: true);
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(obj: false);
+                }
+            }
+        }));
+    }
+
+    public IEnumerator MatchmakingSendInviteToPlayer(string playerId, Action<bool> callback)
+    {
+        yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}matchmaking/invites/{playerId}", "", AccessToken, Request =>
+        {
+            if (Request.result == UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                    callback(obj: true);
+            }
+            else
+            {
+                if (callback != null)
+                {
+                    callback(obj: false);
+                }
+            }
+        }));
+    }
+
 
     public void BattleSendDebugLogFile(List<IMultipartFormSection> formData, string secretKey, string id, Action<UnityWebRequest> callback)
     {
@@ -2226,9 +2704,10 @@ public class ServerManager : MonoBehaviour
             if (request.result == UnityWebRequest.Result.Success)
             {
                 JObject result = JObject.Parse(request.downloadHandler.text);
+                Debug.LogWarning(result);
                 ServerStall stall = result["data"]["Stall"].ToObject<ServerStall>();
 
-                AdStoreObject adObject = new AdStoreObject(stall.adPoster.border, stall.adPoster.colour);
+                AdStoreObject adObject = new(stall);
 
 
 
@@ -2381,10 +2860,19 @@ public class ServerManager : MonoBehaviour
             {
                 border = ad.BorderFrame,
                 colour = ad.BackgroundColour,
+                mainFurniture = ad.FurnitureName,
+                textField = new
+                {
+                    textString = ad.AdText,
+                    textFont = ad.TextFont.name,
+                    textColour = ad.TextColour,
+                }  
                 //tag = data.Tag,
             },
             JsonSerializer.CreateDefault(new JsonSerializerSettings { Converters = { new StringEnumConverter() } })
         ).ToString();
+
+        Debug.LogWarning(body);
 
         yield return StartCoroutine(WebRequests.Patch(DEVADDRESS + "stall/adPoster", body, AccessToken, request =>
         {
@@ -2400,6 +2888,22 @@ public class ServerManager : MonoBehaviour
             }
         }));
     }
+
+    public void SaveAdData(AdStoreObject adData)
+    {
+        Storefront.Get().GetClanData(Clan._id, data =>
+        {
+            data.AdData = adData;
+            StartCoroutine(ServerManager.Instance.UpdateClanAdPoster(adData, success =>
+            {
+                if (success)
+                {
+                    Storefront.Get().SaveClanData(data, clanData => data = clanData);
+                }
+            }));
+        });
+    }
+
     #endregion
 
     #region Leaderboard

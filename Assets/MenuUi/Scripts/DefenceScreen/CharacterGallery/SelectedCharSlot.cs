@@ -16,6 +16,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [Space, SerializeField] private Image _backgroundLowerImage;
         [SerializeField] private Image _backgroundUpperImage;
+        [SerializeField] private Image _backgroundOverride;
 
         [Space, SerializeField] private PieChartPreview _pieChartPreview;
 
@@ -45,8 +46,8 @@ namespace MenuUi.Scripts.CharacterGallery
             _characterImage.sprite = sprite;
             _characterNameText.text = name;
             _classNameIcon.sprite = classNameIcon;
-            _backgroundLowerImage.color = bgColor;
-            _backgroundUpperImage.color = bgAltColor;
+            _backgroundUpperImage.color = bgColor;
+            _backgroundLowerImage.color = bgAltColor;
             _classIcon.sprite = classIcon;
 
 
@@ -67,6 +68,18 @@ namespace MenuUi.Scripts.CharacterGallery
         {
            _characterCard.SetActive(visible);
            _statPopupButton.gameObject.SetActive(visible);
+        }
+
+        public void GradientOverride(Sprite bgImage)
+        {
+            if (bgImage == null)
+            {
+                _backgroundOverride.sprite = null;
+                _backgroundOverride.gameObject.SetActive(false);
+                return;
+            }
+            _backgroundOverride.sprite = bgImage;
+            _backgroundOverride.gameObject.SetActive(true);
         }
     }
 }

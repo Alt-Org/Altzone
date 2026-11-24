@@ -93,12 +93,18 @@ $(function(){initNavTree('class_quantum_1_1_deterministic_command_setup.html',''
   <div class="headertitle"><div class="title">Quantum.DeterministicCommandSetup Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Contains all project-specific commands.  
+ <a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
 <tr class="memitem:a44a26d4beb305bccff614d37044dbf98" id="r_a44a26d4beb305bccff614d37044dbf98"><td class="memItemLeft">static partial void&#160;</td><td class="memItemRight"><a class="el" href="#a44a26d4beb305bccff614d37044dbf98">AddCommandFactoriesUser</a> (ICollection&lt; IDeterministicCommandFactory &gt; factories, <a class="el" href="class_quantum_1_1_runtime_config.html">RuntimeConfig</a> gameConfig, <a class="el" href="class_quantum_1_1_simulation_config.html">SimulationConfig</a> simulationConfig)</td></tr>
+<tr class="memdesc:a44a26d4beb305bccff614d37044dbf98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers the game's custom IDeterministicCommandFactory instances with the Quantum command system. Called once during the simulation initialization.  <br /></td></tr>
 </table>
-<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Contains all project-specific commands. </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="a44a26d4beb305bccff614d37044dbf98" name="a44a26d4beb305bccff614d37044dbf98"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a44a26d4beb305bccff614d37044dbf98">&#9670;&#160;</a></span>AddCommandFactoriesUser()</h2>
 
@@ -130,6 +136,17 @@ Static Private Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Registers the game's custom IDeterministicCommandFactory instances with the Quantum command system. Called once during the simulation initialization. </p>
+<dl class="section warning"><dt>Warning</dt><dd>This method should only be called by <a class="el" href="namespace_quantum.html" title="Quantum&#39;s Build-in Namespace.   Contains Quantum&#39;s own code and Battle Simulation code that is genera...">Quantum</a>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">factories</td><td>The command factory collection to register commands into</td></tr>
+    <tr><td class="paramname">gameConfig</td><td>The runtime game configuration for the current session</td></tr>
+    <tr><td class="paramname">simulationConfig</td><td>The simulation configuration for the current session</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

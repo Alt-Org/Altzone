@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Obsolete]
 public class SetVolume : MonoBehaviour
 {
     [SerializeField] private bool _useAudioSourceBaseVolume = true;

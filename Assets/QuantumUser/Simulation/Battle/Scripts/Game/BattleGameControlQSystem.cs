@@ -48,6 +48,7 @@ namespace Battle.QSimulation.Game
 
             BattleArenaQSpec battleArenaSpec = BattleQConfig.GetArenaSpec(f);
 
+            BattleEntityManager.Init(f, new BattleGridPosition() { Row = -48, Col = -32 }, 16);
             BattleGridManager.Init(battleArenaSpec);
             BattlePlayerManager.Init(f, battleArenaSpec);
 
@@ -55,6 +56,7 @@ namespace Battle.QSimulation.Game
             BattleCollisionQSystem.Init();
             BattleGoalQSystem.Init();
             BattlePlayerClassManager.Init();
+            BattlePlayerShieldManager.Init();
             BattlePlayerMovementController.Init();
             BattlePlayerQSystem.Init();
             BattleProjectileQSystem.Init();
@@ -92,19 +94,40 @@ namespace Battle.QSimulation.Game
         }
 
         /// <summary>
-        /// Called when the game ends. Updates the game session state and calls the BattleViewGameOver Event and BattleOnGameOver Signal.
+        /// Called to end the game when one team scores a goal.<br/>
+        /// Calls <see cref="HandleGameOver(Frame, BattleTeamNumber)">HandleGameOver</see>,
+        /// which handles ending the game.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="winningTeam">The team that won the match.</param>
-        public static void OnGameOver(Frame f, BattleTeamNumber winningTeam)
+        public static void OnGameOverGoal(Frame f, BattleTeamNumber winningTeam)
         {
-            BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
-            f.Events.BattleViewGameOver(winningTeam, gameSession->GameTimeSec);
-            gameSession->State = BattleGameState.GameOver;
+            HandleGameOver(f, winningTeam);
+        }
 
-            BattleTeamNumber WinningTeam = winningTeam;
-            f.Signals.BattleOnGameOver(WinningTeam);
+        /// <summary>
+        /// Called to end the game when one team gives up.<br/>
+        /// Calls <see cref="HandleGameOver(Frame, BattleTeamNumber)">HandleGameOver</see>,
+        /// which handles ending the game.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="giveUpTeam">The team that gave up.</param>
+        ///
+        /// <exception cref="System.ArgumentException">Thrown when <paramref name="giveUpTeam"/> is NoTeam, which is invalid give up team.</exception>
+        public static void OnGameOverGiveUp(Frame f, BattleTeamNumber giveUpTeam)
+        {
+            BattleTeamNumber winningTeam = giveUpTeam switch
+            {
+                BattleTeamNumber.TeamAlpha => BattleTeamNumber.TeamBeta,
+                BattleTeamNumber.TeamBeta => BattleTeamNumber.TeamAlpha,
+
+                BattleTeamNumber.NoTeam => throw new System.ArgumentException("NoTeam is not valid giveUpTeam"),
+                _ => throw new System.NotImplementedException()
+            };
+
+            HandleGameOver(f, winningTeam);
         }
 
         /// <summary>
@@ -177,6 +200,8 @@ namespace Battle.QSimulation.Game
                     // Transition from GetReadyToPlay to Playing
                     if (gameSession->TimeUntilStartSec <= FP._0)
                     {
+                        BattlePlayerQSystem.OnGameStart(f);
+                        BattleProjectileQSystem.Launch(f);
                         f.Events.BattleViewGameStart();
                         gameSession->State = BattleGameState.Playing;
                     }
@@ -203,9 +228,30 @@ namespace Battle.QSimulation.Game
             BattleSoulWallQSpec soulWallSpec = BattleQConfig.GetSoulWallSpec(f);
 
             BattleSoulWallQSystem.CreateSoulWalls(f, battleArenaSpec, soulWallSpec);
-
             BattlePlayerManager.CreatePlayers(f);
+            BattleProjectileQSystem.CreateProjectile(f);
+
             BattlePlayerQSystem.SpawnPlayers(f);
+        }
+
+        /// <summary>
+        /// Private method for handling ending the game.<br/>
+        /// Called by <see cref="OnGameOverGoal(Frame, BattleTeamNumber)">OnGameOverGoal</see> and
+        /// <see cref="OnGameOverGiveUp(Frame, BattleTeamNumber)">OnGameOverGiveUp</see>.<br/>
+        /// Sends the <see cref="Quantum.EventBattleViewGameOver">BattleViewGameOver</see> Event and
+        /// <see cref="Quantum.ISignalBattleOnGameOver">BattleOnGameOver</see> Signal.
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        /// <param name="winningTeam">The team that won the match.</param>
+        private static void HandleGameOver(Frame f, BattleTeamNumber winningTeam)
+        {
+            BattleGameSessionQSingleton* gameSession = f.Unsafe.GetPointerSingleton<BattleGameSessionQSingleton>();
+            f.Events.BattleViewGameOver(winningTeam, gameSession->GameTimeSec);
+            gameSession->State = BattleGameState.GameOver;
+
+            BattleTeamNumber WinningTeam = winningTeam;
+            f.Signals.BattleOnGameOver(WinningTeam);
         }
     }
 }

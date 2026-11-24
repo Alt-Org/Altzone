@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86632199a269e3641a1b2f75d1171ac6, type: 3}
+  m_Name: RandomQuestionConfig
+  m_EditorClassIdentifier: 
+  _questions:
+  - _question: Voiko digitaalinen peli olla taideteos?
+    _englishQuestion: Can a digital game be a work of art?
+    answers:
+    - _answer: "Kyll\xE4"
+      _englishAnswer: Yes
+    - _answer: Ei
+      _englishAnswer: No
+  - _question: "Mik\xE4 tekee pelist\xE4 taidetta?"
+    _englishQuestion: What makes a game a work of art?
+    answers:
+    - _answer: Visuaalinen tyyli
+      _englishAnswer: Visual style
+    - _answer: "Musiikki ja \xE4\xE4nimaailma"
+      _englishAnswer: Music and sounds
+    - _answer: Tarina ja tunnelma
+      _englishAnswer: Story and atmosphere
+    - _answer: Pelaajan kokemus
+      _englishAnswer: Player experience
+    - _answer: Pelimekaniikka
+      _englishAnswer: Game mechanics
+  - _question: "Voiko pelin s\xE4\xE4nn\xF6t tai pelimekaniikka olla osa sen taiteellista
+      ilmaisua?"
+    _englishQuestion: Can the rules or mechanics of a game be part of its artistic
+      expression?
+    answers:
+    - _answer: "Kyll\xE4"
+      _englishAnswer: Yes
+    - _answer: Ei
+      _englishAnswer: No
+  - _question: Millainen peli tuntuu sinusta eniten taiteelliselta?
+    _englishQuestion: What kind of game feels the most artistic to you?
+    answers:
+    - _answer: Kauniisti piirretty tai animoitu peli
+      _englishAnswer: A beautifully drawn or animated game
+    - _answer: "Vahvan tarinan sis\xE4lt\xE4v\xE4 peli"
+      _englishAnswer: A game with a strong story
+    - _answer: "Tunteita her\xE4tt\xE4v\xE4 peli"
+      _englishAnswer: An emotional game
+    - _answer: Kokeellinen tai erikoinen peli
+      _englishAnswer: Experimental or unique game
+    - _answer: Peli, jossa pelaaja saa luoda itse
+      _englishAnswer: A game where the player gets to create on their own
+  - _question: "Voiko peli k\xE4sitell\xE4 vakavia aiheita samalla tavalla kuin elokuva,
+      kirja tai kuvataideteos?"
+    _englishQuestion: Can a game deal with serious topics in the same way as a film,
+      book, or a painting?
+    answers:
+    - _answer: "Kyll\xE4"
+      _englishAnswer: Yes
+    - _answer: Ei
+      _englishAnswer: No
+  - _question: "Onko pelin pelaaja mielest\xE4si mukana teoksen syntymisess\xE4?"
+    _englishQuestion: Do you think the game player is a part of the creation of the
+      work?
+    answers:
+    - _answer: "Kyll\xE4"
+      _englishAnswer: Yes
+    - _answer: Ei
+      _englishAnswer: No
+    - _answer: "Riippuu pelist\xE4"
+      _englishAnswer: Depends on the game
+  - _question: "Mik\xE4 seuraavista on mielest\xE4si t\xE4rkein osa pelitaidetta?"
+    _englishQuestion: Which of the following do you think is the most important part
+      of game art?
+    answers:
+    - _answer: Kuvallinen maailma
+      _englishAnswer: Game graphics
+    - _answer: "\xC4\xE4net ja musiikki"
+      _englishAnswer: Music and sounds
+    - _answer: Tarina
+      _englishAnswer: Story
+    - _answer: Pelattavuus
+      _englishAnswer: Playability
+    - _answer: Pelaajan valinnat
+      _englishAnswer: Player's choices
+    - _answer: Tunnelma
+      _englishAnswer: Atmosphere
+  - _question: Voiko peli olla taidetta, vaikka se ei olisi visuaalisesti kaunis?
+    _englishQuestion: Can a game be a work of art even if it isn't visually pleasing?
+    answers:
+    - _answer: "Kyll\xE4"
+      _englishAnswer: Yes
+    - _answer: Ei
+      _englishAnswer: No
+  - _question: "Oletko joskus pelannut peli\xE4, joka on her\xE4tt\xE4nyt sinussa
+      vahvoja tunteita?"
+    _englishQuestion: Have you ever played a game that evoked strong emotions in
+      you?
+    answers:
+    - _answer: "Kyll\xE4"
+      _englishAnswer: Yes
+    - _answer: Ei
+      _englishAnswer: No
+  - _question: "Pit\xE4isik\xF6 pelej\xE4 esitell\xE4 museoissa, gallerioissa tai
+      taiden\xE4yttelyiss\xE4?"
+    _englishQuestion: Should games be displayed in museums, galleries, or art exhibitions?
+    answers:
+    - _answer: "Kyll\xE4"
+      _englishAnswer: Yes
+    - _answer: Ei
+      _englishAnswer: No

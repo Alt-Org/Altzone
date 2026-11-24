@@ -15,32 +15,82 @@ public class AudioSourceHandler : MonoBehaviour
 
     public void SetChunkIndex(int chunk, int channel) { _chunkIndex = chunk; _channelIndex = channel; }
 
-    void Start() { _audioSource = GetComponent<AudioSource>(); }
+    void Start() { if (!_audioSource) GetAudioSource(); }
 
-    public void SetVolume(float volume) { _audioSource.volume = volume; }
+    public void SetVolume(float volume)
+    {
+        if (!_audioSource) GetAudioSource();
 
-    public void SetAudioClip(AudioClip audio) { _audioSource.clip = audio; }
+        _audioSource.volume = volume;
+    }
 
-    public void SetPlayAudioClip(AudioClip audio, bool loop, float pitch) { SetAudioClip(audio); SetLoop(loop); SetPitch(pitch); Play(); }
+    public void SetAudioClip(AudioClip audioClip)
+    {
+        if (!_audioSource) GetAudioSource();
 
-    public void SetLoop(bool value) { _audioSource.loop = value; }
+        _audioSource.clip = audioClip;
+    }
 
-    public bool IsInUse() { return _audioSource.clip != null; }
+    public void SetPlayAudioClip(AudioClip audioClip, bool loop, float pitch)
+    {
+        SetAudioClip(audioClip);
+        SetLoop(loop);
+        SetPitch(pitch);
+        Play();
+    }
 
-    public void Clear() { Stop(); _audioSource.clip = null; _audioSource.pitch = 1f; }
+    public void SetLoop(bool value)
+    {
+        if (!_audioSource) GetAudioSource();
+
+        _audioSource.loop = value;
+    }
+
+    public bool IsInUse()
+    {
+        if (!_audioSource) GetAudioSource();
+
+        return _audioSource.clip != null;
+    }
+
+    public void Clear()
+    {
+        Stop();
+        _audioSource.clip = null;
+        _audioSource.pitch = 1f;
+    }
 
     public void Play()
     {
+        if (!_audioSource) GetAudioSource();
+
         _audioSource.Play();
 
         if (!_audioSource.loop) _playbackCoroutine = StartCoroutine(WaitForPlaybackFinish());
     }
 
-    public void Stop() { StopCoroutine(_playbackCoroutine); _audioSource.Stop(); }
+    public void Stop()
+    {
+        if (!_audioSource) GetAudioSource();
 
-    public void Continue() { _audioSource.UnPause(); StartCoroutine(WaitForPlaybackFinish()); }
+        StopCoroutine(_playbackCoroutine);
+        _audioSource.Stop();
+    }
 
-    public void SetPitch(float pitch) { _audioSource.pitch = pitch; }
+    public void Continue()
+    {
+        if (!_audioSource) GetAudioSource();
+
+        _audioSource.UnPause();
+        StartCoroutine(WaitForPlaybackFinish());
+    }
+
+    public void SetPitch(float pitch)
+    {
+        if (!_audioSource) GetAudioSource();
+
+        _audioSource.pitch = pitch;
+    }
 
     private IEnumerator WaitForPlaybackFinish()
     {
@@ -48,6 +98,8 @@ public class AudioSourceHandler : MonoBehaviour
             yield return null;
 
         _audioSource.clip = null;
-        OnPlaybackFinished.Invoke(_chunkIndex, _channelIndex);
+        OnPlaybackFinished?.Invoke(_chunkIndex, _channelIndex);
     }
+
+    private void GetAudioSource() { _audioSource = GetComponent<AudioSource>(); }
 }

@@ -1,21 +1,23 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-
-using UnityEngine;
-using UnityEngine.UI;
-
-using Prg.Scripts.Common.PubSub;
-
+using Altzone.Scripts;
 using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Common.Photon;
 using Altzone.Scripts.Lobby;
-using Photon.Client;
-using ReasonType = Altzone.Scripts.Lobby.LobbyManager.GetKickedEvent.ReasonType;
-
+using Altzone.Scripts.Lobby.Wrappers;
+using Altzone.Scripts.Model.Poco.Player;
 using MenuUi.Scripts.Lobby.CreateRoom;
-using PopupSignalBus = MenuUI.Scripts.SignalBus;
 using MenuUi.Scripts.Signals;
+using MenuUi.Scripts.Window;
+using MenuUI.Scripts;
+using Photon.Client;
+using Prg.Scripts.Common.PubSub;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using ReasonType = Altzone.Scripts.Lobby.LobbyManager.GetKickedEvent.ReasonType;
 
 namespace MenuUi.Scripts.Lobby.InLobby
 {
@@ -35,8 +37,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         private PhotonRoomList _photonRoomList;
         private JoinIntent _pendingJoinIntent = JoinIntent.None;
-        private GameType _pendingQueueGameType = GameType.Random2v2;
+        private MatchmakingType _pendingQueueGameType = MatchmakingType.Random2v2;
         private Coroutine _queueRejoinHolder;
+        private bool _createRoomRequestInFlight;
 
         private enum JoinIntent
         {
@@ -49,8 +52,10 @@ namespace MenuUi.Scripts.Lobby.InLobby
         private void Awake()
         {
             _photonRoomList = gameObject.GetOrAddComponent<PhotonRoomList>();
+            WireCreateRoomButtonFallback();
             _createRoomCustom.CreateRoomButton.onClick.AddListener(CreateCustomRoom);
-            _createRoomFromMainMenuButton.onClick.AddListener(CreateCustomRoom);
+                _createRoomFromMainMenuButton.onClick.RemoveAllListeners();
+                _createRoomFromMainMenuButton.onClick.AddListener(() => SignalBus.OnCustomRoomSettingsRequestedSignal());
             LobbyManager.OnClanMemberDisconnected += HandleClanMemberDisconnected;
             LobbyManager.OnKickedOutOfTheRoom += HandleKickedOutOfRoom;
         }
@@ -92,6 +97,7 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 StopCoroutine(_queueRejoinHolder);
                 _queueRejoinHolder = null;
             }
+            _createRoomRequestInFlight = false;
             _pendingJoinIntent = JoinIntent.None;
         }
 
@@ -106,11 +112,20 @@ namespace MenuUi.Scripts.Lobby.InLobby
         /// <summary>
         /// Coroutine to create a room after client is connected to lobby.
         /// </summary>
-        /// <param name="gameType">Game type of which room to create.</param>
+        /// <param name="matchmakingType">Game type of which room to create.</param>
         /// <param name="callback">Callback which is called after room is created.</param>
         /// <returns></returns>
-        public IEnumerator StartCreatingRoom(GameType gameType, Action callback)
+        public IEnumerator StartCreatingRoom(MatchmakingType matchmakingType, GameType gameType, Action callback)
         {
+            if (_createRoomRequestInFlight)
+            {
+                Debug.Log("StartCreatingRoom: room creation already in flight, ignoring duplicate request.");
+                yield break;
+            }
+
+            _createRoomRequestInFlight = true;
+            try
+            {
             // Do not show the creating-room text if the client is in a matchmaking or queue room
             bool isMatchmakingOrQueue = PhotonRealtimeClient.InMatchmakingRoom;
             try
@@ -131,15 +146,18 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 yield return null;
                 if (PhotonRealtimeClient.InLobby)
                 {
-                    switch (gameType)
+                    switch (matchmakingType)
                     {
-                        case GameType.Clan2v2:
-                            CreateClan2v2Room();
+                        case MatchmakingType.FriendLobby:
+                            yield return CreateFriendLobbyRoom(gameType);
                             break;
-                        case GameType.Random2v2:
-                            CreateRandom2v2Room();
+                        case MatchmakingType.Clan2v2:
+                            yield return CreateClan2v2Room(gameType);
                             break;
-                        case GameType.Custom:
+                        case MatchmakingType.Random2v2:
+                            yield return CreateRandom2v2Room(gameType);
+                            break;
+                        case MatchmakingType.Custom:
                             if (!_createRoomCustom.IsCustomRoomOptionsReady) _createRoomCustom.InitializeCustomRoomOptions();
                             CreateCustomRoom();
                             break;
@@ -148,75 +166,216 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 }
             } while (!roomCreated);
 
-            callback();
+            callback?.Invoke();
+            }
+            finally
+            {
+                _createRoomRequestInFlight = false;
+            }
+        }
+
+        private IEnumerator CreateFriendLobbyRoom(GameType gameType)
+        {
+            if (ServerManager.Instance == null)
+            {
+                Debug.LogError("CreateFriendLobbyRoom: ServerManager is not available.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Vakava virhe: palvelinyhteyttä ei ole alustettu. Käynnistä peli uudelleen.");
+                yield break;
+            }
+
+            MatchmakingType targetMatchmakingType = InLobbyController.SelectedPremadeTargetMatchmakingType;
+            if (targetMatchmakingType != MatchmakingType.Random2v2 && targetMatchmakingType != MatchmakingType.Clan2v2)
+            {
+                targetMatchmakingType = MatchmakingType.Random2v2;
+            }
+
+            bool roomRegistered = false;
+            string serverRoomId = null;
+            yield return StartCoroutine(ServerManager.Instance.MatchmakingCreateRoom(
+                targetMatchmakingType,
+                gameType,
+                (success, roomId) =>
+                {
+                    roomRegistered = success;
+                    serverRoomId = roomId;
+                },
+                teamSize: 2,
+                allowBots: false));
+
+            if (!roomRegistered)
+            {
+                InLobbyController.ConsumePendingFriendLobbyInvitePlayer();
+                Debug.LogWarning("CreateFriendLobbyRoom: server rejected room creation.");
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Friend Lobby -huoneen luonti epäonnistui. Yritä uudelleen.");
+                yield break;
+            }
+
+            if (!PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(targetMatchmakingType, gameType, roomId: serverRoomId))
+            {
+                InLobbyController.ConsumePendingFriendLobbyInvitePlayer();
+                Debug.LogWarning($"CreateFriendLobbyRoom: Photon room creation failed to start for server room '{serverRoomId}'.");
+                yield return StartCoroutine(ServerManager.Instance.MatchmakingLeaveRoom());
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Friend Lobby -huoneen luonti epäonnistui. Yritä uudelleen.");
+            }
         }
 
         private void CreateCustomRoom()
         {
-            _pendingJoinIntent = JoinIntent.CustomCreate;
             // int randomNumber = UnityEngine.Random.Range(0, 100) + DateTime.Now.Millisecond;
             string roomName = string.IsNullOrWhiteSpace(_createRoomCustom.RoomName) ? $"{DefaultRoomNameCustom}" : $"{_createRoomCustom.RoomName}";
 
-            if (_createRoomCustom.IsPrivate && _createRoomCustom.RoomPassword != null && _createRoomCustom.RoomPassword != "")
+            if (_createRoomCustom.IsPrivate)
             {
-                PhotonRealtimeClient.CreateCustomLobbyRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword);
+                if (string.IsNullOrWhiteSpace(_createRoomCustom.RoomPassword))
+                {
+                    _pendingJoinIntent = JoinIntent.None;
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Lisää salasana ennen yksityisen huoneen luontia.");
+                    return;
+                }
+
+                // For private rooms keep the provided password for hashing and the display name for the lobby.
+                string newId = Guid.NewGuid().ToString();
+                string internalName = $"{roomName}_{newId}";
+                roomName = $"{roomName}_{newId.Substring(0, 4)}";
+                PhotonRealtimeClient.CreateCustomLobbyRoom(internalName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, _createRoomCustom.RoomPassword, null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.PlayerCount, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
             }
             else
             {
-                PhotonRealtimeClient.JoinRandomOrCreateCustomRoom(roomName, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion);
+                // Always create a new custom room instead of joining an existing one.
+                // Use a unique internal room id to avoid "A game with the specified id already exist." errors
+                string newId = Guid.NewGuid().ToString();
+                string uniqueRoomId = string.IsNullOrWhiteSpace(roomName) ? $"{DefaultRoomNameCustom}{newId}" : $"{roomName}_{newId}";
+                roomName = $"{roomName}_{newId.Substring(0, 4)}";
+                PhotonRealtimeClient.CreateCustomLobbyRoom(uniqueRoomId, _createRoomCustom.SelectedMapId, _createRoomCustom.SelectedEmotion, "", null, _createRoomCustom.SelectedCustomGameModeIndex, _createRoomCustom.PlayerCount, _createRoomCustom.ShowToFriends, _createRoomCustom.ShowToClan, roomName);
+            }
+
+            _pendingJoinIntent = JoinIntent.CustomCreate;
+        }
+
+        private void WireCreateRoomButtonFallback()
+        {
+            if (_createRoomFromMainMenuButton == null)
+            {
+                Transform buttonTransform = FindDescendantButtonTransform(InLobbyController.PopupContentsInstance != null ? InLobbyController.PopupContentsInstance.transform : transform, "CreateRoom_Button");
+                if (buttonTransform != null)
+                {
+                    _createRoomFromMainMenuButton = buttonTransform.GetComponent<Button>() ?? buttonTransform.GetComponentInChildren<Button>(true);
+                }
+            }
+
+            if (_createRoomFromMainMenuButton == null)
+            {
+                return;
+            }
+
+            _createRoomFromMainMenuButton.onClick.RemoveListener(CreateCustomRoom);
+            _createRoomFromMainMenuButton.onClick.AddListener(CreateCustomRoom);
+
+            TMP_Text buttonText = _createRoomFromMainMenuButton.GetComponentInChildren<TMP_Text>(true);
+            if (buttonText != null)
+            {
+                buttonText.text = "Luo huone";
             }
         }
 
-        private void CreateClan2v2Room()  // soulhome value for matchmaking
+        private static Transform FindDescendantButtonTransform(Transform root, string targetName)
         {
-            StartCoroutine(GetClanData( clanData =>
+            if (root == null)
             {
-                if (clanData != null)
+                return null;
+            }
+
+            foreach (Transform child in root)
+            {
+                if (child.name == targetName)
                 {
-                    // Join the persistent queue room instead of creating a matchmaking room immediately
-                    _pendingJoinIntent = JoinIntent.QueueJoin;
-                    _pendingQueueGameType = GameType.Clan2v2;
-                    PhotonRealtimeClient.JoinOrCreateQueueRoom(GameType.Clan2v2);
+                    return child;
                 }
-            }));
+
+                Transform nested = FindDescendantButtonTransform(child, targetName);
+                if (nested != null)
+                {
+                    return nested;
+                }
+            }
+
+            return null;
         }
 
-        private void CreateRandom2v2Room()  // soulhome value for matchmaking
+        private IEnumerator CreateClan2v2Room(GameType gameType)  // soulhome value for matchmaking
         {
-            StartCoroutine(GetClanData(clanData =>
+            yield return GetClanData( clanData =>
             {
                 if (clanData != null)
                 {
                     // Join the persistent queue room instead of creating a matchmaking room immediately
                     _pendingJoinIntent = JoinIntent.QueueJoin;
-                    _pendingQueueGameType = GameType.Random2v2;
-                    PhotonRealtimeClient.JoinOrCreateQueueRoom(GameType.Random2v2);
+                    _pendingQueueGameType = MatchmakingType.Clan2v2;
+                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(MatchmakingType.Clan2v2, gameType);
                 }
-            }));
+            });
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+            this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Clan2v2, gameType));
+        }
+
+        private IEnumerator CreateRandom2v2Room(GameType gameType)  // soulhome value for matchmaking
+        {
+            yield return GetClanData(clanData =>
+            {
+                if (clanData != null)
+                {
+                    // Join the persistent queue room instead of creating a matchmaking room immediately
+                    _pendingJoinIntent = JoinIntent.QueueJoin;
+                    _pendingQueueGameType = MatchmakingType.Random2v2;
+                    PhotonRealtimeClient.CreateInRoomPremadeLobbyRoom(MatchmakingType.Random2v2, gameType);
+                }
+            });
+            yield return new WaitUntil(() => PhotonRealtimeClient.InRoom);
+            this.Publish(new LobbyManager.StartMatchmakingEvent(MatchmakingType.Random2v2, gameType));
         }
 
         private void JoinRoom(string roomName)
         {
             Debug.Log($"{roomName}");
+            if (PhotonRealtimeClient.InRoom)
+            {
+                var currentRoom = PhotonRealtimeClient.LobbyCurrentRoom;
+                if (currentRoom != null && string.Equals(currentRoom.Name, roomName, StringComparison.Ordinal))
+                {
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Olet jo tässä huoneessa.");
+                }
+                else
+                {
+                    Debug.LogWarning($"JoinRoom skipped for '{roomName}': client is already in room '{currentRoom?.Name ?? "<unknown>"}'.");
+                }
+
+                return;
+            }
+
+            if (!PhotonRealtimeClient.InLobby)
+            {
+                Debug.LogWarning($"JoinRoom skipped for '{roomName}': client is not in lobby.");
+                return;
+            }
+
             var rooms = _photonRoomList.CurrentRooms.ToList();
             foreach (var roomInfo in rooms)
             {
                 if (roomInfo.Name.Equals(roomName, StringComparison.Ordinal) && !roomInfo.RemovedFromList && roomInfo.IsOpen)
                 {
                     // Asking for password if there is one
-                    if (roomInfo.CustomProperties.ContainsKey(PhotonBattleRoom.PasswordKey))
+                    if (roomInfo.CustomProperties.TryGetValue(PhotonBattleRoom.PasswordKey, out object passwordHashObj) && passwordHashObj is string passwordHash && !string.IsNullOrEmpty(passwordHash))
                     {
-                        string password = (string)roomInfo.CustomProperties[PhotonBattleRoom.PasswordKey];
                         StartCoroutine(_passwordPopup.AskForPassword(passwordInput =>
                         {
-                            if (password.Trim() == passwordInput.Trim())
+                            if (RoomPasswordMatches(passwordHash, passwordInput))
                             {
                                 _pendingJoinIntent = JoinIntent.ManualRoomJoin;
                                 PhotonRealtimeClient.JoinRoom(roomInfo.Name);
                             }
                             else
                             {
-                                PopupSignalBus.OnChangePopupInfoSignal("Salasana on väärin.");
+                                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Salasana on väärin.");
                             }
                             _passwordPopup.ClosePopup();
                         }));
@@ -238,7 +397,26 @@ namespace MenuUi.Scripts.Lobby.InLobby
             var player = PhotonRealtimeClient.LocalLobbyPlayer;
             //PhotonRealtimeClient.NickName = room.GetUniquePlayerNameForRoom(player, PhotonRealtimeClient.NickName, "");
             Debug.Log($"'{room.Name}' player name '{PhotonRealtimeClient.NickName}'");
+            string shortcutInvitePlayerId = InLobbyController.ConsumePendingFriendLobbyInvitePlayer();
+            if (!string.IsNullOrEmpty(shortcutInvitePlayerId))
+            {
+                StartCoroutine(SendShortcutInvite(shortcutInvitePlayerId));
+            }
             this.Publish(new LobbyManager.StartRoomEvent());
+        }
+
+        private IEnumerator SendShortcutInvite(string playerId)
+        {
+            bool inviteSent = false;
+            if (ServerManager.Instance != null)
+            {
+                yield return StartCoroutine(ServerManager.Instance.MatchmakingSendInviteToPlayer(playerId, success => inviteSent = success));
+            }
+
+            if (!inviteSent)
+            {
+                OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Kutsun lähetys epäonnistui. Yritä uudelleen Friend Lobby -huoneessa.");
+            }
         }
 
         private void HandleMatchmakingRoomEntered(bool isLeader)
@@ -254,27 +432,43 @@ namespace MenuUi.Scripts.Lobby.InLobby
         {
             bool creatingTextActive = _creatingRoomText != null && _creatingRoomText.activeSelf;
 
+            if (returnCode == LobbyErrorCode.JoinFailedPeerAlreadyJoined || (!string.IsNullOrEmpty(message) && message.IndexOf("already joined", StringComparison.OrdinalIgnoreCase) >= 0))
+            {
+                if (creatingTextActive) _creatingRoomText.SetActive(false);
+                _pendingJoinIntent = JoinIntent.None;
+                Debug.LogWarning($"JoinRoomFailed ignored because the client was already joined to the room. Code={returnCode}, Message={message}");
+                return;
+            }
+
             // Only attempt to create a custom room automatically when the user was creating a custom room.
-            if (_pendingJoinIntent == JoinIntent.CustomCreate || (creatingTextActive && InLobbyController.SelectedGameType == GameType.Custom))
+            if (_pendingJoinIntent == JoinIntent.CustomCreate || (creatingTextActive && InLobbyController.SelectedMatchmakingType == MatchmakingType.Custom))
             {
                 CreateCustomRoom();
                 return;
             }
 
-            if (ShouldRejoinQueueAfterJoinFailed(returnCode, message, out GameType queueGameType))
+            if (ShouldRejoinQueueAfterJoinFailed(returnCode, message, out MatchmakingType queueGameType))
             {
+                if (LobbyManager.Instance != null && LobbyManager.Instance.IsJoinFailureAutoRequeueInFlight)
+                {
+                    if (creatingTextActive) _creatingRoomText.SetActive(false);
+                    _pendingJoinIntent = JoinIntent.None;
+                    Debug.Log("OnJoinedRoomFailed: skipping queue rejoin because LobbyManager already started recovery.");
+                    return;
+                }
+
                 if (creatingTextActive) _creatingRoomText.SetActive(false);
                 _pendingJoinIntent = JoinIntent.None;
-                StartQueueRejoin(queueGameType);
+                StartQueueRejoin(queueGameType, InLobbyController.SelectedGameType);
                 return;
             }
 
             if (creatingTextActive) _creatingRoomText.SetActive(false);
             _pendingJoinIntent = JoinIntent.None;
-            PopupSignalBus.OnChangePopupInfoSignal("Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
         }
 
-        private bool ShouldRejoinQueueAfterJoinFailed(short returnCode, string message, out GameType queueGameType)
+        private bool ShouldRejoinQueueAfterJoinFailed(short returnCode, string message, out MatchmakingType queueGameType)
         {
             queueGameType = _pendingQueueGameType;
 
@@ -287,9 +481,9 @@ namespace MenuUi.Scripts.Lobby.InLobby
             {
                 queueGameType = _pendingQueueGameType;
             }
-            else if (InLobbyController.SelectedGameType == GameType.Random2v2 || InLobbyController.SelectedGameType == GameType.Clan2v2)
+            else if (InLobbyController.SelectedMatchmakingType == MatchmakingType.Random2v2 || InLobbyController.SelectedMatchmakingType == MatchmakingType.Clan2v2)
             {
-                queueGameType = InLobbyController.SelectedGameType;
+                queueGameType = InLobbyController.SelectedMatchmakingType;
             }
             else
             {
@@ -313,17 +507,17 @@ namespace MenuUi.Scripts.Lobby.InLobby
             return msg.Contains("game full") || msg.Contains("game closed") || msg.Contains("does not exist");
         }
 
-        private void StartQueueRejoin(GameType gameType)
+        private void StartQueueRejoin(MatchmakingType matchmakingType, GameType gameType)
         {
             if (_queueRejoinHolder != null)
             {
                 return;
             }
 
-            _queueRejoinHolder = StartCoroutine(RejoinQueueWhenLobbyReady(gameType));
+            _queueRejoinHolder = StartCoroutine(RejoinQueueWhenLobbyReady(matchmakingType, gameType));
         }
 
-        private IEnumerator RejoinQueueWhenLobbyReady(GameType gameType)
+        private IEnumerator RejoinQueueWhenLobbyReady(MatchmakingType matchmakingType, GameType gameType)
         {
             try
             {
@@ -340,8 +534,8 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
                 if (!PhotonRealtimeClient.InLobby)
                 {
-                    Debug.LogWarning($"RejoinQueueWhenLobbyReady: not in lobby, skip queue rejoin for {gameType}");
-                    PopupSignalBus.OnChangePopupInfoSignal("Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
+                    Debug.LogWarning($"RejoinQueueWhenLobbyReady: not in lobby, skip queue rejoin for {matchmakingType}");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
                     yield break;
                 }
 
@@ -361,19 +555,19 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 bool joined;
                 try
                 {
-                    joined = PhotonRealtimeClient.JoinOrCreateQueueRoom(gameType);
+                    joined = PhotonRealtimeClient.JoinOrCreateQueueRoom(matchmakingType, gameType);
                 }
                 catch (Exception ex)
                 {
                     Debug.LogWarning($"RejoinQueueWhenLobbyReady: JoinOrCreateQueueRoom threw: {ex.Message}");
-                    PopupSignalBus.OnChangePopupInfoSignal("Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
                     yield break;
                 }
 
                 if (!joined)
                 {
-                    Debug.LogWarning($"RejoinQueueWhenLobbyReady: JoinOrCreateQueueRoom returned false for {gameType}");
-                    PopupSignalBus.OnChangePopupInfoSignal("Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
+                    Debug.LogWarning($"RejoinQueueWhenLobbyReady: JoinOrCreateQueueRoom returned false for {matchmakingType}");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Liityminen epäonnistui: huone on täysi tai ei käytettävissä.");
                 }
             }
             finally
@@ -384,12 +578,18 @@ namespace MenuUi.Scripts.Lobby.InLobby
 
         public void SwitchToRoom()
         {
-            _roomSwitcher.SwitchRoom(InLobbyController.SelectedGameType);
+            _roomSwitcher.SwitchRoom(InLobbyController.SelectedMatchmakingType);
         }
 
         private void UpdateStatus()
         {
-            LobbyManager.Instance.CurrentRooms = _photonRoomList.CurrentRooms;
+            if (!PhotonRealtimeClient.InLobby)
+            {
+                _searchPanel.RoomsData = new List<LobbyRoomInfo>();
+                _searchPanel.SetOnJoinRoom(JoinRoom);
+                return;
+            }
+
             var rooms = _photonRoomList.CurrentRooms.ToList();
             rooms.Sort((a, b) =>
             {
@@ -398,13 +598,118 @@ namespace MenuUi.Scripts.Lobby.InLobby
                 var strB = $"{(b.IsOpen ? 0 : 1)}{b.Name}";
                 return string.Compare(strA, strB, StringComparison.Ordinal);
             });
+
+            rooms = FilterCustomRooms(rooms);
+
             _searchPanel.RoomsData = rooms;
             _searchPanel.SetOnJoinRoom(JoinRoom);
         }
 
+        private List<LobbyRoomInfo> FilterCustomRooms(List<LobbyRoomInfo> rooms)
+        {
+            if (rooms == null)
+            {
+                return rooms;
+            }
+
+            // Get local player data (from local DataStore) for friend list and clan id checks
+            PlayerData localPlayerData = null;
+            try
+            {
+                string uniqueId = ServerManager.Instance?.Player?.uniqueIdentifier;
+                if (!string.IsNullOrEmpty(uniqueId))
+                {
+                    Storefront.Get().GetPlayerData(uniqueId, pd => localPlayerData = pd);
+                }
+            }
+            catch { localPlayerData = null; }
+
+            return rooms.Where(room =>
+            {
+                if (room == null || room.CustomProperties == null)
+                {
+                    return false;
+                }
+
+                if (!room.CustomProperties.TryGetValue(PhotonBattleRoom.MatchmakingKey, out object gameTypeValue) || gameTypeValue is not int gameType || gameType != (int)MatchmakingType.Custom)
+                {
+                    return false;
+                }
+
+                // If room is marked show-to-friends only (sf), only show if the local player is friends with the room leader
+                if (room.CustomProperties.TryGetValue(PhotonBattleRoom.ShowToFriendsKey, out object sfObj) && sfObj is bool sf && sf)
+                {
+                    string leaderId = null;
+                    if (room.CustomProperties.TryGetValue(PhotonBattleRoom.LeaderIdKey, out object lidObj) && lidObj is string lid)
+                    {
+                        leaderId = lid;
+                    }
+
+                    bool allowed = false;
+                    // Allow if the local player is the leader
+                    if (!string.IsNullOrEmpty(leaderId))
+                    {
+                        if (localPlayerData != null && localPlayerData.Id == leaderId) allowed = true;
+                        // Check friend list
+                        if (!allowed && localPlayerData?.friendPlayers != null)
+                        {
+                            foreach (var fp in localPlayerData.friendPlayers)
+                            {
+                                if (fp != null && fp._id == leaderId)
+                                {
+                                    allowed = true; break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!allowed) return false;
+                }
+
+                // If room is marked show-to-clan only (sc), only show if local player's clan matches
+                if (room.CustomProperties.TryGetValue(PhotonBattleRoom.ShowToClanKey, out object scObj) && scObj is bool sc && sc)
+                {
+                    string roomClanId = null;
+                    if (room.CustomProperties.TryGetValue(PhotonBattleRoom.ClanNameKey, out object rclan) && rclan is string rcid)
+                    {
+                        roomClanId = rcid;
+                    }
+
+                    string myClanId = ServerManager.Instance?.Player?.clan_id ?? localPlayerData?.ClanId;
+                    if (string.IsNullOrEmpty(roomClanId) || string.IsNullOrEmpty(myClanId) || !roomClanId.Equals(myClanId, StringComparison.Ordinal))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }).ToList();
+        }
+
+        private static bool RoomPasswordMatches(string storedPasswordValue, string passwordInput)
+        {
+            if (string.IsNullOrEmpty(storedPasswordValue))
+            {
+                return false;
+            }
+
+            string normalizedInput = passwordInput?.Trim() ?? string.Empty;
+            bool looksLikeHash = storedPasswordValue.Length == 64 && storedPasswordValue.All(character =>
+                (character >= '0' && character <= '9') ||
+                (character >= 'a' && character <= 'f'));
+
+            if (looksLikeHash)
+            {
+                string enteredPasswordHash = PhotonRealtimeClient.HashRoomPassword(normalizedInput);
+                return string.Equals(storedPasswordValue, enteredPasswordHash, StringComparison.Ordinal);
+            }
+
+            return string.Equals(storedPasswordValue.Trim(), normalizedInput, StringComparison.Ordinal);
+        }
+
         private void HandleClanMemberDisconnected()
         {
-            PopupSignalBus.OnChangePopupInfoSignal("Pelin etsiminen lopetetaan. Klaanin jäsen sulki pelin.");
+            OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Pelin etsiminen lopetetaan. Klaanin jäsen sulki pelin.");
         }
 
         private void HandleKickedOutOfRoom(ReasonType reason)
@@ -412,11 +717,11 @@ namespace MenuUi.Scripts.Lobby.InLobby
             switch (reason)
             {
                 case ReasonType.FullRoom:
-                    PopupSignalBus.OnChangePopupInfoSignal("Virhe pelin etsimisessä, huone on täysi.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Error, "Virhe pelin etsimisessä, huone on täysi.");
                     //CreateCustomRoom();
                     break;
                 case ReasonType.RoomLeader:
-                    PopupSignalBus.OnChangePopupInfoSignal("Huoneen johtaja poisti sinut huoneesta.");
+                    OverlayPanelCheck.ActivateInfoPopup(InfoLevel.Warning, "Huoneen johtaja poisti sinut huoneesta.");
                     //CreateCustomRoom();
                     break;
             }

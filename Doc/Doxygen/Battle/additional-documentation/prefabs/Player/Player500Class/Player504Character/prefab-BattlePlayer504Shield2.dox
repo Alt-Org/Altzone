@@ -1,0 +1,25 @@
+/// @file "BattlePlayer504Shield2.prefab"
+/// <summary>
+/// Prefab for the shield number 2 of character 504 "Pössyttelijä".
+/// </summary>
+///
+/// This prefab is a variant of @ref "BattlePlayer504Shield1(Base).prefab" and has a similar structure as the base prefab.
+///
+/// ### Structure Overrides
+/// - **BattlePlayer504Shield2**
+///     - *Children:*
+///         - **ShieldViewModel**
+///             - *Components:*
+///                 - @cref{Battle.View.Player,BattlePlayerShieldViewController}
+///         - *Children:*
+///             - **Shield**
+///                 - *Components:*
+///                     - SpriteRenderer
+///
+
+/// @file "BattlePlayer504Shield2EntityPrototype.qprototype"
+/// <summary>
+/// EntityPrototype counterpart of @ref "BattlePlayer504Shield2.prefab"
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).

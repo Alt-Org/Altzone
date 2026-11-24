@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts;
 using Altzone.Scripts.Model.Poco.Clan;
+using MenuUI.Scripts.Jukebox;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,9 @@ public class AlternateTopPanel : AltMonoBehaviour
     [SerializeField] private TextMeshProUGUI _rankingTextWins;
     [SerializeField] private TextMeshProUGUI _rankingTextActivity;
     [SerializeField] private bool _alternateLeaderboard;
+    [Header("Button Visuals")]
+    [SerializeField] private PopupButtonVisual _jukeboxButtonVisual;
+    [SerializeField] private JukeBoxSoulhomeHandler _jukeboxHandler;
 
 
     private float _timerLeaderboard = 5;
@@ -61,6 +65,11 @@ public class AlternateTopPanel : AltMonoBehaviour
     {
         OnTopPanelChanged += ChangeInfoData;
         OnLeaderBoardChange += ChangeLeaderboardType;
+
+        if (_jukeboxHandler != null && _jukeboxButtonVisual != null)
+        {
+            _jukeboxHandler.SetJukeboxButtonVisual(_jukeboxButtonVisual);
+        }
 
         if (!_alternateLeaderboard)
         {

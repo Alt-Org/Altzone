@@ -438,34 +438,23 @@ namespace MenuUi.Scripts.SwipeNavigation
             isSwipeMode = true;
             if (scrollRect || baseScrollRect)
             {
-                if ((scrollRect && scrollRect.enabled) || (baseScrollRect && baseScrollRect.enabled))
-                    while (percent < 1)
-                    {
-                        current += Time.deltaTime;
-                        percent = current / swipeTime;
+                while (percent < 1)
+                {
+                    current += Time.deltaTime;
+                    percent = current / swipeTime;
+                    if (scrollRect && !scrollRect.enabled) scrollRect.enabled = true;
+                    if (baseScrollRect && !baseScrollRect.enabled) baseScrollRect.enabled = true;
+                    scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
+                    if (scrollRect && scrollRect.enabled) scrollRect.enabled = false;
+                    if (baseScrollRect && baseScrollRect.enabled) baseScrollRect.enabled = false;
 
-                        scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
-
-                        yield return null;
-                    }
-                else
-                    while (percent < 1)
-                    {
-                        current += Time.deltaTime;
-                        percent = current / swipeTime;
-                        if (scrollRect) scrollRect.enabled = true;
-                        if (baseScrollRect) baseScrollRect.enabled = true;
-                        scrollBar.value = Mathf.Lerp(start, scrollPageValues[index], percent);
-                        if (scrollRect) scrollRect.enabled = false;
-                        if (baseScrollRect) baseScrollRect.enabled = false;
-
-                        yield return null;
-                    }
+                    yield return null;
+                }
             }
             isSwipeMode = false;
             _startTouch = Vector2.zero;
             _endTouch = Vector2.zero;
-            IsEnabled = true;
+            if(ClickStateHandler.GetClickState() is not ClickState.Hold or ClickState.Move) IsEnabled = true;
             settingScroll = false;
         }
 

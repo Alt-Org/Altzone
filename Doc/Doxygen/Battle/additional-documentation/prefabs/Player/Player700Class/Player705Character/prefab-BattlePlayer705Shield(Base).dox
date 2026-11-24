@@ -1,0 +1,25 @@
+/// @file "BattlePlayer705Shield(Base).prefab"
+/// <summary>
+/// Prefab for the shield (Base) of character 705 "Pilkunviilaus".
+/// </summary>
+///
+/// This prefab is a variant of @ref "BattlePlayer700Shield(BaseAndTestCharacter).prefab" and has a similar structure as the base prefab.
+///
+/// ### Structure Overrides
+/// - **BattlePlayer705Shield(Base)**
+///     - *Children:*
+///         - **ShieldViewModel**
+///             - *Components:*
+///                 - @cref{Battle.View.Player,BattlePlayerShieldViewController}
+///         - *Children:*
+///             - **Shield**
+///                 - *Components:*
+///                     - SpriteRenderer
+///
+
+/// @file "BattlePlayer705Shield(Base)EntityPrototype.qprototype"
+/// <summary>
+/// EntityPrototype counterpart of @ref "BattlePlayer705Shield(Base).prefab"
+/// </summary>
+///
+/// Contains data about the prefab that %Quantum needs (QComponents used in prefab etc.).

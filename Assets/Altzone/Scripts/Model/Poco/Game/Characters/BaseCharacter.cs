@@ -249,12 +249,12 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             return level switch
             {
-                 1 =>  10,
-                 2 =>  12,
-                 3 =>  14,
-                 4 =>  16,
-                 5 =>  18,
-                 6 =>  20,
+                 1 =>  1,
+                 2 =>  2,
+                 3 =>  4,
+                 4 =>  6,
+                 5 =>  8,
+                 6 => 10,
 
                 _ => -1,
             };
@@ -433,6 +433,14 @@ namespace Altzone.Scripts.Model.Poco.Game
         {
             CharacterClassType ClassType = (CharacterClassType) GetClass((int)id);
             return ClassType;
+        }
+    }
+
+    public static class BaseCharacterExtension
+    {
+        public static int GetBaseStatsCombined(this BaseCharacter basecharacter)
+        {
+            return basecharacter.DefaultSpeed + basecharacter.DefaultCharacterSize + basecharacter.DefaultAttack + basecharacter.DefaultDefence + basecharacter.DefaultHp;
         }
     }
 }

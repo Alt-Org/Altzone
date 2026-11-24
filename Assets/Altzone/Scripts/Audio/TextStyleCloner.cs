@@ -19,10 +19,10 @@ namespace Altzone.Scripts.Audio
         {
             yield return new WaitForEndOfFrame();
 
-            SetTextSettings(true);
+            SetTextSettings();
         }
 
-        public void SetTextSettings(bool keepAlpha = false)
+        public void SetTextSettings()
         {
             if (!_targetText) _targetText = GetComponent<TMPro.TMP_Text>();
 

@@ -15,12 +15,14 @@ namespace Battle.QSimulation.Game
 {
     public class BattleQConfig : AssetObject
     {
-        public AssetRef<BattleArenaQSpec>      BattleArenaSpec;
-        public AssetRef<BattleSoulWallQSpec>   BattleSoulWallSpec;
-        public AssetRef<BattleProjectileQSpec> BattleProjectileSpec;
-        public AssetRef<BattleDiamondQSpec>    BattleDiamondSpec;
-        public AssetRef<BattlePlayerQSpec>     BattlePlayerSpec;
-        public AssetRef<BattlePlayerBotQSpec>  BattlePlayerBotSpec;
+        public AssetRef<BattleArenaQSpec>          BattleArenaSpec;
+        public AssetRef<BattleSoulWallQSpec>       BattleSoulWallSpec;
+        public AssetRef<BattleProjectileQSpec>     BattleProjectileSpec;
+        public AssetRef<BattleDiamondQSpec>        BattleDiamondSpec;
+        public AssetRef<BattlePlayerQSpec>         BattlePlayerSpec;
+        public AssetRef<BattlePlayerBotQSpec>      BattlePlayerBotSpec;
+        public AssetRef<BattlePlayerClass100QSpec> BattlePlayerClass100Spec;
+        public AssetRef<BattlePlayerClass600QSpec> BattlePlayerClass600Spec;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static BattleArenaQSpec GetArenaSpec(Frame f)
@@ -57,6 +59,19 @@ namespace Battle.QSimulation.Game
         {
             return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattlePlayerBotSpec);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static BattlePlayerClass100QSpec GetBattlePlayerClass100Spec(Frame f)
+        {
+            return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattlePlayerClass100Spec);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static BattlePlayerClass600QSpec GetBattlePlayerClass600Spec(Frame f)
+        {
+            return f.FindAsset(f.FindAsset(f.RuntimeConfig.BattleConfig).BattlePlayerClass600Spec);
+        }
+
     }
 
     [Serializable]
@@ -78,6 +93,7 @@ namespace Battle.QSimulation.Game
         public BattleEmotionState ProjectileInitialEmotion;
 
         public bool IsTestMode;
+        public bool IsTestFlipperGame;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static PlayerType[] GetPlayerSlotTypes(Frame f) => f.RuntimeConfig.BattleParameters.PlayerSlotTypes;
@@ -96,5 +112,8 @@ namespace Battle.QSimulation.Game
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool GetIsTestMode(Frame f) => f.RuntimeConfig.BattleParameters.IsTestMode;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool GetIsTestFlipperGame(Frame f) => f.RuntimeConfig.BattleParameters.IsTestFlipperGame;
     }
 }

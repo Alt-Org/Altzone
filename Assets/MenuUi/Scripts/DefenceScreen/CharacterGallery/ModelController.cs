@@ -96,7 +96,7 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnRandomSelectedCharactersRequested += SetRandomSelectedCharactersToEmptySlots;
             SignalBus.OnReloadCharacterGalleryRequested += OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged += HandleCharacterSelected;
-            SignalBus.OnDefenceGalleryStatPopupRequested += _statsWindowController.OpenPopup;
+            if(_statsWindowController) SignalBus.OnDefenceGalleryStatPopupRequested += _statsWindowController.OpenPopup;
             SignalBus.OnLoadoutDefenceCharacterChanged += HandleLoadoutCharacterChanged;
             SignalBus.OnLoadoutChanged += SaveBattleCharacters;
         }
@@ -131,7 +131,7 @@ namespace MenuUi.Scripts.CharacterGallery
             SignalBus.OnRandomSelectedCharactersRequested -= SetRandomSelectedCharactersToEmptySlots;
             SignalBus.OnReloadCharacterGalleryRequested -= OnReloadRequested;
             SignalBus.OnSelectedDefenceCharacterChanged -= HandleCharacterSelected;
-            SignalBus.OnDefenceGalleryStatPopupRequested -= _statsWindowController.OpenPopup;
+            if (_statsWindowController) SignalBus.OnDefenceGalleryStatPopupRequested -= _statsWindowController.OpenPopup;
             SignalBus.OnLoadoutDefenceCharacterChanged -= HandleLoadoutCharacterChanged;
             SignalBus.OnLoadoutChanged -= SaveBattleCharacters;
         }
@@ -185,7 +185,7 @@ namespace MenuUi.Scripts.CharacterGallery
 
                 // Set characters in the ModelView
                 _view.SetCharacters(characters, selectedCharacterIds);
-                _editingPanelView.SetCharacters(characters, selectedCharacterIds);
+                if(_editingPanelView) _editingPanelView.SetCharacters(characters, selectedCharacterIds);
 
                 OnPlayerDataReady?.Invoke(_playerData);
             }));

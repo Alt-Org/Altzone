@@ -36,6 +36,8 @@ MonoBehaviour:
   CharacterShortDescriptionFinnish: "Tunteensa sumuun kadottanut, hiljaisuuteen sulkeutunut
     selviytyj\xE4. "
   CharacterShortDescriptionEnglish: 
+  CharacterAbilityDescriptionFinnish: 
+  CharacterAbilityDescriptionEnglish: 
   CharacterStats: {fileID: 11400000, guid: 859a91df01c75df45aa149818858fa5b, type: 2}
   Hp:
     Level: 1
@@ -55,7 +57,10 @@ MonoBehaviour:
   GalleryImage: {fileID: 21300000, guid: 7cbae5771ecf99743a18652dc6a90b24, type: 3}
   GalleryHeadImage: {fileID: 21300000, guid: 7ad101b094a1fd045a5b26b145f784bf, type: 3}
   CharPhotoSeries: {fileID: 0}
-  BattleEntityPrototype:
+  BattleCharacterEntityPrototype:
     Id:
       Value: 1352049255164248144
+  BattleShieldEntityPrototypes:
+  - Id:
+      Value: 1359835354237927269
   BattleUiSprite: {fileID: 0}

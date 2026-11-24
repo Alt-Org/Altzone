@@ -1,8 +1,15 @@
+using System.Collections;
+using Altzone.Scripts;
+using Altzone.Scripts.Battle.Photon;
 using Altzone.Scripts.Lobby;
 using MenuUi.Scripts.Lobby;
 using MenuUi.Scripts.Lobby.CreateRoom;
+using MenuUi.Scripts.Lobby.InRoom;
+using MenuUi.Scripts.Lobby.SelectedCharacters;
 using MenuUi.Scripts.Signals;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Handles switching Battle Popup panels to a battle room and back to the main panel.
@@ -12,73 +19,252 @@ public class BattlePopupPanelManager : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private GameObject _topPanel;
     [SerializeField] private GameObject _border;
+    [SerializeField] private GameObject _characterConfirmPanel;
     [SerializeField] private GameObject _mainPanel;
     [SerializeField] private GameObject _createCustomRoom;
     [SerializeField] private GameObject _custom2v2WaitingRoom;
     [SerializeField] private GameObject _clanAndRandom2v2WaitingRoom;
     [SerializeField] private MatchmakingPanel _matchmakingPanel;
+    private Coroutine _delayedMatchCheckHolder;
+    private Coroutine _refreshMainPanelHolder;
 
     private void OnEnable()
     {
         LobbyManager.OnMatchmakingRoomEntered += SwitchToMatchmakingPanel;
         SignalBus.OnCustomRoomSettingsRequested += OpenCustomRoomSettings;
+        InRoomController.OnLeaveRoom += ReturnToMain;
+        CharacterConfirmPanelHandler.OnLockCharacters += SwitchRoom;
+        WireMainPanelButtons();
+        WireCreateRoomButtons();
     }
 
     private void OnDisable()
     {
         LobbyManager.OnMatchmakingRoomEntered -= SwitchToMatchmakingPanel;
         SignalBus.OnCustomRoomSettingsRequested -= OpenCustomRoomSettings;
+        InRoomController.OnLeaveRoom -= ReturnToMain;
+        CharacterConfirmPanelHandler.OnLockCharacters -= SwitchRoom;
     }
 
-    public void SwitchRoom(GameType gameType)
+    public void OpenConfirmWindow(MatchmakingType gameType)
+    {
+        ClosePanels();
+        _characterConfirmPanel.SetActive(true);
+        _characterConfirmPanel.GetComponent<CharacterConfirmPanelHandler>().SetInfo(gameType);
+    }
+
+    public void SwitchRoom(MatchmakingType gameType)
     {
         ClosePanels();
 
+        // If we're already in a matchmaking or queue room, prefer showing the matchmaking panel
+        bool inMatchmakingOrQueue = false;
+        try
+        {
+            if (PhotonRealtimeClient.InMatchmakingRoom) inMatchmakingOrQueue = true;
+            var curr = PhotonRealtimeClient.LobbyCurrentRoom;
+            if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey)) inMatchmakingOrQueue = true;
+        }
+        catch { }
+
+        bool isLeader = PhotonRealtimeClient.LocalLobbyPlayer != null && PhotonRealtimeClient.LocalLobbyPlayer.IsMasterClient;
+
+        string currRoomName = "<none>";
+        try
+        {
+            var c = PhotonRealtimeClient.LobbyCurrentRoom;
+            if (c != null) currRoomName = c.Name ?? "<unnamed>";
+        }
+        catch { }
+
+        Debug.Log($"BattlePopupPanelManager.SwitchRoom: gameType={gameType}, inMatchmakingOrQueue={inMatchmakingOrQueue}, currRoom={currRoomName}, isLeader={isLeader}");
+
         switch (gameType)
         {
-            case GameType.Custom:
-                SwitchCustomRoom(CustomGameMode.TwoVersusTwo);
+            case MatchmakingType.Custom:
+                // If already in a room, prefer showing the correct custom waiting room based on room's custom game mode
+                if (PhotonRealtimeClient.InRoom)
+                {
+                    try
+                    {
+                        int mode = PhotonRealtimeClient.LobbyCurrentRoom.GetCustomProperty(PhotonBattleRoom.GameTypeKey, (int)GameType.BattlePingPong);
+                        SwitchCustomRoom((GameType)mode);
+                    }
+                    catch
+                    {
+                        ShowMainPanel();
+                    }
+                }
+                else
+                {
+                    ShowMainPanel();
+                }
                 break;
-            case GameType.Clan2v2:
-                _clanAndRandom2v2WaitingRoom.SetActive(true);
-                break;
-            case GameType.Random2v2:
-                _clanAndRandom2v2WaitingRoom.SetActive(true);
+            case MatchmakingType.FriendLobby:
+            case MatchmakingType.Clan2v2:
+            case MatchmakingType.Random2v2:
+                if (inMatchmakingOrQueue)
+                {
+                    SwitchToMatchmakingPanel(isLeader);
+                }
+                else
+                {
+                    _clanAndRandom2v2WaitingRoom.SetActive(true);
+                    _topPanel.SetActive(true);
+                    // Start a short delayed check to catch race where matchmaking join finishes shortly after popup opens
+                    try
+                    {
+                        if (_delayedMatchCheckHolder != null) { StopCoroutine(_delayedMatchCheckHolder); _delayedMatchCheckHolder = null; }
+                        _delayedMatchCheckHolder = StartCoroutine(DelayedMatchCheckCoroutine(isLeader));
+                        Debug.Log("BattlePopupPanelManager.SwitchRoom: started delayed match check coroutine");
+                    }
+                    catch { }
+                }
                 break;
         }
+    }
+
+    private IEnumerator DelayedMatchCheckCoroutine(bool isLeader)
+    {
+        yield return new WaitForSeconds(0.15f);
+        bool inMatchmakingOrQueue = false;
+        try
+        {
+            if (PhotonRealtimeClient.InMatchmakingRoom) inMatchmakingOrQueue = true;
+            var curr = PhotonRealtimeClient.LobbyCurrentRoom;
+            if (curr != null && curr.GetCustomProperty<bool>(PhotonBattleRoom.IsQueueKey)) inMatchmakingOrQueue = true;
+        }
+        catch { }
+
+        if (inMatchmakingOrQueue)
+        {
+            Debug.Log($"BattlePopupPanelManager.DelayedMatchCheckCoroutine: switching to matchmaking panel, isLeader={isLeader}");
+            SwitchToMatchmakingPanel(isLeader);
+        }
+
+        _delayedMatchCheckHolder = null;
     }
 
     public void OpenCustomRoomSettings()
     {
         ClosePanels();
-        _createCustomRoom.SetActive(true);
+        // Ensure the create-room UI has its selectors initialized before showing
+        if (_createCustomRoom != null)
+        {
+            var createComp = _createCustomRoom.GetComponent<CreateRoomCustom>();
+            if (createComp != null && !createComp.IsCustomRoomOptionsReady)
+            {
+                createComp.InitializeCustomRoomOptions();
+            }
+            WireCreateRoomButtons();
+            _createCustomRoom.SetActive(true);
+            _topPanel.SetActive(true);
+        }
     }
 
-    private void SwitchCustomRoom(CustomGameMode mode)
+    private void WireMainPanelButtons()
+    {
+        if (_mainPanel == null)
+        {
+            return;
+        }
+
+        Button previewButton = FindButtonByName(_mainPanel.transform, "PreviewBattle_Button");
+        if (previewButton != null)
+        {
+            previewButton.onClick.RemoveListener(OpenCustomRoomSettings);
+            previewButton.onClick.AddListener(OpenCustomRoomSettings);
+
+            TMP_Text previewText = previewButton.GetComponentInChildren<TMP_Text>(true);
+            if (previewText != null)
+            {
+                previewText.text = "Esikatsele";
+            }
+        }
+    }
+
+    private void WireCreateRoomButtons()
+    {
+        if (_createCustomRoom == null) return;
+
+        Button returnButton = FindButtonByName(_createCustomRoom.transform, "ReturnButton") ?? FindButtonByName(_createCustomRoom.transform, "Cancel_Button");
+        if (returnButton != null)
+        {
+            returnButton.onClick.RemoveListener(ReturnToMain);
+            returnButton.onClick.AddListener(ReturnToMain);
+
+            TMP_Text returnText = returnButton.GetComponentInChildren<TMP_Text>(true);
+            if (returnText != null)
+            {
+                returnText.text = "Takaisin";
+            }
+        }
+
+        // Ensure create button caption is localized
+        Button createBtn = FindButtonByName(_createCustomRoom.transform, "CreateRoom_Button") ?? FindButtonByName(_createCustomRoom.transform, "Create_Button");
+        if (createBtn != null)
+        {
+            TMP_Text createText = createBtn.GetComponentInChildren<TMP_Text>(true);
+            if (createText != null)
+            {
+                createText.text = "Luo huone";
+            }
+        }
+    }
+
+    private static Button FindButtonByName(Transform root, string targetName)
+    {
+        if (root == null)
+        {
+            return null;
+        }
+
+        foreach (Transform child in root)
+        {
+            if (child.name == targetName)
+            {
+                return child.GetComponent<Button>() ?? child.GetComponentInChildren<Button>(true);
+            }
+
+            Button nested = FindButtonByName(child, targetName);
+            if (nested != null)
+            {
+                return nested;
+            }
+        }
+
+        return null;
+    }
+
+    private void SwitchCustomRoom(GameType mode)
     {
         switch (mode)
         {
-            case CustomGameMode.TwoVersusTwo:
+            case GameType.BattlePingPong:
+            case GameType.BattleFlipperGame:
                 _custom2v2WaitingRoom.SetActive(true);
+                _topPanel.SetActive(false);
                 break;
             default:
-                _mainPanel.SetActive(true);
+                ShowMainPanel();
                 break;
         }
     }
 
     public void SwitchToMatchmakingPanel(bool isLeader)
     {
+        Debug.Log($"BattlePopupPanelManager.SwitchToMatchmakingPanel: isLeader={isLeader}");
         ClosePanels();
         _matchmakingPanel.SetCancelButton(isLeader);
         _matchmakingPanel.gameObject.SetActive(true);
+        _topPanel.SetActive(true);
     }
 
     public void ClosePanels()
     {
         foreach (Transform t in transform)
         {
-            if (ReferenceEquals(t.gameObject, _topPanel)) continue;
+            //if (ReferenceEquals(t.gameObject, _topPanel)) continue;
             if (ReferenceEquals(t.gameObject, _border)) continue;
             t.gameObject.SetActive(false);
         }
@@ -92,6 +278,36 @@ public class BattlePopupPanelManager : MonoBehaviour
         }
 
         ClosePanels();
+        ShowMainPanel();
+    }
+
+    private void ShowMainPanel()
+    {
+        if (_mainPanel == null)
+        {
+            return;
+        }
+
         _mainPanel.SetActive(true);
+        _topPanel.SetActive(true);
+
+        if (_refreshMainPanelHolder != null)
+        {
+            StopCoroutine(_refreshMainPanelHolder);
+        }
+
+        _refreshMainPanelHolder = StartCoroutine(RefreshMainPanelCharactersNextFrame());
+    }
+
+    private IEnumerator RefreshMainPanelCharactersNextFrame()
+    {
+        yield return null;
+        BattlePopupCharacterSlotController[] controllers = _mainPanel.GetComponentsInChildren<BattlePopupCharacterSlotController>(true);
+        foreach (BattlePopupCharacterSlotController controller in controllers)
+        {
+            controller.SetCharacters();
+        }
+
+        _refreshMainPanelHolder = null;
     }
 }

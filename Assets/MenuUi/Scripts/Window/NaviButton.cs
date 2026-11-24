@@ -1,5 +1,4 @@
-﻿using MenuUi.Scripts.Window.ScriptableObjects;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,27 +13,62 @@ namespace MenuUi.Scripts.Window
     [RequireComponent(typeof(Button))]
     public class NaviButton : WindowNavigation
     {
+        private Button _button = null;
+        public bool Interactable = true;
+
         private void Start()
         {
+            if (_disabledOnProd && !AppPlatform.IsEditor && !AppPlatform.IsDevelopmentBuild) return;
             Debug.Log($"{name}", gameObject);
-            var button = GetComponent<Button>();
+            _button = GetComponent<Button>();
             if (_naviTarget == null)
             {
-                button.interactable = false;
+                _button.interactable = false;
                 return;
             }
             var windowManager = WindowManager.Get();
             var isCurrentWindow = windowManager.FindIndex(_naviTarget) == 0;
-            button.onClick.AddListener(OnNaviButtonClick);
+            _button.onClick.AddListener(OnNaviButtonClick);
             if (isCurrentWindow)
             {
-                button.interactable = false;
+                Interactable = false;
                 return;
+            }
+        }
+
+        private void OnEnable()
+        {
+            UpdateInteractable();
+            OverlayPanelCheck.OnUpdateButtonInteractable += UpdateInteractable;
+        }
+
+        private void OnDisable()
+        {
+            OverlayPanelCheck.OnUpdateButtonInteractable -= UpdateInteractable;
+        }
+
+        private void UpdateInteractable()
+        {
+            if (_button)
+            {
+                var windowManager = WindowManager.Get();
+                var isCurrentWindow = windowManager.FindIndex(_naviTarget) == 0;
+                if (isCurrentWindow)
+                {
+                    Interactable = false;
+                    return;
+                }
+                else
+                {
+                    Interactable = true;
+                    return;
+                }
             }
         }
 
         protected virtual void OnNaviButtonClick()
         {
+            if (!Interactable) return;
             StartCoroutine(Navigate());
         }
 #if UNITY_EDITOR
