@@ -177,17 +177,17 @@
     //  END Shield Properties
 
     //! @anchor BattlePlayerData-PrivateArrays
-    //! @name Private fixed arrays
+    //! @name Private internal arrays
     //! @{
 
-    /// @var Byte Quantum.BattlePlayerData::_CharacterDefaultSpawnPositions_
+    /// @var Byte Quantum::BattlePlayerData::_CharacterDefaultSpawnPositions_
     /// <summary>Private internal array, access through @cref{Quantum.BattlePlayerData,CharacterDefaultSpawnPositions}</summary>
 
-    /// @var Byte Quantum.BattlePlayerData::_ShieldEntityGroupIDs_
+    /// @var Byte Quantum::BattlePlayerData::_ShieldEntityGroupIDs_
     /// <summary>Private internal array, access through @cref{Quantum.BattlePlayerData,ShieldEntityGroupIDs}</summary>
 
     //! @}
-    //  END Private fixed arrays
+    //  END Private internal arrays
 
     //! @name Quantum Built-in
     //! @{

@@ -22,55 +22,57 @@
 /// A %Quantum input struct that defines the player input data that is used in the game.
 /// </summary>
 ///
-/// See [{PlayerInput}](#page-concepts-player-input) for more information.
+/// See [{PlayerInput}](#page-concepts-player-input) for more info.
 ///
 /// @bigtext{Generated from @ref BattlePlayerInput.qtn}
 ///
 // {
     /// @var bool Quantum::Input::IsValid
     /// <summary>
-    /// Is input valid
+    /// Is input valid.
     /// </summary>
 
     /// @var int Quantum::Input::DebugNumber
     /// <summary>
-    /// Debug number of the input
+    /// Debug number of the input.
     /// </summary>
 
     /// @var BattleMovementInputType Quantum::Input::MovementInput
     /// <summary>
-    /// What movement input type is being used
+    /// What movement input type is being used.
     /// </summary>
 
     /// @var bool Quantum::Input::MovementDirectionIsNormalized
     /// <summary>
-    /// Is movement direction normalized
+    /// Is movement direction normalized.
     /// </summary>
 
     /// @var BattleGridPosition Quantum::Input::MovementGridPosition
     /// <summary>
-    /// Grid position of the movement
+    /// Grid position of the movement.
     /// </summary>
 
     /// @var FPVector2 Quantum::Input::MovementVector
     /// <summary>
-    /// Position or direction of the movement
+    /// Position or direction of the movement.
     /// </summary>
 
     /// @var bool Quantum::Input::RotationInput
     /// <summary>
-    /// Is input rotation input
+    /// Whether rotation input is given.
     /// </summary>
 
     /// @var FP Quantum::Input::RotationValue
     /// <summary>
-    /// Rotation input value
+    /// Rotation input value.
     /// </summary>
 
     /// @var BattleSpecialInput Quantum::Input::Special
     /// <summary>
-    /// Is special input given
+    /// Special input data.
     /// </summary>
+    ///
+    /// See @cref{Quantum,BattleSpecialInput} for more info.
 
     //! @name Quantum Built-in
     //! @{
@@ -88,7 +90,7 @@
 /// Player input enum used by the input and movement logic.
 /// </summary>
 ///
-/// See @cref{Quantum,Input} for more information.
+/// See @cref{Quantum,Input} for more info.
 ///
 /// @bigtext{Generated from @ref BattlePlayerInput.qtn}
 ///
@@ -134,12 +136,12 @@
 // {
     /// @var BattleJoystickState Quantum::BattleSpecialInput::JoystickState
     /// <summary>
-    /// State of the special joystick
+    /// State of the special joystick.
     /// </summary>
 
     /// @var FPVector2 Quantum::BattleSpecialInput::JoystickValue
     /// <summary>
-    /// Value of the special joystick
+    /// Value of the special joystick.
     /// </summary>
 
     //! @name Quantum Built-in
