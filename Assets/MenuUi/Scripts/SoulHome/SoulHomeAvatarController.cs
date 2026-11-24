@@ -782,7 +782,8 @@ namespace MenuUI.Scripts.SoulHome
                 _targetFurniture = null;
 
                 //Temporary until real furniture interaction is added
-                StartCoroutine(InteractAnimation());
+                //StartCoroutine(InteractAnimation());
+                SelectStatus();
             }
             else
             {
