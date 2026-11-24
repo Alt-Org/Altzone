@@ -25,6 +25,12 @@ namespace MenuUI.Scripts.SoulHome
             Custom
         }
 
+        public enum InteractionStyle
+        {
+            Avatar,     // All surrounding slots
+            Click     // All slots along the "front" width
+        }
+
         [SerializeField]
         private string _name;
 
@@ -63,6 +69,7 @@ namespace MenuUI.Scripts.SoulHome
         private bool _hasInteractionSlot = false;
         private Vector2Int _interactionOffset = new Vector2Int(0, 1);
 
+        [SerializeField] private InteractionStyle _intStyle = InteractionStyle.Avatar;
         [SerializeField] private InteractionPattern _pattern = InteractionPattern.FrontRow;
         public List<FurnitureSlot> AssignedInteractionSlots { get; private set; } = new List<FurnitureSlot>();
 
@@ -439,7 +446,7 @@ namespace MenuUI.Scripts.SoulHome
         //Get closest interaction slot for npc to path to
         public FurnitureSlot GetClosestInteractionSlot(Vector3 npcPosition)
         {
-            if (AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
+            if (_intStyle is InteractionStyle.Click || AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
                 return null;
 
             FurnitureSlot closest = null;
@@ -459,32 +466,47 @@ namespace MenuUI.Scripts.SoulHome
 
         public void StartInteract(SoulHomeAvatarController controller)
         {
+            if(_intStyle is InteractionStyle.Avatar)
             StartCoroutine(InteractRoutine(controller));
         }
 
         private IEnumerator InteractRoutine(SoulHomeAvatarController controller)
         {
-            GameObject original = controller.gameObject;
-            original.SetActive(false);
+            SoulHomeFurnitureAnimator animator = GetComponent<SoulHomeFurnitureAnimator>();
+            bool useAvatar = false;
+            if(animator != null)
+            {
+                animator.HandleClick();
+            }
+            else
+            {
+                useAvatar = true;
+            }
 
-            GameObject dummy = Instantiate(original);
-            dummy.SetActive(true);
+            if (useAvatar)
+            {
+                GameObject original = controller.gameObject;
+                original.SetActive(false);
 
-            dummy.transform.SetParent(this.transform, true);
-            dummy.transform.localPosition = Vector3.zero;
+                GameObject dummy = Instantiate(original);
+                dummy.SetActive(true);
 
-            Animator dummyAnim = dummy.GetComponentInChildren<Animator>();
-            //dummyAnim.Play("");
+                dummy.transform.SetParent(this.transform, true);
+                dummy.transform.localPosition = Vector3.zero;
 
-            //yield return new WaitForEndOfFrame(); // Wait for animator to update
-            //float animLength = dummyAnim.GetCurrentAnimatorStateInfo(0).length;
-            //yield return new WaitForSeconds(animLength);
+                Animator dummyAnim = dummy.GetComponentInChildren<Animator>();
+                //dummyAnim.Play("");
 
-            //Temporary
-            yield return new WaitForSeconds(10);
+                //yield return new WaitForEndOfFrame(); // Wait for animator to update
+                //float animLength = dummyAnim.GetCurrentAnimatorStateInfo(0).length;
+                //yield return new WaitForSeconds(animLength);
 
-            Destroy(dummy);
-            original.SetActive(true);
+                //Temporary
+                yield return new WaitForSeconds(10);
+
+                Destroy(dummy);
+                original.SetActive(true);
+            }
         }
 
         public void SetOutline(bool outline)

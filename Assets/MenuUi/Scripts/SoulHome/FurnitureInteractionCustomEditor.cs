@@ -5,7 +5,7 @@ using UnityEngine;
 [CustomEditor(typeof(FurnitureHandling))]
 public class FurnitureInteractionCustomEditor : Editor
 {
-    private FurnitureHandling _script;
+    protected FurnitureHandling _script;
     private SerializedProperty widthProp;
     private SerializedProperty heightProp;
 
@@ -20,15 +20,15 @@ public class FurnitureInteractionCustomEditor : Editor
         DrawDefaultInspector();
         serializedObject.Update();
 
-        if (widthProp.intValue < 1) widthProp.intValue = 1;
-        if (heightProp.intValue < 1) heightProp.intValue = 1;
+        widthProp.intValue = _script.Furniture.FurnitureSize.x;
+        heightProp.intValue = _script.Furniture.FurnitureSize.z;
 
         GUILayout.Space(15);
         EditorGUILayout.HelpBox("GREEN = Furniture Body (Size)\nYELLOW = Interaction Slots", MessageType.Info);
         GUILayout.Label("Custom Interaction Pattern (Front View)", EditorStyles.boldLabel);
 
-        int width = widthProp.intValue;
-        int height = heightProp.intValue;
+        int width = _script.Furniture.FurnitureSize.x;
+        int height = _script.Furniture.FurnitureSize.z;
 
         if (width <= 0 || height <= 0)
         {
