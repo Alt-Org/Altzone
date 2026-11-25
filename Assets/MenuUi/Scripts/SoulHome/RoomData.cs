@@ -863,7 +863,7 @@ namespace MenuUI.Scripts.SoulHome
                     furniture.GetComponent<FurnitureHandling>().TempSlot = _ceilingFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
                 }
 
-                if (handling.HasInteractionSlot)
+                if (grid is FurnitureGrid.Floor && handling.HasInteractionSlot)
                 {
                     Transform targetGrid = GetTargetGrid(grid);
                     handling.ClearInteractionSlots();
@@ -1139,7 +1139,7 @@ namespace MenuUI.Scripts.SoulHome
                 }
             }
 
-            if (handling.HasInteractionSlot)
+            if (grid is FurnitureGrid.Floor && handling.HasInteractionSlot)
             {
                 int W = furnitureSize.x;
                 int H = furnitureSize.y;
