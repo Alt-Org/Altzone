@@ -38,7 +38,6 @@ public static class PollManager // Handles the polls from creation to loading to
         {
             if (result)
             {
-
                 OnPollCreated?.Invoke();
                 if (DailyTaskProgressManager.Instance.CurrentPlayerTask != null)
                 {
@@ -69,7 +68,6 @@ public static class PollManager // Handles the polls from creation to loading to
     {
         if (fetchData) LoadClanData();
 
-
         DataStore store = Storefront.Get();
         PlayerData player = null;
         ClanData clan = null;
@@ -99,7 +97,6 @@ public static class PollManager // Handles the polls from creation to loading to
     {
         ServerManager.Instance.SellItemOnStall(furniture.Id, (int)furniture.Value, result =>
         {
-
             if (result)
             {
                 ShowVotingPopup?.Invoke(furniturePollType);
@@ -193,6 +190,17 @@ public static class PollManager // Handles the polls from creation to loading to
     public static void CreateRolePoll(string targetPlayerId, ClanRoles newRole, Action<bool> callback, string roleId = null)
     {
         LoadClanData();
+
+        DataStore store = Storefront.Get();
+        PlayerData player = null;
+        ClanData clan = null;
+        store.GetPlayerData(GameConfig.Get().PlayerSettings.PlayerGuid, data => player = data);
+
+        if (player != null && player.ClanId != null)
+        {
+            store.GetClanData(player.ClanId, data => clan = data);
+        }
+
         long pollDurationMinutes = 1;
         List<string> voterIds = clan.Members.Select(m => m.Id).ToList();
         string pollId = GetFirstAvailableId();
@@ -207,6 +215,11 @@ public static class PollManager // Handles the polls from creation to loading to
             newRole);
 
         Debug.Log($"TODO CreateRolePoll -> targetPlayerId={targetPlayerId}, roleName={newRole.name}, roleId={roleId}");
+
+        PollManagerData.Instance.pollDataList.Add(poll);
+        PollMonitor.Instance?.StartMonitoring();
+
+        PrintPollList();
 
         if (callback != null)
             callback(false);
