@@ -1214,11 +1214,6 @@ namespace MenuUI.Scripts.SoulHome
             _currentSlotValidity.Clear();
         }
 
-        /*public FurnitureSlot GetSlot(int col, int row, FurnitureHandling furnitureInfo)
-        {
-
-        }*/
-
         public Transform GetTargetGrid(FurnitureGrid grid)
         {
             Transform targetGrid = null;
@@ -1343,14 +1338,12 @@ namespace MenuUI.Scripts.SoulHome
             furniture.GetComponent<FurnitureHandling>().SetScale();
         }
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        public void AddToValidityList(FurnitureSlot slot)
+        private void AddToValidityList(FurnitureSlot slot)
         {
             if (slot != null && !_currentSlotValidity.Contains(slot))
             {
                 _currentSlotValidity.Add(slot);
             }
         }
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 }

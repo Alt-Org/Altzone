@@ -7,8 +7,6 @@ using UnityEngine.Rendering;
 
 namespace MenuUI.Scripts.SoulHome
 {
-
-
     public class FurnitureHandling : MonoBehaviour
     {
         public enum Direction
@@ -52,7 +50,6 @@ namespace MenuUI.Scripts.SoulHome
         private bool _isRotated = false;
         [SerializeField]
         private SortingGroup _sortingGroup;
-
 
         private Furniture _furniture;
         [SerializeField]
