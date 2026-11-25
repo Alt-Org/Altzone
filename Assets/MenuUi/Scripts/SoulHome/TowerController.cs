@@ -237,7 +237,7 @@ namespace MenuUI.Scripts.SoulHome
                         //Debug.Log("Touch: X: " + (prevp.x - lp.x));
                         if (touch.phase is UnityEngine.InputSystem.TouchPhase.Ended or UnityEngine.InputSystem.TouchPhase.Canceled)
                         {
-                            startScrollSlide = new Vector2(Mathf.Abs(prevp.x - lp.x) / scrollSpeed, 0); 
+                            startScrollSlide = new Vector2(Mathf.Abs(prevp.x - lp.x) / scrollSpeed, 0);
                             currentScrollSlide = startScrollSlide;
                             currentScrollSlideDirection = new Vector2(prevp.x - lp.x, 0);
                             currentScrollSlideDirection.Normalize();
@@ -411,7 +411,7 @@ namespace MenuUI.Scripts.SoulHome
                             }
                             //_furnitureList.Add(furnitureObject);
                         }
-                    } 
+                    }
 
                     if (hit2.collider.gameObject.CompareTag("Room"))
                     {
@@ -571,7 +571,7 @@ namespace MenuUI.Scripts.SoulHome
         public void ZoomIn(GameObject room)
         {
             _camera.transform.position = new(room.transform.position.x, room.transform.position.y + room.GetComponent<BoxCollider2D>().size.y / 2,_camera.transform.position.z);
-            
+
             outDelay = Time.time;
 
             Vector3 bl = _camera.ViewportToWorldPoint(new Vector3(0, 0, Mathf.Abs(_camera.transform.position.z)));
@@ -672,10 +672,12 @@ namespace MenuUI.Scripts.SoulHome
             int prevRoomId = (_selectedFurniture.transform.parent != null && _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>() != null) ? _selectedFurniture.transform.parent.GetComponent<FurnitureSlot>().roomId : -1;
             foreach (RaycastHit2D hit2 in hitArray)
             {
+
                 if (hit2.collider.gameObject.CompareTag("Room"))
                 {
                     check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, hover, hitPoint, hitRoom);
                 }
+                
             }
             if (hover)
             {
@@ -806,7 +808,7 @@ namespace MenuUI.Scripts.SoulHome
                     int roomId = furniture.GetComponent<FurnitureHandling>().TempSlot.roomId;
                     _rooms.transform.GetChild(roomId).GetChild(0).GetComponent<RoomData>().FreeFurnitureSlots(furniture.GetComponent<FurnitureHandling>(), furniture.GetComponent<FurnitureHandling>().TempSlot);
                 }
-                
+
                 furniture.GetComponent<FurnitureHandling>().ResetSlot();
                 furniture.GetComponent<FurnitureHandling>().ResetDirection();
             }

@@ -66,6 +66,15 @@ namespace MenuUI.Scripts.SoulHome
 
         }
 
+        public Furniture(GameFurniture gameFurniture)
+        {
+            Name = gameFurniture.Name;
+            FurnitureSize = gameFurniture.FurnitureSize;
+            Place = gameFurniture.Placement;
+            Value = gameFurniture.Value;
+            Weight = gameFurniture.Weight;
+        }
+
         /*public int Id { get => _id; set => _id = value; }
         public string Name { get => _name; set => _name = value; }
         public Vector2Int Position { get => _position; set => _position = value; }

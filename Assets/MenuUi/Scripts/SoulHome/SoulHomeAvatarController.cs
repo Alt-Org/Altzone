@@ -25,6 +25,7 @@ namespace MenuUI.Scripts.SoulHome
         [SerializeField] private float _roomChangeCooldown = 20f;
         // Percentage chance of avatar changing rooms when moving
         [SerializeField] private float _roomChangeChance = 50f;
+        [SerializeField] private float _furnitureInteractChance = 50f;
         [SerializeField]
         private SortingGroup _sortingGroup;
         [SerializeField]
@@ -46,6 +47,8 @@ namespace MenuUI.Scripts.SoulHome
 
         private AvatarStatus _status;
 
+        private FurnitureHandling _targetFurniture;
+
         private Transform _points;
         private RoomData _roomData;
         private List<Vector2> _travelPoints = new();
@@ -57,11 +60,11 @@ namespace MenuUI.Scripts.SoulHome
         private string _rHandLabel;
 
         private Coroutine _statusCoroutine;
-        private GridNode[,] _grid => _roomData.Grid;
+        private GridNode[,] _grid => _roomData.MovementGrid;
         private Vector2Int _currentGridPosition;
         private List<Vector2Int> _walkableSlots => _roomData.WalkableSlots;
-        private int _gridWidth => _roomData.Grid.GetLength(0);
-        private int _gridHeight => _roomData.Grid.GetLength(1);
+        private int _gridWidth => _roomData.MovementGrid.GetLength(0);
+        private int _gridHeight => _roomData.MovementGrid.GetLength(1);
         private List<Vector2> _rawPath;
         private bool hasInitialized = false;
         private float _timeSinceRoomChange = 0f;
@@ -82,7 +85,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             //_animator.keepAnimatorStateOnDisable = true;
             _animator.writeDefaultValuesOnDisable = true;
-            
+
 
             if (transform.parent.CompareTag("Room"))
             {
@@ -176,8 +179,19 @@ namespace MenuUI.Scripts.SoulHome
             while (elapsed < idleTime)
             {
                 elapsed += Time.deltaTime;
-
                 yield return null;
+            }
+
+            //Random chance to move towards furniture
+            if (Random.Range(0, 100) < _furnitureInteractChance)
+            {
+                List<FurnitureHandling> items = _roomData.GetComponentsInChildren<FurnitureHandling>().Where(x => !x.InteractInProgress).ToList();
+                if (items.Count > 0)
+                {
+                    int randomIndex = Random.Range(0, items.Count);
+                    MoveToFurniture(items[randomIndex].gameObject);
+                    yield break;
+                }
             }
 
             SelectStatus();
@@ -267,7 +281,8 @@ namespace MenuUI.Scripts.SoulHome
             }
             else
             {
-                SelectStatus();
+                OnArrival(); // always ends in SelectStatus()
+                //SelectStatus();
             }
         }
 
@@ -683,6 +698,8 @@ namespace MenuUI.Scripts.SoulHome
 
             SelectStatus();
         }
+
+
         private List<AvatarAnimation> ValidateAnimations(List<AvatarAnimation> animationToValidate)
         {
             List<AvatarAnimation> validatedAnimation = new();
@@ -732,6 +749,47 @@ namespace MenuUI.Scripts.SoulHome
             }
 
             StartCoroutine(InteractAnimation());
+        }
+
+        public void MoveToFurniture(GameObject furnitureObj)
+        {
+            _targetFurniture = furnitureObj.GetComponent<FurnitureHandling>();
+            if (_targetFurniture == null)  return;
+
+            FurnitureSlot targetSlot = _targetFurniture.GetClosestInteractionSlot(transform.position);
+            if (targetSlot != null)
+            {
+                if (_statusCoroutine != null) StopCoroutine(_statusCoroutine);
+                _travelPoints.Clear();
+                _status = AvatarStatus.Wander;
+                _targetFurniture.SetInteractCharacter(this);
+
+                Vector2Int targetGridPos = new Vector2Int(targetSlot.column, targetSlot.row);
+                HandleWander(targetGridPos);
+            }
+            else
+            {
+                _targetFurniture = null;
+                SelectStatus();
+            }
+        }
+
+        private void OnArrival()
+        {
+            if (_targetFurniture != null)
+            {
+                _targetFurniture.StartInteract(this);
+                Debug.Log($"NPC arrived at: {_targetFurniture.gameObject.name}");
+                _targetFurniture = null;
+
+                //Temporary until real furniture interaction is added
+                //StartCoroutine(InteractAnimation());
+                SelectStatus();
+            }
+            else
+            {
+                SelectStatus();
+            }
         }
 
         #if UNITY_EDITOR
