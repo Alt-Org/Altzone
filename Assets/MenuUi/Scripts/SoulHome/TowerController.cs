@@ -9,8 +9,6 @@ using Prg.Scripts.Common;
 using UnityEngine.InputSystem;
 using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.Audio;
-using static MenuUI.Scripts.SoulHome.FurnitureHandling;
-using UnityEditor.Graphs;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -678,99 +676,6 @@ namespace MenuUI.Scripts.SoulHome
                 if (hit2.collider.gameObject.CompareTag("Room"))
                 {
                     check = hit2.collider.GetComponent<RoomData>().HandleFurniturePosition(hitArray, _selectedFurniture, hover, hitPoint, hitRoom);
-
-                    //Displayment of interact slots during placement
-                    if ((hover || check) && _selectedFurniture != null)
-                    {
-                        FurnitureHandling handling = _selectedFurniture.GetComponent<FurnitureHandling>();
-                        /*FurnitureSlot hoveredSlot = GetHoveredSlot(hitArray);
-
-                        if (hoveredSlot != null && handling.HasInteractionSlot)
-                        {
-                            RoomData room = hit2.collider.GetComponent<RoomData>();
-
-                            int W = handling.Furniture.GetFurnitureNormalSize().x;
-                            int H = handling.Furniture.GetFurnitureNormalSize().y;
-
-                            foreach (Vector2Int offset in handling.customInteractionOffsets)
-                            {
-                                Vector2Int rotatedOffset = offset;
-                                switch (handling.TempSpriteDirection)
-                                {
-                                    case Direction.Front:
-                                        rotatedOffset = offset;
-                                        rotatedOffset.x = offset.x;
-                                        rotatedOffset.y = -offset.y - H + 1;
-                                        break;
-
-                                    case Direction.Right:
-                                        rotatedOffset = new Vector2Int(offset.y + H - 1, -offset.x);
-                                        break;
-
-                                    case Direction.Left:
-                                        rotatedOffset = new Vector2Int(-offset.y, offset.x - (W - 1));
-                                        break;
-                                }
-
-                                int targetCol = hoveredSlot.column + rotatedOffset.x;
-                                int targetRow = hoveredSlot.row + rotatedOffset.y;
-
-                                HighlightSlot(room, targetCol, targetRow);
-                            }
-                        }*/
-                    }
-
-                    //Save interaction slots on placement
-                    if (!hover && check && _selectedFurniture != null)
-                    {
-                        FurnitureHandling handling = _selectedFurniture.GetComponent<FurnitureHandling>();
-
-                        if (handling.HasInteractionSlot)
-                        {
-                            handling.ClearInteractionSlots();
-                            FurnitureSlot hoveredSlot = GetHoveredSlot(hitArray);
-
-                            if (hoveredSlot != null)
-                            {
-                                RoomData room = hit2.collider.GetComponent<RoomData>();
-
-                                int W = handling.Furniture.GetFurnitureNormalSize().x;
-                                int H = handling.Furniture.GetFurnitureNormalSize().y;
-
-                                foreach (Vector2Int offset in handling.customInteractionOffsets)
-                                {
-                                    Vector2Int rotatedOffset = offset;
-
-                                    switch (handling.TempSpriteDirection)
-                                    {
-                                        case Direction.Front:
-                                            rotatedOffset = offset;
-                                            rotatedOffset.x = offset.x;
-                                            rotatedOffset.y = -offset.y - H + 1;
-                                            break;
-
-                                        case Direction.Right:
-                                            rotatedOffset = new Vector2Int(offset.y + H - 1, -offset.x);
-                                            break;
-
-                                        case Direction.Back:
-                                            rotatedOffset = new Vector2Int(-offset.x + W - 1, -offset.y - (H - 1));
-                                            break;
-
-                                        case Direction.Left:
-                                            rotatedOffset = new Vector2Int(-offset.y, offset.x - (W - 1));
-                                            break;
-                                    }
-
-                                    int targetCol = hoveredSlot.column + rotatedOffset.x;
-                                    int targetRow = hoveredSlot.row + rotatedOffset.y;
-
-                                    //HighlightSlot(room, targetCol, targetRow);
-                                    SaveSlot(room, targetCol, targetRow, handling);
-                                }
-                            }
-                        }
-                    }
                 }
                 
             }

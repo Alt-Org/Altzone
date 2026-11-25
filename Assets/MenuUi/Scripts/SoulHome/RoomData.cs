@@ -756,6 +756,7 @@ namespace MenuUI.Scripts.SoulHome
         }
         public void MoveFurniture(int row, int column, FurnitureGrid grid, GameObject furniture, bool hover)
         {
+            FurnitureHandling handling = furniture.GetComponent<FurnitureHandling>();
             if (!hover) {
                 Debug.Log("Set:"+row + ":" + column);
                 Vector3Int furnitureSize = furniture.GetComponent<FurnitureHandling>().GetFurnitureSize();
@@ -861,6 +862,46 @@ namespace MenuUI.Scripts.SoulHome
                 {
                     furniture.GetComponent<FurnitureHandling>().TempSlot = _ceilingFurniturePoints.GetChild(row).GetChild(column).GetComponent<FurnitureSlot>();
                 }
+
+                if (handling.HasInteractionSlot)
+                {
+                    Transform targetGrid = GetTargetGrid(grid);
+                    handling.ClearInteractionSlots();
+
+                    int W = handling.Furniture.GetFurnitureNormalSize().x;
+                    int H = handling.Furniture.GetFurnitureNormalSize().y;
+
+                    foreach (Vector2Int offset in handling.customInteractionOffsets)
+                    {
+                        Vector2Int rotatedOffset = offset;
+
+                        switch (handling.TempSpriteDirection)
+                        {
+                            case FurnitureHandling.Direction.Front:
+                                rotatedOffset = offset;
+                                rotatedOffset.x = offset.x;
+                                rotatedOffset.y = -offset.y - H + 1;
+                                break;
+
+                            case FurnitureHandling.Direction.Right:
+                                rotatedOffset = new Vector2Int(offset.y + H - 1, -offset.x);
+                                break;
+
+                            case FurnitureHandling.Direction.Back:
+                                rotatedOffset = new Vector2Int(-offset.x + W - 1, -offset.y - (H - 1));
+                                break;
+
+                            case FurnitureHandling.Direction.Left:
+                                rotatedOffset = new Vector2Int(-offset.y, offset.x - (W - 1));
+                                break;
+                        }
+
+                        int targetCol = column + rotatedOffset.x;
+                        int targetRow = row + rotatedOffset.y;
+
+                        SaveSlot(targetCol, targetRow, handling, targetGrid);
+                    }
+                }
             }
             if (furniture.GetComponent<FurnitureHandling>().Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.FloorNonblock)
             {
@@ -912,6 +953,7 @@ namespace MenuUI.Scripts.SoulHome
                         //    ", Slot " + hit2.collider.GetComponent<FurnitureSlot>().row +":"+ hit2.collider.GetComponent<FurnitureSlot>().column);
                         GameObject slot = hit2.collider.gameObject;
                         FurnitureHandling furnitureInfo = furniture.GetComponent<FurnitureHandling>();
+                        furnitureInfo.ClearInteractionSlots();
                         FurnitureGrid gridToCheck = FurnitureGrid.None;
                         if (slot.CompareTag("FloorFurnitureSlot") && furnitureInfo.Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.FloorNonblock)
                             {
@@ -1122,7 +1164,6 @@ namespace MenuUI.Scripts.SoulHome
                     int targetCol = column + rotatedOffset.x;
                     int targetRow = row + rotatedOffset.y;
 
-                    Debug.LogWarning(targetCol + " : " + targetRow);
 
                     HighlightSlot(targetGrid, targetCol, targetRow, handling, check);
                 }
@@ -1144,7 +1185,6 @@ namespace MenuUI.Scripts.SoulHome
 
                 if (isValid)
                 {
-                    Debug.LogWarning(interactSlot.column + " : " + interactSlot.row);
                     interactSlot.SetValidity(isValid, true);
                 }
                 else if (!isValid)
@@ -1152,6 +1192,16 @@ namespace MenuUI.Scripts.SoulHome
                     interactSlot.SetValidity(false, true);
                 }
                 AddToValidityList(interactSlot);
+            }
+        }
+
+        private void SaveSlot(int col, int row, FurnitureHandling handling, Transform grid)
+        {
+            if (col >= 0 && col < SlotColumns && row >= 0 && row < SlotRows)
+            {
+                FurnitureSlot slot = grid.GetChild(row).GetChild(col).GetComponent<FurnitureSlot>();
+                handling.AddInteractionSlot(slot);
+                slot.InteractionOwner = handling;
             }
         }
 
