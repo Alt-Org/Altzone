@@ -1,5 +1,6 @@
 using MenuUi.Scripts.Lobby.SelectedCharacters;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -12,7 +13,37 @@ namespace MenuUi.Scripts.CharacterGallery
         [HideInInspector] public GalleryCharacter SelectedCharacter = null;
 
         [SerializeField] private BattlePopupSelectedCharacterView _battleView;
+        [SerializeField] private Image _emptyBackgroundImage;
         public BattlePopupSelectedCharacterView BattleView => _battleView;
 
+        private Sprite _defaultEmptyBgSprite;
+        private Color _defaultEmptyBgColor;
+        private bool _defaultEmptyBgCached;
+
+        private void CacheDefaultEmptyBackground()
+        {
+            if (_defaultEmptyBgCached || _emptyBackgroundImage == null) return;
+            _defaultEmptyBgSprite = _emptyBackgroundImage.sprite;
+            _defaultEmptyBgColor = _emptyBackgroundImage.color;
+            _defaultEmptyBgCached = true;
+        }
+
+        public void SetEmptyGradientOverride(Sprite bgImage)
+        {
+            if (_emptyBackgroundImage == null) return;
+
+            CacheDefaultEmptyBackground();
+
+            if (bgImage == null)
+            {
+                _emptyBackgroundImage.sprite = _defaultEmptyBgSprite;
+                _emptyBackgroundImage.color = _defaultEmptyBgColor;
+                return;
+            }
+
+            _emptyBackgroundImage.sprite = bgImage;
+            _emptyBackgroundImage.color = Color.white;
+
+        }
     }
 }
