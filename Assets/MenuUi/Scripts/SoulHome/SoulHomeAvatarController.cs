@@ -185,10 +185,10 @@ namespace MenuUI.Scripts.SoulHome
             //Random chance to move towards furniture
             if (Random.Range(0, 100) < _furnitureInteractChance)
             {
-                FurnitureHandling[] items = _roomData.GetComponentsInChildren<FurnitureHandling>();
-                if (items.Length > 0)
+                List<FurnitureHandling> items = _roomData.GetComponentsInChildren<FurnitureHandling>().Where(x => !x.InteractInProgress).ToList();
+                if (items.Count > 0)
                 {
-                    int randomIndex = Random.Range(0, items.Length);
+                    int randomIndex = Random.Range(0, items.Count);
                     MoveToFurniture(items[randomIndex].gameObject);
                     yield break;
                 }
@@ -762,6 +762,7 @@ namespace MenuUI.Scripts.SoulHome
                 if (_statusCoroutine != null) StopCoroutine(_statusCoroutine);
                 _travelPoints.Clear();
                 _status = AvatarStatus.Wander;
+                _targetFurniture.SetInteractCharacter(this);
 
                 Vector2Int targetGridPos = new Vector2Int(targetSlot.column, targetSlot.row);
                 HandleWander(targetGridPos);

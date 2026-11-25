@@ -954,6 +954,7 @@ namespace MenuUI.Scripts.SoulHome
                         GameObject slot = hit2.collider.gameObject;
                         FurnitureHandling furnitureInfo = furniture.GetComponent<FurnitureHandling>();
                         furnitureInfo.ClearInteractionSlots();
+                        furnitureInfo.FreeInteractCharacter();
                         FurnitureGrid gridToCheck = FurnitureGrid.None;
                         if (slot.CompareTag("FloorFurnitureSlot") && furnitureInfo.Furniture.Place is FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.FloorNonblock)
                             {
@@ -1163,7 +1164,6 @@ namespace MenuUI.Scripts.SoulHome
 
                     int targetCol = column + rotatedOffset.x;
                     int targetRow = row + rotatedOffset.y;
-
 
                     HighlightSlot(targetGrid, targetCol, targetRow, handling, check);
                 }

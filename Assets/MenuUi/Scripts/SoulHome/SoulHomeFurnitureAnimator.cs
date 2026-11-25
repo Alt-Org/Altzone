@@ -42,6 +42,7 @@ public class SoulHomeFurnitureAnimator : MonoBehaviour, ISoulHomeObjectClick
         yield return new WaitForSeconds(animationLength);
         _furnitureHandling.ResetDirection();
         _isPlaying = false;
+        _furnitureHandling.FreeInteractCharacter();
     }
 
     private float PlayBattleStart()

@@ -71,6 +71,8 @@ namespace MenuUI.Scripts.SoulHome
 
         [SerializeField] private InteractionStyle _intStyle = InteractionStyle.Avatar;
         [SerializeField] private InteractionPattern _pattern = InteractionPattern.FrontRow;
+        private bool _interactInProgress = false;
+        private SoulHomeAvatarController _interactCharacter = null;
         public List<FurnitureSlot> AssignedInteractionSlots { get; private set; } = new List<FurnitureSlot>();
 
         [HideInInspector]
@@ -135,6 +137,8 @@ namespace MenuUI.Scripts.SoulHome
         public bool SpriteCanBeFlipped { get => _spriteCanBeFlipped;}
 
         public bool HasInteractionSlot => _hasInteractionSlot;
+
+        public bool InteractInProgress { get => _interactInProgress; }
 
         public delegate void FurnitureRotated(Direction direction);
         public event FurnitureRotated OnFurnitureRotated;
@@ -464,8 +468,21 @@ namespace MenuUI.Scripts.SoulHome
             return closest;
         }
 
+        public void SetInteractCharacter(SoulHomeAvatarController avatar)
+        {
+            _interactInProgress = true;
+            _interactCharacter = avatar;
+        }
+
+        public void FreeInteractCharacter()
+        {
+            _interactInProgress = false;
+            _interactCharacter = null;
+        }
+
         public void StartInteract(SoulHomeAvatarController controller)
         {
+            if (_interactCharacter != controller) return;
             if(_intStyle is InteractionStyle.Avatar)
             StartCoroutine(InteractRoutine(controller));
         }
@@ -474,7 +491,7 @@ namespace MenuUI.Scripts.SoulHome
         {
             SoulHomeFurnitureAnimator animator = GetComponent<SoulHomeFurnitureAnimator>();
             bool useAvatar = false;
-            if(animator != null)
+            if (animator != null)
             {
                 animator.HandleClick();
             }
@@ -485,6 +502,7 @@ namespace MenuUI.Scripts.SoulHome
 
             if (useAvatar)
             {
+                float timeStart = Time.time;
                 GameObject original = controller.gameObject;
                 original.SetActive(false);
 
@@ -502,8 +520,8 @@ namespace MenuUI.Scripts.SoulHome
                 //yield return new WaitForSeconds(animLength);
 
                 //Temporary
-                yield return new WaitForSeconds(10);
-
+                yield return new WaitUntil(() => timeStart+10 < Time.time || !_interactInProgress);
+                if(_interactInProgress) FreeInteractCharacter();
                 Destroy(dummy);
                 original.SetActive(true);
             }
