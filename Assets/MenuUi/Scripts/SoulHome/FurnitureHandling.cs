@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Altzone.Scripts.Model.Poco.Game;
+using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -14,6 +15,18 @@ namespace MenuUI.Scripts.SoulHome
             Left,
             Right,
             Back
+        }
+        public enum InteractionPattern
+        {
+            Surround,     // All surrounding slots
+            FrontRow,     // All slots along the "front" width
+            Custom
+        }
+
+        public enum InteractionStyle
+        {
+            Avatar,     // All surrounding slots
+            Click     // All slots along the "front" width
         }
 
         [SerializeField]
@@ -49,7 +62,44 @@ namespace MenuUI.Scripts.SoulHome
         private FurnitureSlot _slot;
         private FurnitureSlot _tempSlot;
 
-        public Furniture Furniture { get => _furniture; set => _furniture = value; }
+        [SerializeField]
+        private bool _hasInteractionSlot = false;
+        private Vector2Int _interactionOffset = new Vector2Int(0, 1);
+
+        [SerializeField] private InteractionStyle _intStyle = InteractionStyle.Avatar;
+        [SerializeField] private InteractionPattern _pattern = InteractionPattern.FrontRow;
+        private bool _interactInProgress = false;
+        private SoulHomeAvatarController _interactCharacter = null;
+        public List<FurnitureSlot> AssignedInteractionSlots { get; private set; } = new List<FurnitureSlot>();
+
+        [HideInInspector]
+        public List<Vector2Int> customInteractionOffsets = new List<Vector2Int>();
+
+        [Header("Dimensions (Edit Mode Configurations)")]
+        [SerializeField] private int _width = 1;
+        [SerializeField] private int _height = 1;
+
+        public int Width => _width;
+        public int Height => _height;
+        public Furniture Furniture
+        {
+            get
+            {
+                if(_furniture == null || string.IsNullOrEmpty(_furniture.Name))
+                {
+                    GameFurniture furniture = null;
+                    furniture= StorageFurnitureReference.Instance.GetGameFurniture(_name);
+                    Debug.LogWarning(furniture);
+                    if (furniture == null)
+                    {
+                        return null;
+                    }
+                    _furniture = new(furniture);
+                }
+                return _furniture;
+        }
+            set => _furniture = value;
+        }
         public Vector2 Position { get => _position; set => _position = value; }
         public FurnitureSlot Slot { get => _slot;
             set
@@ -82,6 +132,10 @@ namespace MenuUI.Scripts.SoulHome
         public Sprite FurnitureSpriteLeft { get => _furnitureSpriteLeft; set { if (!Application.isPlaying) _furnitureSpriteLeft = value; } }
         public Sprite FurnitureSpriteBack { get => _furnitureSpriteBack; set { if (!Application.isPlaying) _furnitureSpriteBack = value; } }
         public bool SpriteCanBeFlipped { get => _spriteCanBeFlipped;}
+
+        public bool HasInteractionSlot => _hasInteractionSlot;
+
+        public bool InteractInProgress { get => _interactInProgress; }
 
         public delegate void FurnitureRotated(Direction direction);
         public event FurnitureRotated OnFurnitureRotated;
@@ -128,6 +182,10 @@ namespace MenuUI.Scripts.SoulHome
 
         public Vector3Int GetFurnitureSize()
         {
+            if (Furniture == null)
+            {
+                return new Vector3Int(_width, _height, 0);
+            }
             if (Furniture.IsRotated) return Furniture.GetFurnitureSizeRotated();
             return Furniture.GetFurnitureNormalSize();
         }
@@ -364,6 +422,106 @@ namespace MenuUI.Scripts.SoulHome
         public void SaveDirection()
         {
             _spriteDirection = _tempSpriteDirection;
+        }
+
+        public void ClearInteractionSlots()
+        {
+            foreach (var slot in AssignedInteractionSlots)
+            {
+                slot.IsReserved = false;
+                slot.InteractionOwner = null;
+                slot.ClearValidity();
+            }
+            AssignedInteractionSlots.Clear();
+        }
+
+        public void AddInteractionSlot(FurnitureSlot slot)
+        {
+            if (!AssignedInteractionSlots.Contains(slot))
+            {
+                slot.IsReserved = true;
+                AssignedInteractionSlots.Add(slot);
+            }
+        }
+
+        //Get closest interaction slot for npc to path to
+        public FurnitureSlot GetClosestInteractionSlot(Vector3 npcPosition)
+        {
+            if (_intStyle is InteractionStyle.Click || AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
+                return null;
+
+            FurnitureSlot closest = null;
+            float minDistance = float.MaxValue;
+
+            foreach (var slot in AssignedInteractionSlots)
+            {
+                float dist = Vector3.Distance(npcPosition, slot.transform.position);
+                if (dist < minDistance)
+                {
+                    minDistance = dist;
+                    closest = slot;
+                }
+            }
+            return closest;
+        }
+
+        public void SetInteractCharacter(SoulHomeAvatarController avatar)
+        {
+            _interactInProgress = true;
+            _interactCharacter = avatar;
+        }
+
+        public void FreeInteractCharacter()
+        {
+            _interactInProgress = false;
+            _interactCharacter = null;
+        }
+
+        public void StartInteract(SoulHomeAvatarController controller)
+        {
+            if (_interactCharacter != controller) return;
+            if(_intStyle is InteractionStyle.Avatar)
+            StartCoroutine(InteractRoutine(controller));
+        }
+
+        private IEnumerator InteractRoutine(SoulHomeAvatarController controller)
+        {
+            SoulHomeFurnitureAnimator animator = GetComponent<SoulHomeFurnitureAnimator>();
+            bool useAvatar = false;
+            if (animator != null)
+            {
+                animator.HandleClick();
+            }
+            else
+            {
+                useAvatar = true;
+            }
+
+            if (useAvatar)
+            {
+                float timeStart = Time.time;
+                GameObject original = controller.gameObject;
+                original.SetActive(false);
+
+                GameObject dummy = Instantiate(original);
+                dummy.SetActive(true);
+
+                dummy.transform.SetParent(this.transform, true);
+                dummy.transform.localPosition = Vector3.zero;
+
+                Animator dummyAnim = dummy.GetComponentInChildren<Animator>();
+                //dummyAnim.Play("");
+
+                //yield return new WaitForEndOfFrame(); // Wait for animator to update
+                //float animLength = dummyAnim.GetCurrentAnimatorStateInfo(0).length;
+                //yield return new WaitForSeconds(animLength);
+
+                //Temporary
+                yield return new WaitUntil(() => timeStart+10 < Time.time || !_interactInProgress);
+                if(_interactInProgress) FreeInteractCharacter();
+                Destroy(dummy);
+                original.SetActive(true);
+            }
         }
 
         public void SetOutline(bool outline)
