@@ -512,7 +512,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 20}
-  m_SizeDelta: {x: 0, y: 216.926}
+  m_SizeDelta: {x: 0, y: 308.26553}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1142519125973415790
 MonoBehaviour:
@@ -1161,7 +1161,7 @@ PrefabInstance:
     - target: {fileID: 2609038723656894371, guid: 9db4c85da134acd459a9b0152d12a2e7,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 183.463
+      value: 229.13277
       objectReference: {fileID: 0}
     - target: {fileID: 2652875200801503437, guid: 9db4c85da134acd459a9b0152d12a2e7,
         type: 3}
@@ -1547,6 +1547,11 @@ PrefabInstance:
       propertyPath: _galleryView
       value: 
       objectReference: {fileID: 202220006862611404}
+    - target: {fileID: 6938972456293038161, guid: 9db4c85da134acd459a9b0152d12a2e7,
+        type: 3}
+      propertyPath: _gradientOverride
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6938972456293038161, guid: 9db4c85da134acd459a9b0152d12a2e7,
         type: 3}
       propertyPath: _loadoutController
