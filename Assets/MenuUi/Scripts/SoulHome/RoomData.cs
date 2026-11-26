@@ -929,6 +929,7 @@ namespace MenuUI.Scripts.SoulHome
                         //    ", Slot " + hit2.collider.GetComponent<FurnitureSlot>().row +":"+ hit2.collider.GetComponent<FurnitureSlot>().column);
                         GameObject slot = hit2.collider.gameObject;
                         FurnitureHandling furnitureInfo = furniture.GetComponent<FurnitureHandling>();
+                        furnitureInfo.StoreInteractionSlots();
                         furnitureInfo.ClearInteractionSlots();
                         furnitureInfo.FreeInteractCharacter();
                         FurnitureGrid gridToCheck = FurnitureGrid.None;

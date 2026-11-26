@@ -811,6 +811,7 @@ namespace MenuUI.Scripts.SoulHome
 
                 furniture.GetComponent<FurnitureHandling>().ResetSlot();
                 furniture.GetComponent<FurnitureHandling>().ResetDirection();
+                furniture.GetComponent<FurnitureHandling>().ResetInteractionSlots();
             }
             foreach (GameObject furniture in ChangedFurnitureList)
             {
@@ -848,6 +849,7 @@ namespace MenuUI.Scripts.SoulHome
                 furniture.GetComponent<FurnitureHandling>().SaveDirection();
                 FurnitureSlot oldSlot = furniture.GetComponent<FurnitureHandling>().Slot;
                 furniture.GetComponent<FurnitureHandling>().SaveSlot();
+                furniture.GetComponent<FurnitureHandling>().SaveInteractionSlots();
                 int roomId;
                 if (oldSlot != null)
                 {

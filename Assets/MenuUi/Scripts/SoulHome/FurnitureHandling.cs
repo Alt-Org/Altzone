@@ -71,6 +71,8 @@ namespace MenuUI.Scripts.SoulHome
         private bool _interactInProgress = false;
         private SoulHomeAvatarController _interactCharacter = null;
         public List<FurnitureSlot> AssignedInteractionSlots { get; private set; } = new List<FurnitureSlot>();
+        private List<FurnitureSlot> TempInteractionSlots { get; set; } = new List<FurnitureSlot>();
+        private List<FurnitureSlot> OldInteractionSlots { get; set; } = new List<FurnitureSlot>();
 
         [HideInInspector]
         public List<Vector2Int> customInteractionOffsets = new List<Vector2Int>();
@@ -309,6 +311,7 @@ namespace MenuUI.Scripts.SoulHome
         /// </summary>
         public void RotateFurniture()
         {
+            StoreInteractionSlots();
             if(_tempSpriteDirection == Direction.Front)
             {
                 if (_furnitureSpriteRight != null || (_spriteCanBeFlipped && _furnitureSpriteLeft != null)) _tempSpriteDirection = Direction.Right;
@@ -432,16 +435,38 @@ namespace MenuUI.Scripts.SoulHome
                 slot.InteractionOwner = null;
                 slot.ClearValidity();
             }
-            AssignedInteractionSlots.Clear();
+            TempInteractionSlots.Clear();
         }
 
         public void AddInteractionSlot(FurnitureSlot slot)
         {
-            if (!AssignedInteractionSlots.Contains(slot))
+            if (!TempInteractionSlots.Contains(slot))
             {
                 slot.IsReserved = true;
-                AssignedInteractionSlots.Add(slot);
+                TempInteractionSlots.Add(slot);
             }
+        }
+        public void StoreInteractionSlots()
+        {
+            if (OldInteractionSlots == null)
+            {
+                OldInteractionSlots = AssignedInteractionSlots;
+                AssignedInteractionSlots.Clear();
+            }
+        }
+
+        public void ResetInteractionSlots()
+        {
+            AssignedInteractionSlots = OldInteractionSlots;
+            TempInteractionSlots.Clear();
+            OldInteractionSlots = null;
+        }
+
+        public void SaveInteractionSlots()
+        {
+            AssignedInteractionSlots = TempInteractionSlots;
+            TempInteractionSlots.Clear();
+            OldInteractionSlots = null;
         }
 
         //Get closest interaction slot for npc to path to
