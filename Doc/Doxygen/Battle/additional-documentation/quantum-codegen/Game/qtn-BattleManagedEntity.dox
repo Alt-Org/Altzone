@@ -1,0 +1,161 @@
+//! @file BattleManagedEntity.qtn
+//! <summary>
+//! Contains @cref{Quantum,BattleEntityID}, @cref{Quantum,BattleManagedEntityQComponent} and @ref BattleManagedEntity.qtn "other related types".
+//! </summary>
+//!
+//! ## Generated Enums
+//! - @cref{Quantum,BattleEntityPlayState}  
+//!   @copybrief Quantum.BattleEntityPlayState
+//!
+//! ## Generated Structs
+//! - @cref{Quantum,BattleEntityID}  
+//!   @copybrief Quantum.BattleEntityID
+//! - @cref{Quantum,BattleEntityLink}  
+//!   @copybrief Quantum.BattleEntityLink
+//! - @cref{Quantum,BattleManagedEntityQComponent}  
+//!   @copybrief Quantum.BattleManagedEntityQComponent
+
+// ---------------------------------------------------------------------------------------------------- //
+
+/// @struct Quantum::BattleEntityID
+/// <summary>
+/// Struct used by @cref{Battle.QSimulation.Game,BattleEntityManager} to reference **%Quantum Entities**.
+/// </summary>
+///
+/// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
+///
+/// @bigtext{Generated from @ref BattleManagedEntity.qtn}  
+/// @bigtext{Extended in @ref BattleEntityManager.cs}
+///
+// {
+    /// @var int Quantum::BattleEntityID::Int
+    /// <summary>
+    /// Integer representation of the <b>{ID}</b>.
+    /// </summary>
+    ///
+    /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
+
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattleEntityID::SIZE
+    //! @var Int32 Quantum::BattleEntityID::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattleEntityID::GetHashCode
+    //!
+    //! @fn void Quantum::BattleEntityID::Serialize
+    //!
+    //! @}
+// }
+
+/// @enum Quantum::BattleEntityPlayState
+/// <summary>
+/// Enum that defines the possible <b>{PlayStates}</b> of <b>{Registered Entities}</b>.
+/// </summary>
+///
+/// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.  
+/// See [{Registered Entities}](#page-concepts-entity-management-registered-entities) for more info.
+///
+/// @bigtext{Generated from @ref BattleManagedEntity.qtn}
+///
+// {
+    /// @var Quantum::BattleEntityPlayState Quantum::BattleEntityPlayState::OutOfPlay
+    /// The **Entity** is OutOfPlay.
+
+    /// @var Quantum::BattleEntityPlayState Quantum::BattleEntityPlayState::InPlay
+    /// The **Entity** is InPlay.
+// }
+
+/// @struct Quantum::BattleEntityLink
+/// <summary>
+/// Struct used in @cref{Quantum,BattleManagedEntityQComponent} to reference **%Quantum Entities** **Linked** to a <b>{Compound}</b> and define their relative positions.
+/// </summary>
+///
+/// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+///
+/// @bigtext{Generated from @ref BattleManagedEntity.qtn}
+///
+// {
+    /// @var EntityRef Quantum::BattleEntityLink::ERef
+    /// <summary>
+    /// Reference to the **%Quantum Entity** **Linked** to the <b>{Compound}</b>.
+    /// </summary>
+    ///
+    /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+
+    /// @var FPVector2 Quantum::BattleEntityLink::Offset
+    /// <summary>
+    /// **Linked** **Entity's** position relative to the <b>{Compound}</b> **Parent**.
+    /// </summary>
+    ///
+    /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattleEntityLink::SIZE
+    //! @var Int32 Quantum::BattleEntityLink::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattleEntityLink::GetHashCode
+    //!
+    //! @fn void Quantum::BattleEntityLink::Serialize
+    //!
+    //! @}
+// }
+
+/// @struct Quantum::BattleManagedEntityQComponent
+/// <summary>
+/// Component for **%Quantum Entities** managed by @cref{Battle.QSimulation.Game,BattleEntityManager}.
+/// </summary>
+///
+/// See [{Managed Entities}](#page-concepts-entity-management-managed-entities) for more info.  
+///
+/// @bigtext{Generated from @ref BattleManagedEntity.qtn}
+///
+// {
+    /// @var bool Quantum::BattleManagedEntityQComponent::IsRegistered
+    /// <summary>
+    /// Whether the <b>{Managed Entity}</b> is of type <b>{Registered}</b> or not.
+    /// </summary>
+    ///
+    /// See [{Managed Entities}](#page-concepts-entity-management-managed-entities) for more info.  
+    /// See [{Registered Entity}](#page-concepts-entity-management-registered-entities) for more info.
+
+    /// @var BattleEntityPlayState Quantum::BattleManagedEntityQComponent::RegisteredState
+    /// <summary>
+    /// The <b>{PlayState}</b> of a <b>{Registered Entity}</b>. Unused if @cref{Quantum.BattleManagedEntityQComponent,IsRegistered} is false.
+    /// </summary>
+    ///
+    /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
+
+    /// @var bool Quantum::BattleManagedEntityQComponent::IsCompound
+    /// <summary>
+    /// Whether the <b>{Managed Entity}</b> is of type <b>{Compound}</b> or not.
+    /// </summary>
+    ///
+    /// See [{Managed Entities}](#page-concepts-entity-management-managed-entities) for more info.  
+    /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+
+    /// @var QListPtr<BattleEntityLink> Quantum::BattleManagedEntityQComponent::CompoundLinkedEntities
+    /// <summary>
+    /// <b>List of Entities linked</b> to the <b>{Compound}</b> parent. Unused if @cref{Quantum.BattleManagedEntityQComponent,IsCompound} is false.
+    /// </summary>
+    ///
+    /// See [{Compound Entities}](#page-concepts-entity-management-compound-entities) for more info.
+
+    //! @name Quantum Built-in
+    //! @{
+    //!
+    //! @var Int32 Quantum::BattleManagedEntityQComponent::SIZE
+    //! @var Int32 Quantum::BattleManagedEntityQComponent::ALIGNMENT
+    //!
+    //! @fn Int32 Quantum::BattleManagedEntityQComponent::GetHashCode
+    //!
+    //! @fn void Quantum::BattleManagedEntityQComponent::ClearPointers
+    //!
+    //! @fn void Quantum::BattleManagedEntityQComponent::OnRemoved
+    //!
+    //! @fn void Quantum::BattleManagedEntityQComponent::Serialize
+    //!
+    //! @}
+// }

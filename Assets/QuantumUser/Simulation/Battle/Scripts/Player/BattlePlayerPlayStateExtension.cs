@@ -12,7 +12,7 @@ namespace Battle.QSimulation.Player
     /// Implements extension methods for BattlePlayerPlayState enum.
     /// </summary>
     ///
-    /// This is used to ease checking the subsstates of the BattlePlayerPlayState enum.<br/>
+    /// This is used to ease checking the substates of the BattlePlayerPlayState enum.<br/>
     /// Checking superstates also checks if the current state is one of the substates of the superstate.<br/>
     /// Checks for states that have no substates are also implemented for consistency.
     public static class BattlePlayerPlayStateExtension

@@ -6,18 +6,19 @@
 This documentation is not entirely up to date. Player code was modified for testing flipper style game and behavior varies depending on if @cref{Battle.QSimulation.Game.BattleParameters,IsTestFlipperGame} is on.
 
 **%Quantum** handles recognizing **Players** through a [PlayerRef🡵](https://doc-api.photonengine.com/en/quantum/current/struct_quantum_1_1_player_ref.html),
-but we prefer to use **PlayerSlot** as defined by us whenever possible.  
-Each **Player** has an assigned **PlayerSlot** and a **TeamNumber**.  
-Each Each **Player** has a **PlayState**.  
-Each **Player** has **data** with them that **isn't connected to any specific character** under the **Player**'s control.  
-Each **Player** controls multiple **Character Entities** which also have some data associated with them.  
-Each **Character Entity** has a player character class that it belongs to.  
-Each **Character Entity** has one or more **Shield Entities**.  
-See [{Player Slots and Teams}](#page-concepts-player-slots-teams)  
-See [{Player PlayState}](#page-concepts-player-playstate)  
-See [{Player Manager Data}](#page-concepts-player-manager-data)  
-See [{Player Character and Shield Entities}](#page-concepts-player-character-and-shield-entity)  
-See [{Player Character Classes}](#page-concepts-player-characters-classes)
+but we prefer to use [{PlayerSlot}](#page-concepts-player-slots-teams) as defined by us whenever possible.  
+Each **Player** has an assigned [{Slot}](#page-concepts-player-slots-teams) and a [{Team}](#page-concepts-player-slots-teams).  
+Each **Player** has [{Player Data}](#page-concepts-player-data) which **is not connected to any specific character** under the **Player**'s control.  
+Each **Player** has a [{PlayState}](#page-concepts-player-playstate).
+
+Each **Player** controls multiple [{Character Entities}](#page-concepts-player-character-and-shield-entity) which also have some data associated with them.  
+Each [{Character Entity}](#page-concepts-player-character-and-shield-entity)
+has a [{Player Character Class}](#page-concepts-player-characters-classes) that it belongs to.  
+Each [{Character Entity}](#page-concepts-player-character-and-shield-entity)
+has one or more [{Shield Entities}](#page-concepts-player-character-and-shield-entity).
+
+The **Player** and their [{Character's}](#page-concepts-player-character-and-shield-entity) can be handled using a
+[{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle).
 
 **Other topics**  
 
@@ -93,6 +94,34 @@ graph PlayerSlotsAndTeams {
   }
 }
 ```
+
+<br/>
+
+## Player Data {#page-concepts-player-data}
+
+**Player Data** not connected to individual [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) is contained in the
+@cref{Quantum,BattlePlayerData} struct. It is defined in and generated from BattlePlayerData.qtn, and extended in BattlePlayerData.cs.  
+The [{PlayerManagerData}](#page-concepts-player-simulation-management-playermanagerdata) **%Quantum Singleton Component** contains a list of each player's **Player Data**
+which can be accessed through the [{PlayerManager}](#page-concepts-player-simulation-management-playermanager).  
+In practice, the **Player Data** can be handled using a [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle)
+by **Creating** one from **Player Data** or based on [{PlayerSlot}](#page-concepts-player-slots-teams),
+in which case the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle)
+will fetch **Player Data** from the [{PlayerManager}](#page-concepts-player-simulation-management-playermanager).
+
+The **Player Data** is split into 2 different levels, the **Gameplay Level** and the **Low Level** .  
+- **Gameplay Level**
+  - Immutable data  
+    Accessed, but is not meant to be modified in gameplay logic.
+  - Mutable data  
+    Accessed and modified as needed in gameplay logic.
+- **Low Level**  
+Accessed and modified as needed in "low level" management and abstraction code. On this level, all data is mutable.  
+In practice, contains all **Player Data**, meaning everything on the **Gameplay Level** and additional **Low Level** only data which is hidden from the **Gameplay Level**.
+
+The individual @cref{Quantum,BattlePlayerData} structs in [{PlayerManagerData}](#page-concepts-player-simulation-management-playermanagerdata)
+are accessed through a @cref{Quantum,BattlePlayerData.Ref} that acts as a reference to one of them.  
+The @cref{Quantum,BattlePlayerData.Ref} struct is also a wrapper which only exposes **Gameplay Level** data directly but also grants access to the **Low Level**,
+allowing full access to the underlying @cref{Quantum,BattlePlayerData} struct for "low level" management and abstraction code.
 
 <br/>
 
@@ -637,36 +666,83 @@ See [{Joining and Initializing}](#page-concepts-player-initializing) for more in
 **Characters** can be [{Alive}](#page-concepts-player-character-entity-character-state) or [{Dead}](#page-concepts-player-character-entity-character-state)
 and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate) or [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).
 
-A **Character** can be **Spawned** using @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int, bool)}.
+A **Character** can be **Spawned** using @clink{SpawnPlayerCharacter:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayerCharacter(Frame, BattlePlayerSlot, int, bool)}.
 ([{InPlay}](#page-concepts-entity-management-registered-entities-playstate))  
 The **Character** is spawned based on it's chosen [{Spawn Behaviour}](#page-concepts-player-character-entity-spawn-behaviour).  
 If a **Character** is [{Dead}](#page-concepts-player-character-entity-character-state), it cannot be **Spawned**.
 
-A **Character** can be **Despawned** using @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, int, bool)}.
+A **Character** can be **Despawned** using @clink{DespawnPlayerCharacter:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayerCharacter(Frame, Battle.QSimulation.Game.BattlePlayerHandle, int, bool)}.
 ([{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))  
 
-The @clink{SpawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayer(Frame, BattlePlayerSlot, int, bool)}
-and @clink{DespawnPlayer:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayer(Frame, BattlePlayerSlot, int, bool)}
+The @clink{SpawnPlayerCharacter:Battle.QSimulation.Player.BattlePlayerManager.SpawnPlayerCharacter(Frame, BattlePlayerSlot, int, bool)}
+and @clink{DespawnPlayerCharacter:Battle.QSimulation.Player.BattlePlayerManager.DespawnPlayerCharacter(Frame, Battle.QSimulation.Game.BattlePlayerHandle, int, bool)}
 methods also affect the [{Player PlayState}](#page-concepts-player-playstate) of the **Player** the **Character** belongs to.
 
 <br/>
 
 #### PlayerHandle {#page-concepts-player-simulation-management-playerhandle}
 
-The @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle} struct defined in [{PlayerManager}](#page-concepts-player-simulation-management-playermanager) allows
-the code to access [{Player Manager Data}](#page-concepts-player-manager-data) of each individual **Player**.
+The @cref{Battle.QSimulation.Game,BattlePlayerHandle} is a special case [{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle),
+as it contains data on the **Player** itself, who is not an entity, and optionally, data on one [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character).  
+As stated before, the @cref{Battle.QSimulation.Game,BattlePlayerHandle} can be used to **Handle** the **Player** itself detached from any **Character**.
 
-There is both a **private** @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} struct containing all the data for **use internally**
-within [{PlayerManager}](#page-concepts-player-simulation-management-playermanager), and the **public** @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle}
-exposing some parts to the **rest of the game**.
+A @cref{Battle.QSimulation.Game,BattlePlayerHandle} for the **Player** itself with **no** [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character)
+can be **Created** using the @clink{Create:Battle.QSimulation.Game.BattlePlayerHandle.Create(Frame,BattlePlayerSlot)} method.
 
-<br/>
+When a [{Character is Loaded}](#page-concepts-player-simulation-management-playerhandle-loaded-character), it functions the same as any other
+[{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for the [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character).
 
-#### ShieldManagerData (%Quantum Singleton) {#page-concepts-player-simulation-management-shieldmanagerdata}
+##### Linked/Associated Entities {#page-concepts-player-simulation-management-playerhandle-linked-entities}
 
-The @cref{Quantum, BattlePlayerShieldManagerDataQSingleton} struct is a **%Quantum Singleton Component** defined in and generated from BattlePlayerShieldManagerData.qtn
-containing all our defined data for managing **Shields**.  
-The data contained in this **%Quantum Singleton Component** is used by the [{ShieldManager}](#page-concepts-player-simulation-management-shieldmanager).
+Each [{Player Character}](#page-concepts-player-character-and-shield-entity) has **Entities** that are **Linked/Associated** with the **Character** and the **Player** itself
+using a @cref{Quantum,BattlePlayerLinkQComponent}, a [{Link Component}](#page-concepts-battle-handle-entity-type-handle-link-component).  
+Each **Linked/Associated Entity** has a @cref{Quantum,BattlePlayerLinkEntityType}.
+
+| Linked/Associated Entity                                                                                                                                                                                              | @cref{Quantum,BattlePlayerLinkEntityType}           |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------- |
+| The main [{Player Character Entity}](#page-concepts-player-character-and-shield-entity).                                                                                                                              | @cref{Quantum.BattlePlayerLinkEntityType,Character} |
+| The **Hitbox Entities** of the main [{Player Character Entity}](#page-concepts-player-character-and-shield-entity).                                                                                                   | @cref{Quantum.BattlePlayerLinkEntityType,Hitbox}    |
+| The [{Player Shield Entity}](#page-concepts-player-character-and-shield-entity) associated with the main [{Player Character Entity}](#page-concepts-player-character-and-shield-entity).                              | @cref{Quantum.BattlePlayerLinkEntityType,Shield}    |
+| The **Hitbox Entities** of the [{Player Shield Entities}](#page-concepts-player-character-and-shield-entity) associated with the main [{Player Character Entity}](#page-concepts-player-character-and-shield-entity). | @cref{Quantum.BattlePlayerLinkEntityType,Shield}    |
+
+If a [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) is **Created** from a **Linked/Associated Entity** of **Type** @cref{Quantum.BattlePlayerLinkEntityType,Hitbox},
+the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) will have an [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playerhandle-collided-hitbox).  
+If a [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) is **Created** from a **Linked/Associated Entity** of **Type** @cref{Quantum.BattlePlayerLinkEntityType,Character}
+or @cref{Quantum.BattlePlayerLinkEntityType,Shield}, the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle)
+will just have a [{Loaded Character}](#page-concepts-player-simulation-management-playerhandle-loaded-character).
+
+##### Loaded Character {#page-concepts-player-simulation-management-playerhandle-loaded-character}
+
+Each [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) can have **one** or **none** of the
+[{3 Characters}](#page-concepts-player-character-and-shield-entity) the **Player** controls **Loaded**.  
+When a **Character is Loaded**, the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle)
+functions as a [{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for the **Loaded Character**.
+
+A [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) for the **Player** with a **Character already Loaded**
+can be **Created** using the @clink{Create:Battle.QSimulation.Game.BattlePlayerHandle.Create(Frame,EntityRef)} method with a
+[{Linked/Associated Entity}](#page-concepts-player-simulation-management-playerhandle-linked-entities) as an argument.
+
+A **Character** can be **Loaded** using the @cref{Battle.QSimulation.Game.BattlePlayerHandle,LoadCharacter} method.  
+The @cref{Battle.QSimulation.Game.BattlePlayerHandle,LoadCharacter} method can obviously be called after the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle)
+is **Created**, upgrading the [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) from only handling the **Player** itself to also handling one of the **Characters**.  
+If there already is a **Loaded Character**, another **Character** can still be **Loaded**, replacing the currently **Loaded Character**.
+
+**Multiple Characters** can be **Handled** using the @cref{Battle.QSimulation.Game.BattlePlayerHandle,LoadCharacterCopy} method.  
+The @cref{Battle.QSimulation.Game.BattlePlayerHandle,LoadCharacterCopy} method returns a copy of the
+[{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) with the desired **Character Loaded**.
+
+Whether a [{Character}](#page-concepts-player-character-and-shield-entity) is **Loaded** or not can be **Checked** using the
+@cref{Battle.QSimulation.Game.BattlePlayerHandle,HandleHasCharacterLoaded} property.  
+If a [{Character}](#page-concepts-player-character-and-shield-entity) should be **Loaded**, it can be **Asserted** using the
+@cref{Battle.QSimulation.Game.BattlePlayerHandle,DevAssertPlayerHandleHasCharacterLoaded} method.
+
+##### Available Collided Hitbox {#page-concepts-player-simulation-management-playerhandle-collided-hitbox}
+
+When there is a collision involving a [{Player Character}](#page-concepts-player-character-and-shield-entity), the **Player Hitbox Entity** that was collided with is relevant.  
+So, if a [{PlayerHandle}](#page-concepts-player-simulation-management-playerhandle) is **Created** using the @clink{Create:Battle.QSimulation.Game.BattlePlayerHandle.Create(Frame,EntityRef)}
+method with a [{Linked/Associated Entity}](#page-concepts-player-simulation-management-playerhandle-linked-entities)
+of **Type** @cref{Quantum.BattlePlayerLinkEntityType,Hitbox} as an argument,
+the **Hitbox Entity** is captured and made **Available** through the @cref{Battle.QSimulation.Game.BattlePlayerHandle,CollidedHitboxEntityRef} field.
 
 <br/>
 
@@ -683,7 +759,7 @@ Handles **Initializing Shields** that are present in the game, as well as attach
 and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate) or [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).
 
 A **Shield** can be [{Attached}](#page-concepts-player-character-entity-shield-attach) to a player's **Character**
-using @clink{AttachShield:Battle.QSimulation.Player.BattlePlayerShieldManager.AttachShield(Frame, BattlePlayerSlot, int, int, bool)}.
+using @clink{AttachShield:Battle.QSimulation.Player.BattlePlayerShieldManager.AttachShield(Frame, Battle.QSimulation.Game.BattlePlayerHandle, int)}.
 This has no effect on the [{InPlay/OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate).  
 If a **Character** already has a shield [{Attached}](#page-concepts-player-character-entity-shield-attach), the shield will be swapped.  
 When [{Attached}](#page-concepts-player-character-entity-shield-attach), [{InPlay/OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate)
@@ -692,13 +768,49 @@ logic is handled by the [{PlayerManager}](#page-concepts-player-simulation-manag
 [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate) when **Character** is [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))
 
 **Shields** can be used **Detached**
-using @clink{GetDetachedShieldEntityRef:Battle.QSimulation.Player.BattlePlayerShieldManager.GetDetachedShieldEntityRef(Frame, BattlePlayerSlot, int, int, bool)}.
+using @clink{GetDetachedShieldEntityRef:Battle.QSimulation.Player.BattlePlayerShieldManager.GetDetachedShieldEntityRef(Frame, Battle.QSimulation.Game.BattlePlayerHandle, int)}.
 The method will retrieve the shield to be used in the arena (**Detached** and [{InPlay}](#page-concepts-entity-management-registered-entities-playstate))
 [{Attached}](#page-concepts-player-character-entity-shield-attach) or not, **Detaching** the **Shield** if needed.  
-A **Shield** can be **Removed** using @clink{RemoveShield:Battle.QSimulation.Player.BattlePlayerShieldManager.RemoveShield(Frame, BattlePlayerSlot, int, int)},
+A **Shield** can be **Removed** using @clink{RemoveShield:Battle.QSimulation.Player.BattlePlayerShieldManager.RemoveShield(Frame, Battle.QSimulation.Game.BattlePlayerHandle, int, int)},
 teleporting it out of the arena.
 (**Detached** and [{OutOfPlay}](#page-concepts-entity-management-registered-entities-playstate))  
 [{Attached}](#page-concepts-player-character-entity-shield-attach) or not, **Detaching** the **Shield** if needed.
+
+<br/>
+
+#### PlayerShieldHandle {#page-concepts-player-simulation-management-playershieldhandle}
+
+The @cref{Battle.QSimulation.Game,BattlePlayerShieldHandle} is a [{Managed Composite Entity Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle)
+for handling [{Player Shield Entities}](#page-concepts-player-character-and-shield-entity).
+
+A @cref{Battle.QSimulation.Game,BattlePlayerShieldHandle} for a **Shield** can be **Created** using the @clink{Create:Battle.QSimulation.Game.BattlePlayerShieldHandle.Create(Frame,EntityRef)} method
+with a [{Linked/Associated Entity}](#page-concepts-player-simulation-management-playershieldhandle-linked-associated-entities) as an argument.
+
+##### Linked/Associated Entities {#page-concepts-player-simulation-management-playershieldhandle-linked-associated-entities}
+
+Each [{Player Shield}](#page-concepts-player-character-and-shield-entity) has **Entities** that are **Linked/Associated** with the **Shield**
+using a @cref{Quantum,BattlePlayerShieldLinkQComponent}, a [{Link Component}](#page-concepts-battle-handle-entity-type-handle-link-component).  
+Each **Linked/Associated Entity** has a @cref{Quantum,BattlePlayerShieldLinkEntityType}.
+
+| Linked/Associated Entity                                                                                         | @cref{Quantum,BattlePlayerShieldLinkEntityType}        |
+| :--------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------- |
+| The main [{Player Shield Entity}](#page-concepts-player-character-and-shield-entity).                            | @cref{Quantum.BattlePlayerShieldLinkEntityType,Shield} |
+| The **Hitbox Entities** of the main [{Player Shield Entity}](#page-concepts-player-character-and-shield-entity). | @cref{Quantum.BattlePlayerShieldLinkEntityType,Hitbox} |
+
+If a [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle) is **Created** from a **Linked/Associated Entity**
+of **Type** @cref{Quantum.BattlePlayerShieldLinkEntityType,Hitbox}, the [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle)
+will have an [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox).  
+If a [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle) is **Created** from a **Linked/Associated Entity**
+of **Type** @cref{Quantum.BattlePlayerShieldLinkEntityType,Shield}, the [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle)
+will **not** have an [{Available Collided Hitbox}](#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox).
+
+##### Available Collided Hitbox {#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox}
+
+When there is a collision involving a [{Player Shield}](#page-concepts-player-character-and-shield-entity), the **Shield Hitbox Entity** that was collided with is relevant.  
+So, if a [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle) is **Created** using the @clink{Create:Battle.QSimulation.Game.BattlePlayerShieldHandle.Create(Frame,EntityRef)}
+method with a [{Linked/Associated Entity}](#page-concepts-player-simulation-management-playershieldhandle-linked-associated-entities)
+of **Type** @cref{Quantum.BattlePlayerShieldLinkEntityType,Hitbox} as an argument,
+the **Hitbox Entity** is captured and made **Available** through the @cref{Battle.QSimulation.Game.BattlePlayerShieldHandle,CollidedHitboxEntityRef} field.
 
 <br/>
 
@@ -711,7 +823,7 @@ This section contains **%Quantum** simulation side **Player** gameplay logic rel
 
 #### PlayerData (%Quantum Component) {#page-concepts-player-simulation-gamelogic-playerdata}
 
-The @cref{Quantum,BattlePlayerDataQComponent} struct is defined in and generated from BattlePlayerData.qtn.
+The @cref{Quantum,BattlePlayerCharacterDataQComponent} struct is defined in and generated from BattlePlayerData.qtn.
 This contains data specific to each [{Player Character Entity}](#page-concepts-player-character-and-shield-entity) used by the **%Quantum Simulation** during gameplay.
 
 <br/>

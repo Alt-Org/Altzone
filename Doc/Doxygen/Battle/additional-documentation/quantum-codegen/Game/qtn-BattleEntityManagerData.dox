@@ -1,6 +1,6 @@
 //! @file BattleEntityManagerData.qtn
 //! <summary>
-//! Contains component used for managing %Quantum entities in the game.
+//! Contains a @cref{Quantum,BattleEntityManagerDataQSingleton} component which is used internally by @cref{Battle.QSimulation.Game,BattleEntityManager} to manage registered entities.
 //! </summary>
 //!
 //! ## Generated Structs
@@ -42,7 +42,10 @@
     //!
     //! @fn Int32 Quantum::BattleEntityManagerDataQSingleton::GetHashCode
     //!
+    //! @fn void Quantum::BattleEntityManagerDataQSingleton::ClearPointers
+    //!
     //! @fn void Quantum::BattleEntityManagerDataQSingleton::OnRemoved
+    //!
     //! @fn void Quantum::BattleEntityManagerDataQSingleton::Serialize
     //!
     //! @}

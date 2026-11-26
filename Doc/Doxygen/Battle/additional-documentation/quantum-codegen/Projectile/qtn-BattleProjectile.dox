@@ -10,8 +10,6 @@
 //! ## Generated Structs
 //! - @cref{Quantum,BattleProjectileQComponent}  
 //!   @copybrief Quantum.BattleProjectileQComponent
-//! - @cref{Quantum,BattleProjectileTriggerQComponent}  
-//!   @copybrief Quantum.BattleProjectileTriggerQComponent
 
 // ---------------------------------------------------------------------------------------------------- //
 
@@ -128,7 +126,7 @@
     //! @name Private internal arrays
     //! @{
 
-    /// @var byte Quantum::BattleProjectileQComponent::_CollisionFlags_
+    /// @var Byte Quantum::BattleProjectileQComponent::_CollisionFlags_
     /// <summary>
     /// An array used internally for holding flags for projectile's collisions.  
     /// Used to prevent hitting multiple entities per frame.  
@@ -147,32 +145,6 @@
     //! @fn Int32 Quantum::BattleProjectileQComponent::GetHashCode
     //!
     //! @fn void Quantum::BattleProjectileQComponent::Serialize
-    //!
-    //! @}
-// }
-
-/// @struct Quantum::BattleProjectileTriggerQComponent
-/// <summary>
-/// Contains entity reference to the projectile entity.
-/// </summary>
-///
-/// @bigtext{Generated from @ref BattleProjectile.qtn}
-///
-// {
-    /// @var EntityRef Quantum::BattleProjectileTriggerQComponent::ProjectileEntityRef
-    /// <summary>
-    /// Used for getting the reference of the projectile entity.
-    /// </summary>
-
-    //! @name Quantum Built-in
-    //! @{
-    //!
-    //! @var Int32 Quantum::BattleProjectileTriggerQComponent::SIZE
-    //! @var Int32 Quantum::BattleProjectileTriggerQComponent::ALIGNMENT
-    //!
-    //! @fn Int32 Quantum::BattleProjectileTriggerQComponent::GetHashCode
-    //!
-    //! @fn void Quantum::BattleProjectileTriggerQComponent::Serialize
     //!
     //! @}
 // }

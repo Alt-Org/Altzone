@@ -1,0 +1,72 @@
+enum BattlePlayerSpawnBehaviour
+{
+    DefaultPosition,
+    CharactersPreviousPosition,
+    PreviousCharactersPosition
+}
+
+//{ PlayerCharacterData
+
+component BattlePlayerCharacterDataQComponent
+{
+    int                        Number;
+    BattlePlayerCharacterID    Id;
+    BattlePlayerCharacterClass Class;
+
+    BattlePlayerStats Stats;
+
+    // Attributes
+    int                        AttributeGridExtendTop;
+    int                        AttributeGridExtendBottom;
+    bool                       AttributeDisableMovement;
+    bool                       AttributeDisableRotation;
+    BattlePlayerSpawnBehaviour AttributeSpawnBehaviour;
+
+    // State
+    BattlePlayerCharacterState State;
+    bool                       StateMovementEnabled;
+    bool                       StateRotationEnabled;
+    FP                         StateDefenceValue;
+    FrameTimer                 StateStunCooldown;
+    FrameTimer                 StateShieldHitCooldown;
+
+    // Movement data
+    bool       MovementHasTargetPosition;
+    FPVector2  MovementTargetPosition;
+    FP         MovementRotationBaseRad;
+    FP         MovementRotationOffsetRad;
+    FPVector2  MovementPreviousInPlayPosition;
+
+    // Shield data
+    int       ShieldCount;
+    EntityRef AttachedShieldEntityRef;
+
+    // Ability data
+    FrameTimer AbilityCooldownSec;
+    FrameTimer AbilityActivateBufferSec;
+
+    // Bot data
+    FP BotMovementCooldownSec;
+    FP BotCharacterSwapTimerSec;
+
+    // View data
+    FPVector2 ViewPosition;
+    FPVector2 ViewMovementVector;
+}
+
+//} PlayerCharacterData
+
+//{ PlayerCharacterDataTemplate
+component BattlePlayerCharacterDataTemplateQComponent
+{
+    int GridExtendTop;
+    int GridExtendBottom;
+
+    BattlePlayerHitboxTemplate Hitbox;
+
+    bool DisableMovement;
+    bool DisableRotation;
+
+    BattlePlayerSpawnBehaviour SpawnBehaviour;
+}
+//} PlayerCharacterDataTemplate

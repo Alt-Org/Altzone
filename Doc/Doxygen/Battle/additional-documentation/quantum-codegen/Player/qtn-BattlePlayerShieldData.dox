@@ -1,6 +1,6 @@
 //! @file BattlePlayerShieldData.qtn
 //! <summary>
-//! Contains components used for player shield entities.
+//! Contains @cref{Quantum,BattlePlayerShieldDataQComponent} and @ref BattlePlayerShieldData.qtn "other related components".
 //! </summary>
 //!
 //! ## Generated Structs
@@ -13,30 +13,38 @@
 
 /// @struct Quantum::BattlePlayerShieldDataQComponent
 /// <summary>
-/// Contains player shield's data, including it's associated player entity and hitbox entities.
+/// Data attached to <b>{Player Shield Entities}</b>.
 /// </summary>
+///
+/// See [{Player Shield Entities}](#page-concepts-player-character-and-shield-entity) for more info.
 ///
 /// @bigtext{Generated from @ref BattlePlayerShieldData.qtn}
 ///
 // {
-    /// @var BattlePlayerEntityRef Quantum::BattlePlayerShieldDataQComponent::PlayerEntityRef
+    /// @var EntityRef Quantum::BattlePlayerShieldDataQComponent::PlayerCharacterEntityRef
     /// <summary>
-    /// EntityRef of the player entity the shield belongs to.
+    /// Reference to the <b>{Player Character Entity}</b> the **Shield** belongs to.
     /// </summary>
+    ///
+    /// See [{Player Character Entities}](#page-concepts-player-character-and-shield-entity) for more info.
 
-    /// @var int Quantum::BattlePlayerShieldDataQComponent::ShieldNumber
+    /// @var int Quantum::BattlePlayerShieldDataQComponent::Number
     /// <summary>
-    /// Shield number of this shield.
+    /// <b>{Shield Number}</b> of the **Shield**.
     /// </summary>
+    ///
+    /// See [{Shield Number}](#page-concepts-player-character-entity-shield-number) for more info.
 
     /// @var bool Quantum::BattlePlayerShieldDataQComponent::IsAttached
     /// <summary>
-    /// Whether this shield is attached or not.
+    /// Whether the **Shield** is <b>{Attached}</b> or not.
     /// </summary>
+    ///
+    /// See [{Attached}](#page-concepts-player-character-entity-shield-attach) for more info.
 
     /// @var FrameTimer Quantum::BattlePlayerShieldDataQComponent::ShieldHitCooldown
     /// <summary>
-    /// Timer used for the cooldown on the shield getting hit.
+    /// Timer used for the cooldown on the **Shield** getting hit.
     /// </summary>
 
     //! @name Quantum Built-in
@@ -54,8 +62,10 @@
 
 /// @struct Quantum::BattlePlayerShieldDataTemplateQComponent
 /// <summary>
-/// Template for creating player shield entity.
+/// Template for creating a <b>{Player Shield Entity}</b>.
 /// </summary>
+///
+/// See [{Player Shield Entity}](#page-concepts-player-character-and-shield-entity) for more info.
 ///
 /// @bigtext{Generated from @ref BattlePlayerShieldData.qtn}
 ///
@@ -73,7 +83,10 @@
     //!
     //! @fn Int32 Quantum::BattlePlayerShieldDataTemplateQComponent::GetHashCode
     //!
+    //! @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::ClearPointers
+    //!
     //! @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::OnRemoved
+    //!
     //! @fn void Quantum::BattlePlayerShieldDataTemplateQComponent::Serialize
     //!
     //! @}

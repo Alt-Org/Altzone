@@ -14,19 +14,21 @@ namespace Quantum {
   using UnityEngine;
   
   [UnityEngine.DisallowMultipleComponent()]
-  public unsafe partial class QPrototypeBattlePlayerShieldManagerDataQSingleton : QuantumUnityComponentPrototype<Quantum.Prototypes.BattlePlayerShieldManagerDataQSingletonPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.BattlePlayerShieldManagerDataQSingleton> {
-    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerShieldManagerDataQSingletonPrototype prototype);
+  public unsafe partial class QPrototypeBattlePlayerLinkQComponent : QuantumUnityComponentPrototype<Quantum.Prototypes.BattlePlayerLinkQComponentPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.BattlePlayerLinkQComponent> {
+    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BattlePlayerLinkQComponentPrototype prototype);
     [DrawInline()]
     [ReadOnly(InEditMode = false)]
-    public Quantum.Prototypes.BattlePlayerShieldManagerDataQSingletonPrototype Prototype;
+    public Quantum.Prototypes.Unity.BattlePlayerLinkQComponentPrototype Prototype;
     public override System.Type ComponentType {
       get {
-        return typeof(Quantum.BattlePlayerShieldManagerDataQSingleton);
+        return typeof(Quantum.BattlePlayerLinkQComponent);
       }
     }
     public override ComponentPrototype CreatePrototype(Quantum.QuantumEntityPrototypeConverter converter) {
-      CreatePrototypeUser(converter, ref Prototype);
-      return Prototype;
+      Quantum.Prototypes.BattlePlayerLinkQComponentPrototype result;
+      converter.Convert(Prototype, out result);
+      CreatePrototypeUser(converter, ref result);
+      return result;
     }
   }
 }

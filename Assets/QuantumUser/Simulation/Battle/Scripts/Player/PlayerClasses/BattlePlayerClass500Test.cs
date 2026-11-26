@@ -25,17 +25,15 @@ namespace Battle.QSimulation.Player
         /// <summary>The BattlePlayerCharacterClass this class is for.</summary>
         public override BattlePlayerCharacterClass Class => BattlePlayerCharacterClass.Class500;
 
-        public override unsafe BattlePlayerClassManager.CreationParameters OnCreate(Frame f, BattlePlayerManager.PlayerHandle playerHandle, BattlePlayerDataQComponent* playerData, EntityRef playerEntity)
+        public override unsafe BattlePlayerClassManager.SetupParameters OnCreate(Frame f, BattlePlayerHandle playerHandle)
         {
-            BattleCompoundEntityQComponent* compoundEntityComponent = f.Unsafe.GetPointer<BattleCompoundEntityQComponent>(playerEntity);
-
-            foreach(BattleEntityLink link in f.ResolveList(compoundEntityComponent->LinkedEntities))
+            foreach(BattleEntityLink link in playerHandle.LoadedCharacterEntityHandle.CompoundGetLinkedEntities(f))
             {
                 BattlePlayerHitboxQComponent* hitBoxComponent = f.Unsafe.GetPointer<BattlePlayerHitboxQComponent>(link.ERef);
                 hitBoxComponent->CollisionType = BattlePlayerCollisionType.None;
             }
 
-            return BattlePlayerClassManager.CreationParameters.Default;
+            return BattlePlayerClassManager.SetupParameters.Default;
         }
 
         /// <summary>
@@ -44,22 +42,18 @@ namespace Battle.QSimulation.Player
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
-        /// <param name="shieldCollisionData">Collision data related to the player shield.</param>
         /// <param name="selected">Is the character selected or not.</param>
-        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData, bool selected)
+        public override unsafe void OnProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, bool selected)
         {
             BattleArenaQSpec spec = BattleQConfig.GetArenaSpec(f);
 
-            EntityRef                   projectileEntityRef   = projectileCollisionData->ProjectileEntityRef;
-            BattleProjectileQComponent* projectile            = projectileCollisionData->Projectile;
-            BattlePlayerEntityRef       playerEntityRef       = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef)->PlayerEntityRef;
-            BattlePlayerDataQComponent* playerData            = f.Unsafe.GetPointer<BattlePlayerDataQComponent>(playerEntityRef);
+            BattlePlayerHandle playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
 
             int       row       = 0;
-            FP        yOffset   = projectile->Radius + BattleGridManager.GridScaleFactor;
+            FP        yOffset   = projectileCollisionData->Projectile.Data->Radius + BattleGridManager.GridScaleFactor;
             FPVector2 direction = FPVector2.Zero;
 
-            switch (playerData->TeamNumber)
+            switch (playerHandle.PlayerData.Team)
             {
                 case BattleTeamNumber.TeamAlpha:
                     row       = 0 + spec.SoulWallHeight;
@@ -81,8 +75,8 @@ namespace Battle.QSimulation.Player
 
             direction = FPVector2.Rotate(direction, f.RNG->NextInclusive(-FP.Rad_45, FP.Rad_45));
 
-            BattleEntityManager.TeleportCompound(f, projectileEntityRef, position, FP._0);
-            BattleProjectileQSystem.UpdateVelocity(f, projectile, direction, BattleProjectileQSystem.SpeedChange.Increment);
+            BattleEntityManager.TeleportCompound(f, projectileCollisionData->Projectile.EntityHandle, position, FP._0);
+            BattleProjectileQSystem.UpdateVelocity(f, projectileCollisionData->Projectile.Data, direction, BattleProjectileQSystem.SpeedChange.Increment);
         }
     }
 }

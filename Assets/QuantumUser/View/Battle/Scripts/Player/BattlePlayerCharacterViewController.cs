@@ -529,7 +529,7 @@ namespace Battle.View.Player
 
             _normalScale = transform.localScale;
 
-            _teamNumber = BattlePlayerManager.PlayerHandle.GetTeamNumber(e.Slot);
+            _teamNumber = BattlePlayerManager.GetPlayerData(_, e.Slot).Team;
 
             if (_teamNumber == BattleGameViewController.LocalPlayerTeam)
             {
@@ -626,13 +626,12 @@ namespace Battle.View.Player
         /// Part of @ref BattlePlayerCharacterViewController-Public-GameflowMethods "Public Gameflow Methods"
         public override void OnUpdateView()
         {
-            if (!_isInPlay) return;
-            BattlePlayerDataQComponent* playerData = PredictedFrame.Unsafe.GetPointer<BattlePlayerDataQComponent>(EntityRef);
-            if (playerData->PlayerRef == PlayerRef.None) return;
+            if (_playState == BattleEntityPlayState.OutOfPlay) return;
+            BattlePlayerHandle playerHandle = BattlePlayerHandle.Create(PredictedFrame, EntityRef);
 
-            UpdateAnimation(playerData);
+            UpdateAnimation(playerHandle.LoadedCharacterData);
 
-            Vector3 viewPosition = playerData->ViewPosition.ToUnityVector3();
+            Vector3 viewPosition = playerHandle.LoadedCharacterData->ViewPosition.ToUnityVector3();
 
             UpdateModelPositionAdjustment(&viewPosition);
 
@@ -713,7 +712,7 @@ namespace Battle.View.Player
         /// <summary>%Boolean that tells whether the %Quantum Entity this ViewController is attached to is in play.</summary>
         ///
         /// See [{PlayState}](#page-concepts-entity-management-registered-entities-playstate) for more info.
-        private bool _isInPlay;
+        private BattleEntityPlayState _playState;
 
         /// <summary>Is shield attached.</summary>
         ///
@@ -779,7 +778,7 @@ namespace Battle.View.Player
 
         /// <summary>
         /// Handler method for <see cref="Quantum.EventBattlePlayStateUpdate">EventBattlePlayStateUpdate</see> QuantumEvent.<br/>
-        /// Updates the <see cref="_isInPlay">_isInPlay</see> bool.
+        /// Updates the <see cref="_playState">_isInPlay</see> bool.
         /// </summary>
         ///
         /// Part of @ref BattlePlayerCharacterViewController-Private-QuantumEventHandlers "Private QuantumEvent Handlers"
@@ -790,7 +789,7 @@ namespace Battle.View.Player
         private void QEventOnPlayStateUpdate(EventBattlePlayStateUpdate e)
         {
             if (e.ERef != EntityRef) return;
-            _isInPlay = e.IsInPlay;
+            _playState = e.PlayState;
 
             _classViewController.OnPlayStateUpdate(e);
         }
@@ -874,7 +873,7 @@ namespace Battle.View.Player
         /// Animations are tracked using @cref{Battle.View.Player.BattlePlayerCharacterViewController,AnimationState}.
         ///
         /// <param name="playerData">Pointer to the player's data component.</param>
-        private void UpdateAnimation(BattlePlayerDataQComponent* playerData)
+        private void UpdateAnimation(BattlePlayerCharacterDataQComponent* playerData)
         {
             Vector2 movementVector = playerData->ViewMovementVector.ToUnityVector2();
 

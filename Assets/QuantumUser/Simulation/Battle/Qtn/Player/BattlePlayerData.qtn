@@ -1,76 +1,22 @@
-enum BattlePlayerSpawnBehaviour
+struct BattlePlayerData
 {
-    DefaultPosition,
-    CharactersPreviousPosition,
-    PreviousCharactersPosition
+    PlayerRef             PRef;
+    BattlePlayerSlot      Slot;
+    BattleTeamNumber      Team;
+    bool                  IsBot;
+    bool                  IsAbandoned;
+    BattlePlayerPlayState PlayState;
+
+    // State
+    bool       StateAllowCharacterSwapping;
+    bool       StatePlayerGiveUp;
+    FrameTimer StateRespawnTimer;
+
+    // Character
+    int                                                 SelectedCharacterNumber;
+    BattleEntityID                                      CharacterEntityGroupID;
+    array<FPVector2>[BATTLE_PLAYER_CHARACTER_MAX_COUNT] CharacterDefaultSpawnPositions;
+
+    // Shield
+    array<BattleEntityID>[BATTLE_PLAYER_CHARACTER_MAX_COUNT] ShieldEntityGroupIDs;
 }
-
-//{ PlayerData
-
-component BattlePlayerDataQComponent
-{
-    // Player's refs and IDs
-    PlayerRef                  PlayerRef;
-    BattlePlayerSlot           Slot;
-    BattleTeamNumber           TeamNumber;
-    BattlePlayerCharacterID    CharacterId;
-    BattlePlayerCharacterClass CharacterClass;
-    int                        CharacterNumber;
-
-    // Player's Stats
-    BattlePlayerStats Stats;
-
-    // Player's attributes
-    int                        GridExtendTop;
-    int                        GridExtendBottom;
-    bool                       DisableMovement;
-    bool                       DisableRotation;
-    BattlePlayerSpawnBehaviour SpawnBehaviour;
-
-    // Player's current state related data
-    bool       MovementEnabled;
-    bool       RotationEnabled;
-    FP         CurrentDefence;
-    FrameTimer StunCooldown;
-    FrameTimer ShieldHitCooldown;
-
-    // Player's movement related data
-    bool       HasTargetPosition;
-    FPVector2  TargetPosition;
-    FP         RotationBaseRad;
-    FP         RotationOffsetRad;
-
-    // Player's shield related data
-    int                         ShieldCount;
-    int                         AttachedShieldNumber;
-    BattlePlayerShieldEntityRef AttachedShield;
-
-    // Ability related data
-    FrameTimer AbilityCooldownSec;
-    FrameTimer AbilityActivateBufferSec;
-
-    // Bot related data
-    FP BotMovementCooldownSec;
-    FP BotCharacterSwapTimerSec;
-
-    // View related data
-    FPVector2 ViewPosition;
-    FPVector2 ViewMovementVector;
-}
-
-//} PlayerData
-
-//{ PlayerDataTemplate
-component BattlePlayerDataTemplateQComponent
-{
-    int GridExtendTop;
-    int GridExtendBottom;
-
-    BattlePlayerHitboxTemplate Hitbox;
-
-    bool DisableMovement;
-    bool DisableRotation;
-
-    BattlePlayerSpawnBehaviour SpawnBehaviour;
-}
-//} PlayerDataTemplate

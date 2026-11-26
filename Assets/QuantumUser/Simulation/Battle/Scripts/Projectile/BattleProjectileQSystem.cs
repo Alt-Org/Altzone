@@ -67,65 +67,10 @@ namespace Battle.QSimulation.Projectile
         public static bool IsCollisionFlagSet(Frame f, BattleProjectileQComponent* projectile, BattleProjectileCollisionFlags flag) => projectile->CollisionFlags[f.Number % 2].IsFlagSet(flag);
 
         /// <summary>
-        /// Sets a specific collision flag for the current frame.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="flag">Collision flag to set.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SetCollisionFlag(Frame f, BattleProjectileQComponent* projectile, BattleProjectileCollisionFlags flag)
-        {
-            BattleProjectileCollisionFlags flags = projectile->CollisionFlags[f.Number % 2];
-            projectile->CollisionFlags[f.Number % 2] = flags.SetFlag(flag);
-        }
-
-        /// <summary>
-        /// Sets whether the projectile is currently held.
-        /// </summary>
-        ///
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="isHeld">True/False : held / not held.</param>
-        public static void SetHeld(BattleProjectileQComponent* projectile, bool isHeld)
-        {
-            projectile->IsHeld = isHeld;
-        }
-
-        /// <summary>
-        /// Sets the emotion state of the projectile and triggers the corresponding event.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="emotion">The new emotion state to assign to the projectile.</param>
-        public static void SetEmotion(Frame f, BattleProjectileQComponent* projectile, BattleEmotionState emotion)
-        {
-            if (emotion != BattleEmotionState.Love)
-            {
-                projectile->EmotionBase = emotion;
-            }
-            projectile->EmotionCurrent = emotion;
-            f.Events.BattleChangeEmotionState(projectile->EmotionCurrent);
-        }
-
-        /// <summary>
-        /// Sets the attack value of the projectile and updates its glow strength.
-        /// </summary>
-        ///
-        /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="attack">The new attack value to assign to the projectile.</param>
-        public static void SetAttack(Frame f, BattleProjectileQComponent* projectile, FP attack)
-        {
-            projectile->Attack = attack;
-            f.Events.BattleProjectileChangeGlowStrength(projectile->Attack / projectile->AttackMax);
-        }
-
-        /// <summary>
         /// Gets the projectile's EntityRef.
         /// </summary>
         ///
-        /// Public version of @cref{GetProjectileEntityRef(Frame\, BattleProjectileSystemDataQSingleton*\, bool)}.<br/>
+        /// Public version of @cref{GetProjectileHandle(Frame\, BattleProjectileSystemDataQSingleton*\, bool)}.<br/>
         /// Used outside of @cref{BattleProjectileQSystem}.<br/>
         /// Also used internally when there's no need for a seperate reference to a @cref{Quantum,BattleProjectileSystemDataQSingleton}.
         ///
@@ -133,10 +78,10 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <returns>The EntityRef of the projectile.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static EntityRef GetProjectileEntityRef(Frame f)
+        public static BattleProjectileHandle GetProjectileHandle(Frame f)
         {
             BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
-            return GetProjectileEntityRef(f, projectileSystemData);
+            return GetProjectileHandle(f, projectileSystemData, markInUse: false);
         }
 
         #endregion Public - Helper Methods
@@ -156,50 +101,37 @@ namespace Battle.QSimulation.Projectile
             EntityRef projectileEntityRef                                       = f.Create(spec.ProjectilePrototype);
             BattleEntityManager.CompoundEntityTemplate projectileEntityTemplate = BattleEntityManager.CompoundEntityTemplate.Create(projectileEntityRef);
 
-            // get a pointer to the Transform2D component of the created projectile entity
-            BattleProjectileQComponent* projectile = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
-            Transform2D* projectileTransform       = f.Unsafe.GetPointer<Transform2D>(projectileEntityRef);
-            PhysicsCollider2D* projectileCollider  = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
+            // initialize projectile link
+            BattleProjectileHandle.CreateLink(f, projectileEntityRef, projectileEntityRef);
 
-            //{create projectile trigger entity
+            //{ create projectile trigger entity
 
-            EntityRef projectileTriggerEntityRef = f.Create();
+            PhysicsCollider2D* projectileCollider = f.Unsafe.GetPointer<PhysicsCollider2D>(projectileEntityRef);
 
-            // initialize projectile trigger component
-            BattleProjectileTriggerQComponent projectileTrigger = new();
-            projectileTrigger.ProjectileEntityRef               = projectileEntityRef;
-
-            // initialize projectile trigger collider
-            PhysicsCollider2D projectileTriggerCollider = PhysicsCollider2D.Create(f,
-                shape: Shape2D.CreateCircle(projectileCollider->Shape.Circle.Radius),
-                isTrigger: true
-            );
-
-            // initialize projectile collision trigger component
-            BattleCollisionTriggerQComponent projectileCollisionTrigger = new();
-            projectileCollisionTrigger.Type                             = BattleCollisionTriggerType.Projectile;
-
-            // initialize projectile trigger entity
-            f.Add(projectileTriggerEntityRef, projectileTrigger);
-            f.Add<Transform2D>(projectileTriggerEntityRef);
-            f.Add(projectileTriggerEntityRef, projectileTriggerCollider);
-            f.Add(projectileTriggerEntityRef, projectileCollisionTrigger);
+            EntityRef projectileTriggerEntityRef = CreateProjectileTriggerEntity(f, projectileCollider);
 
             // link trigger
             projectileEntityTemplate.Link(projectileTriggerEntityRef, new FPVector2(0, 0));
+            BattleProjectileHandle.CreateLink(f, projectileEntityRef, projectileTriggerEntityRef);
 
             //} create projectile trigger entity
 
-            // set projectile position and initial values
-            projectileTransform->Position = new FPVector2(0, 0);
-            projectile->Radius            = projectileCollider->Shape.Circle.Radius;
-            projectile->EmotionCurrent    = 0;
-            projectile->EmotionBase       = 0;
-
             BattleEntityID projectileEntityID = BattleEntityManager.RegisterCompound(f, projectileEntityTemplate);
-            GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityID;
 
-            SetHeld(projectile, true);
+            //{ post registration setup
+
+            BattleProjectileHandle projectileHandle = BattleProjectileHandle.Create(f, projectileEntityRef);
+
+            projectileHandle.Data->Radius           = projectileCollider->Shape.Circle.Radius;
+            projectileHandle.Data->EmotionCurrent   = 0;
+            projectileHandle.Data->EmotionBase      = 0;
+
+            projectileHandle.SetHeld(true);
+
+            //} post registration setup
+
+            // save projectile id
+            GetProjectileSystemData(f)->ProjectileEntityID = projectileEntityID;
         }
 
         /// <summary>
@@ -212,35 +144,34 @@ namespace Battle.QSimulation.Projectile
             // get system data
             BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
 
-            // get references
-            EntityRef                   projectileRef     = GetProjectileEntityRef(f, projectileSystemData, updateViewPlayState: true);
-            BattleProjectileQComponent* projectile        = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileRef);
+            // get projectile
+            BattleProjectileHandle projectile = GetProjectileHandle(f, projectileSystemData, markInUse: true);
 
             // retrieve the projectiles spec
             BattleProjectileQSpec spec = BattleQConfig.GetProjectileSpec(f);
 
             // copy settings from the spec
-            projectile->SpeedBase      = spec.ProjectileInitialSpeed;
-            projectile->SpeedMax       = spec.SpeedMax;
-            projectile->SpeedIncrement = spec.SpeedIncrement;
-            projectile->AttackMax      = spec.AttackMax;
+            projectile.Data->SpeedBase      = spec.ProjectileInitialSpeed;
+            projectile.Data->SpeedMax       = spec.SpeedMax;
+            projectile.Data->SpeedIncrement = spec.SpeedIncrement;
+            projectile.Data->AttackMax      = spec.AttackMax;
 
             // set speed and direction
-            projectile->Speed     = projectile->SpeedBase;
-            projectile->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
+            projectile.Data->Speed     = projectile.Data->SpeedBase;
+            projectile.Data->Direction = FPVector2.Rotate(FPVector2.Up, -(FP.Rad_90 + FP.Rad_45));
 
             // set emotion and attack
-            SetEmotion(f, projectile, BattleParameters.GetProjectileInitialEmotion(f));
-            SetAttack(f, projectile, 0);
+            projectile.SetEmotion(f, BattleParameters.GetProjectileInitialEmotion(f));
+            projectile.SetAttack(f, 0);
 
             // reset CollisionFlags for this frame
-            projectile->CollisionFlags[(f.Number) % 2] = 0;
+            projectile.Data->CollisionFlags[(f.Number) % 2] = 0;
 
-            SetHeld(projectile, false);
+            projectile.SetHeld(false);
 
-            BattleEntityManager.TeleportCompound(f, projectileRef, new FPVector2(0, 0), FP._0);
+            BattleEntityManager.TeleportCompound(f, projectile.EntityHandle, new FPVector2(0, 0), FP._0);
 
-            f.Events.BattleProjectileChangeSpeed(projectile->Speed);
+            f.Events.BattleProjectileChangeSpeed(projectile.Data->Speed);
 
             s_debugLogger.Log(f, "Projectile Launched");
         }
@@ -288,23 +219,21 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="projectileEntity">The entity representing the projectile.</param>
         /// <param name="otherEntity">The entity the projectile is intersecting with.</param>
         /// <param name="normal">The collision normal of the intersection.</param>
         /// <param name="collisionMinOffset">Minimum allowed offset to prevent the projectile from going inside the other entity.</param>
-        public static void HandleIntersection(Frame f, BattleProjectileQComponent* projectile, EntityRef projectileEntity, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
+        public static void HandleIntersection(Frame f, BattleProjectileHandle projectile, EntityRef otherEntity, FPVector2 normal, FP collisionMinOffset)
         {
-            Transform2D* projectileTransform = f.Unsafe.GetPointer<Transform2D>(projectileEntity);
             Transform2D* otherTransform = f.Unsafe.GetPointer<Transform2D>(otherEntity);
 
             // calculate how far off from other entity's position is the projectile supposed to hit it's surface
-            FPVector2 offsetVector = projectileTransform->Position - otherTransform->Position;
+            FPVector2 offsetVector = projectile.TransformCopy.Position - otherTransform->Position;
             FP collisionOffset = FPVector2.Rotate(offsetVector, -FPVector2.RadiansSigned(FPVector2.Up, normal)).Y;
 
             // if projectile accidentally went inside another entity, lift it out
-            if (collisionOffset - projectile->Radius < collisionMinOffset)
+            if (collisionOffset - projectile.Data->Radius < collisionMinOffset)
             {
-                projectileTransform->Position += normal * (collisionMinOffset - collisionOffset + projectile->Radius);
+                projectile.TransformPtr->Position += normal * (collisionMinOffset - collisionOffset + projectile.Data->Radius);
             }
         }
 
@@ -333,20 +262,18 @@ namespace Battle.QSimulation.Projectile
         /// <param name="filter">Reference to <a href="https://doc.photonengine.com/quantum/current/manual/quantum-ecs/systems">Quantum Filter@u-exlink</a>.</param>
         public override void Update(Frame f, ref Filter filter)
         {
-            // unpack filter
-            BattleProjectileQComponent* projectile = filter.Projectile;
-            Transform2D* transform = filter.Transform;
-            projectile->Position = transform->Position;
+            BattleProjectileHandle projectileHandle = BattleProjectileHandle.Create(f, filter);
+            projectileHandle.Data->Position = projectileHandle.TransformCopy.Position;
 
-            if (!projectile->IsHeld)
+            if (!projectileHandle.Data->IsHeld)
             {
                 // move the projectile
-                FPVector2 newPosition = transform->Position + projectile->Direction * (projectile->Speed * f.DeltaTime);
-                BattleEntityManager.MoveCompound(f, GetProjectileEntityRef(f), newPosition, FP._0);
+                FPVector2 newPosition = projectileHandle.TransformCopy.Position + projectileHandle.Data->Direction * (projectileHandle.Data->Speed * f.DeltaTime);
+                BattleEntityManager.MoveCompound(f, GetProjectileHandle(f).EntityHandle, newPosition, FP._0);
             }
 
             // reset CollisionFlags for next frame
-            projectile->CollisionFlags[(f.Number + 1) % 2 ] = 0;
+            projectileHandle.Data->CollisionFlags[(f.Number + 1) % 2 ] = 0;
         }
 
         /// <summary>
@@ -357,16 +284,11 @@ namespace Battle.QSimulation.Projectile
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileCollisionData">Collision data related to the projectile.</param>
-        /// <param name="data">Collision data related to the other entity.</param>
+        /// <param name="component">Collision data related to the other entity.</param>
         /// <param name="collisionTriggerType">The collision type of the collision, informing what the projectile has hit.</param>
-        public static void OnProjectileCollision(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, void* data, BattleCollisionTriggerType collisionTriggerType)
+        public static void OnProjectileCollision(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, void* component, BattleCollisionTriggerType collisionTriggerType)
         {
-            if (projectileCollisionData->Projectile->IsHeld) return;
-
-            // unpack projectileCollisionData
-            BattleProjectileQComponent* projectile       = projectileCollisionData->Projectile;
-            EntityRef                   projectileEntity = projectileCollisionData->ProjectileEntityRef;
-            EntityRef                   otherEntity      = projectileCollisionData->OtherEntityRef;
+            if (projectileCollisionData->Projectile.Data->IsHeld) return;
 
             // set default values
             BattlePlayerCollisionType collisionType      = BattlePlayerCollisionType.Reflect;
@@ -379,7 +301,7 @@ namespace Battle.QSimulation.Projectile
             switch (collisionTriggerType)
             {
                 case BattleCollisionTriggerType.ArenaBorder:
-                    BattleArenaBorderQComponent* arenaBorder = ((BattleCollisionQSystem.ArenaBorderCollisionData*)data)->ArenaBorder;
+                    BattleArenaBorderQComponent* arenaBorder = (BattleArenaBorderQComponent*)component;
 
                     normal             = arenaBorder->Normal;
                     collisionMinOffset = arenaBorder->CollisionMinOffset;
@@ -387,7 +309,7 @@ namespace Battle.QSimulation.Projectile
                     break;
 
                 case BattleCollisionTriggerType.SoulWall:
-                    BattleSoulWallQComponent* soulWall = ((BattleCollisionQSystem.SoulWallCollisionData*)data)->SoulWall;
+                    BattleSoulWallQComponent* soulWall = (BattleSoulWallQComponent*)component;
 
                     // disabled for testing
                     /*if (projectile->EmotionCurrent == BattleEmotionState.Love)
@@ -396,7 +318,7 @@ namespace Battle.QSimulation.Projectile
                     }*/
 
                     // enabled for testing
-                    SetEmotion(f, projectile, soulWall->Emotion);
+                    projectileCollisionData->Projectile.SetEmotion(f, soulWall->Emotion);
 
                     normal             = soulWall->Normal;
                     collisionMinOffset = soulWall->CollisionMinOffset;
@@ -405,12 +327,11 @@ namespace Battle.QSimulation.Projectile
                     break;
 
                 case BattleCollisionTriggerType.Shield:
-                    BattleCollisionQSystem.PlayerShieldCollisionData* dataPtr = (BattleCollisionQSystem.PlayerShieldCollisionData*)data;
-                    BattlePlayerHitboxQComponent* playerShieldHitbox = dataPtr->PlayerShieldHitbox;
+                    BattlePlayerHitboxQComponent* playerShieldHitbox = (BattlePlayerHitboxQComponent*)component;
 
-                    if (FPVector2.Dot(playerShieldHitbox->CalculateNormal(f), projectile->Direction.Normalized) >= 0) break;
+                    if (FPVector2.Dot(playerShieldHitbox->CalculateNormal(f), projectileCollisionData->Projectile.Data->Direction.Normalized) >= 0) break;
 
-                    if (!ProjectileHitPlayerShield(f, projectile, dataPtr, out normal)) break;
+                    if (!ProjectileHitPlayerShield(f, projectileCollisionData, out normal)) break;
 
                     collisionType      = playerShieldHitbox->CollisionType;
                     collisionMinOffset = playerShieldHitbox->CollisionMinOffset;
@@ -420,11 +341,11 @@ namespace Battle.QSimulation.Projectile
                     break;
 
                 case BattleCollisionTriggerType.Player:
-                    BattlePlayerHitboxQComponent* playerCharacterHitbox = ((BattleCollisionQSystem.PlayerCharacterCollisionData*)data)->PlayerCharacterHitbox;
+                    BattlePlayerHitboxQComponent* playerCharacterHitbox = (BattlePlayerHitboxQComponent*)component;
 
-                    if (projectile->EmotionCurrent == BattleEmotionState.Love) break;
+                    if (projectileCollisionData->Projectile.Data->EmotionCurrent == BattleEmotionState.Love) break;
 
-                    if (FPVector2.Dot(playerCharacterHitbox->CalculateNormal(f), projectile->Direction.Normalized) >= 0) break;
+                    if (FPVector2.Dot(playerCharacterHitbox->CalculateNormal(f), projectileCollisionData->Projectile.Data->Direction.Normalized) >= 0) break;
 
                     normal             = playerCharacterHitbox->CalculateNormal(f);
                     collisionType      = playerCharacterHitbox->CollisionType;
@@ -441,14 +362,14 @@ namespace Battle.QSimulation.Projectile
             if (handleCollision)
             {
                 FPVector2 direction;
-                if (collisionType == BattlePlayerCollisionType.Reflect) direction = FPVector2.Reflect(projectile->Direction, normal).Normalized;
+                if (collisionType == BattlePlayerCollisionType.Reflect) direction = FPVector2.Reflect(projectileCollisionData->Projectile.Data->Direction, normal).Normalized;
                 else                                                    direction = normal;
 
-                HandleIntersection(f, projectile, projectileEntity, otherEntity, normal, collisionMinOffset);
-                UpdateVelocity(f, projectile, direction, speedChange);
+                HandleIntersection(f, projectileCollisionData->Projectile, projectileCollisionData->OtherEntityRef, normal, collisionMinOffset);
+                UpdateVelocity(f, projectileCollisionData->Projectile.Data, direction, speedChange);
             }
 
-            SetCollisionFlag(f, projectile, BattleProjectileCollisionFlags.Projectile);
+            projectileCollisionData->Projectile.SetCollisionFlag(f, BattleProjectileCollisionFlags.Projectile);
         }
 
         /// <summary>
@@ -465,10 +386,9 @@ namespace Battle.QSimulation.Projectile
         {
             BattleProjectileSystemDataQSingleton* projectileSystemData = GetProjectileSystemData(f);
 
-            EntityRef                   projectileEntityRef = GetProjectileEntityRef(f, projectileSystemData);
-            BattleProjectileQComponent* projectile          = f.Unsafe.GetPointer<BattleProjectileQComponent>(projectileEntityRef);
+            BattleProjectileHandle projectile = GetProjectileHandle(f, projectileSystemData, markInUse: false);
 
-            SetHeld(projectile, true);
+            projectile.SetHeld(true);
             BattleEntityManager.Return(f, projectileSystemData->ProjectileEntityID);
         }
 
@@ -503,18 +423,44 @@ namespace Battle.QSimulation.Projectile
         /// Gets the projectile's EntityRef.
         /// </summary>
         ///
-        /// Internal version of @cref{GetProjectileEntityRef(Frame)}.<br/>
+        /// Internal version of @cref{GetProjectileHandle(Frame)}.<br/>
         /// Used when there's already a reference to <paramref name="projectileSystemData"/>.
         ///
         /// <param name="f">Current simulation frame.</param>
         /// <param name="projectileSystemData">Pointer to the projectile system data singleton.</param>
-        /// <param name="updateViewPlayState">Whether to update the ViewPlayState.</param>
+        /// <param name="markInUse">Whether to mark the projectile as in use.</param>
         ///
         /// <returns>The EntityRef of the projectile.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static EntityRef GetProjectileEntityRef(Frame f, BattleProjectileSystemDataQSingleton* projectileSystemData, bool updateViewPlayState = false)
+        private static BattleProjectileHandle GetProjectileHandle(Frame f, BattleProjectileSystemDataQSingleton* projectileSystemData, bool markInUse)
         {
-            return BattleEntityManager.Get(f, projectileSystemData->ProjectileEntityID, updateViewPlayState);
+            BattleEntityID entityId = projectileSystemData->ProjectileEntityID;
+
+            if (markInUse) BattleEntityManager.Use(f, entityId);
+
+            return BattleProjectileHandle.Create(f, BattleEntityManager.Get(f, entityId));
+        }
+
+        private static EntityRef CreateProjectileTriggerEntity(Frame f, PhysicsCollider2D* projectileCollider)
+        {
+            EntityRef projectileTriggerEntityRef = f.Create();
+
+            // initialize projectile trigger collider
+            PhysicsCollider2D projectileTriggerCollider = PhysicsCollider2D.Create(f,
+                shape: Shape2D.CreateCircle(projectileCollider->Shape.Circle.Radius),
+                isTrigger: true
+            );
+
+            // initialize projectile collision trigger component
+            BattleCollisionTriggerQComponent projectileCollisionTrigger = new();
+            projectileCollisionTrigger.Type = BattleCollisionTriggerType.Projectile;
+
+            // initialize projectile trigger entity
+            f.Add<Transform2D>(projectileTriggerEntityRef);
+            f.Add(projectileTriggerEntityRef, projectileTriggerCollider);
+            f.Add(projectileTriggerEntityRef, projectileCollisionTrigger);
+
+            return projectileTriggerEntityRef;
         }
 
         /// <summary>
@@ -523,54 +469,48 @@ namespace Battle.QSimulation.Projectile
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="projectile">Pointer to the projectile component.</param>
-        /// <param name="shieldCollisionData">Collision data related to the shield.</param>
+        /// <param name="projectileCollisionData">Projectile's collision data.</param>
         /// <param name="normal">The direction in which the projectile should be sent.</param>
-        private static bool ProjectileHitPlayerShield(Frame f, BattleProjectileQComponent* projectile, BattleCollisionQSystem.PlayerShieldCollisionData* shieldCollisionData, out FPVector2 normal)
+        private static bool ProjectileHitPlayerShield(Frame f, BattleCollisionQSystem.ProjectileCollisionData* projectileCollisionData, out FPVector2 normal)
         {
+            BattlePlayerHandle       playerHandle = BattlePlayerHandle.Create(f, projectileCollisionData->OtherEntityRef);
+            BattlePlayerShieldHandle shieldHandle = BattlePlayerShieldHandle.Create(f, projectileCollisionData->OtherEntityRef);
+
             normal = FPVector2.Zero;
 
-            BattlePlayerShieldDataQComponent* playerShieldData = f.Unsafe.GetPointer<BattlePlayerShieldDataQComponent>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
+            if (projectileCollisionData->Projectile.Data->EmotionCurrent == BattleEmotionState.Love) return false;
 
-            if (projectile->EmotionCurrent == BattleEmotionState.Love) return false;
-
-            BattlePlayerDataQComponent* playerData = playerShieldData->PlayerEntityRef.GetDataQComponent(f);
-
-            BattlePlayerManager.PlayerHandle teammateHandle = BattlePlayerManager.PlayerHandle.GetTeammateHandle(f, playerData->Slot);
+            BattlePlayerData.Ref teammateData = BattlePlayerManager.GetPlayerData(f, BattlePlayerManager.GetTeammateSlot(playerHandle.PlayerData.Slot));
 
             if (!BattleParameters.GetIsTestFlipperGame(f))
             {
                 bool isOnTopOfTeammate = false;
 
-                if (teammateHandle.PlayState.IsInPlay())
+                if (teammateData.PlayState.IsInPlay())
                 {
-                    EntityRef teammateEntity = teammateHandle.GetSelectedCharacterEntityRef(f);
+                    BattlePlayerHandle teammateHandle = BattlePlayerHandle.Create(f, BattlePlayerManager.GetTeammateSlot(playerHandle.PlayerData.Slot));
 
-                    Transform2D* playerTransform = f.Unsafe.GetPointer<Transform2D>(shieldCollisionData->PlayerShieldHitbox->ParentEntityRef);
-                    Transform2D* teammateTransform = f.Unsafe.GetPointer<Transform2D>(teammateEntity);
-
-                    BattleGridPosition playerGridPosition = BattleGridManager.WorldPositionToGridPosition(playerTransform->Position);
-                    BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateTransform->Position);
+                    BattleGridPosition playerGridPosition = BattleGridManager.WorldPositionToGridPosition(playerHandle.LoadedCharacterTransformCopy.Position);
+                    BattleGridPosition teammateGridPosition = BattleGridManager.WorldPositionToGridPosition(teammateHandle.LoadedCharacterTransformCopy.Position);
 
                     isOnTopOfTeammate = playerGridPosition.Row == teammateGridPosition.Row && playerGridPosition.Col == teammateGridPosition.Col;
-
                 }
 
                 // if player is in the same grid cell as teammate, change the projectile to love emotion
                 if (isOnTopOfTeammate)
                 {
                     s_debugLogger.Log(f, "changing projectile emotion to Love");
-                    SetEmotion(f, projectile, BattleEmotionState.Love);
-                    shieldCollisionData->IsLoveProjectileCollision = true;
+                    projectileCollisionData->Projectile.SetEmotion(f, BattleEmotionState.Love);
+                    projectileCollisionData->IsLoveProjectileCollision = true;
 
-                    normal = playerData->TeamNumber == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down;
+                    normal = playerHandle.PlayerData.Team == BattleTeamNumber.TeamAlpha ? FPVector2.Up : FPVector2.Down;
                     return true;
                 }
             }
 
-            if (shieldCollisionData->PlayerShieldHitbox->CollisionType == BattlePlayerCollisionType.None) return false;
+            if (shieldHandle.CollidedHitboxComponent->CollisionType == BattlePlayerCollisionType.None) return false;
 
-            normal = shieldCollisionData->PlayerShieldHitbox->CalculateNormal(f);
+            normal = shieldHandle.CollidedHitboxComponent->CalculateNormal(f);
             return true;
         }
 

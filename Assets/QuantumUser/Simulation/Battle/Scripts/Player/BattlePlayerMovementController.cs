@@ -50,11 +50,9 @@ namespace Battle.QSimulation.Player
         /// Always: updates player's position and rotation based on the current TargetPosition and RotationOffset.<br/>
         ///
         /// <param name="f">Current %Quantum %Frame.</param>
-        /// <param name="playerData">Pointer to player's BattlePlayerDataQComponent.</param>
-        /// <param name="playerEntityRef">Reference to player entity.</param>
-        /// <param name="transform">Pointer to player's transform component.</param>
+        /// <param name="playerHandle">Handle of the player whose movement is being updated.</param>
         /// <param name="input">Pointer to player's Quantum Input.</param>
-        public static void UpdateMovement(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, Transform2D* transform, Input* input)
+        public static void UpdateMovement(Frame f, BattlePlayerHandle playerHandle, Input* input)
         {
             // get spec
             BattlePlayerQSpec spec = BattleQConfig.GetPlayerSpec(f);
@@ -64,12 +62,12 @@ namespace Battle.QSimulation.Player
 
             bool cancelMovement = false;
 
-            if (!playerData->RotationEnabled)
+            if (!playerHandle.LoadedCharacterData->StateRotationEnabled)
             {
                 rotationInput = false;
             }
 
-            if (playerData->MovementEnabled)
+            if (playerHandle.LoadedCharacterData->StateMovementEnabled)
             {
                 if (rotationInput)
                 {
@@ -82,7 +80,7 @@ namespace Battle.QSimulation.Player
                 cancelMovement = true;
             }
 
-            FPVector2 positionNext = transform->Position;
+            FPVector2 positionNext = playerHandle.LoadedCharacterTransformCopy.Position;
 
             //{ handle movement
 
@@ -93,38 +91,38 @@ namespace Battle.QSimulation.Player
                     break;
 
                 case BattleMovementInputType.PositionTarget:
-                    ClampGridPosition(playerData, input->MovementGridPosition, out playerData->TargetPosition);
-                    playerData->HasTargetPosition = true;
-                    playerData->ViewPosition = playerData->TargetPosition;
+                    ClampGridPosition(playerHandle, input->MovementGridPosition, out playerHandle.LoadedCharacterData->MovementTargetPosition);
+                    playerHandle.LoadedCharacterData->MovementHasTargetPosition = true;
+                    playerHandle.LoadedCharacterData->ViewPosition = playerHandle.LoadedCharacterData->MovementTargetPosition;
                     break;
 
                 case BattleMovementInputType.PositionMove:
-                    positionNext = FPVector2.MoveTowards(transform->Position, input->MovementVector, playerData->Stats.Speed * f.DeltaTime);
-                    if (ClampAndSnapWorldPosition(playerData, positionNext, out FPVector2 clampedNext))
+                    positionNext = FPVector2.MoveTowards(playerHandle.LoadedCharacterTransformCopy.Position, input->MovementVector, playerHandle.LoadedCharacterData->Stats.Speed * f.DeltaTime);
+                    if (ClampAndSnapWorldPosition(playerHandle, positionNext, out FPVector2 clampedNext))
                     {
                         positionNext = clampedNext;
                     }
-                    playerData->ViewPosition = positionNext;
+                    playerHandle.LoadedCharacterData->ViewPosition = positionNext;
                     break;
 
                 case BattleMovementInputType.Direction:
-                    FPVector2 movementDirection = input->MovementVector * (input->MovementDirectionIsNormalized ? playerData->Stats.Speed : FP._1);
-                    positionNext = transform->Position + FPVector2.ClampMagnitude(movementDirection, playerData->Stats.Speed) * f.DeltaTime;
-                    if (ClampAndSnapWorldPosition(playerData, positionNext, out FPVector2 clampedPosition))
+                    FPVector2 movementDirection = input->MovementVector * (input->MovementDirectionIsNormalized ? playerHandle.LoadedCharacterData->Stats.Speed : FP._1);
+                    positionNext = playerHandle.LoadedCharacterTransformCopy.Position + FPVector2.ClampMagnitude(movementDirection, playerHandle.LoadedCharacterData->Stats.Speed) * f.DeltaTime;
+                    if (ClampAndSnapWorldPosition(playerHandle, positionNext, out FPVector2 clampedPosition))
                     {
                         positionNext = clampedPosition;
                     }
-                    playerData->ViewPosition = positionNext;
+                    playerHandle.LoadedCharacterData->ViewPosition = positionNext;
                     break;
             }
 
             // handle target position based movement
-            if (playerData->HasTargetPosition)
+            if (playerHandle.LoadedCharacterData->MovementHasTargetPosition)
             {
-                positionNext = FPVector2.MoveTowards(transform->Position, playerData->TargetPosition, playerData->Stats.Speed * f.DeltaTime);
-                if (positionNext == playerData->TargetPosition)
+                positionNext = FPVector2.MoveTowards(playerHandle.LoadedCharacterTransformCopy.Position, playerHandle.LoadedCharacterData->MovementTargetPosition, playerHandle.LoadedCharacterData->Stats.Speed * f.DeltaTime);
+                if (positionNext == playerHandle.LoadedCharacterData->MovementTargetPosition)
                 {
-                    playerData->HasTargetPosition = false;
+                    playerHandle.LoadedCharacterData->MovementHasTargetPosition = false;
                     cancelMovement = true;
                 }
             }
@@ -132,9 +130,9 @@ namespace Battle.QSimulation.Player
             // cancel movement if needed
             if (cancelMovement)
             {
-                ClampAndSnapWorldPosition(playerData, transform->Position, out positionNext);
-                playerData->TargetPosition = positionNext;
-                playerData->ViewPosition   = positionNext;
+                ClampAndSnapWorldPosition(playerHandle, playerHandle.LoadedCharacterTransformCopy.Position, out positionNext);
+                playerHandle.LoadedCharacterData->MovementTargetPosition = positionNext;
+                playerHandle.LoadedCharacterData->ViewPosition   = positionNext;
             }
 
             //} handle movement
@@ -150,45 +148,45 @@ namespace Battle.QSimulation.Player
                 maxAngle = FPMath.Clamp(maxAngle, -maxAllowedAngle, maxAllowedAngle);
 
                 // rotates to left
-                if (maxAngle > playerData->RotationOffsetRad)
+                if (maxAngle > playerHandle.LoadedCharacterData->MovementRotationOffsetRad)
                 {
-                    playerData->RotationOffsetRad += spec.RotationSpeed * f.DeltaTime;
-                    if (playerData->RotationOffsetRad > maxAngle)
+                    playerHandle.LoadedCharacterData->MovementRotationOffsetRad += spec.RotationSpeed * f.DeltaTime;
+                    if (playerHandle.LoadedCharacterData->MovementRotationOffsetRad > maxAngle)
                     {
-                        playerData->RotationOffsetRad = maxAngle;
+                        playerHandle.LoadedCharacterData->MovementRotationOffsetRad = maxAngle;
                     }
-                    s_debugLogger.LogFormat(f, "Leaning left(rotation: {0}", playerData->RotationOffsetRad);
+                    s_debugLogger.LogFormat(f, "Leaning left(rotation: {0}", playerHandle.LoadedCharacterData->MovementRotationOffsetRad);
                 }
 
                 // rotates to right
-                else if (maxAngle < playerData->RotationOffsetRad)
+                else if (maxAngle < playerHandle.LoadedCharacterData->MovementRotationOffsetRad)
                 {
-                    playerData->RotationOffsetRad -= spec.RotationSpeed * f.DeltaTime;
-                    if (playerData->RotationOffsetRad < maxAngle)
+                    playerHandle.LoadedCharacterData->MovementRotationOffsetRad -= spec.RotationSpeed * f.DeltaTime;
+                    if (playerHandle.LoadedCharacterData->MovementRotationOffsetRad < maxAngle)
                     {
-                        playerData->RotationOffsetRad = maxAngle;
+                        playerHandle.LoadedCharacterData->MovementRotationOffsetRad = maxAngle;
                     }
-                    s_debugLogger.LogFormat(f, "Leaning right(rotation: {0}", playerData->RotationOffsetRad);
+                    s_debugLogger.LogFormat(f, "Leaning right(rotation: {0}", playerHandle.LoadedCharacterData->MovementRotationOffsetRad);
                 }
             }
 
             // returns player to 0 rotation when RotateMotion-input ends
-            if (!rotationInput && playerData->RotationOffsetRad != 0 && !BattleParameters.GetIsTestFlipperGame(f))
+            if (!rotationInput && playerHandle.LoadedCharacterData->MovementRotationOffsetRad != 0 && !BattleParameters.GetIsTestFlipperGame(f))
             {
-                if (playerData->RotationOffsetRad > 0)
+                if (playerHandle.LoadedCharacterData->MovementRotationOffsetRad > 0)
                 {
-                    playerData->RotationOffsetRad -= spec.RotationSpeed * f.DeltaTime;
-                    if (playerData->RotationOffsetRad < 0)
+                    playerHandle.LoadedCharacterData->MovementRotationOffsetRad -= spec.RotationSpeed * f.DeltaTime;
+                    if (playerHandle.LoadedCharacterData->MovementRotationOffsetRad < 0)
                     {
-                        playerData->RotationOffsetRad = 0;
+                        playerHandle.LoadedCharacterData->MovementRotationOffsetRad = 0;
                     }
                 }
                 else
                 {
-                    playerData->RotationOffsetRad += spec.RotationSpeed * f.DeltaTime;
-                    if (playerData->RotationOffsetRad > 0)
+                    playerHandle.LoadedCharacterData->MovementRotationOffsetRad += spec.RotationSpeed * f.DeltaTime;
+                    if (playerHandle.LoadedCharacterData->MovementRotationOffsetRad > 0)
                     {
-                        playerData->RotationOffsetRad = 0;
+                        playerHandle.LoadedCharacterData->MovementRotationOffsetRad = 0;
                     }
                 }
             }
@@ -196,40 +194,65 @@ namespace Battle.QSimulation.Player
             //} handle rotation
 
             // update position and rotation
-            Move(f, playerData, playerEntityRef, transform, positionNext);
+            Move(f, playerHandle, positionNext);
         }
 
         /// <summary>
-        /// Moves and rotates the player to the specified position and angle.
+        /// Moves the player character to the specified position.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerData">Pointer to the player's data component.</param>
-        /// <param name="playerEntityRef">Reference to player entity.</param>
-        /// <param name="playerTransform">Pointer to the player's transform2D component.</param>
+        /// <param name="playerHandle">Handle for the player character to be moved.</param>
         /// <param name="position">World position to move to.</param>
-        public static void Move(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, Transform2D* playerTransform, FPVector2 position)
+        public static void Move(Frame f, BattlePlayerHandle playerHandle, FPVector2 position)
         {
-            playerData->ViewMovementVector = position - playerTransform->Position;
-            BattleEntityManager.MoveCompound(f, playerEntityRef, position, playerData->RotationBaseRad);
-            if (playerData->AttachedShield.ERef == EntityRef.None) return;
-            BattleEntityManager.MoveCompound(f, playerData->AttachedShield, position, playerData->RotationBaseRad + playerData->RotationOffsetRad);
+            playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerMovementController), errorContext: "Can not move player");
+
+            playerHandle.LoadedCharacterData->ViewMovementVector = position - playerHandle.LoadedCharacterTransformCopy.Position;
+            BattleEntityManager.MoveCompound(f,
+                playerHandle.LoadedCharacterEntityHandle,
+                position,
+                playerHandle.LoadedCharacterData->MovementRotationBaseRad
+            );
+
+            if (playerHandle.LoadedCharacterData->AttachedShieldEntityRef == EntityRef.None) return;
+
+            FP shieldRotation = playerHandle.LoadedCharacterData->MovementRotationBaseRad +
+                                playerHandle.LoadedCharacterData->MovementRotationOffsetRad;
+            BattleEntityManager.MoveCompound(f,
+                BattleManagedEntityHandle.Create(f, playerHandle.LoadedCharacterData->AttachedShieldEntityRef),
+                position,
+                playerHandle.LoadedCharacterData->MovementRotationBaseRad + playerHandle.LoadedCharacterData->MovementRotationOffsetRad
+            );
         }
 
         /// <summary>
-        /// Instantly moves and rotates the player to the specified position and rotation.
+        /// Instantly moves the player character to the specified position.
         /// </summary>
         ///
         /// <param name="f">Current simulation frame.</param>
-        /// <param name="playerData">Pointer to the player's data component.</param>
-        /// <param name="playerEntityRef">Reference to player entity.</param>
+        /// <param name="playerHandle">Handle for the player character to be teleported.</param>
         /// <param name="position">New world position.</param>
-        public static void Teleport(Frame f, BattlePlayerDataQComponent* playerData, BattlePlayerEntityRef playerEntityRef, FPVector2 position)
+        public static void Teleport(Frame f, BattlePlayerHandle playerHandle, FPVector2 position)
         {
-            playerData->ViewMovementVector = FPVector2.Zero;
-            BattleEntityManager.TeleportCompound(f, playerEntityRef, position, playerData->RotationBaseRad);
-            if (playerData->AttachedShield.ERef == EntityRef.None) return;
-            BattleEntityManager.TeleportCompound(f, playerData->AttachedShield, position, playerData->RotationBaseRad + playerData->RotationOffsetRad);
+            playerHandle.DevAssertPlayerHandleHasCharacterLoaded(nameof(BattlePlayerMovementController), errorContext: "Can not teleport player");
+
+            playerHandle.LoadedCharacterData->ViewMovementVector = FPVector2.Zero;
+            BattleEntityManager.TeleportCompound(f,
+                playerHandle.LoadedCharacterEntityHandle,
+                position,
+                playerHandle.LoadedCharacterData->MovementRotationBaseRad
+            );
+
+            if (!playerHandle.LoadedCharacterHasShieldAttached) return;
+
+            FP shieldRotation = playerHandle.LoadedCharacterData->MovementRotationBaseRad +
+                                playerHandle.LoadedCharacterData->MovementRotationOffsetRad;
+            BattleEntityManager.TeleportCompound(f,
+                BattleManagedEntityHandle.Create(f, playerHandle.LoadedCharacterData->AttachedShieldEntityRef),
+                position,
+                shieldRotation
+            );
         }
 
         /// <summary>This classes BattleDebugLogger instance.</summary>
@@ -240,12 +263,12 @@ namespace Battle.QSimulation.Player
         /// Also transforms the grid position to a world position.
         /// </summary>
         ///
-        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="playerHandle">Handle of the player character being clamped.</param>
         /// <param name="gridPosition">The grid position of the player.</param>
         /// <param name="clampedPosition">The resulting clamped world position of the player.</param>
         ///
         /// <returns>True if the grid position changed from clamping, false if it remained the same.</returns>
-        private static bool ClampGridPosition(BattlePlayerDataQComponent* playerData, BattleGridPosition gridPosition, out FPVector2 clampedPosition)
+        private static bool ClampGridPosition(BattlePlayerHandle playerHandle, BattleGridPosition gridPosition, out FPVector2 clampedPosition)
         {
             BattleGridPosition clampedGridPosition;
 
@@ -253,12 +276,12 @@ namespace Battle.QSimulation.Player
             clampedGridPosition.Col = Mathf.Clamp(gridPosition.Col, 0, BattleGridManager.Columns - 1);
 
             // clamp the TargetPosition inside teams playfield for alphateam
-            if (playerData->TeamNumber == BattleTeamNumber.TeamAlpha)
+            if (playerHandle.PlayerData.Team == BattleTeamNumber.TeamAlpha)
             {
                 clampedGridPosition.Row = Mathf.Clamp(
                     gridPosition.Row,
-                    BattleGridManager.TeamAlphaFieldStart + playerData->GridExtendBottom,
-                    BattleGridManager.TeamAlphaFieldEnd - playerData->GridExtendTop
+                    BattleGridManager.TeamAlphaFieldStart + playerHandle.LoadedCharacterData->AttributeGridExtendBottom,
+                    BattleGridManager.TeamAlphaFieldEnd - playerHandle.LoadedCharacterData->AttributeGridExtendTop
                 );
             }
 
@@ -267,8 +290,8 @@ namespace Battle.QSimulation.Player
             {
                 clampedGridPosition.Row = Mathf.Clamp(
                     gridPosition.Row,
-                    BattleGridManager.TeamBetaFieldStart + playerData->GridExtendBottom,
-                    BattleGridManager.TeamBetaFieldEnd - playerData->GridExtendTop
+                    BattleGridManager.TeamBetaFieldStart + playerHandle.LoadedCharacterData->AttributeGridExtendBottom,
+                    BattleGridManager.TeamBetaFieldEnd - playerHandle.LoadedCharacterData->AttributeGridExtendTop
                 );
             }
 
@@ -281,16 +304,16 @@ namespace Battle.QSimulation.Player
         /// Snaps the world position of the player to the closest grid position and clamps it to the playfield of their team.
         /// </summary>
         ///
-        /// <param name="playerData">Pointer to the player's data component.</param>
+        /// <param name="playerHandle">Handle of the player character being clamped.</param>
         /// <param name="position">The world position of the player.</param>
         /// <param name="clampedPosition">The resulting clamped and snapped world position of the player.</param>
         ///
         /// <returns>True if the grid position changed from clamping, false if it remained the same.</returns>
-        private static bool ClampAndSnapWorldPosition(BattlePlayerDataQComponent* playerData, FPVector2 position, out FPVector2 clampedPosition)
+        private static bool ClampAndSnapWorldPosition(BattlePlayerHandle playerHandle, FPVector2 position, out FPVector2 clampedPosition)
         {
             BattleGridPosition gridPosition = BattleGridManager.WorldPositionToGridPosition(position);
 
-            return ClampGridPosition(playerData, gridPosition, out clampedPosition);
+            return ClampGridPosition(playerHandle, gridPosition, out clampedPosition);
         }
     }
 }
