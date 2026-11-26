@@ -66,7 +66,7 @@ namespace MenuUI.Scripts.SoulHome
         private bool _hasInteractionSlot = false;
         private Vector2Int _interactionOffset = new Vector2Int(0, 1);
 
-        [SerializeField] private InteractionStyle _intStyle = InteractionStyle.Avatar;
+        [SerializeField] private InteractionStyle _interactionStyle = InteractionStyle.Avatar;
         [SerializeField] private InteractionPattern _pattern = InteractionPattern.FrontRow;
         private bool _interactInProgress = false;
         private SoulHomeAvatarController _interactCharacter = null;
@@ -447,7 +447,7 @@ namespace MenuUI.Scripts.SoulHome
         //Get closest interaction slot for npc to path to
         public FurnitureSlot GetClosestInteractionSlot(Vector3 npcPosition)
         {
-            if (_intStyle is InteractionStyle.Click || AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
+            if (_interactionStyle is InteractionStyle.Click || AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
                 return null;
 
             FurnitureSlot closest = null;
@@ -480,7 +480,7 @@ namespace MenuUI.Scripts.SoulHome
         public void StartInteract(SoulHomeAvatarController controller)
         {
             if (_interactCharacter != controller) return;
-            if(_intStyle is InteractionStyle.Avatar)
+            if(_interactionStyle is InteractionStyle.Avatar)
             StartCoroutine(InteractRoutine(controller));
         }
 

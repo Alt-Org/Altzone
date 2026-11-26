@@ -2,6 +2,7 @@
 using MenuUI.Scripts.SoulHome;
 using UnityEditor;
 using UnityEngine;
+using static MenuUI.Scripts.SoulHome.FurnitureHandling;
 
 [CustomEditor(typeof(FurnitureHandling))]
 public class FurnitureHandlingEditor : Editor
@@ -22,7 +23,7 @@ public class FurnitureHandlingEditor : Editor
 
     private SerializedProperty _hasInteractionSlot;
 
-    private SerializedProperty _intStyle;
+    private SerializedProperty _interactionStyle;
     private SerializedProperty _pattern;
 
     private SerializedProperty widthProp;
@@ -42,7 +43,7 @@ public class FurnitureHandlingEditor : Editor
         _trayFurnitureObject = serializedObject.FindProperty("_trayFurnitureObject");
         cullCheckAmount = serializedObject.FindProperty("cullCheckAmount");
         _hasInteractionSlot = serializedObject.FindProperty("_hasInteractionSlot");
-        _intStyle = serializedObject.FindProperty("_intStyle");
+        _interactionStyle = serializedObject.FindProperty("_interactionStyle");
         _pattern = serializedObject.FindProperty("_pattern");
         widthProp = serializedObject.FindProperty("_width");
         heightProp = serializedObject.FindProperty("_height");
@@ -83,11 +84,17 @@ public class FurnitureHandlingEditor : Editor
 
     private void DrawInteractSection()
     {
-        if (_script.Furniture.Place is not (FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.FloorNonblock)) return;
+        if (_script.Furniture.Place is not (FurniturePlacement.Floor or FurniturePlacement.FloorByWall or FurniturePlacement.FloorNonblock)) 
+        {
+            EditorGUILayout.HelpBox($"Only Floor Furniture can have interactions.", MessageType.Info);
+            return;
+        }
         EditorGUILayout.Space();
         EditorGUILayout.PropertyField(_hasInteractionSlot);
+        if (!_hasInteractionSlot.boolValue) return;
         EditorGUILayout.Space();
-        EditorGUILayout.PropertyField(_intStyle);
+        EditorGUILayout.PropertyField(_interactionStyle);
+        if(_interactionStyle.enumValueIndex == (int)InteractionStyle.Click) return;
         EditorGUILayout.PropertyField(_pattern);
         EditorGUILayout.Space();
         EditorGUI.BeginDisabledGroup(true);
