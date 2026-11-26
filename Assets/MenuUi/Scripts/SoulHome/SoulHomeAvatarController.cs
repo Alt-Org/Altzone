@@ -60,7 +60,7 @@ namespace MenuUI.Scripts.SoulHome
         private string _rHandLabel;
 
         private Coroutine _statusCoroutine;
-        private GridNode[,] _grid => _roomData.MovementGrid;
+        private GridNode[,] _grid => _roomData?.MovementGrid;
         private Vector2Int _currentGridPosition;
         private List<Vector2Int> _walkableSlots => _roomData.WalkableSlots;
         private int _gridWidth => _roomData.MovementGrid.GetLength(0);
