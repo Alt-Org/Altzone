@@ -63,7 +63,7 @@ namespace Battle.QSimulation.Player
 
             BattlePlayerClass600QSpec spec = BattleQConfig.GetBattlePlayerClass600Spec(f);
 
-            BattlePlayerClass600DataQComponent* classData = GetClassData(f, shieldHandle.ShieldData->PlayerEntityRef);
+            BattlePlayerClass600DataQComponent* classData = GetClassData(f, shieldHandle.ShieldData->PlayerCharacterEntityRef);
 
             classData->IsHoldingProjectile = true;
 

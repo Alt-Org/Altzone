@@ -2011,7 +2011,7 @@ namespace Quantum {
     public const Int32 SIZE = 24;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
-    public EntityRef PlayerEntityRef;
+    public EntityRef PlayerCharacterEntityRef;
     [FieldOffset(0)]
     public Int32 Number;
     [FieldOffset(4)]
@@ -2021,7 +2021,7 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 3571;
-        hash = hash * 31 + PlayerEntityRef.GetHashCode();
+        hash = hash * 31 + PlayerCharacterEntityRef.GetHashCode();
         hash = hash * 31 + Number.GetHashCode();
         hash = hash * 31 + IsAttached.GetHashCode();
         hash = hash * 31 + ShieldHitCooldown.GetHashCode();
@@ -2032,7 +2032,7 @@ namespace Quantum {
         var p = (BattlePlayerShieldDataQComponent*)ptr;
         serializer.Stream.Serialize(&p->Number);
         QBoolean.Serialize(&p->IsAttached, serializer);
-        EntityRef.Serialize(&p->PlayerEntityRef, serializer);
+        EntityRef.Serialize(&p->PlayerCharacterEntityRef, serializer);
         FrameTimer.Serialize(&p->ShieldHitCooldown, serializer);
     }
   }

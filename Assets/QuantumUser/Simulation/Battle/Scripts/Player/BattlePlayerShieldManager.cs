@@ -92,7 +92,7 @@ namespace Battle.QSimulation.Player
 
                 BattlePlayerShieldDataQComponent playerShieldData = new()
                 {
-                    PlayerEntityRef = playerCharacterEntityRef,
+                    PlayerCharacterEntityRef = playerCharacterEntityRef,
                     Number = shieldEntityIndex
                 };
 
@@ -257,7 +257,7 @@ namespace Battle.QSimulation.Player
             playerHandle.LoadedCharacterData->AttachedShieldEntityRef = EntityRef.None;
             shieldHandle.ShieldData->IsAttached                       = false;
 
-            f.Events.BattleShieldChangeState(shieldHandle.ShieldData->PlayerEntityRef, playerHandle.PlayerData.Team, shieldHandle.ShieldData->IsAttached, shieldNumber);
+            f.Events.BattleShieldChangeState(shieldHandle.ShieldData->PlayerCharacterEntityRef, playerHandle.PlayerData.Team, shieldHandle.ShieldData->IsAttached, shieldNumber);
             return shieldHandle;
         }
 
