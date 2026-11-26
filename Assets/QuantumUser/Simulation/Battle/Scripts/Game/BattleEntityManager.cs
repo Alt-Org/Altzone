@@ -22,12 +22,14 @@ namespace Quantum
     public partial struct BattleEntityID
     {
         /// <summary>
-        /// Integer value of <see cref="None"/>) ID
+        /// Integer value of <see cref="None"/> <b>{ID}</b>
         /// </summary>
+        ///
+        /// See [{Entity ID}](#page-concepts-entity-management-entity-id) for more info.
         public const int NoneValue = 0;
 
         /// <summary>
-        /// A None EntityID
+        /// <b>{None Entity ID]</b>
         /// (<see cref="Int"/> = <see cref="NoneValue"/>)
         /// </summary>
         ///
