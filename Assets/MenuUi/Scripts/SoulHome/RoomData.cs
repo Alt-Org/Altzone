@@ -868,38 +868,14 @@ namespace MenuUI.Scripts.SoulHome
                     Transform targetGrid = GetTargetGrid(grid);
                     handling.ClearInteractionSlots();
 
-                    int W = handling.Furniture.GetFurnitureNormalSize().x;
-                    int H = handling.Furniture.GetFurnitureNormalSize().y;
+                    int W = furnitureSize.x;
+                    int H = furnitureSize.y;
 
                     foreach (Vector2Int offset in handling.customInteractionOffsets)
                     {
-                        Vector2Int rotatedOffset = offset;
+                        Vector2Int target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
 
-                        switch (handling.TempSpriteDirection)
-                        {
-                            case FurnitureHandling.Direction.Front:
-                                rotatedOffset = offset;
-                                rotatedOffset.x = offset.x;
-                                rotatedOffset.y = -offset.y - H + 1;
-                                break;
-
-                            case FurnitureHandling.Direction.Right:
-                                rotatedOffset = new Vector2Int(offset.y + H - 1, -offset.x);
-                                break;
-
-                            case FurnitureHandling.Direction.Back:
-                                rotatedOffset = new Vector2Int(-offset.x + W - 1, -offset.y - (H - 1));
-                                break;
-
-                            case FurnitureHandling.Direction.Left:
-                                rotatedOffset = new Vector2Int(-offset.y, offset.x - (W - 1));
-                                break;
-                        }
-
-                        int targetCol = column + rotatedOffset.x;
-                        int targetRow = row + rotatedOffset.y;
-
-                        SaveSlot(targetCol, targetRow, handling, targetGrid);
+                        SaveSlot(target.x, target.y, handling, targetGrid);
                     }
                 }
             }
@@ -1146,29 +1122,40 @@ namespace MenuUI.Scripts.SoulHome
 
                 foreach (Vector2Int offset in handling.customInteractionOffsets)
                 {
-                    Vector2Int rotatedOffset = offset;
-                    switch (handling.TempSpriteDirection)
-                    {
-                        case FurnitureHandling.Direction.Front:
-                            rotatedOffset = new Vector2Int(offset.x, -offset.y - H + 1);
-                            break;
+                    Vector2Int target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
 
-                        case FurnitureHandling.Direction.Right:
-                            rotatedOffset = new Vector2Int(offset.y + H - 1, -offset.x);
-                            break;
-
-                        case FurnitureHandling.Direction.Left:
-                            rotatedOffset = new Vector2Int(-offset.y, offset.x - (W - 1));
-                            break;
-                    }
-
-                    int targetCol = column + rotatedOffset.x;
-                    int targetRow = row + rotatedOffset.y;
-
-                    HighlightSlot(targetGrid, targetCol, targetRow, handling, check);
+                    HighlightSlot(targetGrid, target.x, target.y, handling, check);
                 }
             }
+        }
 
+        private Vector2Int CorrectInteractOffset(Vector2Int offset, Vector3Int furnitureSize, Vector2Int slot, FurnitureHandling.Direction direction)
+        {
+            Vector2Int rotatedOffset = offset;
+
+            switch (direction)
+            {
+                case FurnitureHandling.Direction.Front:
+                    rotatedOffset = new Vector2Int(offset.x, -offset.y - furnitureSize.y + 1);
+                    break;
+
+                case FurnitureHandling.Direction.Right:
+                    rotatedOffset = new Vector2Int(offset.y + furnitureSize.x - 1, -offset.x);
+                    break;
+
+                case FurnitureHandling.Direction.Back:
+                    rotatedOffset = new Vector2Int(-offset.x + furnitureSize.x - 1, -offset.y - (furnitureSize.y - 1));
+                    break;
+
+                case FurnitureHandling.Direction.Left:
+                    rotatedOffset = new Vector2Int(-offset.y, offset.x - (furnitureSize.y - 1));
+                    break;
+            }
+
+            int targetCol = slot.x + rotatedOffset.x;
+            int targetRow = slot.y + rotatedOffset.y;
+
+            return new(targetCol, targetRow);
         }
 
         private void HighlightSlot(Transform grid, int col, int row, FurnitureHandling handling, bool check)
