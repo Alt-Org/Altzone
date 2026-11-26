@@ -868,9 +868,6 @@ namespace MenuUI.Scripts.SoulHome
                     Transform targetGrid = GetTargetGrid(grid);
                     handling.ClearInteractionSlots();
 
-                    int W = furnitureSize.x;
-                    int H = furnitureSize.y;
-
                     foreach (Vector2Int offset in handling.customInteractionOffsets)
                     {
                         Vector2Int target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
@@ -1118,9 +1115,6 @@ namespace MenuUI.Scripts.SoulHome
 
             if (grid is FurnitureGrid.Floor && handling.HasInteractionSlot)
             {
-                int W = furnitureSize.x;
-                int H = furnitureSize.y;
-
                 foreach (Vector2Int offset in handling.customInteractionOffsets)
                 {
                     Vector2Int target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
