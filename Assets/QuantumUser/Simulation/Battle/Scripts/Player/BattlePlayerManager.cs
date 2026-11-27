@@ -1,6 +1,6 @@
 //! @file BattlePlayerManager.cs
 //! <summary>
-//! Contains @cref{Battle.QSimulation.Player,BattlePlayerManager} partial class which handles player logic.<br/>
+//! Contains @cref{Battle.QSimulation.Player,BattlePlayerManager} partial class which handles player logic.
 //! </summary>
 
 //#define DEBUG_PLAYER_STAT_OVERRIDE
@@ -31,15 +31,18 @@ namespace Battle.QSimulation.Player
     /// @bigtext{See [{Player Overview}](#page-concepts-player-overview) for more info.}<br/>
     /// @bigtext{See [{Player Simulation Code Overview}](#page-concepts-player-simulation-overview) for more info.}<br/>
     ///
-    /// Handles initializing players that are present in the game, as well as spawning and despawning player characters.<br/>
-    /// The @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandle} and @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal} structs are used internally.
+    /// Handles initializing players that are present in the game, as well as spawning and despawning player characters.
     ///
     /// @anchor BattlePlayerManager-PlayerIndex
     /// @bigtext{**%Player Index**}
     ///
-    /// %Player Index is used internally to index player data arrays in @cref{Quantum,BattlePlayerManagerDataQSingleton}.
-    /// %Player [{Slots}](#page-concepts-player-slots-teams) are mapped to the internal %Player Indices using the @cref{Battle.QSimulation.Player.BattlePlayerManager,PlayerHandleInternal}
-    /// @ref BattlePlayerManager-PlayerHandleInternal-PublicStaticMethods-PlayerIndexGetters "Player Index Getter" methods.
+    /// **%Player Index** is used internally when indexing **%Player** related arrays like the @cref{Quantum,BattlePlayerManagerDataQSingleton.PlayerArray}.<br/>
+    /// [{Player Slots}](#page-concepts-player-slots-teams) **1-4** each **Map** to a **%Player Index**.
+    ///
+    /// A [{Player Slot}](#page-concepts-player-slots-teams) can be **Mapped** to a **%Player Index** using
+    /// @clink{BattlePlayerManager.Data.GetPlayerIndex:Battle.QSimulation.Player.BattlePlayerManager.Data.GetPlayerIndex(BattlePlayerSlot)}.<br/>
+    /// A **%Player Index** can be **Mapped** to a [{Player Slot}](#page-concepts-player-slots-teams) using
+    /// @clink{BattlePlayerManager.Data.GetSlot:Battle.QSimulation.Player.BattlePlayerManager.Data.GetSlot(int)}.
     public static unsafe partial class BattlePlayerManager
     {
         #region Public
@@ -490,16 +493,74 @@ namespace Battle.QSimulation.Player
 
         #endregion Public - Static Methods - Spawn/Despawn
 
+        /// <summary>
+        /// Retrieves the <b>{%Player Slot}</b> corresponding to the given <paramref name="playerRef"/>.
+        /// </summary>
+        ///
+        /// See [{Player Slot}](#page-concepts-player-slots-teams) for more info.
+        ///
+        /// <param name="f">The current simulation frame.</param>
+        /// <param name="playerRef"><b>PlayerRef</b> of the <b>%Player</b> whose <b>{%Player Slot}</b> is to be retrieved.</param>
+        ///
+        /// <returns>The retrieved <b>{%Player Slot}</b>.</returns>
         public static BattlePlayerSlot GetSlot(Frame f, PlayerRef playerRef) => Data.GetSlot(Data.GetRef(f), playerRef);
 
+        /// <summary>
+        /// Retrieves the <b>{%Player Teammate Slot}</b> of the given <paramref name="slot"/>.
+        /// </summary>
+        ///
+        /// See [{Player Slot}](#page-concepts-player-slots-teams) for more info.<br/>
+        /// See [{Player Teams}](#page-concepts-player-slots-teams) for more info.
+        ///
+        /// <param name="slot"><b>{PlayerSlot}</b> of the <b>%Player</b> whose <b>{%Player Teammate Slot}</b> is to be retrieved.</param>
+        ///
+        /// <returns>The retrieved <b>{%Player Slot}</b>.</returns>
         public static BattlePlayerSlot GetTeammateSlot(BattlePlayerSlot slot) => Data.GetTeammateSlot(slot);
 
+        /// <summary>
+        /// Retrieves the <b>{TeamNumber}</b> of the given <paramref name="slot"/>.
+        /// </summary>
+        ///
+        /// See [{Player Teams}](#page-concepts-player-slots-teams) for more info.<br/>
+        /// See [{Player Slot}](#page-concepts-player-slots-teams) for more info.
+        ///
+        /// <param name="slot"><b>{PlayerSlot}</b> of the <b>%Player</b> whose <b>{TeamNumber}</b> is to be retrieved.</param>
+        ///
+        /// <returns>The retrieved <b>{TeamNumber}</b>.</returns>
         public static BattleTeamNumber GetTeam(BattlePlayerSlot slot) => Data.GetTeam(slot);
 
+        /// <summary>
+        /// Retrieves the <b>{Opposing Team}</b> of the given <paramref name="team"/>.
+        /// </summary>
+        ///
+        /// See [{Player Teams}](#page-concepts-player-slots-teams) for more info.<br/>
+        /// See [{Opposing Team}](#page-concepts-player-slots-teams) for more info.
+        ///
+        /// <param name="team"><b>{TeamNumber}</b> of the <b>{Team}</b> whose <b>{Opposing Team}</b> is to be retrieved.</param>
+        ///
+        /// <returns>The <b>{TeamNumber}</b> of the <b>{Opposing Team}</b>.</returns>
         public static BattleTeamNumber GetOpposingTeam(BattleTeamNumber team) => Data.GetOpposingTeam(team);
 
+        /// <summary>
+        /// Retrieves <b>{%Player %Data}</b> based on <paramref name="slot"/>.
+        /// </summary>
+        ///
+        /// See [{Player Data}](#page-concepts-player-data) for more info.<br/>
+        /// See [{Player Slot}](#page-concepts-player-slots-teams) for more info.
+        ///
+        /// <param name="f">The current simulation frame..</param>
+        /// <param name="slot"><b>{%Player Slot}</b> of the <b>%Player</b> whose <b>{%Player %Data}</b> is to be retrieved.</param>
+        ///
+        /// <returns>The retrieved <b>{%Player %Data}</b>.</returns>
         public static BattlePlayerData.Ref GetPlayerData(Frame f, BattlePlayerSlot slot) => Data.GetPlayerData(Data.GetRef(f), Data.GetPlayerIndex(slot));
 
+        /// <summary>
+        ///
+        /// </summary>
+        ///
+        /// <param name="f">Current simulation frame.</param>
+        ///
+        /// <returns></returns>
         public static IEnumerable<BattlePlayerData.Ref> GetPlayerDataIterator(Frame f)
         {
             Data.Ref dataRef = Data.GetRef(f);
