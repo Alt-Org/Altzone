@@ -69,29 +69,65 @@ The possible **Slots** are **1-4**.
 The **Teams** are **TeamAlpha** and **TeamBeta**.  
 **Players** in **Slots** **1** and **2** are in **TeamAlpha** and **Players** in **Slots** **3** and **4** in **TeamBeta**.  
 **Guest** and **Spectator** slots also exist, but are not currently used in %Battle.  
-The enums for **Player Slots** and **Teams** are defined in [{Quantum Simulation}](#page-concepts-player-simulation).
+The enums for **Player Slots** and **Teams** are defined in [{Quantum Simulation}](#page-concepts-player-simulation).  
+Each **Player Slot** has a **Player Teammate Slot**, which is the other **Player Slot** on the same **Team**.  
+Each **Team** has an **Opposing Team**, which is the other **Team**.
+
+(The following graph does not indicate how the **Player's** are actually placed on the arena.)
 
 ```dot
-graph PlayerSlotsAndTeams {
-  layout=osage;
-  color=white;
+digraph PlayerSlotsAndTeams {
   fontcolor=white;
   bgcolor=black;
-  pack=0;
+  splines=line;
 
-  node [shape=box, style=filled, color=white, fontcolor=white, fillcolor=black];
-
-  subgraph cluster_beta {
-    label="Team Beta";
-    Slot4
-    Slot3
-  }
+  node [shape=ellipse, style=filled, color=white, fontcolor=white, fillcolor=black];
+  edge [color=gray];
 
   subgraph cluster_alpha {
-    label="Team Alpha";
-    Slot2
-    Slot1
+    Alpha [label = "Team Alpha"]
+    {
+      rank=same;
+      Slot1 [label = "Slot 1"]
+      Slot2 [label = "Slot 2"]
+      AlphaTeammate [shape = plaintext, label = "Teammate", fillcolor=transparent]
+    }
+
+    AlphaTeammate -> Alpha [style=invis]
+
+    Slot1, Slot2 -> Alpha [dir=none]
+
+    AlphaTeammate -> Slot1 [dir=none]
+    AlphaTeammate -> Slot2
+    Slot2 -> AlphaTeammate [dir=none]
+    Slot1 -> AlphaTeammate [dir=back]
   }
+
+  subgraph cluster_beta {
+    Beta  [label = "Team Beta"]
+    {
+      rank=same;
+      Slot3 [label = "Slot 3"]
+      Slot4 [label = "Slot 4"]
+      BetaTeammate [shape = plaintext, label = "Teammate", fillcolor=transparent]
+    }
+
+    Beta -> BetaTeammate [style=invis]
+
+    Beta -> Slot3, Slot4 [dir=none]
+
+    BetaTeammate -> Slot3 [dir=none]
+    BetaTeammate -> Slot4
+    Slot4 -> BetaTeammate [dir=none]
+    Slot3 -> BetaTeammate [dir=back]
+  }
+
+  OpposingTeam [shape = plaintext, label = "Opposing Team", fillcolor=transparent]
+
+  Alpha -> OpposingTeam [dir = none]
+  OpposingTeam -> Beta
+  OpposingTeam -> Beta [dir = none]
+  Alpha -> OpposingTeam [dir = back]
 }
 ```
 
