@@ -433,7 +433,7 @@ namespace MenuUI.Scripts.SoulHome
 
         public void ClearInteractionSlots()
         {
-            foreach (var slot in AssignedInteractionSlots)
+            foreach (var slot in TempInteractionSlots)
             {
                 slot.IsReserved = false;
                 slot.InteractionOwner = null;
@@ -454,23 +454,64 @@ namespace MenuUI.Scripts.SoulHome
         {
             if (OldInteractionSlots == null)
             {
-                OldInteractionSlots = AssignedInteractionSlots;
+                OldInteractionSlots = new(AssignedInteractionSlots);
                 AssignedInteractionSlots.Clear();
             }
         }
 
         public void ResetInteractionSlots()
         {
-            AssignedInteractionSlots = OldInteractionSlots;
-            TempInteractionSlots.Clear();
+            AssignedInteractionSlots = new(OldInteractionSlots);
+            TempInteractionSlots = new(AssignedInteractionSlots);
+
+            foreach (var slot in OldInteractionSlots)
+            {
+                if (slot.InteractionOwner == this)
+                {
+                    slot.IsReserved = false;
+                    slot.InteractionOwner = null;
+                    slot.ClearValidity();
+                }
+            }
+
             OldInteractionSlots = null;
+
+            foreach (var slot in AssignedInteractionSlots)
+            {
+                if(slot.InteractionOwner == this)
+                {
+                    slot.IsReserved = true;
+                    slot.InteractionOwner = this;
+                    slot.ClearValidity();
+                }
+            }
         }
 
         public void SaveInteractionSlots()
         {
-            AssignedInteractionSlots = TempInteractionSlots;
-            TempInteractionSlots.Clear();
+            AssignedInteractionSlots = new(TempInteractionSlots);
+
+            foreach (var slot in OldInteractionSlots)
+            {
+                if (slot.InteractionOwner == this)
+                {
+                    slot.IsReserved = false;
+                    slot.InteractionOwner = null;
+                    slot.ClearValidity();
+                }
+            }
+
             OldInteractionSlots = null;
+
+            foreach (var slot in AssignedInteractionSlots)
+            {
+                if (slot.InteractionOwner == this)
+                {
+                    slot.IsReserved = true;
+                    slot.InteractionOwner = this;
+                    slot.ClearValidity();
+                }
+            }
         }
 
         //Get closest interaction slot for npc to path to
