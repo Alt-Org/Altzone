@@ -653,10 +653,12 @@ namespace Battle.QSimulation.Game
     }
 
     /// <summary>
-    /// <b>{Managed Composite Entity Type Handle}</b> for handling shields.
+    /// <b>{Managed Composite Entity Type Handle}</b> for handling <b>{Shield Entities}</b>.
     /// </summary>
     ///
-    /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.
+    /// See [{Managed Composite Type Handle}](#page-concepts-battle-handle-managed-composite-type-handle) for more info.<br/>
+    /// See [{PlayerShieldHandle}](#page-concepts-player-simulation-management-playershieldhandle) for more info.<br/>
+    /// See [{Shield Entity}](#page-concepts-player-character-and-shield-entity) for more info.
     public unsafe struct BattlePlayerShieldHandle : BattleManagedEntityHandle.IComposite
     {
         /// <summary>
@@ -760,7 +762,8 @@ namespace Battle.QSimulation.Game
         //! @anchor BattlePlayerShieldHandle-CollidedHitboxProperties
         //! @name Collided Hitbox Properties
         //!
-        //! Collided Hitbox Properties
+        //! Data related to the [{Collided Hitbox}](#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox),
+        //! which may or may not be [{Available}](#page-concepts-player-simulation-management-playershieldhandle-available-collided-hitbox).
         //!
         //! @{
 
