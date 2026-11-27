@@ -42,6 +42,7 @@ namespace MenuUi.Scripts.CharacterGallery
         [SerializeField] private GameObject _characterSlotPrefab;
 
         [SerializeField] private ClassReference _classReference;
+        [SerializeField] private bool _gradientOverride = false;
 
         private FilterType _currentFilter = FilterType.All;
         private List<int> filterEnumValues;
@@ -127,7 +128,7 @@ namespace MenuUi.Scripts.CharacterGallery
             // Placing unlocked characters
             foreach (CustomCharacter character in customCharacters)
             {
-                var charSlot = InstantiateCharacterSlot(character.Id, false, _unlockedCharacterGridContent);
+                var charSlot = InstantiateCharacterSlot(character.Id, false, _unlockedCharacterGridContent, _gradientOverride);
 
                 // Going through selectedCharacterIds to check if the CustomCharacter is one of the selected characters
                 for (int i = 0; i < selectedCharacterIds.Length; i++)
@@ -162,7 +163,7 @@ namespace MenuUi.Scripts.CharacterGallery
                     }
                     if (characterUnlocked) continue;
 
-                    InstantiateCharacterSlot(baseCharacter.Id, true, _lockedCharacterGridContent);
+                    InstantiateCharacterSlot(baseCharacter.Id, true, _lockedCharacterGridContent, _gradientOverride);
                 }
             }
 
