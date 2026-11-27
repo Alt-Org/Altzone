@@ -79,7 +79,7 @@ namespace Battle.QSimulation.Player
 
             Data.Ref dataRef = Data.GetRef(f);
 
-            dataRef.PlayerCount        = 0;
+            Data.SetPlayerCount(dataRef, 0);
             int playerCountCheckNumber = 0;
 
             string[] slotDebugStrings = new string[slotTypes.Length];
@@ -92,7 +92,7 @@ namespace Battle.QSimulation.Player
                 BattlePlayerData.Ref    playerData      = Data.GetPlayerData(dataRef, playerIndex);
                 BattleArenaQSpec.Player arenaPlayerSpec = battleArenaSpec.Players[playerIndex];
 
-                BattlePlayerSlot      playerSlot      = Data.GetPlayerSlot(playerIndex);
+                BattlePlayerSlot      playerSlot      = Data.GetSlot(playerIndex);
                 BattleTeamNumber      playerTeam      = Data.GetTeam(playerSlot);
                 BattlePlayerPlayState playerPlayState = BattlePlayerPlayState.NotInGame;
                 bool                  playerIsBot     = false;
@@ -148,7 +148,7 @@ namespace Battle.QSimulation.Player
                 );
 
                 // this will prevent the game from starting
-                dataRef.PlayerCount = -100;
+                Data.SetPlayerCount(dataRef, -100);
             }
         }
 
@@ -201,7 +201,7 @@ namespace Battle.QSimulation.Player
             BattlePlayerData.Ref playerData = Data.GetPlayerData(dataRef, playerTargetSlotIndex);
 
             playerData.Low_Level.PRef = playerRef;
-            dataRef.PlayerCount++;
+            Data.SetPlayerCount(dataRef, Data.GetPlayerCount(dataRef) + 1);
 
             //} register player
 
@@ -230,7 +230,7 @@ namespace Battle.QSimulation.Player
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsAllPlayersRegistered(Frame f)
         {
-            return Data.GetRef(f).PlayerCount == BattleParameters.GetPlayerCount(f);
+            return Data.GetPlayerCount(Data.GetRef(f)) == BattleParameters.GetPlayerCount(f);
         }
 
         //} player management
@@ -496,7 +496,7 @@ namespace Battle.QSimulation.Player
 
         public static BattleTeamNumber GetTeam(BattlePlayerSlot slot) => Data.GetTeam(slot);
 
-        public static BattleTeamNumber GetOpposingTeam(BattleTeamNumber teamNumber) => Data.GetOpposingTeam(teamNumber);
+        public static BattleTeamNumber GetOpposingTeam(BattleTeamNumber team) => Data.GetOpposingTeam(team);
 
         public static BattlePlayerData.Ref GetPlayerData(Frame f, BattlePlayerSlot slot) => Data.GetPlayerData(Data.GetRef(f), Data.GetPlayerIndex(slot));
 

@@ -13,12 +13,6 @@ namespace Battle.QSimulation.Player
         {
             public struct Ref
             {
-                public ref int PlayerCount
-                {
-                    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-                    get => ref Ptr->PlayerCount;
-                }
-
                 public BattlePlayerManagerDataQSingleton* Ptr;
             }
 
@@ -33,6 +27,14 @@ namespace Battle.QSimulation.Player
                 return new Ref() { Ptr = playerManagerData };
             }
 
+            #region PlayerCount Methods
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static int GetPlayerCount(Ref @ref) => @ref.Ptr->PlayerCount;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static void SetPlayerCount(Ref @ref, int playerCount) => @ref.Ptr->PlayerCount = playerCount;
+
+            #endregion PlayerCount Methods
             #region PlayerIndex Methods
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -68,11 +70,11 @@ namespace Battle.QSimulation.Player
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public static BattlePlayerSlot GetSlot(Ref @ref, PlayerRef playerRef)
             {
-                return GetPlayerSlot(GetPlayerIndex(@ref, playerRef));
+                return GetSlot(GetPlayerIndex(@ref, playerRef));
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            public static BattlePlayerSlot GetPlayerSlot(int index)
+            public static BattlePlayerSlot GetSlot(int index)
             {
                 return index switch
                 {
