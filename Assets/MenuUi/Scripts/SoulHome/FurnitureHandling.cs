@@ -4,6 +4,7 @@ using Altzone.Scripts.Model.Poco.Game;
 using Altzone.Scripts.ReferenceSheets;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 
 namespace MenuUI.Scripts.SoulHome
 {
@@ -23,10 +24,11 @@ namespace MenuUI.Scripts.SoulHome
             Custom
         }
 
-        public enum InteractionStyle
+        public enum AnimationTriggerStyle
         {
-            Avatar,     // All surrounding slots
-            Click     // All slots along the "front" width
+            AvatarInteract,     // All surrounding slots
+            Click,     // All slots along the "front" width
+            Loop
         }
 
         [SerializeField]
@@ -62,14 +64,14 @@ namespace MenuUI.Scripts.SoulHome
         private FurnitureSlot _slot;
         private FurnitureSlot _tempSlot;
 
-        [SerializeField]
-        private bool _hasInteractionSlot = false;
-        private Vector2Int _interactionOffset = new Vector2Int(0, 1);
+        [SerializeField, FormerlySerializedAs("_hasInteractionSlot")]
+        private bool _usesAnimation = false;
 
-        [SerializeField] private InteractionStyle _interactionStyle = InteractionStyle.Avatar;
+        [SerializeField] private AnimationTriggerStyle _interactionStyle = AnimationTriggerStyle.AvatarInteract;
         [SerializeField] private InteractionPattern _pattern = InteractionPattern.FrontRow;
         private bool _interactInProgress = false;
         private SoulHomeAvatarController _interactCharacter = null;
+
         public List<FurnitureSlot> AssignedInteractionSlots { get; private set; } = new List<FurnitureSlot>();
         private List<FurnitureSlot> TempInteractionSlots { get; set; } = new List<FurnitureSlot>();
         private List<FurnitureSlot> OldInteractionSlots { get; set; } = new List<FurnitureSlot>();
@@ -135,7 +137,8 @@ namespace MenuUI.Scripts.SoulHome
         public Sprite FurnitureSpriteBack { get => _furnitureSpriteBack; set { if (!Application.isPlaying) _furnitureSpriteBack = value; } }
         public bool SpriteCanBeFlipped { get => _spriteCanBeFlipped;}
 
-        public bool HasInteractionSlot => _hasInteractionSlot;
+        public bool HasInteractionSlot => _usesAnimation && _interactionStyle is AnimationTriggerStyle.AvatarInteract;
+        public AnimationTriggerStyle InteractionStyle => _interactionStyle;
 
         public bool InteractInProgress { get => _interactInProgress; }
 
@@ -472,7 +475,7 @@ namespace MenuUI.Scripts.SoulHome
         //Get closest interaction slot for npc to path to
         public FurnitureSlot GetClosestInteractionSlot(Vector3 npcPosition)
         {
-            if (_interactionStyle is InteractionStyle.Click || AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
+            if (_interactionStyle is AnimationTriggerStyle.Click || AssignedInteractionSlots == null || AssignedInteractionSlots.Count == 0)
                 return null;
 
             FurnitureSlot closest = null;
@@ -505,7 +508,7 @@ namespace MenuUI.Scripts.SoulHome
         public void StartInteract(SoulHomeAvatarController controller)
         {
             if (_interactCharacter != controller) return;
-            if(_interactionStyle is InteractionStyle.Avatar)
+            if(_interactionStyle is AnimationTriggerStyle.AvatarInteract)
             StartCoroutine(InteractRoutine(controller));
         }
 
@@ -515,7 +518,7 @@ namespace MenuUI.Scripts.SoulHome
             bool useAvatar = false;
             if (animator != null)
             {
-                animator.HandleClick();
+                animator.TriggerAnimation(AnimationTriggerStyle.AvatarInteract);
             }
             else
             {

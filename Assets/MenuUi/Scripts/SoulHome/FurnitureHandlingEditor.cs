@@ -21,7 +21,7 @@ public class FurnitureHandlingEditor : Editor
     private SerializedProperty _trayFurnitureObject;
     private SerializedProperty cullCheckAmount;
 
-    private SerializedProperty _hasInteractionSlot;
+    private SerializedProperty _usesAnimation;
 
     private SerializedProperty _interactionStyle;
     private SerializedProperty _pattern;
@@ -42,7 +42,7 @@ public class FurnitureHandlingEditor : Editor
         _sortingGroup = serializedObject.FindProperty("_sortingGroup");
         _trayFurnitureObject = serializedObject.FindProperty("_trayFurnitureObject");
         cullCheckAmount = serializedObject.FindProperty("cullCheckAmount");
-        _hasInteractionSlot = serializedObject.FindProperty("_hasInteractionSlot");
+        _usesAnimation = serializedObject.FindProperty("_usesAnimation");
         _interactionStyle = serializedObject.FindProperty("_interactionStyle");
         _pattern = serializedObject.FindProperty("_pattern");
         widthProp = serializedObject.FindProperty("_width");
@@ -90,11 +90,11 @@ public class FurnitureHandlingEditor : Editor
             return;
         }
         EditorGUILayout.Space();
-        EditorGUILayout.PropertyField(_hasInteractionSlot);
-        if (!_hasInteractionSlot.boolValue) return;
+        EditorGUILayout.PropertyField(_usesAnimation);
+        if (!_usesAnimation.boolValue) return;
         EditorGUILayout.Space();
         EditorGUILayout.PropertyField(_interactionStyle);
-        if(_interactionStyle.enumValueIndex == (int)InteractionStyle.Click) return;
+        if(_interactionStyle.enumValueIndex != (int)AnimationTriggerStyle.AvatarInteract) return;
         EditorGUILayout.PropertyField(_pattern);
         EditorGUILayout.Space();
         EditorGUI.BeginDisabledGroup(true);

@@ -18,13 +18,21 @@ public class SoulHomeFurnitureAnimator : MonoBehaviour, ISoulHomeObjectClick
     [SerializeField] private AnimationClip _rightResetAnimation;
 
     private FurnitureHandling _furnitureHandling;
+    private Coroutine _coroutine = null;
     private bool _isPlaying = false;
+    private bool _isLooping = false;
 
     // Start is called before the first frame update
     void Start()
     {
         _furnitureHandling = GetComponent<FurnitureHandling>();
         _furnitureHandling.OnFurnitureRotated += RotateAnimation;
+        if (_furnitureHandling.InteractionStyle is AnimationTriggerStyle.Loop) TriggerAnimation(AnimationTriggerStyle.Loop);
+    }
+
+    private void OnEnable()
+    {
+        if (_furnitureHandling != null && _furnitureHandling.InteractionStyle is AnimationTriggerStyle.Loop) TriggerAnimation(AnimationTriggerStyle.Loop);
     }
 
     private void OnDestroy()
@@ -32,20 +40,44 @@ public class SoulHomeFurnitureAnimator : MonoBehaviour, ISoulHomeObjectClick
         _furnitureHandling.OnFurnitureRotated -= RotateAnimation;
     }
 
-    public void HandleClick() => StartCoroutine(Animation());
+    public void HandleClick() => StartCoroutine(Animation(AnimationTriggerStyle.Click));
 
-    private IEnumerator Animation()
+    public void TriggerAnimation(AnimationTriggerStyle style) => _coroutine = StartCoroutine(Animation(style));
+
+    private IEnumerator Animation(AnimationTriggerStyle style)
     {
         if (_isPlaying) yield break;
-        float animationLength = PlayBattleStart();
+        float animationLength;
+        switch (style)
+        {
+            case AnimationTriggerStyle.AvatarInteract:
+                animationLength = PlayAnimation();
 
-        yield return new WaitForSeconds(animationLength);
-        _furnitureHandling.ResetDirection();
-        _isPlaying = false;
-        _furnitureHandling.FreeInteractCharacter();
+                yield return new WaitForSeconds(animationLength);
+                _furnitureHandling.ResetDirection();
+                _isPlaying = false;
+                _furnitureHandling.FreeInteractCharacter();
+                break;
+            case AnimationTriggerStyle.Click:
+                animationLength = PlayAnimation();
+
+                yield return new WaitForSeconds(animationLength);
+                _furnitureHandling.ResetDirection();
+                _isPlaying = false;
+                break;
+            case AnimationTriggerStyle.Loop:
+                _isLooping = true;
+                while (_isLooping)
+                {
+                    animationLength = PlayAnimation();
+
+                    yield return new WaitForSeconds(animationLength);
+                }
+                break;
+        }
     }
 
-    private float PlayBattleStart()
+    private float PlayAnimation()
     {
         AnimationClip clip = null;
         if (_furnitureHandling.TempSpriteDirection is FurnitureHandling.Direction.Front)
@@ -75,5 +107,11 @@ public class SoulHomeFurnitureAnimator : MonoBehaviour, ISoulHomeObjectClick
         if (clip == null) return;
 
         _animator.Play(clip.name);
+        _isPlaying = false;
+        if (_isLooping)
+        {
+            StopCoroutine(_coroutine);
+            TriggerAnimation(AnimationTriggerStyle.Loop);
+        }
     }
 }
