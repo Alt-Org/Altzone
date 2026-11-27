@@ -141,6 +141,7 @@ namespace MenuUI.Scripts.SoulHome
         public AnimationTriggerStyle InteractionStyle => _interactionStyle;
 
         public bool InteractInProgress { get => _interactInProgress; }
+        public InteractionPattern Pattern { get => _pattern; }
 
         public delegate void FurnitureRotated(Direction direction);
         public event FurnitureRotated OnFurnitureRotated;

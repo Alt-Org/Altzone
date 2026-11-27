@@ -40,7 +40,11 @@ public class SoulHomeFurnitureAnimator : MonoBehaviour, ISoulHomeObjectClick
         _furnitureHandling.OnFurnitureRotated -= RotateAnimation;
     }
 
-    public void HandleClick() => StartCoroutine(Animation(AnimationTriggerStyle.Click));
+    public void HandleClick()
+    {
+        if (_furnitureHandling.InteractionStyle is AnimationTriggerStyle.Click)
+            StartCoroutine(Animation(AnimationTriggerStyle.Click));
+    }
 
     public void TriggerAnimation(AnimationTriggerStyle style) => _coroutine = StartCoroutine(Animation(style));
 

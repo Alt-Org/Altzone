@@ -868,9 +868,65 @@ namespace MenuUI.Scripts.SoulHome
                     Transform targetGrid = GetTargetGrid(grid);
                     handling.ClearInteractionSlots();
 
-                    foreach (Vector2Int offset in handling.customInteractionOffsets)
+                    if (handling.Pattern is FurnitureHandling.InteractionPattern.Custom)
+                        foreach (Vector2Int offset in handling.customInteractionOffsets)
+                        {
+                            Vector2Int target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                            SaveSlot(target.x, target.y, handling, targetGrid);
+                        }
+                    else if (handling.Pattern is FurnitureHandling.InteractionPattern.FrontRow)
                     {
-                        Vector2Int target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+                        for (int i = 0; i < handling.Furniture.FurnitureSize.x; i++)
+                        {
+                            Vector2Int offset = new(i, -handling.Furniture.FurnitureSize.z);
+                            Vector2Int target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                            SaveSlot(target.x, target.y, handling, targetGrid);
+                        }
+                    }
+                    else if (handling.Pattern is FurnitureHandling.InteractionPattern.Surround)
+                    {
+                        Vector2Int offset;
+                        Vector2Int target;
+                        for (int i = 0; i < handling.Furniture.FurnitureSize.x; i++)
+                        {
+                            offset = new(i, -handling.Furniture.FurnitureSize.z);
+                            target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                            SaveSlot(target.x, target.y, handling, targetGrid);
+
+                            offset = new(i, 1);
+                            target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                            SaveSlot(target.x, target.y, handling, targetGrid);
+                        }
+                        for (int i = 0; i < handling.Furniture.FurnitureSize.z; i++)
+                        {
+                            offset = new(-1, -i);
+                            target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                            SaveSlot(target.x, target.y, handling, targetGrid);
+
+                            offset = new(handling.Furniture.FurnitureSize.x, -i);
+                            target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                            SaveSlot(target.x, target.y, handling, targetGrid);
+                        }
+                        offset = new(-1, 1);
+                        target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                        SaveSlot(target.x, target.y, handling, targetGrid);
+                        offset = new(-1, -handling.Furniture.FurnitureSize.z);
+                        target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                        SaveSlot(target.x, target.y, handling, targetGrid);
+                        offset = new(handling.Furniture.FurnitureSize.x, 1);
+                        target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                        SaveSlot(target.x, target.y, handling, targetGrid);
+                        offset = new(handling.Furniture.FurnitureSize.x, -handling.Furniture.FurnitureSize.z);
+                        target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
 
                         SaveSlot(target.x, target.y, handling, targetGrid);
                     }
@@ -1115,9 +1171,65 @@ namespace MenuUI.Scripts.SoulHome
 
             if (grid is FurnitureGrid.Floor && handling.HasInteractionSlot)
             {
-                foreach (Vector2Int offset in handling.customInteractionOffsets)
+                if(handling.Pattern is FurnitureHandling.InteractionPattern.Custom)
+                    foreach (Vector2Int offset in handling.customInteractionOffsets)
+                    {
+                        Vector2Int target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                        HighlightSlot(targetGrid, target.x, target.y, handling, check);
+                    }
+                else if(handling.Pattern is FurnitureHandling.InteractionPattern.FrontRow)
                 {
-                    Vector2Int target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+                    for (int i = 0; i < handling.Furniture.FurnitureSize.x ;i++)
+                    {
+                        Vector2Int offset = new(i, -handling.Furniture.FurnitureSize.z);
+                        Vector2Int target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                        HighlightSlot(targetGrid, target.x, target.y, handling, check);
+                    }
+                }
+                else if (handling.Pattern is FurnitureHandling.InteractionPattern.Surround)
+                {
+                    Vector2Int offset;
+                    Vector2Int target;
+                    for (int i = 0; i < handling.Furniture.FurnitureSize.x; i++)
+                    {
+                        offset = new(i, -handling.Furniture.FurnitureSize.z);
+                        target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                        HighlightSlot(targetGrid, target.x, target.y, handling, check);
+
+                        offset = new(i, 1);
+                        target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                        HighlightSlot(targetGrid, target.x, target.y, handling, check);
+                    }
+                    for (int i = 0; i < handling.Furniture.FurnitureSize.z; i++)
+                    {
+                        offset = new(-1, -i);
+                        target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                        HighlightSlot(targetGrid, target.x, target.y, handling, check);
+
+                        offset = new(handling.Furniture.FurnitureSize.x, -i);
+                        target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                        HighlightSlot(targetGrid, target.x, target.y, handling, check);
+                    }
+                    offset = new(-1, 1);
+                    target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                    HighlightSlot(targetGrid, target.x, target.y, handling, check);
+                    offset = new(-1, -handling.Furniture.FurnitureSize.z);
+                    target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                    HighlightSlot(targetGrid, target.x, target.y, handling, check);
+                    offset = new(handling.Furniture.FurnitureSize.x, 1);
+                    target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
+
+                    HighlightSlot(targetGrid, target.x, target.y, handling, check);
+                    offset = new(handling.Furniture.FurnitureSize.x, -handling.Furniture.FurnitureSize.z);
+                    target = CorrectInteractOffset(offset, furnitureSize, new(column, row), handling.TempSpriteDirection);
 
                     HighlightSlot(targetGrid, target.x, target.y, handling, check);
                 }
