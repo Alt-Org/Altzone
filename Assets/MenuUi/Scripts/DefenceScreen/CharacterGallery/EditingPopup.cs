@@ -8,6 +8,7 @@ using MenuUi.Scripts.SwipeNavigation;
 using UnityEngine.UI;
 using Altzone.Scripts.ModelV2;
 using System.Collections;
+using Altzone.Scripts.ReferenceSheets;
 
 namespace MenuUi.Scripts.CharacterGallery
 {
@@ -50,6 +51,15 @@ namespace MenuUi.Scripts.CharacterGallery
 
         [SerializeField] private LoadoutRowController _loadoutController;
 
+        [Header("Gradient Override")]
+        [SerializeField] private bool _gradientOverride = false;
+        [SerializeField] private Color _emptySlotBgColor = new Color32(140, 166, 176, 255);      // Grey prime color (#8CA6B0)
+        [SerializeField] private Color _emptySlotAltColor = new Color32(180, 200, 208, 255);     // Lighter highlight color (#B4C8D0)
+        [SerializeField] private Color _emptySlotDeepColor = new Color32(94, 118, 128, 255);     // Darker background color (#5E7680)
+
+        private readonly Dictionary<CharacterClassType, Sprite> _classBgSprites = new();
+        private Sprite _emptySlotBgSprite;
+
         private void Awake()
         {
             _swipe = FindObjectOfType<SwipeUI>();
@@ -68,6 +78,8 @@ namespace MenuUi.Scripts.CharacterGallery
                 _selectedCharacterSlots[i].SlotIndex = i;
                 _selectedCharacterSlots[i].OnSlotPressed += HandleSlotPressed;
             }
+
+            ApplyEmptySlotGradients();
 
             _amountOfLoadouts = _dotsList.Count;
             if (_leftArrow) _leftArrow.onClick.AddListener(PressArrowLeft);
@@ -174,23 +186,58 @@ namespace MenuUi.Scripts.CharacterGallery
                     if (selectedCharacters[i].Id == slot.Id)
                     {
                         _selectedCharacterSlots[i].SelectedCharacter = slot.Character;
-
-                        if (_selectedCharacterSlots[i].BattleView != null)
-                        {
-                            var proto = PlayerCharacterPrototypes.GetCharacter(
-                                ((int)slot.Character.Id).ToString()
-                            );
-
-                            _selectedCharacterSlots[i].BattleView.SetInfo(
-                                proto.GalleryHeadImage,
-                                slot.Character.Id
-                            );
-                        }
-                        
+                        UpdateSlotBattleView(_selectedCharacterSlots[i], slot.Character.Id);
                     }
                 }
             }
             RefreshGalleryUsedVisuals();
+        }
+
+        private void ApplyEmptySlotGradients()
+        {
+            if (!_gradientOverride) return;
+
+            if (_emptySlotBgSprite == null)
+            {
+                _emptySlotBgSprite = ThreeColorGradient.GenerateGradient(
+                    _emptySlotBgColor,
+                    _emptySlotAltColor,
+                    _emptySlotDeepColor
+                );
+            }
+
+            for (int i = 0; i < _selectedCharacterSlots.Length; i++)
+            {
+                if (_selectedCharacterSlots[i] != null)
+                    _selectedCharacterSlots[i].SetEmptyGradientOverride(_emptySlotBgSprite);
+            }
+        }
+
+        private void UpdateSlotBattleView(SelectedCharacterEditingSlot slot, CharacterID charId)
+        {
+            if (slot == null || slot.BattleView == null) return;
+
+            var proto = PlayerCharacterPrototypes.GetCharacter(((int)charId).ToString());
+            if (proto == null) return;
+
+            slot.BattleView.SetInfo(proto.GalleryHeadImage, charId);
+
+            if (_gradientOverride)
+            {
+                CharacterClassType classType = CustomCharacter.GetClass(charId);
+
+                if (!_classBgSprites.TryGetValue(classType, out Sprite bgImage))
+                {
+                    Color bgColor = ClassReference.Instance.GetColor(classType);
+                    Color bgAltColor = ClassReference.Instance.GetAlternativeColor(classType);
+                    Color bgDeepColor = ClassReference.Instance.GetDeepColor(classType);
+
+                    bgImage = ThreeColorGradient.GenerateGradient(bgColor, bgAltColor, bgDeepColor);
+                    _classBgSprites.Add(classType, bgImage);
+                }
+
+                slot.BattleView.GradientOverride(bgImage);
+            }
         }
 
 
@@ -265,19 +312,14 @@ namespace MenuUi.Scripts.CharacterGallery
                 }
 
             }
-            
+
             targetSlot.SelectedCharacter = characterSlot.Character;
 
             // Update battle-style visuals for the new selection
-            if (targetSlot.BattleView != null)
+            UpdateSlotBattleView(targetSlot, characterSlot.Character.Id);
+            if (prevSlot != null && prevSlot.SelectedCharacter != null)
             {
-                var proto = PlayerCharacterPrototypes.GetCharacter(((int)characterSlot.Character.Id).ToString());
-                targetSlot.BattleView.SetInfo(proto.GalleryHeadImage, characterSlot.Character.Id);
-            }
-            if (prevSlot && prevSlot.BattleView != null)
-            {
-                var proto = PlayerCharacterPrototypes.GetCharacter(((int)prevSlot.SelectedCharacter.Id).ToString());
-                prevSlot.BattleView.SetInfo(proto.GalleryHeadImage, prevSlot.SelectedCharacter.Id);
+                UpdateSlotBattleView(prevSlot, prevSlot.SelectedCharacter.Id);
             }
 
             if (_openedFromLoadout)

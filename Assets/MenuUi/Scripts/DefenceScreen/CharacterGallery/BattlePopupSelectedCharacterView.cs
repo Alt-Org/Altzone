@@ -23,6 +23,15 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
         [SerializeField] public Image _resistanceIcon;
 
         private CharacterID _characterId;
+        private Sprite _defaultClassColorSprite;
+        private bool _defaultSpriteCached;
+
+        private void CacheDefaultSprite()
+        {
+            if (_defaultSpriteCached || _classColorImage == null) return;
+            _defaultClassColorSprite = _classColorImage.sprite;
+            _defaultSpriteCached = true;
+        }
 
         public void SetInfo(Sprite galleryImage, CharacterID charID, int[] stats = null)
         {
@@ -40,7 +49,11 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
             }
 
             if (_classColorImage != null)
+            {
+                CacheDefaultSprite();
+                _classColorImage.sprite = _defaultClassColorSprite;
                 _classColorImage.color = ClassReference.Instance.GetColor(charClassType);
+            }
 
             if (_cornerIcon != null)
             {
@@ -64,12 +77,33 @@ namespace MenuUi.Scripts.Lobby.SelectedCharacters
                 _piechartPreview.UpdateChart(_characterId);
         }
 
+        public void GradientOverride(Sprite bgImage)
+        {
+            if (_classColorImage == null) return;
+
+            CacheDefaultSprite();
+
+            if (bgImage == null)
+            {
+                _classColorImage.sprite = _defaultClassColorSprite;
+                return;
+            }
+
+            _classColorImage.sprite = bgImage;
+            _classColorImage.color = Color.white;
+        }
+
         public void SetEmpty()
         {
             if (_backgroundPanel != null) _backgroundPanel.SetActive(false);
             _spriteImage.enabled = false;
             if (_classColorBorderImage != null) _classColorBorderImage.enabled = false;
-            if (_classColorImage != null) _classColorImage.color = Color.gray;
+            if (_classColorImage != null)
+            {
+                CacheDefaultSprite();
+                _classColorImage.sprite = _defaultClassColorSprite;
+                _classColorImage.color = Color.gray;
+            }
             if (_cornerIcon != null) _cornerIcon.enabled = false;
             if (_resistanceIcon != null) _resistanceIcon.enabled = false;
 
