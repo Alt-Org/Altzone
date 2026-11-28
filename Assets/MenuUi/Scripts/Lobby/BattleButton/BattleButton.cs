@@ -36,6 +36,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         private MatchmakingType _selectedMatchmakingType = MatchmakingType.Random2v2;
         private GameType _selectedGameType = GameType.BattlePingPong;
+        private int _selectedTeamSize = 2;
 
         private List<GameTypeOption> _gameTypeOptionList = new();
         private Button _button;
@@ -43,6 +44,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
         public MatchmakingType SelectedMatchmakingType { get => _selectedMatchmakingType; }
         public GameType SelectedGameType { get => _selectedGameType; }
+        public int SelectedTeamSize => _selectedTeamSize;
         public Button Button { get => _button;}
 
         private void Awake()
@@ -78,7 +80,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
                 StartCoroutine(_raidNavigation.Navigate());
                 return;
             }
-            SignalBus.OnBattlePopupRequestedSignal(_selectedMatchmakingType, _selectedMatchmakingType == MatchmakingType.FriendLobby? MatchmakingType.Clan2v2: MatchmakingType.None, _selectedGameType);
+            SignalBus.OnBattlePopupRequestedSignal(_selectedMatchmakingType, _selectedMatchmakingType == MatchmakingType.FriendLobby? MatchmakingType.Clan2v2: MatchmakingType.None, _selectedGameType, _selectedTeamSize);
         }
 
         public void UpdateGameType(GameTypeInfo gameTypeInfo)
@@ -91,6 +93,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             _gameTypeDescription.SetText(gameTypeInfo.Description);
             _selectedMatchmakingType = gameTypeInfo.matchmakingType;
             _selectedGameType = gameTypeInfo.gameType;
+            _selectedTeamSize = Mathf.Clamp(gameTypeInfo.teamSize, 1, 2);
 
             // Saving battle button selected game type to playerprefs
             PlayerPrefs.SetInt(SelectedMatchmakingKey, (int)_selectedMatchmakingType);
@@ -99,7 +102,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
             // Setting selected visuals for option buttons
             foreach (GameTypeOption gameTypeOption in _gameTypeOptionList)
             {
-                bool selected = gameTypeOption.Info.matchmakingType == _selectedMatchmakingType && gameTypeOption.Info.gameType == _selectedGameType;
+                bool selected = gameTypeOption.Info.matchmakingType == _selectedMatchmakingType && gameTypeOption.Info.gameType == _selectedGameType && gameTypeOption.Info.teamSize == _selectedTeamSize;
                 gameTypeOption.SetSelected(selected);
             }
             
@@ -111,7 +114,7 @@ namespace MenuUi.Scripts.Lobby.BattleButton
         {
             foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
             {
-                if (gameTypeInfo.matchmakingType == _selectedMatchmakingType && gameTypeInfo.gameType == _selectedGameType)
+                if (gameTypeInfo.matchmakingType == _selectedMatchmakingType && gameTypeInfo.gameType == _selectedGameType && gameTypeInfo.teamSize == _selectedTeamSize)
                 {
                     _gameTypeName.SetText(gameTypeInfo.Name);
                     _gameTypeDescription.SetText(gameTypeInfo.Description);
@@ -124,9 +127,11 @@ namespace MenuUi.Scripts.Lobby.BattleButton
 
                 foreach (GameTypeInfo gameTypeInfo in _gameTypeReference.GetGameTypeInfos())
                 {
-                    if (gameTypeInfo.gameType == gameTypeOption.Info.gameType)
+                    if (gameTypeInfo.gameType == gameTypeOption.Info.gameType
+                        && gameTypeInfo.matchmakingType == gameTypeOption.Info.matchmakingType
+                        && gameTypeInfo.teamSize == gameTypeOption.Info.teamSize)
                     {
-                        bool selected = gameTypeOption.Info.matchmakingType == _selectedMatchmakingType && gameTypeOption.Info.gameType == _selectedGameType;
+                        bool selected = gameTypeOption.Info.matchmakingType == _selectedMatchmakingType && gameTypeOption.Info.gameType == _selectedGameType && gameTypeOption.Info.teamSize == _selectedTeamSize;
                         gameTypeOption.SetInfo(gameTypeInfo, selected);
                     }
                 }

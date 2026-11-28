@@ -2231,28 +2231,29 @@ public class ServerManager : MonoBehaviour
     #region Battle
 
     public string ActiveMatchmakingRoomId { get; private set; }
+    public string ActiveMatchmakingMatchId { get; private set; }
     public bool HasActiveMatchmakingRoom => !string.IsNullOrEmpty(ActiveMatchmakingRoomId);
+
     private bool _matchmakingLeaveInFlight;
 
-    public static string CreateMatchmakingRoomId()
+    private static T ParseMatchmakingResponse<T>(UnityWebRequest request) where T : class
     {
-        // The matchmaking API validates room ids as MongoDB ObjectIds (24 hexadecimal characters).
-        return Guid.NewGuid().ToString("N").Substring(0, 24);
+        string responseBody = request.downloadHandler?.text;
+        if (string.IsNullOrWhiteSpace(responseBody)) return null;
+
+        JObject response = JObject.Parse(responseBody);
+        return response["data"]?["Object"]?.ToObject<T>();
     }
 
-    public IEnumerator MatchmakingCreateRoom(MatchmakingType matchmakingType, GameType gameType, Action<bool> callback, string RoomId = "", int teamSize = 2, bool allowBots = true, string automaticInvite = null)
-    {
-        yield return StartCoroutine(MatchmakingCreateRoom(
-            matchmakingType,
-            gameType,
-            (success, _) => callback?.Invoke(success),
-            RoomId,
-            teamSize,
-            allowBots,
-            automaticInvite));
-    }
-
-    public IEnumerator MatchmakingCreateRoom(MatchmakingType matchmakingType, GameType gameType, Action<bool, string> callback, string RoomId = "", int teamSize = 2, bool allowBots = true, string automaticInvite = null)
+    public IEnumerator MatchmakingCreateRoom(
+        MatchmakingType matchmakingType,
+        GameType gameType,
+        Action<bool, MatchmakingRoomResponse> callback,
+        string roomId = null,
+        int teamSize = 2,
+        bool allowBots = true,
+        string automaticInvitePlayerId = null,
+        bool automaticClanInvite = false)
     {
         if (HasActiveMatchmakingRoom || _matchmakingLeaveInFlight)
         {
@@ -2264,8 +2265,6 @@ public class ServerManager : MonoBehaviour
                 yield break;
             }
         }
-
-        object invite = automaticInvite != null ? (automaticInvite.ToUpper().Equals("CLAN") ? new { type = "CLAN" } : new { type = "PLAYER", playerId = automaticInvite }) : null;
 
         string matchType = matchmakingType switch
         {
@@ -2282,63 +2281,64 @@ public class ServerManager : MonoBehaviour
             yield break;
         }
 
-        JObject bodyObject = JObject.FromObject(
-            new
-            {
-                matchType,
-                gameType = (int)gameType,
-                allowBots = allowBots,
-                automaticInvite = invite,
-                clientVersion = ApplicationController.VersionNumber.ToString(),
-            },
-            JsonSerializer.CreateDefault(new JsonSerializerSettings {})
-        );
+        JObject body = new()
+        {
+            ["matchType"] = matchType,
+            ["gameType"] = (int)gameType,
+            ["allowBots"] = allowBots,
+            ["clientVersion"] = ApplicationController.VersionNumber.ToString()
+        };
 
         if (matchmakingType == MatchmakingType.Custom)
         {
-            bodyObject["roomId"] = string.IsNullOrEmpty(RoomId) ? CreateMatchmakingRoomId() : RoomId;
-            bodyObject["teamSize"] = teamSize;
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                Debug.LogError("MatchmakingCreateRoom: CUSTOM matchmaking requires a MongoDB room id.");
+                callback?.Invoke(false, null);
+                yield break;
+            }
+            body["roomId"] = roomId;
+            body["teamSize"] = teamSize;
         }
 
-        string body = bodyObject.ToString();
+        if (matchmakingType != MatchmakingType.Custom)
+        {
+            // The backend defaults omitted teamSize to 1, including RANDOM and CLAN.
+            body["teamSize"] = teamSize;
+        }
+
+        if (!string.IsNullOrWhiteSpace(automaticInvitePlayerId))
+        {
+            body["automaticInvite"] = JObject.FromObject(new { type = "PLAYER", playerId = automaticInvitePlayerId });
+        }
+        else if (automaticClanInvite)
+        {
+            body["automaticInvite"] = JObject.FromObject(new { type = "CLAN" });
+        }
 
         for (int attempt = 0; attempt < 2; attempt++)
         {
-            UnityWebRequest.Result requestResult = UnityWebRequest.Result.InProgress;
+            MatchmakingRoomResponse room = null;
+            UnityWebRequest.Result result = UnityWebRequest.Result.InProgress;
             long responseCode = 0;
-            string responseBody = null;
-            yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}matchmaking/rooms", body, AccessToken, Request =>
+            yield return StartCoroutine(WebRequests.Post($"{DEVADDRESS}matchmaking/rooms", body.ToString(), AccessToken, request =>
             {
-                requestResult = Request.result;
-                responseCode = Request.responseCode;
-                responseBody = Request.downloadHandler?.text;
+                result = request.result;
+                responseCode = request.responseCode;
+                if (result == UnityWebRequest.Result.Success)
+                {
+                    try { room = ParseMatchmakingResponse<MatchmakingRoomResponse>(request); }
+                    catch (Exception ex) { Debug.LogError($"MatchmakingCreateRoom: invalid response: {ex.Message}"); }
+                }
             }));
 
-            if (requestResult == UnityWebRequest.Result.Success)
+            if (result == UnityWebRequest.Result.Success && room != null)
             {
-                try
-                {
-                    JObject result = JObject.Parse(responseBody);
-                    string serverRoomId = result["data"]?["Object"]?["id"]?.ToString();
-                    if (string.IsNullOrEmpty(serverRoomId))
-                    {
-                        Debug.LogError("MatchmakingCreateRoom: server response did not contain data.Object.id.");
-                        callback?.Invoke(false, null);
-                        yield break;
-                    }
-
-                    ActiveMatchmakingRoomId = serverRoomId;
-                    callback?.Invoke(true, serverRoomId);
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"MatchmakingCreateRoom: failed to parse server response: {ex.Message}");
-                    callback?.Invoke(false, null);
-                }
+                ActiveMatchmakingRoomId = room.id;
+                callback?.Invoke(true, room);
                 yield break;
             }
 
-            // Recover from stale server state left by an earlier client/game session, then retry once.
             if (responseCode == 409 && attempt == 0)
             {
                 bool leftRoom = false;
@@ -2349,6 +2349,81 @@ public class ServerManager : MonoBehaviour
             callback?.Invoke(false, null);
             yield break;
         }
+    }
+
+    public IEnumerator MatchmakingJoinRoom(string roomId, Action<bool, MatchmakingRoomResponse> callback)
+    {
+        JObject body = new()
+        {
+            ["roomId"] = roomId,
+            ["clientVersion"] = ApplicationController.VersionNumber.ToString()
+        };
+
+        yield return StartCoroutine(MatchmakingRoomPost($"rooms/{UnityWebRequest.EscapeURL(roomId)}/join", body.ToString(), (success, room) =>
+        {
+            if (success) ActiveMatchmakingRoomId = room.id;
+            callback?.Invoke(success, room);
+        }));
+    }
+
+    public IEnumerator MatchmakingStartRoom(string roomId, Action<bool, MatchmakingRoomResponse> callback)
+    {
+        yield return StartCoroutine(MatchmakingRoomPost($"rooms/{UnityWebRequest.EscapeURL(roomId)}/start", string.Empty, (success, room) =>
+        {
+            if (success && !string.IsNullOrEmpty(room.matchId)) ActiveMatchmakingMatchId = room.matchId;
+            callback?.Invoke(success, room);
+        }));
+    }
+
+    public IEnumerator MatchmakingGetRoom(string roomId, Action<bool, MatchmakingRoomResponse> callback)
+    {
+        MatchmakingRoomResponse room = null;
+        bool success = false;
+        yield return StartCoroutine(WebRequests.Get(
+            $"{DEVADDRESS}matchmaking/rooms/{UnityWebRequest.EscapeURL(roomId)}",
+            AccessToken,
+            request =>
+            {
+                success = request.result == UnityWebRequest.Result.Success;
+                if (!success) return;
+                try { room = ParseMatchmakingResponse<MatchmakingRoomResponse>(request); }
+                catch (Exception ex) { Debug.LogError($"MatchmakingGetRoom: invalid response: {ex.Message}"); }
+                success = room != null;
+            }));
+        callback?.Invoke(success, room);
+    }
+
+    public IEnumerator MatchmakingGetRooms(Action<bool, List<MatchmakingRoomResponse>> callback)
+    {
+        List<MatchmakingRoomResponse> rooms = null;
+        bool success = false;
+        yield return StartCoroutine(WebRequests.Get(
+            $"{DEVADDRESS}matchmaking/rooms",
+            AccessToken,
+            request =>
+            {
+                success = request.result == UnityWebRequest.Result.Success;
+                if (!success) return;
+                try { rooms = ParseMatchmakingResponse<List<MatchmakingRoomResponse>>(request); }
+                catch (Exception ex) { Debug.LogError($"MatchmakingGetRooms: invalid response: {ex.Message}"); }
+                success = rooms != null;
+            }));
+        callback?.Invoke(success, rooms);
+    }
+
+    private IEnumerator MatchmakingRoomPost(string relativePath, string body, Action<bool, MatchmakingRoomResponse> callback)
+    {
+        MatchmakingRoomResponse room = null;
+        bool success = false;
+        yield return StartCoroutine(WebRequests.Post($"{DEVADDRESS}matchmaking/{relativePath}", body, AccessToken, request =>
+        {
+            success = request.result == UnityWebRequest.Result.Success;
+            if (!success) return;
+            try { room = ParseMatchmakingResponse<MatchmakingRoomResponse>(request); }
+            catch (Exception ex) { Debug.LogError($"Matchmaking response parsing failed: {ex.Message}"); }
+            success = room != null;
+        }));
+        callback?.Invoke(success, room);
     }
 
     public IEnumerator MatchmakingLeaveRoom(Action<bool> callback = null)
@@ -2364,10 +2439,9 @@ public class ServerManager : MonoBehaviour
         bool leftRoom = false;
         try
         {
-            yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}matchmaking/rooms/leave", "", AccessToken, Request =>
+            yield return StartCoroutine(WebRequests.Post($"{DEVADDRESS}matchmaking/rooms/leave", string.Empty, AccessToken, request =>
             {
-                // Leaving is idempotent locally: a 404 means the backend already has no active room.
-                leftRoom = Request.result == UnityWebRequest.Result.Success || Request.responseCode == 404;
+                leftRoom = request.result == UnityWebRequest.Result.Success || request.responseCode == 404;
                 if (leftRoom) ActiveMatchmakingRoomId = null;
             }));
         }
@@ -2375,48 +2449,96 @@ public class ServerManager : MonoBehaviour
         {
             _matchmakingLeaveInFlight = false;
         }
-
         callback?.Invoke(leftRoom);
+    }
+
+    public IEnumerator MatchmakingCancelRoom(string roomId, Action<bool> callback = null)
+    {
+        bool success = false;
+        yield return StartCoroutine(WebRequests.Delete($"{DEVADDRESS}matchmaking/rooms/{UnityWebRequest.EscapeURL(roomId)}", AccessToken, request =>
+        {
+            success = request.result == UnityWebRequest.Result.Success;
+            if (success) ActiveMatchmakingRoomId = null;
+        }));
+        callback?.Invoke(success);
     }
 
     public IEnumerator MatchmakingSendInviteToClan(Action<bool> callback)
     {
-        yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}matchmaking/invites/clan", "", AccessToken, Request =>
-        {
-            if (Request.result == UnityWebRequest.Result.Success)
-            {
-                if (callback != null)
-                    callback(obj: true);
-            }
-            else
-            {
-                if (callback != null)
-                {
-                    callback(obj: false);
-                }
-            }
-        }));
+        yield return StartCoroutine(MatchmakingInvitePost("invites/clan", callback));
     }
 
     public IEnumerator MatchmakingSendInviteToPlayer(string playerId, Action<bool> callback)
     {
-        yield return StartCoroutine(WebRequests.Post(address: $"{DEVADDRESS}matchmaking/invites/{playerId}", "", AccessToken, Request =>
-        {
-            if (Request.result == UnityWebRequest.Result.Success)
-            {
-                if (callback != null)
-                    callback(obj: true);
-            }
-            else
-            {
-                if (callback != null)
-                {
-                    callback(obj: false);
-                }
-            }
-        }));
+        yield return StartCoroutine(MatchmakingInvitePost($"invites/{UnityWebRequest.EscapeURL(playerId)}", callback));
     }
 
+    private IEnumerator MatchmakingInvitePost(string relativePath, Action<bool> callback)
+    {
+        bool success = false;
+        yield return StartCoroutine(WebRequests.Post($"{DEVADDRESS}matchmaking/{relativePath}", string.Empty, AccessToken, request =>
+        {
+            success = request.result == UnityWebRequest.Result.Success;
+        }));
+        callback?.Invoke(success);
+    }
+
+    public IEnumerator MatchmakingConfirmPhotonReady(string matchId, Action<bool, MqttMatchSet> callback = null)
+    {
+        MqttMatchSet match = null;
+        bool success = false;
+        yield return StartCoroutine(WebRequests.Post($"{DEVADDRESS}matchmaking/matches/{UnityWebRequest.EscapeURL(matchId)}/start", string.Empty, AccessToken, request =>
+        {
+            success = request.result == UnityWebRequest.Result.Success;
+            if (!success) return;
+            try { match = ParseMatchmakingResponse<MqttMatchSet>(request); }
+            catch (Exception ex) { Debug.LogError($"MatchmakingConfirmPhotonReady: invalid response: {ex.Message}"); }
+        }));
+        if (success) ActiveMatchmakingMatchId = matchId;
+        callback?.Invoke(success, match);
+    }
+
+    public IEnumerator MatchmakingFinishMatch(string winningSide, Action<bool, MqttMatchSet> callback = null)
+    {
+        if (string.IsNullOrEmpty(ActiveMatchmakingMatchId))
+        {
+            callback?.Invoke(false, null);
+            yield break;
+        }
+
+        string matchId = ActiveMatchmakingMatchId;
+        MqttMatchSet match = null;
+        bool success = false;
+        string body = JObject.FromObject(new { winningSide }).ToString();
+        yield return StartCoroutine(WebRequests.Post($"{DEVADDRESS}matchmaking/matches/{UnityWebRequest.EscapeURL(matchId)}/finish", body, AccessToken, request =>
+        {
+            success = request.result == UnityWebRequest.Result.Success;
+            if (!success) return;
+            try { match = ParseMatchmakingResponse<MqttMatchSet>(request); }
+            catch (Exception ex) { Debug.LogError($"MatchmakingFinishMatch: invalid response: {ex.Message}"); }
+        }));
+
+        if (success)
+        {
+            ActiveMatchmakingRoomId = null;
+            ActiveMatchmakingMatchId = null;
+        }
+        callback?.Invoke(success, match);
+    }
+
+    public void SetActiveMatchmakingMatch(string matchId)
+    {
+        ActiveMatchmakingMatchId = matchId;
+    }
+
+    public void ClearActiveMatchmakingState(string matchId = null)
+    {
+        if (!string.IsNullOrEmpty(matchId)
+            && !string.Equals(matchId, ActiveMatchmakingMatchId, StringComparison.Ordinal)) return;
+
+        ActiveMatchmakingRoomId = null;
+        ActiveMatchmakingMatchId = null;
+    }
 
     public void BattleSendDebugLogFile(List<IMultipartFormSection> formData, string secretKey, string id, Action<UnityWebRequest> callback)
     {
